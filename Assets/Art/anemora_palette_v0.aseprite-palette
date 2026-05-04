@@ -1,0 +1,29 @@
+{
+  "name": "Anemora Palette v0 Draft",
+  "colors": [
+    { "name": "Charcoal Ink", "color": "#1e1d1aff" },
+    { "name": "Deep Shadow", "color": "#2b2a25ff" },
+    { "name": "Warm Shadow", "color": "#3a332bff" },
+    { "name": "Worn Brown", "color": "#5a4635ff" },
+    { "name": "Old Leather", "color": "#73583fff" },
+    { "name": "Dry Bark", "color": "#8b6a49ff" },
+    { "name": "Soft Beige", "color": "#c8b89aff" },
+    { "name": "Pale Cloth", "color": "#ded2b8ff" },
+    { "name": "Dark Trouser", "color": "#2f3336ff" },
+    { "name": "Faded Navy", "color": "#48535dff" },
+    { "name": "Weathered Stone Dark", "color": "#565951ff" },
+    { "name": "Weathered Stone", "color": "#74766bff" },
+    { "name": "Stone Highlight", "color": "#9a9a89ff" },
+    { "name": "Ash Plaster", "color": "#b8b5a3ff" },
+    { "name": "Moss Grey Dark", "color": "#4d5a4cff" },
+    { "name": "Moss Grey", "color": "#66745fff" },
+    { "name": "Fallen Leaf Dark", "color": "#6a3f2bff" },
+    { "name": "Fallen Leaf", "color": "#8d5b35ff" },
+    { "name": "Dead Grass", "color": "#a58b57ff" },
+    { "name": "UI Text", "color": "#e8dfc8ff" },
+    { "name": "UI Muted Text", "color": "#b7aa91ff" },
+    { "name": "UI Frame", "color": "#8c7657ff" },
+    { "name": "Quiet Accent", "color": "#9f5142ff" },
+    { "name": "Memory Blue Grey", "color": "#657783ff" }
+  ]
+}
