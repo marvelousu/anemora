@@ -4,16 +4,16 @@
 
 - Input drafts: `Assets/Art/Sprites/Hero/v1/_draft/front_v1.png`, `side_v1.png`, `back_v1.png`
 - Palette: `Assets/Art/anemora_palette_v0.gpl`
-- Aseprite executable was not available on PATH, and the main Anemora Unity project was already open. This pass used a deterministic local pixel-processing substitute: palette-v0 nearest-color compression, small region recolor, and 4-frame sheet assembly.
+- Initial pass used deterministic local pixel processing because Aseprite was not installed yet. Follow-up validation used Steam Aseprite `1.3.17.2-x64` at `C:\Program Files (x86)\Steam\steamapps\common\Aseprite\aseprite.exe` to re-export the final PNGs as indexed palette-v0 sprites.
 - Status: draft/v1 review stop. Do not treat this as final art approval until the user reviews the sprite sheet.
 
 ## Outputs
 
 | Asset | Size | Frames | Palette colors | Outside palette |
 |---|---:|---:|---:|---:|
-| `Assets/Art/Sprites/Hero/v1/hero_stand.png` | 32x48 | 1 | 14 | 0 |
-| `Assets/Art/Sprites/Hero/v1/hero_idle.png` | 128x48 | 4 | 14 | 0 |
-| `Assets/Art/Sprites/Hero/v1/hero_walk_front.png` | 128x48 | 4 | 14 | 0 |
+| `Assets/Art/Sprites/Hero/v1/hero_stand.png` | 32x48 | 1 | 13 | 0 |
+| `Assets/Art/Sprites/Hero/v1/hero_idle.png` | 128x48 | 4 | 13 | 0 |
+| `Assets/Art/Sprites/Hero/v1/hero_walk_front.png` | 128x48 | 4 | 13 | 0 |
 | `Assets/Art/Sprites/Hero/v1/hero_walk_back.png` | 128x48 | 4 | 13 | 0 |
 | `Assets/Art/Sprites/Hero/v1/hero_walk_left.png` | 128x48 | 4 | 15 | 0 |
 | `Assets/Art/Sprites/Hero/v1/hero_walk_right.png` | 128x48 | 4 | 15 | 0 |
@@ -27,6 +27,7 @@
 - Idle uses four frames with a 1-pixel upper-body breathing sway.
 - Walk sheets use four frames with small leg/torso offsets. These are intentionally conservative placeholders for F4 Animator validation and should be reviewed in motion.
 - `hero_hands_d7.png` is a separate 64x32 cut with two outlined hands for the D-7 close-up beat.
+- Aseprite `.aseprite` working copies were saved under `art/_intermediate/f2_aseprite_sources/` for local review only; they are gitignored and not public deliverables.
 
 ## Unity Import
 

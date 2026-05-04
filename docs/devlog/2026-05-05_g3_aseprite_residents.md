@@ -8,7 +8,7 @@
   - `Assets/Art/Sprites/NPC/Resident_A/v1/_draft/left_v1.png`
   - `Assets/Art/Sprites/NPC/Resident_B/v1/_draft/seated_v1.png`
 - Palette: `Assets/Art/anemora_palette_v0.gpl`
-- Aseprite executable was not available on PATH, so this pass used deterministic local palette compression and simple 4-frame sheet assembly.
+- Initial pass used deterministic local palette compression because Aseprite was not installed yet. Follow-up validation used Steam Aseprite `1.3.17.2-x64` at `C:\Program Files (x86)\Steam\steamapps\common\Aseprite\aseprite.exe` to re-export the final PNGs as indexed palette-v0 sprites.
 - Status: draft/v1 review stop. Resident age contrast and Resident_B darkness remain user-review items.
 
 ## Outputs
@@ -28,6 +28,7 @@
 - Resident_A idle has a small tired upper-body sway. Walk frames use restrained 1-pixel offsets and should be considered motion-blocking, not final hand animation.
 - Resident_B's PixFlux draft had 68 original colors and a darker rendering style. It was compressed to moss grey / dark trouser / weathered stone colors from palette v0, leaving 7 opaque palette colors.
 - Resident_B idle is almost still, with a small seated breathing shift.
+- Aseprite `.aseprite` working copies were saved under `art/_intermediate/f2_aseprite_sources/` for local review only; they are gitignored and not public deliverables.
 
 ## Unity Import
 
