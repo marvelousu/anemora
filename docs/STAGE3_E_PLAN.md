@@ -56,21 +56,35 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 
 ### Phase E0: URP + Renderer Feature 準備
 
-**目的**: ポータル実装の土台となる URP 設定を確認・調整する。
+**目的**: ポータル実装の土台となる URP Pipeline Asset / Forward Renderer Data を作成し、Renderer Feature と Stencil bit 予約を調整する。
+
+**現状 (Windows Codex `2026-05-05_urp_setup_check.md` 時点)**:
+- URP package `17.3.0` 解決済 ✓
+- `com.unity.collab-proxy` を manifest から除去済 (Unity VCS 不要) ✓
+- `Assets/UniversalRenderPipelineGlobalSettings.asset` / `Assets/DefaultVolumeProfile.asset` 生成済 ✓
+- **未着手**: `Assets/Settings/` 配下の URP Pipeline Asset + Forward Renderer Data の作成と割当
+- **未着手**: `ProjectSettings/GraphicsSettings.asset` / `QualitySettings.asset` の `m_CustomRenderPipeline` 割当
 
 **成果物**:
-- `Assets/Settings/` に URP Asset (Forward+) と Forward Renderer Data の確認結果
-- Stencil bit 予約: `bit 4` を Time Frame portal 用に確保 (Unity URP 内部予約と非競合かを実機検証)
-- 検証メモ `docs/devlog/2026-05-XX_e0_urp_setup.md`
+- `Assets/Settings/UniversalRenderPipeline.asset` (URP Pipeline Asset、Forward+)
+- `Assets/Settings/UniversalRenderPipeline_Renderer.asset` (Forward Renderer Data)
+- 上記 2 つを GraphicsSettings + QualitySettings 全レベルに割当
+- Renderer Feature `PortalStencilFeature` のスケルトンを Forward Renderer Data に追加
+- Stencil bit 予約検証結果: `bit 4` で URP 内部予約と非競合かを実機確認、競合時は bit 6 / 7 へ
+- `Assets/UniversalRenderPipelineGlobalSettings.asset` / `Assets/DefaultVolumeProfile.asset` を `Assets/Settings/` 配下へ整理 (任意、ADR-0004 整合の観点で)
+- 検証メモ `docs/devlog/2026-05-XX_e0_urp_pipeline_asset.md`
 
 **手順**:
-1. Project Settings > Graphics で URP Asset が Forward+ に設定されているか確認
-2. 該当 Forward Renderer Data に Renderer Feature `PortalStencilFeature` (空のスケルトン) を追加
-3. Stencil bit 4 を URP の SSAO / Decal / OutputColorSpace 等の予約と重ならないか実機確認 (URP 16.x 以降の予約マップを確認)
-4. 競合があれば bit 6 / 7 を候補にスライド
+1. `Assets/Settings/` 配下に URP Pipeline Asset を作成 (Create > Rendering > URP Asset (with Universal Renderer))
+2. 自動生成される Forward Renderer Data の Rendering Path を **Forward+** に設定 (ADR-0002 Decision: Forward 固定)
+3. Project Settings > Graphics の `Scriptable Render Pipeline Settings` に作成した URP Asset を割当
+4. Project Settings > Quality の各 Quality Level (Low/Medium/High など) に同 URP Asset を割当
+5. Forward Renderer Data に Renderer Feature `PortalStencilFeature` (空スケルトン) を追加
+6. Stencil bit 4 を URP の SSAO / Decal / Lighting レイヤー予約と重ならないか実機確認 (URP 17.x 予約マップを確認、`StencilUsage` enum を参照)
+7. 競合があれば bit 6 / 7 を候補にスライド、確定値を本書 §5 と ADR-0002 Decision に反映
 
 **担当**: Windows Codex (Unity Editor 操作)
-**Linux 関与**: 検証メモのレビュー、Stencil bit 確定の妥当性判断
+**Linux 関与**: 検証メモのレビュー、Stencil bit 確定の妥当性判断、E0 後に ADR-0002 改訂が必要なら起草
 
 ---
 
@@ -406,3 +420,4 @@ Linux Claude は **コードを書かず、設計レビューと PR レビュー
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0.1 | 2026-05-04 | Stage 3 Day 1 起草、Phase E0-E6 + 検証マトリクス + 担当割り定義 |
+| v0.2 | 2026-05-04 | Windows Codex の URP setup check 結果 (`2026-05-05_urp_setup_check.md`) を Phase E0 に反映: URP Pipeline Asset / Forward Renderer Data の作成・割当を明示、現状ステータスを記載 |
