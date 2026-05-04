@@ -34,7 +34,7 @@
 
 | ツール | 商用利用条件 (記録時) | 注意点 |
 |---|---|---|
-| PixelLab | 公開 ToS 上は生成物の商用/非商用利用可。生成時のアカウント/プラン状態は別途記録必須 | 2026-05-05 Codex 確認: ToS §1.3/§3.3。API 利用は公式 API のみ、生成物で他モデルを訓練する用途は禁止/要許諾。PixelLab UI の paid 加入状態は batchmode から未確認 |
+| PixelLab | 公開 ToS 上は生成物の商用/非商用利用可。**ユーザー paid plan 加入決定 (2026-05-05)** → F1 着手可 | 2026-05-05 Codex 確認: ToS §1.3/§3.3。API 利用は公式 API のみ、生成物で他モデルを訓練する用途は禁止/要許諾。F1 生成時に Plan 状態 + invoice 抜粋を §3 に追記する |
 | Retro Diffusion (Scenario 経由) | Scenario paid plan なら商用利用可。Free plan 出力は採用しない | 2026-05-05 Codex 確認: Scenario pricing/terms。Retro Diffusion/RD Plus は Scenario 上のモデルとして確認。Aseprite 拡張版/standalone で使う場合は別途規約確認 |
 | Aseprite | 自分の創作物に限り商用可 | 2026-05-05 Codex 確認: 公式 FAQ。会社利用は developer ごとに license 必要、Aseprite 本体の再配布は禁止 |
 | Meshy v6 | 要確認 | LowPoly Mode の出力ライセンス確認 |
@@ -119,7 +119,7 @@ PixelLab ToS `https://www.pixellab.ai/termsofservice` / PixelLab API `https://ww
 
 | 日付 | ツール | 変更内容 | 対応 |
 |---|---|---|---|
-| (規約変更時に追記) | | | |
+| 2026-05-05 | PixelLab | ユーザー paid plan 加入決定 (F1 着手可) | F1 着手前に Codex で plan / invoice 状態を確認、本表に詳細追記 |
 
 ---
 
