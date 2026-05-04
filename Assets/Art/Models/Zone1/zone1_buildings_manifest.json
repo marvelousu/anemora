@@ -1,0 +1,560 @@
+{
+  "generated_date": "2026-05-05",
+  "source_spec": "docs/asset_prompts/zone1_buildings.md sections 2-4 and 8",
+  "tool": "Meshy Text to 3D API (Meshy 6 latest, lowpoly) + Blender 4.5.5 LTS",
+  "meshy_status": "18 preview/refine tasks succeeded",
+  "meshy_credits": {
+    "preview": 360,
+    "refine": 180,
+    "total": 540,
+    "balance_before": {
+      "balance": 1100
+    },
+    "balance_after": {
+      "balance": 560
+    }
+  },
+  "intermediate_root": "art/_intermediate/zone1_meshy",
+  "texture_policy": {
+    "pbr": false,
+    "max_base_color_size": "1024px longest side",
+    "palette": "Meshy base color textures desaturated/softened toward Anemora muted earth palette; Blender repair assets use flat palette materials."
+  },
+  "blender_checklist": {
+    "scale_normalized_meters": true,
+    "merge_by_distance_m": 0.001,
+    "normals_recalculated_outside": true,
+    "uv_texture_preserved_or_blender_rebuilt": true,
+    "palette_integrated": "Muted Anemora earth palette pass; metallic=0, roughness=0.95.",
+    "polygon_counts_recorded": true,
+    "fbx_export": "Apply unit scale, smoothing edge, path mode COPY, embedded textures.",
+    "unity_import": "Unity batch setup imports model materials, sets URP/Lit defaults, and creates prefabs under Assets/Prefabs/Zone1."
+  },
+  "selected_candidates": {
+    "House_Player": "House_Player_Candidate_03",
+    "Plaza_Center_Monument": "Plaza_Fountain_Dry_Broken (option B draft)"
+  },
+  "review_candidates": {
+    "House_Player": [
+      "House_Player_Candidate_01",
+      "House_Player_Candidate_02",
+      "House_Player_Candidate_03",
+      "House_Player_Candidate_04"
+    ],
+    "Plaza_Center_Monument": [
+      "Plaza_Monument_A_StoneBench",
+      "Plaza_Fountain_Dry_Broken",
+      "Plaza_Monument_C_Pedestal"
+    ]
+  },
+  "assets": [
+    {
+      "id": "House_Player",
+      "category": "HousePlayer",
+      "path": "Assets/Art/Models/Zone1/HousePlayer/House_Player.fbx",
+      "source_meshy_asset_id": "House_Player_Candidate_03",
+      "source_preview_task_id": "019df4f0-fc1d-7d64-bc63-ce31b545e820",
+      "source_refine_task_id": "019df4f7-bc5f-7fba-97fc-fd25234c27eb",
+      "triangles": 1019,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -2.125,
+          -2.0,
+          0.0
+        ],
+        "max": [
+          2.125,
+          2.0,
+          3.0
+        ],
+        "size_m": [
+          4.25,
+          4.0,
+          3.0
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/House_Player_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/House_Player_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 1200,
+      "notes": "Meshy candidate 03 selected for draft; candidates 01/02 visibly broken, candidate 04 retained for review."
+    },
+    {
+      "id": "Bed_Player",
+      "category": "HousePlayer",
+      "path": "Assets/Art/Models/Zone1/HousePlayer/Bed_Player.fbx",
+      "source_meshy_asset_id": "Bed_Player",
+      "source_preview_task_id": "019df4f1-13c4-7a39-8bca-f2a9a9bab846",
+      "source_refine_task_id": "019df4f7-d157-7fbb-a971-c4f09ca17c32",
+      "triangles": 340,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.525,
+          -1.025,
+          0.0
+        ],
+        "max": [
+          0.525,
+          1.025,
+          0.65
+        ],
+        "size_m": [
+          1.05,
+          2.05,
+          0.65
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Bed_Player_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Bed_Player_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 400,
+      "notes": "Simple disheveled single bed from section 2.3.1."
+    },
+    {
+      "id": "Bookshelf_Empty",
+      "category": "HousePlayer",
+      "path": "Assets/Art/Models/Zone1/HousePlayer/Bookshelf_Empty.fbx",
+      "source_meshy_asset_id": "Bookshelf_Empty",
+      "source_preview_task_id": "019df4f1-2064-7a3c-b62e-7b08658df762",
+      "source_refine_task_id": "019df4f7-dbe3-7c53-a7ab-965aaa178818",
+      "triangles": 84,
+      "objects": 7,
+      "bounds": {
+        "min": [
+          -0.5,
+          -0.151,
+          0.0
+        ],
+        "max": [
+          0.5,
+          0.151,
+          1.5
+        ],
+        "size_m": [
+          1.0,
+          0.302,
+          1.5
+        ]
+      },
+      "texture": "flat Blender materials",
+      "texture_size": "N/A",
+      "textures": [],
+      "max_triangles_target": 500,
+      "notes": "Meshy output had a diagonal board artifact; shelf was rebuilt in Blender to preserve the prompt intent."
+    },
+    {
+      "id": "Bookshelf_FamilyBooks",
+      "category": "HousePlayer",
+      "path": "Assets/Art/Models/Zone1/HousePlayer/Bookshelf_FamilyBooks.fbx",
+      "source_meshy_asset_id": "Bookshelf_Empty",
+      "source_preview_task_id": "019df4f1-2064-7a3c-b62e-7b08658df762",
+      "source_refine_task_id": "019df4f7-dbe3-7c53-a7ab-965aaa178818",
+      "triangles": 180,
+      "objects": 15,
+      "bounds": {
+        "min": [
+          -0.5,
+          -0.153,
+          0.0
+        ],
+        "max": [
+          0.5,
+          0.153,
+          1.5
+        ],
+        "size_m": [
+          1.0,
+          0.305,
+          1.5
+        ]
+      },
+      "texture": "flat Blender materials",
+      "texture_size": "N/A",
+      "textures": [],
+      "max_triangles_target": 650,
+      "notes": "Family-books variant built from the corrected empty shelf with 8 muted book blocks."
+    },
+    {
+      "id": "Table_SmallChair_Wooden",
+      "category": "HousePlayer",
+      "path": "Assets/Art/Models/Zone1/HousePlayer/Table_SmallChair_Wooden.fbx",
+      "source_meshy_asset_id": "Table_SmallChair_Wooden",
+      "source_preview_task_id": "019df4f1-2b60-7a93-9347-74a3c7c66c06",
+      "source_refine_task_id": "019df4f7-e503-7c53-a1cb-2b8ba60b7c4f",
+      "triangles": 593,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.6,
+          -0.775,
+          0.0
+        ],
+        "max": [
+          0.6,
+          0.775,
+          1.15
+        ],
+        "size_m": [
+          1.2,
+          1.55,
+          1.15
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Table_SmallChair_Wooden_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Table_SmallChair_Wooden_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 700,
+      "notes": "Small table and wooden chair from section 2.3.3."
+    },
+    {
+      "id": "Door_House",
+      "category": "HousePlayer",
+      "path": "Assets/Art/Models/Zone1/HousePlayer/Door_House.fbx",
+      "source_meshy_asset_id": "Door_House",
+      "source_preview_task_id": "019df4f1-3b7e-7d81-ad32-27b9b5f1d7a4",
+      "source_refine_task_id": "019df4f7-ee4e-7cad-ae96-6591b568c4af",
+      "triangles": 255,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.45,
+          -0.04,
+          0.0
+        ],
+        "max": [
+          0.45,
+          0.04,
+          2.0
+        ],
+        "size_m": [
+          0.9,
+          0.08,
+          2.0
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Door_House_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Door_House_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 300,
+      "notes": "Standalone plank door from section 2.3.4."
+    },
+    {
+      "id": "Plaza_Fountain_Dry_Broken",
+      "category": "Plaza",
+      "path": "Assets/Art/Models/Zone1/Plaza/Plaza_Fountain_Dry_Broken.fbx",
+      "source_meshy_asset_id": "Plaza_Fountain_Dry_Broken",
+      "source_preview_task_id": "019df4f1-53f5-782a-89c6-c9b878246119",
+      "source_refine_task_id": "019df4f8-01e2-7c53-a1c6-15bb31d9cc89",
+      "triangles": 863,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -1.0,
+          -1.0,
+          0.0
+        ],
+        "max": [
+          1.0,
+          1.0,
+          1.2
+        ],
+        "size_m": [
+          2.0,
+          2.0,
+          1.2
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Plaza_Fountain_Dry_Broken_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Plaza_Fountain_Dry_Broken_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 900,
+      "notes": "Plaza monument option B selected as draft; A/C kept in Meshy intermediate for review."
+    },
+    {
+      "id": "StreetLamp",
+      "category": "Plaza",
+      "path": "Assets/Art/Models/Zone1/Plaza/StreetLamp.fbx",
+      "source_meshy_asset_id": "StreetLamp",
+      "source_preview_task_id": "019df4f1-6ae3-7aac-bf2f-7d1b2d8ca2d9",
+      "source_refine_task_id": "019df4f8-139f-7fc5-8548-4da94652ffda",
+      "triangles": 340,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.225,
+          -0.225,
+          0.0
+        ],
+        "max": [
+          0.225,
+          0.225,
+          3.0
+        ],
+        "size_m": [
+          0.45,
+          0.45,
+          3.0
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/StreetLamp_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/StreetLamp_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 400,
+      "notes": "Reusable unlit cracked street lamp from section 3.3.1."
+    },
+    {
+      "id": "Tree_Decay",
+      "category": "Plaza",
+      "path": "Assets/Art/Models/Zone1/Plaza/Tree_Decay.fbx",
+      "source_meshy_asset_id": "Tree_Decay",
+      "source_preview_task_id": "019df4f1-76d4-7aad-92fb-39f1ef88439b",
+      "source_refine_task_id": "019df4f8-1ca8-7cad-a28a-c7469f784b93",
+      "triangles": 849,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.725,
+          -0.725,
+          0.0
+        ],
+        "max": [
+          0.725,
+          0.725,
+          4.0
+        ],
+        "size_m": [
+          1.45,
+          1.45,
+          4.0
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Tree_Decay_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Tree_Decay_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 1000,
+      "notes": "Sparse-leaf decay tree from section 3.3.2; leaf amount awaits user review."
+    },
+    {
+      "id": "Floor_Stone",
+      "category": "Plaza",
+      "path": "Assets/Art/Models/Zone1/Plaza/Floor_Stone.fbx",
+      "source_meshy_asset_id": "Floor_Stone",
+      "source_preview_task_id": "019df4f1-833f-782b-9f93-9e42cdb61095",
+      "source_refine_task_id": "019df4f8-260d-7fc7-8c62-c710cc9571c7",
+      "triangles": 240,
+      "objects": 20,
+      "bounds": {
+        "min": [
+          -0.998,
+          -0.991,
+          0.0
+        ],
+        "max": [
+          0.998,
+          0.991,
+          0.08
+        ],
+        "size_m": [
+          1.997,
+          1.982,
+          0.08
+        ]
+      },
+      "texture": "flat Blender materials",
+      "texture_size": "N/A",
+      "textures": [],
+      "max_triangles_target": 400,
+      "notes": "Meshy stone tile was too dense for the target; rebuilt in Blender as low-poly uneven cobblestones."
+    },
+    {
+      "id": "Floor_Wood",
+      "category": "Plaza",
+      "path": "Assets/Art/Models/Zone1/Plaza/Floor_Wood.fbx",
+      "source_meshy_asset_id": "Floor_Wood",
+      "source_preview_task_id": "019df4f1-8f77-782c-9819-fcc11a3d963b",
+      "source_refine_task_id": "019df4f8-2ec2-7fc8-85de-8116320f2817",
+      "triangles": 170,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -1.0,
+          -1.0,
+          0.0
+        ],
+        "max": [
+          1.0,
+          1.0,
+          0.05
+        ],
+        "size_m": [
+          2.0,
+          2.0,
+          0.05
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Floor_Wood_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Floor_Wood_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 200,
+      "notes": "2m tileable wooden floor patch from section 3.4.2."
+    },
+    {
+      "id": "Library_Ruin",
+      "category": "LibraryRuin",
+      "path": "Assets/Art/Models/Zone1/LibraryRuin/Library_Ruin.fbx",
+      "source_meshy_asset_id": "Library_Ruin",
+      "source_preview_task_id": "019df4f1-9b90-7a69-9745-cddd551b1bb3",
+      "source_refine_task_id": "019df4f8-3870-7c62-adbb-12cf91ee85e2",
+      "triangles": 1275,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -3.0,
+          -3.0,
+          0.0
+        ],
+        "max": [
+          3.0,
+          3.0,
+          5.0
+        ],
+        "size_m": [
+          6.0,
+          6.0,
+          5.0
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Library_Ruin_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Library_Ruin_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 1500,
+      "notes": "Library ruin exterior from section 4.2."
+    },
+    {
+      "id": "Bookshelf_Library_Past",
+      "category": "LibraryRuin",
+      "path": "Assets/Art/Models/Zone1/LibraryRuin/Bookshelf_Library_Past.fbx",
+      "source_meshy_asset_id": "Bookshelf_Library_Past",
+      "source_preview_task_id": "019df4f1-a79a-7d9a-a1ed-7db9aad8bbfb",
+      "source_refine_task_id": "019df4f8-41e6-7fe0-8568-f7c5c4f2fbe0",
+      "triangles": 934,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.5,
+          -0.2,
+          0.0
+        ],
+        "max": [
+          0.5,
+          0.2,
+          2.5
+        ],
+        "size_m": [
+          1.0,
+          0.4,
+          2.5
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Bookshelf_Library_Past_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Bookshelf_Library_Past_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 1100,
+      "notes": "Filled library bookshelf from section 4.3.1."
+    },
+    {
+      "id": "Book_Family_Past",
+      "category": "LibraryRuin",
+      "path": "Assets/Art/Models/Zone1/LibraryRuin/Book_Family_Past.fbx",
+      "source_meshy_asset_id": "Book_Family_Past",
+      "source_preview_task_id": "019df4f1-b3a9-7d9b-a869-1285df38f280",
+      "source_refine_task_id": "019df4f8-4b8c-7c67-81c5-4cdccb7b62a8",
+      "triangles": 168,
+      "objects": 1,
+      "bounds": {
+        "min": [
+          -0.1,
+          -0.15,
+          0.0
+        ],
+        "max": [
+          0.1,
+          0.15,
+          0.05
+        ],
+        "size_m": [
+          0.2,
+          0.3,
+          0.05
+        ]
+      },
+      "texture": "Assets/Art/Models/Zone1/Textures/Book_Family_Past_0_Image_0.png",
+      "texture_size": "1024x1024",
+      "textures": [
+        {
+          "path": "Assets/Art/Models/Zone1/Textures/Book_Family_Past_0_Image_0.png",
+          "size": "1024x1024"
+        }
+      ],
+      "max_triangles_target": 200,
+      "notes": "Interactable old family book from section 4.3.2."
+    }
+  ],
+  "review_pending": [
+    "Plaza_Center monument final choice: B dry fountain is exported as draft; A/C remain in Meshy intermediate for user review.",
+    "Tree_Decay leaf fall amount: sparse/near-leafless draft awaits user review.",
+    "House_Player interior scope: Bed, Bookshelf variants, Table+Chair, and Door are included as draft scope."
+  ]
+}
