@@ -68,3 +68,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Anemora.TimeManagement.Portal.PortalStencilFeature
   m_Active: 1
   passEvent: 300
+  portalMaskLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  insidePortalLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295

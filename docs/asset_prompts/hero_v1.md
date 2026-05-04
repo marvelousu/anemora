@@ -3,7 +3,7 @@
 > 主人公スプライト v1 を PixelLab + Retro Diffusion で生成するためのプロンプトテンプレート。
 > `STAGE3_F_PLAN.md` §3 Phase F0 / F1 で参照。Windows Codex が PixelLab で試行 → 結果を `docs/devlog/2026-05-XX_f0_prompt_check.md` に記録 → Linux Claude が改訂で v1 確定。
 
-> **Status (2026-05-04)**: v0 起草。PixelLab paid 加入 + 試行結果待ちで v1 へ改訂予定。
+> **Status (2026-05-05)**: v0 起草 + Codex レビュー済。PixelLab paid 状態確認 + 試行結果待ちで v1 へ改訂予定。
 
 ---
 
@@ -36,7 +36,16 @@ silhouette readable at small sizes, inspired by Octopath Traveler and Sea of Sta
 early-game character sprites, quiet melancholic mood without being grim.
 ```
 
-### 2.1 Master Prompt の使い分け
+### 2.1 Production Constraints
+
+PixelLab / Retro Diffusion に追加で渡せる場合は、以下を明示する:
+
+- `transparent background`, `single character only`, `full body visible`, `centered in frame`
+- `no baked drop shadow`, `no ground plane`, `no background scenery`
+- `orthographic sprite view`, `no perspective distortion`, `not cropped`
+- 32x48 直接出力ができない場合は近い縦長解像度で生成し、Aseprite で 32x48 に手修正する
+
+### 2.2 Master Prompt の使い分け
 
 `{{POSE}}` のところに以下のいずれかを差し込んで方向別に生成:
 
@@ -45,7 +54,7 @@ early-game character sprites, quiet melancholic mood without being grim.
 - **left**: `side profile facing left, standing still, arm closer to viewer slightly raised`
 - **right**: `side profile facing right, standing still, arm closer to viewer slightly raised` (left の mirror で代替可能、必要なら個別生成)
 
-### 2.2 完成形プロンプト例 (front)
+### 2.3 完成形プロンプト例 (front)
 
 ```
 A small pixel art sprite of an androgynous protagonist character in their late teens
@@ -64,7 +73,8 @@ character sprites, quiet melancholic mood without being grim.
 ## 3. Negative Prompt (異物原則 + Silent protagonist 守備)
 
 ```
-NOT: glowing eyes, exotic eye color, special markings on face or body, fantasy armor,
+NOT: cropped body, background scenery, ground plane, baked drop shadow, perspective
+distortion, multiple characters, glowing eyes, exotic eye color, special markings on face or body, fantasy armor,
 weapons drawn, magical aura, particle effects, ornate accessories, ancient runes,
 cybernetic parts, mechanical implants, vibrant unnatural hair color (white, red,
 purple, neon), open mouth shouting, dramatic facial expression, anime-style large
@@ -147,6 +157,8 @@ PixelLab の挙動について、Windows Codex が試行時に以下を確認・
 - **Animation export**: sprite sheet として出力できるか、frame 単位か
 - **Variations 強度**: ベース画像との類似度パラメータ
 - **Negative prompt の効き方**: 一般的な diffusion model と同等か、PixelLab 独自の挙動があるか
+- **透明背景**: alpha 付き PNG が出るか、背景除去が別料金/別工程か
+- **記録**: seed / tool version / prompt version / generation time / plan state を `asset_ledger.md` と devlog に残す
 
 これらは v0 プロンプトでは抽象的に書いているが、PixelLab UI に応じて v1 で具体化する。
 
@@ -173,3 +185,4 @@ Negative prompt は §3 と同じ。
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0 | 2026-05-04 | 初版起草。PixelLab 試行前の抽象プロンプト。Master + 方向別 + Animation + Negative + Test sequence + Retro Diffusion 補助 |
+| v0.1 | 2026-05-05 | Codex レビューで production constraints / 透明背景 / seed 記録 / crop・背景・baked shadow の禁止を追記 |

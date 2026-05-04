@@ -1,0 +1,24 @@
+{
+    "name": "Anemora.Tests.PlayMode",
+    "rootNamespace": "Anemora.Tests.PlayMode",
+    "references": [
+        "Anemora.Data",
+        "Anemora.Save",
+        "Newtonsoft.Json",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll",
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

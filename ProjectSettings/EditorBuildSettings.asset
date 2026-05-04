@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Sandbox_E1_Stencil.unity
+    guid: 9c8f7b4312828924ab98ea96f90f3e96
+  - enabled: 1
+    path: Assets/Scenes/Anemora_Main.unity
+    guid: 70778e8a6968c8c43b9c2cd3c92575ae
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

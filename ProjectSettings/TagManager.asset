@@ -13,10 +13,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Layer_Current_Collider
+  - Layer_Past_Collider
+  - Layer_Current_Visual
+  - Layer_Past_Visual
   - 
   - 
   - 

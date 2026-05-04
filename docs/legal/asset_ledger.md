@@ -34,9 +34,9 @@
 
 | ツール | 商用利用条件 (記録時) | 注意点 |
 |---|---|---|
-| PixelLab | 要確認 | プラン単位で確認 |
-| Retro Diffusion | 要確認 | プラン単位で確認 |
-| Aseprite | 自分の創作物に限り商用可 | (人手仕上げツール、独自生成ではない) |
+| PixelLab | 公開 ToS 上は生成物の商用/非商用利用可。生成時のアカウント/プラン状態は別途記録必須 | 2026-05-05 Codex 確認: ToS §1.3/§3.3。API 利用は公式 API のみ、生成物で他モデルを訓練する用途は禁止/要許諾。PixelLab UI の paid 加入状態は batchmode から未確認 |
+| Retro Diffusion (Scenario 経由) | Scenario paid plan なら商用利用可。Free plan 出力は採用しない | 2026-05-05 Codex 確認: Scenario pricing/terms。Retro Diffusion/RD Plus は Scenario 上のモデルとして確認。Aseprite 拡張版/standalone で使う場合は別途規約確認 |
+| Aseprite | 自分の創作物に限り商用可 | 2026-05-05 Codex 確認: 公式 FAQ。会社利用は developer ごとに license 必要、Aseprite 本体の再配布は禁止 |
 | Meshy v6 | 要確認 | LowPoly Mode の出力ライセンス確認 |
 | Blender | 商用利用可 (GPL) | 出力物に GPL は伝播しない |
 | AIVA Pro | Pro plan でフル商用権 | プラン証跡を残す、Free は不可 |
@@ -47,6 +47,9 @@
 | Claude (Anthropic) | 出力物の利用権はユーザー帰属 (Acceptable Use Policy 遵守) | 開発支援は engineering AI tools (Tier 2) 想定 |
 | Codex (OpenAI) | 出力物の利用権はユーザー帰属 (Codex 利用規約遵守) | 開発支援は engineering AI tools (Tier 2) 想定 |
 | DeepL Pro | 商用利用可 (Pro plan) | ローカライズ用 |
+
+2026-05-05 参照 URL:
+PixelLab ToS `https://www.pixellab.ai/termsofservice` / PixelLab API `https://www.pixellab.ai/pixellab-api` / Scenario terms `https://www.scenario.com/terms-and-conditions` / Scenario pricing `https://www.scenario.com/pricing` / Scenario Retro Diffusion essentials `https://help.scenario.com/articles/4202673551-retro-diffusion-models-the-essentials` / Aseprite FAQ `https://www.aseprite.org/faq`
 
 ### 1.3 中間ファイルの扱い
 
@@ -134,3 +137,4 @@
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0 | 2026-05-04 | 初版起草 (テンプレート、ADR-0003 と整合) |
+| v0.1 | 2026-05-05 | PixelLab / Scenario-hosted Retro Diffusion / Aseprite の公開規約確認結果を §1.2 に追記。PixelLab paid 状態は未確認として分離 |
