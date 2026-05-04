@@ -61,6 +61,7 @@ YYYY-MM-DD
 | [0005](0005-time-management-scene-switching.md) | 時間管理 / シーン切替の実装方針 | Accepted | 2026-05-04 |
 | [0006](0006-save-system.md) | セーブシステムの実装方針 | Accepted | 2026-05-04 |
 | [0007](0007-ui-framework-ugui.md) | UI フレームワークに uGUI を採用 (UI Toolkit は将来選択肢) | Accepted | 2026-05-04 |
+| [0008](0008-localization.md) | ローカライズ実装方針 (Unity Localization + TMP Atlas + DeepL Pro) | Accepted | 2026-05-04 |
 
 ## ロードマップ (予定)
 
@@ -72,4 +73,4 @@ Stage 3 で順次起草:
 - ~~0005: 時間管理 / シーン切替の実装方針~~ ✅ Accepted
 - ~~0006: セーブシステムの実装方針~~ ✅ Accepted
 - ~~0007: UI フレームワーク (uGUI vs UI Toolkit)~~ ✅ Accepted
-- 0008: ローカライズ実装 (Stage 4 入口の可能性)
+- ~~0008: ローカライズ実装 (Stage 4 入口想定、方針先行確定)~~ ✅ Accepted
