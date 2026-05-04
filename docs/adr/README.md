@@ -56,13 +56,14 @@ YYYY-MM-DD
 |---|---|---|---|
 | [0001](0001-engine-unity6.3-lts.md) | エンジン Unity 6.3 LTS 採用 | Accepted | 2026-05-04 |
 | [0002](0002-time-frame-portal-stencil.md) | Time Frame ポータルを URP + Stencil Buffer + Renderer Feature で実装 | Accepted | 2026-05-04 |
+| [0003](0003-asset-pipeline.md) | アセットパイプライン (AI 主体 + 人手仕上げ) | Accepted | 2026-05-04 |
 
 ## ロードマップ (予定)
 
 Stage 3 で順次起草:
 
 - ~~0002: URP + Stencil Buffer + Renderer Feature によるポータル実装方針~~ ✅ Accepted
-- 0003: アセットパイプライン (PixelLab / Aseprite / Meshy / Blender / AIVA / Suno / Stable Audio) ← 次に Linux 側で起草
+- ~~0003: アセットパイプライン (PixelLab / Aseprite / Meshy / Blender / AIVA / Suno / Stable Audio)~~ ✅ Accepted
 - 0004: プロジェクトディレクトリ構造 (Windows Codex が B トラック内で起草中)
 - 0005: 時間管理 / シーン切替の実装方針 (ADR-0002 と密結合、本 ADR 完成後)
 - 0006: セーブシステムの実装方針
