@@ -1,51 +1,74 @@
 # Anemora
 
-**HD-2D 探索アクションアドベンチャー** — AI 主体個人開発の 1 ヶ月集中プロジェクト。
+## Project Overview
 
-> Stage 3 (Vertical Slice 設計 + 着手) 進行中。Day 0 = 2026-05-04。
+Anemora は、衰退する街で過去と現在を行き来する HD-2D 探索アクション・アドベンチャーです。Stage 3 の Vertical Slice では、時の窓を開いて街の過去を覗き、そこで取った行動が現在側の風景や進行に反映される体験を最小範囲で実装します。主人公名と第 1 ゾーン正式名は TBD で、Stage 3 A track の確定後に反映します。
 
-## コンセプト
+## Status
 
-**「Time Frame on the Fading World」** — 緩やかに衰退する世界に生まれた一人の住人が、時の筆で空間に四角いフレームを描き、過去・現在・未来のシーンを覗いて主人公の選択を変え、確定された運命の層を旅で一枚ずつ剥がしていく。
+| Item | Status |
+|---|---|
+| Development stage | Stage 3: Vertical Slice in progress |
+| Unity | 6000.3.14f1 |
+| Render pipeline | URP 17.3.0 |
+| Public release | TBD, Stage 4 以降に判断 |
+| Code license | TBD |
+| Protagonist name | TBD |
+| First zone name | TBD |
 
-正式名 "Anemora" は coined 造語 (Anemoia + Memoria 系統)。"知らない過去への郷愁 + 記憶" の融合で、観測者輪廻と本作の核体験を一語に込める。
+## Core Features
 
-詳細は [`PITCH.md`](PITCH.md) (公開ピッチ、10 章) / [`SPEC.md`](SPEC.md) (Stage 2 GDD v0.1、breadth-first 13 章) / [`CONCEPT.md`](CONCEPT.md) (Stage 1 v1.3) を参照。
+- 時の窓 (Time Frame Portal): シンボル選択で過去 / 現在の境界を開くポータル機構。
+- 行動記録 (ActionRecord): 過去で取った行動を記録し、現在側の状態に反映する仕組み。
+- 第 1 ゾーン: 衰退した街、主人公の家、図書館跡を含む Vertical Slice 用エリア。正式ゾーン名は TBD。
+- 日英ローカライズ基盤: TextMeshPro の事前生成 SDF Atlas を使用。日本語は美咲ゴシック、英語は Press Start 2P を draft として準備済み。
 
-## ステータス
+## Getting Started
 
-| Stage | 内容 | 状態 |
-|---|---|---|
-| 1 | コンセプト固め (CONCEPT.md) | **完了** (2026-05-04) |
-| 2 | GDD v0 起こし (SPEC.md) + 公開ピッチ (PITCH.md) | **完了** (2026-05-04) |
-| 3 | Vertical Slice 設計 + 着手 | **進行中** (Day 0 = 2026-05-04) |
-| 4 | 実装マイルストーン (α / β) | 未着手 |
-| 5 | itch.io / Steam 公開 + Zenn 記事化 | 未着手 |
+1. Unity Hub で Unity `6000.3.14f1` をインストールします。
+2. このリポジトリを clone します。
+3. Unity Hub で clone した `anemora/` project を追加して開きます。
+4. `Assets/Scenes/Anemora_Main.unity` を開きます。
+5. Unity Editor の Play で実行します。
 
-## ドキュメント構成
+## Directory Layout
 
-- [`CONCEPT.md`](CONCEPT.md) — Stage 1 ワークシート (中核メカニクス・世界観・コアループ)
-- [`PITCH.md`](PITCH.md) — Stage 2 公開ピッチ (10 章、外部ステークホルダー向け)
-- [`SPEC.md`](SPEC.md) — Stage 2 GDD v0.1 (breadth-first 13 章、実装観点)
-- [`docs/STAGE3_PLAN.md`](docs/STAGE3_PLAN.md) — Stage 3 計画書
-- [`docs/adr/`](docs/adr/) — Architecture Decision Records (技術選定根拠)
-- [`docs/devlog/`](docs/devlog/) — 制作日誌 (Zenn 下書き兼用)
+- `Assets/`: Unity project 本体。Scenes、Scripts、Prefabs、Art、UI、Settings を含みます。
+- `docs/`: ADR、SPEC、VS_SCOPE、devlog、asset ledger などの設計・記録文書。
+- `tools/`: Meshy / Blender postprocess などの Python helper。
+- `art/_intermediate/`: 生成候補や作業途中アセット置き場。gitignore 対象です。
+- `audio/_intermediate/`: 音源候補や作業途中 audio 置き場。gitignore 対象です。
 
-## 公開計画 (三段階)
+## Tech Stack
 
-| 段階 | プラットフォーム | タイミング |
-|---|---|---|
-| 1. 最低保証 | **GitHub Public** | Day 0 から逐次公開 (本リポジトリ) |
-| 2. 中段先行公開 | **itch.io** ($0) | Vertical Slice 完成後 (Stage 3 後半) |
-| 3. オプション商用 | **Steam** | 完成度判断後 (Stage 5) |
+- Engine: Unity `6000.3.14f1`, URP `17.3.0`, TextMeshPro。
+- Languages: C#。`Anemora.Data` POCO、`Anemora.Save`、`Anemora.Game` を asmdef で分離。
+- 2D asset pipeline: PixelLab + Aseprite。
+- 3D asset pipeline: Meshy + Blender。
+- Audio pipeline: AIVA + Suno + Studio One。
+- Localization: TMP SDF Atlas。JP は美咲ゴシック、EN は Press Start 2P draft。
 
-## プロジェクト方針
+## License
 
-- **AI 主体個人開発の実証** を「売り」として制作プロセス自体を公開
-- Claude (設計・対話・文書) × Codex (実装・QA) × Blender (3D アセット) × ユーザー (最終判断)
-- 仕様・コンセプトの独自性を最重要価値に
-- 1 ヶ月集中開発 (Day 0-28)、スコープ削減トリガーを Day 14 / 18 / 23 に設置
+- Code: TBD。Stage 4 入口で公開方針と合わせて決定します。
+- Third-party assets: 個別ライセンスは [`docs/legal/asset_ledger.md`](docs/legal/asset_ledger.md) を参照してください。
+- AI-generated assets: 各ツールの paid plan を前提に生成し、商用利用可否と公開可否を `asset_ledger.md` に記録します。
+- Fonts: 美咲ゴシックはフリー使用許諾、Press Start 2P は SIL Open Font License 1.1。
 
-## ライセンス
+## Roadmap
 
-TBD (Stage 3 中に決定、`LICENSE` 追加予定)。
+- Stage 3: Vertical Slice。時の窓、ActionRecord、第 1 ゾーンの最小体験を実装中。
+- Stage 4: 第 2 ゾーン拡張、ローカライズ完備、Steam 提出準備。
+- Stage 5+: TBD。
+
+## Contributing
+
+現状は単独開発です。Issue / Pull Request の受付方針は、Stage 4 以降に GitHub Public 公開可否と合わせて決定します。
+
+## References
+
+- [`docs/VS_SCOPE.md`](docs/VS_SCOPE.md): Stage 3 Vertical Slice の完成条件。
+- [`docs/STAGE3_PLAN.md`](docs/STAGE3_PLAN.md): Stage 3 の実行計画。
+- [`docs/adr/`](docs/adr/): Architecture Decision Records。
+- [`docs/devlog/`](docs/devlog/): 制作日誌。
+- [`docs/legal/asset_ledger.md`](docs/legal/asset_ledger.md): アセット出典・ライセンス・公開可否の記録。
