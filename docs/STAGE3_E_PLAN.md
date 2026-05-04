@@ -70,7 +70,7 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 - `Assets/Settings/UniversalRenderPipeline_Renderer.asset` (Forward Renderer Data)
 - 上記 2 つを GraphicsSettings + QualitySettings 全レベルに割当
 - Renderer Feature `PortalStencilFeature` のスケルトンを Forward Renderer Data に追加
-- Stencil bit 予約検証結果: `bit 4` で URP 内部予約と非競合かを実機確認、競合時は bit 6 / 7 へ
+- Stencil bit 予約検証結果: URP 17.3.0 では `bit 4` は `StencilLight` と競合するため、ユーザー予約範囲内の `bit 3` を採用
 - `Assets/UniversalRenderPipelineGlobalSettings.asset` / `Assets/DefaultVolumeProfile.asset` を `Assets/Settings/` 配下へ整理 (任意、ADR-0004 整合の観点で)
 - 検証メモ `docs/devlog/2026-05-XX_e0_urp_pipeline_asset.md`
 
@@ -80,8 +80,8 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 3. Project Settings > Graphics の `Scriptable Render Pipeline Settings` に作成した URP Asset を割当
 4. Project Settings > Quality の各 Quality Level (Low/Medium/High など) に同 URP Asset を割当
 5. Forward Renderer Data に Renderer Feature `PortalStencilFeature` (空スケルトン) を追加
-6. Stencil bit 4 を URP の SSAO / Decal / Lighting レイヤー予約と重ならないか実機確認 (URP 17.x 予約マップを確認、`StencilUsage` enum を参照)
-7. 競合があれば bit 6 / 7 を候補にスライド、確定値を本書 §5 と ADR-0002 Decision に反映
+6. URP 17.3.0 の `StencilUsage` enum を確認し、`bit 4` が `StencilLight` と競合することを記録
+7. `StencilUsage.UserMask = 0b00001111` の範囲内から `bit 3` (`0b00001000`) を portal mask 用に確定し、本書 §5 と ADR-0002 Decision に反映
 
 **担当**: Windows Codex (Unity Editor 操作)
 **Linux 関与**: 検証メモのレビュー、Stencil bit 確定の妥当性判断、E0 後に ADR-0002 改訂が必要なら起草
@@ -100,7 +100,7 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 
 **手順**:
 1. Quad メッシュをポータル平面として配置 (1 m × 2 m 程度、地面に垂直)
-2. `PortalMask.shader`: ColorMask 0 + Stencil Ref 1 + Stencil Pass Replace で Stencil bit 4 に書き込む。深度テストは LessEqual、深度書込みは Off
+2. `PortalMask.shader`: ColorMask 0 + Stencil Ref 1 + Stencil Pass Replace で Stencil bit 3 (`0b00001000`) に書き込む。深度テストは LessEqual、深度書込みは Off
 3. `InsideOnly.shader`: Stencil Ref 1 + Stencil Comp Equal で内側のみ描画。マテリアルを単純な Lit にして可視化
 4. Renderer Feature `PortalStencilFeature` を `RenderPassEvent.AfterRenderingOpaques` で挿入し、PortalMask → InsideOnly の順で描画
 5. Sandbox シーンで Quad の奥に色違い Cube を 1 個置き、Quad 越しに見える / Quad 外側からは見えないことを確認
@@ -327,7 +327,7 @@ Assets/
 | Layer 9 | `Layer_Past_Collider` | 過去側 collider |
 | Layer 10 | `Layer_Current_Visual` | 現在側 visual (Camera_Main culling) |
 | Layer 11 | `Layer_Past_Visual` | 過去側 visual (Camera_Main culling, Camera_Past culling) |
-| Stencil bit 4 | Portal mask | E0 で URP 内部予約と非競合確認、競合時は bit 6 / 7 へ |
+| Stencil bit 3 | Portal mask | E0 で URP 17.3.0 の `StencilUsage.UserMask = 0b00001111` 内に確定。bit 4 は `StencilLight` と競合するため使用しない |
 
 Layer 番号は ADR-0005 / E0 で実機確認後に確定。Unity Builtin 0-7 (Default / TransparentFX / Ignore Raycast / Water / UI 等) と衝突しない範囲を選ぶ。
 
@@ -361,7 +361,7 @@ Layer 番号は ADR-0005 / E0 で実機確認後に確定。Unity Builtin 0-7 (D
 
 | リスク | 兆候 | 対応 |
 |---|---|---|
-| Stencil bit が URP 内部予約と衝突 | E0 で SSAO や Decal の表示崩れ | bit 4 → bit 6 → bit 7 と試行、それでもダメなら ADR-0002 改訂 (Forward 固定見直し or 別マスク方式) |
+| Stencil bit が URP 内部予約と衝突 | E0 で SSAO や Decal の表示崩れ | URP 17.3.0 では bit 3 を採用済み。将来 URP 更新で競合した場合は `StencilUsage.UserMask` 内の空き bit を再確認し、空きがなければ ADR-0002 改訂 (Forward 固定見直し or 別マスク方式) |
 | ノート PC で 60 FPS 出ない | E1 段階で 30 FPS 切る | デスクトップ UJPVOG2 へ即移行、TOM はビルド検証用に位置づけ。STAGE3_PLAN §10.2 切替トリガーを発火 |
 | 反転フレームで擦り抜け頻発 | E4 単体で再現する | ヒステリシス幅拡大、最小移動量を上げる、CharacterController を `Move` ではなく `SetPosition` 強制復元へ切替 |
 | ActionRecord 二重反映 | E5 で帰還を 2 度すると本が 2 個現れる | reflected フラグの set タイミングを reflect 直前に変更、UnitTest で二重防止を担保 |

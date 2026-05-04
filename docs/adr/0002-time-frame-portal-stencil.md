@@ -50,7 +50,7 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 #### URP 描画パスと Stencil ビット運用
 
 - **URP は Forward Renderer を前提とする** (Deferred は採用しない)
-- ポータル用途の **stencil ビットは本機構専用に予約** する (Unity URP の内部予約と競合しないビットを選定、E トラック実装時に確定)
+- ポータル用途の **stencil ビットは本機構専用に予約** する。E0 検証により URP 17.3.0 の `StencilUsage.UserMask = 0b00001111` 内から `bit 3` (`0b00001000`) を採用し、`bit 4` は `StencilLight` と競合するため使用しない
 - Renderer Feature の挿入位置は **`RenderPassEvent` で明示** し、通常描画後にポータル内側描画を差し込む
 
 #### ポータル内側カメラの同期条件
