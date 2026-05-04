@@ -28,6 +28,13 @@ Anemora の中核機構である **時の窓 (Time Frame)** は、3D 空間中�
 - 固定アイソメ視点 (自由視点排除、SPEC §7.4)
 - 開発機: ノート PC TOM (統合 Radeon, VRAM 2GB) で軽量検証 → デスクトップ UJPVOG2 (RTX 2070S) で仕上げ (STAGE3_PLAN §10)
 
+### E1 確定メモ (2026-05-05)
+
+- URP 17.3.0 の `StencilUsage` 確認で、`StencilUsage.UserMask = 0b00001111` の範囲は user 用だが、`bit 4` (`0b00010000`) は `StencilLight` と競合することが判明した
+- Anemora portal 用 stencil は user mask 内の最上位である **bit 3** に固定する。Unity shader の `Ref` は bit index ではなく実 stencil 値なので、E1 実装では **Mask = 8 / Ref = 8** として扱う
+- E1 の最小描画では `PortalStencilFeature` が `AnemoraPortalMask` / `AnemoraPortalInside` の 2 pass を enqueue し、ポータル越しの表示を検証済み
+- 自動 screenshot / smoke test と通常 URP 描画経路の defense in depth として、ポータル shader は `UniversalForward` pass と custom LightMode pass (`AnemoraPortalMask` / `AnemoraPortalInside`) を併置する
+
 ### 重要度
 
 VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機構のみ)」に時の窓ポータルシェーダ + ステンシル実装を含めている**。本機構の実装方針は VS の核体験を直接決定し、後続の Vertical Slice 制作 (E トラック) の前提となる。
@@ -50,8 +57,10 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 #### URP 描画パスと Stencil ビット運用
 
 - **URP は Forward Renderer を前提とする** (Deferred は採用しない)
-- ポータル用途の **stencil ビットは本機構専用に予約** する。E0 検証により URP 17.3.0 の `StencilUsage.UserMask = 0b00001111` 内から `bit 3` (`0b00001000`) を採用し、`bit 4` は `StencilLight` と競合するため使用しない
+- ポータル用途の **stencil ビットは本機構専用に予約** する。E0/E1 検証により URP 17.3.0 の `StencilUsage.UserMask = 0b00001111` 内から **`bit 3` (`0b00001000`)** を採用し、`bit 4` は `StencilLight` と競合するため使用しない
+- ShaderLab Stencil 値は **Mask = 8 / Ref = 8** に固定する。`PortalMask.shader` は `Comp Always` + `Pass Replace` で bit 3 を書き込み、`InsideOnly.shader` は `Comp Equal` + `Pass Keep` で bit 3 領域のみ描画する
 - Renderer Feature の挿入位置は **`RenderPassEvent` で明示** し、通常描画後にポータル内側描画を差し込む
+- `PortalStencilFeature` は URP 17 の `DrawObjectsPass` (`UnityEngine.Rendering.Universal.Internal`) 経路を維持する。RenderGraph compatibility warning は既知 caveat とし、public API の custom pass へ移す判断は、E1/E4 の挙動を壊さない代替が確認できた時点で別改訂する
 
 #### ポータル内側カメラの同期条件
 
@@ -65,7 +74,9 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 1. **ポータル四角枠は Quad メッシュ** (シェーダで Stencil Buffer に "ポータル内側" マークを書き込む)
 2. **URP Renderer Feature** で追加レンダリングパスを構築:
    - 通常パス: 現在世界をレンダー (ステンシル外)
-   - ポータルパス: Stencil テストでマスク領域内のみ別時代の世界をレンダー
+   - `AnemoraPortalMask`: `PortalMask.shader` の custom LightMode pass で **Stencil Ref 8 / Mask 8** を書き込む
+   - `AnemoraPortalInside`: `InsideOnly.shader` の custom LightMode pass で Stencil テストに通った領域だけ別時代の世界をレンダー
+   - defense in depth として、両 shader は通常描画向け `UniversalForward` pass も保持する
 3. **別時代の描画**: ポータル内側用の専用カメラで、ポータル領域だけ描画される
 4. **踏込み判定**: プレイヤーがポータル平面を越えたフレームで、メインシーン / ポータル内シーンの主従を反転 (この遷移詳細は ADR-0005 時間管理 / シーン切替で記録)
 
@@ -75,15 +86,16 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 |---|---|
 | レンダリング拡張 | URP Renderer Feature (`ScriptableRendererFeature`)、**Forward 固定** |
 | マスク機構 | Stencil Buffer (URP の Stencil State 制御)、**専用ビット予約** |
-| シェーダ | URP HLSL カスタムシェーダ (ポータル枠 + ポータル内表示) |
+| シェーダ | URP HLSL カスタムシェーダ (ポータル枠 + ポータル内表示)、`UniversalForward` + custom LightMode pass の dual-pass |
 | シーン管理 | 過去/未来時代を別 GameObject ヒエラルキーで保持、レイヤー分離で別カメラに描画 |
 | 踏込み遷移 | C# スクリプトでプレイヤー位置監視、シーン主従反転 (詳細は ADR-0005) |
 
 ### 責務分割 (実装と保守の境界)
 
-- **Renderer Feature** は描画パスの挿入のみ担当する
-- **シェーダ** は stencil 書き込みとポータル境界表現を担当する
+- **Renderer Feature** は `AnemoraPortalMask` / `AnemoraPortalInside` の 2 pass enqueue と layer mask 選択を担当する
+- **シェーダ** は stencil 書き込みとポータル境界表現を担当する。`UniversalForward` pass は通常 URP 経路 / smoke test 安定化用、custom LightMode pass は `PortalStencilFeature` 専用経路とする
 - **C# 側** はポータル生成、カメラ同期、踏込み判定のみ担当する
+- **`PortalStencilFeature.SetLayerMasks()`** は、ADR-0005 の atomic flip ordering で Current / Past の stencil 対象 layer を反転するための public setter として維持する
 
 ### ポータル用シーンのライフサイクル境界
 
@@ -119,12 +131,13 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 - **シェーダ作業に HLSL カスタムシェーダが必要** — URP のシェーダグラフだけでは Stencil 制御が完結しないケースがある、HLSL を直接書く工程が発生
 - **マルチパスレンダリングで GPU 負荷増** — ノート PC TOM の統合 Radeon (VRAM 2GB) で動作確認必須、VS_SCOPE §7 FIX エリアの実装は **デスクトップ UJPVOG2 (RTX 2070S) での仕上げ** が前提 (STAGE3_PLAN §10.2 切替トリガー)
 - **HD-2D Tier 2 動的影との干渉確認が必須** — 動的影自体は stencil とは独立だが、URP の内部予約ビット・レンダリング設定との非競合を実機検証で確認する。必要なら Forward 固定 + 予約ビット運用に寄せる (`_RenderingLayerMask` 経由の分離も検証候補)
+- **URP internal API 依存がある** — E1/E4 時点の `PortalStencilFeature` は `DrawObjectsPass` を使うため `UnityEngine.Rendering.Universal.Internal` 参照を持つ。RenderGraph compatibility warning は既知 caveat として扱い、安定した public custom pass へ移行できるまでは現経路を維持する
 - **ポータル踏込み時のシーン遷移ロジックは別 ADR** — ADR-0005 (時間管理 / シーン切替) で詳細化、本 ADR では「踏込みフレームで主従反転」という方針のみ定義
 - **複数ポータルの同時描画は将来も拡張しない方針** — 現方針で複数描画したい場合は Renderer Feature の大幅改修が必要、Stage 4 以降に新案として議論する場合は本 ADR の Superseded として別 ADR を起こす
 
 ### 後続への影響
 
-- **ADR-0005 (時間管理 / シーン切替)**: 本 ADR の踏込み遷移を詳細化
+- **ADR-0005 (時間管理 / シーン切替)**: 本 ADR の踏込み遷移を詳細化。E4 では `PortalStencilFeature.SetLayerMasks()` を atomic flip ordering の一部として使い、Current / Past の stencil 対象 layer を反転する
 - **ADR-0007 (UI フレームワーク)**: シンボル選択 UI (赤のみ選択可、白/青グレーアウト、VS_SCOPE §3.1) との連携
 - **VS_SCOPE §7 FIX エリア**: 時の窓ポータルシェーダ + ステンシル実装は **Stage 4 でも改修しない FIX** とする方針を本 ADR が裏打ち
 - **ADR-0003 (アセットパイプライン)**: ポータル枠 Quad の VFX (時間境界エフェクト) は AI 生成 + 手仕上げのパイプラインで作成
@@ -191,8 +204,8 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 
 ### 機能動作
 
-1. **Stencil Buffer + Renderer Feature の基本動作** — 単純な四角ポータルで内側に別オブジェクトが描画されるか
-2. **HD-2D Tier 2 動的影との干渉** — ポータル内外で動的影が破綻しないか、Stencil ビット競合がないか、Forward 固定 + 予約ビット運用への寄せが必要か
+1. **Stencil Buffer + Renderer Feature の基本動作** — 単純な四角ポータルで内側に別オブジェクトが描画されるか。E1 では `StencilBit = 3` / `StencilMask = 8` / shader `Ref = 8` で検証済み
+2. **HD-2D Tier 2 動的影との干渉** — ポータル内外で動的影が破綻しないか、Stencil ビット競合がないか、Forward 固定 + 予約ビット運用への寄せが必要か。URP 17.3.0 では `bit 4` が `StencilLight` と競合するため、portal は bit 3 を使う
 3. **踏込み遷移の自然さ** — ポータル平面を越えた瞬間の主従反転に違和感がないか
 4. **複数枠の同時表示制限** — 1 ポータル前提のロジックが破綻しないか (UI / コアループ / 遷移の全層で破綻なし)
 
@@ -207,6 +220,15 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 8. **ビルド版と Editor の差** — Windows ビルド版で Editor 動作と差がないか (Editor 依存ではない確認、`VS_SCOPE.md` §8 必須「Windows ビルド起動」と整合)
 
 検証で破綻が出たら本 ADR を改訂、または別 ADR (Superseded) で記録する。
+
+---
+
+## 改訂履歴
+
+| 版 | 日付 | 変更 |
+|---|---|---|
+| v1.0 | 2026-05-04 | 初版。Time Frame ポータルを URP + Stencil Buffer + Renderer Feature で実装する方針を定義 |
+| v1.1 | 2026-05-05 | E1 確定値反映。Stencil bit 3 / Mask 8 / Ref 8、dual-pass shader、`DrawObjectsPass` internal API caveat、`PortalStencilFeature.SetLayerMasks()` public setter を追記 |
 
 ---
 
