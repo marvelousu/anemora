@@ -65,6 +65,7 @@ Stage 3 Day 1 milestone navigation draft. This is not a public release tag yet; 
 - Revised ADR-0008 localization boundaries to clarify the `DialogueAssetData` POCO vs `DialogueAsset` ScriptableObject two-layer split and asmdef dependencies. (commit 8a3505c)
 - Corrected audio-production documentation from Reaper to Studio One across the asset pipeline notes. (commit 3a29757)
 - Documented the TMP Japanese atlas v0 capacity measurement and 70 missing glyphs for later Stage 4 localization follow-up. (commit a8f2710)
+- Updated `docs/STAGE3_TBD_RESOLUTION.md` as a Stage 3 tracking sheet while keeping unresolved lore-sensitive items as TBD. (commit 18271bc)
 
 ### Fixed
 
