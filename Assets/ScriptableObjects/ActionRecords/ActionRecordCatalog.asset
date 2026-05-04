@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a80cf5875dc5479285425a17f0162f81, type: 3}
   m_Name: ActionRecordCatalog
   m_EditorClassIdentifier:
-  entries: []
+  entries:
+  - actionId: take_book_001
+    type: 1
+    currentSideEffect: SpawnBookOnBed
+    parameters: []
