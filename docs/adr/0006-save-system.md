@@ -73,7 +73,19 @@ public sealed class SaveEnvelope {
 }
 ```
 
-`SaveEnvelope` はスロット内セーブデータの唯一の入口にする。各 subsystem は自分の DTO を返し、`SaveService` が envelope に集約して保存する。アクセシビリティ / 音量 / 表示設定はスロットに属さないため、`settings.json` 側の `SettingsSaveData` に分離する。
+`SaveEnvelope` はスロット内セーブデータの唯一の入口にする。各 subsystem は自分の DTO を返し、`SaveService` が envelope に集約して保存する。アクセシビリティ / 音量 / 表示設定はスロットに属さないため、`settings.json` 側の `SettingsEnvelope` に分離する。
+
+```csharp
+public sealed class SettingsEnvelope {
+    public int settingsVersion;
+    public string buildVersion;
+    public AccessibilitySaveData accessibility;
+    public AudioSettingsSaveData audio;
+    public DisplaySettingsSaveData display;
+}
+```
+
+`SettingsEnvelope` はスロット非依存設定の入口にする。ロード不能な場合でもゲーム進行データとは切り離し、既定値へフォールバックする。
 
 ### 2. 保存先
 
@@ -84,6 +96,7 @@ public sealed class SaveEnvelope {
 ```
 <persistentDataPath>/Anemora/
 ├── settings.json
+├── settings.bak.json
 ├── saves/
 │   ├── autosave/
 │   │   ├── save.json
@@ -102,7 +115,7 @@ public sealed class SaveEnvelope {
 
 #### 方針
 
-- `settings.json` はスロット非依存の設定 (アクセシビリティ / 音量 / 表示設定) を保持する
+- `settings.json` はスロット非依存の設定 (アクセシビリティ / 音量 / 表示設定) を保持し、`settings.bak.json` を復旧用 backup とする
 - `saves/autosave/` は最新オートセーブ専用
 - `saves/slot_01`〜`slot_03` は手動セーブ用
 - `thumbnail.png` は Stage 4 以降の任意実装。VS では `meta.json` のみでよい
@@ -143,11 +156,13 @@ public sealed class SaveMetadata {
 
 #### 起動時ロード
 
-1. `settings.json` を読み、アクセシビリティ / 音量 / 表示設定を適用する
+1. `settings.json` を読み、`settingsVersion` を検証して、アクセシビリティ / 音量 / 表示設定を適用する
 2. タイトル画面を表示する
 3. コンティニュー選択時にスロットメタデータを列挙する
 4. 選択された `save.json` を `SaveEnvelope` としてデシリアライズする
 5. `saveVersion` と `buildVersion` を検証し、必要ならマイグレーションを実行する。ロード可否は `saveVersion` を基準にし、`buildVersion` は警告 / 調査用メタデータとして扱う
+
+`settings.json` が存在しない場合は既定値で `SettingsEnvelope` を生成し、次回保存時に作成する。`settings.json` が壊れている場合は `settings.bak.json` から復元を試し、復元不能なら壊れたファイルを diagnostics 用に残したまま既定値で起動する。設定ファイルの破損はセーブスロットのロード可否に影響させない。
 
 #### ゲーム状態適用
 
@@ -208,8 +223,9 @@ public sealed class SaveMetadata {
 
 #### 方針
 
-- 初期バージョンは `saveVersion = 1`
+- 初期バージョンは `saveVersion = 1`、設定ファイルは `settingsVersion = 1`
 - `SaveMigrator` は `fromVersion -> fromVersion + 1` の逐次移行だけを実装する
+- `SettingsMigrator` も同じ逐次移行方式にし、設定破損時は migration ではなく既定値フォールバックを優先する
 - 未知の新しい `saveVersion` はロード不可として扱い、上書き前に警告する
 - 破壊的変更が必要な場合でも、旧 save を `save.bak.json` として残す
 
@@ -236,17 +252,26 @@ public interface ISaveMigration {
 
 #### 書込み手順
 
-1. 現在の `save.json` を `save.bak.json` にコピーする
-2. 新しい内容を `save.tmp.json` に書く
+1. 対象 slot ディレクトリがなければ作成する
+2. 現在の `save.json` が存在する場合のみ `save.bak.json` にコピーする。初回 autosave / 空の手動 slot では backup をスキップする
+3. 新しい内容を `save.tmp.json` に書く
+4. 書込み完了後、ファイルを flush する
+5. `save.tmp.json` を `save.json` に置換する
+6. `meta.tmp.json` も同様に `meta.json` へ置換する
+7. 成功後に UI へ保存完了を通知する
+
+#### 設定ファイルの書込み手順
+
+1. 現在の `settings.json` が存在する場合のみ `settings.bak.json` にコピーする。初回起動では backup をスキップする
+2. 新しい内容を `settings.tmp.json` に書く
 3. 書込み完了後、ファイルを flush する
-4. `save.tmp.json` を `save.json` に置換する
-5. `meta.tmp.json` も同様に `meta.json` へ置換する
-6. 成功後に UI へ保存完了を通知する
+4. `settings.tmp.json` を `settings.json` に置換する
 
 #### 失敗時
 
 - `save.json` を破壊しない
 - `save.tmp.json` は削除可能なら削除する
+- `settings.json` を破壊しない。`settings.tmp.json` は削除可能なら削除し、次回起動時は `settings.bak.json` or 既定値へフォールバックする
 - `save_errors.log` に例外種別 / スロット ID / 時刻を記録する
 - UI に「保存に失敗しました」を表示し、プレイ継続は止めない
 - ロード時に `save.json` が壊れている場合は `save.bak.json` の復元を試す
@@ -376,12 +401,14 @@ Stage 3-4 の実装は、Steam Cloud の同期対象にしやすい単純なフ�
 6. **atomic write** — 書込み中断を模擬しても `save.json` or `save.bak.json` から復元できるか
 7. **メタデータ再生成** — `meta.json` 破損時に `save.json` からロード画面情報を復元できるか
 8. **migration chain** — `saveVersion = 1` から次版へ移行するテストを最初の schema 変更時に追加できるか
+9. **初回保存** — `save.json` が存在しない初回 autosave / 空の手動 slot 保存で backup 手順が失敗しないか
+10. **設定ファイル復旧** — `settings.json` の欠落 / 破損 / 書込み中断時に `settings.bak.json` または既定値で起動できるか
 
 ### UX
 
-9. **保存完了表示** — 静謐な体験を壊さない小さな表示に収まるか
-10. **ロード画面の情報量** — zone / layer / play time / timestamp で再開位置が分かるか
-11. **手動セーブ延期の許容度** — VS 時点でオートセーブのみでもプレイテストに支障がないか
+11. **保存完了表示** — 静謐な体験を壊さない小さな表示に収まるか
+12. **ロード画面の情報量** — zone / layer / play time / timestamp で再開位置が分かるか
+13. **手動セーブ延期の許容度** — VS 時点でオートセーブのみでもプレイテストに支障がないか
 
 検証で破綻が出たら本 ADR を改訂、または別 ADR (Superseded) で記録する。
 

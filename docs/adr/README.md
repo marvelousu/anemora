@@ -12,7 +12,7 @@ Architecture Decision Record (ADR) は、プロジェクト進行中の技術的
 
 - ファイル名: `NNNN-<kebab-case-title>.md` (4 桁連番、ゼロ埋め)
 - タイトルは英語または日本語、簡潔に
-- 番号は欠番を作らず連続
+- 番号は原則として欠番を作らず連続。ただし並列作業で番号を予約した場合は、ロードマップに「予約 / 起草中」と明記し、後続 ADR はその番号の完了を待たずに起草してよい
 
 ## ステータス
 
@@ -67,7 +67,7 @@ Stage 3 で順次起草:
 
 - ~~0002: URP + Stencil Buffer + Renderer Feature によるポータル実装方針~~ ✅ Accepted
 - ~~0003: アセットパイプライン (PixelLab / Aseprite / Meshy / Blender / AIVA / Suno / Stable Audio)~~ ✅ Accepted
-- 0004: プロジェクトディレクトリ構造 (Windows Codex が B トラック内で起草中)
+- 0004: プロジェクトディレクトリ構造 (Windows Codex が B トラック内で予約 / 起草中)
 - ~~0005: 時間管理 / シーン切替の実装方針~~ ✅ Accepted
 - ~~0006: セーブシステムの実装方針~~ ✅ Accepted
 - ~~0007: UI フレームワーク (uGUI vs UI Toolkit)~~ ✅ Accepted
