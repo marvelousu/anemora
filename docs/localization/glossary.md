@@ -36,7 +36,7 @@
 | Anemora (作品名) | Anemora | confirmed | world | s1 | そのまま固有名詞、ローマ字綴り維持 |
 | 時の筆 | Timewriter | confirmed | world | s3 | "Time Brush" "Chronoscript" は不採用。Time + writer の造語、書く動作を含意。発音 [ˈtaɪmˌraɪtər] |
 | 時の窓 | Time Frame | confirmed | world | s3 | フレーム = 枠を強調、ポータル機構の名称。"Time Window" は普通すぎ、不採用 |
-| ベール剥離 | Veil Peeling | confirmed | world | s3 | 5 層構造、各層をベールで覆い、剥がしていく構造。"Layer Reveal" は不採用 (構造を明示しすぎる) |
+| ベール剥離 | Veil Peeling | provisional | world | s3 | 5 層構造、各層をベールで覆い、剥がしていく構造。"Layer Reveal" は不採用 (構造を明示しすぎる)。Codex E1 review (2026-05-05) で `Unveiling` 候補提示 — Stage 4 入口でユーザー判断 |
 | 真層 | True Layer | provisional | world | s4 | 第 6 層相当の最終層。確定は Stage 4 (収束パターン確定後) |
 | 観測者 | Observer | provisional | world | s4 | 世界の観測主体 (詳細は Stage 4-5 で確定)、複数案維持 |
 | 異物 | Anomaly | provisional | world | s4 | 主人公の正体表現。"Outsider" "Foreigner" は人間的すぎ、"Anomaly" は中立 |
@@ -129,7 +129,7 @@
 
 | ja | en | status | scope | stage | note |
 |---|---|---|---|---|---|
-| オートセーブ | Auto Save | confirmed | ui | s3 | スペース区切り |
+| オートセーブ | Autosave | confirmed | ui | s3 | 一般 UI 慣行 (single word)、Codex E1 review (2026-05-05) 反映 |
 | 手動セーブ | Manual Save | confirmed | ui | s4 | Stage 4 で実装 |
 | スロット | Slot | confirmed | ui | s4 | "Save Slot" の短縮形可 |
 | 上書き保存 | Overwrite | confirmed | ui | s4 | Stage 4 |
@@ -266,3 +266,4 @@ DialogueAsset の `LocalizedString` も同じ用語に従う (ADR-0008 §5)。
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0 | 2026-05-04 | 初版起草。世界観コア用語 (confirmed 11 / provisional 3) + ゾーン名 + キャラ名 + システム用語 + UI 用語 + 含み演出テキスト + NPC 対話の英訳を整理。Stage 3 確定済日本語に対する暫定英訳を投入 |
+| v0.1 | 2026-05-05 | Codex E1 review 反映: `Auto Save` → `Autosave` (一般 UI 慣行)、`Veil Peeling` を provisional に降格 + `Unveiling` 候補を併記 (Stage 4 入口でユーザー判断) |

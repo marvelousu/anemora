@@ -183,42 +183,102 @@ ADR-0007 §TextMeshPro フォント戦略 を引き継ぐ:
 
 ### 5. ScriptableObject Dialogues との接続
 
-#### 5.1 構造接続案
+#### 5.1 asmdef 境界 (重要、Codex E1 review 2026-05-05 反映)
 
-`docs/draft/g3_npc_dialogue.md` §5 で提案された `DialogueAsset` 構造を、Localization Key 参照型に進化させる:
+`Anemora.Data` (asmdef、`Assets/Scripts/Data/`) は **engine-free POCO 専用** に保つ (ADR-0004 + ADR-0006 で確定済)。Unity Localization の `LocalizedString` は engine-dependent な型 (`UnityEngine.Localization` 必須) なので、`Anemora.Data` には載せない。
+
+代わりに **2 層構造** を採る:
+
+| 層 | asmdef | 役割 |
+|---|---|---|
+| Pure data layer | `Anemora.Data` | POCO のみ。Dialogue の text は **string key** で持つ (例: `"dialogue.npc.resident_a.initial_01"`) |
+| Runtime / UI 層 | 別 asmdef (例: `Anemora.UI` or 新設 `Anemora.Game`) | `LocalizedString` で key を解決、TMP で描画 |
+
+#### 5.2 構造接続案 (改訂)
 
 ```csharp
-[CreateAssetMenu(menuName = "Anemora/Dialogue")]
-public class DialogueAsset : ScriptableObject
+// === Anemora.Data (engine-free, POCO のみ) ===
+namespace Anemora.Data
 {
-    public string npcId;
-    public List<DialogueVariant> variants;
+    public sealed class DialogueAssetData  // POCO version、ScriptableObject ではない
+    {
+        public string npcId;
+        public List<DialogueVariantData> variants;
+    }
+
+    public sealed class DialogueVariantData
+    {
+        public string variantId;
+        public List<DialogueTurnData> turns;
+        public List<string> requiredFlags;
+        public List<string> excludedFlags;
+    }
+
+    public sealed class DialogueTurnData
+    {
+        public string speakerId;
+        public string textKey;          // ← String Table の key (例: "dialogue.npc.resident_a.initial_01")
+        public List<DialogueChoiceData> choices;
+    }
+
+    public sealed class DialogueChoiceData
+    {
+        public string emotion;
+        public string labelKey;         // ← 選択肢ラベル key
+        public string nextTurnId;
+    }
 }
 
-public class DialogueVariant
+// === Anemora.UI or Anemora.Game (Unity-dependent) ===
+namespace Anemora.Game.Dialogue
 {
-    public string variantId;
-    public List<DialogueTurn> turns;
-    public List<string> requiredFlags;
-    public List<string> excludedFlags;
-}
+    [CreateAssetMenu(menuName = "Anemora/Dialogue")]
+    public class DialogueAsset : ScriptableObject
+    {
+        public string npcId;
+        public List<DialogueVariantSO> variants;
+    }
 
-public class DialogueTurn
-{
-    public string speakerId;
-    public LocalizedString text;       // ← Unity Localization の LocalizedString 型
-    public List<DialogueChoice> choices;
-}
+    [Serializable]
+    public class DialogueVariantSO
+    {
+        public string variantId;
+        public List<DialogueTurnSO> turns;
+        public List<string> requiredFlags;
+        public List<string> excludedFlags;
+    }
 
-public class DialogueChoice
-{
-    public string emotion;
-    public LocalizedString label;      // ← 選択肢ラベルもローカライズ
-    public string nextTurnId;
+    [Serializable]
+    public class DialogueTurnSO
+    {
+        public string speakerId;
+        public LocalizedString text;            // ← Unity Localization で解決
+        public List<DialogueChoiceSO> choices;
+    }
+
+    [Serializable]
+    public class DialogueChoiceSO
+    {
+        public string emotion;
+        public LocalizedString label;           // ← 同上
+        public string nextTurnId;
+    }
 }
 ```
 
-`LocalizedString` は `tableReference` + `tableEntryReference` を持ち、Unity Localization が解決する。Inspector では key を直接打ち込む形になる。
+#### 5.3 使い分け
+
+- **編集 / Inspector**: `DialogueAsset` (ScriptableObject、`LocalizedString` で string key を Inspector で選択)
+- **永続化 (セーブデータ等)**: `DialogueAssetData` 経由で string key のみを記録 (`Anemora.Data` で扱う)
+- **ランタイム描画**: `DialogueAsset` の `LocalizedString.GetLocalizedString()` を呼んで現在 Locale に応じたテキストを取得
+
+DialogueAsset と DialogueAssetData は **同じ string key を共有** することで両者間で参照可能。`LocalizedString` の `tableReference` + `tableEntryReference` が `string key` 1 つに圧縮される。
+
+#### 5.4 命名整合 (変更なし)
+
+- DialogueAsset の `variantId` (例: "initial", "post_take_book_family_001") は String Table key suffix と一致させる:
+  - String Table key: `dialogue.npc.resident_a.initial_01`, `..._02` (Turn 番号 suffix)
+  - String Table key: `dialogue.npc.resident_a.post_take_book_family_001_01`, `..._02`
 
 #### 5.2 命名整合
 
@@ -408,3 +468,4 @@ Stage 5 で言語を 1 つ追加する場合:
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0.1 | 2026-05-04 | Stage 3 Day 1 起草。Locale 構成 / String Table 命名規則 / TMP Atlas 戦略 / DeepL ワークフロー / DialogueAsset 接続 / 検証ポイント / Alternatives 5 件 |
+| v0.2 | 2026-05-05 | Codex E1 review 反映: §5 asmdef 境界を明確化。`Anemora.Data` は POCO + string key のみ、`LocalizedString` は別 asmdef (`Anemora.Game` or `Anemora.UI`) の DialogueAsset SO に分離。2 層構造で engine-free 性を維持 |
