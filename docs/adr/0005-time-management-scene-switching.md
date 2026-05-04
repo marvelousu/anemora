@@ -51,6 +51,24 @@ Anemora の中核機構「時の窓 (Time Frame)」のレンダリング方針�
 - フレーム単位で監視 (Update / FixedUpdate)
 - 越えた瞬間 (前フレームと今フレームで側が変わった) に **加えて、最小移動量を満たした場合のみ** 反転処理を発動
 - 境界付近の往復ノイズを避けるため、**ヒステリシス帯** を持たせる (反転判定の閾値に余白)
+- E4 実装で確定した VS 値:
+  - hysteresis band: **0.02m**
+  - minimum normal movement: **0.05m**
+  - flip cooldown: **0.1s**
+  - flash duration: **0.05s**
+
+#### PortalState 状態機械
+
+E4 実装では、ポータルの体験状態を以下 6 状態で扱う。
+
+| PortalState | 意味 | 主な入口 | 主な出口 |
+|---|---|---|---|
+| **Normal** | 通常探索。ポータル未生成または閉鎖状態 | シーン開始 / Flipping 完了後 | Selecting |
+| **Selecting** | シンボル選択 UI 表示中。`Time.timeScale = 0` | 時の窓入力 | Generating / Normal |
+| **Generating** | ポータル生成演出中 | シンボル確定 | Open |
+| **Open** | ポータルが開き、踏込み検出が有効 | Generating 完了 | Crossing / Normal |
+| **Crossing** | 境界通過を検出し、反転処理に入る直前 | detector が交差を検出 | Flipping |
+| **Flipping** | カメラ / レイヤー / Stencil / プレイヤー位置を原子的に反転中 | Crossing | Open |
 
 #### 反転処理の詳細
 
@@ -63,6 +81,15 @@ Anemora の中核機構「時の窓 (Time Frame)」のレンダリング方針�
 | **NPC / オブジェクトの活性** | 現在シーンが活性、過去シーンは描画のみ | 過去シーンが活性、現在シーンは描画のみ |
 | **UI** | 現在用 HUD / 対話 UI | 過去用 HUD (赤色調)、対話 UI は引き続き機能 |
 
+E4 実装での atomic flip ordering は以下に固定する。
+
+1. `PortalCrossingDetector` を disarm して二重検出を防ぐ
+2. Main Camera の culling mask、プレイヤー / Collider レイヤー、`PortalStencilFeature.SetLayerMasks()` による Stencil 方向を切替
+3. プレイヤーをポータル平面の反対側へ snap し、ヒステリシス帯から出す
+4. `SceneSidePolarity` の side change event を発火し、現在 / 過去の主従を通知
+5. 0.05s の flash を再生
+6. 0.1s cooldown 後に detector を re-arm
+
 #### 物理レイヤー切替
 
 - 現在側 / 過去側の Collider は **レイヤー分離** する (例: `Layer_Current_Collider` / `Layer_Past_Collider`)
@@ -72,7 +99,7 @@ Anemora の中核機構「時の窓 (Time Frame)」のレンダリング方針�
 
 #### フレーム遷移演出
 
-- 反転フレームに **微細な視覚遷移** (一瞬の白フェード / 色シフト等) を入れる (Stage 3 で具体化)
+- 反転フレームに **微細な視覚遷移** (一瞬の白フェード / 色シフト等) を入れる。E4 実装では flash duration **0.05s** を採用
 - 急峻な切替で違和感を出さない、しかし長すぎる演出は VS の体験を損なう (1 秒以内目安)
 
 ### 2. ポータル用シーンのライフサイクル
@@ -106,8 +133,9 @@ Unity Scene (1 つ、基底):
 
 カメラ:
 - メインカメラ: culling mask = Current レイヤー
-- ポータル内側用カメラ: culling mask = Past レイヤー
-- 反転後はカメラの culling mask を切替 (or カメラ自体を交換)
+- VS 実装では `Camera_Past` を使わず、**Main Camera のみ**で culling mask を反転する
+- ポータル内外の見え方は URP `PortalStencilFeature.SetLayerMasks()` public setter で Current / Past の Stencil layer mask を切替える
+- 反転後はカメラ自体を交換せず、Main Camera culling mask + Stencil layer mask を同時に切替える
 
 #### Stage 4-5 での再評価
 
@@ -259,7 +287,7 @@ public class ActionRecordCatalog : ScriptableObject {
 | プレイヤー状態 | 位置、向き、所属シーン (現在 / 過去) |
 | ActionRecordStore | 全エントリ (痕跡反映の元データ、`ActionRecordEntry` の List) |
 | 進行フラグ | 層進行 (1〜5 + 真層)、ゾーン解放、サイドクエスト |
-| 時間管理状態 | 時の窓の状態 (生成中 / 踏込み中 / 通常) |
+| 時間管理状態 | `PortalState` (Normal / Selecting / Generating / Open / Crossing / Flipping)、現在 / 過去の主従 (`SceneSidePolarity`) |
 | アクセシビリティ設定 | UI 拡大率 / 字幕サイズ / コントラスト (ADR-0007 と連携) |
 
 #### セーブ対象外 (一時状態、復帰時に再生成)
@@ -269,6 +297,7 @@ public class ActionRecordCatalog : ScriptableObject {
 - インベントリの開閉状態
 - `Time.timeScale` (起動時に通常値で初期化)
 - 一時的な演出フラグ (フェードイン / アウト等)
+- 反転処理中の一時順序 (`Crossing` / `Flipping` 内部の detector disarm、cooldown、flash 残り時間)。ロード時は安全側として `Normal` または復元可能な `Open` に正規化する
 
 #### オートセーブのトリガー
 
@@ -421,6 +450,15 @@ VS では **層 1 + 層 2 への片鱗 1 カット** のみ実装する (VS_SCOP
 11. **層遷移時の状態整合性** — VS の層 2 片鱗演出後に状態が正しく層 2 ルールへ移行するか (VS では「予兆 1 カット」のみだが、機構として整合確認)
 
 検証で破綻が出たら本 ADR を改訂、または別 ADR (Superseded) で記録する。
+
+---
+
+## 改訂履歴
+
+| 版 | 日付 | 変更 |
+|---|---|---|
+| v1.0 | 2026-05-04 | 初版。時間管理 / シーン切替 / セーブ対象範囲を定義 |
+| v1.1 | 2026-05-05 | E4 確定値反映。hysteresis / minimum movement / cooldown / flash、PortalState 6 状態、atomic flip ordering、Main Camera 単体 + `PortalStencilFeature.SetLayerMasks()` 反転を追記 |
 
 ---
 

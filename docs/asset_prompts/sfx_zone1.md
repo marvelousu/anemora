@@ -1,9 +1,9 @@
-# Zone 1 SFX Generation Prompt Template (ElevenLabs SFX v2 + Reaper)
+# Zone 1 SFX Generation Prompt Template (ElevenLabs SFX v2 + Studio One)
 
 > G5 で使用する Zone 1 用 SFX (環境音 + 足音 + 時の窓 SFX + その他) のプロンプトテンプレート。
-> ADR-0003 §Decision に従い、**ElevenLabs SFX v2** で全 SFX を生成、**Reaper (DAW)** で音量・ループ点・無音処理。
+> ADR-0003 §Decision に従い、**ElevenLabs SFX v2** で全 SFX を生成、**Studio One (DAW)** で音量・ループ点・無音処理。
 
-> **Status (2026-05-04)**: v0 起草。ElevenLabs SFX 試行前の抽象プロンプト。
+> **Status (2026-05-05)**: v0.1。DAW 仕様を Studio One に修正。一発出しで使える SFX は ElevenLabs 出力を優先し、Studio One は必要時のみ使用。
 
 ---
 
@@ -19,7 +19,7 @@
 ### 1.2 出力規格
 
 - **形式**: WAV (生成時) → OGG Vorbis (Unity 取込み時、quality 6)
-- **サンプルレート**: 48 kHz / 24-bit (Reaper 編集中) → 44.1 kHz / 16-bit (export)
+- **サンプルレート**: 48 kHz / 24-bit (Studio One 編集中) → 44.1 kHz / 16-bit (export)
 - **モノラル / ステレオ**: 環境音はステレオ、SFX 単発はモノラル (3D オーディオで定位、Unity 側で空間化)
 - **長さ**: SFX 単発 0.3-2.0 秒、環境音ループ 30-60 秒
 - **音量基準**: -18 LUFS (BGM とほぼ同レベル、ゲーム内 mixer で再調整)
@@ -30,7 +30,9 @@
 - **Voice 系条項とは別の Sound Effects Terms** に従う (ADR-0003 §法的整合)
 - paid plan 必須 (free plan は商用利用不可、`asset_ledger.md` §1.2)
 - 短い SFX は 0.3-2 秒に切り出して使用
-- ループ素材は生成後 Reaper でクロスフェードを作る
+- 一発出しで長さ・音量・ノイズ・ループが問題なければ、そのまま OGG 変換して採用
+- 問題が小さい場合は Studio One 編集より先に ElevenLabs 側で prompt / duration / variation を調整して再生成
+- ループ素材だけは必要に応じて Studio One でクロスフェードを作る
 
 ---
 
@@ -106,7 +108,7 @@ A single soft footstep on weathered stone tile, leather sole, gentle press witho
 heavy impact, no echo, mono, 0.3 seconds.
 ```
 
-生成 1 回 → Reaper でピッチ shift / amplitude variation を 4 種作成 (`footstep_stone_01.ogg` 〜 `footstep_stone_04.ogg`)。Unity 側でランダム再生。
+生成 1 回 → Studio One でピッチ shift / amplitude variation を 4 種作成 (`footstep_stone_01.ogg` 〜 `footstep_stone_04.ogg`)。Unity 側でランダム再生。
 
 ### 3.2 footstep_wood.ogg (家の中)
 
@@ -115,7 +117,7 @@ A single soft footstep on aged wooden plank floor, leather sole, slight wood cre
 no echo, mono, 0.3 seconds.
 ```
 
-同じく Reaper で 4 variation 作成。
+同じく Studio One で 4 variation 作成。
 
 ### 3.3 footstep_grass.ogg (図書館跡周辺の草地、optional)
 
@@ -138,7 +140,7 @@ no harsh frequencies, no electronic synth artifacts, ethereal but grounded, 1.5
 seconds, mono.
 ```
 
-- Reaper で Reverb (Hall, wet 30%) を加える
+- Studio One で Reverb (Hall, wet 30%) を加える
 - Pitch envelope: ゆっくり上昇 (時間が動き始める感)
 
 ### 4.2 symbol_select.ogg (シンボル選択時、赤を focus した瞬間)
@@ -158,7 +160,7 @@ A brief soft whoosh combined with a very quiet bell-like resonance, like crossin
 threshold of air, 1 second, mono. No harsh impact.
 ```
 
-- Reaper で stereo に展開 (左右に音が広がる、空間切替の演出)
+- Studio One で stereo に展開 (左右に音が広がる、空間切替の演出)
 - 帰還時は同ファイルを再生 (rewind 不要、対称的演出で十分)
 
 ### 4.4 take_item.ogg (持ち帰り、過去で本を取った瞬間)
@@ -168,7 +170,7 @@ A soft paper rustle combined with a very quiet single piano note (in A minor), 0
 seconds, mono. Like picking up a small object that has weight.
 ```
 
-- Reaper で paper rustle と piano note を別レイヤーで重ね、piano は -18 dB 以下に控える
+- Studio One で paper rustle と piano note を別レイヤーで重ね、piano は -18 dB 以下に控える
 
 ### 4.5 return.ogg (帰還、現在に痕跡が反映される瞬間)
 
@@ -258,13 +260,14 @@ Assets/Audio/SFX/
 
 ---
 
-## 8. Reaper 仕上げワークフロー
+## 8. Studio One / 一発出し仕上げワークフロー
 
-### 8.1 ElevenLabs 出力 → Reaper
+### 8.1 ElevenLabs 出力 → Studio One
 
 1. ElevenLabs SFX v2 でテキストプロンプトから 4-8 候補生成
 2. ベスト 1-2 を `audio/_intermediate/sfx_zone1/{category}/` にダウンロード (gitignore)
-3. Reaper で開く
+3. 一発出しで成立するか確認。成立する場合は Studio One を通さず OGG q6 に変換して採用
+4. ループ点、音量、無音、ノイズ、足音 variation、時の窓リバーブが必要な場合だけ Studio One で開く
 
 ### 8.2 共通処理
 
@@ -302,7 +305,7 @@ VS_SCOPE §5.2 と整合:
 
 | ID | アセット名 | 生成日 | ツール | プラン | 入力素材 | 手修正 | 商用可否 | 公開可否 | Steam 開示区分 | 備考 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| sfx_env_wind_subtle | wind_subtle.ogg | 2026-05-XX | ElevenLabs SFX v2 + Reaper | EL paid + Reaper owned | §2.1 prompt | Reaper trim/normalize/loop | 可 (EL Sound Effects Terms) | GitHub Public 可 | Tier 1 player-consumed | 30 秒ループ |
+| sfx_env_wind_subtle | wind_subtle.ogg | 2026-05-XX | ElevenLabs SFX v2 + Studio One | EL paid + Studio One owned | §2.1 prompt | Studio One trim/normalize/loop | 可 (EL Sound Effects Terms) | GitHub Public 可 | Tier 1 player-consumed | 30 秒ループ |
 | sfx_tf_portal_open | portal_open.ogg | 2026-05-XX | (同上) | (同上) | §4.1 prompt | Reverb 追加 | (同上) | (同上) | (同上) | 時の窓展開時 |
 
 (以下、各 SFX について同様に記載)
@@ -321,4 +324,5 @@ VS_SCOPE §5.2 と整合:
 
 | 版 | 日付 | 変更 |
 |---|---|---|
-| v0 | 2026-05-04 | 初版起草。環境音 / 足音 / 時の窓 / NPC / UI の各 SFX 用 ElevenLabs プロンプト + Reaper 仕上げ手順 |
+| v0 | 2026-05-04 | 初版起草。環境音 / 足音 / 時の窓 / NPC / UI の各 SFX 用 ElevenLabs プロンプト + Studio One 仕上げ手順 |
+| v0.1 | 2026-05-05 | DAW 仕様を Studio One に修正。一発出し / AI 側調整優先の採用フローを追加 |

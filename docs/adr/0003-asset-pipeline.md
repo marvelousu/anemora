@@ -32,7 +32,7 @@ Anemora は **AI 主体個人開発** を「売り」にする 1 ヶ月集中プ
 ### 音響方向性 (Stage 1-2 で確定)
 
 - ボイスは採用しない (Silent protagonist)
-- BGM はステム / MIDI 編集前提 (ユーザーが Reaper で最終調整可能)
+- BGM はステム / MIDI 編集前提 (ユーザーが Studio One で最終調整可能)
 - 環境音重視、静謐・衰退の表現
 
 ---
@@ -46,10 +46,10 @@ Anemora は **AI 主体個人開発** を「売り」にする 1 ヶ月集中プ
 | **ドット絵 (キャラクター + 重要オブジェクト)** | **PixelLab** + **Retro Diffusion** | (種別特化生成) | **Aseprite** で手仕上げ |
 | **3D 背景 (建物 / 環境装飾)** | **Meshy v6 (LowPoly Mode)** | **Claude MCP** (Blender 連携) | **Blender 4.5 LTS** で手仕上げ |
 | **シェーダ / VFX** | **Unity URP** (HLSL カスタム) | (なし) | **Unity Editor** で調整 |
-| **BGM (骨格)** | **AIVA Pro** | (なし) | **Reaper (DAW)** でステム編集・マスタリング |
-| **BGM (ムード参照)** | **Suno v5.5** | (なし) | Reaper で部分採用 |
-| **BGM (inpainting / 部分差替)** | **Stable Audio 2.5** | (なし) | Reaper で統合 |
-| **環境音 / SFX** | **ElevenLabs SFX v2** | (なし) | Reaper で調整 |
+| **BGM (骨格)** | **AIVA Pro** | (なし) | **Studio One (DAW)** でステム編集・マスタリング |
+| **BGM (ムード参照)** | **Suno v5.5** | (なし) | Studio One で部分採用 |
+| **BGM (inpainting / 部分差替)** | **Stable Audio 2.5** | (なし) | Studio One で統合 |
+| **環境音 / SFX** | **ElevenLabs SFX v2** | (なし) | Studio One で調整 |
 | **UI 2D (HUD / 対話 / メニュー)** | **Claude + Unity UI** | 必要に応じて Firefly / PixelLab 補助 | **Unity Editor** で手仕上げ |
 | **タイポグラフィ / アイコン** | **Adobe Firefly** / 手描き | (なし) | Photoshop / Aseprite で仕上げ |
 | **ローカライズ素材 (テキスト)** | **Claude** (下訳) | **DeepL** (補助) | 人手校正 |
@@ -70,7 +70,7 @@ AI 生成のみで完結せず、すべてのアセットは **人手で最終�
 - AI 生成のばらつきを統一感ある作品にまとめる
 - 法的整合の観点で「AI 生成 + 人手仕上げ」は権利主張が明確
 - VS_SCOPE §7 の「FIX エリア」は人手仕上げまで到達した品質、「VS 時点暫定完成」は AI 生成段階
-- ユーザーが音楽を扱える前提 (Reaper) を活かす
+- ユーザーが音楽を扱える前提 (Studio One) を活かす
 
 #### 人手仕上げの完了条件
 
@@ -127,15 +127,15 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 ### 利点
 
 - **AI 主体個人開発の証跡として強い** — 制作プロセス自体が `docs/devlog/` で公開され、Zenn 技術記事として転用可能
-- **1 ヶ月集中スコープに合致** — 各種別で AI 生成 → Aseprite/Blender/Reaper で仕上げる工程が個人で回せる
+- **1 ヶ月集中スコープに合致** — 各種別で AI 生成 → Aseprite/Blender/Studio One で仕上げる工程が個人で回せる
 - **法的安全性** — Adobe Firefly + 商用利用可能 AI ツールに限定、Midjourney 等の法的グレーゾーンを排除
 - **月次予算 ¥30,000-40,000 に収まる** — Claude / Codex のサブスクを除いた範囲で全アセット生成可能
-- **ユーザーの音楽スキルを活用** — ステム / MIDI 編集前提の AI ツール選定 (AIVA + Reaper) でユーザー裁量が効く
+- **ユーザーの音楽スキルを活用** — ステム / MIDI 編集前提の AI ツール選定 (AIVA + Studio One) でユーザー裁量が効く
 - **HD-2D Tier 2 と整合** — 重い表現 (volumetric / 高ポリ) を要求しないため、AI 生成 LowPoly でも品質に達する
 
 ### 欠点 / 注意点
 
-- **ツール数が多い** — 学習コストとワークフロー切替コストがある (8 種類のツール、Aseprite + Blender + Reaper + Unity)
+- **ツール数が多い** — 学習コストとワークフロー切替コストがある (8 種類のツール、Aseprite + Blender + Studio One + Unity)
 - **AI 生成の一貫性** — 同一プロジェクト内でビジュアル・音響の統一感を保つにはプロンプトテンプレート確立が必須 (Stage 3 早期に整備)
 - **AI ツールのサブスク管理** — 月額契約の重複・解約タイミング・無料枠活用の管理が必要
 - **AI ツールの利用規約変更リスク** — 各サービスの規約は半年〜1年単位で変わる可能性、代替パスを並行確保
@@ -146,7 +146,7 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 
 - **`docs/legal/asset_ledger.md` 起草** — **Stage 3 Day 0-1 で最低限のテンプレートを先行起草**、各アセットの生成日 / ツール / プラン / 入力素材 / 商用利用可否 / 手修正有無 / 公開可否 / Steam 開示区分を記録
 - **`docs/legal/steam_ai_disclosure.md` 起草** — **Stage 3 Day 0-1 で開示区分整理表と文面草案を置く**、Stage 5 (Steam リリース判断時) に提出文面を確定
-- **Aseprite + Blender + Reaper のセットアップ** — Windows 側 (デスクトップ UJPVOG2 + ノート PC TOM) で別途準備、ADR-0004 (プロジェクトディレクトリ構造) と整合
+- **Aseprite + Blender + Studio One のセットアップ** — Windows 側 (デスクトップ UJPVOG2 + ノート PC TOM) で別途準備、ADR-0004 (プロジェクトディレクトリ構造) と整合
 - **プロンプトテンプレート** — `docs/asset_prompts/` に各種別の生成プロンプトを保管 (Stage 3 中に整備)
 - **VS_SCOPE.md §4 アセット規模** — 本 ADR の予算配分と照らして、新規作成上限と再利用前提を維持
 
@@ -233,6 +233,15 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 
 ---
 
+## 改訂履歴
+
+| 版 | 日付 | 変更 |
+|---|---|---|
+| v1.0 | 2026-05-04 | 初版。AI 主体 + 人手仕上げのアセットパイプラインを定義 |
+| v1.1 | 2026-05-05 | Project DAW 訂正により Reaper → Studio One 統一 |
+
+---
+
 ## References
 
 ### 公式 / ツール
@@ -247,7 +256,7 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 - **Suno v5.5**: https://www.suno.com
 - **Stable Audio 2.5**: https://www.stableaudio.com
 - **ElevenLabs SFX v2**: https://elevenlabs.io
-- **Reaper (DAW)**: https://www.reaper.fm (Linux 版あり)
+- **Studio One (DAW)**: https://www.presonus.com/products/studio-one-pro
 - **Adobe Firefly**: https://www.adobe.com/firefly
 
 ### 法的整合
@@ -264,7 +273,7 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 - `PITCH.md` §11 (月次予算配分)
 - `SPEC.md` §7 (Art) / §8 (Sound) / §10 (Technology)
 - `VS_SCOPE.md` §4 (アセット規模) / §5 (音響規模) / §7 (FIX / 暫定完成 / プレースホルダ可)
-- `STAGE3_PLAN.md` §10 (開発環境の使い分け、Aseprite / Blender / Reaper の機材配置)
+- `STAGE3_PLAN.md` §10 (開発環境の使い分け、Aseprite / Blender / Studio One の機材配置)
 
 ### 関連 ADR
 

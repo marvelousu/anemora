@@ -1,9 +1,9 @@
-# Zone 1 Ambient BGM Generation Prompt Template (AIVA + Suno + Stable Audio + Reaper)
+# Zone 1 Ambient BGM Generation Prompt Template (AIVA + Suno + Stable Audio + Studio One)
 
 > G5 で使用する街アンビエント BGM 1 曲のプロンプトテンプレート。
-> ADR-0003 §Decision に従い、**AIVA Pro = 骨格 / Suno v5.5 = ムード探索 / Stable Audio 2.5 = inpainting** の役割分担、**Reaper (DAW)** で最終仕上げ。
+> ADR-0003 §Decision に従い、**AIVA Pro = 骨格 / Suno v5.5 = ムード探索 / Stable Audio 2.5 = inpainting** の役割分担、**Studio One (DAW)** で最終仕上げ。
 
-> **Status (2026-05-04)**: v0 起草。3 ツール試行前の抽象プロンプト。Reaper でステム編集を前提に複数ツールの出力を組み合わせる方針。
+> **Status (2026-05-05)**: v0.1。DAW 仕様を Studio One に修正。一発出しで成立する場合は AI 生成出力をそのまま採用し、Studio One は最小限の確認・書き出しに留める。
 
 ---
 
@@ -70,7 +70,8 @@ exploration music of Octopath Traveler.
 ### 2.3 出力期待値
 
 - 楽譜 + MIDI + ステム (instrument 別) を取得
-- ステム単位で Reaper に取り込み、Suno / Stable Audio の出力と差し替え可能にする
+- 一発出しで採用可能なら完成版 WAV/OGG を優先し、ステム編集は不要にする
+- ループ点・音量・過剰な盛り上がりに問題がある場合だけ、ステム単位で Studio One に取り込み、Suno / Stable Audio の出力と差し替え可能にする
 
 ---
 
@@ -99,7 +100,9 @@ no aggressive instruments
 ### 3.3 出力期待値
 
 - 4-8 候補生成
-- ベスト 1-2 を選び、AIVA の骨格に対するムード補強として Reaper で重ねる
+- ベスト 1-2 を選ぶ。AIVA 一発出しの完成度が十分なら Suno は不採用
+- Suno 単体の一発出しが AIVA より良い場合は、Suno 単体採用も可。ただし paid plan 生成であることを ledger に明記する
+- AIVA / Suno のどちらも単体では弱い場合だけ、Studio One で重ねる
 - Suno 出力は **paid plan で生成したものに限る** (`asset_ledger.md` §1.2)
 
 ---
@@ -114,40 +117,42 @@ sustain pedal, occasional single note phrases with long silences, no other
 instruments, melancholic introspective mood, 8 bars duration.
 ```
 
-Stable Audio の **prompt + duration + key signature** で生成、Reaper で該当箇所に差し替え。
+Stable Audio の **prompt + duration + key signature** で生成、Studio One で該当箇所に差し替え。
 
 ---
 
-## 5. Reaper 仕上げワークフロー
+## 5. Studio One / 一発出し仕上げワークフロー
 
 ### 5.1 ステップ
 
-1. **AIVA ステム取込み**: Piano / Cello / Violin / Ambient Pad を別トラックに配置
-2. **Suno 候補取込み**: ベスト 1-2 を別トラックに配置 (mute 状態で開始)
-3. **マッシュアップ判定**: AIVA だけで完成度が出るか、Suno を混ぜると向上するかを試聴
-4. **編集**:
+1. **一発出し判定**: AIVA / Suno の完成版出力を先に試聴し、ループ・音量・過剰演出・ノイズ・権利条件に問題がなければ単体採用を優先
+2. **AI 側再生成 / 調整**: 問題が小さい場合は DAW 編集より先に prompt / style / duration / intensity を調整して再生成
+3. **AIVA ステム取込み**: 単体採用できない場合のみ Piano / Cello / Violin / Ambient Pad を Studio One の別トラックに配置
+4. **Suno 候補取込み**: ベスト 1-2 を別トラックに配置 (mute 状態で開始)
+5. **マッシュアップ判定**: AIVA だけで完成度が出るか、Suno を混ぜると向上するかを試聴
+6. **編集**:
    - 不要な dramatic swell をカット
    - ループ点 (例: 0:00 と 3:30 が滑らかに繋がる) を確認・調整
    - パン: Piano center, Cello slightly left, Violin slightly right
    - Ambient pad は -12 dB 以下で背景に埋める
-5. **マスタリング**:
+7. **マスタリング**:
    - Loudness: -18 to -16 LUFS (ゲームの BGM として控えめ)
    - High-pass filter @ 40 Hz (低音域を整理)
    - Subtle reverb (room or hall, wet 15-20%)
    - 最終 limiter は -1 dB ceiling
-6. **Export**:
+8. **Export**:
    - Format: OGG Vorbis (Unity 推奨)、quality 6 (192 kbps 相当)
    - File: `Assets/Audio/Music/Zone1_Ambient.ogg`
-   - 中間 .RPP ファイルと stem WAV は `audio/_intermediate/zone1_ambient/` (gitignore)
+   - 中間 Studio One song / stem WAV は `audio/_intermediate/bgm_zone1_studio_one/` (gitignore)
 
-### 5.2 時の窓使用時の変調 (VS では Reaper 出力に対するランタイム処理で代用)
+### 5.2 時の窓使用時の変調 (VS では Studio One 出力に対するランタイム処理で代用)
 
 ADR-0003 §音響方向性 + VS_SCOPE §5.1: VS では時の窓固有曲を作らず、街アンビエントの **変調** で代用:
 
 - Unity AudioMixer で Low-pass filter (cutoff 800 Hz) を時の窓使用時に適用
 - 一部楽器を mute (Cello / Violin を mute、Piano + Ambient のみ残す)
 - Pitch shift -2 semitones (subtle、半音 2 つ下げて時間が遅くなった感)
-- これらは G5 で実装、Reaper 側では特別な作業は不要
+- これらは G5 で実装、Studio One 側では特別な作業は不要
 
 ---
 
@@ -171,7 +176,7 @@ VS_SCOPE §5.1 / §5.2 と整合:
 
 | ID | アセット名 | 生成日 | ツール | プラン | 入力素材 | 手修正 | 商用可否 | 公開可否 | Steam 開示区分 | 備考 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| bgm_zone1_v1 | Zone1_Ambient.ogg | 2026-05-XX | AIVA Pro + Suno v5.5 + Reaper | AIVA Pro / Suno paid / Reaper owned | AIVA description / Suno style prompt | Reaper 編集・マスタリング | 可 (AIVA Pro + Suno paid) | GitHub Public 可 | Tier 1 player-consumed | 街アンビエント、3-4 分尺ループ |
+| bgm_zone1_v1 | Zone1_Ambient.ogg | 2026-05-XX | AIVA Pro + Suno v5.5 + Studio One | AIVA Pro / Suno paid / Studio One owned | AIVA description / Suno style prompt | Studio One 編集・マスタリング | 可 (AIVA Pro + Suno paid) | GitHub Public 可 | Tier 1 player-consumed | 街アンビエント、3-4 分尺ループ |
 
 ---
 
@@ -187,4 +192,5 @@ VS_SCOPE §5.1 / §5.2 と整合:
 
 | 版 | 日付 | 変更 |
 |---|---|---|
-| v0 | 2026-05-04 | 初版起草。AIVA + Suno + Stable Audio + Reaper の役割分担と各プロンプト |
+| v0 | 2026-05-04 | 初版起草。AIVA + Suno + Stable Audio + Studio One の役割分担と各プロンプト |
+| v0.1 | 2026-05-05 | DAW 仕様を Studio One に修正。一発出し / AI 側調整優先の採用フローを追加 |
