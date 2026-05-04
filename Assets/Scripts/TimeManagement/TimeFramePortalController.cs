@@ -40,6 +40,7 @@ namespace Anemora.TimeManagement
         private int portalGenerationCount;
 
         public event Action<PortalState, float> StateChanged;
+        public event Action<SceneSide> CrossingCompleted;
 
         public PortalState State => state;
         public GameObject PortalInstance => portalInstance;
@@ -241,6 +242,7 @@ namespace Anemora.TimeManagement
 
             SetState(PortalState.Open);
             flipRoutine = null;
+            CrossingCompleted?.Invoke(targetSide);
         }
 
         private void EnsurePortalInstance()
