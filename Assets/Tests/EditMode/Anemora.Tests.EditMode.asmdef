@@ -3,6 +3,7 @@
     "rootNamespace": "Anemora.Tests.EditMode",
     "references": [
         "Anemora.Data",
+        "Anemora.Game",
         "Anemora.Save",
         "Newtonsoft.Json",
         "UnityEngine.TestRunner",

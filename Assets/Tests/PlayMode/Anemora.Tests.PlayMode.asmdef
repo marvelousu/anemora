@@ -3,7 +3,10 @@
     "rootNamespace": "Anemora.Tests.PlayMode",
     "references": [
         "Anemora.Data",
+        "Anemora.Game",
         "Anemora.Save",
+        "Unity.Localization",
+        "Unity.ResourceManager",
         "Newtonsoft.Json",
         "UnityEngine.TestRunner"
     ],
