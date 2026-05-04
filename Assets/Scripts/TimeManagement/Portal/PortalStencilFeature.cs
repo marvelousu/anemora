@@ -69,6 +69,13 @@ namespace Anemora.TimeManagement.Portal
                 : string.Empty;
         }
 
+        public void SetLayerMasks(LayerMask portalMaskLayers, LayerMask insidePortalLayers)
+        {
+            this.portalMaskLayers = portalMaskLayers;
+            this.insidePortalLayers = insidePortalLayers;
+            Create();
+        }
+
         public static void ResetDiagnosticsForTests()
         {
             LastEnqueueFrame = -1;
