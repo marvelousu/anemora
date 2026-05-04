@@ -1,176 +1,117 @@
-# Stage 3 A トラック TBD 解決まとめ
+# Stage 3 TBD Resolution Tracking Sheet
 
-> Stage 3 (Vertical Slice 設計) A トラック「TBD 解決」の確定事項集約。
-> 2026-05-04 (Day 0) `/spec` 対話で詰めた内容を、SPEC.md / VS_SCOPE.md への反映前に一次資料として集約する。
-
-> **Status (2026-05-04 = Day 0)**: A トラック /spec 完了。VS 制作に必要な範囲の TBD は確定。残り (第 1 ゾーン名 / 衰退原因 / 真層など) は Stage 3 試作と同期 or Stage 4-5 まで保留。
+> 本 sheet は、Stage 3 Day 1 以降に残っている user 判断ポイントを一覧化するための tracking sheet。
+> `feedback_anemora_no_premature_lockin.md` の方針に従い、候補の優劣付け、案の誘導、収束予測は書かない。
 
 ---
 
-## 1. 主人公
+## 1. 概要
 
-### 1.1 確定事項
+### 1.1 目的
 
-| 項目 | 確定内容 |
-|---|---|
-| 性別 | **中性的・両読み可能** (Frisk / Yume Nikki 系統)。完全確定ではなく、Stage 3 ヒーロービジュアル試作で微調整余地あり |
-| 年齢層 | **仮置き 10 代後半〜20 代前半**、ヒーロービジュアル試作で微調整 |
-| 沈黙設定 | **Silent protagonist** (Undertale 型)。主人公はしゃべらず、感情のみテキストウィンドウで表現 |
-| 偽記憶レベル | **ぼんやりと存在を覚えている** 程度。顔や名前は鮮明に出てこない、感覚としての「あの人たち」 |
+- user 判断が必要な TBD を一覧化する。
+- 各 TBD の状態、反映先、Stage 3 完了条件への影響を tracking する。
+- Stage 3 の実装 session が、未確定事項を確定扱いで進めないようにする。
 
-### 1.2 動機の三層構造 (確定)
+### 1.2 更新方針
 
-| 層 | 内容 | 開示タイミング |
-|---|---|---|
-| **表層** | 「ぼんやりと覚えている家族に会いたい」 (シンプル・明確) | オープニング〜序盤 |
-| **中層** | 街の謎を辿る中で自然に生まれる「自分はここで何をしているのか」「他の住人も同じように消えてしまったのか」という問い | 中盤に内側から立ち上がる |
-| **真層** | ループを止めるために生まれた異物としての真相 (本人にも自覚なし) | **最終盤 (第 5 層 / 真層)** で開示 |
-
-> **重要**: 表層動機がシンプルかつ明確であることでプレイヤーが疑わない。プレイヤーに真相を悟らせない強度を持たせるため、表層は派手な仕掛けより日常感を優先する。
-
-### 1.3 主人公の真相 (最終盤で開示)
-
-- 主人公は **元から (気づいたら) 時の筆を持っていた**
-- 同じようなループをしている世界の中で、**突然変異的に発生した異物**
-- 本来この主人公は他のループには存在しない
-- **「ループを止めるために生まれた存在」** (世界が作ったか / 観測者が作ったかは TBD、Stage 4-5 で確定)
-- 現在の年齢までの記憶は持っているが偽記憶、自覚はない
-- 第 5 層 / 真層で正体が明かされる
+- user が明示的に「決めた」と言うまで、各項目は未確定として扱う。
+- 各 TBD が解決したら、該当 row を strike-through し、確定日と反映 commit hash を `反映先 (確定後)` または row 末尾に追記する。
+- 新規 TBD が発生したら、§2 の表へ 1 row / 1 項目で追記する。
+- 複数案が並立する場合は併記する。`draft`、`provisional`、`intermediate`、`TBD` の状態を明示し、案を絞らない。
+- 「決めない」も有効な状態として扱い、Stage 4 以降でよい項目はそのまま保持する。
 
 ---
 
-## 2. 異物原則
+## 2. TBD 項目一覧
 
-**異物は主人公のみ。NPC は全員ループ世界の普通の住人。**
-
-「街の老人 = 語り手」「前任者 = 守り人」のような特殊な役割を持つ NPC は採用しない。NPC は街に生きている普通の人たちとして設計する (= トロープ排除、独自性確保)。
-
-> **私の以前の SPEC §4.2 記述ミス訂正**: アーキタイプ「街の老人 (第 1 ゾーンの語り手)」「別の時の筆所有者 (前任者)」は私の勝手な仮置き。`feedback_anemora_no_premature_lockin` 違反。本書で訂正する。
-
----
-
-## 3. 時の筆
-
-### 3.1 確定事項
-
-- **古代の遺物** (物として存在する)
-- 主人公は **元から / 気づいたら持っていた** (発見イベントは無し、ポケットに入っている)
-- 史上 **主人公だけが使える** (前任者複数説は撤回、SPEC §3.3 第 4 層も訂正)
-
-### 3.2 オープニング内での発見タイミング
-
-**ドアの前で家を出るとき、ポケットから取り出して気づく** (確定)。
-
-> ベッドから起き上がるタイミングは「主人公の立ち姿確認」「家の確認」「操作の試行」など他の感情で混雑するため、ドア前で発見が最適。家を出る = 世界に踏み出す = 時の筆を握って立つ、の象徴的接続。
-
----
-
-## 4. オープニング設計
-
-### 4.1 場と環境 (確定)
-
-| 次元 | 確定内容 |
-|---|---|
-| 場 | **家のベッドスタート** (ブレワイ的構成、閉塞 → 解放、段階的開示で異質性を悟らせない) |
-| 時間 | 朝 |
-| 家の環境 | **窓なし、閉塞感** を演出 (外に出たときの解放感とのコントラスト) |
-| 外に出た瞬間 | **朝日が差し込む + 風が吹く + 何らかの音** (荒廃を示唆、風がある世界) |
-| 鳥の音 | **TBD** (鳥がいる世界観なのか未確定、Stage 3 試作と同期) |
-| その後の街 | BGM のみ、他の物音はなく、さびれた感じ・静謐・衰退 |
-
-### 4.2 主人公の状態 (確定)
-
-- 感情は普通に持っている (異物としての違和感を強調しすぎない)
-- 含み演出の後は、普通にベッドの上で起きて立ち上がる
-- ファーストパーソン視点ではなく、**通常の俯瞰視点** で表現
-
-### 4.3 含み演出 (確定)
-
-「真相はわからないけれど、後から見るとこういうことかなと考察がはかどる」レベル。中盤バレを避ける質感が必須 (進撃の巨人型: 考察はいろいろ出るが、確定はかなり終盤)。
-
-| シーケンス | 演出 | 真相予兆 | 中盤バレリスク |
-|---|---|---|---|
-| **目覚めの直前 / 瞬間** | **D-3**: 「夢を見ていたような、夢を見ていなかったような」感覚 (空白の眠りだったか長い夢だったか曖昧、起き上がる頃には霧消) | 主人公の存在の不確かさ / 偽記憶の作為 | 低 |
-| **ベッドで起きた直後** | **D-7 改**: 通常の俯瞰視点で、主人公が自分の手を見る一瞬の動作 (掛け布団をめくる / 体を起こす流れの中で)。すぐに普通の起き上がりに戻る | 自分の身体性への違和感 / 異物 | 極低 |
-| **起き上がってから (補助、削除可能フラグ)** | **D-6 弱版**: 「今日は体がだるい」程度の体感。やりすぎ判定なら **削除可能** | 異物としての身体違和感 | 中-高 (家族の偽記憶と重なると強くなりすぎる懸念あり) |
-
-> **D-6 弱版の判定**: 家族のことを思い出せないこと自体が既に「この世の存在ではない」予想を引き起こす信号なので、D-6 が加わると過剰になる懸念。Stage 3 試作で実際の体感を確認し、やりすぎなら削除する運用。
-
-### 4.4 NPC の登場タイミング (確定)
-
-オープニング (主人公の目覚め〜家を出る) では **NPC は登場しない**。主人公単独の瞬間。NPC の初出は街に出てから (VS 中盤、6:00-12:00 物語の入口) で、いずれも「普通の住人」設定 (異物の役割を持たない)。
+| 項目 ID | カテゴリ | 現状 | 候補 / 案 | user 判断必要か | ブロック影響度 | 反映先 (確定後) | 期日目安 |
+|---|---|---|---|---|---|---|---|
+| CHR-01 | キャラクター | 主人公名は未確定。localization glossary では `主人公` / `Protagonist` が tbd 扱い。 | TBD。候補名が出たら併記する。現状は固有名なし / `主人公` 表記のまま。 | Yes | 中 (Stage 3 quality に影響) | `docs/localization/glossary.md`, dialogue / UI text, future character sheet | Stage 3 内 (VS 完成前) |
+| CHR-02 | キャラクター | 主人公の性別は user 最終判断待ち。F2/F4 は visual draft として進行。 | TBD: 中性 / 男 / 女 / その他。中性表現は draft review 軸であり、確定ではない。 | Yes | 高 (Stage 3 死守ライン直撃) | `docs/asset_prompts/hero_v1.md`, `Assets/Art/Sprites/Hero/`, `Assets/Prefabs/Characters/Hero.prefab` | Stage 3 内 (VS 完成前) |
+| CHR-03 | キャラクター | 主人公の年齢は user 最終判断待ち。 | provisional: 10 代後半から 20 代前半。TBD: それ以外の年齢帯も未排除。 | Yes | 中 (Stage 3 quality に影響) | hero prompt, sprite review notes, future character sheet | Stage 3 内 (VS 完成前) |
+| CHR-04 | キャラクター | 主人公の出身詳細は未確定。VS では深掘りしない運用。 | TBD: 家族構成 / 職業 / 居住歴 / 偽記憶の具体内容 / その他。 | Yes | 低 (Stage 4 以降で OK) | SPEC, future narrative bible, character sheet | Stage 4 入口 |
+| NPC-01 | キャラクター | Resident_A は NPC draft として進行。個別シートは未確定。 | draft: 中年から初老の普通の住人。TBD: 名前 / 年齢 / 生活背景 / 対話差分 / 現在反映の見え方。 | Yes | 高 (Stage 3 死守ライン直撃) | `docs/draft/g3_npc_dialogue.md`, NPC prefab / DialogueAsset, character sheet | Stage 3 内 (VS 完成前) |
+| NPC-02 | キャラクター | Resident_B は NPC draft として進行。個別シートは未確定。 | draft: 静かに座る普通の住人。TBD: 名前 / 年齢 / 生活背景 / 対話差分 / Resident_A との対比。 | Yes | 中 (Stage 3 quality に影響) | `docs/draft/g3_npc_dialogue.md`, NPC prefab / DialogueAsset, character sheet | Stage 3 内 (VS 完成前) |
+| STORY-01 | 物語 | 衰退原因の扱いは未確定。Stage 3 では見せ方のみ最小化。 | TBD: 比喩 / 実体 / 比喩と実体の併存 / 判定保留。 | Yes | 低 (Stage 4 以降で OK) | SPEC, VS_SCOPE, future narrative bible | Stage 4 入口 |
+| STORY-02 | 物語 | 時の筆の起源の詳細は未確定。 | draft/provisional: 物として存在する時の筆。TBD: 古代遺物 / 世界由来 / 観測者由来 / 起源非開示 / その他。 | Yes | 低 (Stage 4 以降で OK) | SPEC, ADR-0005 notes, future narrative bible | Stage 4 入口 |
+| STORY-03 | 物語 | 主人公が選ばれた理由は未確定。 | TBD: 世界が選んだ / 観測者が選んだ / 誰も選んでいない / 偶発 / その他。 | Yes | 低 (Stage 4 以降で OK) | SPEC, future narrative bible | Stage 4 入口 |
+| STORY-04 | 物語 | 第 1 ゾーン正式名は未確定。現状は仮称として「街」を使用。 | TBD: 「街」継続 / 新名称 / 地名なし / その他。候補名が出たら併記する。 | Yes | 中 (Stage 3 quality に影響) | `docs/localization/glossary.md`, `docs/VS_SCOPE.md`, UI / dialogue text | Stage 3 内 (VS 完成前) |
+| ART-01 | アート | F2 Hero / NPC v1 は draft review 待ち。 | 確認軸: 中性表現 / 同一性 / 年齢対比 / palette 統一 / Resident_B の暗さ。各軸は user review まで未確定。 | Yes | 高 (Stage 3 死守ライン直撃) | `Assets/Art/Sprites/Hero/`, `Assets/Art/Sprites/NPC/`, F2/F4 devlog | Stage 3 内 (VS 完成前) |
+| ART-02 | アート | F3 Retro Diffusion 補助の要否は未確定。 | TBD: 使用する / 使用しない / Hero のみ / NPC のみ / 差し替え候補作成のみ。 | Yes | 中 (Stage 3 quality に影響) | F3 prompt / devlog, `docs/legal/asset_ledger.md` if used | Stage 3 内 (VS 完成前) |
+| ART-03 | アート | Anemora パレット v0 は draft。最終採用は未確定。 | draft: palette v0。TBD: v0 採用 / v0 改訂 / 別 palette / Stage 4 で再評価。 | Yes | 中 (Stage 3 quality に影響) | UI palette assets, sprite polish notes, ADR / asset docs | Stage 3 内 (VS 完成前) |
+| ART-04 | アート | TMP 美咲ゴシック JP atlas は draft。最終採用は未確定。 | draft: 美咲ゴシック JP atlas。TBD: 採用 / fallback 追加 / 別 JP font / Stage 4 で再評価。 | Yes | 中 (Stage 3 quality に影響) | `docs/adr/0008-localization.md`, TMP font assets, localization docs | Stage 3 内 (VS 完成前) |
+| ART-05 | アート | Press Start 2P EN atlas は導入済み。最終採用は未確定。 | draft: Press Start 2P。TBD: 採用 / 別 EN font / Stage 4 で再評価。 | Yes | 低 (Stage 4 以降で OK) | `docs/adr/0008-localization.md`, TMP English Atlas, localization docs | Stage 4 入口 |
+| ENV-01 | 環境 | Plaza monument は draft / intermediate が並存。 | draft: B 噴水跡。intermediate: A bench / C pedestal。TBD: B 採用 / A 採用 / C 採用 / 複数併用 / 再生成。 | Yes | 高 (Stage 3 死守ライン直撃) | `Assets/Prefabs/Zone1/`, A3 devlog, scene placement | Stage 3 内 (VS 完成前) |
+| ENV-02 | 環境 | Tree_Decay の落葉度は user review 待ち。 | draft: sparse / near-leafless。TBD: sparse 採用 / near-leafless 採用 / 両方使用 / 再調整。 | Yes | 中 (Stage 3 quality に影響) | `Assets/Prefabs/Zone1/`, material / prefab variants, A3 devlog | Stage 3 内 (VS 完成前) |
+| ENV-03 | 環境 | House_Player 内装スコープは未確定。 | TBD: Bed / Bookshelf 2 variants / Table+Chair / Door の全部 / 一部 / placeholder 維持。 | Yes | 高 (Stage 3 死守ライン直撃) | `Assets/Prefabs/Zone1/House_Player*`, G1 scene, opening flow | Stage 3 内 (VS 完成前) |
+| AUD-01 | 音響 | A4 が MCP AIVA で BGM 進行中。現状、user 判断保留として記録された音響 TBD はなし。 | 現状なし。新規判断が出たら別 row で追記する。 | No | 低 (Stage 4 以降で OK) | Audio prompt / devlog if a new TBD appears | 任意 |
+| TECH-01 | 技術 | LocalizationSettings + StringTable seed の key 命名は A1-followup で実装予定。構造方針は user 確認待ち。 | TBD: namespace あり / scene prefix あり / flat key / JP source key / その他。 | Yes | 中 (Stage 3 quality に影響) | localization assets, `docs/localization/glossary.md`, tests | Stage 3 内 (VS 完成前) |
+| DOC-01 | 文書 | ADR-0009 Asset pipeline は Proposed。Accepted 化は user 承認待ち。 | TBD: Accepted / Proposed 維持 / 改訂後 Accepted。 | Yes | 低 (Stage 4 以降で OK) | `docs/adr/0009-asset-pipeline.md`, `docs/legal/asset_ledger.md` | Stage 4 入口 |
+| PUB-01 | 公開 | Code license は未確定。 | TBD: ライセンス未定 / OSS license 候補 / proprietary / dual license / その他。 | Yes | 低 (Stage 4 以降で OK) | `README.md`, `LICENSE`, release docs | Stage 4 入口 |
+| PUB-02 | 公開 | Public release の時期と形態は未確定。 | TBD: Steam Early Access / itch.io / GitHub Public のみ / 非公開継続 / その他。 | Yes | 低 (Stage 4 以降で OK) | `README.md`, release checklist, Steam / itch docs | Stage 4 入口 |
 
 ---
 
-## 5. VS 主要違和感
+## 3. 列挙済み TBD 項目
 
-**「失われた家族の記憶」を VS 主要違和感に統合** (確定)。
+§2 の表には、以下の user 判断保留項目を 1 row / 1 項目で登録済み。
 
-- 第 1 ゾーン (街、仮称) = 家族の家
-- 主要違和感 = 失われた本 / 手紙 / 歌譜などの「記憶の断片」
-- オープニングで「ぼんやり覚えている家族に会いたい」動機提示
-- 過去で家族の家に踏込み、本を持ち帰る
-- 現在に戻ると、家には誰もいない / 本だけが残る
-- 街の他の住人は家族のことを覚えていない (= 偽記憶の伏線、最終盤で意味)
-- 層 2 片鱗で「過去で持ち帰ったはずの本が現在に存在しない / 別の場所にある」 = 「あなたの記憶も書き換わっているかもしれない」予兆
+### 3.1 キャラクター / 物語
 
----
+- CHR-01: 主人公名
+- CHR-02: 主人公性別
+- CHR-03: 主人公年齢
+- CHR-04: 主人公出身詳細
+- NPC-01: Resident_A 個別シート
+- NPC-02: Resident_B 個別シート
+- STORY-01: 衰退原因
+- STORY-02: 時の筆の起源
+- STORY-03: 主人公が選ばれた理由
+- STORY-04: 第 1 ゾーン正式名
 
-## 6. SPEC.md / VS_SCOPE.md 訂正リスト
+### 3.2 アート
 
-本書で確定した内容を反映するため、以下の章を改訂する:
+- ART-01: F2 Hero / NPC v1 アートレビュー
+- ART-02: F3 Retro Diffusion 補助の要否
+- ART-03: Anemora パレット v0 採用最終確定
+- ART-04: TMP 美咲ゴシック採用最終確定
+- ART-05: Press Start 2P 採用最終確定
 
-### SPEC.md
-- **§3.3 ベール剥離 第 4 層**: 「時の筆所有者は過去にも複数いた」→ **削除**、「時の筆を使えた者は史上主人公だけ」に置換
-- **§3.5 オープン要件**: 主人公・時の筆・偽記憶などの解決済項目を消し込み (項目 1.x / 3.1)
-- **§4.1 主人公**: 名前 TBD のまま、性別=中性的、年齢=仮置き、silent protagonist、動機 3 層、真相を反映
-- **§4.2 主要登場人物**: アーキタイプ「街の老人」削除、「異物は主人公のみ、NPC は普通の住人」を明文化
-- **§9 (UI/UX) 関連**: silent protagonist 仕様を §9.x 対話 UI に反映 (NPC 一方的に話す + 主人公は感情/反応の選択肢のみ)
-- **§13.3 オープン要件まとめ**: 解決済項目を消し込み
-- **§13.4 改訂履歴**: v0.2 として本訂正を記載
+### 3.3 環境
 
-### VS_SCOPE.md
-- **§2 体験流れ**: オープニング 0:00-1:00 を本書 §4 の確定内容で具体化 (家ベッドスタート + D-3 + D-7 + D-6 弱版)
-- **§3.2 第 1 ゾーン NPC 配置**: 「老人 1 + 主要 1」→「普通の住人 1-2 人」 (異物設定なし)
-- **§6 UI**: silent protagonist の対話 UI 反映 (NPC 一方的話 + 主人公感情 / 反応選択肢)
-- **§13 改訂履歴**: v0.2 として本訂正を記載
+- ENV-01: Plaza monument 採用最終決定
+- ENV-02: Tree_Decay 落葉度
+- ENV-03: House_Player 内装スコープ
 
-### docs/STAGE3_PLAN.md
-- 必要に応じて A トラック完了状態を追記
+### 3.4 音響
 
----
+- AUD-01: 現状 A4 BGM 進行中、判断保留なし
 
-## 7. 残った TBD 項目
+### 3.5 技術 / 文書
 
-### 7.1 Stage 3 試作と同期して確定
+- TECH-01: LocalizationSettings + StringTable seed の最終 key 命名
+- DOC-01: ADR-0009 Asset pipeline Status: Proposed -> Accepted
 
-- 第 1 ゾーン (街) の正式名 (作画試作と同期)
-- 主要 NPC (普通の住人 1-2 人) の具体設定 (作画試作と同期)
-- 鳥の音の有無 (世界観: 鳥がいる/いない)
-- Hook = 30 秒トレイラーシグネチャー画 (ヴィジュアル試作後に決定)
+### 3.6 公開
 
-### 7.2 Stage 4-5 まで保留
-
-- 衰退原因の具体描写 (比喩か実体か / 両方並列、複数案維持)
-- 主人公の出身詳細 (家族構成 / 職業) — 偽記憶なので「あった」設定の中身、VS には不要
-- 真層の収束パターン (観測者放棄 / 継承 / 終焉 / その他)
-- 観測者 vs 世界 (主人公創造主体)
+- PUB-01: Code license
+- PUB-02: Public release 判断
 
 ---
 
-## 8. 関連文書
+## 4. 解決ガイドライン
 
-- `CONCEPT.md` (Stage 1 v1.3、コンセプト固め)
-- `PITCH.md` (Stage 2 公開ピッチ)
-- `SPEC.md` (Stage 2 GDD v0.1、本書で v0.2 訂正)
-- `docs/VS_SCOPE.md` (Stage 3 D トラック v0.1、本書で v0.2 訂正)
-- `docs/STAGE3_PLAN.md` (Stage 3 計画書)
-- `docs/adr/0001-engine-unity6.3-lts.md`
+- 「決めない」も valid。複数案を並列維持してよい。
+- VS 死守ラインに直撃する判断のみ Stage 3 内で解決対象にする。
+- Stage 4 入口以降でよい判断は、未確定のまま保持してよい。
+- 確定時は §2 の該当 row を strike-through し、確定日、反映 commit hash、反映先を追記する。
+- A2 / Codex は候補を評価しない。user が明示的に決めるまで確定扱いにしない。
 
 ---
 
-## 9. 改訂履歴
+## 5. 更新履歴
 
 | 版 | 日付 | 変更 |
 |---|---|---|
-| v1 | 2026-05-04 | A トラック /spec 対話完了、初版作成 |
+| v0.1 | 2026-05-05 | Stage 3 Day 1 の user 判断保留 tracking sheet として初版起草 |
