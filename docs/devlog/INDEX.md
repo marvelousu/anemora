@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v0.4 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v0.6 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 46 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
+Current root-level Markdown coverage: 47 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -21,6 +21,7 @@ Current root-level Markdown coverage: 46 files under `docs/devlog/`, including t
 |---|---|---|---|---|---|
 | 2026-05-06 | [2026-05-06_stage4_phase0_triage.md](2026-05-06_stage4_phase0_triage.md) | Stage 4 Phase 0 triage and backlog extraction | This task | Stage 4 Phase 0 | [Unreleased](../../CHANGELOG.md#unreleased) Stage 4 entry |
 | 2026-05-06 | [2026-05-06_urp_renderobjects_pass_migration.md](2026-05-06_urp_renderobjects_pass_migration.md) | PortalStencilFeature migration from internal DrawObjectsPass to public RenderObjectsPass | This task | Stage 4 Phase 0 / URP cleanup | [Unreleased](../../CHANGELOG.md#unreleased) fixed |
+| 2026-05-06 | [2026-05-06_stage4_niro_full_redraw_scope.md](2026-05-06_stage4_niro_full_redraw_scope.md) | Niro / Hero v2 full-redraw scope and asset brief handoff | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0 Stage 3 Closeout (2026-05-06)
 
@@ -152,3 +153,4 @@ Current root-level Markdown coverage: 46 files under `docs/devlog/`, including t
 | v0.3 | 2026-05-06 | Stage 3 closeout devlog を追加し、root-level Markdown coverage を 44 件へ更新 |
 | v0.4 | 2026-05-06 | Stage 4 Phase 0 triage devlog を追加し、root-level Markdown coverage を 45 件へ更新 |
 | v0.5 | 2026-05-06 | URP RenderObjectsPass migration devlog を追加し、root-level Markdown coverage を 46 件へ更新 |
+| v0.6 | 2026-05-06 | Niro full-redraw scope devlog を追加し、root-level Markdown coverage を 47 件へ更新 |

@@ -66,6 +66,7 @@ Milestone groups covered in this section:
 
 | Commit | Entry |
 |---|---|
+| This task | Promoted Stage 4 character art scope so Niro / Hero v2 is a full redraw, with Resident_A / Resident_B review decisions tracked separately. |
 | `33a2507`, `8bd0d01` | Added and updated `docs/devlog/INDEX.md` for devlog navigation and CHANGELOG cross-reference. |
 | `34112eb` | Added Stage 3 review aids for high-impact visual review items. |
 | `4417663` | Added `docs/G5_PREFLIGHT.md` for G5 Go / No-Go preparation. |
