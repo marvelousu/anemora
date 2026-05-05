@@ -1,6 +1,6 @@
 # Anemora Asset Structure
 
-> Status: v0.2 draft (2026-05-05). This file records the directory layout observed in the working tree at Stage 3 Day 1 after Niro lore, audio, localization, and performance harness updates.
+> Status: v0.3 draft (2026-05-06). This file records the directory layout observed in the working tree after Stage 4 character v2 import.
 
 ## 1. 概要
 
@@ -35,10 +35,13 @@ Scan basis: clean temporary worktree based on `origin/main`, 2026-05-05. Canonic
 | `Assets/Art/Sprites/` | character sprite root |
 | `Assets/Art/Sprites/Hero/v1/` | Hero v1 sprites: stand, idle, walk, D-7 hands |
 | `Assets/Art/Sprites/Hero/v1/_draft/` | Hero F1 draft comparison files |
+| `Assets/Art/Sprites/Hero/v2/` | Hero v2 Stage 4 sprites: stand, idle, walk, D-7 hands |
 | `Assets/Art/Sprites/NPC/Resident_A/v1/` | Resident_A v1 idle / walk sprites |
 | `Assets/Art/Sprites/NPC/Resident_A/v1/_draft/` | Resident_A F1 draft comparison files |
+| `Assets/Art/Sprites/NPC/Resident_A/v2/` | Resident_A v2 Stage 4 idle / walk sprites |
 | `Assets/Art/Sprites/NPC/Resident_B/v1/` | Resident_B v1 seated idle sprite |
 | `Assets/Art/Sprites/NPC/Resident_B/v1/_draft/` | Resident_B F1 draft comparison file |
+| `Assets/Art/Sprites/NPC/Resident_B/v2/` | Resident_B v2 Stage 4 seated idle sprite |
 | `Assets/Art/Materials/` | art material root |
 | `Assets/Art/Materials/Portal/` | portal stencil / inside-only shader materials |
 | `Assets/Art/Models/Zone1/` | Zone1 FBX, atlas, manifest, material root |
@@ -53,7 +56,7 @@ Scan basis: clean temporary worktree based on `origin/main`, 2026-05-05. Canonic
 
 Major observed files:
 
-- Character sprite PNGs: 20 non-meta `.png` files under `Assets/Art/Sprites/`.
+- Character sprite PNGs: 33 non-meta `.png` files under `Assets/Art/Sprites/`.
 - Zone1 FBX files: 14 non-meta `.fbx` files under `Assets/Art/Models/Zone1/`.
 - Portal shader files: `PortalMask.shader`, `InsideOnly.shader`.
 - Portal material files: `PortalMask.mat`, `InsideOnly.mat`, `Debug_Current.mat`, `Debug_Past.mat`.

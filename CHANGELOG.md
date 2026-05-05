@@ -26,6 +26,7 @@ Milestone groups covered in this section:
 | Commit | Entry |
 |---|---|
 | This task | Added a runtime brush tutorial hint that switches between create, release, and close affordances for the local time-window flow. |
+| This task | Added the user-approved Stage 4 character v2 sprite sets for Niro / Hero, Resident_A, and Resident_B. |
 | `4029cc0` | Added G3 partial NPC placement and dialogue UI scaffold in `Anemora_Main`, including Resident_A / Resident_B instances and `NpcDialogueFlowTests`. |
 | `2f3197b` | Added LocalizationSettings, ja-JP / en locale assets, StringTable seed, Addressables registration, and localization resolution PlayMode tests. |
 | `d2ae62a` | Added Save/Load round-trip E2E PlayMode coverage for ActionRecord reflection persistence. |
@@ -40,6 +41,7 @@ Milestone groups covered in this section:
 
 | Commit | Entry |
 |---|---|
+| This task | Switched the Hero, Resident_A, and Resident_B prefabs and animation clips from provisional v1 sprites to the Stage 4 v2 sprite sets. |
 | `f486c28` | Revised `docs/VS_SCOPE.md` to v0.2 with E0-E5 / A1-A3 / F1-F4 / G4 completion state and core-loop minimum achievement. |
 | `2cf0dfa` | Revised ADR-0008 to v0.3 with LocalizationSettings completion, StringTable seed, Addressables setup, and batchmode fallback details. |
 | `9f1d5c7` | Revised `docs/VS_SCOPE.md` to v0.3 with Audio completion, G3 Localization completion, and G5 as the remaining completion gate. |
@@ -68,6 +70,7 @@ Milestone groups covered in this section:
 | Commit | Entry |
 |---|---|
 | This task | Promoted Stage 4 character art scope so Niro / Hero v2 is a full redraw, with Resident_A / Resident_B review decisions tracked separately. |
+| This task | Recorded the character v2 import, asset ledger rows, and user-approved pixel granularity direction for Hero / Resident_A / Resident_B. |
 | `33a2507`, `8bd0d01` | Added and updated `docs/devlog/INDEX.md` for devlog navigation and CHANGELOG cross-reference. |
 | `34112eb` | Added Stage 3 review aids for high-impact visual review items. |
 | `4417663` | Added `docs/G5_PREFLIGHT.md` for G5 Go / No-Go preparation. |

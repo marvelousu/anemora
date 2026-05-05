@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v0.7 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v0.8 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 48 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
+Current root-level Markdown coverage: 49 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -23,6 +23,7 @@ Current root-level Markdown coverage: 48 files under `docs/devlog/`, including t
 | 2026-05-06 | [2026-05-06_urp_renderobjects_pass_migration.md](2026-05-06_urp_renderobjects_pass_migration.md) | PortalStencilFeature migration from internal DrawObjectsPass to public RenderObjectsPass | This task | Stage 4 Phase 0 / URP cleanup | [Unreleased](../../CHANGELOG.md#unreleased) fixed |
 | 2026-05-06 | [2026-05-06_stage4_niro_full_redraw_scope.md](2026-05-06_stage4_niro_full_redraw_scope.md) | Niro / Hero v2 full-redraw scope and asset brief handoff | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_brush_tutorial_hint.md](2026-05-06_stage4_brush_tutorial_hint.md) | Runtime brush tutorial hint for create / release / close affordance | This task | Stage 4 Phase 0 / brush UX | [Unreleased](../../CHANGELOG.md#unreleased) added |
+| 2026-05-06 | [2026-05-06_stage4_hero_v2_import.md](2026-05-06_stage4_hero_v2_import.md) | User-approved Hero / Resident_A / Resident_B v2 import | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) added / changed |
 
 ### 2.0 Stage 3 Closeout (2026-05-06)
 
@@ -96,6 +97,7 @@ Current root-level Markdown coverage: 48 files under `docs/devlog/`, including t
 - [2026-05-05_f1_pixellab_draft.md](2026-05-05_f1_pixellab_draft.md) — F1 PixelLab Hero draft.
 - [2026-05-05_g3_npc_pixellab_draft.md](2026-05-05_g3_npc_pixellab_draft.md) — G3 NPC PixelLab draft.
 - [2026-05-05_f2_aseprite_hero.md](2026-05-05_f2_aseprite_hero.md) — F2 Hero Aseprite finish draft.
+- [2026-05-06_stage4_hero_v2_import.md](2026-05-06_stage4_hero_v2_import.md) — Stage 4 Hero / Resident_A / Resident_B v2 import.
 - [2026-05-05_g3_aseprite_residents.md](2026-05-05_g3_aseprite_residents.md) — G3 Resident A/B Aseprite finish draft.
 - [2026-05-05_f4_hero_npc_prefab_animator.md](2026-05-05_f4_hero_npc_prefab_animator.md) — F4 Hero/NPC prefab animator setup.
 - A3 buildings: no root devlog file exists as of v0.1; see CHANGELOG entry for commit `a547e96`.
@@ -156,3 +158,4 @@ Current root-level Markdown coverage: 48 files under `docs/devlog/`, including t
 | v0.5 | 2026-05-06 | URP RenderObjectsPass migration devlog を追加し、root-level Markdown coverage を 46 件へ更新 |
 | v0.6 | 2026-05-06 | Niro full-redraw scope devlog を追加し、root-level Markdown coverage を 47 件へ更新 |
 | v0.7 | 2026-05-06 | Brush tutorial hint devlog を追加し、root-level Markdown coverage を 48 件へ更新 |
+| v0.8 | 2026-05-06 | Hero v2 import devlog を追加し、root-level Markdown coverage を 49 件へ更新 |

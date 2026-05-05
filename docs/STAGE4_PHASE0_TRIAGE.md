@@ -43,7 +43,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 | 1 | URP `DrawObjectsPass` / RenderGraph warning cleanup | Resolved in this task | Codex | Replaced internal `DrawObjectsPass` with public `RenderObjectsPass`; added PlayMode warning-count assertion. | EditMode `32/32`, PlayMode `29/29`, Windows build success, 30 second player warning count `0`. |
 | 2 | Brush UX polish | Initial runtime hint implemented | Codex + user review | Added a lightweight runtime overlay for create / release / close hints without scene YAML changes. Later UI review can replace it with a localized icon treatment. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
 | 3 | Test-count reconciliation | Open verification hygiene | Codex | Identify why Unity Test Runner reports EditMode `32/32` while source marker scan finds 31 markers, or keep a durable explanation in verification docs. | Future verification docs can state one expected count without ambiguity, or clearly preserve the source/runner distinction. |
-| 4 | Niro v2 full redraw + Resident review | Open art production prep | User decision + Codex asset work | Treat Niro / Hero as a full redraw for Stage 4 baseline; review Resident_A / Resident_B for age, continuity, darkness, and style fit before deciding whether they also need v2 sprites. | Niro v2 is imported, visible in prefab preview, and documented in asset ledger; Resident_A / Resident_B keep or redraw decisions are recorded. |
+| 4 | Character v2 redraw + Resident review | Verified in this task | User decision + Codex asset work | Niro / Hero, Resident_A, and Resident_B v2 directions were user-approved and imported into runtime sprite assets. Resident_B uses the long-hair dark 3/4 seated direction for current/future-side mood. | v2 rows are documented in asset ledger; Hero / Resident_A / Resident_B prefabs and clips reference v2; targeted tests, full EditMode/PlayMode, and Windows build pass. |
 | 5 | TMP font / palette readability review | Open visual review | User decision + Codex docs/assets | Compare JP / EN dialogue panels and UI screenshots against current fonts and palette v0. | Keep / revise decision recorded; any replacement has license and atlas notes. |
 | 6 | Dialogue v1 polish | Open content polish | Codex draft + user review | Polish Niro / Resident_A / Resident_B text without internal planning vocabulary; keep JP/EN key parity. | StringTable and DialogueAsset remain synchronized; dialogue tests pass. |
 | 7 | Audio polish | Open audio review | User listening + Codex asset/docs | Review BGM loop, mix balance, time-window modulation, SFX replacement candidates, and ambience additions. | Keep / replace decisions are recorded per category; audio wiring tests remain green. |
@@ -63,7 +63,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 ## 5. Recommended Dispatch Order
 
 1. Test-count reconciliation if it blocks verification communication.
-2. Character art batch: Niro v2 full redraw first, with Resident_A / Resident_B review decisions kept separate from the Hero redraw.
+2. Character art batch: handle any later scene-specific Resident_B diagonal orientation as a separate focused polish task if the runtime scene read needs it.
 3. TMP / palette readability review.
 4. Dialogue and audio polish batches.
 5. Verification hardening and Steam EA prep.
