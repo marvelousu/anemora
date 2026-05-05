@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Anemora_Strings Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Anemora_Strings
+  m_TableCollectionNameGuidString: 7471e391c970ac446afd44b983a87e3c
+  m_Entries:
+  - m_Id: 1349509120
+    m_Key: dialogue.placeholder.resident_a.greet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1534058496
+    m_Key: dialogue.placeholder.resident_b.idle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1534058497
+    m_Key: ui.menu.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1534058498
+    m_Key: ui.menu.continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252800
+    m_Key: ui.menu.options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252801
+    m_Key: ui.menu.quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252802
+    m_Key: system.autosave_indicator
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8919993802277781530
+  references:
+    version: 2
+    RefIds:
+    - rid: 8919993802277781530
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1777939360887

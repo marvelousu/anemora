@@ -3,7 +3,8 @@
     "rootNamespace": "Anemora.Game",
     "references": [
         "Anemora.Data",
-        "Unity.Localization"
+        "Unity.Localization",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

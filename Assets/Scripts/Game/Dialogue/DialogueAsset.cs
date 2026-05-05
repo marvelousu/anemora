@@ -69,8 +69,23 @@ namespace Anemora.Game.Dialogue
 
             try
             {
-                localizedString.WaitForCompletion = true;
-                var resolved = localizedString.GetLocalizedString();
+                var localeOperation = LocalizationSettings.SelectedLocaleAsync;
+                if (!localeOperation.IsDone)
+                {
+                    localeOperation.WaitForCompletion();
+                }
+
+                var locale = localizedString.LocaleOverride != null
+                    ? localizedString.LocaleOverride
+                    : localeOperation.Result;
+                var tableEntry = LocalizationSettings.StringDatabase.GetTableEntry(
+                    localizedString.TableReference,
+                    localizedString.TableEntryReference,
+                    locale,
+                    localizedString.FallbackState == FallbackBehavior.DontUseFallback
+                        ? FallbackBehavior.DontUseFallback
+                        : FallbackBehavior.UseFallback);
+                var resolved = tableEntry.Entry?.GetLocalizedString();
                 return string.IsNullOrEmpty(resolved) ? fallback ?? string.Empty : resolved;
             }
             catch (Exception)

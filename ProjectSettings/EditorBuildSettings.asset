@@ -11,5 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Anemora_Main.unity
     guid: 70778e8a6968c8c43b9c2cd3c92575ae
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: dd424ca34ab7d494195b4488bad2275e, type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: b7208bb935b169249b40c327c8d880f1, type: 2}
   m_UseUCBPForAssetBundles: 0
