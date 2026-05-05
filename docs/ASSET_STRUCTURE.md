@@ -1,6 +1,6 @@
 # Anemora Asset Structure
 
-> Status: v0.1 draft (2026-05-05). This file records the directory layout observed in the working tree at Stage 3 Day 1.
+> Status: v0.2 draft (2026-05-05). This file records the directory layout observed in the working tree at Stage 3 Day 1 after Niro lore, audio, localization, and performance harness updates.
 
 ## 1. 概要
 
@@ -12,7 +12,7 @@ ADR-0009 `docs/adr/0009-asset-pipeline.md` は asset pipeline workflow を扱い
 
 ## 2. リポジトリ root 構成
 
-Scan basis: repo root `C:\Users\maro6\Documents\Unity\Anemora`, 2026-05-05. `Library/`, `Logs/`, `Temp/`, `.git/` は scan 表示から除外しました。
+Scan basis: clean temporary worktree based on `origin/main`, 2026-05-05. Canonical project root remains `C:\Users\maro6\Documents\Unity\Anemora`; `Library/`, `Logs/`, `Temp/`, `.git/` は scan 表示から除外しました。
 
 | Path | 用途 | 状態 |
 |---|---|---|
@@ -74,27 +74,44 @@ Observed animation clips: `Hero_Idle.anim`, `Hero_Walk.anim`, `Resident_A_Idle.a
 
 ### 3.3 Audio
 
-`Assets/Audio/` exists in the current working tree and is untracked at scan time. Treat it as the current A4 audio layout until that session's commit lands.
+`Assets/Audio/` is now tracked as the A4 Zone1 audio layout. The canonical runtime SFX set is under `Assets/Audio/SFX/Zone1/**`; flat category directories remain as compatibility copies.
 
 | Path / file | 用途 | 状態 |
 |---|---|---|
-| `Assets/Audio/Music/` | BGM root | untracked |
-| `Assets/Audio/Music/Zone1_Ambient.ogg` | Zone1 ambient BGM | untracked |
-| `Assets/Audio/SFX/` | SFX root | untracked |
-| `Assets/Audio/SFX/env/` | environment SFX category | untracked |
-| `Assets/Audio/SFX/footstep/` | footstep SFX category | untracked |
-| `Assets/Audio/SFX/npc/` | NPC SFX category | untracked |
-| `Assets/Audio/SFX/timeframe/` | Time Frame Portal SFX category | untracked |
-| `Assets/Audio/SFX/ui/` | UI SFX category | untracked |
-| `Assets/Audio/SFX/ui/sfx_ui_button_click_01.ogg` | UI button click SFX | untracked |
+| `Assets/Audio/Music/` | BGM root | tracked |
+| `Assets/Audio/Music/Zone1_Ambient.ogg` | Zone1 ambient BGM | tracked |
+| `Assets/Audio/SFX/Zone1/` | canonical Zone1 SFX root | tracked |
+| `Assets/Audio/SFX/Zone1/environment/` | environment SFX: birds, water, dry leaves, silence pad, wind loop, wood creak | tracked |
+| `Assets/Audio/SFX/Zone1/footsteps/` | footstep SFX: stone / wood / grass / sand, walk / run / land | tracked |
+| `Assets/Audio/SFX/Zone1/time_window/` | Time Frame Portal SFX: wheel open/close, symbol hover/select, portal open/flip | tracked |
+| `Assets/Audio/SFX/Zone1/npc/` | NPC SFX: greeting, interaction ack, departure | tracked |
+| `Assets/Audio/SFX/Zone1/ui/` | UI SFX: button click, menu open, menu close | tracked |
+| `Assets/Audio/SFX/env/` | compatibility copy of environment SFX | tracked |
+| `Assets/Audio/SFX/footstep/` | compatibility copy of footstep SFX | tracked |
+| `Assets/Audio/SFX/timeframe/` | compatibility copy of time-window SFX | tracked |
+| `Assets/Audio/SFX/npc/` | compatibility copy of NPC SFX | tracked |
+| `Assets/Audio/SFX/ui/` | compatibility copy of UI SFX | tracked |
 
-No AudioMixer asset directory was observed at scan time.
+Observed audio files: 61 non-meta `.ogg` files: 1 music file, 30 canonical Zone1 SFX files, and 30 compatibility-copy SFX files. No `Assets/Audio/Mixers/` or AudioMixer asset was observed in the clean scan.
 
 ### 3.4 Localization
 
-Project-level Locale / StringTable assets are not present as standalone Unity assets at scan time. A1 localization completion should update this section after those assets are imported.
+Project-level Unity Localization assets are now present under `Assets/Localization/`.
 
-Existing localization-related assets are currently font/TMP assets under UI:
+| Path / file | 用途 |
+|---|---|
+| `Assets/Localization/LocalizationSettings.asset` | Unity Localization settings asset |
+| `Assets/Localization/Locales/Locale_ja-JP.asset` | Japanese locale |
+| `Assets/Localization/Locales/Locale_en.asset` | English locale |
+| `Assets/Localization/StringTables/` | StringTableCollection and locale tables |
+| `Assets/Localization/StringTables/Anemora_Strings.asset` | `Anemora_Strings` StringTableCollection |
+| `Assets/Localization/StringTables/Anemora_Strings Shared Data.asset` | shared table keys |
+| `Assets/Localization/StringTables/Anemora_Strings_ja-JP.asset` | Japanese string table |
+| `Assets/Localization/StringTables/Anemora_Strings_en.asset` | English string table |
+
+Observed `Anemora_Strings` keys include menu keys, `dialogue.speaker.niro`, `dialogue.speaker.resident_a`, `dialogue.speaker.resident_b`, Niro intro / past-portal lines, and Resident_A / Resident_B encounter lines.
+
+Font / TMP localization assets remain under UI:
 
 - `Assets/UI/Localization/Fonts/`
 - `Assets/TextMesh Pro/Resources/TMP Settings.asset`
@@ -125,25 +142,37 @@ Observed portal prefab file: `Portal_Frame.prefab`.
 | Path / file | 用途 |
 |---|---|
 | `Assets/ScriptableObjects/ActionRecords/ActionRecordCatalog.asset` | E5 / G4 ActionRecord catalog |
-| `Assets/ScriptableObjects/Dialogues/Resident_A_Greeting.asset` | G3 partial dialogue asset |
-| `Assets/ScriptableObjects/Dialogues/Resident_B_Idle.asset` | G3 partial dialogue asset |
+| `Assets/ScriptableObjects/Dialogues/Niro_Intro.asset` | Niro intro monologue DialogueAsset |
+| `Assets/ScriptableObjects/Dialogues/Niro_PastPortal.asset` | Niro past-portal monologue DialogueAsset |
+| `Assets/ScriptableObjects/Dialogues/Resident_A_Greeting.asset` | Resident_A encounter DialogueAsset |
+| `Assets/ScriptableObjects/Dialogues/Resident_B_Idle.asset` | Resident_B encounter DialogueAsset |
+
+All observed dialogue ScriptableObjects reference the `Anemora_Strings` table. `Resident_A_Greeting.asset` uses `dialogue.encounter.past_resident_a.*`; `Resident_B_Idle.asset` uses `dialogue.encounter.present_resident_b.*`; Niro assets use `dialogue.niro.*` keys.
 
 ### 3.8 Scripts
 
 | Path | 用途 |
 |---|---|
+| `Assets/Scripts/Audio/` | Zone1 runtime audio controller |
 | `Assets/Scripts/Data/` | `Anemora.Data` asmdef and POCO data types |
 | `Assets/Scripts/Save/` | `Anemora.Save` asmdef and save migration code |
 | `Assets/Scripts/Save/Migration/` | save migration interface |
 | `Assets/Scripts/Game/` | `Anemora.Game` asmdef |
 | `Assets/Scripts/Game/Dialogue/` | DialogueAsset ScriptableObject layer |
 | `Assets/Scripts/Dialogue/` | NPC interaction and dialogue display components |
+| `Assets/Scripts/PerformanceHarness/` | Stage 4 stress sample harness skeleton |
 | `Assets/Scripts/Player/` | prototype player controller and animator binder |
-| `Assets/Scripts/TimeManagement/` | portal, scene side, camera sync, ActionRecord runtime |
+| `Assets/Scripts/TimeManagement/` | portal, scene side, camera sync, ActionRecord runtime, Niro monologue hook |
 | `Assets/Scripts/TimeManagement/Portal/` | URP portal stencil renderer feature |
 | `Assets/Scripts/TimeManagement/Reflectors/` | reflector interfaces and book reflection components |
 
-Observed non-meta C# files under `Assets/Scripts/`: 24.
+Key observed files added since v0.1:
+
+- `Assets/Scripts/Audio/Zone1AudioController.cs`
+- `Assets/Scripts/TimeManagement/NiroMonologueController.cs`
+- `Assets/Scripts/PerformanceHarness/StressSampleRunner.cs`
+
+Observed non-meta C# files under `Assets/Scripts/`: 27.
 
 ### 3.9 Tests
 
@@ -155,7 +184,13 @@ Observed non-meta C# files under `Assets/Scripts/`: 24.
 Observed test files at scan time:
 
 - EditMode: 7 non-meta `.cs` files.
-- PlayMode: 10 non-meta `.cs` files.
+- PlayMode: 15 non-meta `.cs` files.
+
+PlayMode files added / confirmed since v0.1 include:
+
+- `Assets/Tests/PlayMode/Zone1AudioWiringTests.cs`
+- `Assets/Tests/PlayMode/SaveLoadLocaleIntegrationTests.cs`
+- `Assets/Tests/PlayMode/StressSampleRunnerSmokeTests.cs`
 
 ### 3.10 UI
 
@@ -168,7 +203,7 @@ Observed test files at scan time:
 | `Assets/UI/Scripts/SymbolWheelController.cs` | symbol wheel UI controller |
 | `Assets/UI/Sprites/` | symbol wheel icon sprites |
 
-Observed font / atlas files: `Anemora_JP.asset`, `Anemora_JP_Atlas.asset`, `Anemora_EN.asset`, `Anemora_EN_Atlas.asset`, `misaki_gothic.ttf`, `PressStart2P-Regular.ttf`, `PressStart2P_LICENSE.txt`.
+Observed font / atlas files: `Anemora_JP.asset`, `Anemora_JP_Atlas.asset`, `Anemora_EN.asset`, `Anemora_EN_Atlas.asset`, `misaki_gothic.ttf`, `PressStart2P-Regular.ttf`, `PressStart2P_LICENSE.txt`. String tables are not under `Assets/UI/Localization/`; they live under `Assets/Localization/StringTables/`.
 
 Observed UI sprite files: `symbol_red.png`, `symbol_blue_disabled.png`, `symbol_white_disabled.png`.
 
@@ -192,6 +227,9 @@ Some `Assets/Settings/` files are dirty in the current working tree. This doc re
 | `Assets/Editor/AnemoraE1ParallelSetup.cs` | E1 setup automation |
 | `Assets/Editor/AnemoraTmpJapaneseAtlasBuilder.cs` | TMP JP atlas builder helper |
 | `Assets/Editor/AnemoraZone1BuildingAssetSetup.cs` | Zone1 building asset setup helper |
+| `Assets/Editor/Zone1AudioSceneSetup.cs` | Zone1 audio scene wiring helper |
+
+Observed non-meta C# files under `Assets/Editor/`: 5.
 
 ## 4. docs/ 階層
 
@@ -250,10 +288,12 @@ Naming conventions are a local reference extracted from ADR-0009 section 4 and c
 
 ## 8. セッション間 path 認識の注意
 
-- Character sprite の canonical root は `Assets/Art/Sprites/` です。
+- Character sprite の canonical root は `Assets/Art/Sprites/` です。`Assets/Art/Characters/` は v0.2 scan 時点で存在しません。
 - AnimatorController / `.anim` files の canonical root は `Assets/Animators/` です。
-- 現状の SFX category layout は `Assets/Audio/SFX/` 直下の category directory です。ただし `Assets/Audio/` は scan 時点で untracked のため、A4 commit 後に再確認してください。
-- Project-level Locale / StringTable assets は scan 時点で未配置です。A1 完了後に本 doc を更新してください。
+- Zone1 SFX の primary layout は `Assets/Audio/SFX/Zone1/` 配下の `environment/`, `footsteps/`, `time_window/`, `npc/`, `ui/` です。`Assets/Audio/SFX/env/` などの flat category directories は compatibility copy として残っています。
+- Project-level Locale / StringTable assets は `Assets/Localization/` 配下です。TMP font assets は `Assets/UI/Localization/Fonts/` 配下です。
+- Niro monologue runtime hook の実在パスは `Assets/Scripts/TimeManagement/NiroMonologueController.cs` です。Dialogue UI / interactable scaffolding は `Assets/Scripts/Dialogue/` 配下です。
+- Performance stress harness skeleton は `Assets/Scripts/PerformanceHarness/StressSampleRunner.cs` です。Stage 4 perf v1.0 で scene wiring / deterministic execution を追加予定です。
 - 本 doc は source of truth として扱いますが、Unity import や他 session push により実態と乖離することがあります。作業前に `rg --files` または directory scan で対象 path を再確認してください。
 - 大幅な構造変更があれば v0.x として本 doc を改訂してください。
 
@@ -261,4 +301,5 @@ Naming conventions are a local reference extracted from ADR-0009 section 4 and c
 
 | Version | Date | Notes |
 |---|---|---|
+| v0.2 | 2026-05-05 | Niro lore DialogueAsset / localization, Zone1 audio, audio scene setup, PlayMode additions, and performance harness skeleton を実 scan ベースで反映 |
 | v0.1 | 2026-05-05 | 初版起草。Stage 3 Day 1 時点の root / Assets / docs / tools / intermediate layout を実 scan ベースで整理 |
