@@ -15,14 +15,6 @@ MonoBehaviour:
   m_TableCollectionName: Anemora_Strings
   m_TableCollectionNameGuidString: 7471e391c970ac446afd44b983a87e3c
   m_Entries:
-  - m_Id: 1349509120
-    m_Key: dialogue.placeholder.resident_a.greet
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1534058496
-    m_Key: dialogue.placeholder.resident_b.idle
-    m_Metadata:
-      m_Items: []
   - m_Id: 1534058497
     m_Key: ui.menu.start
     m_Metadata:
@@ -41,6 +33,70 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1538252802
     m_Key: system.autosave_indicator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252803
+    m_Key: dialogue.speaker.niro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252804
+    m_Key: dialogue.speaker.resident_a
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252805
+    m_Key: dialogue.speaker.resident_b
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252806
+    m_Key: dialogue.niro.intro.line_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252807
+    m_Key: dialogue.niro.intro.line_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252808
+    m_Key: dialogue.niro.intro.line_3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252809
+    m_Key: dialogue.niro.intro.line_4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252810
+    m_Key: dialogue.niro.past_portal.line_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252811
+    m_Key: dialogue.niro.past_portal.line_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252812
+    m_Key: dialogue.encounter.past_resident_a.line_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252813
+    m_Key: dialogue.encounter.past_resident_a.line_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252814
+    m_Key: dialogue.encounter.past_resident_a.line_3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252815
+    m_Key: dialogue.encounter.present_resident_b.line_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252816
+    m_Key: dialogue.encounter.present_resident_b.line_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252817
+    m_Key: dialogue.encounter.present_resident_b.line_3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252818
+    m_Key: dialogue.encounter.present_resident_b.line_4
     m_Metadata:
       m_Items: []
   m_Metadata:

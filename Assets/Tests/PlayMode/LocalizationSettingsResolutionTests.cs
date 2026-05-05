@@ -12,7 +12,7 @@ namespace Anemora.Tests.PlayMode
         const string TableName = "Anemora_Strings";
 
         [UnityTest]
-        public IEnumerator PlaceholderDialogueKey_ResolvesForJapaneseLocale()
+        public IEnumerator FinalDialogueKey_ResolvesForJapaneseLocale()
         {
             yield return LocalizationSettings.InitializationOperation;
 
@@ -24,16 +24,16 @@ namespace Anemora.Tests.PlayMode
 
             var operation = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(
                 TableName,
-                "dialogue.placeholder.resident_a.greet",
+                "dialogue.encounter.past_resident_a.line_1",
                 ja,
                 FallbackBehavior.UseFallback);
             yield return operation;
 
-            Assert.That(operation.Result, Is.EqualTo("[TBD: Resident_A greet line]"));
+            Assert.That(operation.Result, Is.EqualTo("あれ、見えてる？　向こうの大きな建物。"));
         }
 
         [UnityTest]
-        public IEnumerator PlaceholderDialogueKey_ResolvesForEnglishLocale()
+        public IEnumerator FinalDialogueKey_ResolvesForEnglishLocale()
         {
             yield return LocalizationSettings.InitializationOperation;
 
@@ -45,12 +45,12 @@ namespace Anemora.Tests.PlayMode
 
             var operation = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(
                 TableName,
-                "dialogue.placeholder.resident_b.idle",
+                "dialogue.encounter.present_resident_b.line_1",
                 en,
                 FallbackBehavior.UseFallback);
             yield return operation;
 
-            Assert.That(operation.Result, Is.EqualTo("[TBD: Resident_B idle line]"));
+            Assert.That(operation.Result, Is.EqualTo("Here, only the order of collapse has stayed intact."));
         }
 
         [UnityTest]
@@ -61,7 +61,7 @@ namespace Anemora.Tests.PlayMode
             var ja = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier("ja-JP"));
             Assert.That(ja, Is.Not.Null);
 
-            var missingKey = "dialogue.placeholder.missing_key";
+            var missingKey = "dialogue.encounter.missing_key";
             var turn = new DialogueTurnSO
             {
                 speakerId = "resident_a",

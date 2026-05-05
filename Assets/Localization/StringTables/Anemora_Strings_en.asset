@@ -18,14 +18,6 @@ MonoBehaviour:
   m_Metadata:
     m_Items: []
   m_TableData:
-  - m_Id: 1349509120
-    m_Localized: '[TBD: Resident_A greet line]'
-    m_Metadata:
-      m_Items: []
-  - m_Id: 1534058496
-    m_Localized: '[TBD: Resident_B idle line]'
-    m_Metadata:
-      m_Items: []
   - m_Id: 1534058497
     m_Localized: Start
     m_Metadata:
@@ -44,6 +36,70 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1538252802
     m_Localized: Autosaving...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252803
+    m_Localized: Niro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252804
+    m_Localized: Girl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252805
+    m_Localized: Recorder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252806
+    m_Localized: In Antela, dust moves before sound does.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252807
+    m_Localized: These streets were left by someone, but each step makes them feel farther away.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252808
+    m_Localized: If something can be returned, I want to return it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252809
+    m_Localized: If an ending can be held back, I want to believe there is still time.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252810
+    m_Localized: The town is breathing.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252811
+    m_Localized: A warmth I should not know stays in my hand.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252812
+    m_Localized: Can you see it? The big building over there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252813
+    m_Localized: Its windows were lit yesterday. Today they are black.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252814
+    m_Localized: If you go closer, keep your steps quiet. It still feels like that place is listening.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252815
+    m_Localized: Here, only the order of collapse has stayed intact.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252816
+    m_Localized: Pillars, shelves, floorboards. The more broken a thing is, the clearer its date becomes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252817
+    m_Localized: I do not record who comes here. Only what has become less.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252818
+    m_Localized: If you are passing through, keep your eyes on the ground.
     m_Metadata:
       m_Items: []
   references:

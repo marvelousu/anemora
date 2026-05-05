@@ -16,24 +16,35 @@ MonoBehaviour:
   variants:
   - variantId: greeting
     turns:
-    - speakerId: dialogue.placeholder.resident_a.name
+    - speakerId: dialogue.speaker.resident_a
       text:
         m_TableReference:
           m_TableCollectionName: Anemora_Strings
         m_TableEntryReference:
           m_KeyId: 0
-          m_Key: dialogue.placeholder.resident_a.greet
+          m_Key: dialogue.encounter.past_resident_a.line_1
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []
       choices: []
-    - speakerId: dialogue.placeholder.resident_a.name
+    - speakerId: dialogue.speaker.resident_a
       text:
         m_TableReference:
           m_TableCollectionName: Anemora_Strings
         m_TableEntryReference:
           m_KeyId: 0
-          m_Key: dialogue.placeholder.resident_a.greet_2
+          m_Key: dialogue.encounter.past_resident_a.line_2
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      choices: []
+    - speakerId: dialogue.speaker.resident_a
+      text:
+        m_TableReference:
+          m_TableCollectionName: Anemora_Strings
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.encounter.past_resident_a.line_3
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []

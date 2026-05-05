@@ -967,7 +967,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 978155310}
+    m_TransformParent: {fileID: 1096053360}
     m_Modifications:
     - target: {fileID: 785934780649464286, guid: 847ef7f35154bea4eb549118ee1615f0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1015,7 +1015,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3897786856074178251, guid: 847ef7f35154bea4eb549118ee1615f0, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1696,7 +1696,6 @@ Transform:
   - {fileID: 680385208}
   - {fileID: 96278505}
   - {fileID: 486574511}
-  - {fileID: 511399322}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1006271867
@@ -1907,6 +1906,7 @@ Transform:
   - {fileID: 1780809913}
   - {fileID: 750465019}
   - {fileID: 300400101}
+  - {fileID: 511399322}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1120892078
@@ -1926,6 +1926,7 @@ GameObject:
   - component: {fileID: 1120892079}
   - component: {fileID: 1120892086}
   - component: {fileID: 1120892087}
+  - component: {fileID: 1120892088}
   m_Layer: 0
   m_Name: TimeFramePortalSystem
   m_TagString: Untagged
@@ -2134,6 +2135,24 @@ MonoBehaviour:
   bookPrefab: {fileID: 8358023521085076377, guid: dbd3e08d3d184420b8acba24d6605d4b, type: 3}
   bedSpawnPoint: {fileID: 300400103}
   spawnParent: {fileID: 300400101}
+--- !u!114 &1120892088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1120892078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 294ce006377245d58eb69fab9ca72230, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.TimeManagement.NiroMonologueController
+  portalController: {fileID: 1120892079}
+  dialogueDisplay: {fileID: 0}
+  introDialogue: {fileID: 11400000, guid: 6e9fa9a24058413db62075bf328fbf6c, type: 2}
+  pastPortalDialogue: {fileID: 11400000, guid: f93487058e794b2faea1047baa40df10, type: 2}
+  showIntroOnStart: 1
+  showPastPortalOnce: 1
 --- !u!1 &1155701522
 GameObject:
   m_ObjectHideFlags: 0

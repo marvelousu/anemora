@@ -10,52 +10,52 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 77c8b3c51f78496eb0a23d15dd8d9ea8, type: 3}
-  m_Name: Resident_B_Idle
+  m_Name: Niro_Intro
   m_EditorClassIdentifier: Anemora.Game::Anemora.Game.Dialogue.DialogueAsset
-  npcId: resident_b
+  npcId: niro
   variants:
-  - variantId: idle
+  - variantId: intro
     turns:
-    - speakerId: dialogue.speaker.resident_b
+    - speakerId: dialogue.speaker.niro
       text:
         m_TableReference:
           m_TableCollectionName: Anemora_Strings
         m_TableEntryReference:
           m_KeyId: 0
-          m_Key: dialogue.encounter.present_resident_b.line_1
+          m_Key: dialogue.niro.intro.line_1
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []
       choices: []
-    - speakerId: dialogue.speaker.resident_b
+    - speakerId: dialogue.speaker.niro
       text:
         m_TableReference:
           m_TableCollectionName: Anemora_Strings
         m_TableEntryReference:
           m_KeyId: 0
-          m_Key: dialogue.encounter.present_resident_b.line_2
+          m_Key: dialogue.niro.intro.line_2
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []
       choices: []
-    - speakerId: dialogue.speaker.resident_b
+    - speakerId: dialogue.speaker.niro
       text:
         m_TableReference:
           m_TableCollectionName: Anemora_Strings
         m_TableEntryReference:
           m_KeyId: 0
-          m_Key: dialogue.encounter.present_resident_b.line_3
+          m_Key: dialogue.niro.intro.line_3
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []
       choices: []
-    - speakerId: dialogue.speaker.resident_b
+    - speakerId: dialogue.speaker.niro
       text:
         m_TableReference:
           m_TableCollectionName: Anemora_Strings
         m_TableEntryReference:
           m_KeyId: 0
-          m_Key: dialogue.encounter.present_resident_b.line_4
+          m_Key: dialogue.niro.intro.line_4
         m_FallbackState: 0
         m_WaitForCompletion: 0
         m_LocalVariables: []
