@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Anemora.TimeManagement.Reflectors
 {
-    public sealed class BookReflector : MonoBehaviour, IReflector
+    public sealed class BookReflector : MonoBehaviour, IReflector, IReflectedStateRestorer
     {
         private const string DefaultSpawnBookSideEffect = "SpawnBookOnBed";
 
@@ -21,12 +21,40 @@ namespace Anemora.TimeManagement.Reflectors
 
         public bool TryReflect(ActionRecordEntry entry, ActionRecordCatalog catalogOverride)
         {
-            if (entry == null || entry.reflected || string.IsNullOrEmpty(entry.actionId))
+            if (entry == null || entry.reflected || !CanSpawnBook(entry, catalogOverride))
             {
                 return false;
             }
 
-            if (reflectedActionIds.Contains(entry.actionId))
+            SpawnBook(entry);
+            return true;
+        }
+
+        public int RestoreReflected(IEnumerable<ActionRecordEntry> entries, ActionRecordCatalog catalogOverride)
+        {
+            if (entries == null)
+            {
+                return 0;
+            }
+
+            var restoredCount = 0;
+            foreach (var entry in entries)
+            {
+                if (entry == null || !entry.reflected || !CanSpawnBook(entry, catalogOverride))
+                {
+                    continue;
+                }
+
+                SpawnBook(entry);
+                restoredCount++;
+            }
+
+            return restoredCount;
+        }
+
+        private bool CanSpawnBook(ActionRecordEntry entry, ActionRecordCatalog catalogOverride)
+        {
+            if (entry == null || string.IsNullOrEmpty(entry.actionId) || reflectedActionIds.Contains(entry.actionId))
             {
                 return false;
             }
@@ -44,6 +72,11 @@ namespace Anemora.TimeManagement.Reflectors
                 return false;
             }
 
+            return true;
+        }
+
+        private void SpawnBook(ActionRecordEntry entry)
+        {
             var spawnTransform = bedSpawnPoint != null ? bedSpawnPoint : transform;
             var parent = spawnParent != null ? spawnParent : null;
             LastSpawnedBook = Instantiate(
@@ -54,7 +87,6 @@ namespace Anemora.TimeManagement.Reflectors
             LastSpawnedBook.name = $"{bookPrefab.name}_{entry.actionId}_Reflected";
             reflectedActionIds.Add(entry.actionId);
             ReflectionCount++;
-            return true;
         }
 
         private bool MatchesBookSideEffect(

@@ -71,6 +71,7 @@ namespace Anemora.TimeManagement
         public void LoadFromSaveData(ActionRecordStoreSaveData saveData)
         {
             store.LoadFromSaveData(saveData);
+            RestoreReflectedState();
         }
 
         public ActionRecordStoreSaveData ToSaveData()
@@ -146,6 +147,23 @@ namespace Anemora.TimeManagement
             return false;
         }
 
+        private int RestoreReflectedState()
+        {
+            var reflectedEntries = store.GetReflected().ToList();
+            if (reflectedEntries.Count == 0)
+            {
+                return 0;
+            }
+
+            var restoredCount = 0;
+            foreach (var restorer in ResolveReflectedStateRestorers())
+            {
+                restoredCount += restorer.RestoreReflected(reflectedEntries, catalog);
+            }
+
+            return restoredCount;
+        }
+
         private IEnumerable<IReflector> ResolveReflectors()
         {
             if (reflectorBehaviours == null || reflectorBehaviours.Length == 0)
@@ -160,6 +178,24 @@ namespace Anemora.TimeManagement
                 if (behaviour is IReflector reflector)
                 {
                     yield return reflector;
+                }
+            }
+        }
+
+        private IEnumerable<IReflectedStateRestorer> ResolveReflectedStateRestorers()
+        {
+            if (reflectorBehaviours == null || reflectorBehaviours.Length == 0)
+            {
+                reflectorBehaviours = GetComponentsInChildren<MonoBehaviour>(true)
+                    .Where(behaviour => behaviour is IReflector || behaviour is IReflectedStateRestorer)
+                    .ToArray();
+            }
+
+            foreach (var behaviour in reflectorBehaviours)
+            {
+                if (behaviour is IReflectedStateRestorer restorer)
+                {
+                    yield return restorer;
                 }
             }
         }
