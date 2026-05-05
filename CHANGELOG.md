@@ -19,7 +19,7 @@ Milestone groups covered in this section:
 | Lore / public materials | Niro / Antela reflection, public pitch, trailer script, README polish |
 | Verification / QA | Test-count reconciliation, save/load coverage, stress harness, URP warning investigation |
 | Documentation / onboarding | API docs, scene tour, asset structure, notices, contributing, devlog index |
-| Stage 4 entry | Stage 3 retrospective, Stage 4 roadmap, code license options |
+| Stage 4 entry | Stage 3 retrospective, Stage 4 roadmap, Phase 0 triage, code license options |
 
 ### Added
 
@@ -87,6 +87,7 @@ Milestone groups covered in this section:
 | `34585e3` | Added `docs/STAGE3_RETROSPECTIVE.md` v0.1 preliminary draft. |
 | `a49ee52` | Added `docs/STAGE4_ROADMAP.md` v0.1 preliminary draft. |
 | This task | Promoted Stage 3 closeout docs: `docs/G5_ACCEPTANCE_MATRIX.md`, `docs/VS_SCOPE.md`, `docs/STAGE3_RETROSPECTIVE.md`, `docs/STAGE4_ROADMAP.md`, `docs/G5_PREFLIGHT.md`, `docs/VERIFICATION_SUITE.md`, and `docs/devlog/2026-05-06_stage3_closeout.md`. |
+| This task | Added `docs/STAGE4_PHASE0_TRIAGE.md` and `docs/devlog/2026-05-06_stage4_phase0_triage.md` to classify Stage 4 immediate fixes, backlog items, and no-action items. |
 
 ### Removed
 
@@ -148,7 +149,7 @@ Stage 3 Day 1 milestone navigation draft. This is not a public release tag yet; 
 
 ## Roadmap
 
-- Stage 3 Vertical Slice completion: user manual G5 sign-off remains after automated G5, audio rebuild, and performance baseline work.
+- Stage 3 Vertical Slice: complete as of 2026-05-06 after G5 manual confirmation and latest demo brush repair.
 - Stage 4: G5 result reflection, quality reinforcement, zone expansion planning, localization/content polish, art/font revision as needed, and Steam Early Access submission preparation.
 - Stage 5+: Steam Early Access feedback / full release planning.
 

@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v0.3 Stage 3 closeout index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v0.4 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,13 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 44 files under `docs/devlog/`, including this index and the Stage 3 closeout record.
+Current root-level Markdown coverage: 45 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage record.
+
+### 2.0.1 Stage 4 Entry (2026-05-06)
+
+| 日付 | ファイル | topic | 関連 commit | 関連 milestone | CHANGELOG |
+|---|---|---|---|---|---|
+| 2026-05-06 | [2026-05-06_stage4_phase0_triage.md](2026-05-06_stage4_phase0_triage.md) | Stage 4 Phase 0 triage and backlog extraction | This task | Stage 4 Phase 0 | [Unreleased](../../CHANGELOG.md#unreleased) Stage 4 entry |
 
 ### 2.0 Stage 3 Closeout (2026-05-06)
 
@@ -108,6 +114,7 @@ Current root-level Markdown coverage: 44 files under `docs/devlog/`, including t
 
 ### G5 / Verification / Performance
 
+- [2026-05-06_stage4_phase0_triage.md](2026-05-06_stage4_phase0_triage.md) — Phase 0 immediate-fix / backlog / no-action extraction for Stage 4 dispatch.
 - [2026-05-06_stage3_closeout.md](2026-05-06_stage3_closeout.md) — Stage 3 closeout, latest demo brush repair confirmation, final test/build summary, and Stage 4 carry-forward.
 - [2026-05-05_test_count_reconcile.md](2026-05-05_test_count_reconcile.md) — EditMode 31 vs 32 baseline reconcile.
 - [2026-05-05_performance_baseline.md](2026-05-05_performance_baseline.md) — G5 performance baseline.
@@ -141,3 +148,4 @@ Current root-level Markdown coverage: 44 files under `docs/devlog/`, including t
 | v0.1 | 2026-05-05 | 初版起草。既存 root devlog 18 件、この index、screenshots 6 件を index 化 |
 | v0.2 | 2026-05-05 | 最新 devlog 8 件を追加。root-level Markdown coverage を 28 件へ更新し、G5 / verification / audio ledger / documentation QA の cross-index と CHANGELOG cross-ref を追加 |
 | v0.3 | 2026-05-06 | Stage 3 closeout devlog を追加し、root-level Markdown coverage を 44 件へ更新 |
+| v0.4 | 2026-05-06 | Stage 4 Phase 0 triage devlog を追加し、root-level Markdown coverage を 45 件へ更新 |

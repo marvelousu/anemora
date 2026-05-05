@@ -38,7 +38,7 @@ Phase 0 absorbs final Stage 3 observations before larger Stage 4 production star
 
 | Workstream | 成果物 | 完了条件 | 推定工数 | Notes |
 |---|---|---|---|---|
-| G5 result triage | `docs/G5_ACCEPTANCE_MATRIX.md` final result notes + Stage 3 retrospective v1.0 inputs | User manual G5 items are classified as immediate fix, Stage 4 backlog, or no action | S | Stage 3 closeout result is now recorded; next task is issue/backlog extraction rather than more Stage 3 repair. |
+| G5 result triage | `docs/G5_ACCEPTANCE_MATRIX.md` final result notes + Stage 3 retrospective v1.0 inputs + `docs/STAGE4_PHASE0_TRIAGE.md` | User manual G5 items are classified as immediate fix, Stage 4 backlog, or no action | S | Stage 3 closeout result is now recorded; `STAGE4_PHASE0_TRIAGE.md` is the dispatch source for immediate Stage 4 work. |
 | F2 v2 redraw | Niro v2 sprite set with hat silhouette; Resident_A / Resident_B revised only where G5 or art review indicates need | New sprite draft is imported, visible in prefab preview, and documented in asset ledger | M-L | Stage 3 v1 sprites remain provisional until this pass decides whether to replace them. |
 | Lore content polish | G3 dialogue v0 -> v1 pass for Niro, Resident_A, Resident_B, and opening / short hint text | JP text is internally consistent; EN draft has review notes; StringTable key migration plan is recorded | M | Use current `docs/draft/g3_npc_dialogue.md`, `da6040f`, and `docs/PITCH_PUBLIC.md` as inputs. |
 | Audio polish | SFX placeholder replacement list + added ambience candidates + mix notes from G5 listening | Replacement or keep decisions are recorded per SFX category; BGM loop / balance notes are resolved or backlogged | M | Keep `Zone1_Ambient.ogg` as the baseline unless G5 listening finds a blocker. |
