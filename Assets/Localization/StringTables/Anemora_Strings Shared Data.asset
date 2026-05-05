@@ -63,6 +63,10 @@ MonoBehaviour:
     m_Key: dialogue.niro.intro.line_4
     m_Metadata:
       m_Items: []
+  - m_Id: 1538252819
+    m_Key: dialogue.niro.intro.line_5
+    m_Metadata:
+      m_Items: []
   - m_Id: 1538252810
     m_Key: dialogue.niro.past_portal.line_1
     m_Metadata:

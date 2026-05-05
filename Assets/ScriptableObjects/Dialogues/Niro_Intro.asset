@@ -60,6 +60,17 @@ MonoBehaviour:
         m_WaitForCompletion: 0
         m_LocalVariables: []
       choices: []
+    - speakerId: dialogue.speaker.niro
+      text:
+        m_TableReference:
+          m_TableCollectionName: Anemora_Strings
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.niro.intro.line_5
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      choices: []
     requiredFlags: []
     excludedFlags: []
   references:

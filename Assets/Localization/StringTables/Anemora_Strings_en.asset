@@ -47,7 +47,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1538252805
-    m_Localized: Recorder
+    m_Localized: Record Keeper
     m_Metadata:
       m_Items: []
   - m_Id: 1538252806
@@ -64,6 +64,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 1538252809
     m_Localized: If an ending can be held back, I want to believe there is still time.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1538252819
+    m_Localized: Each time I pass through here, something seems to fade a little.
     m_Metadata:
       m_Items: []
   - m_Id: 1538252810
@@ -99,7 +103,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1538252818
-    m_Localized: If you are passing through, keep your eyes on the ground.
+    m_Localized: If you pass through, watch what remains underfoot.
     m_Metadata:
       m_Items: []
   references:
