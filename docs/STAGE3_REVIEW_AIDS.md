@@ -1,30 +1,31 @@
 # Stage 3 Review Aids
 
-> Status: v0.1 draft (2026-05-05). This document is a review aid only. It does not choose, recommend, or predict the outcome of any TBD item.
+> Status: v0.2 resolved aid (2026-05-05). This document remains a review record only. It does not choose, recommend, or predict future art revisions.
 
 ## 1. 概要
 
 This document supports user visual review for high-impact or art-direction-sensitive TBD items tracked in [STAGE3_TBD_RESOLUTION.md](STAGE3_TBD_RESOLUTION.md). It is separate from the tracking sheet: `STAGE3_TBD_RESOLUTION.md` records status and final resolution, while this file lists review viewpoints, verified reference files, comparison targets, and where a decision should be reflected.
 
-Covered TBDs:
+Covered TBDs and Stage 3 /spec resolution results:
 
-| TBD ID | Review target | Source tracking row |
+| TBD ID | Review target | Resolution |
 |---|---|---|
-| ART-01 | F2 Hero / NPC v1 sprite review | `STAGE3_TBD_RESOLUTION.md` §2 |
-| ART-03 | Anemora palette v0 final adoption review | `STAGE3_TBD_RESOLUTION.md` §2 |
-| ART-04 | TMP Misaki Gothic JP atlas final adoption review | `STAGE3_TBD_RESOLUTION.md` §2 |
-| ART-05 | TMP Press Start 2P EN atlas final adoption review | `STAGE3_TBD_RESOLUTION.md` §2 |
+| ~~ART-01~~ | F2 Hero / NPC v1 sprite review | provisional 採用。Reflected by `c0cb631`; Stage 4 revision |
+| ~~ART-03~~ | Anemora palette v0 final adoption review | provisional 採用。Reflected by `c0cb631`; Stage 4 再評価 |
+| ~~ART-04~~ | TMP Misaki Gothic JP atlas final adoption review | provisional 採用。Reflected by `c0cb631`; Stage 4 再評価 |
+| ~~ART-05~~ | TMP Press Start 2P EN atlas final adoption review | provisional 採用。Reflected by `c0cb631`; Stage 4 再評価 |
 
-How to use:
+How to use after v0.2:
 
-1. Open the relevant section below.
-2. Open the listed reference files in Unity, Aseprite, an image viewer, or a text viewer as appropriate.
-3. Record the user decision as one of: final adoption, hold, minor revision, alternate candidate comparison, or full replacement.
-4. Reflect the decision in the files listed under each "判断後の反映先".
+1. Treat the v0.2 entries as the Stage 3 resolved baseline.
+2. If Stage 4 reopens a visual decision, open the relevant section below and compare against the listed reference files.
+3. Record any Stage 4 revision as a new TBD or revision task; do not overwrite the Stage 3 resolution history.
 
-Holding a TBD is a valid outcome. This file intentionally keeps parallel options open.
+Holding or reopening a future art question remains valid. This file records the Stage 3 result without ranking later alternatives.
 
 ## 2. F2 Hero / NPC Sprite Review
+
+> Resolution (2026-05-05, `c0cb631`): F2 Hero / NPC v1 sprite set is provisionally adopted for Stage 3. Niro is gender-neutral, 15-19, and keeps the Snufkin-like hat direction. Stage 4 revision remains planned.
 
 ### 2.1 観点
 
@@ -87,12 +88,14 @@ Related devlogs:
 
 ### 2.4 判断後の反映先
 
-- **Final adoption**: update `docs/STAGE3_TBD_RESOLUTION.md` row `ART-01` with resolved state, date, and commit hash. Confirm `docs/legal/asset_ledger.md` rows `hero_v1_f2_sprite_set`, `resident_a_v1_g3_sprite_set`, and `resident_b_v1_g3_sprite_set` as adopted.
+- **Resolved Stage 3 baseline**: `docs/STAGE3_TBD_RESOLUTION.md` row `ART-01` and `docs/legal/asset_ledger.md` rows `hero_v1_f2_sprite_set`, `resident_a_v1_g3_sprite_set`, and `resident_b_v1_g3_sprite_set` were updated by `c0cb631`.
 - **Minor revision**: keep F4 prefab references stable when possible; revise only the affected PNGs under `Assets/Art/Sprites/Hero/v1/` or `Assets/Art/Sprites/NPC/`.
 - **Alternate candidate comparison**: add new candidate assets and devlog notes in a separate task, then compare against the paths above.
 - **Full replacement**: decide whether an F3-style supplemental art task is needed, then update `ART-01` and the related sprite / prefab references after the replacement lands.
 
 ## 3. Anemora パレット v0 採用最終確定
+
+> Resolution (2026-05-05, `c0cb631`): Anemora palette v0 is provisionally adopted for Stage 3 and remains subject to Stage 4 reevaluation.
 
 ### 3.1 観点
 
@@ -115,11 +118,13 @@ Related devlogs:
 
 ### 3.4 判断後の反映先
 
-- **Final adoption**: update `docs/STAGE3_TBD_RESOLUTION.md` row `ART-03` with resolved state, date, and commit hash. Confirm `docs/legal/asset_ledger.md` row `anemora_palette_v0` as adopted.
+- **Resolved Stage 3 baseline**: `docs/STAGE3_TBD_RESOLUTION.md` row `ART-03` and `docs/legal/asset_ledger.md` row `anemora_palette_v0` were updated by `c0cb631`.
 - **Minor revision**: create v0.1 palette assets in a separate commit and update affected sprite / UI references after review.
 - **Full replacement**: create alternate palette assets, then review sprite, building, and UI imports against the replacement.
 
 ## 4. TMP 美咲ゴシック JP Atlas 採用最終確定
+
+> Resolution (2026-05-05, `c0cb631`): TMP 美咲ゴシック JP atlas is provisionally adopted for Stage 3 and remains subject to Stage 4 reevaluation.
 
 ### 4.1 観点
 
@@ -145,11 +150,13 @@ Related devlogs:
 
 ### 4.4 判断後の反映先
 
-- **Final adoption**: update `docs/STAGE3_TBD_RESOLUTION.md` row `ART-04` with resolved state, date, and commit hash. Confirm `docs/legal/asset_ledger.md` row `anemora_jp_tmp_font_v0` and Tier 1 player-consumed classification.
+- **Resolved Stage 3 baseline**: `docs/STAGE3_TBD_RESOLUTION.md` row `ART-04` and `docs/legal/asset_ledger.md` row `anemora_jp_tmp_font_v0` were updated by `c0cb631`.
 - **Missing character work needed**: add fallback font, extend atlas coverage, or adjust actual VS text in a separate task.
 - **Alternate JP font comparison**: generate a new TMP atlas and devlog, then compare against this section's reference files.
 
 ## 5. TMP Press Start 2P EN Atlas 採用最終確定
+
+> Resolution (2026-05-05, `c0cb631`): TMP Press Start 2P EN atlas is provisionally adopted for Stage 3 and remains subject to Stage 4 reevaluation.
 
 ### 5.1 観点
 
@@ -174,17 +181,19 @@ Related devlogs:
 
 ### 5.4 判断後の反映先
 
-- **Final adoption**: update `docs/STAGE3_TBD_RESOLUTION.md` row `ART-05` with resolved state, date, and commit hash. Confirm or add the relevant Press Start 2P and `Anemora_EN` rows in `docs/legal/asset_ledger.md`, including Tier 1 player-consumed classification.
+- **Resolved Stage 3 baseline**: `docs/STAGE3_TBD_RESOLUTION.md` row `ART-05` and `docs/legal/asset_ledger.md` row `anemora_en_tmp_font_v0` were updated by `c0cb631`.
 - **Alternate EN font comparison**: generate one or more parallel TMP atlases and compare readability, license, and VRAM in a separate task.
 - **Fallback chain update**: if the accepted EN font changes, update JP / EN fallback links and record the change in a devlog.
 
 ## 6. Review 判断後の運用
 
-When a TBD is resolved:
+For the Stage 3 rows covered by this document, the TBDs are resolved by `c0cb631` and closed in `docs/STAGE3_TBD_RESOLUTION.md`.
 
-1. Update the relevant row in `docs/STAGE3_TBD_RESOLUTION.md` with strike-through or equivalent resolved marking, resolution date, and reflection commit hash.
-2. Update `docs/legal/asset_ledger.md` with the adopted state or add a missing ledger row.
-3. If the decision changes the asset pipeline policy, consider whether `docs/adr/0009-asset-pipeline.md` should move from Proposed toward Accepted.
+If Stage 4 reopens one of these areas:
+
+1. Create a new row in `docs/STAGE3_TBD_RESOLUTION.md` or the Stage 4 equivalent, instead of editing away the Stage 3 resolution.
+2. Update `docs/legal/asset_ledger.md` only for the newly adopted or revised asset rows.
+3. Keep ADR-0009 status as Accepted unless a separate ADR revision changes the pipeline decision.
 
 Other valid outcomes:
 
@@ -192,10 +201,11 @@ Other valid outcomes:
 - **Minor revision**: create a narrow revision commit for the affected asset only.
 - **Full replacement**: start a separate asset generation / redraw / atlas generation task.
 
-This review aid does not close the TBD rows by itself.
+This review aid records the closed Stage 3 rows and remains available as a comparison checklist for later revisions.
 
 ## 7. 更新履歴
 
 | Version | Date | Change |
 |---|---|---|
 | v0.1 | 2026-05-05 | 初版起草。ART-01 / ART-03 / ART-04 / ART-05 の目視レビュー aid を追加 |
+| v0.2 | 2026-05-05 | Stage 3 /spec resolution interview の結果を反映。ART-01 / ART-03 / ART-04 / ART-05 を provisional 採用として close し、反映 commit `c0cb631` を記録 |
