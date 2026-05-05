@@ -93,7 +93,7 @@ The exact release timing, price, store-page copy, trailer final cut, contributio
 - [`docs/STAGE3_RETROSPECTIVE.md`](docs/STAGE3_RETROSPECTIVE.md): Stage 3 retrospective draft。
 - [`docs/VS_SCOPE.md`](docs/VS_SCOPE.md): Stage 3 Vertical Slice の完成条件。
 - [`docs/STAGE3_PLAN.md`](docs/STAGE3_PLAN.md): Stage 3 の実行計画。
+- [`docs/STAGE4_ROADMAP.md`](docs/STAGE4_ROADMAP.md): Stage 4 の preliminary roadmap。
 - [`docs/adr/`](docs/adr/): Architecture Decision Records。
 - [`docs/devlog/`](docs/devlog/): 制作日誌。
 - [`docs/legal/asset_ledger.md`](docs/legal/asset_ledger.md): アセット出典・ライセンス・公開可否の記録。
-- Stage 4 roadmap: pending parallel A2 task; add link after the roadmap file lands.
