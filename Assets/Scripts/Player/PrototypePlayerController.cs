@@ -12,7 +12,15 @@ namespace Anemora.Player
         [SerializeField] private bool lockYPosition = true;
         [SerializeField] private float lockedYPosition = 0.62f;
 
+        private bool movementFrozen;
+
         public float MoveSpeed => moveSpeed;
+        public bool IsMovementFrozen => movementFrozen;
+
+        public void SetMovementFrozen(bool frozen)
+        {
+            movementFrozen = frozen;
+        }
 
         private void Awake()
         {
@@ -23,14 +31,22 @@ namespace Anemora.Player
 
             if (lockYPosition)
             {
-                var position = transform.position;
-                position.y = lockedYPosition;
-                transform.position = position;
+                ApplyLockedYPosition();
             }
         }
 
         private void Update()
         {
+            if (movementFrozen)
+            {
+                if (lockYPosition)
+                {
+                    ApplyLockedYPosition();
+                }
+
+                return;
+            }
+
             var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
             if (input.sqrMagnitude > 1f)
             {
@@ -60,10 +76,15 @@ namespace Anemora.Player
 
             if (lockYPosition)
             {
-                var position = transform.position;
-                position.y = lockedYPosition;
-                transform.position = position;
+                ApplyLockedYPosition();
             }
+        }
+
+        private void ApplyLockedYPosition()
+        {
+            var position = transform.position;
+            position.y = lockedYPosition;
+            transform.position = position;
         }
     }
 }

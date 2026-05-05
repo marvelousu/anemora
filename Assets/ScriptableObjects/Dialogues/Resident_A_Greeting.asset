@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77c8b3c51f78496eb0a23d15dd8d9ea8, type: 3}
+  m_Name: Resident_A_Greeting
+  m_EditorClassIdentifier: Anemora.Game::Anemora.Game.Dialogue.DialogueAsset
+  npcId: resident_a
+  variants:
+  - variantId: greeting
+    turns:
+    - speakerId: dialogue.placeholder.resident_a.name
+      text:
+        m_TableReference:
+          m_TableCollectionName: Anemora_Strings
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.placeholder.resident_a.greet
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      choices: []
+    - speakerId: dialogue.placeholder.resident_a.name
+      text:
+        m_TableReference:
+          m_TableCollectionName: Anemora_Strings
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.placeholder.resident_a.greet_2
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      choices: []
+    requiredFlags: []
+    excludedFlags: []
+  references:
+    version: 2
+    RefIds: []
