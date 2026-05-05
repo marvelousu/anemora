@@ -1,3 +1,4 @@
+using Anemora.Audio;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -54,6 +55,7 @@ namespace Anemora.UI
                 return;
             }
 
+            Zone1AudioController.Instance?.PlayTimeSymbolSelectRed();
             Debug.Log("Red symbol selected");
             onSymbolSelected.Invoke(SymbolType.Red);
         }
@@ -116,6 +118,7 @@ namespace Anemora.UI
 
             focusedSymbol = symbol;
             ApplyState();
+            Zone1AudioController.Instance?.PlayTimeSymbolHover();
         }
 
         private void ApplyState()

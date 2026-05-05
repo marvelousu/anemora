@@ -17,10 +17,15 @@ namespace Anemora.Dialogue
         [SerializeField] private string speakerTableName = "Anemora_Strings";
         [SerializeField] private KeyCode primaryAdvanceKey = KeyCode.Space;
         [SerializeField] private KeyCode secondaryAdvanceKey = KeyCode.E;
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip advanceClip;
+        [SerializeField] private AudioClip closeClip;
+        [SerializeField, Range(0f, 1f)] private float dialogueAudioVolume = 0.7f;
 
         private DialogueVariantSO currentVariant;
         private int currentTurnIndex;
         private int ignoreInputFrame = -1;
+        private bool hasShownDialogue;
 
         public static DialogueDisplay Instance { get; private set; }
         public bool IsVisible => panelRoot != null && panelRoot.activeSelf;
@@ -77,6 +82,7 @@ namespace Anemora.Dialogue
             }
 
             SetPlayerFrozen(true);
+            hasShownDialogue = true;
             RenderCurrentTurn();
         }
 
@@ -94,11 +100,14 @@ namespace Anemora.Dialogue
                 return;
             }
 
+            PlayDialogueAudio(advanceClip);
             RenderCurrentTurn();
         }
 
         public void Close()
         {
+            var shouldPlayCloseAudio = hasShownDialogue && IsVisible;
+
             if (panelRoot != null)
             {
                 panelRoot.SetActive(false);
@@ -116,7 +125,13 @@ namespace Anemora.Dialogue
 
             currentVariant = null;
             currentTurnIndex = 0;
+            hasShownDialogue = false;
             SetPlayerFrozen(false);
+
+            if (shouldPlayCloseAudio)
+            {
+                PlayDialogueAudio(closeClip);
+            }
         }
 
         private void ResolveReferences()
@@ -138,6 +153,11 @@ namespace Anemora.Dialogue
             if (advanceIndicator != null && string.IsNullOrEmpty(advanceIndicator.text))
             {
                 advanceIndicator.text = ">";
+            }
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
             }
         }
 
@@ -185,6 +205,20 @@ namespace Anemora.Dialogue
                     new[] { typeof(bool) },
                     null);
                 method?.Invoke(playerController, new object[] { frozen });
+            }
+        }
+
+        private void PlayDialogueAudio(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            ResolveReferences();
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(clip, dialogueAudioVolume);
             }
         }
 

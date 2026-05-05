@@ -1,3 +1,4 @@
+using Anemora.Audio;
 using UnityEngine;
 
 namespace Anemora.Player
@@ -11,8 +12,11 @@ namespace Anemora.Player
         [SerializeField] private float moveSpeed = 2.2f;
         [SerializeField] private bool lockYPosition = true;
         [SerializeField] private float lockedYPosition = 0.62f;
+        [SerializeField] private Zone1FootstepSurface defaultFootstepSurface = Zone1FootstepSurface.Stone;
+        [SerializeField] private float footstepInterval = 0.42f;
 
         private bool movementFrozen;
+        private float footstepTimer;
 
         public float MoveSpeed => moveSpeed;
         public bool IsMovementFrozen => movementFrozen;
@@ -55,6 +59,7 @@ namespace Anemora.Player
 
             if (input.sqrMagnitude <= Mathf.Epsilon)
             {
+                footstepTimer = 0f;
                 return;
             }
 
@@ -72,6 +77,7 @@ namespace Anemora.Player
             if (delta.sqrMagnitude > Mathf.Epsilon)
             {
                 transform.rotation = Quaternion.LookRotation(delta.normalized, Vector3.up);
+                TickFootsteps();
             }
 
             if (lockYPosition)
@@ -85,6 +91,18 @@ namespace Anemora.Player
             var position = transform.position;
             position.y = lockedYPosition;
             transform.position = position;
+        }
+
+        private void TickFootsteps()
+        {
+            footstepTimer -= Time.deltaTime;
+            if (footstepTimer > 0f)
+            {
+                return;
+            }
+
+            Zone1AudioController.Instance?.PlayFootstep(defaultFootstepSurface);
+            footstepTimer = Mathf.Max(0.05f, footstepInterval);
         }
     }
 }

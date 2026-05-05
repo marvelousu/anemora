@@ -8,6 +8,9 @@ namespace Anemora.Dialogue
         public DialogueAsset dialogueAsset;
         public float interactionRange = 1.5f;
         public KeyCode interactKey = KeyCode.E;
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip interactionClip;
+        [SerializeField, Range(0f, 1f)] private float interactionVolume = 0.7f;
 
         private Transform player;
 
@@ -46,6 +49,7 @@ namespace Anemora.Dialogue
                 return false;
             }
 
+            PlayInteractionAudio();
             DialogueDisplay.Instance.Show(dialogueAsset);
             return true;
         }
@@ -77,6 +81,24 @@ namespace Anemora.Dialogue
             }
 
             return player;
+        }
+
+        private void PlayInteractionAudio()
+        {
+            if (interactionClip == null)
+            {
+                return;
+            }
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+            }
+
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(interactionClip, interactionVolume);
+            }
         }
     }
 }

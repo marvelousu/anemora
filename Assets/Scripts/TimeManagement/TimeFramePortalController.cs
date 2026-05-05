@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Anemora.Audio;
 using Anemora.UI;
 using UnityEngine;
 
@@ -155,6 +156,7 @@ namespace Anemora.TimeManagement
                 portalInstance = null;
             }
 
+            Zone1AudioController.Instance?.PlayTimeWheelClose();
             Time.timeScale = 1f;
             SetState(PortalState.Normal);
         }
@@ -163,6 +165,7 @@ namespace Anemora.TimeManagement
         {
             Time.timeScale = 0f;
             SetState(PortalState.Selecting);
+            Zone1AudioController.Instance?.PlayTimeWheelOpen();
 
             SetState(PortalState.Generating);
             if (generationDuration > 0f)
@@ -176,6 +179,7 @@ namespace Anemora.TimeManagement
 
             EnsurePortalInstance();
             ConfigureOpenPortal();
+            Zone1AudioController.Instance?.PlayTimePortalOpen();
 
             Time.timeScale = 1f;
             SetState(PortalState.Open);
@@ -196,6 +200,7 @@ namespace Anemora.TimeManagement
         private IEnumerator PerformAtomicFlipRoutine(SceneSide targetSide)
         {
             SetState(PortalState.Crossing);
+            Zone1AudioController.Instance?.PlayTimePortalFlip();
 
             if (crossingDetector != null)
             {
