@@ -60,6 +60,7 @@ Milestone groups covered in this section:
 | `5a1a39b` | Applied audio prompts integration check fixes across audio prompt / ADR / notice references. |
 | `1c7ac12` | Reconciled the EditMode 31 vs 32 test-count baseline across verification docs. |
 | `c72a79c` | Applied docs cross-link audit fixes for path drift and documented remaining larger sync candidates. |
+| This task | Replaced `PortalStencilFeature`'s URP internal `DrawObjectsPass` usage with public `RenderObjectsPass`, added a PlayMode warning-count assertion, and verified player log warning count `0`. |
 
 ### Documentation
 

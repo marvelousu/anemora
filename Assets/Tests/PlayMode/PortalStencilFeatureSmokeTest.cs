@@ -16,45 +16,64 @@ namespace Anemora.Tests.PlayMode
         [UnityTest]
         public IEnumerator SandboxSceneEnqueuesPortalStencilPasses()
         {
+            var renderGraphWarningCount = 0;
+            void CountRenderGraphWarning(string condition, string stackTrace, LogType type)
+            {
+                if (condition.Contains("DrawObjectsPass does not have an implementation of the RecordRenderGraph method"))
+                {
+                    renderGraphWarningCount++;
+                }
+            }
+
+            Application.logMessageReceived += CountRenderGraphWarning;
+
             var featureType = Type.GetType(
                 "Anemora.TimeManagement.Portal.PortalStencilFeature, Assembly-CSharp",
                 throwOnError: true);
 
-            featureType.GetMethod("ResetDiagnosticsForTests", BindingFlags.Public | BindingFlags.Static)
-                ?.Invoke(null, Array.Empty<object>());
-
-            var operation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Single);
-            while (!operation.isDone)
+            try
             {
+                featureType.GetMethod("ResetDiagnosticsForTests", BindingFlags.Public | BindingFlags.Static)
+                    ?.Invoke(null, Array.Empty<object>());
+
+                var operation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Single);
+                while (!operation.isDone)
+                {
+                    yield return null;
+                }
+
+                var startFrame = Time.frameCount;
+                var camera = Camera.main;
+                Assert.That(camera, Is.Not.Null);
+
+                camera.enabled = true;
+
+                RenderShot(camera, new Vector3(0f, 1.25f, -4.2f), new Vector3(0f, 1.05f, 0.75f));
                 yield return null;
+
+                RenderShot(camera, new Vector3(2.7f, 1.25f, -0.2f), new Vector3(0f, 1f, 0.3f));
+                yield return null;
+
+                RenderShot(camera, new Vector3(0f, 1.25f, 3.4f), new Vector3(0f, 1f, 0f));
+                yield return null;
+
+                var lastFrame = (int)featureType.GetProperty("LastEnqueueFrame", BindingFlags.Public | BindingFlags.Static)
+                    .GetValue(null);
+                var passCount = (int)featureType.GetProperty("LastEnqueuedPassCount", BindingFlags.Public | BindingFlags.Static)
+                    .GetValue(null);
+                var cameraName = (string)featureType.GetProperty("LastCameraName", BindingFlags.Public | BindingFlags.Static)
+                    .GetValue(null);
+
+                Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(SceneName));
+                Assert.That(lastFrame, Is.GreaterThanOrEqualTo(startFrame));
+                Assert.That(passCount, Is.EqualTo(2));
+                Assert.That(cameraName, Is.Not.Empty);
+                Assert.That(renderGraphWarningCount, Is.Zero);
             }
-
-            var startFrame = Time.frameCount;
-            var camera = Camera.main;
-            Assert.That(camera, Is.Not.Null);
-
-            camera.enabled = true;
-
-            RenderShot(camera, new Vector3(0f, 1.25f, -4.2f), new Vector3(0f, 1.05f, 0.75f));
-            yield return null;
-
-            RenderShot(camera, new Vector3(2.7f, 1.25f, -0.2f), new Vector3(0f, 1f, 0.3f));
-            yield return null;
-
-            RenderShot(camera, new Vector3(0f, 1.25f, 3.4f), new Vector3(0f, 1f, 0f));
-            yield return null;
-
-            var lastFrame = (int)featureType.GetProperty("LastEnqueueFrame", BindingFlags.Public | BindingFlags.Static)
-                .GetValue(null);
-            var passCount = (int)featureType.GetProperty("LastEnqueuedPassCount", BindingFlags.Public | BindingFlags.Static)
-                .GetValue(null);
-            var cameraName = (string)featureType.GetProperty("LastCameraName", BindingFlags.Public | BindingFlags.Static)
-                .GetValue(null);
-
-            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo(SceneName));
-            Assert.That(lastFrame, Is.GreaterThanOrEqualTo(startFrame));
-            Assert.That(passCount, Is.EqualTo(2));
-            Assert.That(cameraName, Is.Not.Empty);
+            finally
+            {
+                Application.logMessageReceived -= CountRenderGraphWarning;
+            }
         }
 
         private static void RenderShot(Camera camera, Vector3 position, Vector3 lookAt)

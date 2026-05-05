@@ -28,7 +28,7 @@ Stage 3 Vertical Slice is accepted complete. No immediate Stage 3 blocker remain
 | Windows build | Accepted | Latest demo build path recorded in closeout devlog | Future build work is regression / release-candidate work. |
 | Dialogue / localization | Accepted for Stage 3 | Locale and NPC dialogue tests green | Polish copy and readability in Stage 4. |
 | Audio | Accepted for Stage 3 | Assets and wiring tests green; no reported Stage 3 audio blocker | Review mix / loop / replacement candidates in Stage 4. |
-| Technical caveat | Accepted with backlog | URP `DrawObjectsPass` warning repeated in player logs | Schedule technical cleanup before public release hardening. |
+| Technical caveat | Resolved in Stage 4 Phase 0 | URP `DrawObjectsPass` warning repeated in historical player logs; current player log count is `0` after public `RenderObjectsPass` migration | Keep warning-count regression coverage in portal smoke / performance runs. |
 
 ## 2. Immediate Fixes
 
@@ -40,7 +40,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 
 | Priority | Workstream | Status | Owner | Next action | Exit check |
 |---:|---|---|---|---|---|
-| 1 | URP `DrawObjectsPass` / RenderGraph warning cleanup | Open technical debt | Codex | Prototype a RenderGraph-compatible `PortalStencilFeature` replacement or public `RenderObjectsPass` migration in an isolated worktree. | Player log warning count drops to 0; portal stencil smoke, portal boundary, and Windows build remain green. |
+| 1 | URP `DrawObjectsPass` / RenderGraph warning cleanup | Resolved in this task | Codex | Replaced internal `DrawObjectsPass` with public `RenderObjectsPass`; added PlayMode warning-count assertion. | EditMode `32/32`, PlayMode `29/29`, Windows build success, 30 second player warning count `0`. |
 | 2 | Brush UX polish | Open polish | Codex + user review | Add affordance / tutorial hint plan first; code only after the intended on-screen hint is clear. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
 | 3 | Test-count reconciliation | Open verification hygiene | Codex | Identify why Unity Test Runner reports EditMode `32/32` while source marker scan finds 31 markers, or keep a durable explanation in verification docs. | Future verification docs can state one expected count without ambiguity, or clearly preserve the source/runner distinction. |
 | 4 | Niro v2 sprite / hat silhouette review | Open art review | User decision + Codex asset work | Review Stage 3 v1 sprites against `STAGE3_REVIEW_AIDS.md`, then decide minor revision vs redraw vs hold. | Revised or retained sprite state is documented in asset ledger and visible in prefab preview. |
@@ -62,14 +62,13 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 
 ## 5. Recommended Dispatch Order
 
-1. URP warning cleanup technical spike.
-2. Brush UX affordance / tutorial hint plan and small implementation.
-3. Test-count reconciliation if it blocks verification communication.
-4. Visual review batch: Niro v2, palette, TMP fonts.
-5. Dialogue and audio polish batches.
-6. Verification hardening and Steam EA prep.
+1. Brush UX affordance / tutorial hint plan and small implementation.
+2. Test-count reconciliation if it blocks verification communication.
+3. Visual review batch: Niro v2, palette, TMP fonts.
+4. Dialogue and audio polish batches.
+5. Verification hardening and Steam EA prep.
 
-The first technical task should be isolated from art/audio/content work because it touches renderer behavior and has clear regression tests. If the renderer migration proves too large, explicitly defer it with a short decision note and move to brush UX polish.
+The first technical task was the URP warning cleanup. It is now resolved for Phase 0; keep warning-count regression checks when changing portal rendering or performance harness code.
 
 ## 6. Revision History
 

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.Rendering.Universal.Internal;
 
 namespace Anemora.TimeManagement.Portal
 {
@@ -25,31 +24,37 @@ namespace Anemora.TimeManagement.Portal
         public static int LastEnqueuedPassCount { get; private set; }
         public static string LastCameraName { get; private set; } = string.Empty;
 
-        private ScriptableRenderPass maskPass;
-        private ScriptableRenderPass insidePass;
+        private RenderObjectsPass maskPass;
+        private RenderObjectsPass insidePass;
 
         public override void Create()
         {
-            var disabledStencil = StencilState.defaultValue;
-            maskPass = new DrawObjectsPass(
+            maskPass = CreatePortalPass(
                 "Anemora Portal Mask",
-                new[] { new ShaderTagId("AnemoraPortalMask") },
-                true,
                 passEvent,
-                RenderQueueRange.all,
-                portalMaskLayers,
-                disabledStencil,
-                0);
+                new[] { "AnemoraPortalMask" },
+                portalMaskLayers);
 
-            insidePass = new DrawObjectsPass(
+            insidePass = CreatePortalPass(
                 "Anemora Portal Inside",
-                new[] { new ShaderTagId("AnemoraPortalInside") },
-                true,
                 (RenderPassEvent)((int)passEvent + 1),
-                RenderQueueRange.all,
-                insidePortalLayers,
-                disabledStencil,
-                0);
+                new[] { "AnemoraPortalInside" },
+                insidePortalLayers);
+        }
+
+        private static RenderObjectsPass CreatePortalPass(
+            string profilerTag,
+            RenderPassEvent renderPassEvent,
+            string[] shaderTags,
+            LayerMask layerMask)
+        {
+            return new RenderObjectsPass(
+                profilerTag,
+                renderPassEvent,
+                shaderTags,
+                RenderQueueType.Opaque,
+                layerMask.value,
+                new RenderObjects.CustomCameraSettings());
         }
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)

@@ -40,7 +40,7 @@ ADR、実装 doc、test catalog、devlog で使う技術用語。Player-facing t
 
 | 用語 | 公式表記 | 区分 | 定義 | 出現 doc |
 |---|---|---|---|---|
-| PortalStencilFeature | `PortalStencilFeature` | 設計 / 技術 | 時の窓の mask / inside 描画を扱う URP Renderer Feature。Stage 4 で RenderGraph 対応候補。 | `docs/adr/0002-time-frame-portal-stencil.md`, `docs/VS_SCOPE.md`, `docs/devlog/2026-05-05_urp_drawobjects_warning_investigation.md` |
+| PortalStencilFeature | `PortalStencilFeature` | 設計 / 技術 | 時の窓の mask / inside 描画を扱う URP Renderer Feature。Stage 4 Phase 0 で public `RenderObjectsPass` 経路へ移行済み。 | `docs/adr/0002-time-frame-portal-stencil.md`, `docs/VS_SCOPE.md`, `docs/devlog/2026-05-05_urp_drawobjects_warning_investigation.md`, `docs/devlog/2026-05-06_urp_renderobjects_pass_migration.md` |
 | stencil bit / dual-pass | stencil bit 3 / Mask 8 / Ref 8 / dual-pass | 設計 / 技術 | Portal mask / inside rendering の確定値と defense-in-depth shader 方針。 | `docs/adr/0002-time-frame-portal-stencil.md`, `docs/VS_SCOPE.md` |
 | hysteresis | hysteresis | 設計 / 技術 | Portal 境界付近の往復 flip を安定させる許容帯。E4 で 0.02m 等の値を確定。 | `docs/adr/0005-time-management-scene-switching.md`, `docs/VS_SCOPE.md` |
 | ActionRecord | `ActionRecord` | 設計 / 技術 | 過去 / 未来側で行った能動行動を記録し、現在側反映へ渡す data / runtime 概念。 | `SPEC.md`, `docs/VS_SCOPE.md`, `docs/localization/glossary.md` |

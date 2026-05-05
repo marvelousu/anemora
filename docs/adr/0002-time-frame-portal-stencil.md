@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (実装は Stage 3 E トラックで検証 → 必要なら改訂)
+Accepted (Stage 4 v1.2 で RenderGraph warning cleanup 済み)
 
 ## Date
 
@@ -35,6 +35,13 @@ Anemora の中核機構である **時の窓 (Time Frame)** は、3D 空間中�
 - E1 の最小描画では `PortalStencilFeature` が `AnemoraPortalMask` / `AnemoraPortalInside` の 2 pass を enqueue し、ポータル越しの表示を検証済み
 - 自動 screenshot / smoke test と通常 URP 描画経路の defense in depth として、ポータル shader は `UniversalForward` pass と custom LightMode pass (`AnemoraPortalMask` / `AnemoraPortalInside`) を併置する
 
+### Stage 4 v1.2 RenderGraph cleanup (2026-05-06)
+
+- `PortalStencilFeature` は URP internal `DrawObjectsPass` 依存をやめ、public `RenderObjectsPass` に移行した
+- `UnityEngine.Rendering.Universal.Internal` import は不要になった
+- `PortalStencilFeature.SetLayerMasks()` は ADR-0005 atomic flip ordering の public API として維持する
+- EditMode `32/32`、PlayMode `29/29`、Windows Standalone build success、30 秒 player log warning count `0` を確認した
+
 ### 重要度
 
 VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機構のみ)」に時の窓ポータルシェーダ + ステンシル実装を含めている**。本機構の実装方針は VS の核体験を直接決定し、後続の Vertical Slice 制作 (E トラック) の前提となる。
@@ -60,7 +67,7 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 - ポータル用途の **stencil ビットは本機構専用に予約** する。E0/E1 検証により URP 17.3.0 の `StencilUsage.UserMask = 0b00001111` 内から **`bit 3` (`0b00001000`)** を採用し、`bit 4` は `StencilLight` と競合するため使用しない
 - ShaderLab Stencil 値は **Mask = 8 / Ref = 8** に固定する。`PortalMask.shader` は `Comp Always` + `Pass Replace` で bit 3 を書き込み、`InsideOnly.shader` は `Comp Equal` + `Pass Keep` で bit 3 領域のみ描画する
 - Renderer Feature の挿入位置は **`RenderPassEvent` で明示** し、通常描画後にポータル内側描画を差し込む
-- `PortalStencilFeature` は URP 17 の `DrawObjectsPass` (`UnityEngine.Rendering.Universal.Internal`) 経路を維持する。RenderGraph compatibility warning は既知 caveat とし、public API の custom pass へ移す判断は、E1/E4 の挙動を壊さない代替が確認できた時点で別改訂する
+- `PortalStencilFeature` は URP public `RenderObjectsPass` 経路で `AnemoraPortalMask` / `AnemoraPortalInside` の 2 pass を enqueue する。Stage 3 で使っていた URP internal `DrawObjectsPass` 経路は、Stage 4 v1.2 で RenderGraph warning cleanup のため廃止した
 
 #### ポータル内側カメラの同期条件
 
@@ -131,7 +138,7 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 - **シェーダ作業に HLSL カスタムシェーダが必要** — URP のシェーダグラフだけでは Stencil 制御が完結しないケースがある、HLSL を直接書く工程が発生
 - **マルチパスレンダリングで GPU 負荷増** — ノート PC TOM の統合 Radeon (VRAM 2GB) で動作確認必須、VS_SCOPE §7 FIX エリアの実装は **デスクトップ UJPVOG2 (RTX 2070S) での仕上げ** が前提 (STAGE3_PLAN §10.2 切替トリガー)
 - **HD-2D Tier 2 動的影との干渉確認が必須** — 動的影自体は stencil とは独立だが、URP の内部予約ビット・レンダリング設定との非競合を実機検証で確認する。必要なら Forward 固定 + 予約ビット運用に寄せる (`_RenderingLayerMask` 経由の分離も検証候補)
-- **URP internal API 依存がある** — E1/E4 時点の `PortalStencilFeature` は `DrawObjectsPass` を使うため `UnityEngine.Rendering.Universal.Internal` 参照を持つ。RenderGraph compatibility warning は既知 caveat として扱い、安定した public custom pass へ移行できるまでは現経路を維持する
+- **URP public pass 依存へ移行済み** — E1/E4 時点では `DrawObjectsPass` internal API に依存していたが、Stage 4 v1.2 で public `RenderObjectsPass` へ移行した。今後 URP package が `RenderObjectsPass` API を変える場合は、RenderGraph-capable custom pass への再移行を検討する
 - **ポータル踏込み時のシーン遷移ロジックは別 ADR** — ADR-0005 (時間管理 / シーン切替) で詳細化、本 ADR では「踏込みフレームで主従反転」という方針のみ定義
 - **複数ポータルの同時描画は将来も拡張しない方針** — 現方針で複数描画したい場合は Renderer Feature の大幅改修が必要、Stage 4 以降に新案として議論する場合は本 ADR の Superseded として別 ADR を起こす
 
@@ -229,6 +236,7 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 |---|---|---|
 | v1.0 | 2026-05-04 | 初版。Time Frame ポータルを URP + Stencil Buffer + Renderer Feature で実装する方針を定義 |
 | v1.1 | 2026-05-05 | E1 確定値反映。Stencil bit 3 / Mask 8 / Ref 8、dual-pass shader、`DrawObjectsPass` internal API caveat、`PortalStencilFeature.SetLayerMasks()` public setter を追記 |
+| v1.2 | 2026-05-06 | Stage 4 RenderGraph warning cleanup を反映。`PortalStencilFeature` を URP internal `DrawObjectsPass` から public `RenderObjectsPass` へ移行し、Player log warning count `0` を確認 |
 
 ---
 
@@ -250,6 +258,7 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 ### Anemora 内部文書
 
 - `ADR-0001` (エンジン Unity 6.3 LTS 採用)
+- `docs/devlog/2026-05-06_urp_renderobjects_pass_migration.md`
 - `SPEC.md` §5.1 (時の窓システム機能要件)
 - `SPEC.md` §10.1-10.2 (Technology / 主要技術)
 - `VS_SCOPE.md` §3.1 (コアループ要素 / グレーアウト方針 / 詰み防止)
