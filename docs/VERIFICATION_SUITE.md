@@ -77,7 +77,7 @@ Reconcile note (2026-05-06): latest Unity Test Runner execution is EditMode `32/
 | `SceneSidePolarityTests` | `FlipToOppositeRaisesOneEventAndSameSideIsNoop` | SceneSidePolarity flip event と same-side noop | E4 PortalCrossing | §C |
 | `TimeFramePortalControllerIntegrationTests` | `SymbolWheelBurstCreatesOnlyOnePortalAndRestoresTimeScale`; `AtomicFlipAppliesCameraPlayerAndStencilBeforeSideEvent`; `CrossingRunsThroughCrossingAndFlippingStates` | SymbolWheel burst、timeScale restore、atomic flip ordering、camera / player / stencil 切替、Crossing / Flipping state flow | E3 / E4 Portal | §C |
 | `AnemoraMainPortalWiringRoundTripTests` | `MainScenePortalWiringSupportsBoundaryRoundTrip` | Anemora_Main で Current -> Past -> Current の境界往復が成立すること | A2 wiring | §C |
-| `DemoPlayableSmokeTests` | `MainSceneHasVisibleDemoEnvironmentAndTopmostUi`; `BrushPortalAndNpcDialogueAreUsableInMainScene` | DemoPlayable scene environment、topmost UI、local time-window quick/drag flow、brush preview / generated window footprint一致、NPC dialogue usability | G5 closeout / Stage 3 demo repair | §C / §I / §L / §M |
+| `DemoPlayableSmokeTests` | `MainSceneHasVisibleDemoEnvironmentAndTopmostUi`; `BrushPortalAndNpcDialogueAreUsableInMainScene` | DemoPlayable scene environment、topmost UI、runtime brush hint、local time-window quick/drag flow、brush preview / generated window footprint一致、NPC dialogue usability | G5 closeout / Stage 3 demo repair / Stage 4 brush UX | §C / §I / §L / §M |
 
 ### 3.2 ActionRecord E2E
 

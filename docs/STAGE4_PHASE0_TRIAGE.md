@@ -41,7 +41,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 | Priority | Workstream | Status | Owner | Next action | Exit check |
 |---:|---|---|---|---|---|
 | 1 | URP `DrawObjectsPass` / RenderGraph warning cleanup | Resolved in this task | Codex | Replaced internal `DrawObjectsPass` with public `RenderObjectsPass`; added PlayMode warning-count assertion. | EditMode `32/32`, PlayMode `29/29`, Windows build success, 30 second player warning count `0`. |
-| 2 | Brush UX polish | Open polish | Codex + user review | Add affordance / tutorial hint plan first; code only after the intended on-screen hint is clear. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
+| 2 | Brush UX polish | Initial runtime hint implemented | Codex + user review | Added a lightweight runtime overlay for create / release / close hints without scene YAML changes. Later UI review can replace it with a localized icon treatment. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
 | 3 | Test-count reconciliation | Open verification hygiene | Codex | Identify why Unity Test Runner reports EditMode `32/32` while source marker scan finds 31 markers, or keep a durable explanation in verification docs. | Future verification docs can state one expected count without ambiguity, or clearly preserve the source/runner distinction. |
 | 4 | Niro v2 full redraw + Resident review | Open art production prep | User decision + Codex asset work | Treat Niro / Hero as a full redraw for Stage 4 baseline; review Resident_A / Resident_B for age, continuity, darkness, and style fit before deciding whether they also need v2 sprites. | Niro v2 is imported, visible in prefab preview, and documented in asset ledger; Resident_A / Resident_B keep or redraw decisions are recorded. |
 | 5 | TMP font / palette readability review | Open visual review | User decision + Codex docs/assets | Compare JP / EN dialogue panels and UI screenshots against current fonts and palette v0. | Keep / revise decision recorded; any replacement has license and atlas notes. |
@@ -62,9 +62,9 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 
 ## 5. Recommended Dispatch Order
 
-1. Brush UX affordance / tutorial hint plan and small implementation.
-2. Test-count reconciliation if it blocks verification communication.
-3. Character art batch: Niro v2 full redraw first, with Resident_A / Resident_B review decisions kept separate from the Hero redraw.
+1. Test-count reconciliation if it blocks verification communication.
+2. Character art batch: Niro v2 full redraw first, with Resident_A / Resident_B review decisions kept separate from the Hero redraw.
+3. TMP / palette readability review.
 4. Dialogue and audio polish batches.
 5. Verification hardening and Steam EA prep.
 

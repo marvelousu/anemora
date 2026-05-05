@@ -34,6 +34,7 @@ namespace Anemora.Tests.PlayMode
             var pastRoot = GameObject.Find("DemoZone1_Past");
             var dialogueCanvas = GameObject.Find("DialogueCanvas")?.GetComponent<Canvas>();
             var symbolWheel = FindSceneComponent(SymbolWheelType);
+            var portal = FindSceneComponent(PortalControllerType);
 
             Assert.That(currentRoot, Is.Not.Null);
             Assert.That(pastRoot, Is.Not.Null);
@@ -48,6 +49,14 @@ namespace Anemora.Tests.PlayMode
             Assert.That(symbolWheel, Is.Not.Null);
             Assert.That(symbolWheel.GetComponentInParent<Canvas>().renderMode, Is.EqualTo(RenderMode.ScreenSpaceOverlay));
             Assert.That((bool)GetProperty(symbolWheel, "IsVisible"), Is.False);
+
+            Assert.That(portal, Is.Not.Null);
+            Assert.That((bool)GetProperty(portal, "BrushTutorialHintVisible"), Is.True);
+            Assert.That((string)GetProperty(portal, "BrushTutorialHintText"), Does.Contain("Shift"));
+            var hintCanvas = GameObject.Find("BrushTutorialHintCanvas_Runtime")?.GetComponent<Canvas>();
+            Assert.That(hintCanvas, Is.Not.Null);
+            Assert.That(hintCanvas.renderMode, Is.EqualTo(RenderMode.ScreenSpaceOverlay));
+            Assert.That(hintCanvas.sortingOrder, Is.LessThan(dialogueCanvas.sortingOrder));
         }
 
         [UnityTest]
@@ -72,6 +81,7 @@ namespace Anemora.Tests.PlayMode
             yield return new WaitForSecondsRealtime(0.25f);
 
             Assert.That(GetProperty(portal, "State"), Is.EqualTo(Enum.Parse(PortalStateType, "Open")));
+            Assert.That((string)GetProperty(portal, "BrushTutorialHintText"), Does.Contain("Right-click"));
             Assert.That(GetProperty(polarity, "CurrentSide").ToString(), Is.EqualTo("Current"));
             var quickPortalInstance = (GameObject)GetProperty(portal, "PortalInstance");
             Assert.That(quickPortalInstance, Is.Not.Null);
@@ -103,6 +113,7 @@ namespace Anemora.Tests.PlayMode
             Invoke(portal, "ClosePortal");
             yield return new WaitForSecondsRealtime(0.25f);
             Assert.That(GetProperty(portal, "State"), Is.EqualTo(Enum.Parse(PortalStateType, "Normal")));
+            Assert.That((string)GetProperty(portal, "BrushTutorialHintText"), Does.Contain("Shift"));
             Assert.That(CountEnabledRenderers(currentTable), Is.GreaterThan(0));
 
             var dragStartWorld = new Vector3(-0.8f, 0f, 0.15f);
@@ -115,6 +126,7 @@ namespace Anemora.Tests.PlayMode
             var preview = GameObject.Find("TimeWindow_BrushPreview_Runtime");
             var previewFill = preview != null ? FindChildByName(preview.transform, "TimeWindow_BrushPreview_Fill") : null;
             Assert.That(preview, Is.Not.Null);
+            Assert.That((string)GetProperty(portal, "BrushTutorialHintText"), Does.Contain("Release"));
             Assert.That(preview.transform.position.x, Is.EqualTo(expectedDragCenter.x).Within(0.04f));
             Assert.That(preview.transform.position.z, Is.EqualTo(expectedDragCenter.z).Within(0.04f));
             Assert.That(previewFill, Is.Not.Null);

@@ -4,6 +4,7 @@ using System.Reflection;
 using Anemora.Audio;
 using Anemora.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Anemora.TimeManagement
 {
@@ -57,6 +58,11 @@ namespace Anemora.TimeManagement
         [SerializeField] private float minimumDraggedWindowWorldSize = 0.75f;
         [SerializeField] private Color brushPreviewFillColor = new Color(0.16f, 0.66f, 1f, 0.2f);
         [SerializeField] private Color brushPreviewEdgeColor = new Color(1f, 0.9f, 0.62f, 0.86f);
+        [SerializeField] private bool showBrushTutorialHint = true;
+        [SerializeField] private int brushTutorialHintSortingOrder = 900;
+        [SerializeField] private string brushCreateHintText = "[Shift] + drag: draw time window";
+        [SerializeField] private string brushReleaseHintText = "Release: place time window";
+        [SerializeField] private string brushCloseHintText = "Right-click: close time window";
 
         private Coroutine generationRoutine;
         private Coroutine flipRoutine;
@@ -77,6 +83,9 @@ namespace Anemora.TimeManagement
         private Transform brushPreviewRightEdge;
         private Material brushPreviewFillMaterial;
         private Material brushPreviewEdgeMaterial;
+        private GameObject brushHintRoot;
+        private GameObject brushHintPanel;
+        private Text brushHintText;
 
         public event Action<PortalState, float> StateChanged;
         public event Action<SceneSide> CrossingCompleted;
@@ -85,6 +94,8 @@ namespace Anemora.TimeManagement
         public GameObject PortalInstance => portalInstance;
         public int PortalGenerationCount => portalGenerationCount;
         public bool UsesLocalDioramaWindow => useLocalDioramaWindow;
+        public bool BrushTutorialHintVisible => brushHintPanel != null && brushHintPanel.activeInHierarchy;
+        public string BrushTutorialHintText => brushHintText != null ? brushHintText.text : string.Empty;
 
         private void Awake()
         {
@@ -155,11 +166,13 @@ namespace Anemora.TimeManagement
             }
 
             DestroyBrushPreview();
+            DestroyBrushTutorialHint();
         }
 
         private void OnDestroy()
         {
             DestroyBrushPreview();
+            DestroyBrushTutorialHint();
             DestroyPreviewMaterial(brushPreviewFillMaterial);
             DestroyPreviewMaterial(brushPreviewEdgeMaterial);
         }
@@ -170,6 +183,7 @@ namespace Anemora.TimeManagement
             HandleCancelInput();
             HandleQuickPlacePortalInput();
             HandleBrushInput();
+            UpdateBrushTutorialHint();
         }
 
         public void HandleSymbolSelected(SymbolType symbol)
@@ -205,12 +219,17 @@ namespace Anemora.TimeManagement
         public bool TryUpdateBrushPreviewForTests(Vector2 startScreenPosition, Vector2 endScreenPosition)
         {
             brushDragStart = startScreenPosition;
-            return TryUpdateBrushPreview(endScreenPosition);
+            brushDragActive = true;
+            var updated = TryUpdateBrushPreview(endScreenPosition);
+            UpdateBrushTutorialHint();
+            return updated;
         }
 
         public void ClearBrushPreviewForTests()
         {
+            brushDragActive = false;
             DestroyBrushPreview();
+            UpdateBrushTutorialHint();
         }
 
         public void TriggerCrossingForTests()
@@ -913,6 +932,147 @@ namespace Anemora.TimeManagement
             brushPreviewBackEdge = null;
             brushPreviewLeftEdge = null;
             brushPreviewRightEdge = null;
+        }
+
+        private void UpdateBrushTutorialHint()
+        {
+            if (!ShouldShowBrushTutorialHint())
+            {
+                if (brushHintPanel != null)
+                {
+                    brushHintPanel.SetActive(false);
+                }
+
+                return;
+            }
+
+            EnsureBrushTutorialHint();
+            if (brushHintPanel == null || brushHintText == null)
+            {
+                return;
+            }
+
+            brushHintPanel.SetActive(true);
+            brushHintText.text = ResolveBrushTutorialHintText();
+        }
+
+        private bool ShouldShowBrushTutorialHint()
+        {
+            return showBrushTutorialHint &&
+                   enableBrushInput &&
+                   useLocalDioramaWindow &&
+                   !IsDialogueDisplayVisible();
+        }
+
+        private string ResolveBrushTutorialHintText()
+        {
+            if (brushDragActive)
+            {
+                return brushReleaseHintText;
+            }
+
+            return state == PortalState.Open ? brushCloseHintText : brushCreateHintText;
+        }
+
+        private void EnsureBrushTutorialHint()
+        {
+            if (brushHintRoot != null)
+            {
+                return;
+            }
+
+            brushHintRoot = new GameObject(
+                "BrushTutorialHintCanvas_Runtime",
+                typeof(Canvas),
+                typeof(CanvasScaler),
+                typeof(GraphicRaycaster));
+            brushHintRoot.transform.SetParent(transform, false);
+            SetLayerRecursively(brushHintRoot, 5);
+
+            var canvas = brushHintRoot.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = brushTutorialHintSortingOrder;
+
+            var scaler = brushHintRoot.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+
+            brushHintPanel = new GameObject("BrushTutorialHintPanel_Runtime", typeof(RectTransform), typeof(Image));
+            brushHintPanel.transform.SetParent(brushHintRoot.transform, false);
+            SetLayerRecursively(brushHintPanel, 5);
+
+            var panelRect = (RectTransform)brushHintPanel.transform;
+            panelRect.anchorMin = new Vector2(0f, 1f);
+            panelRect.anchorMax = new Vector2(0f, 1f);
+            panelRect.pivot = new Vector2(0f, 1f);
+            panelRect.anchoredPosition = new Vector2(28f, -28f);
+            panelRect.sizeDelta = new Vector2(420f, 52f);
+
+            var image = brushHintPanel.GetComponent<Image>();
+            image.color = new Color(0.03f, 0.04f, 0.05f, 0.62f);
+            image.raycastTarget = false;
+
+            var textObject = new GameObject("BrushTutorialHintText_Runtime", typeof(RectTransform), typeof(Text));
+            textObject.transform.SetParent(brushHintPanel.transform, false);
+            SetLayerRecursively(textObject, 5);
+
+            var textRect = (RectTransform)textObject.transform;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(16f, 8f);
+            textRect.offsetMax = new Vector2(-16f, -8f);
+
+            brushHintText = textObject.GetComponent<Text>();
+            brushHintText.alignment = TextAnchor.MiddleLeft;
+            brushHintText.color = new Color(0.92f, 0.88f, 0.74f, 0.94f);
+            brushHintText.font = ResolveBrushHintFont();
+            brushHintText.fontSize = 17;
+            brushHintText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            brushHintText.verticalOverflow = VerticalWrapMode.Truncate;
+            brushHintText.supportRichText = false;
+            brushHintText.raycastTarget = false;
+        }
+
+        private static Font ResolveBrushHintFont()
+        {
+            var runtimeFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if (runtimeFont != null)
+            {
+                return runtimeFont;
+            }
+
+            var osFont = Font.CreateDynamicFontFromOSFont(
+                new[] { "Yu Gothic UI", "Meiryo", "Arial" },
+                17);
+            if (osFont != null)
+            {
+                return osFont;
+            }
+
+            return Resources.GetBuiltinResource<Font>("Arial.ttf");
+        }
+
+        private void DestroyBrushTutorialHint()
+        {
+            if (brushHintRoot == null)
+            {
+                return;
+            }
+
+            if (Application.isPlaying)
+            {
+                Destroy(brushHintRoot);
+            }
+            else
+            {
+                DestroyImmediate(brushHintRoot);
+            }
+
+            brushHintRoot = null;
+            brushHintPanel = null;
+            brushHintText = null;
         }
 
         private static void DestroyPreviewMaterial(Material material)

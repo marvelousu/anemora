@@ -25,6 +25,7 @@ Milestone groups covered in this section:
 
 | Commit | Entry |
 |---|---|
+| This task | Added a runtime brush tutorial hint that switches between create, release, and close affordances for the local time-window flow. |
 | `4029cc0` | Added G3 partial NPC placement and dialogue UI scaffold in `Anemora_Main`, including Resident_A / Resident_B instances and `NpcDialogueFlowTests`. |
 | `2f3197b` | Added LocalizationSettings, ja-JP / en locale assets, StringTable seed, Addressables registration, and localization resolution PlayMode tests. |
 | `d2ae62a` | Added Save/Load round-trip E2E PlayMode coverage for ActionRecord reflection persistence. |
