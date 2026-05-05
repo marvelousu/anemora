@@ -1,6 +1,6 @@
 # Stage 4 Phase 0 Triage
 
-Status: v0.1 Stage 4 entry triage (2026-05-06)
+Status: v0.2 Stage 4 entry triage (2026-05-06)
 
 This document extracts the Stage 4 Phase 0 backlog from the accepted Stage 3 closeout. It is intentionally narrow: it does not reopen Stage 3 completion, choose art direction, or start content expansion.
 
@@ -42,7 +42,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 |---:|---|---|---|---|---|
 | 1 | URP `DrawObjectsPass` / RenderGraph warning cleanup | Resolved in this task | Codex | Replaced internal `DrawObjectsPass` with public `RenderObjectsPass`; added PlayMode warning-count assertion. | EditMode `32/32`, PlayMode `29/29`, Windows build success, 30 second player warning count `0`. |
 | 2 | Brush UX polish | Initial runtime hint implemented | Codex + user review | Added a lightweight runtime overlay for create / release / close hints without scene YAML changes. Later UI review can replace it with a localized icon treatment. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
-| 3 | Test-count reconciliation | Open verification hygiene | Codex | Identify why Unity Test Runner reports EditMode `32/32` while source marker scan finds 31 markers, or keep a durable explanation in verification docs. | Future verification docs can state one expected count without ambiguity, or clearly preserve the source/runner distinction. |
+| 3 | Test-count reconciliation | Resolved as documented runner/source distinction | Codex | Character v2 added three EditMode `[Test]` methods, moving the source-marker count from 31 to 34; the recorded Unity runner count moved from `32/32` to `35/35`, so the historical +1 runner/source delta remains. | Verification docs state the executed runner baseline as EditMode `35/35`, PlayMode `29/29`, with source markers tracked separately as EditMode 34 and PlayMode 29. |
 | 4 | Character v2 redraw + Resident review | Verified in this task | User decision + Codex asset work | Niro / Hero, Resident_A, and Resident_B v2 directions were user-approved and imported into runtime sprite assets. Resident_B uses the long-hair dark 3/4 seated direction for current/future-side mood. | v2 rows are documented in asset ledger; Hero / Resident_A / Resident_B prefabs and clips reference v2; targeted tests, full EditMode/PlayMode, and Windows build pass. |
 | 5 | TMP font / palette readability review | Open visual review | User decision + Codex docs/assets | Compare JP / EN dialogue panels and UI screenshots against current fonts and palette v0. | Keep / revise decision recorded; any replacement has license and atlas notes. |
 | 6 | Dialogue v1 polish | Open content polish | Codex draft + user review | Polish Niro / Resident_A / Resident_B text without internal planning vocabulary; keep JP/EN key parity. | StringTable and DialogueAsset remain synchronized; dialogue tests pass. |
@@ -62,11 +62,10 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 
 ## 5. Recommended Dispatch Order
 
-1. Test-count reconciliation if it blocks verification communication.
-2. Character art batch: handle any later scene-specific Resident_B diagonal orientation as a separate focused polish task if the runtime scene read needs it.
-3. TMP / palette readability review.
-4. Dialogue and audio polish batches.
-5. Verification hardening and Steam EA prep.
+1. Character art follow-up: handle any later scene-specific Resident_B diagonal orientation as a separate focused polish task if the runtime scene read needs it.
+2. TMP / palette readability review.
+3. Dialogue and audio polish batches.
+4. Verification hardening and Steam EA prep.
 
 The first technical task was the URP warning cleanup. It is now resolved for Phase 0; keep warning-count regression checks when changing portal rendering or performance harness code.
 
@@ -74,4 +73,5 @@ The first technical task was the URP warning cleanup. It is now resolved for Pha
 
 | Version | Date | Change |
 |---|---|---|
+| v0.2 | 2026-05-06 | Resolves test-count reconciliation as a documented runner/source distinction after character v2 added three EditMode source markers. |
 | v0.1 | 2026-05-06 | Initial Phase 0 triage. Converts Stage 3 closeout facts into immediate fix, Stage 4 backlog, and no-action buckets. |

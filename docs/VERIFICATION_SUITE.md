@@ -18,14 +18,14 @@ Status: Stage 3 closeout baseline (2026-05-06)
 - `docs/G5_ACCEPTANCE_MATRIX.md` の section が増減したら §4 / §5 を更新する。
 - 本 catalog は source scan に基づく。推測で test を追加しない。
 
-Source scan (2026-05-06, `a0bd50b`):
+Source scan (2026-05-06, `cab5a59`):
 
-- `Assets/Tests/EditMode/`: 31 test method markers discovered.
+- `Assets/Tests/EditMode/`: 34 test method markers discovered.
 - `Assets/Tests/PlayMode/`: 29 test method markers discovered.
-- Total: 60 test method markers discovered.
+- Total: 63 test method markers discovered.
 - EditMode parameterized test attributes: none (`[TestCase]` / `[TestCaseSource]` not present).
 
-Reconcile note (2026-05-06): latest Unity Test Runner execution is EditMode `32/32`, PlayMode `29/29`. The source marker scan still finds 31 EditMode `[Test]` markers and no `[TestCase]` / `[TestCaseSource]` methods under `Assets/Tests/EditMode/`; for acceptance, use the Test Runner result.
+Reconcile note (2026-05-06): latest Unity Test Runner execution is EditMode `35/35`, PlayMode `29/29`. Character v2 added three `CharacterPrefabStructureTests` EditMode `[Test]` methods, so the previous source marker count moves from 31 to 34. The historical +1 Unity runner/source distinction remains; for acceptance, use the Test Runner result and keep source-marker totals as scan metadata.
 
 ## 2. EditMode tests
 
@@ -58,7 +58,7 @@ Reconcile note (2026-05-06): latest Unity Test Runner execution is EditMode `32/
 
 | Test class | Method | Verifies | 関連 milestone | Matrix セクション |
 |---|---|---|---|---|
-| `CharacterPrefabStructureTests` | `CharacterPrefabsContainSpriteRendererAndAnimator`; `LocomotionControllersExposeExpectedStatesAndParameters`; `F2CharacterSpritesAreSlicedForAnimatorClips` | Hero / Resident prefab structure、AnimatorController states / parameters、F2 sprite slicing for animation clips | F4 prefab | §F |
+| `CharacterPrefabStructureTests` | `CharacterPrefabsContainSpriteRendererAndAnimator`; `LocomotionControllersExposeExpectedStatesAndParameters`; `F2CharacterSpritesAreSlicedForAnimatorClips`; `HeroV2SpritesAreSlicedForAnimatorClips`; `ResidentV2SpritesAreSlicedForAnimatorClips`; `CharacterPrefabsUseV2SpriteSets` | Hero / Resident prefab structure、AnimatorController states / parameters、F2 and v2 sprite slicing for animation clips、prefab / clip references use v2 sprite sets | F4 prefab / Stage 4 character v2 | §F |
 
 ### 2.6 Portal crossing data tests
 
@@ -185,6 +185,7 @@ Unity.exe -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -buil
 
 | 版 | 日付 | 変更 |
 |---|---|---|
+| v1.1 | 2026-05-06 | Stage 4 character v2 test count reconcile: latest Unity runner baseline is EditMode `35/35`, PlayMode `29/29`; source markers are EditMode 34 and PlayMode 29. |
 | v1.0 | 2026-05-06 | Stage 3 closeout baseline に更新。Latest Unity run は EditMode `32/32`、PlayMode `29/29` pass。DemoPlayable / SaveLoad / Locale integration coverage を追加。 |
 | v0.2 | 2026-05-05 | EditMode 31/31 baseline を確定。`docs/G5_PREFLIGHT.md` の 32/32 表記との差分を解消し、`[TestCase]` / `[TestCaseSource]` 不在を明記。 |
 | v0.1 | 2026-05-05 | 初版起草。Source scan に基づき EditMode 31 + PlayMode 18 = 49 件を catalog 化し、G5 matrix cross-reference と coverage gaps を記録。EditMode 32 baseline との差分は reconcile 対象として明記 |

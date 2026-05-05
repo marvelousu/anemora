@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v0.8 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v0.9 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 50 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
+Current root-level Markdown coverage: 51 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -25,6 +25,7 @@ Current root-level Markdown coverage: 50 files under `docs/devlog/`, including t
 | 2026-05-06 | [2026-05-06_stage4_brush_tutorial_hint.md](2026-05-06_stage4_brush_tutorial_hint.md) | Runtime brush tutorial hint for create / release / close affordance | This task | Stage 4 Phase 0 / brush UX | [Unreleased](../../CHANGELOG.md#unreleased) added |
 | 2026-05-06 | [2026-05-06_stage4_hero_v2_import.md](2026-05-06_stage4_hero_v2_import.md) | User-approved Hero / Resident_A / Resident_B v2 import | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) added / changed |
 | 2026-05-06 | [2026-05-06_stage4_audio_polish_inventory.md](2026-05-06_stage4_audio_polish_inventory.md) | Stage 4 audio polish inventory and listening-dispatch report | This task | Stage 4 Phase 0 / audio polish | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-06 | [2026-05-06_stage4_test_count_reconciliation.md](2026-05-06_stage4_test_count_reconciliation.md) | Stage 4 EditMode runner/source test-count reconciliation | This task | Stage 4 Phase 0 / verification | [Unreleased](../../CHANGELOG.md#unreleased) verification |
 
 ### 2.0 Stage 3 Closeout (2026-05-06)
 
@@ -161,3 +162,4 @@ Current root-level Markdown coverage: 50 files under `docs/devlog/`, including t
 | v0.6 | 2026-05-06 | Niro full-redraw scope devlog を追加し、root-level Markdown coverage を 47 件へ更新 |
 | v0.7 | 2026-05-06 | Brush tutorial hint devlog を追加し、root-level Markdown coverage を 48 件へ更新 |
 | v0.8 | 2026-05-06 | Hero v2 import devlog を追加し、root-level Markdown coverage を 49 件へ更新 |
+| v0.9 | 2026-05-06 | Stage 4 audio polish inventory and test-count reconciliation devlogs added; root-level Markdown coverage updated to 51 files. |
