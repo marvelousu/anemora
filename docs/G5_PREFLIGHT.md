@@ -12,7 +12,7 @@ Status: Draft for G5 execution entry
 
 ## 2. 必須前提状態
 
-G5 実行前に、以下の状態を満たしていることを確認する。現時点の test baseline は EditMode 32/32、PlayMode 18/18。新規 test が追加された場合は、G5 実行時点の expected count を採用する。
+G5 実行前に、以下の状態を満たしていることを確認する。現時点の test baseline は EditMode 31/31、PlayMode 18/18。新規 test が追加された場合は、G5 実行時点の expected count を採用する。
 
 ### 2.1 commit / push 状態
 
@@ -25,7 +25,7 @@ G5 実行前に、以下の状態を満たしていることを確認する。�
 - `git status` で G5 対象外の dirty / untracked がない、または temporary worktree で分離されている。
 - Unity で project を開き、compile error がない。
 - Unity package import error がない。
-- EditMode test が全件 pass する。現時点 baseline は 32/32。
+- EditMode test が全件 pass する。現時点 baseline は 31/31。
 - PlayMode test が全件 pass する。現時点 baseline は 18/18。
 - Windows Standalone build が error なしで成功する。
 
@@ -92,7 +92,7 @@ G5 実行時点の outstanding は、Go / No-Go 判定への影響で分けて�
 
 ### 4.3 テスト走行
 
-- [ ] EditMode test が 32/32 pass、または最新 expected count で全件 pass。
+- [ ] EditMode test が 31/31 pass、または最新 expected count で全件 pass。
 - [ ] PlayMode test が 18/18 pass、または最新 expected count で全件 pass。
 - [ ] テスト中に想定外の Console error / warning が出ない。
 
@@ -151,4 +151,5 @@ Lore / art / audio の未完了項目が残る場合は、該当 matrix row の�
 
 | 版 | 日付 | 変更 |
 |---|---|---|
+| v0.2 | 2026-05-05 | EditMode baseline を source scan に基づき 31/31 へ reconcile。PlayMode baseline は 18/18 維持。 |
 | v0.1 | 2026-05-05 | 初版起草。G5 実行前の必須前提、outstanding items、pre-flight checklist、Go / No-Go 判定を定義 |

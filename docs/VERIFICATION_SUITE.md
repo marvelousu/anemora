@@ -23,8 +23,9 @@ Source scan (2026-05-05):
 - `Assets/Tests/EditMode/`: 31 test methods discovered.
 - `Assets/Tests/PlayMode/`: 18 test methods discovered.
 - Total: 49 test methods discovered.
+- EditMode parameterized test attributes: none (`[TestCase]` / `[TestCaseSource]` not present).
 
-Note: `docs/G5_PREFLIGHT.md` は現時点 baseline として EditMode 32/32、PlayMode 18/18 を記載している。本 catalog の source scan では EditMode 31 件だったため、次回 test run または test 追加時に baseline count の reconcile が必要。
+Reconcile note (2026-05-05): EditMode baseline is 31/31, not 32/32. The source scan found 31 `[Test]` methods and no `[TestCase]` / `[TestCaseSource]` methods under `Assets/Tests/EditMode/`; `docs/G5_PREFLIGHT.md` has been updated accordingly.
 
 ## 2. EditMode tests
 
@@ -173,4 +174,5 @@ Unity.exe -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -buil
 
 | 版 | 日付 | 変更 |
 |---|---|---|
+| v0.2 | 2026-05-05 | EditMode 31/31 baseline を確定。`docs/G5_PREFLIGHT.md` の 32/32 表記との差分を解消し、`[TestCase]` / `[TestCaseSource]` 不在を明記。 |
 | v0.1 | 2026-05-05 | 初版起草。Source scan に基づき EditMode 31 + PlayMode 18 = 49 件を catalog 化し、G5 matrix cross-reference と coverage gaps を記録。EditMode 32 baseline との差分は reconcile 対象として明記 |
