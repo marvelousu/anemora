@@ -141,7 +141,7 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 - **ADR-0007 (UI フレームワーク)**: シンボル選択 UI (赤のみ選択可、白/青グレーアウト、VS_SCOPE §3.1) との連携
 - **VS_SCOPE §7 FIX エリア**: 時の窓ポータルシェーダ + ステンシル実装は **Stage 4 でも改修しない FIX** とする方針を本 ADR が裏打ち
 - **ADR-0003 (アセットパイプライン)**: ポータル枠 Quad の VFX (時間境界エフェクト) は AI 生成 + 手仕上げのパイプラインで作成
-- **ADR-0004 (プロジェクトディレクトリ構造)** (Windows Codex が B トラックで起草): `Assets/Scripts/TimeFrame/`, `Assets/Shaders/Portal/`, `Assets/Renderer/` 等のディレクトリを想定
+- **ADR-0004 (プロジェクトディレクトリ構造)**: `Assets/Scripts/TimeManagement/Portal/`、`Assets/Art/Materials/Portal/`、`Assets/Settings/` 等の配置と整合
 
 ---
 
@@ -262,6 +262,6 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 ### 関連 ADR (本 ADR と相互参照)
 
 - `ADR-0001`: エンジン Unity 6.3 LTS 採用 (本 ADR の前提)
-- `ADR-0004` (Windows Codex 起草中): プロジェクトディレクトリ構造 — `Assets/Scripts/TimeFrame/`, `Assets/Shaders/Portal/` 等の配置
-- `ADR-0005` (今後起草): 時間管理 / シーン切替 — 踏込み時の主従反転詳細
-- `ADR-0007` (今後起草): UI フレームワーク (uGUI vs UI Toolkit) — シンボル選択 UI の実装
+- `ADR-0004`: プロジェクトディレクトリ構造 — `Assets/Scripts/TimeManagement/Portal/`, `Assets/Art/Materials/Portal/` 等の配置
+- `ADR-0005`: 時間管理 / シーン切替 — 踏込み時の主従反転詳細
+- `ADR-0007`: UI フレームワーク (uGUI vs UI Toolkit) — シンボル選択 UI の実装

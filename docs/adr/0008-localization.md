@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (Stage 4 入口で実装着手、本 ADR は方針の先行確定)
+Accepted (Stage 3 A1 で DialogueAsset / package baseline 着手、Stage 4 入口で本格 localization 実装)
 
 ## Date
 
@@ -33,7 +33,7 @@ VS 着手段階では Unity Localization の API を呼ぶが、実翻訳デー�
 ### 技術前提
 
 - Unity 6000.3.14f1 + URP (ADR-0001)
-- Unity Localization Package: 最新安定版 (Unity 6.3 系で `com.unity.localization@1.5.x` 想定)
+- Unity Localization Package: `com.unity.localization@1.5.9` (Stage 3 A1 で導入、Unity 6.3 系の 1.5.x line)
 - TextMeshPro: `com.unity.textmeshpro` (URP 同梱)
 - DeepL Pro: 翻訳 API として商用契約 (ADR-0003)
 - Aseprite: 日本語ピクセルフォント Atlas 生成 (ピクセルフォントの場合)
@@ -280,13 +280,7 @@ DialogueAsset と DialogueAssetData は **同じ string key を共有** する�
   - String Table key: `dialogue.npc.resident_a.initial_01`, `..._02` (Turn 番号 suffix)
   - String Table key: `dialogue.npc.resident_a.post_take_book_family_001_01`, `..._02`
 
-#### 5.2 命名整合
-
-- DialogueAsset の `variantId` (例: "initial", "post_take_book_family_001") は String Table key suffix と一致させる:
-  - DialogueAsset key: `dialogue.npc.resident_a.initial_01`, `..._02` (Turn 番号 suffix)
-  - DialogueAsset key: `dialogue.npc.resident_a.post_take_book_family_001_01`, `..._02`
-
-#### 5.3 開発フロー
+#### 5.5 開発フロー
 
 1. **Stage 3 中**: 日本語原文を `docs/draft/g3_npc_dialogue.md` で起草
 2. **Stage 3 完了時**: 確定文言を String Table (`Anemora_Strings.asset` の ja-JP sub-Asset) に投入
@@ -469,3 +463,4 @@ Stage 5 で言語を 1 つ追加する場合:
 |---|---|---|
 | v0.1 | 2026-05-04 | Stage 3 Day 1 起草。Locale 構成 / String Table 命名規則 / TMP Atlas 戦略 / DeepL ワークフロー / DialogueAsset 接続 / 検証ポイント / Alternatives 5 件 |
 | v0.2 | 2026-05-05 | Codex E1 review 反映: §5 asmdef 境界を明確化。`Anemora.Data` は POCO + string key のみ、`LocalizedString` は別 asmdef (`Anemora.Game` or `Anemora.UI`) の DialogueAsset SO に分離。2 層構造で engine-free 性を維持 |
+| v0.3 | 2026-05-05 | ADR review pass: `com.unity.localization@1.5.9` 導入状態、Status の実装段階表現、§5 の重複見出しを整理 |

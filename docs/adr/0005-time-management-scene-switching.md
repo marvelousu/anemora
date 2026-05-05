@@ -35,7 +35,7 @@ Anemora の中核機構「時の窓 (Time Frame)」のレンダリング方針�
 - Unity 6.3 LTS + URP (ADR-0001)
 - ADR-0002 (Time Frame ポータル) と整合
 - ADR-0007 (UI フレームワーク) のシンボル選択 UI / 対話 UI と連携
-- ADR-0006 (セーブシステム、未起草) と境界を定義
+- ADR-0006 (セーブシステム) と境界を定義
 - VS では赤シンボル (過去) + 持ち帰る 1 種のみ実装、未来側は演出のみ
 - VS では時間侵食状態を発動させない (機構は定義するが、トリガー条件を満たさない)
 
@@ -110,7 +110,7 @@ E4 実装での atomic flip ordering は以下に固定する。
 
 - VS は **第 1 ゾーン (現在) + その過去 1 つ** のみのスコープ (VS_SCOPE.md §3.2)
 - **Unity Scene は 1 つを基底** とし、その内部に `Root_Current` / `Root_Past` を **常駐 GameObject 群** として保持
-- レイヤー分離で別カメラに描画 (ADR-0002 採用方針)
+- レイヤー分離で Main Camera + Stencil layer mask に描画 (ADR-0002 v1.1 / ADR-0005 v1.1 の実装方針)
 - メモリオーバーヘッドが小さい (低ポリ 3D + 軽量ドット絵スプライト前提)
 - シーン切替遅延がない (Additive ロード待ちが不要)
 - 状態同期が単純 (ロード/アンロードによる初期化漏れを回避)
@@ -306,7 +306,7 @@ public class ActionRecordCatalog : ScriptableObject {
 - 重要会話後 (主要 NPC との対話完了時)
 - ESC メニューを開いた時
 
-#### ADR-0006 (セーブシステム、未起草) との責務分担
+#### ADR-0006 (セーブシステム) との責務分担
 
 | 責務 | 担当 ADR |
 |---|---|
@@ -358,7 +358,7 @@ VS では **層 1 + 層 2 への片鱗 1 カット** のみ実装する (VS_SCOP
 ### 後続への影響
 
 - **ADR-0002 (Time Frame ポータル)** — 本 ADR が踏込み遷移詳細とライフサイクルを確定したため、ADR-0002 の「ADR-0005 で詳細化」記述が解決
-- **ADR-0006 (セーブシステム、未起草)** — 本 ADR との責務分担を明文化:
+- **ADR-0006 (セーブシステム)** — 本 ADR との責務分担を明文化:
   - **本 ADR (0005)**: セーブ対象データの意味と範囲
   - **ADR-0006**: ファイル形式 / 保存先 / スロット管理 / ロード順序 / 暗号化・圧縮の要否
 - **ADR-0007 (UI フレームワーク)** — 進行ログの書換、対話 UI の状態切替、シンボル選択 UI の枠生成中操作で連携
@@ -459,6 +459,7 @@ VS では **層 1 + 層 2 への片鱗 1 カット** のみ実装する (VS_SCOP
 |---|---|---|
 | v1.0 | 2026-05-04 | 初版。時間管理 / シーン切替 / セーブ対象範囲を定義 |
 | v1.1 | 2026-05-05 | E4 確定値反映。hysteresis / minimum movement / cooldown / flash、PortalState 6 状態、atomic flip ordering、Main Camera 単体 + `PortalStencilFeature.SetLayerMasks()` 反転を追記 |
+| v1.2 | 2026-05-05 | ADR review pass: ポータル描画の説明を Main Camera + Stencil layer mask 方針へ統一 |
 
 ---
 
@@ -496,6 +497,6 @@ VS では **層 1 + 層 2 への片鱗 1 カット** のみ実装する (VS_SCOP
 - `ADR-0001`: エンジン Unity 6.3 LTS 採用 (本 ADR の前提)
 - `ADR-0002`: Time Frame ポータル — 本 ADR が踏込み遷移とライフサイクルを引き継ぎ
 - `ADR-0003`: アセットパイプライン — 痕跡可視化 / 層遷移演出のアセット
-- `ADR-0004` (Windows Codex 起草中): プロジェクトディレクトリ構造 — `Assets/Scripts/TimeManagement/`, `Assets/ScriptableObjects/ActionRecords/` 等の配置
-- `ADR-0006` (今後起草): セーブシステム — 本 ADR §6 で定義したデータ範囲を永続化
+- `ADR-0004`: プロジェクトディレクトリ構造 — `Assets/Scripts/TimeManagement/`, `Assets/ScriptableObjects/ActionRecords/` 等の配置
+- `ADR-0006`: セーブシステム — 本 ADR §6 で定義したデータ範囲を永続化
 - `ADR-0007`: UI フレームワーク — シンボル選択 UI / 対話 UI と本 ADR の状態管理が連携

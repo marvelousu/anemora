@@ -84,7 +84,7 @@ Anemora の VS 制作 (Stage 3) と Stage 4-5 の本実装で、UI フレーム�
 
 ### 命名規則 / ディレクトリ構造
 
-ADR-0004 (プロジェクトディレクトリ構造、Windows Codex 起草中) で確定するが、本 ADR の前提として:
+ADR-0004 (プロジェクトディレクトリ構造) で確定するが、本 ADR の前提として:
 
 - `Assets/UI/Prefabs/` — UI Prefab (HUD / Dialog / SymbolWheel / Menu)
 - `Assets/UI/Sprites/` — UI Sprite アセット (9-slice / アイコン)
@@ -103,7 +103,7 @@ HD-2D Tier 2 と整合する UI スタイル:
 
 ### TextMeshPro フォント戦略
 
-Stage 3 着手前に以下を確定済として運用:
+Stage 3 では以下を運用方針として扱う。フォント資産の最終採用は `docs/STAGE3_TBD_RESOLUTION.md` で tracking する:
 
 - **日本語**: **事前生成 Atlas を基本** とする (Dynamic Font は使わない)
   - JIS 第 1 水準 + 第 2 水準で 6,000-7,000 字、Atlas 容量を計測
@@ -137,8 +137,8 @@ Stage 3 着手前に以下を確定済として運用:
 ### 後続への影響
 
 - **VS_SCOPE.md §6 UI 規模** — uGUI 前提で構築、対話 UI / シンボル選択 UI は完成品質方針で詰める
-- **ADR-0004 (プロジェクトディレクトリ構造、Windows Codex 起草中)** — `Assets/UI/` の標準サブディレクトリと整合
-- **ADR-0008 (ローカライズ実装、Stage 4 入口で起草予定)** — Unity Localization Package + TextMeshPro + uGUI の連携方針を詳細化。特に **String Table の命名規則、Locale 切替時の TMP Font Asset 切替、翻訳差分の運用責務** を定義する
+- **ADR-0004 (プロジェクトディレクトリ構造)** — `Assets/UI/` の標準サブディレクトリと整合
+- **ADR-0008 (ローカライズ実装)** — Unity Localization Package + TextMeshPro + uGUI の連携方針を詳細化。特に **String Table の命名規則、Locale 切替時の TMP Font Asset 切替、翻訳差分の運用責務** を定義する
 - **`docs/legal/asset_ledger.md`** — UI 2D アセット (アイコン / 装飾枠) も AI 生成の場合は記録対象
 
 ---
@@ -201,6 +201,15 @@ Stage 3 着手前に以下を確定済として運用:
 
 ---
 
+## 改訂履歴
+
+| 版 | 日付 | 変更 |
+|---|---|---|
+| v1.0 | 2026-05-04 | 初版。uGUI を本線採用し、UI Toolkit を将来選択肢として保持 |
+| v1.1 | 2026-05-05 | ADR review pass: ADR-0004 / ADR-0008 cross-reference と TMP font finality 表現を現状に合わせて更新 |
+
+---
+
 ## References
 
 ### 公式
@@ -232,6 +241,6 @@ Stage 3 着手前に以下を確定済として運用:
 - `ADR-0001`: エンジン Unity 6.3 LTS 採用 (本 ADR の前提)
 - `ADR-0002`: Time Frame ポータル — 本 ADR のシンボル選択 UI が連携
 - `ADR-0003`: アセットパイプライン — UI 素材 (アイコン / 装飾枠) の生成方針
-- `ADR-0004` (Windows Codex 起草中): プロジェクトディレクトリ構造 — `Assets/UI/` 配置と本 ADR が整合
-- `ADR-0005` (今後起草): 時間管理 / シーン切替 — 時の窓シンボル選択 UI の状態遷移と連携
-- `ADR-0008` (Stage 4 入口で起草予定): ローカライズ実装 — Unity Localization + TextMeshPro + uGUI の連携詳細
+- `ADR-0004`: プロジェクトディレクトリ構造 — `Assets/UI/` 配置と本 ADR が整合
+- `ADR-0005`: 時間管理 / シーン切替 — 時の窓シンボル選択 UI の状態遷移と連携
+- `ADR-0008`: ローカライズ実装 — Unity Localization + TextMeshPro + uGUI の連携詳細

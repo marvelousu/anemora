@@ -81,6 +81,12 @@ Anemora の中核機構である「時の窓 (Time Frame)」は、3D 空間に�
 - AI 主体個人開発の優位性 (既存エコシステム活用) を失う
 - → **不採用**
 
+## 改訂履歴
+
+| 版 | 日付 | 変更 |
+|---|---|---|
+| v1.0 | 2026-05-04 | 初版。Unity 6.3 LTS + URP を本線エンジンとして採用 |
+
 ## References
 
 - [Unity 6.3 LTS Release Notes](https://unity.com/releases/lts) (TBD: 公式 URL は記事公開時に確定)

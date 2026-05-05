@@ -24,6 +24,7 @@ Use this initial Unity layout. Subdirectories may be created lazily as Stage 3 t
   - `Assets/Scripts/TimeManagement/` for Time Frame portal, ActionRecord runtime, scene-flip logic (ADR-0005)
   - `Assets/Scripts/Save/` for save/load services and migration chain (ADR-0006)
   - `Assets/Scripts/Data/` for plain DTOs (`SaveEnvelope`, `ActionRecordEntry`, etc., ADR-0005 / 0006)
+  - `Assets/Scripts/Game/` for Unity-dependent gameplay assets such as DialogueAsset ScriptableObjects (ADR-0008)
   - `Assets/Scripts/UI/` for HUD, dialog, symbol wheel, ESC menu controllers (ADR-0007)
 - `Assets/Art/` for visual source assets
   - `Assets/Art/Sprites/` for sprite and HD-2D visual source exports
@@ -48,7 +49,7 @@ Use this initial Unity layout. Subdirectories may be created lazily as Stage 3 t
 
 The project targets Unity `6000.3.14f1`, a Unity 6.3 LTS build, with Universal Render Pipeline enabled through `com.unity.render-pipelines.universal`.
 
-Asmdef boundaries are not yet imposed at Stage 3 Day 1. They will be introduced when Newtonsoft.Json (ADR-0006) or test assemblies require explicit references; the directory layout above is shaped to make later asmdef splits straightforward (`Save`, `Data`, `TimeManagement`, `UI` each form natural assembly seams).
+Asmdef boundaries are introduced selectively. Stage 3 Day 1 added `Anemora.Data` for engine-free POCO types and `Anemora.Game` for Unity-dependent gameplay / DialogueAsset types (ADR-0008). Additional asmdef splits may still be introduced when Newtonsoft.Json (ADR-0006), Save, TimeManagement, or UI assemblies require explicit references; the directory layout above is shaped to keep those later splits straightforward.
 
 ## Consequences
 Unity import and editor file access stay on the fastest local filesystem for this machine. WSL2 remains useful for text-oriented work but is not on the critical path for Unity asset import or editor iteration.
@@ -70,8 +71,9 @@ Maintain two separate repositories, one for docs in WSL2 and one for Unity on Wi
 - `docs/adr/0006-save-system.md` — informs `Assets/Scripts/Save/` and `Assets/Scripts/Data/`
 - `docs/adr/0007-ui-framework-ugui.md` — informs `Assets/UI/{Prefabs,Sprites,Scripts,Localization}/`
 
-## Revision History
+## 改訂履歴
 | Rev | Date | Change |
 |---|---|---|
 | v1 | 2026-05-05 | Initial draft (Windows Codex, B track) |
 | v1.1 | 2026-05-04 | Linux Claude follow-up: expanded `Assets/` layout for ADR-0003 / 0005 / 0006 / 0007 alignment, added asmdef note, added cross-ADR references |
+| v1.2 | 2026-05-05 | ADR review pass: recorded `Assets/Scripts/Game/` and updated asmdef note for `Anemora.Data` / `Anemora.Game` reality |

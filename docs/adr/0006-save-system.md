@@ -311,7 +311,7 @@ Stage 3-4 の実装は、Steam Cloud の同期対象にしやすい単純なフ�
 
 - **ADR-0005 (時間管理 / シーン切替)** — §6 のセーブ対象を本 ADR の `SaveEnvelope` とロード順序で永続化する
 - **ADR-0007 (UI フレームワーク)** — ESC メニュー、ロード画面、`settings.json` によるアクセシビリティ設定保存が本 ADR と連携する
-- **ADR-0004 (プロジェクトディレクトリ構造、Windows Codex 起草中)** — `Assets/Scripts/Save/`, `Assets/Scripts/Data/`, asmdef 参照設計と整合が必要
+- **ADR-0004 (プロジェクトディレクトリ構造)** — `Assets/Scripts/Save/`, `Assets/Scripts/Data/`, asmdef 参照設計と整合が必要
 - **Stage 3 G トラック** — 第 1 ゾーン実装時に、オートセーブと ActionRecord 復元を通しで検証する
 - **Stage 5 Steam 公開** — Steam Cloud と conflict handling を本 ADR 改訂 or 別 ADR で具体化する
 
@@ -414,6 +414,15 @@ Stage 3-4 の実装は、Steam Cloud の同期対象にしやすい単純なフ�
 
 ---
 
+## 改訂履歴
+
+| 版 | 日付 | 変更 |
+|---|---|---|
+| v1.0 | 2026-05-04 | 初版。JSON / persistentDataPath / autosave / migration / Steam Cloud 連携方針を定義 |
+| v1.1 | 2026-05-05 | ADR review pass: ADR-0004 cross-reference の起草中表記を更新 |
+
+---
+
 ## References
 
 ### 公式
@@ -434,6 +443,6 @@ Stage 3-4 の実装は、Steam Cloud の同期対象にしやすい単純なフ�
 ### 関連 ADR
 
 - `ADR-0001`: エンジン Unity 6.3 LTS 採用 (本 ADR の前提)
-- `ADR-0004` (Windows Codex 起草中): プロジェクトディレクトリ構造 — `Assets/Scripts/Save/` 等の配置と整合
+- `ADR-0004`: プロジェクトディレクトリ構造 — `Assets/Scripts/Save/` 等の配置と整合
 - `ADR-0005`: 時間管理 / シーン切替 — 本 ADR の永続化対象を定義
 - `ADR-0007`: UI フレームワーク — セーブ UI / 設定保存と連携

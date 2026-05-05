@@ -279,4 +279,4 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 
 - `ADR-0001`: エンジン Unity 6.3 LTS 採用 (本 ADR の前提)
 - `ADR-0002`: Time Frame ポータル — VFX パイプラインの一部
-- `ADR-0004` (Windows Codex 起草中): プロジェクトディレクトリ構造 — `Assets/Art/Sprites/`, `Assets/Art/Models/`, `Assets/Audio/BGM/` 等のアセット配置と本 ADR が整合
+- `ADR-0004`: プロジェクトディレクトリ構造 — `Assets/Art/Sprites/`, `Assets/Art/Models/`, `Assets/Audio/Music/` 等のアセット配置と本 ADR が整合
