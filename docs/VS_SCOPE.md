@@ -1,12 +1,12 @@
-# Vertical Slice スコープ定義 v0
+# Vertical Slice スコープ定義 v0.2
 
 > Anemora の **Vertical Slice (VS) = ここまで作れば「縦切り完成」と呼べる** 範囲を定義する。
 > Stage 3 (Day 0-10 目安) で本書を達成し、達成判定 = Stage 4 (α) 着手の前提。
-> SPEC.md / PITCH.md と整合し、TBD 項目は VS_SCOPE のために最小限を確定する。
+> SPEC.md / PITCH.md と整合し、VS_SCOPE は完成定義・確定済み仕様・残タスクを扱う。流動的な TBD は `docs/STAGE3_TBD_RESOLUTION.md` で tracking する。
 
 > **役割分離**: 本書 (VS_SCOPE) は **VS の "定義書"** (何を作れば VS 完成か)。`docs/STAGE3_PLAN.md` は **VS の "実行計画書"** (どう進めるか・どの順序で何日かけて作るか)。両者の混線を防ぐため、完了条件は本書 §8 を主とし、STAGE3_PLAN 側はそこへの参照に統一する。
 
-> **Status (2026-05-04 = Day 0)**: v0.1。ユーザー判断 3 軸 (連続プレイ時間 10-15 分 / コアループ最小 / 層遷移片鱗のみ) + Codex (fast) レビュー 12 件 (P0×4 / P1×4 / P2×4) 全件反映済。
+> **Status (2026-05-05 = Stage 3 Day 1)**: v0.2。E0-E5 + A2 + G4 のコアループ最小成立は達成済み (`0644822`)。残る VS 完成判定は G3 final、A4 Audio、G5 通し体験 + Windows build + 検証マトリクス実行。
 
 ---
 
@@ -26,12 +26,12 @@
 ### シナリオ流れ
 
 ```
-[ 0:00-1:00 ] オープニング (Stage 3 A トラック /spec で詳細確定、`STAGE3_TBD_RESOLUTION.md` §4 参照)
+[ 0:00-1:00 ] オープニング (Stage 3 A トラック /spec で詳細化済。未確定項目は `docs/STAGE3_TBD_RESOLUTION.md` で tracking)
   - 主人公が **家のベッドで目覚める** (家は窓なし・閉塞感)
   - 含み演出: D-3 (夢を見ていたような、夢を見ていなかったような) + D-7 改 (俯瞰視点で手を見る一瞬の動作) + D-6 弱版 (今日は体がだるい、削除可能フラグ)
   - 主人公は silent protagonist、感情はテキストウィンドウのみ
   - **ドアの前で家を出るとき、ポケットから時の筆を取り出して気づく**
-  - 外に出た瞬間: 朝日 + 風 + 何らかの音 (鳥は TBD)、その後は BGM のみで静謐・衰退
+  - 外に出た瞬間: 朝日 + 風 + 何らかの音 (鳥音の採否は `docs/STAGE3_TBD_RESOLUTION.md` で tracking)、その後は BGM のみで静謐・衰退
   - チュートリアルは過剰なガイドを避け、街の探索の中で時の窓の使い方を体得
 
 [ 1:00-3:00 ] チュートリアル違和感 (主要 1 つ)
@@ -69,7 +69,7 @@
 
 ## 3. 実装範囲
 
-### 3.1 コアループ要素
+### 3.1 コアループ要素 (v0.2: 最小成立達成済)
 
 | 要素 | VS 実装 | Stage 4 以降 |
 |---|---|---|
@@ -78,6 +78,23 @@
 | 能動行動 | **持ち帰る** 1 種のみ | 告げる / 押す/動かす |
 | 過去への踏込み | ✅ 実装 (現在時間停止 + ジオラマ表示) | 未来踏込み |
 | 現在への反映 | ✅ 実装 (痕跡可視化 + NPC セリフ変化) | より広範な世界書換 |
+
+**v0.2 達成状況**: E0-E5 + A2 + G4 のチェーンにより、VS のコアループ最小成立は達成済み (`0644822`)。
+
+達成済みの手触り:
+
+1. SymbolWheel で赤シンボルを選択する。
+2. Portal が開く。
+3. Player が Past へ移動する。
+4. Past 側の本を取得し、ActionRecord に記録する。
+5. Current へ帰還する。
+6. Bed 上に `Book_Family_Current` が spawn し、過去での行動が現在へ反映される。
+
+検証状態:
+
+- `AnemoraMainPortalWiringRoundTripTests`: green。
+- G4 ActionRecord reflection E2E PlayMode test: green。
+- Day 1 時点の PlayMode suite: 16/16 green。
 
 > **シンボル UI 表示方針**: シンボル選択 UI には白/青も表示するが、**薄色 / グレーアウト + 選択不可** で「未来に拡張される」予告として機能させる (Stage 4 での誤実装防止)。
 >
@@ -105,7 +122,7 @@
 | ヒーロービジュアル v1 | ✅ 実装 (PixelLab + Aseprite 仕上げ) |
 | 4 方向歩き / 走り / アイドル | ✅ 実装 |
 | 表情差分 | プレースホルダ可 (Stage 4 で拡充) |
-| 名前 / 性別 / 年齢 | TBD (Stage 3 中盤までに /spec で確定) |
+| 名前 / 性別 / 年齢 | `docs/STAGE3_TBD_RESOLUTION.md` で tracking。VS_SCOPE では確定扱いしない |
 
 ### 3.4 層遷移片鱗 (VS フィナーレ)
 
@@ -114,6 +131,30 @@
 | 層 1 完結 | ✅ プレイヤーが「衰退の予兆 → 能動行動 → 痕跡」を理解 |
 | 層 2 片鱗 | **1 カットのみ**: 「ルールが書き換わる予兆」を視覚演出 |
 | 層 2 のルール本体 | ❌ VS では実装しない (Stage 4 マイルストン) |
+
+### 3.5 Stage 3 Day 1 機能ブロック状態
+
+| ブロック | v0.1 状態 | v0.2 反映 |
+|---|---|---|
+| E0 URP Pipeline | TBD | ✅ 完了。`AnemoraE0Setup.cs` editor automation により URP pipeline baseline を構築。 |
+| E1 PortalStencil | TBD | ✅ 完了。`PortalStencilFeature` + `PortalMask.shader` / `InsideOnly.shader`、stencil bit 3 / Mask = 8 / Ref = 8、dual-pass 設計。ADR-0002 v1.1 反映。 |
+| E2 ヒエラルキー | TBD | ✅ 完了。`SceneRootRegistry` + `Camera_Past` skeleton。VS では `Camera_Past` を使わず Main Camera の culling 反転で運用。 |
+| E3 SymbolWheel | TBD | ✅ 完了。3 シンボル表示、赤のみ活性、白 / 青は preview / disabled。 |
+| E4 PortalCrossing | TBD | ✅ 完了。6 状態 state machine + atomic flip。hysteresis 0.02m / minimum normal movement 0.05m / cooldown 0.1s / flash 0.05s。ADR-0005 v1.1 反映。 |
+| E5 ActionRecord | TBD | ✅ 完了。`IReflector` + `BookReflector` + `ActionRecordCatalog` + `ActionRecordRuntime`。 |
+| A1 DialogueAsset 構造 | TBD | ✅ 完了。`Anemora.Data` POCO + `Anemora.Game` asmdef + `DialogueAsset` SO + `com.unity.localization@1.5.9`。Batchmode では key fallback で動作。`LocalizationSettings` + `StringTable` seed は seed タスクで進行中。 |
+| A2 Anemora_Main wiring | TBD | ✅ 完了 (`cb2b6ed`)。`PrototypePlayerController` + 境界往復 PlayMode test。 |
+| A3 Zone1 Buildings | TBD | ✅ 完了。Meshy v6 + 3/14 Blender 修復 + atlas + manifest + tools/scripts。 |
+| A4 Audio | TBD | 進行中。MCP AIVA で BGM 作業中。SFX 30 種は prompt detail v1.0 ready、BGM 後に着手。 |
+| A5 UI 基盤 + ローカライズ | TBD | ✅ JP TMP Atlas (美咲ゴシック) + EN draft (Press Start 2P) + Anemora パレット v0。最終採用は `docs/STAGE3_TBD_RESOLUTION.md` 参照。 |
+| F1 PixelLab drafts | TBD | ✅ 完了。Hero front / side / back、Resident_A front / back / left、Resident_B seated。 |
+| F2 Aseprite 仕上げ | TBD | ✅ 完了。Steam Aseprite 正式版で再エクスポート (`08f61b8`, `4d2092a`)。 |
+| F3 Retro Diffusion 補助 | TBD | 要否は `docs/STAGE3_TBD_RESOLUTION.md` で tracking。 |
+| F4 Hero/NPC.prefab + Animator | TBD | ✅ 完了 (`d2c95c2`)。Hero / Resident_A / Resident_B prefab + 個別 `AnimatorController` + `HeroAnimatorBinder` + `Anemora_Main` placeholder 置換。 |
+| G1/G2 Buildings 採用方針 | TBD | ✅ 解決。A3 Meshy 再生成 = 案 b 採用。 |
+| G3 NPC 配置 + 対話 | TBD | partial 着手中。Resident_A/B placement + `NpcInteractable` + `DialogueDisplay` scaffold。Final batch は `LocalizationSettings` + 実 dialogue 内容投入後。 |
+| G4 ActionRecord トリガー設置 | TBD | ✅ 完了 (`0644822`)。`take_book_001` + `Book_Family_Current.prefab` + `PastBookInteractable` + E2E PlayMode test。 |
+| G5 通し体験 + Windows ビルド + 検証マトリクス | TBD | matrix draft ready (`docs/G5_ACCEPTANCE_MATRIX.md`, 36 項目)。F4 / G3 / Audio 完了後に G5 実行。 |
 
 ---
 
@@ -153,25 +194,31 @@ VFX は時の窓 / 痕跡可視化 / 層 2 片鱗の **3 つに限定** (環境�
 
 ## 5. 音響規模
 
+音響方向性は v0.1 の **静謐 / 衰退 / メランコリック、暗黒一辺倒ではない** 方針を維持する。DAW は Studio One に統一済み (Reaper 表記は ADR-0003 と asset prompt 側で訂正済み)。
+
 ### 5.1 BGM
 
-VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ループ再利用で代用可:
+VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ループ再利用で代用可。A4 は MCP AIVA で進行中。
 
 | トラック | VS 実装 | 品質 |
 |---|---|---|
-| 街アンビエント (常時 BGM) | ✅ 実装 1 曲 | VS 時点暫定完成 |
-| 時の窓使用時の演出曲 | 街アンビエントの変調 + フィルタで代用可 (固有曲は Stage 4) | プレースホルダ可 |
+| 街アンビエント (常時 BGM) | 進行中。MCP AIVA で BGM 作業中 | VS 時点暫定完成 |
+| 時の窓使用時の演出曲 | 街アンビエントの変調で代用。Low-pass + 楽器抜き + pitch shift -2 semitones を VS で実装 | プレースホルダ可 |
 | 層遷移片鱗演出曲 | 既存 BGM の変調で代用 | Stage 4 で固有曲に差替 |
+
+詳細 prompt / export 方針は `docs/asset_prompts/bgm_zone1_ambient.md` を参照。
 
 ### 5.2 環境音 / SFX
 
 | カテゴリ | VS 実装 |
 |---|---|
-| 環境音 (鳥/風/水) | 5-8 種 (ループ可能) |
-| 足音 (床タイル別) | 3-5 種 |
-| 時の窓 SFX (描画/シンボル選択/踏込み) | 5 種 |
-| 持ち帰り SFX | 2-3 種 |
-| NPC 反応 SFX | 3-5 種 |
+| 環境音 | 6 種 |
+| 足音 | 12 種 |
+| 時の窓 SFX | 6 種 |
+| NPC 反応 SFX | 3 種 |
+| UI SFX | 3 種 |
+
+SFX 30 種は `docs/asset_prompts/sfx_zone1.md` v1.0 draft ready。ツール構成は ElevenLabs SFX 28 / Stable Audio 1 / Studio One foley 1。実生成は A4 BGM 後に着手する。
 
 ### 5.3 ボイス
 
@@ -229,34 +276,40 @@ VS = 「最終クオリティで作り込んだ縦切り」と理想は持ちつ
 
 ## 8. 完了条件チェックリスト
 
-VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。
+VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v0.2 では Stage 3 Day 1 の実装 reality を反映し、各項目に状態とブロック原因を付ける。
 
 ### 必須 (VS 達成判定の死守ライン、全 YES が VS 完成の条件)
 
-- [ ] **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分)
-- [ ] 時の窓描画 → 赤シンボル選択 → 過去踏込み → 持ち帰り → 現在反映 の **コアループが破綻なく動作**
-- [ ] **主要違和感 1 個** が機能 (反映の痕跡が確認できる)
-- [ ] **層 2 への片鱗演出が 1 カット** 入っている
-- [ ] 主人公スプライト v1 が動作 (品質は VS 時点暫定で可)
-- [ ] 街中央広場 + 周辺の HD-2D Tier 2 レンダリングが動作 (1 ゾーン成立)
-- [ ] **Windows ビルドが起動 → タイトル → ゲーム本体まで動作**
-- [ ] 詰みが起きない (時の窓再描画で必ず解除可能)
+| 状態 | 項目 | v0.2 ブロック原因 / 備考 |
+|---|---|---|
+| 進行中 | **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分) | G3 final / Audio / G5 実行待ち。検証項目は `docs/G5_ACCEPTANCE_MATRIX.md` に準備済み。 |
+| ✅ | 時の窓描画 → 赤シンボル選択 → 過去踏込み → 持ち帰り → 現在反映 の **コアループが破綻なく動作** | E0-E5 + A2 + G4 で達成済み。PlayMode 16/16 green。 |
+| ✅ | **主要違和感 1 個** が機能 (反映の痕跡が確認できる) | G4 の本取得 → Current 側 Bed 上 book spawn で達成済み。 |
+| 残 | **層 2 への片鱗演出が 1 カット** 入っている | G5 final flow で実配置 / 実再生確認が必要。 |
+| ✅ | 主人公スプライト v1 が動作 (品質は VS 時点暫定で可) | F2 / F4 完了。Hero prefab + Animator + `HeroAnimatorBinder` 導入済み。 |
+| ✅ | 街中央広場 + 周辺の HD-2D Tier 2 レンダリングが動作 (1 ゾーン成立) | A3 buildings 完了。F4 prefab、UI 基盤 v0 も到達済み。 |
+| 残 | **Windows ビルドが起動 → タイトル → ゲーム本体まで動作** | G5 で Windows Standalone build を実行。 |
+| ✅ | 詰みが起きない (時の窓再描画で必ず解除可能) | コアループ PlayMode と boundary round-trip で基礎動作確認済み。G5 manual で再確認。 |
 
 ### 推奨 (達成すべきだが、削減トリガー時に外せる)
 
-- [ ] サイド違和感 1 個
-- [ ] NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** (生存・移住・会話変化のいずれか、痕跡として確認できる形で)
-- [ ] 街アンビエント BGM 1 曲
-- [ ] 時の窓 SFX (描画/シンボル/踏込み/持ち帰り)
-- [ ] オートセーブが動作
-- [ ] ESC メニュー → タイトルへ戻る が動作
+| 状態 | 項目 | v0.2 ブロック原因 / 備考 |
+|---|---|---|
+| 残 | サイド違和感 1 個 | Stage 3 完走優先。削減対象として維持。 |
+| 進行中 | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | G3 partial 進行中。Final は `LocalizationSettings` + user `/spec` 後の dialogue 内容投入待ち。 |
+| 進行中 | 街アンビエント BGM 1 曲 | A4 BGM 進行中。 |
+| 残 | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX prompt v1.0 ready。BGM 後に実生成 / import。 |
+| 残 | オートセーブが動作 | Save/Load の VS 必要範囲を G5 で確認。 |
+| 残 | ESC メニュー → タイトルへ戻る が動作 | UI final wiring 後に G5 で確認。 |
 
 ### Stage 4-5 寄り (VS 判定では問わない、達成できれば加点)
 
-- [ ] 30 秒トレイラー (PITCH §3) の 6 カット全てが実機キャプチャ可能
-- [ ] Linux ビルドが起動 → タイトル → ゲーム本体まで動作 (Mac は Stage 4 まで保留可)
-- [ ] アセット完成品質 FIX (Stage 4 でも改修しない水準)
-- [ ] BGM / SFX が固有曲・固有素材で完成品質
+| 状態 | 項目 | v0.2 ブロック原因 / 備考 |
+|---|---|---|
+| 残 | 30 秒トレイラー (PITCH §3) の 6 カット全てが実機キャプチャ可能 | G5 通し体験後に素材化判断。 |
+| 残 | Linux ビルドが起動 → タイトル → ゲーム本体まで動作 (Mac は Stage 4 まで保留可) | VS 判定外。 |
+| 進行中 | アセット完成品質 FIX (Stage 4 でも改修しない水準) | コア機構は FIX。sprite / building / audio は VS 時点暫定完成として扱う。 |
+| 進行中 | BGM / SFX が固有曲・固有素材で完成品質 | A4 進行中。VS 判定では完成品質までは問わない。 |
 
 ---
 
@@ -267,9 +320,9 @@ VS 制作中に進捗が遅れた場合、以下の順で削減する。**死守
 | 削減順 | 項目 | 削減後の体験 |
 |---|---|---|
 | 1 | **§8 Stage 4-5 寄り全項目** (Linux ビルド / 30 秒トレイラー素材 / アセット完成品質 FIX / BGM・SFX 固有素材) | VS 判定要件外、即削減可、最優先 |
-| 2 | BGM / SFX の完成品質 | 既存 SFX のループ再利用 → 環境音 + 最小 SFX のみ |
+| 2 | BGM / SFX の完成品質 | BGM 変調 + 環境音 + 最小 SFX のみ |
 | 3 | サイド違和感 1 個 → 0 個 | 主要違和感のみ + 物語入口で 5-7 分の VS |
-| 4 | NPC を 2 人 → 1 人 | 老人 1 人だけで物語入口、運命書換は痕跡可視化で代替 |
+| 4 | NPC を 2 人 → 1 人 | 普通の住人 1 人だけで物語入口、現在反映は痕跡可視化で代替 |
 | 5 | NPC「現在反映」要件を緩和 | 会話変化のみ (生存・移住の演出は省略) |
 | 死守 | コアループ + 主要違和感 + 層 2 片鱗 + 1 セッション完走 | ここから先は削減不可、削るなら VS の意味が消える |
 
@@ -293,32 +346,64 @@ VS 達成後、Stage 4 (α) で対応:
 
 VS 達成後、SPEC を v1 に改訂:
 
-- TBD 項目で VS 制作中に確定したもの (主人公名/性別/年齢、ゾーン名確定 等) を反映
+- `docs/STAGE3_TBD_RESOLUTION.md` で user 確定済みになった項目だけを反映
 - §13.3 オープン要件の更新 (Stage 3 で解決済を消し込み)
 - §13.4 改訂履歴に v1 エントリ追加
 - VS 体験で発見した設計上の問題を該当章に反映
 
 ---
 
-## 12. 関連文書
+## 12. ADR 改訂結果 / 実装参照
+
+Stage 3 Day 1 の実装結果は以下の ADR / docs に反映済み。
+
+| 参照 | 状態 | VS_SCOPE v0.2 への反映 |
+|---|---|---|
+| `docs/adr/0002-time-frame-portal-stencil.md` | v1.1 / Accepted (`02f5c22`) | E1 確定値。stencil bit 3、Mask = 8 / Ref = 8、dual-pass shader、URP StencilLight 競合経緯を §3.1 / §3.5 へ反映。 |
+| `docs/adr/0005-time-management-scene-switching.md` | v1.1 / Accepted (`3a29757`) | E4 確定値。PortalState 6 状態、atomic flip ordering、hysteresis 0.02m / minimum 0.05m / cooldown 0.1s / flash 0.05s を §3.1 / §3.5 へ反映。 |
+| `docs/adr/0008-localization.md` | v0.2 / Accepted | `Anemora.Data` POCO と runtime/UI 層の asmdef 境界、TMP Atlas 方針を A1 / A5 状態へ反映。 |
+| `docs/adr/0009-asset-pipeline.md` | Proposed (`cbb6ac1`) | PixelLab + Aseprite、Meshy + Blender、Studio One、TMP Atlas、ledger 運用を asset pipeline の Stage 4 入口参照として追加。 |
+| `docs/G5_ACCEPTANCE_MATRIX.md` | draft ready (`7c4a258`) | G5 通し体験 / Windows build / acceptance test 36 項目の実行表として §8 へ接続。 |
+
+## 13. TBD tracking
+
+VS_SCOPE は完成定義と確定済み実装状態を扱う。未確定の user 判断項目は `docs/STAGE3_TBD_RESOLUTION.md` (`18271bc`) で tracking し、本書では個別候補を列挙しない。
+
+対象例:
+
+- 主人公名 / 性別 / 年齢 / 出身詳細。
+- 衰退原因、時の筆の起源、主人公が選ばれた理由。
+- Resident_A / Resident_B の個別シート。
+- F2 art review、palette / font 最終採用、Zone1 asset review。
+- Code license / public release 判断。
+
+確定後は `docs/STAGE3_TBD_RESOLUTION.md` の該当 row に確定日と反映 commit hash を残し、必要なものだけ VS_SCOPE / SPEC / localization / asset docs へ反映する。
+
+## 14. 関連文書
 
 - `SPEC.md` (Stage 2 GDD v0.1)
 - `PITCH.md` (Stage 2 公開ピッチ)
 - `docs/STAGE3_PLAN.md` (Stage 3 計画書、本書はその D トラックの成果物)
+- `docs/STAGE3_TBD_RESOLUTION.md` (Stage 3 user 判断保留 tracking)
+- `docs/G5_ACCEPTANCE_MATRIX.md` (G5 acceptance test 実行表)
 - `docs/adr/0001-engine-unity6.3-lts.md` (エンジン採用根拠)
-- `docs/adr/0002-` 以降 (VS 実装中に逐次起草)
+- `docs/adr/0002-time-frame-portal-stencil.md`
+- `docs/adr/0005-time-management-scene-switching.md`
+- `docs/adr/0008-localization.md`
+- `docs/adr/0009-asset-pipeline.md`
 
 ---
 
-## 13. 改訂履歴
+## 15. 改訂履歴
 
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0 | 2026-05-04 | 初版起草 (ユーザー判断 3 軸: プレイ時間 10-15 分 / コアループ最小 / 層 2 片鱗) |
 | v0.1 | 2026-05-04 | Codex (fast) レビュー 12 件全件反映 (P0×4 / P1×4 / P2×4): §1 役割分離明文化 / §2 ペーシング短縮 / §3.1 グレーアウト+詰み防止+未来側+操作系明文化 / §3.2 建物上限 / §4 アセット規模縮小 / §6 UI を VS 暫定完成に / §7 FIX 範囲をコア機構のみに / §8 完了条件 3 段階化 / §9 削減順再編 |
-| v0.2 | 2026-05-04 | Stage 3 A トラック /spec 反映: §2 オープニング詳細化 (家ベッド + D-3/D-7/D-6 含み演出 + 時の筆発見タイミング) / §3.2 NPC 配置を「普通の住人 1-2 人、異物原則」に訂正 (老人撤回) / §6 対話 UI に silent protagonist 反映 |
+| v0.1a | 2026-05-04 | Stage 3 A トラック /spec 反映: §2 オープニング詳細化 (家ベッド + D-3/D-7/D-6 含み演出 + 時の筆発見タイミング) / §3.2 NPC 配置を「普通の住人 1-2 人、異物原則」に訂正 (老人撤回) / §6 対話 UI に silent protagonist 反映 |
+| v0.2 | 2026-05-05 | Stage 3 Day 1 進捗の整合反映 (E0-E5 / A1-A3 / F1-F4 / G4 完了状態) / ADR-0002, ADR-0005, ADR-0008, ADR-0009 改訂結果反映 / TBD 項目を `docs/STAGE3_TBD_RESOLUTION.md` へ移譲 / §3.1 コアループ最小成立達成を明記 / 残タスク表 (G3 final / G5 / Audio) を最新化 |
 
 ---
 
-> **End of VS_SCOPE v0.1**
-> Stage 3 実装の指針として運用。Stage 3 完了後、SPEC v1 改訂と合わせて v1 へ昇格。
+> **End of VS_SCOPE v0.2**
+> Stage 3 実装の完成定義として運用。Stage 3 完了後、SPEC v1 改訂と合わせて v1 へ昇格。
