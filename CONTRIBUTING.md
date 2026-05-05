@@ -1,19 +1,20 @@
 # Contributing to Anemora
 
-> Status: draft (2026-05-05). Anemora is currently in Stage 3 Vertical Slice development. Stage 3 /spec resolution locked the planned public release direction to Steam Early Access and keeps the code license as All Rights Reserved by default until Stage 4 re-evaluation.
+> Status: draft v0.3 (2026-05-06). Anemora is currently near the end of Stage 3 Vertical Slice verification. The primary public release path is Steam Early Access, and the code license remains All Rights Reserved by default until Stage 4 re-evaluation.
 
-## 1. Welcome / Current Status
+## 1. Current Contribution Posture
 
-Anemora is currently a single-developer project. The current release direction is Steam Early Access, but issue intake, pull request intake, review rules, and contributor legal terms are not finalized yet.
+Anemora is currently a single-developer project. External issue intake, pull request intake, review rules, contributor legal terms, and moderation policy are not open workflows yet.
 
-For now, this document is a preparation draft. It records the current state and the decisions still open, without selecting a final contribution model.
+This document is a Stage 4 preparation draft. It records the current project state and the decisions that must be made before public contribution intake can be treated as supported.
 
-Relevant tracking docs:
+Current public-facing project facts:
 
-- `README.md` — project overview and basic setup.
-- `docs/STAGE3_TBD_RESOLUTION.md` — resolved Stage 3 /spec decisions and remaining Stage 4 re-evaluation items.
-- `docs/legal/code_license_options.md` — neutral code license option notes.
-- `NOTICES.md` — third-party notices and current All Rights Reserved default.
+- Protagonist: Niro / ニロ (provisional).
+- First zone: Antela / アンテラ (provisional).
+- Public release direction: Steam Early Access as the primary public path.
+- Code and project-owned assets: All Rights Reserved by default unless a third-party license explicitly applies.
+- Contribution intake: single-developer workflow continues until Stage 4 decides otherwise.
 
 ## 2. Development Setup
 
@@ -33,10 +34,7 @@ Additional layout / automation references:
 
 ## 3. Coding Style
 
-TBD. Current user-facing names from Stage 3 /spec resolution:
-
-- Protagonist: Niro / ニロ (provisional).
-- First zone: Antela / アンテラ (provisional).
+Formal public coding style guide: TBD for Stage 4.
 
 Current observed code structure:
 
@@ -44,64 +42,66 @@ Current observed code structure:
 - `Assets/Scripts/Save/` contains the `Anemora.Save` layer.
 - `Assets/Scripts/Game/` contains game-facing ScriptableObject / runtime code.
 - `Assets/Scripts/TimeManagement/`, `Assets/Scripts/Player/`, `Assets/Scripts/Dialogue/`, and `Assets/UI/Scripts/` hold feature-specific runtime components.
+- `Assets/Scripts/PerformanceHarness/` contains Stage 4 stress-sample harness scaffolding.
 
-No final public coding style guide is selected yet. If this repository accepts external pull requests later, formatting, naming, asmdef boundaries, nullable policy, and Unity serialization conventions should be documented here.
+If this repository accepts external pull requests later, formatting, naming, asmdef boundaries, nullable policy, Unity serialization conventions, and generated-asset boundaries should be documented here.
 
 ## 4. Commit Message Conventions
 
-TBD.
+Formal commit convention: TBD for Stage 4.
 
 Observed Stage 3 Day 1 commit subjects use short imperative phrases, for example:
 
-- `Add editor automation usage doc`
-- `Add LocalizationSettings and StringTable seed for dialogue resolution`
-- `Reconcile EditMode test count baseline`
-- `Apply audio prompts integration check fixes and document inconsistencies`
+- `Add trailer script v0 (30s / 60s / 180s)`
+- `Polish README post-lore-reflection`
+- `Add Stage 4 roadmap preliminary draft`
+- `Add stress sample harness design and skeleton`
 
 The current history does not follow strict Conventional Commits syntax such as `feat:`, `fix:`, or `docs:`. Stage 4 should decide whether to keep the existing imperative-subject convention, adopt Conventional Commits, or use another release-note workflow.
 
-## 5. Pull Request Process
+## 5. Issues and Pull Requests
 
-TBD.
+Pull request intake: TBD for Stage 4.
 
-Open decisions before public PR intake:
+Issue template set: TBD for Stage 4.
+
+At this draft point, external PRs should not be treated as an accepted workflow. Before opening public PR intake, decide:
 
 - Whether pull requests are accepted at all.
-- Review owner and review SLA.
+- Review owner and review expectations.
 - Required tests / manual verification before merge.
 - Branch naming and target branch policy.
-- Whether large Unity asset changes require separate review from code changes.
+- Whether Unity scene / prefab / asset changes require separate review from code changes.
 - Whether contributors may submit generated assets or only source code / docs.
 
-Until this section is finalized, external PRs should not be treated as an accepted workflow.
+At scan time, no `.github/ISSUE_TEMPLATE/` directory was present. If public issue intake opens, add templates for bugs, feature requests, asset review, localization feedback, and documentation fixes as appropriate.
 
-## 6. Issue Templates
+## 6. Code License / Conduct / DCO / CLA
 
-TBD.
+Code license remains All Rights Reserved by default. Stage 4 may re-evaluate this, but this contributing draft does not grant an open-source license. See `NOTICES.md` for the consumer-facing license summary.
 
-At scan time, no `.github/ISSUE_TEMPLATE/` directory was present. Stage 4 can decide whether to add templates for bugs, feature requests, asset review, localization feedback, or documentation fixes.
+Code of Conduct: TBD for Stage 4.
 
-## 7. Code of Conduct
+DCO / CLA handling: TBD for Stage 4.
 
-TBD.
-
-At scan time, no `CODE_OF_CONDUCT.md` file was present. If public issue / PR participation is opened, the project should decide whether to add a Code of Conduct and where moderation responsibility sits.
-
-## 8. DCO / CLA
-
-TBD.
-
-Contributor legal handling depends on the Stage 4 re-evaluation of the current All Rights Reserved default. Options such as no external contributions, project-license-only contribution, Developer Certificate of Origin, Contributor License Agreement, or custom written contribution terms are not selected here.
+At scan time, no `CODE_OF_CONDUCT.md` file was present. Contributor legal handling depends on the Stage 4 re-evaluation of the current All Rights Reserved default. Options such as no external contributions, project-license-only contribution, Developer Certificate of Origin, Contributor License Agreement, or custom written contribution terms are not selected here.
 
 Related docs:
 
-- `docs/STAGE3_TBD_RESOLUTION.md` PUB-01 — code license remains All Rights Reserved by default, Stage 4 re-evaluation.
-- `docs/STAGE3_TBD_RESOLUTION.md` PUB-02 — public release direction is Steam Early Access.
-- `docs/legal/code_license_options.md` — DCO / CLA is mentioned as part of contribution willingness.
+- `NOTICES.md` — current consumer-facing license and third-party notices.
+- `docs/legal/code_license_options.md` — neutral code license option notes.
 
-## 9. Asset Contribution Policy
+## 7. Asset Contribution Policy
 
-TBD, with current tracking through `docs/legal/asset_ledger.md`.
+External asset contribution acceptance: TBD for Stage 4.
+
+Current asset provenance is tracked through `docs/legal/asset_ledger.md`. Stage 3 Day 1 state includes:
+
+- Niro / Antela provisional identity decisions reflected in sprite and documentation rows.
+- Zone1 BGM `Assets/Audio/Music/Zone1_Ambient.ogg`.
+- Zone1 SFX 30 entries across environment, footsteps, time-window, NPC, and UI categories.
+- TMP Japanese / English font atlases and third-party font license references.
+- Meshy / Blender building assets, PixelLab / Aseprite sprite assets, and AI-assisted audio records.
 
 Any future asset contribution policy must account for:
 
@@ -113,36 +113,48 @@ Any future asset contribution policy must account for:
 
 Do not assume that a code license, once selected or re-evaluated, also licenses sprites, audio, models, fonts, TMP atlases, or other assets. Asset licensing remains separate until Stage 4 re-evaluates it.
 
-## 10. Testing Expectations
+## 8. Testing Expectations
 
-TBD, with current verification guidance in `docs/VERIFICATION_SUITE.md`.
+Required public PR test gates: TBD until a PR workflow opens.
 
-Current test references:
+Current verification references:
 
-- EditMode tests: `Assets/Tests/EditMode/`.
-- PlayMode tests: `Assets/Tests/PlayMode/`.
+- EditMode expected count: 31 tests by source scan under `Assets/Tests/EditMode/`.
+- PlayMode expected count: 27 UnityTests by source scan under `Assets/Tests/PlayMode/`.
 - Verification catalog: `docs/VERIFICATION_SUITE.md`.
 - G5 acceptance checklist: `docs/G5_ACCEPTANCE_MATRIX.md`.
 - G5 preflight: `docs/G5_PREFLIGHT.md`.
+- Manual G5 rubric: `docs/G5_MANUAL_RUBRIC.md`.
 
 Before any future PR process is opened, this section should define which checks are required for code changes, Unity scene / prefab changes, generated asset changes, documentation-only changes, and release candidates.
 
-## 11. Documentation Updates
-
-TBD.
+## 9. Documentation Updates
 
 Current navigation docs that may need updates when a contribution changes project behavior:
 
+- `README.md` — public project entry point.
 - `CHANGELOG.md` — milestone / release-note level.
 - `docs/devlog/INDEX.md` — devlog navigation.
 - `docs/ASSET_STRUCTURE.md` — directory layout.
 - `docs/EDITOR_AUTOMATION.md` — automation usage.
 - `docs/legal/asset_ledger.md` — asset provenance and license tracking.
-- `docs/STAGE3_TBD_RESOLUTION.md` — resolved Stage 3 decisions and remaining Stage 4 re-evaluation items.
+- `docs/STAGE4_ROADMAP.md` — preliminary Stage 4 sequencing.
 
-## 12. Change History
+## 10. Public Release and Public-Facing References
+
+The current primary public release path is Steam Early Access. Exact release timing, price, store-page copy, trailer final cut, and final license handling remain Stage 4 review items.
+
+- `docs/PITCH_PUBLIC.md` — Steam description / trailer / press-kit source text.
+- `docs/TRAILER_SCRIPT.md` — 30s / 60s / 180s trailer script draft.
+- `docs/STAGE3_RETROSPECTIVE.md` — Stage 3 retrospective draft.
+- `docs/STAGE4_ROADMAP.md` — Stage 4 preliminary roadmap.
+- `AUTHORS.md` — primary author and contribution status.
+- `NOTICES.md` — consumer-facing third-party notices and current license status.
+
+## 11. Change History
 
 | Version | Date | Notes |
 |---|---|---|
-| v0.1 | 2026-05-05 | Initial draft for Stage 4 entry preparation. Contribution intake, coding style, PR process, issue templates, Code of Conduct, DCO / CLA, and asset policy remain TBD. |
+| v0.1 | 2026-05-05 | Initial draft for Stage 4 entry preparation. |
 | v0.2 | 2026-05-05 | Reflected Stage 3 /spec resolution: Niro / Antela provisional names, Steam Early Access release direction, and All Rights Reserved default license pending Stage 4 re-evaluation. |
+| v0.3 | 2026-05-06 | Updated for Stage 3 Day 1 near-completion: single-developer posture, Steam Early Access path, All Rights Reserved default, asset ledger state, test counts, and public-facing cross-references. |
