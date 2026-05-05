@@ -70,6 +70,7 @@ namespace Anemora.Tests.PlayMode
             Assert.That(reflectionsRoot, Is.Not.Null);
 
             SetDurationsForTests(controller, 0f, 0f, 0f);
+            SetLocalDioramaWindowForTests(controller, false);
             SelectRed(controller);
             yield return WaitForPortalOpen(controller);
 
@@ -229,6 +230,12 @@ namespace Anemora.Tests.PlayMode
         {
             ControllerType.GetMethod("SetDurationsForTests", BindingFlags.Public | BindingFlags.Instance)
                 .Invoke(controller, new object[] { generationDuration, flipCooldown, flashDuration });
+        }
+
+        private static void SetLocalDioramaWindowForTests(Component controller, bool enabled)
+        {
+            ControllerType.GetMethod("SetLocalDioramaWindowForTests", BindingFlags.Public | BindingFlags.Instance)
+                .Invoke(controller, new object[] { enabled });
         }
 
         private static void MovePlayerToSignedDistance(

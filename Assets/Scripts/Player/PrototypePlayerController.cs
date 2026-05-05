@@ -51,7 +51,7 @@ namespace Anemora.Player
                 return;
             }
 
-            var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+            var input = ReadMoveInput();
             if (input.sqrMagnitude > 1f)
             {
                 input.Normalize();
@@ -103,6 +103,34 @@ namespace Anemora.Player
 
             Zone1AudioController.Instance?.PlayFootstep(defaultFootstepSurface);
             footstepTimer = Mathf.Max(0.05f, footstepInterval);
+        }
+
+        private static Vector3 ReadMoveInput()
+        {
+            var x = Input.GetAxisRaw("Horizontal");
+            var z = Input.GetAxisRaw("Vertical");
+
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                x -= 1f;
+            }
+
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                x += 1f;
+            }
+
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                z -= 1f;
+            }
+
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            {
+                z += 1f;
+            }
+
+            return new Vector3(Mathf.Clamp(x, -1f, 1f), 0f, Mathf.Clamp(z, -1f, 1f));
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Anemora.Dialogue
 
             Instance = this;
             ResolveReferences();
+            EnsureUiRendersOnTop();
             Close();
         }
 
@@ -72,6 +73,7 @@ namespace Anemora.Dialogue
         public void Show(DialogueAsset asset)
         {
             ResolveReferences();
+            EnsureUiRendersOnTop();
             currentVariant = ResolveFirstVariantWithTurns(asset);
             currentTurnIndex = 0;
             ignoreInputFrame = Time.frameCount;
@@ -83,6 +85,7 @@ namespace Anemora.Dialogue
 
             SetPlayerFrozen(true);
             hasShownDialogue = true;
+            transform.SetAsLastSibling();
             RenderCurrentTurn();
         }
 
@@ -161,6 +164,25 @@ namespace Anemora.Dialogue
             }
         }
 
+        private void EnsureUiRendersOnTop()
+        {
+            var canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.transform.localScale = Vector3.one;
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = Mathf.Max(canvas.sortingOrder, 1000);
+                SetLayerRecursively(canvas.gameObject, 5);
+            }
+            else
+            {
+                SetLayerRecursively(gameObject, 5);
+            }
+
+            NormalizeDialogueLayout();
+        }
+
         private void RenderCurrentTurn()
         {
             if (currentVariant == null ||
@@ -234,6 +256,38 @@ namespace Anemora.Dialogue
             }
 
             return null;
+        }
+
+        private static void SetLayerRecursively(GameObject root, int layer)
+        {
+            root.layer = layer;
+            foreach (Transform child in root.transform)
+            {
+                SetLayerRecursively(child.gameObject, layer);
+            }
+        }
+
+        private void NormalizeDialogueLayout()
+        {
+            if (transform is RectTransform rootRect)
+            {
+                rootRect.localScale = Vector3.one;
+                rootRect.anchorMin = Vector2.zero;
+                rootRect.anchorMax = Vector2.one;
+                rootRect.offsetMin = Vector2.zero;
+                rootRect.offsetMax = Vector2.zero;
+                rootRect.pivot = new Vector2(0.5f, 0.5f);
+            }
+
+            if (panelRoot != null && panelRoot.transform is RectTransform panelRect)
+            {
+                panelRect.localScale = Vector3.one;
+                panelRect.anchorMin = new Vector2(0f, 0f);
+                panelRect.anchorMax = new Vector2(1f, 0.32f);
+                panelRect.offsetMin = new Vector2(64f, 36f);
+                panelRect.offsetMax = new Vector2(-64f, -18f);
+                panelRect.pivot = new Vector2(0.5f, 0.5f);
+            }
         }
 
         private static DialogueVariantSO ResolveFirstVariantWithTurns(DialogueAsset asset)

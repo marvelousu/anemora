@@ -81,6 +81,8 @@ namespace Anemora.Tests.PlayMode
             Assert.That(mainCamera, Is.Not.Null);
             Assert.That(mainCamera.cullingMask, Is.EqualTo(CurrentCameraMask));
 
+            ControllerType.GetMethod("SetLocalDioramaWindowForTests", BindingFlags.Public | BindingFlags.Instance)
+                .Invoke(controller, new object[] { false });
             SelectRed(controller);
             yield return new WaitForSecondsRealtime(0.15f);
 

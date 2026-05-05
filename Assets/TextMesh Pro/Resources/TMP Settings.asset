@@ -22,7 +22,7 @@ MonoBehaviour:
   m_EnableRaycastTarget: 1
   m_GetFontFeaturesAtRuntime: 1
   m_missingGlyphCharacter: 0
-  m_ClearDynamicDataOnBuild: 1
+  m_ClearDynamicDataOnBuild: 0
   m_warningsDisabled: 0
   m_defaultFontAsset: {fileID: 0}
   m_defaultFontAssetPath: 
@@ -44,6 +44,6 @@ MonoBehaviour:
   m_defaultColorGradientPresetsPath: 
   m_defaultStyleSheet: {fileID: 0}
   m_StyleSheetsResourcePath: 
-  m_leadingCharacters: {fileID: 0}
-  m_followingCharacters: {fileID: 0}
+  m_leadingCharacters: {fileID: 4900000, guid: dcedfffa830036f429415ef3747a3204, type: 3}
+  m_followingCharacters: {fileID: 4900000, guid: d12c36a15f055074a8a0f67d9bf7a15f, type: 3}
   m_UseModernHangulLineBreakingRules: 0

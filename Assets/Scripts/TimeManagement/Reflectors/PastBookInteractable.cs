@@ -14,9 +14,16 @@ namespace Anemora.TimeManagement.Reflectors
         [SerializeField] private Transform player;
         [SerializeField] private SceneSidePolarity sidePolarity;
         [SerializeField] private bool requirePastSide = true;
+        [SerializeField] private bool reflectImmediately;
 
         public string ActionId => actionId;
         public string TargetObjectId => targetObjectId;
+
+        public void SetLocalWindowMode(bool enabled)
+        {
+            requirePastSide = !enabled;
+            reflectImmediately = enabled;
+        }
 
         private void Update()
         {
@@ -54,6 +61,11 @@ namespace Anemora.TimeManagement.Reflectors
                 gameTimeTicks = DateTime.UtcNow.Ticks,
                 reflected = false
             });
+
+            if (reflectImmediately)
+            {
+                runtime.ReflectUnreflected();
+            }
 
             gameObject.SetActive(false);
             return true;

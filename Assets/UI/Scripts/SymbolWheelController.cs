@@ -29,6 +29,7 @@ namespace Anemora.UI
 
         public UnityEvent<SymbolType> OnSymbolSelected => onSymbolSelected;
         public SymbolType FocusedSymbol => focusedSymbol;
+        public bool IsVisible => rootCanvas != null && rootCanvas.enabled;
 
         private void Awake()
         {
@@ -42,9 +43,15 @@ namespace Anemora.UI
                 rootCanvas.worldCamera = Camera.main;
             }
 
-            if (rootCanvas != null && hideCanvasOnAwake)
+            if (rootCanvas != null)
             {
-                rootCanvas.enabled = false;
+                rootCanvas.transform.localScale = Vector3.one;
+                rootCanvas.overrideSorting = true;
+                rootCanvas.sortingOrder = Mathf.Max(rootCanvas.sortingOrder, 900);
+                if (hideCanvasOnAwake)
+                {
+                    rootCanvas.enabled = false;
+                }
             }
 
             ApplyState();
@@ -73,6 +80,24 @@ namespace Anemora.UI
             Zone1AudioController.Instance?.PlayTimeSymbolSelectRed();
             Debug.Log("Red symbol selected");
             onSymbolSelected.Invoke(SymbolType.Red);
+        }
+
+        public void SetVisible(bool visible)
+        {
+            if (rootCanvas == null)
+            {
+                rootCanvas = GetComponentInParent<Canvas>();
+            }
+
+            if (rootCanvas != null)
+            {
+                rootCanvas.enabled = visible;
+                if (visible)
+                {
+                    rootCanvas.overrideSorting = true;
+                    rootCanvas.sortingOrder = Mathf.Max(rootCanvas.sortingOrder, 900);
+                }
+            }
         }
 
         public void SetKeyboardSelectionEnabled(bool enabled)
