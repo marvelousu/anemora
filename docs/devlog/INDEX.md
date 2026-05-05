@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v0.1 draft (2026-05-05). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v0.2 draft (2026-05-05). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 22 files under `docs/devlog/`, including this index and the audio integration check report.
+Current root-level Markdown coverage: 28 files under `docs/devlog/`, including this index and the audio integration check report.
 
 ### 2.1 Stage 3 Day 1 (2026-05-05)
 
@@ -33,6 +33,14 @@ Current root-level Markdown coverage: 22 files under `docs/devlog/`, including t
 | 2026-05-05 | [2026-05-05_tmp_jp_atlas_v0.md](2026-05-05_tmp_jp_atlas_v0.md) | TMP Japanese Atlas v0 draft | `a8f2710` | UI foundation v0 | [0.1.0-alpha.1](../../CHANGELOG.md#010-alpha1---2026-05-05) §Localization/UI |
 | 2026-05-05 | [2026-05-05_tmp_jp_atlas_v0_1_missing_chars_review.md](2026-05-05_tmp_jp_atlas_v0_1_missing_chars_review.md) | TMP JP Atlas missing 70 chars review | `3a29757` | UI foundation follow-up | [0.1.0-alpha.1](../../CHANGELOG.md#010-alpha1---2026-05-05) §Localization/UI |
 | 2026-05-05 | [2026-05-05_tmp_en_atlas_v0.md](2026-05-05_tmp_en_atlas_v0.md) | TMP English Atlas v0 draft | `f5b4685` | A5 TMP EN atlas | [0.1.0-alpha.1](../../CHANGELOG.md#010-alpha1---2026-05-05) §Localization/UI |
+| 2026-05-05 | [2026-05-05_g3_partial_npc_dialog_scaffold.md](2026-05-05_g3_partial_npc_dialog_scaffold.md) | G3 partial NPC placement and dialogue scaffold | `4029cc0` | G3 partial | [Unreleased](../../CHANGELOG.md#unreleased) follow-up |
+| 2026-05-05 | [2026-05-05_adr_review_pass.md](2026-05-05_adr_review_pass.md) | ADR 0001-0009 review pass | `73d4808` | ADR consistency | [Unreleased](../../CHANGELOG.md#unreleased) doc hygiene |
+| 2026-05-05 | [2026-05-05_test_count_reconcile.md](2026-05-05_test_count_reconcile.md) | EditMode 31 vs 32 test count reconcile | `1c7ac12` | Verification docs | [Unreleased](../../CHANGELOG.md#unreleased) verification |
+| 2026-05-05 | [2026-05-05_performance_baseline.md](2026-05-05_performance_baseline.md) | Stage 3 Day 1 performance baseline | `2e3569f` | G5 / performance | [Unreleased](../../CHANGELOG.md#unreleased) verification |
+| 2026-05-05 | [2026-05-05_doc_cross_link_audit.md](2026-05-05_doc_cross_link_audit.md) | Docs cross-link integrity audit | `c72a79c` | Documentation QA | [Unreleased](../../CHANGELOG.md#unreleased) doc hygiene |
+| 2026-05-05 | [2026-05-05_asset_ledger_sfx_consolidation_review.md](2026-05-05_asset_ledger_sfx_consolidation_review.md) | asset_ledger SFX 30-entry consolidation review | `50ab8c0` | A5 / audio ledger | [Unreleased](../../CHANGELOG.md#unreleased) asset ledger |
+| 2026-05-05 | [2026-05-05_g5_automated_run.md](2026-05-05_g5_automated_run.md) | G5 automated preflight, tests, build, and matrix results | `c17d62f` | G5 automated | [Unreleased](../../CHANGELOG.md#unreleased) verification |
+| 2026-05-05 | [2026-05-05_g5_audio_rebuild.md](2026-05-05_g5_audio_rebuild.md) | G5 audio-enabled Windows rebuild and metrics refresh | `e6e3c61` | G5 audio rebuild | [Unreleased](../../CHANGELOG.md#unreleased) verification |
 
 ### 2.2 Stage 3 Day 0 (2026-05-04)
 
@@ -66,6 +74,7 @@ Current root-level Markdown coverage: 22 files under `docs/devlog/`, including t
 
 - [2026-05-05_a2_anemora_main_wiring.md](2026-05-05_a2_anemora_main_wiring.md) — A2 Anemora_Main wiring and boundary round-trip.
 - [2026-05-05_g4_actionrecord_trigger.md](2026-05-05_g4_actionrecord_trigger.md) — G4 ActionRecord trigger wiring.
+- [2026-05-05_g3_partial_npc_dialog_scaffold.md](2026-05-05_g3_partial_npc_dialog_scaffold.md) — G3 partial NPC placement and dialogue UI scaffold.
 
 ### Assets (F1-F4 + A3 buildings)
 
@@ -87,7 +96,16 @@ Current root-level Markdown coverage: 22 files under `docs/devlog/`, including t
 ### Audio (A4 BGM + SFX)
 
 - [2026-05-05_audio_prompts_integration_check.md](2026-05-05_audio_prompts_integration_check.md) — Audio prompt / ADR / ledger integration check after A4 BGM export.
+- [2026-05-05_asset_ledger_sfx_consolidation_review.md](2026-05-05_asset_ledger_sfx_consolidation_review.md) — SFX 30-entry ledger consolidation review.
+- [2026-05-05_g5_audio_rebuild.md](2026-05-05_g5_audio_rebuild.md) — Audio-enabled G5 Windows rebuild and runtime metrics refresh.
 - Prompt details live in `docs/asset_prompts/`; see `sfx_zone1.md` v1.0 draft and `bgm_zone1_ambient.md`.
+
+### G5 / Verification / Performance
+
+- [2026-05-05_test_count_reconcile.md](2026-05-05_test_count_reconcile.md) — EditMode 31 vs 32 baseline reconcile.
+- [2026-05-05_performance_baseline.md](2026-05-05_performance_baseline.md) — G5 performance baseline.
+- [2026-05-05_g5_automated_run.md](2026-05-05_g5_automated_run.md) — G5 automated preflight, tests, build, and matrix results.
+- [2026-05-05_g5_audio_rebuild.md](2026-05-05_g5_audio_rebuild.md) — G5 audio-enabled rebuild for manual §H verification.
 
 ### Documentation / ADR (0001-0009)
 
@@ -95,6 +113,8 @@ Current root-level Markdown coverage: 22 files under `docs/devlog/`, including t
 - [2026-05-04_stage1_concept_dialogue.md](2026-05-04_stage1_concept_dialogue.md) — Stage 1 concept dialogue log.
 - [2026-05-04_stage2_pitch_spec.md](2026-05-04_stage2_pitch_spec.md) — Stage 2 PITCH / SPEC drafting log.
 - [2026-05-04_stage3_day0.md](2026-05-04_stage3_day0.md) — Stage 3 Day 0 planning and setup log.
+- [2026-05-05_adr_review_pass.md](2026-05-05_adr_review_pass.md) — ADR 0001-0009 consistency review pass.
+- [2026-05-05_doc_cross_link_audit.md](2026-05-05_doc_cross_link_audit.md) — docs-wide cross-link integrity audit.
 
 ## 4. Screenshots 一覧
 
@@ -112,3 +132,4 @@ Current root-level Markdown coverage: 22 files under `docs/devlog/`, including t
 | Version | Date | Change |
 |---|---|---|
 | v0.1 | 2026-05-05 | 初版起草。既存 root devlog 18 件、この index、screenshots 6 件を index 化 |
+| v0.2 | 2026-05-05 | 最新 devlog 8 件を追加。root-level Markdown coverage を 28 件へ更新し、G5 / verification / audio ledger / documentation QA の cross-index と CHANGELOG cross-ref を追加 |
