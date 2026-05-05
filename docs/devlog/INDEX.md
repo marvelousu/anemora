@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 49 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
+Current root-level Markdown coverage: 50 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -24,6 +24,7 @@ Current root-level Markdown coverage: 49 files under `docs/devlog/`, including t
 | 2026-05-06 | [2026-05-06_stage4_niro_full_redraw_scope.md](2026-05-06_stage4_niro_full_redraw_scope.md) | Niro / Hero v2 full-redraw scope and asset brief handoff | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_brush_tutorial_hint.md](2026-05-06_stage4_brush_tutorial_hint.md) | Runtime brush tutorial hint for create / release / close affordance | This task | Stage 4 Phase 0 / brush UX | [Unreleased](../../CHANGELOG.md#unreleased) added |
 | 2026-05-06 | [2026-05-06_stage4_hero_v2_import.md](2026-05-06_stage4_hero_v2_import.md) | User-approved Hero / Resident_A / Resident_B v2 import | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) added / changed |
+| 2026-05-06 | [2026-05-06_stage4_audio_polish_inventory.md](2026-05-06_stage4_audio_polish_inventory.md) | Stage 4 audio polish inventory and listening-dispatch report | This task | Stage 4 Phase 0 / audio polish | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0 Stage 3 Closeout (2026-05-06)
 
@@ -115,6 +116,7 @@ Current root-level Markdown coverage: 49 files under `docs/devlog/`, including t
 - [2026-05-05_audio_prompts_integration_check.md](2026-05-05_audio_prompts_integration_check.md) — Audio prompt / ADR / ledger integration check after A4 BGM export.
 - [2026-05-05_asset_ledger_sfx_consolidation_review.md](2026-05-05_asset_ledger_sfx_consolidation_review.md) — SFX 30-entry ledger consolidation review.
 - [2026-05-05_g5_audio_rebuild.md](2026-05-05_g5_audio_rebuild.md) — Audio-enabled G5 Windows rebuild and runtime metrics refresh.
+- [2026-05-06_stage4_audio_polish_inventory.md](2026-05-06_stage4_audio_polish_inventory.md) — Stage 4 audio inventory, ledger status, tests, and user listening checkpoints.
 - Prompt details live in `docs/asset_prompts/`; see `sfx_zone1.md` v1.0 draft and `bgm_zone1_ambient.md`.
 
 ### G5 / Verification / Performance
