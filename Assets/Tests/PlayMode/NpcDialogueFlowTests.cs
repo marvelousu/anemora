@@ -4,6 +4,8 @@ using System.Reflection;
 using Anemora.Game.Dialogue;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
@@ -12,6 +14,9 @@ namespace Anemora.Tests.PlayMode
     public sealed class NpcDialogueFlowTests
     {
         private const string SceneName = "Anemora_Main";
+        private const string TableName = "Anemora_Strings";
+        private const string ResidentAGreetKey = "dialogue.placeholder.resident_a.greet";
+        private const string ResidentAGreetPlaceholder = "[TBD: Resident_A greet line]";
         private const int PastVisualLayer = 11;
 
         private static readonly Type NpcInteractableType = ResolveRuntimeType("Anemora.Dialogue.NpcInteractable");
@@ -89,6 +94,65 @@ namespace Anemora.Tests.PlayMode
             Assert.That((bool)GetProperty(controller, "IsMovementFrozen"), Is.False);
         }
 
+        [UnityTest]
+        public IEnumerator ResidentADialogueResolvesPlaceholderAfterLocaleSwitch()
+        {
+            yield return LocalizationSettings.InitializationOperation;
+
+            var ja = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier("ja-JP"));
+            var en = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier("en"));
+            Assert.That(ja, Is.Not.Null);
+            Assert.That(en, Is.Not.Null);
+
+            yield return LoadMainScene();
+
+            var player = GameObject.FindWithTag("Player");
+            var residentA = GameObject.Find("Resident_A_Instance");
+            var display = UnityEngine.Object.FindObjectOfType(DialogueDisplayType);
+
+            Assert.That(player, Is.Not.Null);
+            Assert.That(residentA, Is.Not.Null);
+            Assert.That(display, Is.Not.Null);
+
+            LocalizationSettings.SelectedLocale = ja;
+            yield return LocalizationSettings.SelectedLocaleAsync;
+
+            var jaOperation = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(
+                TableName,
+                ResidentAGreetKey,
+                ja,
+                FallbackBehavior.UseFallback);
+            yield return jaOperation;
+            Assert.That(jaOperation.Result, Is.EqualTo(ResidentAGreetPlaceholder));
+
+            yield return ShowResidentADialogue(player, residentA, display);
+            Assert.That(
+                GetProperty(display, "CurrentText"),
+                Is.EqualTo(ExpectedDialogueDisplayText(ResidentAGreetKey, ResidentAGreetPlaceholder)));
+
+            Invoke(display, "Close");
+
+            LocalizationSettings.SelectedLocale = en;
+            yield return LocalizationSettings.SelectedLocaleAsync;
+
+            var enOperation = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(
+                TableName,
+                ResidentAGreetKey,
+                en,
+                FallbackBehavior.UseFallback);
+            yield return enOperation;
+            Assert.That(enOperation.Result, Is.EqualTo(ResidentAGreetPlaceholder));
+
+            yield return ShowResidentADialogue(player, residentA, display);
+            Assert.That(
+                GetProperty(display, "CurrentText"),
+                Is.EqualTo(ExpectedDialogueDisplayText(ResidentAGreetKey, ResidentAGreetPlaceholder)));
+
+            Invoke(display, "Close");
+            LocalizationSettings.SelectedLocale = ja;
+            yield return LocalizationSettings.SelectedLocaleAsync;
+        }
+
         private static IEnumerator LoadMainScene()
         {
             var operation = SceneManager.LoadSceneAsync(SceneName, LoadSceneMode.Single);
@@ -98,6 +162,23 @@ namespace Anemora.Tests.PlayMode
             }
 
             yield return null;
+        }
+
+        private static IEnumerator ShowResidentADialogue(GameObject player, GameObject residentA, object display)
+        {
+            Invoke(display, "Close");
+            player.transform.position = residentA.transform.position + new Vector3(0.25f, 0f, 0f);
+            yield return null;
+
+            var interactable = residentA.GetComponent(NpcInteractableType);
+            Assert.That((bool)Invoke(interactable, "TryInteract"), Is.True);
+            Assert.That((bool)GetProperty(display, "IsVisible"), Is.True);
+        }
+
+        private static string ExpectedDialogueDisplayText(string key, string localizedText)
+        {
+            // DialogueLocalization intentionally returns key fallback in batchmode.
+            return Application.isBatchMode ? key : localizedText;
         }
 
         private static void AssertPlacedNpc(GameObject npc, Transform expectedParent, Vector3 expectedLocalPosition)
