@@ -10,7 +10,7 @@ Windows-side Stage 3 Day 1 check for the Unity `6000.3.14f1` project after pulli
 - `com.unity.render-pipelines.universal` resolves as URP `17.3.0`.
 - Package resolution initially failed because `com.unity.collab-proxy@2.9.8` could not be found. Removed `com.unity.collab-proxy` from `Packages/manifest.json` because Unity Version Control is not required for Stage 3.
 - Unity regenerated `Packages/packages-lock.json` successfully after the manifest fix.
-- A later import generated Unity's URP global support assets (`Assets/UniversalRenderPipelineGlobalSettings.asset`, `Assets/DefaultVolumeProfile.asset`) and Shader Graph project settings.
+- A later import generated Unity's URP global support assets (`Assets/Settings/UniversalRenderPipelineGlobalSettings.asset`, `Assets/Settings/DefaultVolumeProfile.asset`) and Shader Graph project settings.
 
 ## URP settings status
 - URP package is installed and resolved.

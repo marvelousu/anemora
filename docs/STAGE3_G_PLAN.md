@@ -145,7 +145,7 @@ VS では **過去のジオラマは家族の家 + 図書館跡のみ実装**、
 - `Assets/Prefabs/Zone1/Bookshelf_Empty.prefab` (現在版、空)
 - `Assets/Prefabs/Zone1/Bookshelf_FamilyBooks.prefab` (過去版、本が並ぶ)
 - `Assets/Prefabs/Zone1/Door_House.prefab` (ドア、時の筆発見トリガー付き)
-- `Assets/Scripts/TimeManagement/Reflectors/BookshelfReflector.cs` (ActionRecord で本がベッドに現れる反映スクリプト、E5 で定義したものと統合)
+- `Assets/Scripts/TimeManagement/Reflectors/BookReflector.cs` (ActionRecord で本がベッドに現れる反映スクリプト、E5 で定義したものと統合)
 
 **手順**:
 1. ベッド / テーブル / 本棚 / ドアの 3D モデルを Meshy v6 LowPoly で生成 (ADR-0003)、Blender で破綻補正
@@ -202,10 +202,10 @@ VS では **過去のジオラマは家族の家 + 図書館跡のみ実装**、
 **成果物**:
 - `Assets/Art/Sprites/NPC/Resident_A/v1/` (NPC 1 スプライト、4 方向 + Idle、F トラック後段で生成)
 - `Assets/Art/Sprites/NPC/Resident_B/v1/` (NPC 2 スプライト、同上)
-- `Assets/Prefabs/NPC_Resident_A.prefab`
-- `Assets/Prefabs/NPC_Resident_B.prefab`
-- `Assets/ScriptableObjects/Dialogues/Resident_A_Dialogue.asset` (対話データ)
-- `Assets/ScriptableObjects/Dialogues/Resident_B_Dialogue.asset`
+- `Assets/Prefabs/Characters/Resident_A.prefab`
+- `Assets/Prefabs/Characters/Resident_B.prefab`
+- `Assets/ScriptableObjects/Dialogues/Resident_A_Greeting.asset` (対話データ)
+- `Assets/ScriptableObjects/Dialogues/Resident_B_Idle.asset`
 
 **手順**:
 1. F トラック完了後、NPC スプライトを F1-F4 と同手順で生成 (PixelLab + Aseprite)
@@ -237,7 +237,7 @@ VS では **過去のジオラマは家族の家 + 図書館跡のみ実装**、
   - `actionId = "take_book_family_001"`
   - `type = TakeItem`
   - `currentSideEffect = SpawnBookOnBed_Player`
-- `Assets/Scripts/TimeManagement/Reflectors/BookshelfReflector.cs` の SpawnBookOnBed_Player ロジック実装 (E5 で書いた BookReflector を本ゾーンに特化)
+- `Assets/Scripts/TimeManagement/Reflectors/BookReflector.cs` の SpawnBookOnBed_Player ロジック実装 (E5 で書いた BookReflector を本ゾーンに特化)
 
 **手順**:
 1. 過去版 Library_Ruin_Past に Book_Family_Past を配置 (Interactable component)
@@ -340,8 +340,8 @@ Assets/
 │   ├── ActionRecords/
 │   │   └── ActionRecordCatalog.asset          (E5 + G4)
 │   └── Dialogues/
-│       ├── Resident_A_Dialogue.asset          (G3)
-│       └── Resident_B_Dialogue.asset          (G3)
+│       ├── Resident_A_Greeting.asset          (G3)
+│       └── Resident_B_Idle.asset              (G3)
 ├── Scenes/
 │   └── Anemora_Main.unity                     (G0-G5、E2 で常駐ヒエラルキー scaffold)
 ├── Audio/

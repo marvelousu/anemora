@@ -140,7 +140,7 @@ ADR-0007 §UI 要素別の実装方針 に従い:
 
 ## 5. ScriptableObject 構造の提案
 
-`Assets/ScriptableObjects/Dialogues/Resident_A_Dialogue.asset` を以下の形で持つ:
+`Assets/ScriptableObjects/Dialogues/Resident_A_Greeting.asset` を以下の形で持つ:
 
 ```csharp
 [CreateAssetMenu(menuName = "Anemora/Dialogue")]

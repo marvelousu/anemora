@@ -188,7 +188,7 @@ VS_SCOPE.md §4.1 / §7 「ヒーロービジュアルは VS 時点暫定完成�
 **成果物**:
 - `Assets/Art/Sprites/Hero/v1/` のスプライトに `Pixel Per Unit = 32` (32x48 sprite に対する標準値、要実機確認) と `Filter Mode = Point` を設定
 - `Assets/Art/Sprites/Hero/v1/hero_idle.controller` (Animator Controller)
-- `Assets/Prefabs/Hero.prefab` (Hero GameObject、SpriteRenderer + Animator + 仮 CharacterController)
+- `Assets/Prefabs/Characters/Hero.prefab` (Hero GameObject、SpriteRenderer + Animator + 仮 CharacterController)
 - E5 / G トラック側からこの Prefab を参照可能な状態
 
 **手順**:

@@ -61,7 +61,7 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 **現状 (Windows Codex `2026-05-05_urp_setup_check.md` 時点)**:
 - URP package `17.3.0` 解決済 ✓
 - `com.unity.collab-proxy` を manifest から除去済 (Unity VCS 不要) ✓
-- `Assets/UniversalRenderPipelineGlobalSettings.asset` / `Assets/DefaultVolumeProfile.asset` 生成済 ✓
+- `Assets/Settings/UniversalRenderPipelineGlobalSettings.asset` / `Assets/Settings/DefaultVolumeProfile.asset` 生成済 ✓
 - **未着手**: `Assets/Settings/` 配下の URP Pipeline Asset + Forward Renderer Data の作成と割当
 - **未着手**: `ProjectSettings/GraphicsSettings.asset` / `QualitySettings.asset` の `m_CustomRenderPipeline` 割当
 
@@ -71,7 +71,7 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 - 上記 2 つを GraphicsSettings + QualitySettings 全レベルに割当
 - Renderer Feature `PortalStencilFeature` のスケルトンを Forward Renderer Data に追加
 - Stencil bit 予約検証結果: URP 17.3.0 では `bit 4` は `StencilLight` と競合するため、ユーザー予約範囲内の `bit 3` を採用
-- `Assets/UniversalRenderPipelineGlobalSettings.asset` / `Assets/DefaultVolumeProfile.asset` を `Assets/Settings/` 配下へ整理 (任意、ADR-0004 整合の観点で)
+- `Assets/Settings/UniversalRenderPipelineGlobalSettings.asset` / `Assets/Settings/DefaultVolumeProfile.asset` を確認 (ADR-0004 整合の観点で)
 - 検証メモ `docs/devlog/2026-05-XX_e0_urp_pipeline_asset.md`
 
 **手順**:
@@ -208,11 +208,10 @@ VS_SCOPE.md §3.1 の **コアループ最小成立**:
 **目的**: 過去の能動行動 1 種を記録し、帰還時に現在側へ反映する最小ケース。
 
 **成果物**:
-- `Assets/Scripts/Data/ActionRecordEntry.cs` (POCO, ADR-0005 §6)
-- `Assets/Scripts/TimeManagement/ActionRecordStore.cs` (List 保持、ADR-0005)
+- `Assets/Scripts/Data/ActionRecord.cs` (ActionRecordEntry POCO + ActionRecordStore, ADR-0005 §6)
 - `Assets/ScriptableObjects/ActionRecords/ActionRecordCatalog.asset` (静的定義、ADR-0005)
 - `Assets/Scripts/TimeManagement/Reflectors/BookReflector.cs` (痕跡反映の最小実装)
-- 検証用 prefab: `Assets/Prefabs/PastBook.prefab` (過去側で取れる本), `Assets/Prefabs/CurrentBookPlaceholder.prefab` (現在側で痕跡として現れる本)
+- 検証用 prefab: `Assets/Prefabs/Zone1/Book_Family_Past.prefab` (過去側で取れる本), `Assets/Prefabs/Zone1/Book_Family_Current.prefab` (現在側で痕跡として現れる本)
 
 **手順**:
 1. ActionRecordEntry: `actionId`, `targetObjectId`, `type`, `gameTimeTicks`, `reflected` (ADR-0005 §6 のスニペットと一致)

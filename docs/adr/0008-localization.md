@@ -87,7 +87,7 @@ VS 着手段階では Unity Localization の API を呼ぶが、実翻訳デー�
 
 #### 2.1 命名規則
 
-**Asset 形式**: `Assets/UI/Localization/Anemora_Strings.asset` (シングル StringTableCollection、Locale ごとに sub-Asset)
+**Asset 形式**: `Assets/Localization/StringTables/Anemora_Strings.asset` (シングル StringTableCollection、Locale ごとに sub-Asset)
 
 **Key 命名**: `domain.subdomain.purpose_id`
 
