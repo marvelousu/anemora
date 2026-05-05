@@ -1,17 +1,17 @@
 # Contributing to Anemora
 
-> Status: draft (2026-05-05). Anemora is currently in Stage 3 Vertical Slice development. External contribution policy is TBD and will be decided at the Stage 4 public-release entry point.
+> Status: draft (2026-05-05). Anemora is currently in Stage 3 Vertical Slice development. Stage 3 /spec resolution locked the planned public release direction to Steam Early Access and keeps the code license as All Rights Reserved by default until Stage 4 re-evaluation.
 
 ## 1. Welcome / Current Status
 
-Anemora is currently a single-developer project. This repository may become public at or after Stage 4, but issue intake, pull request intake, review rules, and contributor legal terms are not finalized yet.
+Anemora is currently a single-developer project. The current release direction is Steam Early Access, but issue intake, pull request intake, review rules, and contributor legal terms are not finalized yet.
 
 For now, this document is a preparation draft. It records the current state and the decisions still open, without selecting a final contribution model.
 
 Relevant tracking docs:
 
 - `README.md` — project overview and basic setup.
-- `docs/STAGE3_TBD_RESOLUTION.md` — open Stage 3 / Stage 4 decisions, including code license and public release form.
+- `docs/STAGE3_TBD_RESOLUTION.md` — resolved Stage 3 /spec decisions and remaining Stage 4 re-evaluation items.
 - `docs/legal/code_license_options.md` — neutral code license option notes.
 - `NOTICES.md` — third-party notices and current All Rights Reserved default.
 
@@ -33,7 +33,10 @@ Additional layout / automation references:
 
 ## 3. Coding Style
 
-TBD.
+TBD. Current user-facing names from Stage 3 /spec resolution:
+
+- Protagonist: Niro / ニロ (provisional).
+- First zone: Antela / アンテラ (provisional).
 
 Current observed code structure:
 
@@ -88,12 +91,12 @@ At scan time, no `CODE_OF_CONDUCT.md` file was present. If public issue / PR par
 
 TBD.
 
-Contributor legal handling depends on the Stage 4 code license decision. Options such as no external contributions, project-license-only contribution, Developer Certificate of Origin, Contributor License Agreement, or custom written contribution terms are not selected here.
+Contributor legal handling depends on the Stage 4 re-evaluation of the current All Rights Reserved default. Options such as no external contributions, project-license-only contribution, Developer Certificate of Origin, Contributor License Agreement, or custom written contribution terms are not selected here.
 
 Related docs:
 
-- `docs/STAGE3_TBD_RESOLUTION.md` PUB-01 — code license.
-- `docs/STAGE3_TBD_RESOLUTION.md` PUB-02 — public release form.
+- `docs/STAGE3_TBD_RESOLUTION.md` PUB-01 — code license remains All Rights Reserved by default, Stage 4 re-evaluation.
+- `docs/STAGE3_TBD_RESOLUTION.md` PUB-02 — public release direction is Steam Early Access.
 - `docs/legal/code_license_options.md` — DCO / CLA is mentioned as part of contribution willingness.
 
 ## 9. Asset Contribution Policy
@@ -108,7 +111,7 @@ Any future asset contribution policy must account for:
 - Intermediate files under `art/_intermediate/` and `audio/_intermediate/`.
 - Final Unity import paths under `Assets/`.
 
-Do not assume that a code license, once selected, also licenses sprites, audio, models, fonts, TMP atlases, or other assets. Asset licensing remains separate until Stage 4 resolves it.
+Do not assume that a code license, once selected or re-evaluated, also licenses sprites, audio, models, fonts, TMP atlases, or other assets. Asset licensing remains separate until Stage 4 re-evaluates it.
 
 ## 10. Testing Expectations
 
@@ -135,10 +138,11 @@ Current navigation docs that may need updates when a contribution changes projec
 - `docs/ASSET_STRUCTURE.md` — directory layout.
 - `docs/EDITOR_AUTOMATION.md` — automation usage.
 - `docs/legal/asset_ledger.md` — asset provenance and license tracking.
-- `docs/STAGE3_TBD_RESOLUTION.md` — open user decisions.
+- `docs/STAGE3_TBD_RESOLUTION.md` — resolved Stage 3 decisions and remaining Stage 4 re-evaluation items.
 
 ## 12. Change History
 
 | Version | Date | Notes |
 |---|---|---|
 | v0.1 | 2026-05-05 | Initial draft for Stage 4 entry preparation. Contribution intake, coding style, PR process, issue templates, Code of Conduct, DCO / CLA, and asset policy remain TBD. |
+| v0.2 | 2026-05-05 | Reflected Stage 3 /spec resolution: Niro / Antela provisional names, Steam Early Access release direction, and All Rights Reserved default license pending Stage 4 re-evaluation. |

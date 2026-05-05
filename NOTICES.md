@@ -1,6 +1,6 @@
 # NOTICES
 
-> Status: v0.1 draft (2026-05-05). This file is a public-facing summary of third-party notices for the Anemora repository. It is not a substitute for legal review before a public release.
+> Status: v0.2 draft (2026-05-05). This file is a public-facing summary of third-party notices for the Anemora repository. It is not a substitute for legal review before a public release.
 
 ## 1. 概要
 
@@ -10,7 +10,7 @@ This file summarizes third-party fonts, Unity packages, and generated-asset sour
 - **Relationship to asset ledger**: this file is consumer-facing. `docs/legal/asset_ledger.md` remains the internal per-asset tracking sheet with generation dates, prompts, source IDs, paid-plan evidence, and review status.
 - **Out of scope**: development tools that are not distributed as part of the game runtime, such as Aseprite, Blender, Python, and Studio One. These are acknowledged in §5.
 
-Anemora's own code and asset license is not finalized. See §6.
+Anemora's own code and asset license remains All Rights Reserved by default. Stage 3 /spec resolution locked the planned public release direction to Steam Early Access, with license re-evaluation at Stage 4. See §6.
 
 ## 2. 第三者フォント
 
@@ -120,7 +120,7 @@ Detailed per-asset provenance is tracked in `docs/legal/asset_ledger.md`. This s
 | AIVA Pro | BGM comparison workflow; Stage 3 Day 1 candidate was rejected for final use | Pro plan tracked; rejected comparison material remains intermediate |
 | Suno v5.5 | BGM candidate generation and selected Zone1 ambient source (`Dustlight Piano B`) | Paid plan tracked; selected BGM row recorded in `asset_ledger.md`; intermediate candidates remain ignored |
 | Stable Audio 2.5 | Planned fallback/inpainting or SFX ambience support | Commercial/API status must be verified at generation time before any final asset is included |
-| ElevenLabs SFX v2 | SFX generation workflow | Creator paid plan tracked; one draft SFX smoke test is tracked, remaining SFX generation depends on quota/billing resolution |
+| ElevenLabs SFX v2 | SFX generation workflow | Creator paid plan tracked; Zone1 SFX 30 generation / import is tracked in `asset_ledger.md` |
 | Studio One | DAW finishing tool for BGM/SFX | Development/production tool only; final exported audio rights depend on lawful inputs and project ownership |
 
 This repository may include AI-generated or AI-assisted assets. For exact asset IDs, prompts, selected takes, manual edits, and Steam AI disclosure classification, see `docs/legal/asset_ledger.md`.
@@ -132,18 +132,20 @@ The following tools are used to create or process assets but are not distributed
 - Aseprite, Steam version owned by the user, used for pixel-art palette/indexed sprite finishing.
 - Blender 4.5.5 LTS, GPL-licensed development tool, used to repair and postprocess 3D assets. Blender's GPL does not automatically license the exported FBX assets; exported asset licensing still depends on the source asset and project rights.
 - Python standard library scripts under `tools/`, including Meshy API helpers and Blender automation. No committed Python dependency file currently lists Pillow or other third-party Python packages.
-- Studio One, user-owned DAW license, used or planned for audio finishing.
+- Studio One, user-owned DAW license, used for audio finishing workflow planning and available for BGM/SFX finishing.
 
 Development-tool licenses should be reviewed separately if any tool binary, plugin, or third-party Python dependency is later committed or redistributed.
 
 ## 6. Anemora 自身の license
 
-- **Code license**: TBD. Stage 4 entry decision is tracked in `docs/STAGE3_TBD_RESOLUTION.md`.
-- **Project-owned assets**: TBD. Sprite, building, audio, UI, and derivative TMP atlas licensing will be decided in Stage 4 in a form consistent with the code license and third-party source licenses.
-- **Current default**: All Rights Reserved. Until a license is added, commercial use, redistribution, and derivative works of Anemora's original code/assets require author permission, except where a separate third-party license expressly applies.
+- **Code license**: All Rights Reserved remains the current default. Stage 4 may re-evaluate, but no OSS code license is granted by this file.
+- **Project-owned assets**: All Rights Reserved remains the current default for original Anemora sprites, models, audio selections, UI assets, and derivative TMP atlas assets, except where a separate third-party license expressly applies.
+- **Public release direction**: Steam Early Access is the planned public release path as of the Stage 3 /spec resolution interview.
+- **Current default**: Until a license is added, commercial use, redistribution, and derivative works of Anemora's original code/assets require author permission, except where a separate third-party license expressly applies.
 
 ## 7. 更新履歴
 
 | Version | Date | Change |
 |---|---|---|
 | v0.1 | 2026-05-05 | 初版起草。Stage 3 Day 1 時点の third-party fonts, Unity packages, AI-generated asset sources, development-tool acknowledgements, and Anemora license TBD status を集約 |
+| v0.2 | 2026-05-05 | Stage 3 /spec resolution を反映。Code license は All Rights Reserved 継続、public release direction は Steam Early Access 予定として記録 |

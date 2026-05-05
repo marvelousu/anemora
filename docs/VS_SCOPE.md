@@ -1,4 +1,4 @@
-# Vertical Slice スコープ定義 v0.3
+# Vertical Slice スコープ定義 v0.4
 
 > Anemora の **Vertical Slice (VS) = ここまで作れば「縦切り完成」と呼べる** 範囲を定義する。
 > Stage 3 (Day 0-10 目安) で本書を達成し、達成判定 = Stage 4 (α) 着手の前提。
@@ -6,7 +6,7 @@
 
 > **役割分離**: 本書 (VS_SCOPE) は **VS の "定義書"** (何を作れば VS 完成か)。`docs/STAGE3_PLAN.md` は **VS の "実行計画書"** (どう進めるか・どの順序で何日かけて作るか)。両者の混線を防ぐため、完了条件は本書 §8 を主とし、STAGE3_PLAN 側はそこへの参照に統一する。
 
-> **Status (2026-05-05 = Stage 3 Day 1)**: v0.3。E0-E5 + A2 + G4 のコアループ最小成立は達成済み (`0644822`)。G3 Localization / NPC 対話基盤と A4 Audio は完了済み。残る VS 完成判定は G5 通し体験 + Windows build + 検証マトリクス実行。
+> **Status (2026-05-05 = Stage 3 Day 1)**: v0.4。E0-E5 + A2 + G4 のコアループ最小成立は達成済み (`0644822`)。G3 Localization / NPC 対話基盤と A4 Audio は完了済み。Stage 3 /spec resolution interview で Niro / Antela / art・palette・font provisional 採用を反映済み。残る VS 完成判定は G5 通し体験 + Windows build + 検証マトリクス実行。
 
 ---
 
@@ -27,7 +27,7 @@
 
 ```
 [ 0:00-1:00 ] オープニング (Stage 3 A トラック /spec で詳細化済。未確定項目は `docs/STAGE3_TBD_RESOLUTION.md` で tracking)
-  - 主人公が **家のベッドで目覚める** (家は窓なし・閉塞感)
+  - Niro (ニロ、provisional) が **Antela の家のベッドで目覚める** (家は窓なし・閉塞感)
   - 含み演出: D-3 (夢を見ていたような、夢を見ていなかったような) + D-7 改 (俯瞰視点で手を見る一瞬の動作) + D-6 弱版 (今日は体がだるい、削除可能フラグ)
   - 主人公は silent protagonist、感情はテキストウィンドウのみ
   - **ドアの前で家を出るとき、ポケットから時の筆を取り出して気づく**
@@ -46,7 +46,7 @@
   - 持ち帰る対象は「記憶の断片」(本でも手紙でも歌の譜面でも)
 
 [ 6:00-12:00 ] 物語の入口
-  - 主要 NPC との対話 (1-2 人)
+  - 主要 NPC との対話 (1-2 人): 過去側 Resident_A は街の過去住人 witness、現在側 Resident_B は廃墟 / 図書館跡の観察者 / 記録者
   - 「衰退は止められないかもしれない」「でも何かは変えられる」というテーマの提示
   - プレイヤーの能動行動が NPC に「現在反映」を起こす (生存・移住・会話変化のいずれか 1 つ、痕跡が見える形で)
 
@@ -104,13 +104,13 @@
 >
 > **操作系**: VS はキーボード + マウスで完結。ゲームパッド対応は Stage 4 以降。
 
-### 3.2 第 1 ゾーン (仮称: 街)
+### 3.2 第 1 ゾーン: Antela (アンテラ、provisional)
 
 | 項目 | VS 実装規模 | 備考 |
 |---|---|---|
-| 物理規模 | 主人公の家 (窓なし、閉塞) + 中央広場 + 周辺 2-3 棟 (歩いて 1-2 分で回れる) | 街全体ではなく、街の一画 + 家の内部 |
-| 違和感配置 | **主要 1 + サイド 1 = 計 2 個** | **主要 = 失われた家族の記憶 (本/手紙/歌譜)**、サイドは別の住人の記憶 etc. |
-| NPC 配置 | **普通の住人 1-2 人** (異物設定なし、特別な役割なし) | **異物原則**: 異物は主人公のみ (SPEC §4.2 / `STAGE3_TBD_RESOLUTION.md` §2) |
+| 物理規模 | Niro の家 (窓なし、閉塞) + 中央広場 + 図書館跡 + 周辺 2-3 棟 (歩いて 1-2 分で回れる) | Antela 全体ではなく、街の一画 + 家の内部 |
+| 違和感配置 | **主要 1 + サイド 1 = 計 2 個** | **主要 = 失われた記録 / 本の痕跡**、サイドは別の住人の記憶 etc. |
+| NPC 配置 | **普通の住人 1-2 人** (異物設定なし、Niro と面識なし) | Resident_A = 過去側 witness / hook、Resident_B = 現在側の観察者 / 記録者。**異物原則**: 異物は主人公のみ (SPEC §4.2 / `STAGE3_TBD_RESOLUTION.md` §2) |
 | 探索的バリア | なし (空気感優先) | メトロイドヴァニア要素は VS 範囲外 |
 
 > **新規作成上限**: VS で新規作成する建物モジュールは **最大 3 棟程度**、残りは **再利用モジュール** (向き / テクスチャ / スケール変化) で構成。アセット暴走防止のための上限。
@@ -122,7 +122,9 @@
 | ヒーロービジュアル v1 | ✅ 実装 (PixelLab + Aseprite 仕上げ) |
 | 4 方向歩き / 走り / アイドル | ✅ 実装 |
 | 表情差分 | プレースホルダ可 (Stage 4 で拡充) |
-| 名前 / 性別 / 年齢 | `docs/STAGE3_TBD_RESOLUTION.md` で tracking。VS_SCOPE では確定扱いしない |
+| 名前 / 性別 / 年齢 | Niro (ニロ、provisional) / 中性表現で最終確定 / 15-19 歳 |
+| 見た目 | スナフキン的な帽子を含む静かな旅人シルエット |
+| 家族 / 知人 | 不在。VS では不在そのものを違和感として扱う |
 
 ### 3.4 層遷移片鱗 (VS フィナーレ)
 
@@ -132,9 +134,11 @@
 | 層 2 片鱗 | **1 カットのみ**: 「ルールが書き換わる予兆」を視覚演出 |
 | 層 2 のルール本体 | ❌ VS では実装しない (Stage 4 マイルストン) |
 
+> **設計用語注記**: 「層」「ベール剥離」は制作・設計用の便宜語であり、インゲーム UI / dialogue には出さない。VS の表示文言は違和感、記憶、痕跡、風景変化として表現する。
+
 ### 3.5 Stage 3 Day 1 機能ブロック状態
 
-| ブロック | v0.1 状態 | v0.3 反映 |
+| ブロック | v0.1 状態 | v0.4 反映 |
 |---|---|---|
 | E0 URP Pipeline | TBD | ✅ 完了。`AnemoraE0Setup.cs` editor automation により URP pipeline baseline を構築。 |
 | E1 PortalStencil | TBD | ✅ 完了。`PortalStencilFeature` + `PortalMask.shader` / `InsideOnly.shader`、stencil bit 3 / Mask = 8 / Ref = 8、dual-pass 設計。ADR-0002 v1.1 反映。 |
@@ -146,13 +150,13 @@
 | A2 Anemora_Main wiring | TBD | ✅ 完了 (`cb2b6ed`)。`PrototypePlayerController` + 境界往復 PlayMode test。 |
 | A3 Zone1 Buildings | TBD | ✅ 完了。Meshy v6 + 3/14 Blender 修復 + atlas + manifest + tools/scripts。 |
 | A4 Audio | TBD | ✅ 完了。BGM `Zone1_Ambient.ogg` + SFX 30 種 (環境 6 / 足音 12 / 時の窓 6 / NPC 3 / UI 3) + `Zone1AudioController` wiring 到達済み。 |
-| A5 UI 基盤 + ローカライズ | TBD | ✅ JP TMP Atlas (美咲ゴシック) + EN draft (Press Start 2P) + Anemora パレット v0。最終採用は `docs/STAGE3_TBD_RESOLUTION.md` 参照。 |
+| A5 UI 基盤 + ローカライズ | TBD | ✅ JP TMP Atlas (美咲ゴシック) + EN draft (Press Start 2P) + Anemora パレット v0。Stage 3 /spec resolution で provisional 採用。 |
 | F1 PixelLab drafts | TBD | ✅ 完了。Hero front / side / back、Resident_A front / back / left、Resident_B seated。 |
 | F2 Aseprite 仕上げ | TBD | ✅ 完了。Steam Aseprite 正式版で再エクスポート (`08f61b8`, `4d2092a`)。 |
-| F3 Retro Diffusion 補助 | TBD | 要否は `docs/STAGE3_TBD_RESOLUTION.md` で tracking。 |
+| F3 Retro Diffusion 補助 | TBD | VS では不要。Stage 4 で revision / alternate candidate が必要になった場合のみ再検討。 |
 | F4 Hero/NPC.prefab + Animator | TBD | ✅ 完了 (`d2c95c2`)。Hero / Resident_A / Resident_B prefab + 個別 `AnimatorController` + `HeroAnimatorBinder` + `Anemora_Main` placeholder 置換。 |
 | G1/G2 Buildings 採用方針 | TBD | ✅ 解決。A3 Meshy 再生成 = 案 b 採用。 |
-| G3 NPC 配置 + 対話 | TBD | ✅ 完了。Resident_A/B placement + `NpcInteractable` + `DialogueDisplay` scaffold + `DialogueAsset` SO 到達済み。A1 `LocalizationSettings` 完了と Locale switch dialog E2E PlayMode test を反映。実 dialogue 内容は user `/spec` 後に更新可。 |
+| G3 NPC 配置 + 対話 | TBD | ✅ 完了。Resident_A/B placement + `NpcInteractable` + `DialogueDisplay` scaffold + `DialogueAsset` SO 到達済み。A1 `LocalizationSettings` 完了と Locale switch dialog E2E PlayMode test を反映。Resident_A = 過去側 witness、Resident_B = 現在側 observer / recorder として扱う。 |
 | G4 ActionRecord トリガー設置 | TBD | ✅ 完了 (`0644822`)。`take_book_001` + `Book_Family_Current.prefab` + `PastBookInteractable` + E2E PlayMode test。 |
 | G5 通し体験 + Windows ビルド + 検証マトリクス | TBD | 残。matrix draft ready (`docs/G5_ACCEPTANCE_MATRIX.md`, 36 項目)。G3 / Audio 完了後の最終 Go/No-Go として G5 を実行。 |
 
@@ -276,11 +280,11 @@ VS = 「最終クオリティで作り込んだ縦切り」と理想は持ちつ
 
 ## 8. 完了条件チェックリスト
 
-VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v0.3 では Audio completion と G3 Localization completion を反映し、実装ブロッカーは G5 実行のみとして扱う。
+VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v0.4 では Stage 3 /spec resolution interview の lore / art / release 判断を反映し、実装ブロッカーは G5 実行のみとして扱う。
 
 ### 必須 (VS 達成判定の死守ライン、全 YES が VS 完成の条件)
 
-| 状態 | 項目 | v0.3 ブロック原因 / 備考 |
+| 状態 | 項目 | v0.4 ブロック原因 / 備考 |
 |---|---|---|
 | 残 | **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分) | G3 Localization / Audio は完了済み。残る確認は G5 通し体験実行のみ。検証項目は `docs/G5_ACCEPTANCE_MATRIX.md` に準備済み。 |
 | ✅ | 時の窓描画 → 赤シンボル選択 → 過去踏込み → 持ち帰り → 現在反映 の **コアループが破綻なく動作** | E0-E5 + A2 + G4 で達成済み。PlayMode 16/16 green。 |
@@ -293,7 +297,7 @@ VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。
 
 ### 推奨 (達成すべきだが、削減トリガー時に外せる)
 
-| 状態 | 項目 | v0.3 ブロック原因 / 備考 |
+| 状態 | 項目 | v0.4 ブロック原因 / 備考 |
 |---|---|---|
 | 残 | サイド違和感 1 個 | Stage 3 完走優先。削減対象として維持。 |
 | ✅ | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | Resident_A/B scaffold と DialogueAsset SO 到達済み。Locale switch dialog E2E PlayMode test green。実 dialogue 内容は user `/spec` 後に更新可。 |
@@ -304,7 +308,7 @@ VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。
 
 ### Stage 4-5 寄り (VS 判定では問わない、達成できれば加点)
 
-| 状態 | 項目 | v0.3 ブロック原因 / 備考 |
+| 状態 | 項目 | v0.4 ブロック原因 / 備考 |
 |---|---|---|
 | 残 | 30 秒トレイラー (PITCH §3) の 6 カット全てが実機キャプチャ可能 | G5 通し体験後に素材化判断。 |
 | 残 | Linux ビルドが起動 → タイトル → ゲーム本体まで動作 (Mac は Stage 4 まで保留可) | VS 判定外。 |
@@ -357,7 +361,7 @@ VS 達成後、SPEC を v1 に改訂:
 
 Stage 3 Day 1 の実装結果は以下の ADR / docs に反映済み。
 
-| 参照 | 状態 | VS_SCOPE v0.3 への反映 |
+| 参照 | 状態 | VS_SCOPE v0.4 への反映 |
 |---|---|---|
 | `docs/adr/0002-time-frame-portal-stencil.md` | v1.1 / Accepted (`02f5c22`) | E1 確定値。stencil bit 3、Mask = 8 / Ref = 8、dual-pass shader、URP StencilLight 競合経緯を §3.1 / §3.5 へ反映。 |
 | `docs/adr/0005-time-management-scene-switching.md` | v1.1 / Accepted (`3a29757`) | E4 確定値。PortalState 6 状態、atomic flip ordering、hysteresis 0.02m / minimum 0.05m / cooldown 0.1s / flash 0.05s を §3.1 / §3.5 へ反映。 |
@@ -367,15 +371,13 @@ Stage 3 Day 1 の実装結果は以下の ADR / docs に反映済み。
 
 ## 13. TBD tracking
 
-VS_SCOPE は完成定義と確定済み実装状態を扱う。未確定の user 判断項目は `docs/STAGE3_TBD_RESOLUTION.md` (`18271bc`) で tracking し、本書では個別候補を列挙しない。
+VS_SCOPE は完成定義と確定済み実装状態を扱う。Stage 3 /spec resolution interview で解決した user 判断項目は `docs/STAGE3_TBD_RESOLUTION.md` に解決日と反映 commit hash を残す。未確定または Stage 4 再評価の項目は同 sheet で tracking し、本書では個別候補を列挙しない。
 
 対象例:
 
-- 主人公名 / 性別 / 年齢 / 出身詳細。
-- 衰退原因、時の筆の起源、主人公が選ばれた理由。
-- Resident_A / Resident_B の個別シート。
-- F2 art review、palette / font 最終採用、Zone1 asset review。
-- Code license / public release 判断。
+- Stage 4 で再評価する art / palette / font revision。
+- 真層の収束パターン、主人公の創造主体など Stage 4 以降の story bible 項目。
+- Public release / license の運用詳細。
 
 確定後は `docs/STAGE3_TBD_RESOLUTION.md` の該当 row に確定日と反映 commit hash を残し、必要なものだけ VS_SCOPE / SPEC / localization / asset docs へ反映する。
 
@@ -403,8 +405,9 @@ VS_SCOPE は完成定義と確定済み実装状態を扱う。未確定の user
 | v0.1a | 2026-05-04 | Stage 3 A トラック /spec 反映: §2 オープニング詳細化 (家ベッド + D-3/D-7/D-6 含み演出 + 時の筆発見タイミング) / §3.2 NPC 配置を「普通の住人 1-2 人、異物原則」に訂正 (老人撤回) / §6 対話 UI に silent protagonist 反映 |
 | v0.2 | 2026-05-05 | Stage 3 Day 1 進捗の整合反映 (E0-E5 / A1-A3 / F1-F4 / G4 完了状態) / ADR-0002, ADR-0005, ADR-0008, ADR-0009 改訂結果反映 / TBD 項目を `docs/STAGE3_TBD_RESOLUTION.md` へ移譲 / §3.1 コアループ最小成立達成を明記 / 残タスク表 (G3 final / G5 / Audio) を最新化 |
 | v0.3 | 2026-05-05 | Audio 完成 (BGM + SFX 30 種 + `Zone1AudioController`) / G3 Localization 完成 (`LocalizationSettings` + Locale switch test) / §8 死守ラインを G5 残のみに整理 |
+| v0.4 | 2026-05-05 | Stage 3 /spec resolution interview 反映: Niro / Antela provisional 採用、主人公中性表現・15-19 歳・スナフキン的帽子、Resident_A / Resident_B 役割、art / palette / font provisional 採用、設計用語をインゲームに出さない注記 |
 
 ---
 
-> **End of VS_SCOPE v0.3**
+> **End of VS_SCOPE v0.4**
 > Stage 3 実装の完成定義として運用。Stage 3 完了後、SPEC v1 改訂と合わせて v1 へ昇格。

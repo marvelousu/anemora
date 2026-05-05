@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed (ユーザー承認後 Accepted へ昇格)
+Accepted
 
 ## Date
 
@@ -15,6 +15,8 @@ ADR-0003 は AI 主体 + 人手仕上げのアセット制作方針を定義し�
 この過程で、単なるツール選定ではなく、**生成 → 中間処理 → 最終 import** の責務分離、gitignore された中間ファイルの扱い、Unity import 設定、Steam AI 開示区分、並列 dirty 混在を避ける staging 規律が必要になった。
 
 本 ADR は ADR-0003 の上位方針を置き換えず、Stage 4 以降の制作・保守・新規 contributor 参加時に参照する **実務手順 ADR** として正式化する。
+
+Stage 3 /spec resolution interview (2026-05-05) でユーザー承認を受け、Status を Proposed から Accepted へ昇格した。
 
 ### 関連文書
 
@@ -270,3 +272,4 @@ Tier は「使用した tool」ではなく「最終成果物への AI 生成物
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v0.1 | 2026-05-05 | Stage 3 Day 1 実運用をもとに草稿化。生成 → 中間処理 → 最終 import、ツール分担、中間ファイル gitignore、最終配置、Unity import 標準、asset_ledger 責務、並列 session 規律、Steam 開示 Tier 1/2/3 を定義 |
+| v0.2 | 2026-05-05 | Stage 3 /spec resolution interview で user 承認を受け、Status を Proposed から Accepted へ変更 |

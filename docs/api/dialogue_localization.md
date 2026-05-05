@@ -166,6 +166,15 @@ Current categories:
 | `ui.*` | UI labels. Current menu entries live under `ui.menu.*`. |
 | `system.*` | System-facing UI/status text, for example `system.autosave_indicator`. |
 
+Stage 3 /spec resolution introduced the protagonist name Niro and the VS NPC roles. Future key migration should move placeholder dialogue keys toward content-specific names without changing the current assets in this doc pass:
+
+| Current placeholder key | Target naming direction | Notes |
+|---|---|---|
+| `dialogue.placeholder.resident_a.greet` | `dialogue.niro.encounter_resident_a.greet` | Resident_A is the past-side Antela resident witness / hook. |
+| `dialogue.placeholder.resident_b.idle` | `dialogue.niro.encounter_resident_b.idle` | Resident_B is the current-side ruins / library observer-recorder. |
+
+The key migration itself is a separate localization asset task because it must update `Anemora_Strings Shared Data.asset`, both locale tables, and every `DialogueAsset` reference atomically.
+
 For `DialogueAsset` SO fields, set `LocalizedString` table references to `Anemora_Strings` and entry references to the exact string key. Code/tests may also construct a reference directly:
 
 ```csharp

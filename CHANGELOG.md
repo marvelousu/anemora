@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Stage 3 is still in progress. Public release, code license, protagonist name, and the formal Zone 1 name are TBD.
+Stage 3 is still in progress. Stage 3 /spec resolution selected Niro and Antela as provisional names, kept the code license as All Rights Reserved by default, and locked the planned public release direction to Steam Early Access.
 
 ### Added
 
 ### Changed
+
+- Reflected Stage 3 /spec resolution interview decisions across planning docs: protagonist Niro / ニロ (provisional), first zone Antela / アンテラ (provisional), gender-neutral protagonist expression, 15-19 age range, no family/acquaintance setup, Resident_A / Resident_B VS roles, Stage 3 provisional art/font/palette adoption, ADR-0009 Accepted, All Rights Reserved default, and Steam Early Access release direction.
 
 ### Fixed
 
@@ -73,9 +75,9 @@ Stage 3 Day 1 milestone navigation draft. This is not a public release tag yet; 
 
 ## Roadmap
 
-- Stage 3 Vertical Slice completion: G3 review / integration, G5 verification, and Audio finalization (BGM + SFX) remain. F4 prefab / animator work is already pushed in this milestone.
-- Stage 4: Zone 2 expansion, localization completion, Steam submission preparation, and GitHub Public release decision.
-- Stage 5+: TBD.
+- Stage 3 Vertical Slice completion: G5 verification / Windows build remains after G3 Localization and Audio completion.
+- Stage 4: Zone 2 expansion, localization content polish, art/font revision as needed, and Steam Early Access submission preparation.
+- Stage 5+: Steam Early Access feedback / full release planning.
 
 [Unreleased]: https://github.com/marvelousu/anemora/compare/v0.1.0-alpha.1...HEAD
 [0.1.0-alpha.1]: https://github.com/marvelousu/anemora/releases/tag/v0.1.0-alpha.1
