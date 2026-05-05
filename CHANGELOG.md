@@ -71,6 +71,7 @@ Milestone groups covered in this section:
 |---|---|
 | This task | Promoted Stage 4 character art scope so Niro / Hero v2 is a full redraw, with Resident_A / Resident_B review decisions tracked separately. |
 | This task | Recorded the character v2 import, asset ledger rows, and user-approved pixel granularity direction for Hero / Resident_A / Resident_B. |
+| This task | Recorded the Stage 4 TMP / palette readability review and next screenshot gate before font or UI asset replacement. |
 | `33a2507`, `8bd0d01` | Added and updated `docs/devlog/INDEX.md` for devlog navigation and CHANGELOG cross-reference. |
 | `34112eb` | Added Stage 3 review aids for high-impact visual review items. |
 | `4417663` | Added `docs/G5_PREFLIGHT.md` for G5 Go / No-Go preparation. |

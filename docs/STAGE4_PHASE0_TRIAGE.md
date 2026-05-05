@@ -44,7 +44,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 | 2 | Brush UX polish | Initial runtime hint implemented | Codex + user review | Added a lightweight runtime overlay for create / release / close hints without scene YAML changes. Later UI review can replace it with a localized icon treatment. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
 | 3 | Test-count reconciliation | Resolved as documented runner/source distinction | Codex | Character v2 added three EditMode `[Test]` methods, moving the source-marker count from 31 to 34; the recorded Unity runner count moved from `32/32` to `35/35`, so the historical +1 runner/source delta remains. | Verification docs state the executed runner baseline as EditMode `35/35`, PlayMode `29/29`, with source markers tracked separately as EditMode 34 and PlayMode 29. |
 | 4 | Character v2 redraw + Resident review | Verified in this task | User decision + Codex asset work | Niro / Hero, Resident_A, and Resident_B v2 directions were user-approved and imported into runtime sprite assets. Resident_B uses the long-hair dark 3/4 seated direction for current/future-side mood. | v2 rows are documented in asset ledger; Hero / Resident_A / Resident_B prefabs and clips reference v2; targeted tests, full EditMode/PlayMode, and Windows build pass. |
-| 5 | TMP font / palette readability review | Open visual review | User decision + Codex docs/assets | Compare JP / EN dialogue panels and UI screenshots against current fonts and palette v0. | Keep / revise decision recorded; any replacement has license and atlas notes. |
+| 5 | TMP font / palette readability review | Initial review recorded | User decision + Codex docs/assets | `docs/devlog/2026-05-06_stage4_tmp_palette_readability_review.md` records current prefab/font/palette risks. Next capture JP / EN dialogue screenshots before changing font assets. | Keep / revise decision recorded; any replacement has license and atlas notes. |
 | 6 | Dialogue v1 polish | Open content polish | Codex draft + user review | Polish Niro / Resident_A / Resident_B text without internal planning vocabulary; keep JP/EN key parity. | StringTable and DialogueAsset remain synchronized; dialogue tests pass. |
 | 7 | Audio polish | Open audio review | User listening + Codex asset/docs | Review BGM loop, mix balance, time-window modulation, SFX replacement candidates, and ambience additions. | Keep / replace decisions are recorded per category; audio wiring tests remain green. |
 | 8 | Verification gap coverage | Open QA expansion | Codex | Extend stress harness / warning regression / save-load scenario coverage only where it protects Stage 4 work. | `VERIFICATION_SUITE.md` reflects the new automated or manual coverage boundary. |
@@ -63,7 +63,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 ## 5. Recommended Dispatch Order
 
 1. Character art follow-up: handle any later scene-specific Resident_B diagonal orientation as a separate focused polish task if the runtime scene read needs it.
-2. TMP / palette readability review.
+2. TMP / palette screenshot capture and small UI polish decision.
 3. Dialogue and audio polish batches.
 4. Verification hardening and Steam EA prep.
 
@@ -73,5 +73,6 @@ The first technical task was the URP warning cleanup. It is now resolved for Pha
 
 | Version | Date | Change |
 |---|---|---|
+| v0.3 | 2026-05-06 | Records initial TMP / palette readability review and moves the next action to screenshot capture before UI asset changes. |
 | v0.2 | 2026-05-06 | Resolves test-count reconciliation as a documented runner/source distinction after character v2 added three EditMode source markers. |
 | v0.1 | 2026-05-06 | Initial Phase 0 triage. Converts Stage 3 closeout facts into immediate fix, Stage 4 backlog, and no-action buckets. |
