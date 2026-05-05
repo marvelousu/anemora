@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v1.1 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v1.2 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 53 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
+Current root-level Markdown coverage: 54 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -28,6 +28,7 @@ Current root-level Markdown coverage: 53 files under `docs/devlog/`, including t
 | 2026-05-06 | [2026-05-06_stage4_audio_listening_checklist.md](2026-05-06_stage4_audio_listening_checklist.md) | User-guided Stage 4 audio listening and replacement checklist | This task | Stage 4 Phase 0 / audio polish | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_test_count_reconciliation.md](2026-05-06_stage4_test_count_reconciliation.md) | Stage 4 EditMode runner/source test-count reconciliation | This task | Stage 4 Phase 0 / verification | [Unreleased](../../CHANGELOG.md#unreleased) verification |
 | 2026-05-06 | [2026-05-06_stage4_tmp_palette_readability_review.md](2026-05-06_stage4_tmp_palette_readability_review.md) | Stage 4 TMP font and palette readability review | This task | Stage 4 Phase 0 / UI readability | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-06 | [2026-05-06_stage4_dialogue_tmp_capture_investigation.md](2026-05-06_stage4_dialogue_tmp_capture_investigation.md) | Stage 4 DialoguePanel TMP screenshot capture investigation | This task | Stage 4 Phase 0 / UI readability | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0 Stage 3 Closeout (2026-05-06)
 
@@ -113,6 +114,7 @@ Current root-level Markdown coverage: 53 files under `docs/devlog/`, including t
 - [2026-05-05_tmp_jp_atlas_v0_1_missing_chars_review.md](2026-05-05_tmp_jp_atlas_v0_1_missing_chars_review.md) — TMP JP Atlas missing 70 chars review.
 - [2026-05-05_tmp_en_atlas_v0.md](2026-05-05_tmp_en_atlas_v0.md) — TMP English Atlas v0 draft.
 - [2026-05-06_stage4_tmp_palette_readability_review.md](2026-05-06_stage4_tmp_palette_readability_review.md) — Stage 4 TMP / palette readability review.
+- [2026-05-06_stage4_dialogue_tmp_capture_investigation.md](2026-05-06_stage4_dialogue_tmp_capture_investigation.md) — Stage 4 DialoguePanel TMP screenshot capture investigation.
 - A1 DialogueAsset: no root devlog file exists as of v0.1; see CHANGELOG entry for commit `523c048`.
 
 ### Audio (A4 BGM + SFX)
@@ -169,3 +171,4 @@ Current root-level Markdown coverage: 53 files under `docs/devlog/`, including t
 | v0.9 | 2026-05-06 | Stage 4 audio polish inventory and test-count reconciliation devlogs added; root-level Markdown coverage updated to 51 files. |
 | v1.0 | 2026-05-06 | TMP / palette readability review devlog を追加し、root-level Markdown coverage を 52 件へ更新 |
 | v1.1 | 2026-05-06 | Stage 4 audio listening checklist devlog added; root-level Markdown coverage updated to 53 files. |
+| v1.2 | 2026-05-06 | DialoguePanel TMP screenshot capture investigation devlog を追加し、root-level Markdown coverage を 54 件へ更新 |
