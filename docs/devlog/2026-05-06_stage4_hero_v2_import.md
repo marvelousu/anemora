@@ -1,6 +1,6 @@
 # Stage 4 Character v2 Import
 
-Status: v0.1 implementation record (2026-05-06)
+Status: v0.2 implementation record with Resident_A follow-up caveat (2026-05-06)
 
 This devlog records the Stage 4 Niro / Hero v2 redraw import and Resident_A / Resident_B v2 adoption after user review approval.
 
@@ -18,7 +18,7 @@ This devlog records the Stage 4 Niro / Hero v2 redraw import and Resident_A / Re
 
 User approved the Hero v2 candidate after visual review. The accepted direction reads as a full redraw rather than a small v1 edit: broad travel-worn hat, muted earth palette, gender-neutral teen silhouette, stronger pixel pass, and consistent front/back/side identity.
 
-Resident_A was accepted with a slightly higher-resolution box downscale so its youth / witness read remains clear while staying within the same 32x48 pixel granularity. Resident_B was accepted as a long-haired, dark, seated 3/4 diagonal sprite for the current/future-side resident mood.
+Resident_A was imported with a slightly higher-resolution box downscale so its youth / witness read remains clear while staying within the same 32x48 pixel granularity. A later runtime review reopened Resident_A for revision: its pixel feel reads too strong, and its face/head scale reads visibly larger than the Hero. Hero and Resident_B are now the visual reference for scale and pixel granularity. Resident_B was accepted as a long-haired, dark, seated 3/4 diagonal sprite for the current/future-side resident mood.
 
 ## 2. Imported Assets
 
@@ -64,7 +64,7 @@ Resident_A and Resident_B went through an explicit review gate before adoption:
 - `art/_intermediate/stage4_character_pixel_pass_review/resident_b_longhair_diagonal_review.png`
 - `art/_intermediate/stage4_character_pixel_pass_review/stage4_pixel_granularity_alignment_review_clean.png`
 
-Resident_A uses the approved slightly higher-resolution box downscale. Resident_B uses the approved long-hair dark 3/4 seated direction. Additional diagonal Resident_B views are retained only as ignored intermediate review material for future scene-specific orientation work.
+Resident_A currently uses the imported slightly higher-resolution box downscale, but this is no longer closed: the next art pass should reduce the over-strong pixel feel and bring face/head scale closer to Hero and Resident_B. Resident_B uses the approved long-hair dark 3/4 seated direction. Additional diagonal Resident_B views are retained only as ignored intermediate review material for future scene-specific orientation work.
 
 ## 5. Verification
 
@@ -80,5 +80,5 @@ The first full PlayMode attempt with `-nographics` reported `27/29` because grap
 
 ## 6. Follow-Up
 
+- Revise Resident_A before treating the character v2 pass as closed. Use Hero and Resident_B as the reference for face/head scale, body proportions, and pixel granularity; do not simply sharpen or downscale the current Resident_A sheet.
 - If `Anemora_Main` later needs Resident_B to face the exact scene diagonal, use the retained 8-view intermediate sheet to create a scene-specific v2 idle variant instead of editing the current runtime sheet blindly.
-- Any further character polish should keep Hero, Resident_A, and Resident_B pixel granularity aligned.

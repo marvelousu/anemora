@@ -1,6 +1,6 @@
 # Stage 4 Roadmap
 
-Status: v1.0 Stage 4 entry roadmap (2026-05-06)
+Status: v1.1 Stage 4 entry roadmap (2026-05-06)
 
 本 doc は、Stage 3 closeout 後に Stage 4 の入口を定義する roadmap である。`docs/G5_ACCEPTANCE_MATRIX.md` と `docs/STAGE3_RETROSPECTIVE.md` v1.0 の結果を反映済み。
 
@@ -39,7 +39,7 @@ Phase 0 absorbs final Stage 3 observations before larger Stage 4 production star
 | Workstream | 成果物 | 完了条件 | 推定工数 | Notes |
 |---|---|---|---|---|
 | G5 result triage | `docs/G5_ACCEPTANCE_MATRIX.md` final result notes + Stage 3 retrospective v1.0 inputs + `docs/STAGE4_PHASE0_TRIAGE.md` | User manual G5 items are classified as immediate fix, Stage 4 backlog, or no action | S | Stage 3 closeout result is now recorded; `STAGE4_PHASE0_TRIAGE.md` is the dispatch source for immediate Stage 4 work. |
-| F2 v2 redraw | Niro / Hero v2 full redraw with a clear hat silhouette and gender-neutral 15-19 read; Resident_A / Resident_B v2 review and adoption | Niro v2 sprite draft is imported, visible in prefab preview, and documented in asset ledger; Resident_A / Resident_B keep or redraw decisions are recorded | M-L | User review on 2026-05-06 approved Niro / Hero, Resident_A, and Resident_B v2 runtime adoption. Preserve Stage 3 v1 sprites as the comparison baseline. Resident_B uses a darker long-hair 3/4 seated direction for current/future-side mood. |
+| F2 v2 redraw | Niro / Hero v2 full redraw with a clear hat silhouette and gender-neutral 15-19 read; Resident_A / Resident_B v2 review and adoption | Niro v2 sprite draft is imported, visible in prefab preview, and documented in asset ledger; Resident_A / Resident_B keep or redraw decisions are recorded | M-L | User review on 2026-05-06 accepts Hero and Resident_B as the current visual reference. Resident_A v2 is imported but needs a follow-up pass because its pixel feel is too strong and its face/head scale reads larger than Hero. Preserve Stage 3 v1 sprites as the comparison baseline. Resident_B uses a darker long-hair 3/4 seated direction for current/future-side mood. |
 | Lore content polish | G3 dialogue v0 -> v1 pass for Niro, Resident_A, Resident_B, and opening / short hint text | JP text is internally consistent; EN draft has review notes; StringTable key migration plan is recorded | M | Use current `docs/draft/g3_npc_dialogue.md`, `da6040f`, and `docs/PITCH_PUBLIC.md` as inputs. |
 | Audio polish | SFX placeholder replacement list + added ambience candidates + mix notes from G5 listening | Replacement or keep decisions are recorded per SFX category; BGM loop / balance notes are resolved or backlogged | M | Keep `Zone1_Ambient.ogg` as the baseline unless G5 listening finds a blocker. |
 | Demo brush UX polish | Brush preview affordance, tutorial hint, and input feel review after `a0bd50b` | Brush interaction remains understandable without developer explanation; any confusion is either fixed or documented as tutorial/content backlog | S-M | Initial runtime create / release / close hint is implemented without scene YAML changes; later UI review can replace it with a polished localized treatment. |
@@ -108,3 +108,4 @@ These items should be resolved or explicitly left open when promoting this roadm
 |---|---|---|
 | v0.1 | 2026-05-05 | Preliminary Stage 4 roadmap draft. Defines Phase 0-4 from G5 result reflection through Steam Early Access release package, with deliverables, completion conditions, effort bands, and no calendar dates. |
 | v1.0 | 2026-05-06 | Promoted after Stage 3 closeout. Reflects `a0bd50b` user manual confirmation, latest test baseline, and Stage 4 Phase 0 entry workstreams. |
+| v1.1 | 2026-05-06 | Adds the post-runtime Resident_A follow-up while keeping Hero and Resident_B as the accepted character reference. |

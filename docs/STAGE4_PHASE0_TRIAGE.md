@@ -1,6 +1,6 @@
 # Stage 4 Phase 0 Triage
 
-Status: v0.2 Stage 4 entry triage (2026-05-06)
+Status: v0.4 Stage 4 entry triage (2026-05-06)
 
 This document extracts the Stage 4 Phase 0 backlog from the accepted Stage 3 closeout. It is intentionally narrow: it does not reopen Stage 3 completion, choose art direction, or start content expansion.
 
@@ -43,7 +43,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 | 1 | URP `DrawObjectsPass` / RenderGraph warning cleanup | Resolved in this task | Codex | Replaced internal `DrawObjectsPass` with public `RenderObjectsPass`; added PlayMode warning-count assertion. | EditMode `32/32`, PlayMode `29/29`, Windows build success, 30 second player warning count `0`. |
 | 2 | Brush UX polish | Initial runtime hint implemented | Codex + user review | Added a lightweight runtime overlay for create / release / close hints without scene YAML changes. Later UI review can replace it with a localized icon treatment. | A new player can discover `Shift` + left-drag and right-click deletion without developer explanation. |
 | 3 | Test-count reconciliation | Resolved as documented runner/source distinction | Codex | Character v2 added three EditMode `[Test]` methods, moving the source-marker count from 31 to 34; the recorded Unity runner count moved from `32/32` to `35/35`, so the historical +1 runner/source delta remains. | Verification docs state the executed runner baseline as EditMode `35/35`, PlayMode `29/29`, with source markers tracked separately as EditMode 34 and PlayMode 29. |
-| 4 | Character v2 redraw + Resident review | Verified in this task | User decision + Codex asset work | Niro / Hero, Resident_A, and Resident_B v2 directions were user-approved and imported into runtime sprite assets. Resident_B uses the long-hair dark 3/4 seated direction for current/future-side mood. | v2 rows are documented in asset ledger; Hero / Resident_A / Resident_B prefabs and clips reference v2; targeted tests, full EditMode/PlayMode, and Windows build pass. |
+| 4 | Character v2 redraw + Resident review | Follow-up open for Resident_A | User review + Codex asset work | Hero and Resident_B are now the accepted visual reference. Resident_A v2 remains imported, but runtime review found its pixel feel too strong and its face/head scale too large against the Hero; revise Resident_A to match Hero / Resident_B granularity and scale. | Next Resident_A candidate is user-reviewed against Hero and Resident_B before runtime replacement; targeted character tests and full PlayMode remain green after import. |
 | 5 | TMP font / palette readability review | Initial review recorded | User decision + Codex docs/assets | `docs/devlog/2026-05-06_stage4_tmp_palette_readability_review.md` records current prefab/font/palette risks. Next capture JP / EN dialogue screenshots before changing font assets. | Keep / revise decision recorded; any replacement has license and atlas notes. |
 | 6 | Dialogue v1 polish | Open content polish | Codex draft + user review | Polish Niro / Resident_A / Resident_B text without internal planning vocabulary; keep JP/EN key parity. | StringTable and DialogueAsset remain synchronized; dialogue tests pass. |
 | 7 | Audio polish | Open audio review | User listening + Codex asset/docs | Review BGM loop, mix balance, time-window modulation, SFX replacement candidates, and ambience additions. | Keep / replace decisions are recorded per category; audio wiring tests remain green. |
@@ -62,7 +62,7 @@ If a new user-visible regression appears, handle it as a focused repair in a tem
 
 ## 5. Recommended Dispatch Order
 
-1. Character art follow-up: handle any later scene-specific Resident_B diagonal orientation as a separate focused polish task if the runtime scene read needs it.
+1. Character art follow-up: revise Resident_A first, using Hero and Resident_B as the scale / pixel-granularity reference; handle any later scene-specific Resident_B diagonal orientation only if the runtime scene read needs it.
 2. TMP / palette screenshot capture and small UI polish decision.
 3. Dialogue and audio polish batches.
 4. Verification hardening and Steam EA prep.
@@ -73,6 +73,7 @@ The first technical task was the URP warning cleanup. It is now resolved for Pha
 
 | Version | Date | Change |
 |---|---|---|
+| v0.4 | 2026-05-06 | Records post-runtime Resident_A follow-up: reduce over-strong pixel feel and face/head scale, with Hero and Resident_B as the visual reference. |
 | v0.3 | 2026-05-06 | Records initial TMP / palette readability review and moves the next action to screenshot capture before UI asset changes. |
 | v0.2 | 2026-05-06 | Resolves test-count reconciliation as a documented runner/source distinction after character v2 added three EditMode source markers. |
 | v0.1 | 2026-05-06 | Initial Phase 0 triage. Converts Stage 3 closeout facts into immediate fix, Stage 4 backlog, and no-action buckets. |
