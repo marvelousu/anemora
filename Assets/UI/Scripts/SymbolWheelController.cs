@@ -19,6 +19,9 @@ namespace Anemora.UI
         [SerializeField] private Image whiteSymbol;
         [SerializeField] private Image blueSymbol;
         [SerializeField] private float disabledAlpha = 0.4f;
+        [SerializeField] private bool acceptKeyboardSelection;
+        [SerializeField] private bool acceptMouseHover = true;
+        [SerializeField] private bool hideCanvasOnAwake = true;
         [SerializeField] private UnityEvent<SymbolType> onSymbolSelected = new();
 
         private SymbolType focusedSymbol = SymbolType.Red;
@@ -39,13 +42,25 @@ namespace Anemora.UI
                 rootCanvas.worldCamera = Camera.main;
             }
 
+            if (rootCanvas != null && hideCanvasOnAwake)
+            {
+                rootCanvas.enabled = false;
+            }
+
             ApplyState();
         }
 
         private void Update()
         {
-            HandleKeyboardAndPadInput();
-            HandleMouseHover();
+            if (acceptKeyboardSelection)
+            {
+                HandleKeyboardAndPadInput();
+            }
+
+            if (acceptMouseHover)
+            {
+                HandleMouseHover();
+            }
         }
 
         public void SelectFocusedSymbol()
@@ -58,6 +73,11 @@ namespace Anemora.UI
             Zone1AudioController.Instance?.PlayTimeSymbolSelectRed();
             Debug.Log("Red symbol selected");
             onSymbolSelected.Invoke(SymbolType.Red);
+        }
+
+        public void SetKeyboardSelectionEnabled(bool enabled)
+        {
+            acceptKeyboardSelection = enabled;
         }
 
         private void HandleKeyboardAndPadInput()

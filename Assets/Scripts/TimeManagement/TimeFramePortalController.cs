@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Reflection;
 using Anemora.Audio;
 using Anemora.UI;
 using UnityEngine;
@@ -33,12 +34,19 @@ namespace Anemora.TimeManagement
         [SerializeField] private float flipCooldown = 0.1f;
         [SerializeField] private float flashDuration = 0.05f;
         [SerializeField] private float snapDistanceMultiplier = 1.5f;
+        [SerializeField] private bool enableBrushInput = true;
+        [SerializeField] private KeyCode brushModifierKey = KeyCode.LeftShift;
+        [SerializeField] private KeyCode alternateBrushModifierKey = KeyCode.RightShift;
+        [SerializeField] private int brushMouseButton = 0;
+        [SerializeField] private float minBrushDragPixels = 24f;
 
         private Coroutine generationRoutine;
         private Coroutine flipRoutine;
         private GameObject portalInstance;
         private PortalState state = PortalState.Normal;
         private int portalGenerationCount;
+        private bool brushDragActive;
+        private Vector2 brushDragStart;
 
         public event Action<PortalState, float> StateChanged;
         public event Action<SceneSide> CrossingCompleted;
@@ -116,6 +124,11 @@ namespace Anemora.TimeManagement
             }
         }
 
+        private void Update()
+        {
+            HandleBrushInput();
+        }
+
         public void HandleSymbolSelected(SymbolType symbol)
         {
             if (symbol != SymbolType.Red || state != PortalState.Normal)
@@ -129,6 +142,11 @@ namespace Anemora.TimeManagement
             }
 
             generationRoutine = StartCoroutine(GeneratePortalRoutine());
+        }
+
+        public bool TryCompleteBrushStrokeForTests(Vector2 startScreenPosition, Vector2 endScreenPosition, bool modifierHeld)
+        {
+            return TryCompleteBrushStroke(startScreenPosition, endScreenPosition, modifierHeld);
         }
 
         public void TriggerCrossingForTests()
@@ -313,6 +331,89 @@ namespace Anemora.TimeManagement
         {
             state = nextState;
             StateChanged?.Invoke(state, Time.timeScale);
+        }
+
+        private void HandleBrushInput()
+        {
+            if (!enableBrushInput || IsDialogueDisplayVisible())
+            {
+                brushDragActive = false;
+                return;
+            }
+
+            var modifierHeld = Input.GetKey(brushModifierKey) || Input.GetKey(alternateBrushModifierKey);
+            if (state != PortalState.Normal)
+            {
+                brushDragActive = false;
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(brushMouseButton) && modifierHeld)
+            {
+                brushDragStart = Input.mousePosition;
+                brushDragActive = true;
+                return;
+            }
+
+            if (!brushDragActive)
+            {
+                return;
+            }
+
+            if (!modifierHeld)
+            {
+                brushDragActive = false;
+                return;
+            }
+
+            if (Input.GetMouseButtonUp(brushMouseButton))
+            {
+                TryCompleteBrushStroke(brushDragStart, Input.mousePosition, true);
+                brushDragActive = false;
+            }
+        }
+
+        private bool TryCompleteBrushStroke(Vector2 startScreenPosition, Vector2 endScreenPosition, bool modifierHeld)
+        {
+            if (!enableBrushInput ||
+                !modifierHeld ||
+                state != PortalState.Normal ||
+                IsDialogueDisplayVisible())
+            {
+                return false;
+            }
+
+            var minPixels = Mathf.Max(1f, minBrushDragPixels);
+            if ((endScreenPosition - startScreenPosition).sqrMagnitude < minPixels * minPixels)
+            {
+                return false;
+            }
+
+            if (symbolWheel != null)
+            {
+                symbolWheel.SelectFocusedSymbol();
+            }
+            else
+            {
+                HandleSymbolSelected(SymbolType.Red);
+            }
+
+            return generationRoutine != null || state != PortalState.Normal;
+        }
+
+        private static bool IsDialogueDisplayVisible()
+        {
+            var displayType =
+                Type.GetType("Anemora.Dialogue.DialogueDisplay, Anemora.Dialogue", throwOnError: false) ??
+                Type.GetType("Anemora.Dialogue.DialogueDisplay, Assembly-CSharp", throwOnError: false);
+            var instance = displayType?
+                .GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)?
+                .GetValue(null);
+            var isVisible = instance?
+                .GetType()
+                .GetProperty("IsVisible", BindingFlags.Public | BindingFlags.Instance)?
+                .GetValue(instance);
+            return isVisible is bool visible && visible;
         }
     }
 }

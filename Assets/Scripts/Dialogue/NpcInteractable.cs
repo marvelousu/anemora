@@ -11,6 +11,7 @@ namespace Anemora.Dialogue
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip interactionClip;
         [SerializeField, Range(0f, 1f)] private float interactionVolume = 0.7f;
+        [SerializeField] private bool requireMainCameraVisibility = true;
 
         private Transform player;
 
@@ -18,7 +19,8 @@ namespace Anemora.Dialogue
 
         private void Update()
         {
-            if (Input.GetKeyDown(interactKey))
+            if (Input.GetKeyDown(interactKey) &&
+                (!requireMainCameraVisibility || IsVisibleToMainCamera()))
             {
                 TryInteract();
             }
@@ -81,6 +83,17 @@ namespace Anemora.Dialogue
             }
 
             return player;
+        }
+
+        private bool IsVisibleToMainCamera()
+        {
+            var mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                return true;
+            }
+
+            return (mainCamera.cullingMask & (1 << gameObject.layer)) != 0;
         }
 
         private void PlayInteractionAudio()
