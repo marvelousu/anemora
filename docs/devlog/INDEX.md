@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v1.2 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v1.3 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 54 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
+Current root-level Markdown coverage: 55 files under `docs/devlog/`, including this index, the Stage 3 closeout record, and the Stage 4 Phase 0 triage records.
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -24,6 +24,7 @@ Current root-level Markdown coverage: 54 files under `docs/devlog/`, including t
 | 2026-05-06 | [2026-05-06_stage4_niro_full_redraw_scope.md](2026-05-06_stage4_niro_full_redraw_scope.md) | Niro / Hero v2 full-redraw scope and asset brief handoff | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_brush_tutorial_hint.md](2026-05-06_stage4_brush_tutorial_hint.md) | Runtime brush tutorial hint for create / release / close affordance | This task | Stage 4 Phase 0 / brush UX | [Unreleased](../../CHANGELOG.md#unreleased) added |
 | 2026-05-06 | [2026-05-06_stage4_hero_v2_import.md](2026-05-06_stage4_hero_v2_import.md) | User-approved Hero / Resident_A / Resident_B v2 import | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) added / changed |
+| 2026-05-06 | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A follow-up review sheet after runtime scale / pixel-granularity feedback | This task | Stage 4 Phase 0 / character art | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_audio_polish_inventory.md](2026-05-06_stage4_audio_polish_inventory.md) | Stage 4 audio polish inventory and listening-dispatch report | This task | Stage 4 Phase 0 / audio polish | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_audio_listening_checklist.md](2026-05-06_stage4_audio_listening_checklist.md) | User-guided Stage 4 audio listening and replacement checklist | This task | Stage 4 Phase 0 / audio polish | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-06 | [2026-05-06_stage4_test_count_reconciliation.md](2026-05-06_stage4_test_count_reconciliation.md) | Stage 4 EditMode runner/source test-count reconciliation | This task | Stage 4 Phase 0 / verification | [Unreleased](../../CHANGELOG.md#unreleased) verification |
@@ -103,6 +104,7 @@ Current root-level Markdown coverage: 54 files under `docs/devlog/`, including t
 - [2026-05-05_g3_npc_pixellab_draft.md](2026-05-05_g3_npc_pixellab_draft.md) — G3 NPC PixelLab draft.
 - [2026-05-05_f2_aseprite_hero.md](2026-05-05_f2_aseprite_hero.md) — F2 Hero Aseprite finish draft.
 - [2026-05-06_stage4_hero_v2_import.md](2026-05-06_stage4_hero_v2_import.md) — Stage 4 Hero / Resident_A / Resident_B v2 import.
+- [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) — Resident_A follow-up review sheet after runtime scale / pixel-granularity feedback.
 - [2026-05-05_g3_aseprite_residents.md](2026-05-05_g3_aseprite_residents.md) — G3 Resident A/B Aseprite finish draft.
 - [2026-05-05_f4_hero_npc_prefab_animator.md](2026-05-05_f4_hero_npc_prefab_animator.md) — F4 Hero/NPC prefab animator setup.
 - A3 buildings: no root devlog file exists as of v0.1; see CHANGELOG entry for commit `a547e96`.
@@ -155,6 +157,7 @@ Current root-level Markdown coverage: 54 files under `docs/devlog/`, including t
 | [e1_portal_front.png](screenshots/e1_portal_front.png) | [2026-05-05_e1_stencil_minimum.md](2026-05-05_e1_stencil_minimum.md) | E1 portal front visual evidence |
 | [e1_portal_side.png](screenshots/e1_portal_side.png) | [2026-05-05_e1_stencil_minimum.md](2026-05-05_e1_stencil_minimum.md) | E1 portal side visual evidence |
 | [e1_portal_back.png](screenshots/e1_portal_back.png) | [2026-05-05_e1_stencil_minimum.md](2026-05-05_e1_stencil_minimum.md) | E1 portal back visual evidence |
+| [stage4_resident_a_followup_review_sheet_abc.png](screenshots/stage4_resident_a_followup_review_sheet_abc.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A A/B/C follow-up review sheet |
 
 ## 5. 更新履歴
 
@@ -172,3 +175,4 @@ Current root-level Markdown coverage: 54 files under `docs/devlog/`, including t
 | v1.0 | 2026-05-06 | TMP / palette readability review devlog を追加し、root-level Markdown coverage を 52 件へ更新 |
 | v1.1 | 2026-05-06 | Stage 4 audio listening checklist devlog added; root-level Markdown coverage updated to 53 files. |
 | v1.2 | 2026-05-06 | DialoguePanel TMP screenshot capture investigation devlog を追加し、root-level Markdown coverage を 54 件へ更新 |
+| v1.3 | 2026-05-06 | Resident_A follow-up review devlog and screenshot added; root-level Markdown coverage updated to 55 files. |
