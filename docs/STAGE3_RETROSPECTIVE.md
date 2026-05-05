@@ -1,8 +1,8 @@
 # Stage 3 Retrospective
 
-Status: v0.1 preliminary draft (2026-05-05)
+Status: v1.0 Stage 3 closeout (2026-05-06)
 
-本 doc は、user manual G5 の最終判定前に起草する Stage 3 retrospective 草稿である。Stage 3 完成判定そのものではない。v1.0 retrospective は、`docs/G5_ACCEPTANCE_MATRIX.md` に user manual G5 結果を反映した後で別途作成する。
+本 doc は、Stage 3 Vertical Slice 完了後の retrospective である。`docs/G5_ACCEPTANCE_MATRIX.md` に user manual G5 結果を反映し、`docs/VS_SCOPE.md` v1.0 で Stage 3 完了判定を確定した。
 
 ## 1. VS_SCOPE evolution
 
@@ -14,7 +14,7 @@ Stage 3 は Vertical Slice の完成定義から開始し、実装事実が増�
 | v0.2 | `f486c28` | Stage 3 Day 1 の実装進捗を反映した。E0-E5、A1-A3、F1-F4、G4 の完了状態と、コアループ最小成立を記録した。 |
 | v0.3 | `9f1d5c7` | Audio 完成と G3 Localization 完成を反映し、残る Stage 3 completion blocker を G5 verification に絞った。 |
 
-その後の v0.4 (`c0cb631`) では、`/spec` resolution interview の結果として Niro、Antela、NPC 役割、art / font / palette の provisional 採用、内部設計ラベルを player-facing text に出さない方針を反映した。本 v0.1 retrospective では、v0.4 を v0.3 実装状態整理後の文書同期として扱う。
+その後の v0.4 (`c0cb631`) では、`/spec` resolution interview の結果として Niro、Antela、NPC 役割、art / font / palette の provisional 採用、内部設計ラベルを player-facing text に出さない方針を反映した。本 v1.0 retrospective では、v0.4 を v0.3 実装状態整理後の文書同期として扱う。
 
 ## 2. Completion milestones
 
@@ -40,18 +40,19 @@ Stage 3 は Vertical Slice の完成定義から開始し、実装事実が増�
 | G1/G2 environment choice | Done | `a547e96` | Zone1 Meshy regeneration path が実装済み environment route になった。 |
 | G3 NPC placement / dialogue | Done for Stage 3 | `4029cc0`, `da6040f` | NPC placement、dialogue scaffold、Stage 3 final dialogue draft が揃った。最終 text polish は Stage 4 へ送る。 |
 | G4 ActionRecord trigger loop | Done | `0644822` | Past book interaction、Current reflection、Bed spawn、duplicate prevention が E2E PlayMode coverage に到達した。 |
-| G5 automated verification | Done for automated sections | `c17d62f`, `e6e3c61`, `df19870` | Automated G5 sections、audio rebuild、performance baseline を記録した。 |
-| G5 user manual sign-off | Pending | `docs/G5_MANUAL_RUBRIC.md` | Audio listening、UI visibility、full playthrough feel、final visual hint judgement は user manual review 待ち。 |
+| G5 automated verification | Done | `c17d62f`, `e6e3c61`, `df19870`, `a0bd50b` | Automated G5 sections、audio rebuild、performance baseline、latest demo repair verification を記録した。 |
+| G5 user manual sign-off | Done | `a0bd50b`, `docs/G5_ACCEPTANCE_MATRIX.md` | User confirmed latest demo feel after drag precision repair. No remaining Stage 3 blocker was reported; polish items move to Stage 4. |
 
 ## 3. Numerical results
 
-以下の数値は preliminary accounting である。v1.0 retrospective では、user manual G5 完了後の最新 automated G5 run を単一の test row として反映する。
+以下の数値は Stage 3 closeout accounting である。Historical G5 run と latest demo repair run の差分があるため、単一の source-scan row と latest executed row を分けて記録する。
 
-| Area | Preliminary value | Source / caveat |
+| Area | Closeout value | Source / caveat |
 |---|---:|---|
-| Current committed source test catalog | 31 EditMode + 25 PlayMode methods | `1b15880` 時点の `Assets/Tests/EditMode` と `Assets/Tests/PlayMode` の `rg` scan。PlayMode には `b9daccb` の `Zone1AudioWiringTests` を含む。 |
+| Current committed source test markers | 31 EditMode + 29 PlayMode method markers | `a0bd50b` 時点の `Assets/Tests/EditMode` と `Assets/Tests/PlayMode` の `rg "\\[(Test\\|UnityTest)\\]"` scan。EditMode は Unity Test Runner 実行件数と 1 件差があるため、実行結果を優先する。 |
+| Latest closeout automated run | 32/32 EditMode + 29/29 PlayMode passed | `a0bd50b` 後、`C:\Users\maro6\Documents\Unity\Anemora-demo-repair` で Codex が再実行。`codex_editmode.log` / `codex_playmode.log` は exit code 0。 |
 | Historical accepted G5 automated run | 32/32 EditMode + 23/23 PlayMode passed | `docs/devlog/2026-05-05_g5_automated_run.md` at `c17d62f`。 |
-| Test-count reconciliation note | 現時点の committed source scan では 32 EditMode + 25 PlayMode を同時に証明する単一状態はない | `docs/devlog/2026-05-05_test_count_reconcile.md` は source baseline を 31/31 EditMode と記録している。v1.0 では final G5 run 後に更新する。 |
+| Test-count reconciliation note | Source marker scan と Unity Test Runner count の差は docs 上の caveat として残す | `docs/devlog/2026-05-05_test_count_reconcile.md` は source baseline を 31/31 EditMode と記録している。Stage 3 closeout では latest executed count `32/32` を acceptance source とする。 |
 | Performance baseline v0.1 | Build folder 115.056 MiB, average 59.909 FPS | `docs/devlog/2026-05-05_performance_baseline.md` at `2e3569f`。この baseline は audio 未統合。 |
 | Performance baseline v0.2 | Build folder 117.853 MiB, average 59.989 FPS, p95 frame time 16.683 ms | `docs/devlog/2026-05-05_performance_baseline_v0_2.md` at `df19870`。Audio-loaded 120 second idle sample。 |
 | Build size | 117.853 MiB | v0.2 build folder disk size。BuildReport total size は 117.669 MiB。 |
@@ -93,15 +94,16 @@ Stage 4 で cross-model review の価値が高いのは、save/load format、loc
 
 ## 5. Stage 4 handoff
 
-以下は、user manual G5 が immediate Stage 3 fix の要否を判断した後に Stage 4 planning へ送る項目である。
+以下は、Stage 3 closeout 後に Stage 4 planning へ送る項目である。いずれも Stage 3 blocker ではない。
 
 | Item | Why it carries forward | Current reference |
 |---|---|---|
 | F2 v2 redraw for Niro | Stage 3 sprite は provisional 採用済みだが、hat silhouette direction が十分に反映されていない。 | `docs/G5_MANUAL_RUBRIC.md`, `docs/scene_tour_anemora_main.md` |
 | Lore content polish | Stage 3 dialogue は VS 用 final draft に到達したが、line polish と broader continuity は content expansion 前に必要。 | `docs/draft/g3_npc_dialogue.md`, `da6040f` |
 | Audio polish | BGM と 30 SFX は統合済み。manual listening により placeholder SFX、loop、balance、ambience follow-up が出る可能性がある。 | `docs/G5_MANUAL_RUBRIC.md`, `docs/devlog/2026-05-05_g5_audio_rebuild.md` |
+| Demo brush / local time-window polish | Stage 3 で drag preview と generated window の一致は修復済み。Stage 4 では brush feel、visual affordance、tutorialization を磨く。 | `a0bd50b`, `docs/devlog/2026-05-06_stage3_closeout.md` |
 | Stage 4 roadmap | Stage 3 で多くの follow-up docs が発生したため、Stage 4 では sequencing と ownership を単一 roadmap にまとめる必要がある。 | `docs/VS_SCOPE.md`, `docs/STAGE3_TBD_RESOLUTION.md` |
 | Steam Early Access preparation | Public release direction は Steam Early Access。Store page、age rating、partner registration、pricing、disclosure prep が残る。 | `README.md`, `NOTICES.md`, `docs/PITCH_PUBLIC.md` |
 | Code license final decision | All Rights Reserved が現状 default。Public contribution intake 前に Stage 4 で継続または変更を判断する。 | `NOTICES.md`, `CONTRIBUTING.md` |
 
-Preliminary close: Stage 3 implementation は near-completion state にあり、残る judgement point は user manual G5 である。本 doc は、その結果が記録されるまで v1.0 に昇格しない。
+Closeout: Stage 3 implementation は Vertical Slice 完了として受け入れた。Stage 4 は `docs/STAGE4_ROADMAP.md` Phase 0 から開始し、G5 観察結果の triage、provisional asset review、audio/font/palette/dialogue polish、URP DrawObjectsPass warning cleanup を扱う。

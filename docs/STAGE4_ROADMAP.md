@@ -1,8 +1,8 @@
 # Stage 4 Roadmap
 
-Status: v0.1 preliminary draft (2026-05-05)
+Status: v1.0 Stage 4 entry roadmap (2026-05-06)
 
-本 doc は、Stage 3 user manual G5 の最終判定前に起草する Stage 4 roadmap 草稿である。v1.0 は、`docs/G5_ACCEPTANCE_MATRIX.md` と `docs/STAGE3_RETROSPECTIVE.md` v1.0 に user manual G5 結果を反映した後で別途作成する。
+本 doc は、Stage 3 closeout 後に Stage 4 の入口を定義する roadmap である。`docs/G5_ACCEPTANCE_MATRIX.md` と `docs/STAGE3_RETROSPECTIVE.md` v1.0 の結果を反映済み。
 
 Stage 4 は、Stage 3 Vertical Slice を Steam Early Access に提出可能な build へ近づける段階である。Steam Early Access 予定は Stage 3 /spec resolution closure (`63de141`) で lock-in 済み。Code license は All Rights Reserved を現状 default とし、公開準備の中で再評価する。
 
@@ -26,7 +26,7 @@ Effort は個人開発 scale の relative band で記録する。`S` は focused
 
 | Phase | Name | Main output | Entry condition | Exit condition |
 |---:|---|---|---|---|
-| 0 | G5 result reflection | G5 findings triage + Stage 3 carry-over fixes | User manual G5 result recorded | Immediate Stage 3 blockers resolved or explicitly moved to Stage 4 backlog |
+| 0 | G5 result reflection | G5 findings triage + Stage 3 carry-over fixes | User manual G5 result recorded (`a0bd50b`) | Immediate Stage 3 blockers resolved or explicitly moved to Stage 4 backlog |
 | 1 | Quality reinforcement | Art / UI / localization / tests / renderer warnings brought to Stage 4 baseline | Phase 0 triage complete | Public-facing vertical-slice baseline is stable enough for content expansion |
 | 2 | Zone expansion | Zone structure and next-zone production plan | Phase 1 baseline accepted | Next content block has scoped design, asset needs, and implementation entry points |
 | 3 | Steam EA prep | Store, trailer, press kit, legal / disclosure, pricing inputs | Phase 2 content plan stable enough for public messaging | Steam release materials have reviewable drafts and missing-decision list |
@@ -38,10 +38,11 @@ Phase 0 absorbs final Stage 3 observations before larger Stage 4 production star
 
 | Workstream | 成果物 | 完了条件 | 推定工数 | Notes |
 |---|---|---|---|---|
-| G5 result triage | `docs/G5_ACCEPTANCE_MATRIX.md` final result notes + Stage 3 retrospective v1.0 inputs | User manual G5 items are classified as immediate fix, Stage 4 backlog, or no action | S | Preserve observed facts before deciding fixes. |
+| G5 result triage | `docs/G5_ACCEPTANCE_MATRIX.md` final result notes + Stage 3 retrospective v1.0 inputs | User manual G5 items are classified as immediate fix, Stage 4 backlog, or no action | S | Stage 3 closeout result is now recorded; next task is issue/backlog extraction rather than more Stage 3 repair. |
 | F2 v2 redraw | Niro v2 sprite set with hat silhouette; Resident_A / Resident_B revised only where G5 or art review indicates need | New sprite draft is imported, visible in prefab preview, and documented in asset ledger | M-L | Stage 3 v1 sprites remain provisional until this pass decides whether to replace them. |
 | Lore content polish | G3 dialogue v0 -> v1 pass for Niro, Resident_A, Resident_B, and opening / short hint text | JP text is internally consistent; EN draft has review notes; StringTable key migration plan is recorded | M | Use current `docs/draft/g3_npc_dialogue.md`, `da6040f`, and `docs/PITCH_PUBLIC.md` as inputs. |
 | Audio polish | SFX placeholder replacement list + added ambience candidates + mix notes from G5 listening | Replacement or keep decisions are recorded per SFX category; BGM loop / balance notes are resolved or backlogged | M | Keep `Zone1_Ambient.ogg` as the baseline unless G5 listening finds a blocker. |
+| Demo brush UX polish | Brush preview affordance, tutorial hint, and input feel review after `a0bd50b` | Brush interaction remains understandable without developer explanation; any confusion is either fixed or documented as tutorial/content backlog | S-M | Core drag precision is fixed; this is polish. |
 | URP DrawObjectsPass warning fix | RenderGraph-compatible `PortalStencilFeature` replacement or documented public `RenderObjectsPass` migration | Player log warning count drops to 0; portal visual tests and boundary flow still pass | L | `026bf1f` identifies internal `DrawObjectsPass` as root cause and proposes RenderGraph / public-pass migration. |
 
 ## 4. Phase 1: Quality reinforcement
@@ -93,10 +94,10 @@ Phase 4 turns the prepared build and materials into a release candidate. Release
 
 These items should be resolved or explicitly left open when promoting this roadmap to v1.0.
 
-| Decision | Current state | Needed before v1.0 |
+| Decision | Current state | Stage 4 handling |
 |---|---|---|
-| User manual G5 outcome | Pending | Immediate fixes and Stage 4 backlog items are recorded. |
-| Test count baseline | Mixed historical / source-scan counts | Latest automated run count is recorded after G5 result sync. |
+| User manual G5 outcome | Resolved for Stage 3 | Immediate fixes and Stage 4 backlog items are recorded. |
+| Test count baseline | Latest executed: EditMode `32/32`, PlayMode `29/29`; source marker scan: EditMode 31, PlayMode 29 | Keep both values visible until a future test-count reconcile removes the source/runner difference. |
 | Release structure | Steam Early Access path locked, content scale still open | User selects or keeps open the 4-zone vs 6-zone content structure. |
 | Code license | All Rights Reserved default | User decides whether Stage 4 keeps this default or prepares another license path. |
 | Public contribution intake | Not opened | CONTRIBUTING / issue template policy is updated only if public intake is planned. |
@@ -106,3 +107,4 @@ These items should be resolved or explicitly left open when promoting this roadm
 | Version | Date | Change |
 |---|---|---|
 | v0.1 | 2026-05-05 | Preliminary Stage 4 roadmap draft. Defines Phase 0-4 from G5 result reflection through Steam Early Access release package, with deliverables, completion conditions, effort bands, and no calendar dates. |
+| v1.0 | 2026-05-06 | Promoted after Stage 3 closeout. Reflects `a0bd50b` user manual confirmation, latest test baseline, and Stage 4 Phase 0 entry workstreams. |

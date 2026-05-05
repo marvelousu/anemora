@@ -1,6 +1,6 @@
 # Verification Suite Catalog
 
-Status: Draft
+Status: Stage 3 closeout baseline (2026-05-06)
 
 ## 1. 概要
 
@@ -18,14 +18,14 @@ Status: Draft
 - `docs/G5_ACCEPTANCE_MATRIX.md` の section が増減したら §4 / §5 を更新する。
 - 本 catalog は source scan に基づく。推測で test を追加しない。
 
-Source scan (2026-05-05):
+Source scan (2026-05-06, `a0bd50b`):
 
-- `Assets/Tests/EditMode/`: 31 test methods discovered.
-- `Assets/Tests/PlayMode/`: 18 test methods discovered.
-- Total: 49 test methods discovered.
+- `Assets/Tests/EditMode/`: 31 test method markers discovered.
+- `Assets/Tests/PlayMode/`: 29 test method markers discovered.
+- Total: 60 test method markers discovered.
 - EditMode parameterized test attributes: none (`[TestCase]` / `[TestCaseSource]` not present).
 
-Reconcile note (2026-05-05): EditMode baseline is 31/31, not 32/32. The source scan found 31 `[Test]` methods and no `[TestCase]` / `[TestCaseSource]` methods under `Assets/Tests/EditMode/`; `docs/G5_PREFLIGHT.md` has been updated accordingly.
+Reconcile note (2026-05-06): latest Unity Test Runner execution is EditMode `32/32`, PlayMode `29/29`. The source marker scan still finds 31 EditMode `[Test]` markers and no `[TestCase]` / `[TestCaseSource]` methods under `Assets/Tests/EditMode/`; for acceptance, use the Test Runner result.
 
 ## 2. EditMode tests
 
@@ -77,6 +77,7 @@ Reconcile note (2026-05-05): EditMode baseline is 31/31, not 32/32. The source s
 | `SceneSidePolarityTests` | `FlipToOppositeRaisesOneEventAndSameSideIsNoop` | SceneSidePolarity flip event と same-side noop | E4 PortalCrossing | §C |
 | `TimeFramePortalControllerIntegrationTests` | `SymbolWheelBurstCreatesOnlyOnePortalAndRestoresTimeScale`; `AtomicFlipAppliesCameraPlayerAndStencilBeforeSideEvent`; `CrossingRunsThroughCrossingAndFlippingStates` | SymbolWheel burst、timeScale restore、atomic flip ordering、camera / player / stencil 切替、Crossing / Flipping state flow | E3 / E4 Portal | §C |
 | `AnemoraMainPortalWiringRoundTripTests` | `MainScenePortalWiringSupportsBoundaryRoundTrip` | Anemora_Main で Current -> Past -> Current の境界往復が成立すること | A2 wiring | §C |
+| `DemoPlayableSmokeTests` | `MainSceneHasVisibleDemoEnvironmentAndTopmostUi`; `BrushPortalAndNpcDialogueAreUsableInMainScene` | DemoPlayable scene environment、topmost UI、local time-window quick/drag flow、brush preview / generated window footprint一致、NPC dialogue usability | G5 closeout / Stage 3 demo repair | §C / §I / §L / §M |
 
 ### 3.2 ActionRecord E2E
 
@@ -96,16 +97,26 @@ Reconcile note (2026-05-05): EditMode baseline is 31/31, not 32/32. The source s
 | Test class | Method | Verifies | 関連 milestone | Matrix セクション |
 |---|---|---|---|---|
 | `DialogueAssetIntegrationTests` | `ScriptableObjectInstance_HoldsLocalizedStringDialogueTree`; `EmptyLocalizationTables_FallBackToStringKeys` | DialogueAsset SO が LocalizedString dialogue tree を保持すること、empty localization table で string key fallback できること | A1 DialogueAsset | §G |
+| `LocalizationSettingsResolutionTests` | `FinalDialogueKey_ResolvesForJapaneseLocale`; `FinalDialogueKey_ResolvesForEnglishLocale`; `MissingKey_FallsBackToKeyString` | ja-JP / en StringTable resolution と missing key fallback | A1 Localization seed | §G / §I |
 
 ### 3.5 Dialog flow
 
 | Test class | Method | Verifies | 関連 milestone | Matrix セクション |
 |---|---|---|---|---|
-| `NpcDialogueFlowTests` | `SceneContainsResidentNpcInstancesWithPlaceholderDialogueAssets`; `ResidentAInteractionShowsAdvancesAndClosesDialoguePanel` | Resident_A / Resident_B scene instances、placeholder DialogueAsset assignment、Resident_A interaction -> DialogueDisplay show -> advance -> close flow | G3 partial | §G |
+| `NpcDialogueFlowTests` | `SceneContainsResidentNpcInstancesWithFinalDialogueAssets`; `ResidentAInteractionShowsAdvancesAndClosesDialoguePanel`; `ResidentADialogueResolvesFinalTextAfterLocaleSwitch` | Resident_A / Resident_B scene instances、DialogueAsset assignment、Resident_A interaction -> DialogueDisplay show -> advance -> close flow、locale switch 後の final text resolution | G3 final dialogue | §G / §I |
 
-### 3.6 Save/Load round trip
+### 3.6 Audio wiring
 
-PlayMode に save/load 専用 test class は現時点では存在しない。SaveEnvelope / migration / ActionRecordStore の round-trip は §2.2 / §2.3 の EditMode tests が担当する。Standalone 上の save/load round-trip は `docs/G5_ACCEPTANCE_MATRIX.md` §J で manual verification 対象とする。
+| Test class | Method | Verifies | 関連 milestone | Matrix セクション |
+|---|---|---|---|---|
+| `Zone1AudioWiringTests` | `MainSceneHasZone1AudioControllerWithCoreClips`; `MainSceneHasNpcDialogueAudioClips` | Zone1AudioController と NPC dialogue audio clip references が scene に存在すること | A4 Audio | §H |
+
+### 3.7 Save/Load round trip
+
+| Test class | Method | Verifies | 関連 milestone | Matrix セクション |
+|---|---|---|---|---|
+| `SaveLoadRoundTripE2ETests` | `BookReflectionSurvivesSaveEnvelopeJsonRoundTripAndSceneReload` | Book reflection 済み ActionRecord の SaveEnvelope round-trip、scene reload 後の duplicate prevention | Save / Load E2E | §J |
+| `SaveLoadLocaleIntegrationTests` | `ResidentADialogueUsesCurrentLocaleAfterSaveEnvelopeRoundTripAndSceneReload` | Locale は SaveEnvelope に永続化せず、現在 selected locale を維持したまま dialogue resolve できること | Save / Load + Localization | §G / §I / §J |
 
 ## 4. Matrix cross-reference
 
@@ -113,23 +124,23 @@ PlayMode に save/load 専用 test class は現時点では存在しない。Sav
 |---|---|---|---|
 | §A Engine / Pipeline | URP / Stencil | `PortalStencilFeatureSmokeTest`; `TimeFramePortalControllerIntegrationTests` | URP pipeline 起動、Game view の portal visual、RenderGraph / lighting warning の確認 |
 | §B Scene / Hierarchy | 常駐 hierarchy | `SceneRootRegistrySmokeTest`; `HeroAnimatorBinderTests.MainSceneUsesHeroPrefabInstancesForCurrentAndPastVisuals` | Hierarchy 目視、layer assignment、missing reference / missing script の確認 |
-| §C Symbol / Portal | E3-E4 portal flip | `PortalCrossingHysteresisTests`; `SceneSidePolarityTests`; `TimeFramePortalControllerIntegrationTests`; `AnemoraMainPortalWiringRoundTripTests`; `PortalStencilFeatureSmokeTest` | Symbol UI 表示、白 / 青 disabled 表示、flash 演出、境界付近の体感確認 |
+| §C Symbol / Portal | E3-E4 portal flip | `PortalCrossingHysteresisTests`; `SceneSidePolarityTests`; `TimeFramePortalControllerIntegrationTests`; `AnemoraMainPortalWiringRoundTripTests`; `PortalStencilFeatureSmokeTest`; `DemoPlayableSmokeTests` | Symbol UI 表示、白 / 青 disabled 表示、flash 演出、境界付近の体感確認 |
 | §D ActionRecord | E5 + G4 | `ActionRecordCatalogTests`; `ActionRecordStoreTests`; `BookReflectorIntegrationTests`; `G4ActionRecordReflectionE2ETests` | Bed spawn の視認、実 scene 内の interactable 操作、UI / VFX / SFX との接続確認 |
 | §E Buildings / Environment | A3 | None | Zone1 building prefab 14 個の配置、Meshy / Blender 修復 asset の visual quality、scale / material / collider 目視 |
 | §F Character | F4 | `CharacterPrefabStructureTests`; `HeroAnimatorBinderTests` | Sprite 表示品質、Idle / Walk の見た目、NPC visual placement、import settings 目視 |
-| §G Dialogue / NPC | A1 + G3 partial | `DialogueAssetDataTests`; `DialogueAssetIntegrationTests`; `NpcDialogueFlowTests` | Dialogue UI 表示、文字 fit、JP / EN 表示の実 UI、placeholder / lore content の扱い |
-| §H Audio (BGM + SFX) | A4 | None | BGM loop、time-window modulation、SFX trigger の listen test |
-| §I UI / Localization | UI 基盤 + atlas | Dialogue key fallback は `DialogueAssetIntegrationTests` で partial coverage | TMP atlas fallback、tofu / 欠字、palette v0 の UI 適用、画面上の text fit |
-| §J Save / Load | POCO + Save layer | `SaveEnvelopeRoundTripTests`; `SaveMigrationTests`; `ActionRecordStoreTests` | Standalone での save/load round-trip、reflected 状態の scene 復元 |
+| §G Dialogue / NPC | A1 + G3 final | `DialogueAssetDataTests`; `DialogueAssetIntegrationTests`; `LocalizationSettingsResolutionTests`; `NpcDialogueFlowTests`; `SaveLoadLocaleIntegrationTests`; `DemoPlayableSmokeTests` | Dialogue UI 表示、文字 fit、JP / EN 表示の実 UI、content polish |
+| §H Audio (BGM + SFX) | A4 | `Zone1AudioWiringTests` | BGM loop、time-window modulation、SFX trigger の listen test |
+| §I UI / Localization | UI 基盤 + atlas | `DialogueAssetIntegrationTests`; `LocalizationSettingsResolutionTests`; `NpcDialogueFlowTests`; `SaveLoadLocaleIntegrationTests`; `DemoPlayableSmokeTests` | TMP atlas visual quality、palette v0 の最終採否、画面上の text fit |
+| §J Save / Load | POCO + Save layer | `SaveEnvelopeRoundTripTests`; `SaveMigrationTests`; `ActionRecordStoreTests`; `SaveLoadRoundTripE2ETests`; `SaveLoadLocaleIntegrationTests` | Standalone UI save/load flow は Stage 4。 |
 | §K Build / Performance | build / profiler baseline | None | Windows Standalone build、FPS、VRAM / heap profiler 計測 |
 | §L 通し体験 | E2E manual playthrough | Supporting coverage from §C / §D / §F / §G / §J PlayMode and EditMode tests | Full playthrough 5-8 分、softlock、flow、違和感、録画確認 |
-| §M 層 2 片鱗 | VS_SCOPE §5.x | None | 片鱗演出 1 カットの manual visual verification |
+| §M 層 2 片鱗 | VS_SCOPE §5.x | `DemoPlayableSmokeTests` | Minimum hint mechanics are covered; authored final visual beat remains Stage 4 manual/content work. |
 
 Automated support by matrix section:
 
-- Automated or partial automated support: 8 / 13 sections (§A, §B, §C, §D, §F, §G, §J, §L).
-- Manual-only sections: 5 / 13 sections (§E, §H, §I, §K, §M).
-- All 13 sections still require at least one G5 manual observation or result entry in `docs/G5_ACCEPTANCE_MATRIX.md`.
+- Automated or partial automated support: 10 / 13 sections (§A, §B, §C, §D, §F, §G, §I, §J, §L, §M).
+- Manual-only sections: 3 / 13 sections (§E, §H, §K).
+- Stage 3 closeout manual observations are recorded in `docs/G5_ACCEPTANCE_MATRIX.md`; Stage 4 keeps quality polish observations as backlog.
 
 ## 5. Coverage gaps
 
@@ -139,11 +150,11 @@ The following are observed gaps in automated coverage. This list records coverag
 |---|---|---|---|
 | URP pipeline startup / RenderGraph warning | §A | Stencil pass smoke test exists, but full scene pipeline startup and visual warning state are manual | Scene launch smoke test that opens `Anemora_Main` and asserts no startup exceptions |
 | Buildings / Environment | §E | No automated prefab loadability or Zone1 placement test | Prefab load test for `Assets/Prefabs/Zone1/` and missing mesh / material assertions |
-| Audio playback / routing | §H | No BGM / SFX playback or AudioMixer modulation test | Audio asset reference test and AudioMixer parameter smoke test after A4 completion |
-| TMP atlas / UI rendering | §I | Dialogue key fallback is tested, but TMP atlas fallback and rendered glyph coverage are manual | TMP FontAsset / StringTable key coverage test or screenshot-based UI smoke test |
+| Audio playback / routing | §H | `Zone1AudioWiringTests` covers references, but audible mix / loop quality remains manual | AudioMixer parameter smoke test or runtime audio event counter if Stage 4 needs regression coverage |
+| TMP atlas / UI rendering | §I | Locale resolution and demo UI visibility are tested, but rendered glyph / readability quality remains manual | TMP FontAsset / StringTable key coverage test or screenshot-based UI smoke test |
 | Build / Performance | §K | No threshold-based automated build / FPS / memory test | Batch build smoke test and profiler baseline comparison after G5 build pipeline is stable |
-| Full playthrough | §L | Supporting subsystem tests exist, but 5-8 minute end-to-end flow is manual | None recorded; by definition G5 manual playthrough remains the source of truth |
-| 層 2 片鱗 | §M | No automated test for final visual beat | Scene marker / trigger smoke test if the final implementation exposes a stable object or event |
+| Full playthrough | §L | DemoPlayable smoke covers the core local time-window / NPC flow; final feel remains manual | Keep manual playthrough as source of truth; add scenario runner only if Stage 4 regressions recur |
+| 層 2 片鱗 | §M | DemoPlayable smoke covers minimum hint mechanics, not a authored final cinematic beat | Scene marker / trigger smoke test if Stage 4 implements a stable authored event |
 
 Gap count: 7.
 
@@ -174,5 +185,6 @@ Unity.exe -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -buil
 
 | 版 | 日付 | 変更 |
 |---|---|---|
+| v1.0 | 2026-05-06 | Stage 3 closeout baseline に更新。Latest Unity run は EditMode `32/32`、PlayMode `29/29` pass。DemoPlayable / SaveLoad / Locale integration coverage を追加。 |
 | v0.2 | 2026-05-05 | EditMode 31/31 baseline を確定。`docs/G5_PREFLIGHT.md` の 32/32 表記との差分を解消し、`[TestCase]` / `[TestCaseSource]` 不在を明記。 |
 | v0.1 | 2026-05-05 | 初版起草。Source scan に基づき EditMode 31 + PlayMode 18 = 49 件を catalog 化し、G5 matrix cross-reference と coverage gaps を記録。EditMode 32 baseline との差分は reconcile 対象として明記 |

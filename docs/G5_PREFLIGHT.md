@@ -1,6 +1,6 @@
 # G5 Pre-flight Check
 
-Status: Draft for G5 execution entry
+Status: Finalized for Stage 3 closeout (2026-05-06)
 
 ## 1. 概要
 
@@ -12,7 +12,7 @@ Status: Draft for G5 execution entry
 
 ## 2. 必須前提状態
 
-G5 実行前に、以下の状態を満たしていることを確認する。現時点の test baseline は EditMode 31/31、PlayMode 18/18。新規 test が追加された場合は、G5 実行時点の expected count を採用する。
+G5 実行前に、以下の状態を満たしていることを確認する。Stage 3 closeout 時点の latest executed baseline は EditMode `32/32`、PlayMode `29/29`。Source marker scan は EditMode 31 / PlayMode 29 で、EditMode は Unity Test Runner 実行件数を acceptance source とする。
 
 ### 2.1 commit / push 状態
 
@@ -25,8 +25,8 @@ G5 実行前に、以下の状態を満たしていることを確認する。�
 - `git status` で G5 対象外の dirty / untracked がない、または temporary worktree で分離されている。
 - Unity で project を開き、compile error がない。
 - Unity package import error がない。
-- EditMode test が全件 pass する。現時点 baseline は 31/31。
-- PlayMode test が全件 pass する。現時点 baseline は 18/18。
+- EditMode test が全件 pass する。Stage 3 closeout baseline は `32/32`。
+- PlayMode test が全件 pass する。Stage 3 closeout baseline は `29/29`。
 - Windows Standalone build が error なしで成功する。
 
 ### 2.3 アセット参照健全性
@@ -40,8 +40,8 @@ G5 実行前に、以下の状態を満たしていることを確認する。�
 ### 2.4 Localization 基盤
 
 - `LocalizationSettings` asset が Project Settings で Active になっている (A1 完了後)。
-- `StringTable` (ja-JP / en) に placeholder key が投入済みである (A1 完了後)。
-- `Resident_A_Greeting.asset` / `Resident_B_Idle.asset` が StringTable key を resolve できる。G3 partial 段階では key fallback 表示でも可。
+- `StringTable` (ja-JP / en) に Stage 3 final dialogue key が投入済みである。
+- `Resident_A_Greeting.asset` / `Resident_B_Idle.asset` が Stage 3 final dialogue key を StringTable 経由で resolve できる。
 
 ### 2.5 Audio 基盤
 
@@ -63,7 +63,7 @@ G5 実行時点の outstanding は、Go / No-Go 判定への影響で分けて�
 以下は G5 担当が matrix の備考欄または作業ログに明示すれば No-Go とは扱わない。各項目の user 判断状態は `docs/STAGE3_TBD_RESOLUTION.md` を参照する。
 
 - User art review が未確定。対象は F2 / palette / font。review aid (`docs/STAGE3_REVIEW_AIDS.md`) で判断保留のまま扱える。
-- Lore content が未確定。対象は主人公名、物語詳細、NPC dialogue 内容。`/spec` resolution 待ちの場合、placeholder で G5 を実行できる。
+- Lore content の長期 polish は Stage 4 へ残る。Stage 3 G5 は Niro / Resident_A / Resident_B の minimum final dialogue draft で実行できる。
 - ADR-0009 が Proposed 状態。Accepted 化は user 承認後であり、G5 実行の pre-flight blocker にはしない。
 
 ### 3.3 Outright blockers
@@ -92,8 +92,8 @@ G5 実行時点の outstanding は、Go / No-Go 判定への影響で分けて�
 
 ### 4.3 テスト走行
 
-- [ ] EditMode test が 31/31 pass、または最新 expected count で全件 pass。
-- [ ] PlayMode test が 18/18 pass、または最新 expected count で全件 pass。
+- [x] EditMode test が `32/32` pass、または最新 expected count で全件 pass。
+- [x] PlayMode test が `29/29` pass、または最新 expected count で全件 pass。
 - [ ] テスト中に想定外の Console error / warning が出ない。
 
 ### 4.4 ビルド verification
@@ -118,7 +118,7 @@ G5 実行時点の outstanding は、Go / No-Go 判定への影響で分けて�
 
 - [ ] `LocalizationSettings` asset が Active である。
 - [ ] `StringTable` (ja-JP / en) が `Anemora_Strings` collection に登録済みである。
-- [ ] dialog placeholder key が解決できる。実 lore content は `[TBD]` でもよい。
+- [x] Stage 3 final dialogue key が ja-JP / en で解決できる。
 
 ### 4.8 Audio
 
@@ -151,5 +151,6 @@ Lore / art / audio の未完了項目が残る場合は、該当 matrix row の�
 
 | 版 | 日付 | 変更 |
 |---|---|---|
+| v1.0 | 2026-05-06 | Stage 3 closeout baseline に更新。Latest run は EditMode `32/32`、PlayMode `29/29` pass。 |
 | v0.2 | 2026-05-05 | EditMode baseline を source scan に基づき 31/31 へ reconcile。PlayMode baseline は 18/18 維持。 |
 | v0.1 | 2026-05-05 | 初版起草。G5 実行前の必須前提、outstanding items、pre-flight checklist、Go / No-Go 判定を定義 |

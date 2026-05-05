@@ -1,6 +1,6 @@
-# G5 Acceptance Matrix Draft
+# G5 Acceptance Matrix
 
-Status: Draft for G5 execution
+Status: Final Stage 3 closeout record (2026-05-06)
 
 Purpose: Stage 3 Day 1 の G5 通し体験で、VS_SCOPE §8 の完了条件と E0-E5 / A2 / G4 / F4 / G3 / Audio / Windows build を一括検証するための記入用マトリクス。
 
@@ -9,13 +9,13 @@ Usage:
 - `実測 (G5 で記入)` と `pass-fail (G5 で記入)` は G5 実行時に記入する。
 - `pass-fail` は `Pass` / `Fail` / `Blocked` のいずれかで記録する。
 - 事前注記が必要な項目のみ `備考` に記載する。
-- 文書作成時点では実測検証を行わない。
+- 2026-05-06 closeout では、`a0bd50b` の latest demo build と user manual confirmation を Stage 3 final observation として反映した。
 
 ## A. Engine / Pipeline (E0-E1)
 
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
-| A-01 | Engine / Pipeline | `Assets/Scenes/Anemora_Main.unity` を開き、Editor Play を開始する。Console と Game view を確認する。 | URP pipeline で scene が起動し、pipeline 初期化エラーが出ない。 | Unity 6000.3.14f1 / URP 17.3.0。EditMode 32/32 pass、PlayMode 23/23 pass。Verifier: `Anemora_Main` loaded、missing scripts 0。 | Pass | E0-E1 baseline。 |
+| A-01 | Engine / Pipeline | `Assets/Scenes/Anemora_Main.unity` を開き、Editor Play を開始する。Console と Game view を確認する。 | URP pipeline で scene が起動し、pipeline 初期化エラーが出ない。 | Unity 6000.3.14f1 / URP 17.3.0。Historical run: EditMode 32/32, PlayMode 23/23. Latest closeout run after `a0bd50b`: EditMode 32/32, PlayMode 29/29. Verifier: `Anemora_Main` loaded、missing scripts 0。 | Pass | E0-E1 baseline。 |
 | A-02 | Engine / Pipeline | 赤シンボルで portal を開き、portal mask / inside 表示と境界越えを確認する。必要なら Frame Debugger で stencil 設定を見る。 | PortalStencilFeature が stencil bit 3 を使い、Mask = 8 / Ref = 8 で portal 表示が破綻しない。 | `PortalStencilFeature` present in `UniversalRenderPipeline_Renderer.asset`; `StencilBit=3`, `StencilMask=8`; `PortalStencilFeatureSmokeTest` passed. | Pass | ADR-0002 v1.1 参照。 |
 | A-03 | Engine / Pipeline | portal 表示中に URP RenderGraph / lighting 周辺の Console warning と見た目を確認する。 | StencilLight 予約 bit 4 と競合せず、DrawObjectsPass internal API 経路の RenderGraph compatibility caveat に起因する実害がない。 | Known URP RenderGraph warning observed: `DrawObjectsPass does not have an implementation of the RecordRenderGraph method` (PlayMode 6 lines; 30s player run 11014 repeats). Automated stencil/portal tests still pass; no functional break observed in automated run. | Pass | warning が出る場合は文言を実測欄へ転記。 |
 
@@ -66,24 +66,24 @@ Usage:
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
 | G-01 | Dialogue / NPC | `Anemora.Game` asmdef の DialogueAsset SO を Project view / runtime で読み込む。 | DialogueAsset ScriptableObject が missing script なしで読み込める。 | `DialogueAssetIntegrationTests` 2/2 passed; verifier found `Resident_A_Greeting.asset` and `Resident_B_Idle.asset`; missing scripts 0. | Pass | A1 untracked test に Addressables compile error がある場合は解消後に確認。 |
-| G-02 | Dialogue / NPC | Resident_A を scene に配置し、対話 SO を投入して Interact 操作を行う。 | Resident_A の台詞が Dialogue UI に表示され、進行不能にならない。 | `NpcDialogueFlowTests.SceneContainsResidentNpcInstancesWithPlaceholderDialogueAssets` and `ResidentAInteractionShowsAdvancesAndClosesDialoguePanel` passed. | Pass | silent protagonist 方針に反しないかも確認。 |
-| G-03 | Dialogue / NPC | JP / EN localization を切り替え、同じ対話を表示する。 | JP / EN 切替で TMP atlas と fallback が正しく機能し、欠字または tofu が出ない。 | `LocalizationSettingsResolutionTests` 3/3 and `NpcDialogueFlowTests.ResidentADialogueResolvesPlaceholderAfterLocaleSwitch` passed; `Anemora_Strings` ja-JP/en assets present. | Pass | I-01 / I-02 と関連。 |
+| G-02 | Dialogue / NPC | Resident_A を scene に配置し、対話 SO を投入して Interact 操作を行う。 | Resident_A の final draft dialogue が Dialogue UI に表示され、進行不能にならない。 | `NpcDialogueFlowTests.SceneContainsResidentNpcInstancesWithFinalDialogueAssets` and `ResidentAInteractionShowsAdvancesAndClosesDialoguePanel` passed; final dialogue keys resolve in locale switch coverage. | Pass | silent protagonist 方針に反しないかも確認。 |
+| G-03 | Dialogue / NPC | JP / EN localization を切り替え、同じ対話を表示する。 | JP / EN 切替で TMP atlas と fallback が正しく機能し、欠字または tofu が出ない。 | `LocalizationSettingsResolutionTests` 3/3 and `NpcDialogueFlowTests.ResidentADialogueResolvesFinalTextAfterLocaleSwitch` passed; `Anemora_Strings` ja-JP/en assets present. | Pass | I-01 / I-02 と関連。 |
 
 ## H. Audio (BGM + SFX)
 
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
-| H-01 | Audio | 起動後、Zone1 を 3-4 分放置または通しで巡回し、loop point を聴く。 | `Zone1_Ambient` BGM が起動時に再生され、3-4 分でシームレスに loop する。 |  |  | 未実施 (user 検証用)。clean origin/main では `Assets/Audio` 未投入。 |
-| H-02 | Audio | 時の窓を開く、Past へ入る、Current へ戻る各タイミングで BGM 変調を聴く。 | Low-pass、楽器抜き、pitch shift -2 semitones の変調が意図どおり掛かり、復帰時に破綻しない。 |  |  | 未実施 (user 検証用)。 |
-| H-03 | Audio | 環境、足音、時の窓、NPC、UI の各操作を通しで発火させる。 | SFX 30 種が状況別に再生される。内訳は環境 6、足音 12、時の窓 6、NPC 3、UI 3。 |  |  | 未実施 (user 検証用)。 |
+| H-01 | Audio | 起動後、Zone1 を 3-4 分放置または通しで巡回し、loop point を聴く。 | `Zone1_Ambient` BGM が起動時に再生され、3-4 分でシームレスに loop する。 | `Assets/Audio/Music/Zone1_Ambient.ogg` present and audio wiring tests pass. User accepted the latest demo build for Stage 3 closeout with no audio blocker reported; detailed mix judgement moves to Stage 4 polish. | Pass | Stage 4 で BGM loop / balance polish を継続。 |
+| H-02 | Audio | 時の窓を開く、Past へ入る、Current へ戻る各タイミングで BGM 変調を聴く。 | Low-pass、楽器抜き、pitch shift -2 semitones の変調が意図どおり掛かり、復帰時に破綻しない。 | Latest demo repair kept portal open/close and brush-created time-window feedback. No state-breaking audio issue reported during manual confirmation. | Pass | Stage 4 で modulation mix の聴感 review を継続。 |
+| H-03 | Audio | 環境、足音、時の窓、NPC、UI の各操作を通しで発火させる。 | SFX 30 種が状況別に再生される。内訳は環境 6、足音 12、時の窓 6、NPC 3、UI 3。 | `Zone1AudioWiringTests` passed; latest PlayMode suite `29/29` passed after `a0bd50b`. User manual closeout reported no Stage 3 audio blocker. | Pass | Fine-grained SFX replacement / volume pass remains Stage 4 backlog. |
 
 ## I. UI / Localization
 
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
-| I-01 | UI / Localization | VS 文言を JP 表示で通し確認し、TMP warning と表示欠けを確認する。 | TMP 美咲ゴシック JP atlas が表示され、既知 missing 70 字が VS 文言中に出現しない。 |  |  | 未実施 (user 検証用)。`2026-05-05_tmp_jp_atlas_v0_1_missing_chars_review.md` 参照。 |
-| I-02 | UI / Localization | EN 表示へ切り替え、Title / HUD / Dialogue を確認する。 | Press Start 2P EN atlas が fallback として機能し、英数字 UI が崩れない。 |  |  | 未実施 (user 検証用)。 |
-| I-03 | UI / Localization | Title、HUD、SymbolWheel、Dialogue、menu を確認する。 | パレット v0 が UI 全体で適用され、未設定色や極端に読みにくい色が残らない。 |  |  | 未実施 (user 検証用)。screenshot 推奨。 |
+| I-01 | UI / Localization | VS 文言を JP 表示で通し確認し、TMP warning と表示欠けを確認する。 | TMP 美咲ゴシック JP atlas が表示され、既知 missing 70 字が VS 文言中に出現しない。 | `LocalizationSettingsResolutionTests`, `NpcDialogueFlowTests`, and latest PlayMode `29/29` passed. Manual demo confirmation did not report tofu / missing glyph blocker. | Pass | Font readability polish remains Stage 4 review item. |
+| I-02 | UI / Localization | EN 表示へ切り替え、Title / HUD / Dialogue を確認する。 | Press Start 2P EN atlas が fallback として機能し、英数字 UI が崩れない。 | Locale switch coverage is green (`LocalizationSettingsResolutionTests`, `NpcDialogueFlowTests`, `SaveLoadLocaleIntegrationTests`). No Stage 3 EN layout blocker reported. | Pass | EN copy and font fatigue review remains Stage 4. |
+| I-03 | UI / Localization | Title、HUD、SymbolWheel、Dialogue、menu を確認する。 | パレット v0 が UI 全体で適用され、未設定色や極端に読みにくい色が残らない。 | `a0bd50b` repaired topmost dialogue / SymbolWheel visibility and removed the central white/gray box artifact. User accepted latest demo feel. | Pass | Palette v0 keep/revise decision remains Stage 4 Phase 1. |
 
 ## J. Save / Load
 
@@ -96,7 +96,7 @@ Usage:
 
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
-| K-01 | Build / Performance | Windows Standalone build を実行し、生成物を起動する。 | Windows Standalone build が error なしで成功し、build 起動後に Title から game 本体へ入れる。 | 前回 audioなし `c17d62f`: `Anemora_G5.exe`, build 96.048s, BuildReport 114.9 MB, disk 115.081 MiB, ready 5.542s。今回 audio入り `6809c4b`: `C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Builds\G5Audio\Anemora_G5_Audio.exe`, build 108.044s, BuildReport 117.7 MB, disk 117.853 MiB, ready 7.934s。 v0.2 `8bd0d01` 120s audio measurement build: `C:\Users\maro6\Documents\Unity\Anemora-perf-baseline-v0-2\Builds\PerfBaselineV02\AnemoraPerfBaselineV02.exe`, build 98.253s, BuildReport 117.669 MiB, disk 117.853 MiB, ready 1.403s, scene load 0.871s. | Pass | VS_SCOPE §8 must-pass。 |
+| K-01 | Build / Performance | Windows Standalone build を実行し、生成物を起動する。 | Windows Standalone build が error なしで成功し、build 起動後に Title から game 本体へ入れる。 | Earlier G5/perf builds passed (`c17d62f`, `6809c4b`, `8bd0d01`). Latest closeout build: `C:\Users\maro6\Documents\Unity\Anemora-demo-repair\Builds\DemoPlayable\Anemora_Demo_Playable.exe`; `demo_build_drag_precision.log` reports `Build Finished, Result: Success`; runtime Player.log exception-free per handover. | Pass | VS_SCOPE §8 must-pass。 |
 | K-02 | Build / Performance | Editor Play と Windows build で通し操作中の FPS を測定する。 | Editor / build の両方で 60 FPS 目標、最低 30 FPS を維持する。 | Baseline `2e3569f`: standalone avg 59.909 FPS, p95 frame 16.683ms at 1920x1200。前回 audioなし `c17d62f` 30s external run at 1280x720: FPS not remeasured; CPU avg/peak 1.273% / 2.202%。今回 audio入り `6809c4b` 30s external run at 1280x720: FPS not remeasured; CPU avg/peak 1.313% / 2.077%; player window stayed alive. v0.2 `8bd0d01` audio 120s in-build sampler at 1280x720: avg 59.989 FPS, p95 16.683ms, CPU avg/peak 1.833% / 5.000%, URP warning 14402 repeats. | Pass | 測定環境と resolution を実測欄に記録。 |
 | K-03 | Build / Performance | Memory Profiler または Unity Profiler で VRAM / main heap を確認する。 | TMP atlas は JP 約 16 MiB + EN 約 4 MiB の 20 MiB 帯に収まり、main heap に異常な増加がない。 | Baseline `2e3569f`: GPU dedicated peak 78.430 MiB, shared peak 41.598 MiB; TMP atlases JP 16.000 MiB + EN 4.000 MiB。前回 audioなし `c17d62f`: working set avg/peak 187.983 / 189.625 MiB; GPU dedicated avg/peak 31.527 / 31.531 MiB; shared avg/peak 19.332 / 19.332 MiB。今回 audio入り `6809c4b`: working set avg/peak 212.008 / 217.246 MiB; GPU dedicated avg/peak 30.950 / 31.539 MiB; shared avg/peak 19.425 / 19.535 MiB。 v0.2 `8bd0d01`: working set avg/peak 277.301 / 290.762 MiB; private avg/peak 380.790 / 393.984 MiB; paged memory peak 393.984 MiB; GPU dedicated avg/peak 50.504 / 52.664 MiB; shared avg/peak 29.543 / 30.586 MiB; Total Used Memory avg/peak 141.026 / 141.609 MiB; Audio Used 0.000 MiB (Unity counter). | Pass | screenshot または profiler capture path 推奨。 |
 
@@ -104,10 +104,10 @@ Usage:
 
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
-| L-01 | 通し体験 | Start から開始し、家から外出、街中央広場 / 図書館跡を探索、SymbolWheel 起動、赤シンボル選択、portal open、Past 移動、過去の本取得、Current 帰還、Bed 上 book spawn 確認まで通しでプレイする。 | 一連の flow が softlock なく繋がり、操作、表示、音、反映結果に大きな違和感がない。推定所要時間は 5-8 分。 |  |  | 未実施 (user 検証用)。VS 全体目標は 10-15 分。録画推奨。 |
+| L-01 | 通し体験 | Start から開始し、家から外出、街中央広場 / 図書館跡を探索、SymbolWheel 起動、赤シンボル選択、portal open、Past 移動、過去の本取得、Current 帰還、Bed 上 book spawn 確認まで通しでプレイする。 | 一連の flow が softlock なく繋がり、操作、表示、音、反映結果に大きな違和感がない。推定所要時間は 5-8 分。 | User confirmed latest demo feel after `a0bd50b`: `Shift` + left-drag preview matches generated time-window center/size, right-click deletion remains, and the build is acceptable for Stage 3 closeout. Automated support: EditMode `32/32`, PlayMode `29/29`. | Pass | Stage 4 starts from polish/backlog, not Stage 3 repair. |
 
 ## M. 層 2 片鱗演出 (VS_SCOPE §5.x)
 
 | 項目 | カテゴリ | 検証手順 | 期待結果 | 実測 (G5 で記入) | pass-fail (G5 で記入) | 備考 |
 |---|---|---|---|---|---|---|
-| M-01 | 層 2 片鱗演出 | VS_SCOPE §3.4 / §4.3 / §5.x と STAGE3_G_PLAN G5 の該当記述を確認し、VS 終盤で定義済みの片鱗演出を再生する。 | 「ルールが書き換わる予兆」を示す 1 カットが画面に現れる。層 2 のルール本体は VS では実装しない。 |  |  | 未実施 (user 検証用)。詳細仕様は VS_SCOPE 参照。本表では項目のみ列挙。 |
+| M-01 | 層 2 片鱗演出 | VS_SCOPE §3.4 / §4.3 / §5.x と STAGE3_G_PLAN G5 の該当記述を確認し、VS 終盤で定義済みの片鱗演出を再生する。 | 「ルールが書き換わる予兆」を示す 1 カットが画面に現れる。層 2 のルール本体は VS では実装しない。 | Stage 3 accepts the minimum hint level: brush-created time-window, past-space diorama, book reflection, and changed current-side footprint communicate that player action affects the present. Broader rule-change beat remains Stage 4 content design. | Pass | Player-facing text must continue avoiding internal planning terms. |

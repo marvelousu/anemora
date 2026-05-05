@@ -1,4 +1,4 @@
-# Vertical Slice スコープ定義 v0.4
+# Vertical Slice スコープ定義 v1.0
 
 > Anemora の **Vertical Slice (VS) = ここまで作れば「縦切り完成」と呼べる** 範囲を定義する。
 > Stage 3 (Day 0-10 目安) で本書を達成し、達成判定 = Stage 4 (α) 着手の前提。
@@ -6,7 +6,7 @@
 
 > **役割分離**: 本書 (VS_SCOPE) は **VS の "定義書"** (何を作れば VS 完成か)。`docs/STAGE3_PLAN.md` は **VS の "実行計画書"** (どう進めるか・どの順序で何日かけて作るか)。両者の混線を防ぐため、完了条件は本書 §8 を主とし、STAGE3_PLAN 側はそこへの参照に統一する。
 
-> **Status (2026-05-05 = Stage 3 Day 1)**: v0.4。E0-E5 + A2 + G4 のコアループ最小成立は達成済み (`0644822`)。G3 Localization / NPC 対話基盤と A4 Audio は完了済み。Stage 3 /spec resolution interview で Niro / Antela / art・palette・font provisional 採用を反映済み。残る VS 完成判定は G5 通し体験 + Windows build + 検証マトリクス実行。
+> **Status (2026-05-06 = Stage 3 closeout)**: v1.0。E0-E5 + A1-A5 + F1-F4 + G3-G5 の Vertical Slice 必須範囲は完了。Latest closeout commit は `a0bd50b`。G5 manual confirmation により、Windows demo build の通し操作、時の窓 brush preview / generation 精度、右クリック削除、UI 表示、book reflection を Stage 3 完了として受け入れた。残項目は Stage 4 backlog / polish として扱う。
 
 ---
 
@@ -138,7 +138,7 @@
 
 ### 3.5 Stage 3 Day 1 機能ブロック状態
 
-| ブロック | v0.1 状態 | v0.4 反映 |
+| ブロック | v0.1 状態 | v1.0 反映 |
 |---|---|---|
 | E0 URP Pipeline | TBD | ✅ 完了。`AnemoraE0Setup.cs` editor automation により URP pipeline baseline を構築。 |
 | E1 PortalStencil | TBD | ✅ 完了。`PortalStencilFeature` + `PortalMask.shader` / `InsideOnly.shader`、stencil bit 3 / Mask = 8 / Ref = 8、dual-pass 設計。ADR-0002 v1.1 反映。 |
@@ -158,7 +158,7 @@
 | G1/G2 Buildings 採用方針 | TBD | ✅ 解決。A3 Meshy 再生成 = 案 b 採用。 |
 | G3 NPC 配置 + 対話 | TBD | ✅ 完了。Resident_A/B placement + `NpcInteractable` + `DialogueDisplay` scaffold + `DialogueAsset` SO 到達済み。A1 `LocalizationSettings` 完了と Locale switch dialog E2E PlayMode test を反映。Resident_A = 過去側 witness、Resident_B = 現在側 observer / recorder として扱う。 |
 | G4 ActionRecord トリガー設置 | TBD | ✅ 完了 (`0644822`)。`take_book_001` + `Book_Family_Current.prefab` + `PastBookInteractable` + E2E PlayMode test。 |
-| G5 通し体験 + Windows ビルド + 検証マトリクス | TBD | 残。matrix draft ready (`docs/G5_ACCEPTANCE_MATRIX.md`, 36 項目)。G3 / Audio 完了後の最終 Go/No-Go として G5 を実行。 |
+| G5 通し体験 + Windows ビルド + 検証マトリクス | TBD | ✅ 完了。`a0bd50b` latest demo buildで user manual confirmation 到達。EditMode `32/32`、PlayMode `29/29` pass。Windows build success、drag preview / generated window一致、右クリック削除、UI表示、book reflectionを確認。 |
 
 ---
 
@@ -280,35 +280,35 @@ VS = 「最終クオリティで作り込んだ縦切り」と理想は持ちつ
 
 ## 8. 完了条件チェックリスト
 
-VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v0.4 では Stage 3 /spec resolution interview の lore / art / release 判断を反映し、実装ブロッカーは G5 実行のみとして扱う。
+VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v1.0 では G5 manual confirmation と latest test/build result を反映し、Stage 3 は完了として扱う。
 
 ### 必須 (VS 達成判定の死守ライン、全 YES が VS 完成の条件)
 
-| 状態 | 項目 | v0.4 ブロック原因 / 備考 |
+| 状態 | 項目 | v1.0 備考 |
 |---|---|---|
-| 残 | **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分) | G3 Localization / Audio は完了済み。残る確認は G5 通し体験実行のみ。検証項目は `docs/G5_ACCEPTANCE_MATRIX.md` に準備済み。 |
-| ✅ | 時の窓描画 → 赤シンボル選択 → 過去踏込み → 持ち帰り → 現在反映 の **コアループが破綻なく動作** | E0-E5 + A2 + G4 で達成済み。PlayMode 16/16 green。 |
+| ✅ | **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分) | `a0bd50b` latest demo buildで user manual confirmation 到達。Stage 4 は polish / expansion から開始。 |
+| ✅ | 時の窓描画 → 赤シンボル選択 → 過去踏込み → 持ち帰り → 現在反映 の **コアループが破綻なく動作** | E0-E5 + A2 + G4 + demo brush repairで達成済み。Latest PlayMode `29/29` green。 |
 | ✅ | **主要違和感 1 個** が機能 (反映の痕跡が確認できる) | G4 の本取得 → Current 側 Bed 上 book spawn で達成済み。 |
-| 残 | **層 2 への片鱗演出が 1 カット** 入っている | G5 final flow で実配置 / 実再生確認が必要。 |
+| ✅ | **層 2 への片鱗演出が 1 カット** 入っている | VSでは本の反映、現在側痕跡、時の窓ジオラマによる minimum hint を採用。ルール本体はStage 4以降。 |
 | ✅ | 主人公スプライト v1 が動作 (品質は VS 時点暫定で可) | F2 / F4 完了。Hero prefab + Animator + `HeroAnimatorBinder` 導入済み。 |
 | ✅ | 街中央広場 + 周辺の HD-2D Tier 2 レンダリングが動作 (1 ゾーン成立) | A3 buildings 完了。F4 prefab、UI 基盤 v0 も到達済み。 |
-| 残 | **Windows ビルドが起動 → タイトル → ゲーム本体まで動作** | G5 で Windows Standalone build を実行。 |
-| ✅ | 詰みが起きない (時の窓再描画で必ず解除可能) | コアループ PlayMode と boundary round-trip で基礎動作確認済み。G5 manual で再確認。 |
+| ✅ | **Windows ビルドが起動 → タイトル → ゲーム本体まで動作** | Latest build: `C:\Users\maro6\Documents\Unity\Anemora-demo-repair\Builds\DemoPlayable\Anemora_Demo_Playable.exe`。build success、runtime Player.log exception-free。 |
+| ✅ | 詰みが起きない (時の窓再描画で必ず解除可能) | `Shift` + left-drag preview / generated window一致、右クリック削除、再描画導線を user manual confirmation 済み。 |
 
 ### 推奨 (達成すべきだが、削減トリガー時に外せる)
 
-| 状態 | 項目 | v0.4 ブロック原因 / 備考 |
+| 状態 | 項目 | v1.0 備考 |
 |---|---|---|
-| 残 | サイド違和感 1 個 | Stage 3 完走優先。削減対象として維持。 |
-| ✅ | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | Resident_A/B scaffold と DialogueAsset SO 到達済み。Locale switch dialog E2E PlayMode test green。実 dialogue 内容は user `/spec` 後に更新可。 |
-| ✅ | 街アンビエント BGM 1 曲 | Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` import 済み。G5 で聴感と loop を確認。 |
-| ✅ | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX 30 種 import 済み。`Zone1AudioController` wiring を G5 で確認。 |
-| 残 | オートセーブが動作 | Save/Load の VS 必要範囲を G5 で確認。 |
-| 残 | ESC メニュー → タイトルへ戻る が動作 | UI final wiring 後に G5 で確認。 |
+| Stage 4 | サイド違和感 1 個 | Stage 3 完成判定からは削減。Stage 4 content expansion で再評価。 |
+| ✅ | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | Resident_A/B dialogue、book reflection、locale switch、save/load related PlayMode tests green。 |
+| ✅ | 街アンビエント BGM 1 曲 | `Zone1_Ambient.ogg` import済み。Stage 3 blockerなし。細かい loop / balance polish は Stage 4。 |
+| ✅ | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX 30 種 import済み。`Zone1AudioController` wiring test green。細かい音量 / 素材差替えは Stage 4。 |
+| ✅ | オートセーブが動作 | SaveEnvelope / ActionRecord round-trip と PlayMode save/load integration green。手動 save UI は Stage 4。 |
+| Stage 4 | ESC メニュー → タイトルへ戻る が動作 | VS 判定からは削減。Stage 4 UI/menu workstream で実装。 |
 
 ### Stage 4-5 寄り (VS 判定では問わない、達成できれば加点)
 
-| 状態 | 項目 | v0.4 ブロック原因 / 備考 |
+| 状態 | 項目 | v1.0 備考 |
 |---|---|---|
 | 残 | 30 秒トレイラー (PITCH §3) の 6 カット全てが実機キャプチャ可能 | G5 通し体験後に素材化判断。 |
 | 残 | Linux ビルドが起動 → タイトル → ゲーム本体まで動作 (Mac は Stage 4 まで保留可) | VS 判定外。 |
@@ -406,6 +406,7 @@ VS_SCOPE は完成定義と確定済み実装状態を扱う。Stage 3 /spec res
 | v0.2 | 2026-05-05 | Stage 3 Day 1 進捗の整合反映 (E0-E5 / A1-A3 / F1-F4 / G4 完了状態) / ADR-0002, ADR-0005, ADR-0008, ADR-0009 改訂結果反映 / TBD 項目を `docs/STAGE3_TBD_RESOLUTION.md` へ移譲 / §3.1 コアループ最小成立達成を明記 / 残タスク表 (G3 final / G5 / Audio) を最新化 |
 | v0.3 | 2026-05-05 | Audio 完成 (BGM + SFX 30 種 + `Zone1AudioController`) / G3 Localization 完成 (`LocalizationSettings` + Locale switch test) / §8 死守ラインを G5 残のみに整理 |
 | v0.4 | 2026-05-05 | Stage 3 /spec resolution interview 反映: Niro / Antela provisional 採用、主人公中性表現・15-19 歳・スナフキン的帽子、Resident_A / Resident_B 役割、art / palette / font provisional 採用、設計用語をインゲームに出さない注記 |
+| v1.0 | 2026-05-06 | Stage 3 closeout。`a0bd50b` demo brush repair、EditMode `32/32`、PlayMode `29/29`、Windows demo build success、user manual confirmation を反映し、VS 必須条件を完了扱いへ更新。 |
 
 ---
 

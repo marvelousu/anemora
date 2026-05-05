@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Preliminary Stage 3 Day 1 release notes. Stage 3 is still in progress and remains unreleased; user manual G5 sign-off is the remaining completion judgement. Stage 3 /spec resolution selected Niro and Antela as provisional names, kept the code license as All Rights Reserved by default, and locked the planned public release direction to Steam Early Access.
+Stage 3 Vertical Slice closeout notes. Stage 3 is complete as of 2026-05-06 after G5 manual confirmation and the latest demo brush repair. Stage 3 /spec resolution selected Niro and Antela as provisional names, kept the code license as All Rights Reserved by default, and locked the planned public release direction to Steam Early Access.
 
 Milestone groups covered in this section:
 
 | Group | Scope |
 |---|---|
-| Core loop / G5 | Automated G5, audio rebuild, performance baseline, manual review preparation |
+| Core loop / G5 | Automated G5, audio rebuild, performance baseline, manual review, closeout docs |
 | Audio | Zone1 BGM, SFX 30, controller wiring, audio tests, SFX ledger consolidation |
 | Dialogue / localization | G3 dialogue, LocalizationSettings, locale switching, DialogueAsset authoring |
 | Lore / public materials | Niro / Antela reflection, public pitch, trailer script, README polish |
@@ -50,6 +50,7 @@ Milestone groups covered in this section:
 | `df19870` | Recorded audio-loaded performance baseline v0.2 with build size, FPS, memory, and known URP warning counts. |
 | `3d11e4b` | Updated `docs/scene_tour_anemora_main.md` to v0.2 with Niro lore and audio scene wiring. |
 | `7ab3499`, `1d5b078` | Polished README after lore reflection and Stage 4 entry updates. |
+| `a0bd50b` | Repaired the demo playable time-window brush flow: drag preview now matches generated time-window center / size / floor footprint, with right-click deletion preserved. |
 
 ### Fixed
 
@@ -85,6 +86,7 @@ Milestone groups covered in this section:
 | `026bf1f` | Investigated the URP `DrawObjectsPass` RenderGraph warning and documented Stage 4 fix options. |
 | `34585e3` | Added `docs/STAGE3_RETROSPECTIVE.md` v0.1 preliminary draft. |
 | `a49ee52` | Added `docs/STAGE4_ROADMAP.md` v0.1 preliminary draft. |
+| This task | Promoted Stage 3 closeout docs: `docs/G5_ACCEPTANCE_MATRIX.md`, `docs/VS_SCOPE.md`, `docs/STAGE3_RETROSPECTIVE.md`, `docs/STAGE4_ROADMAP.md`, `docs/G5_PREFLIGHT.md`, `docs/VERIFICATION_SUITE.md`, and `docs/devlog/2026-05-06_stage3_closeout.md`. |
 
 ### Removed
 
