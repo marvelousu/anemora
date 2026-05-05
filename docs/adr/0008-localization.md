@@ -64,6 +64,23 @@ VS 着手段階では Unity Localization の API を呼ぶが、実翻訳デー�
 - 切替時に `LocalizationSettings.SelectedLocale` 更新 + TMP Font Atlas 切替
 - 進行中のテキスト表示は次のセリフ送りから新 Locale 反映 (再起動不要)
 
+#### 1.4 Stage 3 A1 実装済み LocalizationSettings (v0.3 追補)
+
+`2f3197b` 時点で、LocalizationSettings / Locale / StringTable seed は以下の構造で実装済み。
+
+- Active settings: `Assets/Localization/LocalizationSettings.asset`
+  - `ProjectSettings/EditorBuildSettings.asset` の `com.unity.localization.settings` に登録済み
+  - Project locale identifier: `ja-JP`
+  - Startup selectors: `CommandLineLocaleSelector(-language=)` → `SpecificLocaleSelector(ja-JP)`
+  - String database / Asset database fallback: enabled
+- Locale assets:
+  - `Assets/Localization/Locales/Locale_ja-JP.asset` (`ja-JP`, `Japanese`)
+  - `Assets/Localization/Locales/Locale_en.asset` (`en`, `English`)
+  - `Locale_ja-JP.asset` は fallback metadata で `Locale_en.asset` を参照
+- Addressables:
+  - `ProjectSettings/EditorBuildSettings.asset` の `com.unity.addressableassets` に `Assets/AddressableAssetsData/AddressableAssetSettings.asset` を登録済み
+  - Localization locale / shared data / string table assets は `Localization-*` Addressables group に登録済み
+
 ---
 
 ### 2. String Table 設計
@@ -95,6 +112,37 @@ VS 着手段階では Unity Localization の API を呼ぶが、実翻訳デー�
 #### 2.3 Plural / Gender / Conditional
 
 VS / Stage 4 では使わない (英語と日本語で plural は意識せず単純訳)。Stage 5 で必要言語が出たら Unity Localization の Smart Format / SmartString で対応。
+
+#### 2.4 Stage 3 A1 StringTable seed 実装 (v0.3 追補)
+
+`2f3197b` 時点の実装パスは、初期案の `Assets/UI/Localization/` ではなく `Assets/Localization/` 配下に確定。
+
+| Asset | 役割 |
+|---|---|
+| `Assets/Localization/StringTables/Anemora_Strings.asset` | `StringTableCollection`。collection name は `Anemora_Strings`。 |
+| `Assets/Localization/StringTables/Anemora_Strings Shared Data.asset` | shared key / numeric id 管理。 |
+| `Assets/Localization/StringTables/Anemora_Strings_ja-JP.asset` | `ja-JP` 用 `StringTable`。 |
+| `Assets/Localization/StringTables/Anemora_Strings_en.asset` | `en` 用 `StringTable`。 |
+
+Seed key は以下の 3 系統を採る。
+
+| Prefix | 用途 | 現 seed 例 |
+|---|---|---|
+| `dialogue.*` | NPC 対話 / 物語テキスト。未確定 content は `[TBD: <description>]` で止める。 | `dialogue.placeholder.resident_a.greet` |
+| `ui.*` | UI 文言。確定できるものは実文言を投入する。 | `ui.menu.start` |
+| `system.*` | system status / 通知文言。 | `system.autosave_indicator` |
+
+現 seed entry:
+
+| Key | ja-JP | en |
+|---|---|---|
+| `dialogue.placeholder.resident_a.greet` | `[TBD: Resident_A greet line]` | `[TBD: Resident_A greet line]` |
+| `dialogue.placeholder.resident_b.idle` | `[TBD: Resident_B idle line]` | `[TBD: Resident_B idle line]` |
+| `ui.menu.start` | `はじめる` | `Start` |
+| `ui.menu.continue` | `つづきから` | `Continue` |
+| `ui.menu.options` | `せってい` | `Options` |
+| `ui.menu.quit` | `おわる` | `Quit` |
+| `system.autosave_indicator` | `じどうほぞん中` | `Autosaving...` |
 
 ---
 
@@ -287,6 +335,23 @@ DialogueAsset と DialogueAssetData は **同じ string key を共有** する�
 3. **Stage 4 入口**: DeepL Pro で英語下訳 → 人手校正 → en-US sub-Asset に投入
 4. **継続**: 新 NPC / 新セリフ追加時に同フロー
 
+#### 5.6 Runtime 解決仕様 (v0.3 追補)
+
+`Assets/Scripts/Game/Dialogue/DialogueAsset.cs` の実装では、通常呼び出し口は以下。
+
+```csharp
+string DialogueTurnSO.GetLocalizedTextOrFallback(string fallback);
+string DialogueChoiceSO.GetLocalizedLabelOrFallback(string fallback);
+```
+
+両方とも internal helper `DialogueLocalization.ResolveOrFallback(LocalizedString localizedString, string fallback)` に委譲する。
+
+- `Application.isBatchMode == true` の場合: `fallback ?? string.Empty` を返す。これは batchmode test / build 互換のため維持する。
+- `LocalizationSettings.HasSettings == false`、`LocalizedString` が null / empty、解決例外発生時: `fallback ?? string.Empty` を返す。
+- 非 batchmode runtime: `LocalizationSettings.SelectedLocaleAsync` を必要に応じて待ち、`localizedString.LocaleOverride` があれば優先し、なければ selected locale を使う。
+- 非 batchmode runtime: `LocalizationSettings.StringDatabase.GetTableEntry(...)` を呼び、`FallbackBehavior.DontUseFallback` 明示時だけ fallback 無効、それ以外は `FallbackBehavior.UseFallback` で解決する。
+- 解決値が null / empty の場合: `fallback ?? string.Empty` を返す。
+
 ---
 
 ### 6. Editor Workflow (asset 管理)
@@ -345,6 +410,7 @@ Stage 5 で言語を 1 つ追加する場合:
 
 - **TMP Atlas 容量**: 日本語 6,000-7,000 字で 4096x4096 SDF1 想定、メモリ占有が大きい (ノート PC TOM の VRAM 2GB で動作確認必須)
 - **Fallback 設計**: 日本語 / 英語 Atlas のフォールバック関係を双方向で設定する必要、設定漏れで「□」表示が出るリスク
+- **LocalizationSettings YAML の trailing space**: `Assets/Localization/LocalizationSettings.asset` には Unity `SerializeReference` の空 value として `data: ` / `- ` が出る。これらを blanket trim すると `LocalizationSettings` 初期化失敗や PlayMode localization test timeout を招くため、通常の Markdown / C# と同じ whitespace cleanup 対象にしない。
 - **DeepL の機械訳と用語集の整合**: 自動翻訳が用語集を尊重しないため、人手校正の負荷
 - **専用語彙の確定タイミング**: 「時の筆 = Timewriter」など世界観固有名詞は Stage 4 入口前に英訳を確定させないと、後から全 String Table を更新する負荷
 - **UI レイアウトの言語別調整**: 英語 / 日本語で文字長が違うため、UI Prefab で動的レイアウト (Content Size Fitter / Layout Group) が必須
@@ -445,6 +511,7 @@ Stage 5 で言語を 1 つ追加する場合:
 - `ADR-0006` (セーブシステム、`DisplaySettingsSaveData` 連携)
 - `ADR-0007` (UI フレームワーク、Unity Localization + TMP 採用根拠)
 - `STAGE3_F_PLAN.md` §4.2 (日本語ピクセルフォント選定)
+- `docs/api/dialogue_localization.md` (A1 DialogueAsset + LocalizationSettings 実装 API surface)
 - `docs/draft/g3_npc_dialogue.md` §5 (DialogueAsset 構造案)
 - `VS_SCOPE.md` §6 (UI 規模)
 - `PITCH.md` §11 (月次予算)
@@ -463,4 +530,4 @@ Stage 5 で言語を 1 つ追加する場合:
 |---|---|---|
 | v0.1 | 2026-05-04 | Stage 3 Day 1 起草。Locale 構成 / String Table 命名規則 / TMP Atlas 戦略 / DeepL ワークフロー / DialogueAsset 接続 / 検証ポイント / Alternatives 5 件 |
 | v0.2 | 2026-05-05 | Codex E1 review 反映: §5 asmdef 境界を明確化。`Anemora.Data` は POCO + string key のみ、`LocalizedString` は別 asmdef (`Anemora.Game` or `Anemora.UI`) の DialogueAsset SO に分離。2 層構造で engine-free 性を維持 |
-| v0.3 | 2026-05-05 | ADR review pass: `com.unity.localization@1.5.9` 導入状態、Status の実装段階表現、§5 の重複見出しを整理 |
+| v0.3 | 2026-05-05 | ADR review pass に加え、A1 LocalizationSettings completion (`2f3197b`) を反映。`Assets/Localization/LocalizationSettings.asset` / ja-JP・en Locale / `Anemora_Strings` TableCollection / Addressables group / batchmode fallback と非 batchmode StringDatabase 解決 / placeholder key 規則 / YAML trailing space caveat を明確化 |
