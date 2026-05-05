@@ -1,4 +1,4 @@
-# Vertical Slice スコープ定義 v0.2
+# Vertical Slice スコープ定義 v0.3
 
 > Anemora の **Vertical Slice (VS) = ここまで作れば「縦切り完成」と呼べる** 範囲を定義する。
 > Stage 3 (Day 0-10 目安) で本書を達成し、達成判定 = Stage 4 (α) 着手の前提。
@@ -6,7 +6,7 @@
 
 > **役割分離**: 本書 (VS_SCOPE) は **VS の "定義書"** (何を作れば VS 完成か)。`docs/STAGE3_PLAN.md` は **VS の "実行計画書"** (どう進めるか・どの順序で何日かけて作るか)。両者の混線を防ぐため、完了条件は本書 §8 を主とし、STAGE3_PLAN 側はそこへの参照に統一する。
 
-> **Status (2026-05-05 = Stage 3 Day 1)**: v0.2。E0-E5 + A2 + G4 のコアループ最小成立は達成済み (`0644822`)。残る VS 完成判定は G3 final、A4 Audio、G5 通し体験 + Windows build + 検証マトリクス実行。
+> **Status (2026-05-05 = Stage 3 Day 1)**: v0.3。E0-E5 + A2 + G4 のコアループ最小成立は達成済み (`0644822`)。G3 Localization / NPC 対話基盤と A4 Audio は完了済み。残る VS 完成判定は G5 通し体験 + Windows build + 検証マトリクス実行。
 
 ---
 
@@ -134,7 +134,7 @@
 
 ### 3.5 Stage 3 Day 1 機能ブロック状態
 
-| ブロック | v0.1 状態 | v0.2 反映 |
+| ブロック | v0.1 状態 | v0.3 反映 |
 |---|---|---|
 | E0 URP Pipeline | TBD | ✅ 完了。`AnemoraE0Setup.cs` editor automation により URP pipeline baseline を構築。 |
 | E1 PortalStencil | TBD | ✅ 完了。`PortalStencilFeature` + `PortalMask.shader` / `InsideOnly.shader`、stencil bit 3 / Mask = 8 / Ref = 8、dual-pass 設計。ADR-0002 v1.1 反映。 |
@@ -142,19 +142,19 @@
 | E3 SymbolWheel | TBD | ✅ 完了。3 シンボル表示、赤のみ活性、白 / 青は preview / disabled。 |
 | E4 PortalCrossing | TBD | ✅ 完了。6 状態 state machine + atomic flip。hysteresis 0.02m / minimum normal movement 0.05m / cooldown 0.1s / flash 0.05s。ADR-0005 v1.1 反映。 |
 | E5 ActionRecord | TBD | ✅ 完了。`IReflector` + `BookReflector` + `ActionRecordCatalog` + `ActionRecordRuntime`。 |
-| A1 DialogueAsset 構造 | TBD | ✅ 完了。`Anemora.Data` POCO + `Anemora.Game` asmdef + `DialogueAsset` SO + `com.unity.localization@1.5.9`。Batchmode では key fallback で動作。`LocalizationSettings` + `StringTable` seed は seed タスクで進行中。 |
+| A1 DialogueAsset 構造 | TBD | ✅ 完了。`Anemora.Data` POCO + `Anemora.Game` asmdef + `DialogueAsset` SO + `com.unity.localization@1.5.9`。`LocalizationSettings` + `StringTable` seed 実装済み。Batchmode key fallback と non-batchmode StringDatabase 解決を確認済み。 |
 | A2 Anemora_Main wiring | TBD | ✅ 完了 (`cb2b6ed`)。`PrototypePlayerController` + 境界往復 PlayMode test。 |
 | A3 Zone1 Buildings | TBD | ✅ 完了。Meshy v6 + 3/14 Blender 修復 + atlas + manifest + tools/scripts。 |
-| A4 Audio | TBD | 進行中。BGM は Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` export 済みとして asset_ledger に記録。SFX は `sfx_ui_button_click_01` smoke export 済み、残り 29 種は ElevenLabs API quota 解消後に着手。 |
+| A4 Audio | TBD | ✅ 完了。BGM `Zone1_Ambient.ogg` + SFX 30 種 (環境 6 / 足音 12 / 時の窓 6 / NPC 3 / UI 3) + `Zone1AudioController` wiring 到達済み。 |
 | A5 UI 基盤 + ローカライズ | TBD | ✅ JP TMP Atlas (美咲ゴシック) + EN draft (Press Start 2P) + Anemora パレット v0。最終採用は `docs/STAGE3_TBD_RESOLUTION.md` 参照。 |
 | F1 PixelLab drafts | TBD | ✅ 完了。Hero front / side / back、Resident_A front / back / left、Resident_B seated。 |
 | F2 Aseprite 仕上げ | TBD | ✅ 完了。Steam Aseprite 正式版で再エクスポート (`08f61b8`, `4d2092a`)。 |
 | F3 Retro Diffusion 補助 | TBD | 要否は `docs/STAGE3_TBD_RESOLUTION.md` で tracking。 |
 | F4 Hero/NPC.prefab + Animator | TBD | ✅ 完了 (`d2c95c2`)。Hero / Resident_A / Resident_B prefab + 個別 `AnimatorController` + `HeroAnimatorBinder` + `Anemora_Main` placeholder 置換。 |
 | G1/G2 Buildings 採用方針 | TBD | ✅ 解決。A3 Meshy 再生成 = 案 b 採用。 |
-| G3 NPC 配置 + 対話 | TBD | partial 着手中。Resident_A/B placement + `NpcInteractable` + `DialogueDisplay` scaffold。Final batch は `LocalizationSettings` + 実 dialogue 内容投入後。 |
+| G3 NPC 配置 + 対話 | TBD | ✅ 完了。Resident_A/B placement + `NpcInteractable` + `DialogueDisplay` scaffold + `DialogueAsset` SO 到達済み。A1 `LocalizationSettings` 完了と Locale switch dialog E2E PlayMode test を反映。実 dialogue 内容は user `/spec` 後に更新可。 |
 | G4 ActionRecord トリガー設置 | TBD | ✅ 完了 (`0644822`)。`take_book_001` + `Book_Family_Current.prefab` + `PastBookInteractable` + E2E PlayMode test。 |
-| G5 通し体験 + Windows ビルド + 検証マトリクス | TBD | matrix draft ready (`docs/G5_ACCEPTANCE_MATRIX.md`, 36 項目)。F4 / G3 / Audio 完了後に G5 実行。 |
+| G5 通し体験 + Windows ビルド + 検証マトリクス | TBD | 残。matrix draft ready (`docs/G5_ACCEPTANCE_MATRIX.md`, 36 項目)。G3 / Audio 完了後の最終 Go/No-Go として G5 を実行。 |
 
 ---
 
@@ -198,11 +198,11 @@ VFX は時の窓 / 痕跡可視化 / 層 2 片鱗の **3 つに限定** (環境�
 
 ### 5.1 BGM
 
-VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ループ再利用で代用可。A4 BGM は Suno `Dustlight Piano B` の一発出しを採用し、AIVA は比較素材として不採用。SFX は ElevenLabs API quota 解消後に残りを生成する。
+VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ループ再利用で代用可。A4 BGM は Suno `Dustlight Piano B` の一発出しを採用し、AIVA は比較素材として不採用。SFX 30 種は ElevenLabs / Stable Audio / Studio One foley で生成・整理済み。
 
 | トラック | VS 実装 | 品質 |
 |---|---|---|
-| 街アンビエント (常時 BGM) | Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` export 済み。最終 import / commit 状態は A4 handover と asset_ledger で確認 | VS 時点暫定完成 |
+| 街アンビエント (常時 BGM) | Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` import 済み。`Zone1AudioController` から再生する | VS 時点暫定完成 |
 | 時の窓使用時の演出曲 | 街アンビエントの変調で代用。Low-pass + 楽器抜き + pitch shift -2 semitones を VS で実装 | プレースホルダ可 |
 | 層遷移片鱗演出曲 | 既存 BGM の変調で代用 | Stage 4 で固有曲に差替 |
 
@@ -218,7 +218,7 @@ VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ルー�
 | NPC 反応 SFX | 3 種 |
 | UI SFX | 3 種 |
 
-SFX 30 種は `docs/asset_prompts/sfx_zone1.md` v1.0 draft ready。ツール構成は ElevenLabs SFX 28 / Stable Audio 1 / Studio One foley 1。`sfx_ui_button_click_01` は smoke export 済み、残り 29 種は ElevenLabs API quota 解消後に着手する。
+SFX 30 種は `docs/asset_prompts/sfx_zone1.md` v1.0 draft に沿って生成・import 済み。`Zone1AudioController` は環境音、足音、時の窓、NPC、UI の各カテゴリを参照し、G5 で聴感 / trigger wiring を確認する。
 
 ### 5.3 ボイス
 
@@ -276,13 +276,13 @@ VS = 「最終クオリティで作り込んだ縦切り」と理想は持ちつ
 
 ## 8. 完了条件チェックリスト
 
-VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v0.2 では Stage 3 Day 1 の実装 reality を反映し、各項目に状態とブロック原因を付ける。
+VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。**推奨** は削減トリガー時に外せる。**Stage 4-5 寄り** は VS 判定では問わない。v0.3 では Audio completion と G3 Localization completion を反映し、実装ブロッカーは G5 実行のみとして扱う。
 
 ### 必須 (VS 達成判定の死守ライン、全 YES が VS 完成の条件)
 
-| 状態 | 項目 | v0.2 ブロック原因 / 備考 |
+| 状態 | 項目 | v0.3 ブロック原因 / 備考 |
 |---|---|---|
-| 進行中 | **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分) | G3 final / Audio / G5 実行待ち。検証項目は `docs/G5_ACCEPTANCE_MATRIX.md` に準備済み。 |
+| 残 | **ニューゲームから VS 終端まで、1 セッションで破綻なく通しプレイ可能** (10-15 分) | G3 Localization / Audio は完了済み。残る確認は G5 通し体験実行のみ。検証項目は `docs/G5_ACCEPTANCE_MATRIX.md` に準備済み。 |
 | ✅ | 時の窓描画 → 赤シンボル選択 → 過去踏込み → 持ち帰り → 現在反映 の **コアループが破綻なく動作** | E0-E5 + A2 + G4 で達成済み。PlayMode 16/16 green。 |
 | ✅ | **主要違和感 1 個** が機能 (反映の痕跡が確認できる) | G4 の本取得 → Current 側 Bed 上 book spawn で達成済み。 |
 | 残 | **層 2 への片鱗演出が 1 カット** 入っている | G5 final flow で実配置 / 実再生確認が必要。 |
@@ -293,23 +293,23 @@ VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。
 
 ### 推奨 (達成すべきだが、削減トリガー時に外せる)
 
-| 状態 | 項目 | v0.2 ブロック原因 / 備考 |
+| 状態 | 項目 | v0.3 ブロック原因 / 備考 |
 |---|---|---|
 | 残 | サイド違和感 1 個 | Stage 3 完走優先。削減対象として維持。 |
-| 進行中 | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | G3 partial 進行中。Final は `LocalizationSettings` + user `/spec` 後の dialogue 内容投入待ち。 |
-| 進行中 | 街アンビエント BGM 1 曲 | Suno `Dustlight Piano B` 採用 / export 済み。G5 前に import / commit 状態を確認。 |
-| 残 | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX prompt v1.0 ready。ElevenLabs API quota 解消後に実生成 / import。 |
+| ✅ | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | Resident_A/B scaffold と DialogueAsset SO 到達済み。Locale switch dialog E2E PlayMode test green。実 dialogue 内容は user `/spec` 後に更新可。 |
+| ✅ | 街アンビエント BGM 1 曲 | Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` import 済み。G5 で聴感と loop を確認。 |
+| ✅ | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX 30 種 import 済み。`Zone1AudioController` wiring を G5 で確認。 |
 | 残 | オートセーブが動作 | Save/Load の VS 必要範囲を G5 で確認。 |
 | 残 | ESC メニュー → タイトルへ戻る が動作 | UI final wiring 後に G5 で確認。 |
 
 ### Stage 4-5 寄り (VS 判定では問わない、達成できれば加点)
 
-| 状態 | 項目 | v0.2 ブロック原因 / 備考 |
+| 状態 | 項目 | v0.3 ブロック原因 / 備考 |
 |---|---|---|
 | 残 | 30 秒トレイラー (PITCH §3) の 6 カット全てが実機キャプチャ可能 | G5 通し体験後に素材化判断。 |
 | 残 | Linux ビルドが起動 → タイトル → ゲーム本体まで動作 (Mac は Stage 4 まで保留可) | VS 判定外。 |
 | 進行中 | アセット完成品質 FIX (Stage 4 でも改修しない水準) | コア機構は FIX。sprite / building / audio は VS 時点暫定完成として扱う。 |
-| 進行中 | BGM / SFX が固有曲・固有素材で完成品質 | BGM は export 済み、SFX は残生成待ち。VS 判定では完成品質までは問わない。 |
+| ✅ | BGM / SFX が固有曲・固有素材で完成品質 | BGM + SFX 30 種は VS 時点素材として到達済み。G5 で build / 聴感 / trigger を確認する。 |
 
 ---
 
@@ -357,11 +357,11 @@ VS 達成後、SPEC を v1 に改訂:
 
 Stage 3 Day 1 の実装結果は以下の ADR / docs に反映済み。
 
-| 参照 | 状態 | VS_SCOPE v0.2 への反映 |
+| 参照 | 状態 | VS_SCOPE v0.3 への反映 |
 |---|---|---|
 | `docs/adr/0002-time-frame-portal-stencil.md` | v1.1 / Accepted (`02f5c22`) | E1 確定値。stencil bit 3、Mask = 8 / Ref = 8、dual-pass shader、URP StencilLight 競合経緯を §3.1 / §3.5 へ反映。 |
 | `docs/adr/0005-time-management-scene-switching.md` | v1.1 / Accepted (`3a29757`) | E4 確定値。PortalState 6 状態、atomic flip ordering、hysteresis 0.02m / minimum 0.05m / cooldown 0.1s / flash 0.05s を §3.1 / §3.5 へ反映。 |
-| `docs/adr/0008-localization.md` | v0.2 / Accepted | `Anemora.Data` POCO と runtime/UI 層の asmdef 境界、TMP Atlas 方針を A1 / A5 状態へ反映。 |
+| `docs/adr/0008-localization.md` | v0.3 / Accepted (`2cf0dfa`) | `Anemora.Data` POCO と runtime/UI 層の asmdef 境界、TMP Atlas 方針、`LocalizationSettings` / StringTable seed 完了を A1 / A5 / G3 状態へ反映。 |
 | `docs/adr/0009-asset-pipeline.md` | Proposed (`cbb6ac1`) | PixelLab + Aseprite、Meshy + Blender、Studio One、TMP Atlas、ledger 運用を asset pipeline の Stage 4 入口参照として追加。 |
 | `docs/G5_ACCEPTANCE_MATRIX.md` | draft ready (`7c4a258`) | G5 通し体験 / Windows build / acceptance test 36 項目の実行表として §8 へ接続。 |
 
@@ -402,8 +402,9 @@ VS_SCOPE は完成定義と確定済み実装状態を扱う。未確定の user
 | v0.1 | 2026-05-04 | Codex (fast) レビュー 12 件全件反映 (P0×4 / P1×4 / P2×4): §1 役割分離明文化 / §2 ペーシング短縮 / §3.1 グレーアウト+詰み防止+未来側+操作系明文化 / §3.2 建物上限 / §4 アセット規模縮小 / §6 UI を VS 暫定完成に / §7 FIX 範囲をコア機構のみに / §8 完了条件 3 段階化 / §9 削減順再編 |
 | v0.1a | 2026-05-04 | Stage 3 A トラック /spec 反映: §2 オープニング詳細化 (家ベッド + D-3/D-7/D-6 含み演出 + 時の筆発見タイミング) / §3.2 NPC 配置を「普通の住人 1-2 人、異物原則」に訂正 (老人撤回) / §6 対話 UI に silent protagonist 反映 |
 | v0.2 | 2026-05-05 | Stage 3 Day 1 進捗の整合反映 (E0-E5 / A1-A3 / F1-F4 / G4 完了状態) / ADR-0002, ADR-0005, ADR-0008, ADR-0009 改訂結果反映 / TBD 項目を `docs/STAGE3_TBD_RESOLUTION.md` へ移譲 / §3.1 コアループ最小成立達成を明記 / 残タスク表 (G3 final / G5 / Audio) を最新化 |
+| v0.3 | 2026-05-05 | Audio 完成 (BGM + SFX 30 種 + `Zone1AudioController`) / G3 Localization 完成 (`LocalizationSettings` + Locale switch test) / §8 死守ラインを G5 残のみに整理 |
 
 ---
 
-> **End of VS_SCOPE v0.2**
+> **End of VS_SCOPE v0.3**
 > Stage 3 実装の完成定義として運用。Stage 3 完了後、SPEC v1 改訂と合わせて v1 へ昇格。
