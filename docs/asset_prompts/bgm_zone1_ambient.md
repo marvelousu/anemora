@@ -178,6 +178,8 @@ VS_SCOPE §5.1 / §5.2 と整合:
 |---|---|---|---|---|---|---|---|---|---|---|
 | bgm_zone1_v1 | Zone1_Ambient.ogg | 2026-05-XX | AIVA Pro + Suno v5.5 + Studio One | AIVA Pro / Suno paid / Studio One owned | AIVA description / Suno style prompt | Studio One 編集・マスタリング | 可 (AIVA Pro + Suno paid) | GitHub Public 可 | Tier 1 player-consumed | 街アンビエント、3-4 分尺ループ |
 
+実採用が Suno 単体一発出しの場合は、§3.3 / §5.1 の許容範囲として、`ツール` / `入力素材` / `手修正` を実態に合わせて `Suno v5.5 + export tool`、Suno style prompt、one-shot export などに置き換える。AIVA 比較素材や Stable Audio 未使用は備考に記録し、採用 asset row には実際に使った生成 source を優先して記載する。
+
 ---
 
 ## 8. ユーザー判断ポイント
@@ -194,3 +196,4 @@ VS_SCOPE §5.1 / §5.2 と整合:
 |---|---|---|
 | v0 | 2026-05-04 | 初版起草。AIVA + Suno + Stable Audio + Studio One の役割分担と各プロンプト |
 | v0.1 | 2026-05-05 | DAW 仕様を Studio One に修正。一発出し / AI 側調整優先の採用フローを追加 |
+| v0.2 | 2026-05-05 | Audio integration check: Suno 単体一発出し採用時の asset_ledger 記載方針を補足 |

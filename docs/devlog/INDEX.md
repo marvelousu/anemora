@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 19 files under `docs/devlog/`, including this index.
+Current root-level Markdown coverage: 22 files under `docs/devlog/`, including this index and the audio integration check report.
 
 ### 2.1 Stage 3 Day 1 (2026-05-05)
 
@@ -86,7 +86,7 @@ Current root-level Markdown coverage: 19 files under `docs/devlog/`, including t
 
 ### Audio (A4 BGM + SFX)
 
-- No root devlog file exists as of v0.1.
+- [2026-05-05_audio_prompts_integration_check.md](2026-05-05_audio_prompts_integration_check.md) — Audio prompt / ADR / ledger integration check after A4 BGM export.
 - Prompt details live in `docs/asset_prompts/`; see `sfx_zone1.md` v1.0 draft and `bgm_zone1_ambient.md`.
 
 ### Documentation / ADR (0001-0009)

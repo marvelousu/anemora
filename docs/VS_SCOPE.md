@@ -145,7 +145,7 @@
 | A1 DialogueAsset 構造 | TBD | ✅ 完了。`Anemora.Data` POCO + `Anemora.Game` asmdef + `DialogueAsset` SO + `com.unity.localization@1.5.9`。Batchmode では key fallback で動作。`LocalizationSettings` + `StringTable` seed は seed タスクで進行中。 |
 | A2 Anemora_Main wiring | TBD | ✅ 完了 (`cb2b6ed`)。`PrototypePlayerController` + 境界往復 PlayMode test。 |
 | A3 Zone1 Buildings | TBD | ✅ 完了。Meshy v6 + 3/14 Blender 修復 + atlas + manifest + tools/scripts。 |
-| A4 Audio | TBD | 進行中。MCP AIVA で BGM 作業中。SFX 30 種は prompt detail v1.0 ready、BGM 後に着手。 |
+| A4 Audio | TBD | 進行中。BGM は Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` export 済みとして asset_ledger に記録。SFX は `sfx_ui_button_click_01` smoke export 済み、残り 29 種は ElevenLabs API quota 解消後に着手。 |
 | A5 UI 基盤 + ローカライズ | TBD | ✅ JP TMP Atlas (美咲ゴシック) + EN draft (Press Start 2P) + Anemora パレット v0。最終採用は `docs/STAGE3_TBD_RESOLUTION.md` 参照。 |
 | F1 PixelLab drafts | TBD | ✅ 完了。Hero front / side / back、Resident_A front / back / left、Resident_B seated。 |
 | F2 Aseprite 仕上げ | TBD | ✅ 完了。Steam Aseprite 正式版で再エクスポート (`08f61b8`, `4d2092a`)。 |
@@ -198,11 +198,11 @@ VFX は時の窓 / 痕跡可視化 / 層 2 片鱗の **3 つに限定** (環境�
 
 ### 5.1 BGM
 
-VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ループ再利用で代用可。A4 は MCP AIVA で進行中。
+VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ループ再利用で代用可。A4 BGM は Suno `Dustlight Piano B` の一発出しを採用し、AIVA は比較素材として不採用。SFX は ElevenLabs API quota 解消後に残りを生成する。
 
 | トラック | VS 実装 | 品質 |
 |---|---|---|
-| 街アンビエント (常時 BGM) | 進行中。MCP AIVA で BGM 作業中 | VS 時点暫定完成 |
+| 街アンビエント (常時 BGM) | Suno `Dustlight Piano B` 採用 / `Zone1_Ambient.ogg` export 済み。最終 import / commit 状態は A4 handover と asset_ledger で確認 | VS 時点暫定完成 |
 | 時の窓使用時の演出曲 | 街アンビエントの変調で代用。Low-pass + 楽器抜き + pitch shift -2 semitones を VS で実装 | プレースホルダ可 |
 | 層遷移片鱗演出曲 | 既存 BGM の変調で代用 | Stage 4 で固有曲に差替 |
 
@@ -218,7 +218,7 @@ VS 必須は街アンビエント 1 曲のみ。それ以外は変調 / ルー�
 | NPC 反応 SFX | 3 種 |
 | UI SFX | 3 種 |
 
-SFX 30 種は `docs/asset_prompts/sfx_zone1.md` v1.0 draft ready。ツール構成は ElevenLabs SFX 28 / Stable Audio 1 / Studio One foley 1。実生成は A4 BGM 後に着手する。
+SFX 30 種は `docs/asset_prompts/sfx_zone1.md` v1.0 draft ready。ツール構成は ElevenLabs SFX 28 / Stable Audio 1 / Studio One foley 1。`sfx_ui_button_click_01` は smoke export 済み、残り 29 種は ElevenLabs API quota 解消後に着手する。
 
 ### 5.3 ボイス
 
@@ -297,8 +297,8 @@ VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。
 |---|---|---|
 | 残 | サイド違和感 1 個 | Stage 3 完走優先。削減対象として維持。 |
 | 進行中 | NPC 1-2 人と対話可能、**少なくとも 1 人に「現在反映」が見える** | G3 partial 進行中。Final は `LocalizationSettings` + user `/spec` 後の dialogue 内容投入待ち。 |
-| 進行中 | 街アンビエント BGM 1 曲 | A4 BGM 進行中。 |
-| 残 | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX prompt v1.0 ready。BGM 後に実生成 / import。 |
+| 進行中 | 街アンビエント BGM 1 曲 | Suno `Dustlight Piano B` 採用 / export 済み。G5 前に import / commit 状態を確認。 |
+| 残 | 時の窓 SFX (描画/シンボル/踏込み/持ち帰り) | SFX prompt v1.0 ready。ElevenLabs API quota 解消後に実生成 / import。 |
 | 残 | オートセーブが動作 | Save/Load の VS 必要範囲を G5 で確認。 |
 | 残 | ESC メニュー → タイトルへ戻る が動作 | UI final wiring 後に G5 で確認。 |
 
@@ -309,7 +309,7 @@ VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。
 | 残 | 30 秒トレイラー (PITCH §3) の 6 カット全てが実機キャプチャ可能 | G5 通し体験後に素材化判断。 |
 | 残 | Linux ビルドが起動 → タイトル → ゲーム本体まで動作 (Mac は Stage 4 まで保留可) | VS 判定外。 |
 | 進行中 | アセット完成品質 FIX (Stage 4 でも改修しない水準) | コア機構は FIX。sprite / building / audio は VS 時点暫定完成として扱う。 |
-| 進行中 | BGM / SFX が固有曲・固有素材で完成品質 | A4 進行中。VS 判定では完成品質までは問わない。 |
+| 進行中 | BGM / SFX が固有曲・固有素材で完成品質 | BGM は export 済み、SFX は残生成待ち。VS 判定では完成品質までは問わない。 |
 
 ---
 

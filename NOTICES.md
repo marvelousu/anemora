@@ -117,8 +117,8 @@ Detailed per-asset provenance is tracked in `docs/legal/asset_ledger.md`. This s
 |---|---|---|
 | PixelLab | Character sprite drafts and derived finished sprites | Pixel Apprentice paid plan confirmed; generated/derived sprite assets tracked as Tier 1 player-consumed |
 | Meshy v6 | Zone1 3D building meshes, textures, and Unity prefab derivatives | API key/credits confirmed; paid/premium output ownership tracked per generated asset |
-| AIVA Pro | BGM generation workflow, final BGM still under review/export | Pro plan tracked; final accepted audio asset not yet committed at this draft |
-| Suno v5.5 | BGM candidate generation/support workflow | Paid plan tracked; generated candidates remain review/intermediate until final export |
+| AIVA Pro | BGM comparison workflow; Stage 3 Day 1 candidate was rejected for final use | Pro plan tracked; rejected comparison material remains intermediate |
+| Suno v5.5 | BGM candidate generation and selected Zone1 ambient source (`Dustlight Piano B`) | Paid plan tracked; selected BGM row recorded in `asset_ledger.md`; intermediate candidates remain ignored |
 | Stable Audio 2.5 | Planned fallback/inpainting or SFX ambience support | Commercial/API status must be verified at generation time before any final asset is included |
 | ElevenLabs SFX v2 | SFX generation workflow | Creator paid plan tracked; one draft SFX smoke test is tracked, remaining SFX generation depends on quota/billing resolution |
 | Studio One | DAW finishing tool for BGM/SFX | Development/production tool only; final exported audio rights depend on lawful inputs and project ownership |
