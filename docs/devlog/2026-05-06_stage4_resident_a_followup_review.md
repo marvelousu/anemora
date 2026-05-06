@@ -24,6 +24,7 @@ Tracked review evidence:
 - `docs/devlog/screenshots/stage4_resident_a_followup_review_sheet_d_e_hero_ratio.png`
 - `docs/devlog/screenshots/stage4_resident_a_hero_ratio_regen_compare.png`
 - `docs/devlog/screenshots/stage4_resident_a_fgh_connected_nearest_compare.png`
+- `docs/devlog/screenshots/stage4_resident_a_f_based_f2_f3_f4_nearest_compare.png`
 
 Local intermediate files, intentionally under ignored `art/_intermediate/`:
 
@@ -34,6 +35,8 @@ Local intermediate files, intentionally under ignored `art/_intermediate/`:
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_d_e_hero_ratio_raw.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_fgh_connected_candidates_raw.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_[fgh]_connected_fit_32x48.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_f2_f3_f4_f_based_raw.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_f[234]_f_based_fit_32x48.png`
 
 The top of the sheet shows the current runtime contact sheet for Hero, Resident_A, and Resident_B. The bottom shows three new Resident_A concept options labeled A / B / C.
 
@@ -132,18 +135,32 @@ After C3 fix C was demoted, the next review pass targeted the two blockers direc
 | Sprite | BBox in 32x48 cell | Read |
 |---|---:|---|
 | C3 fix C | 17x45 | Rejected: head/body connection reads detached |
-| F fit | 17x45 | Connected, but face still reads larger |
-| G fit | 15x45 | Strongest current candidate: connected and not oversized |
+| F fit | 17x45 | Connected; later user review preferred this direction over G |
+| G fit | 15x45 | Connected and not oversized, but later user review found the hair too short |
 | H fit | 17x45 | Connected, but softer / less clear than G |
 
-Result: G is the strongest current Resident_A review candidate. It should still stay review-only until user approval. If approved, the next step is to build the actual idle / walk cell set from this direction and compare it in-runtime before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
+Result after user review on 2026-05-07: G should not be the implementation base because its shorter hair changes the character read too much. F is the preferred direction despite its larger face read.
+
+## 4.4 F-Based F2/F3/F4 Candidates
+
+The next pass kept F's longer hair and quieter Resident_A read, while reducing the face / head feel slightly.
+
+| Sprite | BBox in 32x48 cell | Read |
+|---|---:|---|
+| F fit | 17x45 | Preferred direction, but face still reads larger |
+| G fit | 15x45 | Demoted: hair too short |
+| F2 fit | 16x45 | Strongest current candidate: F-like hair and mood with smaller silhouette |
+| F3 fit | 16x45 | F-like hair, but reads slightly taller / stronger |
+| F4 fit | 16x45 | F-like hair, but face / hair mass still reads broader |
+
+Result: F2 is the strongest current Resident_A review candidate. It keeps the longer-hair F direction and avoids G's short-hair drift while improving the scale mismatch.
 
 ## 5. Next Step
 
 User review gate:
 
-- Review the F/G/H nearest-neighbor comparison and decide whether G is acceptable as the next implementation base.
-- If G is accepted, create actual 32x48 gameplay cells and idle/walk sheets.
+- Review the F-based F2/F3/F4 nearest-neighbor comparison and decide whether F2 is acceptable as the next implementation base.
+- If F2 is accepted, create actual 32x48 gameplay cells and idle/walk sheets.
 - Compare the extracted gameplay cells against Hero and Resident_B before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
 - During final extraction, preserve crisp square pixels and avoid any resampling that blurs face, hair edge, neck, or collar.
 - Add asset ledger provenance only when a selected replacement becomes runtime/player-consumed.
@@ -158,4 +175,5 @@ User review gate:
 
 | Version | Date | Change |
 |---|---|---|
+| v0.2 | 2026-05-07 | Records F-over-G user preference and adds F2/F3/F4 F-based refinement comparison |
 | v0.1 | 2026-05-06 | Initial Resident_A follow-up review sheet and candidate notes |
