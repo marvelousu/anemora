@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v1.5 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v1.6 Stage 4 entry index (2026-05-07). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -184,3 +184,4 @@ Current root-level Markdown coverage: 55 files under `docs/devlog/`, including t
 | v1.3 | 2026-05-06 | Resident_A follow-up review devlog and screenshot added; root-level Markdown coverage updated to 55 files. |
 | v1.4 | 2026-05-06 | Resident_A Candidate C / C2 / C3 size comparison screenshots indexed. |
 | v1.5 | 2026-05-06 | Resident_A C3 32x48 headfix and D/E Hero-ratio regeneration comparison screenshots indexed. |
+| v1.6 | 2026-05-07 | Resident_A C3 fix C user review correction recorded: head/body connection and preview blur remain blockers. |

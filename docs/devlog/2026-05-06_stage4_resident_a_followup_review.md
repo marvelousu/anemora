@@ -104,9 +104,9 @@ The local 32x48 prototype keeps the C3 body direction and reduces head / hair vo
 | Resident_A current | 20x45 | 0.36 | Too large-headed |
 | Resident_B v2 | 25x45 | 0.33 | Accepted, hair-heavy seated reference |
 | C3 base | 16x45 | 0.33 | Better, still slightly large-headed |
-| C3 fix C | 17x45 | 0.31 | Best current balance between Resident_A direction and Hero-like proportion |
+| C3 fix C | 17x45 | 0.31 | Good head-size metric, but user review found the head/body connection reads detached |
 
-Result: C3 fix C is the strongest current implementation base. It still needs manual pixel cleanup, but the head-size problem is meaningfully reduced without losing the quieter Resident_A silhouette.
+Result after user review on 2026-05-07: C3 fix C is not approved as an implementation base as-is. The head-size metric is useful, but the neck / collar / shoulder bridge was reduced too far and the head reads separated from the body. The review image also reads too blurry to evaluate pixel quality confidently.
 
 ### Hero-Ratio Regeneration
 
@@ -117,16 +117,17 @@ A stricter regeneration produced D / E.
 | D fit | 15x45 | 0.33 | Head still reads larger than intended; more boyish / Hero-adjacent |
 | E fit | 15x45 | 0.24 | Smaller head, but too close to Hero-like proportions and less Resident_A-specific |
 
-Result: D / E are useful evidence that Hero-like proportions can be reached, but they drift toward a protagonist-like young resident and away from the C direction. They should not replace C3 fix C unless the next user review explicitly prefers this stronger youthful read.
+Result: D / E are useful evidence that Hero-like proportions can be reached, but they drift toward a protagonist-like young resident and away from the C direction. They should not replace the Resident_A direction unless the next user review explicitly prefers this stronger youthful read.
 
 ## 5. Next Step
 
 User review gate:
 
-- Pick C3 fix C as the current best implementation base, or choose D / E only if a more Hero-like young resident is preferred.
+- Create a new Resident_A candidate that keeps C3's quiet body direction but restores a readable neck / collar / shoulder connection.
+- Review it in a sharp nearest-neighbor sheet before selection; do not rely on blurred enlarged previews.
 - After selection, create actual 32x48 gameplay cells and idle/walk sheets.
 - Compare the extracted gameplay cells against Hero and Resident_B before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
-- During final extraction, keep C3 fix C's body direction and run manual pixel cleanup so the face does not blur and the hair edge remains readable.
+- During final extraction, preserve crisp square pixels and avoid any resampling that blurs face, hair edge, neck, or collar.
 - Add asset ledger provenance only when a selected replacement becomes runtime/player-consumed.
 
 ## 6. Verification
