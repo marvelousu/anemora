@@ -74,6 +74,7 @@ Milestone groups covered in this section:
 | This task | Recorded the post-runtime Resident_A v2 follow-up: Hero and Resident_B are the accepted reference; Resident_A needs reduced pixel harshness and face/head scale adjustment. |
 | This task | Added a Resident_A follow-up review sheet with A/B/C concept options; no runtime asset replacement yet. |
 | This task | Added Resident_A Candidate C / C2 / C3 size comparisons; C3 is the current best base, but final head/hair reduction is still recommended before runtime import. |
+| This task | Added Resident_A C3 32x48 headfix prototypes and D/E Hero-ratio regeneration comparisons; C3 fix C is the recommended base pending user review. |
 | This task | Recorded the Stage 4 TMP / palette readability review and next screenshot gate before font or UI asset replacement. |
 | `33a2507`, `8bd0d01` | Added and updated `docs/devlog/INDEX.md` for devlog navigation and CHANGELOG cross-reference. |
 | `34112eb` | Added Stage 3 review aids for high-impact visual review items. |

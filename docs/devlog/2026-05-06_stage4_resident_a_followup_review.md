@@ -20,12 +20,17 @@ Tracked review evidence:
 - `docs/devlog/screenshots/stage4_resident_a_candidate_c_size_compare.png`
 - `docs/devlog/screenshots/stage4_resident_a_followup_review_sheet_c2_c3.png`
 - `docs/devlog/screenshots/stage4_resident_a_candidate_c2_c3_size_compare.png`
+- `docs/devlog/screenshots/stage4_resident_a_c3_32x48_headfix_variants.png`
+- `docs/devlog/screenshots/stage4_resident_a_followup_review_sheet_d_e_hero_ratio.png`
+- `docs/devlog/screenshots/stage4_resident_a_hero_ratio_regen_compare.png`
 
 Local intermediate files, intentionally under ignored `art/_intermediate/`:
 
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_abc_raw.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_review_sheet_abc.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_c2_c3_raw.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_c3_32x48_*.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_d_e_hero_ratio_raw.png`
 
 The top of the sheet shows the current runtime contact sheet for Hero, Resident_A, and Resident_B. The bottom shows three new Resident_A concept options labeled A / B / C.
 
@@ -82,14 +87,46 @@ A narrower follow-up prompt produced C2 / C3:
 
 Result: C2 / C3 reduce the mismatch, with C3 closest to the requested direction. Hero remains smaller-headed at 0.29, so the recommended runtime path is to use C3 as the visual base but shave head / hair volume by roughly one 32x48-cell pixel during final extraction or a targeted redraw pass.
 
+## 4.2 Both Follow-Up Paths
+
+User requested both next paths:
+
+1. Create a C3-based 32x48 head / hair reduction prototype.
+2. Regenerate stricter Hero-ratio candidates.
+
+### C3 32x48 Prototype
+
+The local 32x48 prototype keeps the C3 body direction and reduces head / hair volume before cell fitting.
+
+| Sprite | BBox in 32x48 cell | Rough head ratio | Read |
+|---|---:|---:|---|
+| Hero v2 | 19x45 | 0.29 | Accepted reference |
+| Resident_A current | 20x45 | 0.36 | Too large-headed |
+| Resident_B v2 | 25x45 | 0.33 | Accepted, hair-heavy seated reference |
+| C3 base | 16x45 | 0.33 | Better, still slightly large-headed |
+| C3 fix C | 17x45 | 0.31 | Best current balance between Resident_A direction and Hero-like proportion |
+
+Result: C3 fix C is the strongest current implementation base. It still needs manual pixel cleanup, but the head-size problem is meaningfully reduced without losing the quieter Resident_A silhouette.
+
+### Hero-Ratio Regeneration
+
+A stricter regeneration produced D / E.
+
+| Sprite | BBox in 32x48 cell | Rough head ratio | Read |
+|---|---:|---:|---|
+| D fit | 15x45 | 0.33 | Head still reads larger than intended; more boyish / Hero-adjacent |
+| E fit | 15x45 | 0.24 | Smaller head, but too close to Hero-like proportions and less Resident_A-specific |
+
+Result: D / E are useful evidence that Hero-like proportions can be reached, but they drift toward a protagonist-like young resident and away from the C direction. They should not replace C3 fix C unless the next user review explicitly prefers this stronger youthful read.
+
 ## 5. Next Step
 
 User review gate:
 
-- Pick C3 as the current best base, or request one more regeneration targeting Hero-like head ratio.
+- Pick C3 fix C as the current best implementation base, or choose D / E only if a more Hero-like young resident is preferred.
 - After selection, create actual 32x48 gameplay cells and idle/walk sheets.
 - Compare the extracted gameplay cells against Hero and Resident_B before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
-- During final extraction, keep C3 body direction but reduce head / hair volume by about one gameplay-cell pixel if it still reads larger than Hero.
+- During final extraction, keep C3 fix C's body direction and run manual pixel cleanup so the face does not blur and the hair edge remains readable.
 - Add asset ledger provenance only when a selected replacement becomes runtime/player-consumed.
 
 ## 6. Verification
