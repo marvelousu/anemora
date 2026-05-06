@@ -23,6 +23,7 @@ Tracked review evidence:
 - `docs/devlog/screenshots/stage4_resident_a_c3_32x48_headfix_variants.png`
 - `docs/devlog/screenshots/stage4_resident_a_followup_review_sheet_d_e_hero_ratio.png`
 - `docs/devlog/screenshots/stage4_resident_a_hero_ratio_regen_compare.png`
+- `docs/devlog/screenshots/stage4_resident_a_fgh_connected_nearest_compare.png`
 
 Local intermediate files, intentionally under ignored `art/_intermediate/`:
 
@@ -31,6 +32,8 @@ Local intermediate files, intentionally under ignored `art/_intermediate/`:
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_c2_c3_raw.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_c3_32x48_*.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_d_e_hero_ratio_raw.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_fgh_connected_candidates_raw.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_[fgh]_connected_fit_32x48.png`
 
 The top of the sheet shows the current runtime contact sheet for Hero, Resident_A, and Resident_B. The bottom shows three new Resident_A concept options labeled A / B / C.
 
@@ -119,13 +122,28 @@ A stricter regeneration produced D / E.
 
 Result: D / E are useful evidence that Hero-like proportions can be reached, but they drift toward a protagonist-like young resident and away from the C direction. They should not replace the Resident_A direction unless the next user review explicitly prefers this stronger youthful read.
 
+## 4.3 Connected F/G/H Candidates
+
+After C3 fix C was demoted, the next review pass targeted the two blockers directly:
+
+- Restore a visible neck / collar / shoulder bridge.
+- Review at crisp nearest-neighbor scale instead of a blurred enlargement.
+
+| Sprite | BBox in 32x48 cell | Read |
+|---|---:|---|
+| C3 fix C | 17x45 | Rejected: head/body connection reads detached |
+| F fit | 17x45 | Connected, but face still reads larger |
+| G fit | 15x45 | Strongest current candidate: connected and not oversized |
+| H fit | 17x45 | Connected, but softer / less clear than G |
+
+Result: G is the strongest current Resident_A review candidate. It should still stay review-only until user approval. If approved, the next step is to build the actual idle / walk cell set from this direction and compare it in-runtime before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
+
 ## 5. Next Step
 
 User review gate:
 
-- Create a new Resident_A candidate that keeps C3's quiet body direction but restores a readable neck / collar / shoulder connection.
-- Review it in a sharp nearest-neighbor sheet before selection; do not rely on blurred enlarged previews.
-- After selection, create actual 32x48 gameplay cells and idle/walk sheets.
+- Review the F/G/H nearest-neighbor comparison and decide whether G is acceptable as the next implementation base.
+- If G is accepted, create actual 32x48 gameplay cells and idle/walk sheets.
 - Compare the extracted gameplay cells against Hero and Resident_B before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
 - During final extraction, preserve crisp square pixels and avoid any resampling that blurs face, hair edge, neck, or collar.
 - Add asset ledger provenance only when a selected replacement becomes runtime/player-consumed.

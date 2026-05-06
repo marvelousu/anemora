@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v1.6 Stage 4 entry index (2026-05-07). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v1.7 Stage 4 entry index (2026-05-07). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -164,6 +164,7 @@ Current root-level Markdown coverage: 55 files under `docs/devlog/`, including t
 | [stage4_resident_a_c3_32x48_headfix_variants.png](screenshots/stage4_resident_a_c3_32x48_headfix_variants.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A C3 32x48 head / hair reduction prototype comparison |
 | [stage4_resident_a_followup_review_sheet_d_e_hero_ratio.png](screenshots/stage4_resident_a_followup_review_sheet_d_e_hero_ratio.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A D/E stricter Hero-ratio regeneration sheet |
 | [stage4_resident_a_hero_ratio_regen_compare.png](screenshots/stage4_resident_a_hero_ratio_regen_compare.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A D/E fitted-size comparison against Hero |
+| [stage4_resident_a_fgh_connected_nearest_compare.png](screenshots/stage4_resident_a_fgh_connected_nearest_compare.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A F/G/H connected-candidate nearest-neighbor comparison |
 
 ## 5. 更新履歴
 
@@ -185,3 +186,4 @@ Current root-level Markdown coverage: 55 files under `docs/devlog/`, including t
 | v1.4 | 2026-05-06 | Resident_A Candidate C / C2 / C3 size comparison screenshots indexed. |
 | v1.5 | 2026-05-06 | Resident_A C3 32x48 headfix and D/E Hero-ratio regeneration comparison screenshots indexed. |
 | v1.6 | 2026-05-07 | Resident_A C3 fix C user review correction recorded: head/body connection and preview blur remain blockers. |
+| v1.7 | 2026-05-07 | Resident_A F/G/H connected-candidate nearest-neighbor comparison indexed. |
