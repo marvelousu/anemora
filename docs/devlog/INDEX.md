@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v1.8 Stage 4 entry index (2026-05-07). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v1.9 Stage 4 entry index (2026-05-07). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -189,3 +189,4 @@ Current root-level Markdown coverage: 55 files under `docs/devlog/`, including t
 | v1.6 | 2026-05-07 | Resident_A C3 fix C user review correction recorded: head/body connection and preview blur remain blockers. |
 | v1.7 | 2026-05-07 | Resident_A F/G/H connected-candidate nearest-neighbor comparison indexed. |
 | v1.8 | 2026-05-07 | Resident_A F-based F2/F3/F4 nearest-neighbor comparison indexed. |
+| v1.9 | 2026-05-07 | Resident_A F2 rejection and F/F4 role-framed review state recorded. |

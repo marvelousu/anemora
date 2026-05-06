@@ -153,14 +153,24 @@ The next pass kept F's longer hair and quieter Resident_A read, while reducing t
 | F3 fit | 16x45 | F-like hair, but reads slightly taller / stronger |
 | F4 fit | 16x45 | F-like hair, but face / hair mass still reads broader |
 
-Result: F2 is the strongest current Resident_A review candidate. It keeps the longer-hair F direction and avoids G's short-hair drift while improving the scale mismatch.
+Result after user review on 2026-05-07: F2 is rejected. The viable direction is F or F4. These two read less like a pure scale correction and more like different personality choices:
+
+- F: younger, softer, more anxious / witness-like.
+- F4: more composed, slightly older, more self-contained.
+
+Resident_A role framing for the final selection:
+
+- Past-side young town resident / witness.
+- No prior relationship with Niro.
+- Points emotionally toward the declining current side through unease, warning, or foreshadowing.
+- Should not read as the protagonist, a fantasy page, or a confident guide.
 
 ## 5. Next Step
 
 User review gate:
 
-- Review the F-based F2/F3/F4 nearest-neighbor comparison and decide whether F2 is acceptable as the next implementation base.
-- If F2 is accepted, create actual 32x48 gameplay cells and idle/walk sheets.
+- Review F and F4 against Resident_A's role and decide which personality read should anchor the implementation base.
+- If F or F4 is accepted, create actual 32x48 gameplay cells and idle/walk sheets.
 - Compare the extracted gameplay cells against Hero and Resident_B before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
 - During final extraction, preserve crisp square pixels and avoid any resampling that blurs face, hair edge, neck, or collar.
 - Add asset ledger provenance only when a selected replacement becomes runtime/player-consumed.
@@ -175,5 +185,6 @@ User review gate:
 
 | Version | Date | Change |
 |---|---|---|
+| v0.3 | 2026-05-07 | Records user rejection of F2 and reframes the decision as F vs F4 with Resident_A role context |
 | v0.2 | 2026-05-07 | Records F-over-G user preference and adds F2/F3/F4 F-based refinement comparison |
 | v0.1 | 2026-05-06 | Initial Resident_A follow-up review sheet and candidate notes |
