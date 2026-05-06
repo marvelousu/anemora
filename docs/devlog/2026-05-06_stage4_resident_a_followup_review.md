@@ -17,11 +17,15 @@ This task creates a user-review sheet only. It does not select, crop, sheet, or 
 Tracked review evidence:
 
 - `docs/devlog/screenshots/stage4_resident_a_followup_review_sheet_abc.png`
+- `docs/devlog/screenshots/stage4_resident_a_candidate_c_size_compare.png`
+- `docs/devlog/screenshots/stage4_resident_a_followup_review_sheet_c2_c3.png`
+- `docs/devlog/screenshots/stage4_resident_a_candidate_c2_c3_size_compare.png`
 
 Local intermediate files, intentionally under ignored `art/_intermediate/`:
 
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_abc_raw.png`
 - `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_review_sheet_abc.png`
+- `art/_intermediate/stage4_resident_a_followup_review/resident_a_v2_followup_candidates_c2_c3_raw.png`
 
 The top of the sheet shows the current runtime contact sheet for Hero, Resident_A, and Resident_B. The bottom shows three new Resident_A concept options labeled A / B / C.
 
@@ -54,13 +58,38 @@ Main avoid list:
 
 No candidate is accepted yet. Runtime import should wait for user selection or a regeneration instruction.
 
+## 4.1 Size Comparison Follow-Up
+
+After user feedback that Candidate C still seemed slightly large-headed, Candidate C was temporarily fit into a 32x48 cell and compared against current Hero, Resident_A, and Resident_B.
+
+Approximate visual metrics from the fit comparison:
+
+| Sprite | BBox in 32x48 cell | Rough head ratio |
+|---|---:|---:|
+| Hero v2 | 19x45 | 0.29 |
+| Resident_A current | 20x45 | 0.36 |
+| Resident_B v2 | 25x45 | 0.33 |
+| Candidate C fit | 16x45 | 0.36 |
+
+Result: Candidate C direction is useful, but its head ratio remains closer to current Resident_A than to Hero. It should not be imported as-is.
+
+A narrower follow-up prompt produced C2 / C3:
+
+| Sprite | BBox in 32x48 cell | Rough head ratio |
+|---|---:|---:|
+| C2 fit | 17x45 | 0.33 |
+| C3 fit | 16x45 | 0.33 |
+
+Result: C2 / C3 reduce the mismatch, with C3 closest to the requested direction. Hero remains smaller-headed at 0.29, so the recommended runtime path is to use C3 as the visual base but shave head / hair volume by roughly one 32x48-cell pixel during final extraction or a targeted redraw pass.
+
 ## 5. Next Step
 
 User review gate:
 
-- Pick A / B / C as a base, or request regeneration with a narrower target.
+- Pick C3 as the current best base, or request one more regeneration targeting Hero-like head ratio.
 - After selection, create actual 32x48 gameplay cells and idle/walk sheets.
 - Compare the extracted gameplay cells against Hero and Resident_B before replacing `Assets/Art/Sprites/NPC/Resident_A/v2/`.
+- During final extraction, keep C3 body direction but reduce head / hair volume by about one gameplay-cell pixel if it still reads larger than Hero.
 - Add asset ledger provenance only when a selected replacement becomes runtime/player-consumed.
 
 ## 6. Verification

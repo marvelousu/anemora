@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v1.3 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v1.4 Stage 4 entry index (2026-05-06). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -158,6 +158,9 @@ Current root-level Markdown coverage: 55 files under `docs/devlog/`, including t
 | [e1_portal_side.png](screenshots/e1_portal_side.png) | [2026-05-05_e1_stencil_minimum.md](2026-05-05_e1_stencil_minimum.md) | E1 portal side visual evidence |
 | [e1_portal_back.png](screenshots/e1_portal_back.png) | [2026-05-05_e1_stencil_minimum.md](2026-05-05_e1_stencil_minimum.md) | E1 portal back visual evidence |
 | [stage4_resident_a_followup_review_sheet_abc.png](screenshots/stage4_resident_a_followup_review_sheet_abc.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A A/B/C follow-up review sheet |
+| [stage4_resident_a_candidate_c_size_compare.png](screenshots/stage4_resident_a_candidate_c_size_compare.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A Candidate C fitted-size comparison |
+| [stage4_resident_a_followup_review_sheet_c2_c3.png](screenshots/stage4_resident_a_followup_review_sheet_c2_c3.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A C2/C3 smaller-head review sheet |
+| [stage4_resident_a_candidate_c2_c3_size_compare.png](screenshots/stage4_resident_a_candidate_c2_c3_size_compare.png) | [2026-05-06_stage4_resident_a_followup_review.md](2026-05-06_stage4_resident_a_followup_review.md) | Resident_A C2/C3 fitted-size comparison |
 
 ## 5. 更新履歴
 
@@ -176,3 +179,4 @@ Current root-level Markdown coverage: 55 files under `docs/devlog/`, including t
 | v1.1 | 2026-05-06 | Stage 4 audio listening checklist devlog added; root-level Markdown coverage updated to 53 files. |
 | v1.2 | 2026-05-06 | DialoguePanel TMP screenshot capture investigation devlog を追加し、root-level Markdown coverage を 54 件へ更新 |
 | v1.3 | 2026-05-06 | Resident_A follow-up review devlog and screenshot added; root-level Markdown coverage updated to 55 files. |
+| v1.4 | 2026-05-06 | Resident_A Candidate C / C2 / C3 size comparison screenshots indexed. |
