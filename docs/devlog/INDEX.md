@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v2.0 Chapter 1 narrative entry (2026-05-09). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v2.1 Chapter 1 Scene 2 + map alignment (2026-05-09). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,13 +13,14 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 56 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, and the Chapter 1 narrative design records.
+Current root-level Markdown coverage: 57 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, and the Chapter 1 narrative design records.
 
 ### 2.0.0 Chapter 1 Narrative Design (2026-05-09)
 
 | 日付 | ファイル | topic | 関連 commit | 関連 milestone | CHANGELOG |
 |---|---|---|---|---|---|
 | 2026-05-09 | [2026-05-09_chapter1_scene1_v3_final.md](2026-05-09_chapter1_scene1_v3_final.md) | Chapter 1 Scene 1 v3 final 確定 (8 セクション [1.A]-[1.H])、pending 3 点 + 後出し 2 点すべて解決 | This task | Stage 4 / Chapter 1 narrative | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-09 | [2026-05-09_chapter1_scene2_v1_final.md](2026-05-09_chapter1_scene2_v1_final.md) | Chapter 1 Scene 2 v1 final 確定 (6 セクション [2.A]-[2.F]、ミア設定確定 = 元縫物職人 / 一人暮らし)、視界解放メカニズム確定 (1+5: 陽の角度 + 音の誘導、土砂封鎖を視界誘導に統一)、sister doc map 整合修正 (シーン 5 を南端へ、街角を南方面へ) | This task | Stage 4 / Chapter 1 narrative | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0.1 Stage 4 Entry (2026-05-06)
 
@@ -197,3 +198,4 @@ Current root-level Markdown coverage: 56 files under `docs/devlog/`, including t
 | v1.8 | 2026-05-07 | Resident_A F-based F2/F3/F4 nearest-neighbor comparison indexed. |
 | v1.9 | 2026-05-07 | Resident_A F2 rejection and F/F4 role-framed review state recorded. |
 | v2.0 | 2026-05-09 | Chapter 1 Scene 1 v3 final 確定 devlog (8 セクション [1.A]-[1.H]) を追加し、root-level Markdown coverage を 56 件へ更新。 |
+| v2.1 | 2026-05-09 | Chapter 1 Scene 2 v1 final 確定 devlog (6 セクション [2.A]-[2.F]、ミア設定確定、視界解放 1+5 統一、sister doc 整合修正) を追加し、root-level Markdown coverage を 57 件へ更新。 |
