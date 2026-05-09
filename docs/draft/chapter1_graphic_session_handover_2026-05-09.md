@@ -1,11 +1,15 @@
 # Chapter 1 グラフィック / アセット製作セッション 引継ぎ書 (2026-05-09)
 
-> **位置付け**: 第 1 章「忘れられた街」全シーン動線骨格完成 (2026-05-09) を受け、グラフィック / アセット製作セッションへ整合性確認 + 指示書作成依頼を渡す書類
-> **宛先**: Windows 側グラフィック / アセット製作セッション (Codex Windows 想定)
-> **次のステップ**: 本書をグラフィックセッションが読み、(1) 既存制作物との整合性確認、(2) 製作セッション (VS = Vertical Slice 第 1 章実装) 向けの優先順序付き指示書を作成
+> **位置付け**: 第 1 章「忘れられた街」全シーン動線骨格完成 (2026-05-09) を受け、Windows 側グラフィック foundation orchestrator へ整合性確認 + 指示書作成依頼を渡す書類
+> **宛先**: Windows 側 graphics foundation orchestrator (Tom)。そこから character generation session / implementation session に振り分け想定
+> **次のステップ**: orchestrator が本書を読み、(1) 既存制作物との整合性確認、(2) Production session (VS = Vertical Slice 第 1 章実装) 向けの優先順序付き指示書を作成
 > **二部構成**: 本書は **graphic / asset 特化**。**narrative / map 詳細** は sister docs:
->   - `chapter1_s1_s2_handover_2026-05-08.md` v1.5 (broader、物語 + メカ + 制約)
->   - `chapter1_map_handover_2026-05-08.md` v1.3 (map / level design 特化)
+>   - `docs/draft/chapter1_s1_s2_handover_2026-05-08.md` v1.5 (broader、物語 + メカ + 制約)
+>   - `docs/draft/chapter1_map_handover_2026-05-08.md` v1.3 (map / level design 特化)
+>
+> **重要**: パスはすべて **repo 相対** で記載。Anemora repo の Windows 側実体は `C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2`、notes repo の Windows 側実体は `C:\Users\maro6\notes`。
+>
+> **承知事項**: Windows 側で character generation session が **既に v10 proportion lock を進行中** (Mia v10 完了 / Aria v10 front 完了 / 他は source pending)。本書は新規キャラ制作依頼ではなく、**narrative / spec / map 側の最新状態と整合性確認** が主目的。
 
 ---
 
@@ -130,26 +134,30 @@
 
 ## 4. キャラクター prefab 一覧 (Chapter 1 必要分)
 
-### 4.1 既存 (Stage 3 / Stage 4 構築済 + 改訂中)
+### 4.1 既存 + Windows 側で v10 proportion lock 進行中 (2026-05-09 時点)
 
-| コード | 名前 | 状態 | Chapter 1 での使用 |
-|---|---|---|---|
-| Hero | Niro | F2 v1 既存、Stage 4 v2 redraw 進行中 | 序章〜シーン 5 全シーン (主人公) |
-| Resident_A | アリア | Stage 3 prefab 既存、F2 拒否経由で別 candidate 検証中 | シーン 1 (過去遠景)、シーン 3 (過去アリア家) |
-| Resident_B | レト | Stage 3 prefab 既存、Stage 3 lore-aware dialogue 投入済 | シーン 1 (現在、図書館跡) |
+Windows 側 character generation session の最新状態 (`_handover/anemora-character-generation-claude-*-v10-*-2026-05-09.md` 参照):
 
-### 4.2 新規必要 (Chapter 1 用、優先度高)
-
-| コード | 名前 | 設定 | 登場シーン | 役割 |
+| コード | 名前 | Windows 側状態 | Chapter 1 での使用 | narrative 側からの整合確認依頼 |
 |---|---|---|---|---|
-| **Resident_F** | **ミア** | 30-40、元・縫物 / 織物職人、一人暮らし、面倒見の良さ | シーン 2 | 種依頼、街の世話役 |
-| **Resident_C** | **カイア** | 25-30、街と森境のナッツ農家、一人暮らし、観察力ある寡黙 | シーン 4 | T4 連鎖の現在側、種受け取り |
-| **Resident_D** | **ダリオ** | 40 代、旅商人 / 香料商 (エリュトリア由来) | シーン 3 (過去街角)、シーン 4 (過去カイア畑) | T4 連鎖の過去側、香料を扱う |
-| **Resident_J** | **カーラ** | 30-40、商家女主人 (アリアの母) | シーン 3 (過去アリア家) | 親子温かいシーン、商売教え |
-| **Resident_K** | **カイロ** | 年齢不問、楽器奏者・詩人 | シーン 3 (過去街角) | 中世活気の象徴、楽器演奏 |
-| **Resident_L** | **ルナ** | 5-10、子供 | シーン 3 (過去街角) | 中世活気の象徴、子供の遊び |
+| Hero | Niro | F2 v1 既存、Stage 4 v2 redraw 進行中 | 序章〜シーン 5 全シーン (主人公) | 新仕様 v3.2「Niro が窓内に入って歩ける」と整合する pose / animation セット必要 |
+| Resident_A | アリア | Stage 3 prefab 既存、**v10 front 完了**、back/left/right は source pending | シーン 1 (過去遠景)、シーン 3 (過去アリア家、商売教え演出) | シーン 3 [3.D] で商家娘 (12-15) として母 J と並ぶ姿の整合確認 |
+| Resident_B | レト | Stage 3 prefab 既存、**v8 front pending source** | シーン 1 (現在、図書館跡) | シーン 1 v4 dialogue (本出現 + 「あなたのような方が」) と既存 Stage 3 dialogue の差し替え整合 |
+| **Resident_F** | **ミア** | **v10 proportion lock 完了**、front pending source | シーン 2 | 設定確定 = 30-40、**元・縫物 / 織物職人、一人暮らし**、面倒見の良さ。proportion lock が確定設定に整合か確認 |
+| **Resident_C** | **カイア** | **v10 front pending source** | シーン 4 | 設定確定 = 25-30、**街と森境のナッツ農家、一人暮らし**、観察力ある寡黙。proportion lock 設計時に反映 |
+| **Resident_D** | **ダリオ** | **v10 front pending source** | シーン 3 (過去街角)、シーン 4 (過去カイア畑) | 旅商人 / 香料商 (エリュトリア由来)、複数シーンで香料瓶を扱う動作 |
+| **Resident_J** | **カーラ** | **v10 front pending source** | シーン 3 (過去アリア家) | 商家女主人 (アリアの母)、商売教えの動作 |
+| **Resident_K** | **カイロ** | **v10 front pending source** | シーン 3 (過去街角) | 楽器奏者・詩人、楽器演奏動作 |
+| **Resident_L** | **ルナ** | **v10 front pending source** | シーン 3 (過去街角) | 5-10 子供、遊び動作 |
 
-### 4.3 新規必要 (使いまわし用 Mob、優先度中)
+→ **キャラ生成は順調**。本 handover からの追加依頼は **設定確定情報の反映 + 確認** のみ:
+- Mia: 「縫物 / 織物職人」「一人暮らし」「面倒見の良さ」が proportion lock 反映されているか確認
+- Kaia: 「ナッツ農家」「一人暮らし」「観察力寡黙」を proportion lock 設計時に反映
+- Dario: 香料瓶を持つ / 渡す / 並べる 動作セット必要 (T4 連鎖の核)
+- Karla: 商売道具 (茶葉 / 香料 / 布) を扱う動作セット
+- Reto v8: シーン 1 v4 dialogue 差し替えに伴う表情 / 動作追加可否
+
+### 4.2 新規必要 (使いまわし用 Mob、優先度中)
 
 | コード | 用途 |
 |---|---|
@@ -253,35 +261,52 @@
 
 ## 8. 既存制作物との整合性確認 (グラフィックセッションでの判断)
 
-### 8.1 既存制作物 (Stage 3 / Stage 4 進行中)
+### 8.1 既存制作物 (Windows 側 Stage 3 / Stage 4 進行中、2026-05-09 時点)
 
-- Hero F2 v1 / v2 redraw 進行中
+#### キャラクター系 (character generation session)
+- Hero F2 v1 既存 / v2 redraw 進行中
+- Aria v10 front 完了 (back/left/right source pending)
+- Mia v10 proportion lock 完了 (front source pending)
+- Reto v8 / Dario v10 / Karla v10 / Kairo v10 / Luna v10 / Kaia v10 = front pending source
+
+#### foundation 系 (graphics foundation / implementation session)
 - Resident_A / B prefab + Stage 3 lore-aware dialogue
 - 14 building prefab (Anemora_Main 未配置)
 - Portal_Frame、DialoguePanel、SymbolWheel
-- Zone1 audio
+- Zone1 audio (BGM 1 + SFX 30 種、Zone1AudioController)
 - TMP fonts/atlas
+- TimeFramePortalSystem (旧仕様、v3.2 拡張未対応)
 
 ### 8.2 整合性確認項目
 
-| # | 確認項目 | 判断 |
-|---|---|---|
-| 1 | Hero v2 redraw の方向性 (Niro silent protagonist + 窓内移動) と新仕様 v3.2 の整合 | グラフィックセッションで判断 |
-| 2 | Resident_A (アリア) の Stage 3 dialogue (lore-aware) と新シーン 1 [1.E] / シーン 3 [3.D] の dialogue 整合 | dialogue 差し替え必要か確認 |
-| 3 | Resident_B (レト) の Stage 3 dialogue と新シーン 1 v4 dialogue (本出現復活、「あなたのような方が」復活) の整合 | dialogue 差し替え必要 |
-| 4 | 14 building prefab の配置可能性 (新マップ 東/北東展開) | Anemora_Main 配置時に再検証 |
-| 5 | Anemora_Main.unity を Chapter 1 として発展させるか、新規 Anemora_Chapter1.unity を作るか | グラフィックセッションで判断 |
-| 6 | TimeFramePortalSystem の新仕様 v3.2 (Niro 窓内移動 + 触れる + 痕跡) 対応 | 既存実装の拡張で済むか、再実装か検討 |
-| 7 | Zone1 audio をシーン 5 廃墟予兆まで使うか、Zone2 を新設するか | 検討 |
-| 8 | Symbol Wheel の 1 周目「赤のみ」表示対応 | 既存実装の表示制御変更 |
+| # | 確認項目 | 担当 | 判断 |
+|---|---|---|---|
+| 1 | Hero v2 redraw の方向性 (Niro silent protagonist + 窓内移動) と新仕様 v3.2 の整合 | character generation | proportion lock 設計時に「窓内移動 pose」要否確認 |
+| 2 | Mia v10 proportion lock が「縫物 / 織物職人 + 一人暮らし + 面倒見」設定と整合 | character generation | 既設計を確認、必要なら追加動作 (布を扱う / 縫う動作) |
+| 3 | Kaia v10 proportion lock 設計時に「ナッツ農家 + 一人暮らし + 観察力寡黙」を反映 | character generation | 設計開始前に本 handover §4.1 参照 |
+| 4 | Dario v10 proportion lock 設計時に「香料瓶を持つ / 渡す / 並べる」動作セット必要 (T4 連鎖の核) | character generation | front pending source 段階で確認 |
+| 5 | Karla v10 で「商売道具 (茶葉 / 香料 / 布) を扱う」動作セット | character generation | 同上 |
+| 6 | Resident_A (アリア) Stage 3 dialogue ↔ 新シーン 1 [1.E] / シーン 3 [3.D] dialogue (商売教え + エリュトリア連動) 整合 | implementation | dialogue 差し替え必要、新 dialogue は handover §9.1 [3.D] 参照 |
+| 7 | Resident_B (レト) Stage 3 dialogue ↔ 新シーン 1 v4 dialogue (本出現復活、「...本物だ」「...あなたのような方が」復活) 整合 | implementation | dialogue 差し替え必要、Reto v8 の表情追加可能か確認 |
+| 8 | 14 building prefab の配置可能性 (新マップ 東/北東展開、handover §2.1) | implementation | Anemora_Main 配置時に再検証 |
+| 9 | Anemora_Main.unity を Chapter 1 として発展させるか、新規 Anemora_Chapter1.unity を作るか | implementation orchestrator | アセット配置 + 動線テスト容易性で判断 |
+| 10 | TimeFramePortalSystem の新仕様 v3.2 (Niro 窓内移動 + 触れる + 痕跡) 対応 | implementation | 既存実装の拡張 vs 再実装、要設計判断 (大きな変更、ユーザー確認推奨) |
+| 11 | Zone1 audio をシーン 5 廃墟予兆まで使うか、Zone2 を新設するか | implementation | シーン 5 廃墟特有の音 (砂塵 / 風) 必要、別 zone 推奨 |
+| 12 | Symbol Wheel の 1 周目「赤のみ」表示対応 | implementation | 表示制御変更、シンボル段階開示 (handover §3.3) 反映 |
+| 13 | シーン 1 [1.F] 本出現演出復活 (痕跡可視化) の実装 | implementation | 旧設計に戻すが、Niro 能動行動の結果として整合する形 |
+| 14 | シーン 4 [4.D] [4.G] オート発動例外の実装 | implementation | ストーリー上の見せ場として確実に再生する仕組み |
+| 15 | シーン 5 [5.E] 章切り替えアニメ + BF1 起点 (小石蹴る) の実装 | implementation | 章切り替え演出システム新規 + 小石オブジェクト |
 
-### 8.3 グラフィックセッションへの依頼
+### 8.3 graphics foundation orchestrator への依頼
 
-1. **既存制作物との整合性確認** を上記項目について行う
-2. **製作セッション (VS = Vertical Slice 第 1 章実装) 向けの優先順序付き指示書** を作成
-3. アセット制作の **進捗管理 + 工数見積** を行う
-4. **新仕様 v3.2 (時の窓モード)** の実装方針を判断
-5. 不明点があれば本書 + sister docs を参照、それでも不明なら orchestration index に質問を残す
+1. **既存制作物との整合性確認** (§8.2 の 15 項目) を行う
+2. **担当別の振り分け**:
+   - character generation session 向け: §8.2 #1-#5 (proportion lock 設計時の設定反映 + 動作セット)
+   - implementation session 向け: §8.2 #6-#15 (dialogue 差し替え + 新仕様 v3.2 実装 + Symbol Wheel + 章切り替え演出 + シーン構成)
+3. 各セッション向けの **優先順序付き指示書** を作成
+4. アセット制作の **進捗管理 + 工数見積**
+5. **新仕様 v3.2 (時の窓モード)** の実装方針判断 (大きな変更のためユーザー確認推奨、§10.3 自走境界参照)
+6. 不明点があれば本書 + sister docs を参照、それでも不明なら orchestration index に質問を残す
 
 ---
 
@@ -334,21 +359,33 @@
 
 ---
 
-## 11. 関連ドキュメント
+## 11. 関連ドキュメント (Anemora repo 相対パス、Windows 側実体は `C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2\`)
 
 | Doc | 役割 | 現状 |
 |---|---|---|
-| `chapter1_s1_s2_handover_2026-05-08.md` | broader (物語/演出/メカ/制約/アセット) | v1.5 |
-| `chapter1_map_handover_2026-05-08.md` | map / level design 特化 | v1.3 |
-| **本書 (`chapter1_graphic_session_handover_2026-05-09.md`)** | graphic / asset 特化、整合性確認 + 指示書作成依頼 | v1.0 |
-| `STORY_BIBLE_v1.md` | 物語骨格 (本章は §3.2、登場人物 §4) | v1.7 (案 D 5 シーン構成は本 handover 側が最新) |
-| `DESIGN_RATIONALE.md` | 命名 / クライマックス由来 | §1.5 章名「忘れられた街」由来 |
-| `PROTOTYPE_TIME_FRAME_v0.md` | 操作感プロト仕様 (precursor) | v0.1 |
-| `AUTONOMOUS_WORK_GUIDELINE.md` | 独走可否境界 | v1.0 |
-| `scene_tour_anemora_main.md` | 現状 scene 構造 (再利用前提) | v0.2 |
-| `VS_SCOPE.md` | Stage 3 完成定義 | v0.4 |
-| `STAGE4_ROADMAP.md` | Stage 4 計画 | preliminary |
-| `ASSET_STRUCTURE.md` | アセット配置規約 | v0.2 |
+| `docs/draft/chapter1_s1_s2_handover_2026-05-08.md` | broader (物語/演出/メカ/制約/アセット) | v1.5 |
+| `docs/draft/chapter1_map_handover_2026-05-08.md` | map / level design 特化 | v1.3 |
+| **本書 (`docs/draft/chapter1_graphic_session_handover_2026-05-09.md`)** | graphic / asset 特化、整合性確認 + 指示書作成依頼 | v1.1 |
+| `docs/STORY_BIBLE_v1.md` | 物語骨格 (本章は §3.2、登場人物 §4) | v1.7 (案 D 5 シーン構成は本 handover 側が最新) |
+| `docs/DESIGN_RATIONALE.md` | 命名 / クライマックス由来 | §1.5 章名「忘れられた街」由来 |
+| `docs/PROTOTYPE_TIME_FRAME_v0.md` | 操作感プロト仕様 (precursor) | v0.1 |
+| `docs/AUTONOMOUS_WORK_GUIDELINE.md` | 独走可否境界 | v1.0 |
+| `docs/scene_tour_anemora_main.md` | 現状 scene 構造 (再利用前提) | v0.2 |
+| `docs/VS_SCOPE.md` | Stage 3 完成定義 | v0.4 |
+| `docs/STAGE4_ROADMAP.md` | Stage 4 計画 | preliminary |
+| `docs/ASSET_STRUCTURE.md` | アセット配置規約 | v0.2 |
+
+### 11.1 関連 devlog (Anemora repo 相対、2026-05-09)
+- `docs/devlog/2026-05-09_chapter1_scene1_v3_final.md` (シーン 1 v3 final、後の v4 で本出現復活)
+- `docs/devlog/2026-05-09_chapter1_scene2_v1_final.md` (シーン 2 + 視界解放 + sister doc 整合)
+- `docs/devlog/2026-05-09_chapter1_layer1_revision_and_scene3_design.md` (Layer 1 仕様改訂 + シーン 1 v4 + シーン 3 v3)
+- `docs/devlog/2026-05-09_chapter1_scene4_v1.md` (シーン 4 + エリュトリア + カイア)
+- `docs/devlog/2026-05-09_chapter1_scene5_v1_and_map_redesign.md` (シーン 5 + 動線再設計 + Z 用語整理 + 白窓 1 周目なし)
+
+### 11.2 Windows 側 character generation 進捗 (notes repo 相対、Windows 側実体は `C:\Users\maro6\notes\`)
+- `_handover/anemora-character-generation-claude-aria-v10-front-complete-2026-05-09.md`
+- `_handover/anemora-character-generation-claude-mia-v10-proportion-lock-complete-2026-05-09.md`
+- `_handover/anemora-character-generation-claude-{dario,karla,kairo,luna,kaia,reto v8}-v10-front-pending-source-2026-05-09.md`
 
 ### 11.1 関連 devlog (2026-05-09)
 - `2026-05-09_chapter1_scene1_v3_final.md` (シーン 1 v3 final、後の v4 で本出現復活)
@@ -363,7 +400,7 @@
 
 作業完了時:
 - Anemora repo: `docs/devlog/2026-05-DD_chapter1_graphic_session_review.md` (確認結果 + 製作セッション向け指示書)
-- notes side (orchestration): `~/notes/_handover/anemora-chapter1-graphic-session-review-2026-05-DD.md`
+- notes repo (orchestration): `_handover/anemora-chapter1-graphic-session-review-2026-05-DD.md` (Windows: `C:\Users\maro6\notes\_handover\...`)
 
 `AUTONOMOUS_WORK_GUIDELINE.md` §5 報告フォーマット準拠。
 
@@ -374,3 +411,4 @@
 | 版 | 日付 | 変更 |
 |---|---|---|
 | v1.0 | 2026-05-09 | 初版作成 (第 1 章「忘れられた街」全シーン動線骨格完成 commit `43ebc43` を受け、グラフィックセッション向け整合性確認 + 指示書作成依頼書を作成) |
+| v1.1 | 2026-05-09 | パスを **repo 相対** に統一 (Linux パス `~/learning/games/anemora/...` は使わない、Windows 側との互換性確保)。Windows 側 character generation session の **進捗を反映** (Mia v10 proportion lock 完了 / Aria v10 front 完了 / 他 v10 front pending source)、本 handover からの新規キャラ制作依頼ではなく **設定整合確認 + 動作セット要望 + dialogue 差し替え** が主目的に修正。§4.1 を「進行中」状態に書き直し、§8 整合性確認を 15 項目に拡大 (担当別: character generation #1-#5 / implementation #6-#15)、§11 関連ドキュメントを Anemora repo 相対 + Windows 実体パス併記。 |
