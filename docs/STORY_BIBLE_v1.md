@@ -592,7 +592,6 @@
 
 関連 doc:
 - `DESIGN_RATIONALE.md` — 命名・全体構造・演出選択の **由来ログ** (2026-05-07 作成、Phase 1-5 遡及収録、ブログ化用一次ソース)
-- `AUTONOMOUS_WORK_GUIDELINE.md` — Codex 独立作業指針
 
 memory:
 - `project_anemora_story_bible_v1` (Phase 1-4 確定 + Phase 5 進行中)
@@ -659,7 +658,7 @@ memory:
 
 ### 10.3 並走可能な技術作業 (干渉なしで進められる範囲)
 
-- `AUTONOMOUS_WORK_GUIDELINE.md` を参照
+- グラフィック polish / 技術改善 / バグ修正 / ドキュメント整備等は、Story Bible §8.1 確定事項を変更しない範囲で並走可。判断に迷ったらユーザー保留。
 
 ---
 

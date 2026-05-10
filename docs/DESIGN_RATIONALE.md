@@ -787,7 +787,6 @@
 ## 付録 B. 関連ドキュメント
 
 - `STORY_BIBLE_v1.md` — Story Bible 本体
-- `AUTONOMOUS_WORK_GUIDELINE.md` — Codex 独立作業指針
 - `CONCEPT.md` (Stage 1 期成果物) — 旧 untitled-3dpx 期の起源記録
 
 ---
