@@ -14,7 +14,7 @@ Measured / inspected state:
 
 | Item | Value |
 | --- | --- |
-| Investigation worktree | `C:\Users\maro6\Documents\Unity\Anemora-urp-warning-investigation` |
+| Investigation worktree | `<worktree:Anemora-urp-warning-investigation>` |
 | Project commit inspected | `da6040f` |
 | Unity | 6000.3.14f1 |
 | URP package | `com.unity.render-pipelines.universal` 17.3.0 |
@@ -27,7 +27,7 @@ Existing logs already reproduce the warning deterministically.
 | Run | Evidence | Count |
 | --- | --- | ---: |
 | G5 audio rebuild | `docs/devlog/2026-05-05_g5_audio_rebuild.md` | 6,996 warnings / 30s |
-| Performance baseline v0.2 | `C:\Users\maro6\Documents\Unity\Anemora-perf-baseline-v0-2\g5_perf_v02_player_120s.log` | 14,402 warnings / 120s |
+| Performance baseline v0.2 | `<worktree:Anemora-perf-baseline-v0-2>\g5_perf_v02_player_120s.log` | 14,402 warnings / 120s |
 | Performance baseline v0.2 frame count | `docs/devlog/2026-05-05_performance_baseline_v0_2.md` | 7,199 frames |
 
 The v0.2 count maps to the portal feature structure:
@@ -41,7 +41,7 @@ This strongly indicates a two-pass-per-frame source, not a random log loop.
 Deterministic repro command shape:
 
 ```powershell
-$exe = "C:\Users\maro6\Documents\Unity\Anemora-perf-baseline-v0-2\Builds\PerfBaselineV02\AnemoraPerfBaselineV02.exe"
+$exe = "<worktree:Anemora-perf-baseline-v0-2>\Builds\PerfBaselineV02\AnemoraPerfBaselineV02.exe"
 $log = "C:\Temp\Anemora_urp_warning_repro.log"
 Start-Process -FilePath $exe -ArgumentList @("-screen-fullscreen","0","-screen-width","1280","-screen-height","720","-logFile",$log) -Wait
 (Select-String -Path $log -Pattern "DrawObjectsPass does not have an implementation of the RecordRenderGraph method").Count
@@ -88,7 +88,7 @@ No other project renderer feature constructs `DrawObjectsPass`.
 
 Inspected package cache:
 
-`C:\Users\maro6\Documents\Unity\Anemora-perf-baseline-v0-2\Library\PackageCache\com.unity.render-pipelines.universal@3b809f23691d`
+`<worktree:Anemora-perf-baseline-v0-2>\Library\PackageCache\com.unity.render-pipelines.universal@3b809f23691d`
 
 Relevant findings:
 

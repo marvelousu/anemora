@@ -7,7 +7,7 @@
 >   - `docs/draft/chapter1_s1_s2_handover_2026-05-08.md` v1.5 (broader、物語 + メカ + 制約)
 >   - `docs/draft/chapter1_map_handover_2026-05-08.md` v1.3 (map / level design 特化)
 >
-> **重要**: パスはすべて **repo 相対** で記載。Anemora repo の Windows 側実体は `C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2`、notes repo の Windows 側実体は `C:\Users\maro6\notes`。
+> **重要**: パスはすべて **repo 相対** で記載。Anemora repo の Windows 側実体は `<worktree:Anemora-stage4-hero-v2>`、notes repo の Windows 側実体は `<notes-vault>`。
 >
 > **承知事項**: Windows 側で character generation session が **既に v10 proportion lock を進行中** (Mia v10 完了 / Aria v10 front 完了 / 他は source pending)。本書は新規キャラ制作依頼ではなく、**narrative / spec / map 側の最新状態と整合性確認** が主目的。
 
@@ -326,7 +326,7 @@ Windows 側 character generation session の最新状態 (`_handover/anemora-cha
 
 ### 10.1 物語/世界観
 - **異物原則**: 異物は Niro のみ。NPC 全員「普通の住人」(語り部 / 前任者 / 守り人 / 予言者 NG)
-- **「層」「ベール剥離」用語**: 設計用便宜語、player-facing で出さない
+- **「層」「段階反転」用語**: 設計用便宜語、player-facing で出さない
 - **固有名詞 player-facing 抑制**: 章名は OK、「Antela」「エリュトリア」等は dialogue / UI で前面化しない (ただし dialogue 内で「エリュトリアの新茶葉」のように出すのは OK、UI ラベルとしては避ける)
 - **ネタバレ語彙 metadata 禁止**: commit / PR / branch / ファイル名で Echo / 観測者輪廻 / 真層 / 第 4 の壁 等を使わない
 
@@ -359,7 +359,7 @@ Windows 側 character generation session の最新状態 (`_handover/anemora-cha
 
 ---
 
-## 11. 関連ドキュメント (Anemora repo 相対パス、Windows 側実体は `C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2\`)
+## 11. 関連ドキュメント (Anemora repo 相対パス、Windows 側実体は `<worktree:Anemora-stage4-hero-v2>\`)
 
 | Doc | 役割 | 現状 |
 |---|---|---|
@@ -382,7 +382,7 @@ Windows 側 character generation session の最新状態 (`_handover/anemora-cha
 - `docs/devlog/2026-05-09_chapter1_scene4_v1.md` (シーン 4 + エリュトリア + カイア)
 - `docs/devlog/2026-05-09_chapter1_scene5_v1_and_map_redesign.md` (シーン 5 + 動線再設計 + Z 用語整理 + 白窓 1 周目なし)
 
-### 11.2 Windows 側 character generation 進捗 (notes repo 相対、Windows 側実体は `C:\Users\maro6\notes\`)
+### 11.2 Windows 側 character generation 進捗 (notes repo 相対、Windows 側実体は `<notes-vault>\`)
 - `_handover/anemora-character-generation-claude-aria-v10-front-complete-2026-05-09.md`
 - `_handover/anemora-character-generation-claude-mia-v10-proportion-lock-complete-2026-05-09.md`
 - `_handover/anemora-character-generation-claude-{dario,karla,kairo,luna,kaia,reto v8}-v10-front-pending-source-2026-05-09.md`
@@ -400,7 +400,7 @@ Windows 側 character generation session の最新状態 (`_handover/anemora-cha
 
 作業完了時:
 - Anemora repo: `docs/devlog/2026-05-DD_chapter1_graphic_session_review.md` (確認結果 + 製作セッション向け指示書)
-- notes repo (orchestration): `_handover/anemora-chapter1-graphic-session-review-2026-05-DD.md` (Windows: `C:\Users\maro6\notes\_handover\...`)
+- notes repo (orchestration): `_handover/anemora-chapter1-graphic-session-review-2026-05-DD.md` (Windows: `<notes-vault>\_handover\...`)
 
 `AUTONOMOUS_WORK_GUIDELINE.md` §5 報告フォーマット準拠。
 

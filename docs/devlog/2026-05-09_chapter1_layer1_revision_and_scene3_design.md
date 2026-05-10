@@ -211,7 +211,7 @@
 |---|---|
 | `docs/draft/chapter1_s1_s2_handover_2026-05-08.md` | v1.3: §3.6 仕様 v3.2 追加、§7 シーン 1 v4 (本出現復活、Niro 窓内移動)、§9.1 シーン 3 v3、§9.2 シーン 4 T4 再定義、§11.1 Niro 家伏線、§17 改訂履歴 |
 | `docs/draft/chapter1_map_handover_2026-05-08.md` | v1.2: §6.1 アリア家を「廃墟だが入れる」に修正、§7.1 シーン 3 v3、Niro 家伏線追加、§11 改訂履歴 |
-| `~/.claude/projects/-home-maro1/memory/project_anemora_story_bible_v1.md` | Layer 1 ルール変更、時の窓モード仕様 v3.2 追加、シーン 1 v4 反映、Niro 家伏線、シーン 4 T4 再定義 |
+| `<local-memory>/memory/project_anemora_story_bible_v1.md` | Layer 1 ルール変更、時の窓モード仕様 v3.2 追加、シーン 1 v4 反映、Niro 家伏線、シーン 4 T4 再定義 |
 | `docs/devlog/2026-05-09_chapter1_layer1_revision_and_scene3_design.md` | 新規 (本ファイル) |
 | `docs/devlog/INDEX.md` | v2.2 |
 

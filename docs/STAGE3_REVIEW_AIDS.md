@@ -130,7 +130,7 @@ Related devlogs:
 
 - **VS 文言で missing 字なし**: Missing 70 characters from the v0 bake should be checked against actual Stage 3 String Tables or display text.
 - **読みやすさ**: 16x16 pixel font behavior in TMP SDF output should be reviewed in panel and menu contexts.
-- **VRAM 容量**: 4096 x 4096 Alpha8 runtime estimate is 16.0 MiB, about 0.78% of TOM's 2 GiB VRAM.
+- **VRAM 容量**: 4096 x 4096 Alpha8 runtime estimate is 16.0 MiB, about 0.78% of the laptop's 2 GiB VRAM.
 - **License**: Misaki font license state should remain aligned with GitHub Public, itch.io, and Steam commercial use.
 
 ### 4.2 参照ファイル

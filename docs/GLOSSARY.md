@@ -28,7 +28,7 @@ CONCEPT / SPEC / ADR / 開発 doc 用。インゲーム UI、dialogue、Steam de
 | 用語 | 公式表記 | 区分 | 定義 | 出現 doc |
 |---|---|---|---|---|
 | 第 N 層 | 第 1-5 層 + 真層 | internal | 物語構造・認識更新段階を管理する設計単位。Player-facing では現象や記憶変化として表現する。 | `CONCEPT.md`, `SPEC.md`, `docs/VS_SCOPE.md` |
-| ベール剥離 | Veil Peeling | internal | 各段階で世界理解や主語が変わる構造の設計名。CONCEPT v1.4 以降、player-facing では使用不可。 | `CONCEPT.md`, `SPEC.md`, `docs/localization/glossary.md` |
+| 段階反転 (旧称: ベール剥離) | Veil Peeling / Staged Reveal | internal | 各段階で世界理解や主語が変わる構造の設計名。CONCEPT v1.4 以降、player-facing では使用不可。 | `CONCEPT.md`, `SPEC.md`, `docs/localization/glossary.md` |
 | メタ④ | Meta 4 / メタ④ | internal | Stage 1-2 で扱ったメタ構造の内部メモ用 shorthand。Public text では説明しない。 | `CONCEPT.md`, `SPEC.md` |
 | 観測者の輪廻 / 観測者磨耗 | Observer recurrence / observer erosion | internal | Player の累積観測や世界の摩耗を扱う上位物語概念。Niro の通常の観測行為とは別。 | `CONCEPT.md`, `SPEC.md`, `PITCH.md` |
 | 主語の二層構造 | two-subject structure | internal | 表向きの主人公行動と、上位の観測主体を分けて扱う設計概念。 | `SPEC.md`, `CONCEPT.md` |
@@ -60,7 +60,7 @@ Asset pipeline、ledger、prompt docs、handover で使う production 用語。P
 | Suno | Suno v5.5 | production | BGM mood / candidate generation tool。Stage 3 Zone1 ambient は Suno `Dustlight Piano B` 採用。 | `docs/asset_prompts/bgm_zone1_ambient.md`, `docs/VS_SCOPE.md`, `NOTICES.md` |
 | ElevenLabs | ElevenLabs SFX v2 | production | SFX generation workflow。Stage 3 では Zone1 SFX 30 種の production source として tracking。 | `docs/asset_prompts/sfx_zone1.md`, `docs/VS_SCOPE.md`, `NOTICES.md` |
 | Studio One | Studio One | production | BGM / SFX finishing 用 DAW。Reaper 表記から Studio One に統一済み。 | `docs/adr/0003-asset-pipeline.md`, `docs/asset_prompts/bgm_zone1_ambient.md`, `docs/asset_prompts/sfx_zone1.md` |
-| Aseprite | Aseprite | production | Pixel art cleanup / palette / indexed PNG export tool。Stage 3 F2 で Steam 版を使用。 | `docs/adr/0009-asset-pipeline.md`, `docs/STAGE3_RETROSPECTIVE.md`, `docs/VS_SCOPE.md` |
+| Aseprite | Aseprite | production | Pixel art cleanup / palette / indexed PNG export tool。Stage 3 F2 で正式版を使用。 | `docs/adr/0009-asset-pipeline.md`, `docs/STAGE3_RETROSPECTIVE.md`, `docs/VS_SCOPE.md` |
 
 ## 5. Usage rules
 

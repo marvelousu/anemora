@@ -6,7 +6,7 @@ Scope: documentation-only review of the current TMP font, dialogue panel, and pa
 
 Observed runtime / asset inputs:
 
-- Dialogue screenshot: `C:\Users\maro6\Documents\Unity\Anemora-demo-repair\Builds\DemoPlayable\demo4_dialogue.png`
+- Dialogue screenshot: `<worktree:Anemora-demo-repair>\Builds\DemoPlayable\demo4_dialogue.png`
 - Dialogue prefab: `Assets/UI/Prefabs/DialoguePanel.prefab`
 - JP font asset: `Assets/UI/Localization/Fonts/Anemora_JP.asset`
 - EN font asset: `Assets/UI/Localization/Fonts/Anemora_EN.asset`

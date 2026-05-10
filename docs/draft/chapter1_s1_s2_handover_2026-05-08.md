@@ -124,7 +124,7 @@
 ### 3.4 silent protagonist + E3 感情表現
 
 - Niro はセリフなし、心情のみ表示 ("(...筆)" 等の括弧テキスト)
-- E3 = 顔表情画 + 短い感情テキスト (Undertale 型)
+- E3 = 顔表情画 + 短い感情テキスト (silent 主人公の独立タイトル 型)
 - 長文テキストや E1 顔のみ / E4 フルボイスは却下
 
 ### 3.5 prototype 評価中
@@ -1176,7 +1176,7 @@ isometric strict ルール (SPEC §7.4) は **通常プレイ中** のカメラ�
 ### 10.3 主人公
 
 - **Niro** (ニロ): 既存 Hero.prefab (F2 v1)
-- gender-neutral、15-19 歳、スナフキン的帽子方向 (provisional、F2 v1 sprite に未反映、Stage 4 v2 redraw 候補)
+- gender-neutral、15-19 歳、つばのある旅人風の帽子方向 (provisional、F2 v1 sprite に未反映、Stage 4 v2 redraw 候補)
 - silent protagonist (セリフなし、心情のみ括弧テキスト)
 
 ### 10.4 名無し背景
@@ -1279,7 +1279,7 @@ Niro が自分の家に戻り、内部で時の窓を発動:
 ### 12.1 物語/世界観
 
 - **異物原則**: 異物は Niro のみ。NPC 全員「普通の住人」(語り部 / 前任者 / 守り人 / 予言者 NG)
-- **「層」「ベール剥離」用語**: 設計用便宜語、player-facing で出さない (`feedback_anemora_in_game_layer_terms`)
+- **「層」「段階反転」用語**: 設計用便宜語、player-facing で出さない (`feedback_anemora_in_game_layer_terms`)
 - **固有名詞 player-facing 抑制**: 章名は OK、「Antela」等は dialogue / UI で前面化しない
 - **ネタバレ語彙 metadata 禁止**: commit / PR / branch / ファイル名で禁止 (`feedback_anemora_no_spoiler_in_metadata`)
 - **「お帰り、Niro」など過去関係セリフ NG** (Niro = ゲーム開始時点で発生、誰の記憶にもない)

@@ -24,7 +24,7 @@
 
 - **AI 主体個人開発の Pitch 軸**: 機械訳ベタ訳ではなく、Anemora の世界観を尊重した coined translation を優先 (例: 時の筆 = "Timewriter" は造語、辞書訳の "Time Brush" は不採用)
 - **シンプル優先**: Stage 5 で他言語追加時に再翻訳しやすい平易な英語に寄せる
-- **音の質感を尊重**: Chrono Trigger / Undertale 系の "なんかかっこいい" 感を意識 (`feedback_anemora_no_premature_lockin.md` のネーミング軸と整合)
+- **音の質感を尊重**: 古典 RPG / silent 主人公の独立タイトル系の「響きの良さ」を意識 (`feedback_anemora_no_premature_lockin.md` のネーミング軸と整合)
 - **欧米寄り Latin/Greek の overuse 回避**: "Chronoscript" のような重い造語は避ける
 
 ---
@@ -36,7 +36,7 @@
 | Anemora (作品名) | Anemora | confirmed | world | s1 | そのまま固有名詞、ローマ字綴り維持 |
 | 時の筆 | Timewriter | confirmed | world | s3 | "Time Brush" "Chronoscript" は不採用。Time + writer の造語、書く動作を含意。発音 [ˈtaɪmˌraɪtər] |
 | 時の窓 | Time Frame | confirmed | world | s3 | フレーム = 枠を強調、ポータル機構の名称。"Time Window" は普通すぎ、不採用 |
-| ベール剥離 | Veil Peeling | provisional | world | s3 | 5 層構造、各層をベールで覆い、剥がしていく構造。"Layer Reveal" は不採用 (構造を明示しすぎる)。Codex E1 review (2026-05-05) で `Unveiling` 候補提示 — Stage 4 入口でユーザー判断 |
+| 段階反転 (旧称: ベール剥離) | Veil Peeling / Staged Reveal | provisional | world | s3 | 5 層構造、各層を段階的に反転していく構造。"Layer Reveal" は不採用 (構造を明示しすぎる)。Codex E1 review (2026-05-05) で `Unveiling` 候補提示 — Stage 4 入口でユーザー判断 |
 | 真層 | True Layer | provisional | world | s4 | 第 6 層相当の最終層。確定は Stage 4 (収束パターン確定後) |
 | 観測者 | Observer | provisional | world | s4 | 世界の観測主体 (詳細は Stage 4-5 で確定)、複数案維持 |
 | 異物 | Anomaly | provisional | world | s4 | 主人公の正体表現。"Outsider" "Foreigner" は人間的すぎ、"Anomaly" は中立 |
@@ -237,7 +237,7 @@ DeepL Pro / Claude / Codex で翻訳補助を使う場合、本書を **必ず�
 
 時の筆 = Timewriter
 時の窓 = Time Frame
-ベール剥離 = Veil Peeling
+段階反転 (旧称: ベール剥離) = Staged Reveal / Veil Peeling
 痕跡 = Trace
 踏込み = Crossing
 帰還 = Return

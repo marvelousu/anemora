@@ -34,7 +34,7 @@ Stage 3 は Vertical Slice の完成定義から開始し、実装事実が増�
 | A4 Audio | Done | `6809c4b`, `b9daccb` | `Zone1_Ambient.ogg`、Zone1 SFX 30 種、Zone1AudioController、audio PlayMode wiring tests が origin/main に到達した。 |
 | A5 UI foundation / fonts | Done for Stage 3 | `a8f2710`, `f5b4685`, `2f3197b` | Palette v0、Japanese TMP Atlas、English TMP Atlas、localization settings を Stage 3 provisional asset として採用した。 |
 | F1 PixelLab drafts | Done | `4a420a5` | Hero / Resident draft generation を記録した。 |
-| F2 Aseprite finish | Done for Stage 3 | `08f61b8`, `4d2092a` | Stage 3 sprite を Steam Aseprite 経由で re-export した。Niro の hat silhouette は Stage 4 redraw item として残る。 |
+| F2 Aseprite finish | Done for Stage 3 | `08f61b8`, `4d2092a` | Stage 3 sprite を Aseprite 経由で re-export した。Niro の hat silhouette は Stage 4 redraw item として残る。 |
 | F3 Retro Diffusion support | Not used for VS | `63de141` | Stage 3 VS path では不要として記録した。必要なら Stage 4 で再評価する。 |
 | F4 Hero/NPC prefabs and Animator | Done | `d2c95c2` | Hero、Resident_A、Resident_B prefab と AnimatorController が scene integration に到達した。 |
 | G1/G2 environment choice | Done | `a547e96` | Zone1 Meshy regeneration path が実装済み environment route になった。 |
@@ -50,7 +50,7 @@ Stage 3 は Vertical Slice の完成定義から開始し、実装事実が増�
 | Area | Closeout value | Source / caveat |
 |---|---:|---|
 | Current committed source test markers | 31 EditMode + 29 PlayMode method markers | `a0bd50b` 時点の `Assets/Tests/EditMode` と `Assets/Tests/PlayMode` の `rg "\\[(Test\\|UnityTest)\\]"` scan。EditMode は Unity Test Runner 実行件数と 1 件差があるため、実行結果を優先する。 |
-| Latest closeout automated run | 32/32 EditMode + 29/29 PlayMode passed | `a0bd50b` 後、`C:\Users\maro6\Documents\Unity\Anemora-demo-repair` で Codex が再実行。`codex_editmode.log` / `codex_playmode.log` は exit code 0。 |
+| Latest closeout automated run | 32/32 EditMode + 29/29 PlayMode passed | `a0bd50b` 後、`<worktree:Anemora-demo-repair>` で Codex が再実行。`codex_editmode.log` / `codex_playmode.log` は exit code 0。 |
 | Historical accepted G5 automated run | 32/32 EditMode + 23/23 PlayMode passed | `docs/devlog/2026-05-05_g5_automated_run.md` at `c17d62f`。 |
 | Test-count reconciliation note | Source marker scan と Unity Test Runner count の差は docs 上の caveat として残す | `docs/devlog/2026-05-05_test_count_reconcile.md` は source baseline を 31/31 EditMode と記録している。Stage 3 closeout では latest executed count `32/32` を acceptance source とする。 |
 | Performance baseline v0.1 | Build folder 115.056 MiB, average 59.909 FPS | `docs/devlog/2026-05-05_performance_baseline.md` at `2e3569f`。この baseline は audio 未統合。 |

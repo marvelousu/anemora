@@ -8,7 +8,7 @@ Result: Go for the automated G5 portion.
 
 This run used a clean temporary worktree at:
 
-`C:\Users\maro6\Documents\Unity\Anemora-g5-automated`
+`<worktree:Anemora-g5-automated>`
 
 Base commit:
 
@@ -65,7 +65,7 @@ One PlayMode attempt with `-nographics` failed in `PortalStencilFeatureSmokeTest
 
 Windows Standalone output:
 
-`C:\Users\maro6\Documents\Unity\Anemora-g5-automated\Builds\G5Automated\Anemora_G5.exe`
+`<worktree:Anemora-g5-automated>\Builds\G5Automated\Anemora_G5.exe`
 
 Build metrics:
 

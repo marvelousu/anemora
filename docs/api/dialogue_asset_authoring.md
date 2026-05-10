@@ -185,7 +185,7 @@ Use the standard Unity Test Runner batchmode path from `docs/VERIFICATION_SUITE.
 ```powershell
 & "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" `
   -batchmode `
-  -projectPath "C:\Users\maro6\Documents\Unity\Anemora" `
+  -projectPath "<repo>" `
   -runTests `
   -testPlatform PlayMode `
   -testResults dialogue_playmode_results.xml `

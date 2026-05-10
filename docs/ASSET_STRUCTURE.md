@@ -12,7 +12,7 @@ ADR-0009 `docs/adr/0009-asset-pipeline.md` は asset pipeline workflow を扱い
 
 ## 2. リポジトリ root 構成
 
-Scan basis: clean temporary worktree based on `origin/main`, 2026-05-05. Canonical project root remains `C:\Users\maro6\Documents\Unity\Anemora`; `Library/`, `Logs/`, `Temp/`, `.git/` は scan 表示から除外しました。
+Scan basis: clean temporary worktree based on `origin/main`, 2026-05-05. Canonical project root is the repository root; `Library/`, `Logs/`, `Temp/`, `.git/` は scan 表示から除外しました。
 
 | Path | 用途 | 状態 |
 |---|---|---|

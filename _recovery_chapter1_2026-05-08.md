@@ -38,7 +38,7 @@ Summary:
    - T4 連鎖 (butterfly effect chain at chapter 1 climax)
 
 3. Files and Code Sections:
-   - `/home/maro1/learning/games/anemora/docs/STORY_BIBLE_v1.md`
+   - `<linux-repo>/docs/STORY_BIBLE_v1.md`
      - Authoritative narrative bible
      - §1.2 章構成: 序章+5章+終章, 2周ループ
      - §3.2 第1章シーン構成: 1=図書館跡, 2=Resident_Aの家(Resident_J親子), 3=街角(D/K/L), 4=T4連鎖, 5=廃墟予兆
@@ -46,16 +46,16 @@ Summary:
      - §4.2-4.3 14 NPC table with roles
      - v1.7 changelog (2026-05-07): All 14 NPC names finalized
    
-   - `/home/maro1/learning/games/anemora/docs/DESIGN_RATIONALE.md`
+   - `<linux-repo>/docs/DESIGN_RATIONALE.md`
      - Naming/design rationale, blog source material
    
-   - `/home/maro1/learning/games/anemora/docs/VS_SCOPE.md`
+   - `<linux-repo>/docs/VS_SCOPE.md`
      - §2 序章: ベッドで目覚める, ドアで時の筆発見, 朝日+風
      - §3.2 Antela: Niro家+中央広場+図書館跡+周辺2-3棟
      - §3.5 Stage 3 Day 1 status: G3 NPC配置/Resident_A/B placement完了
    
-   - `/home/maro1/learning/games/anemora/docs/asset_prompts/` (existing): bgm_zone1_ambient.md, hero_v1.md, npc_residents.md, sfx_zone1.md, zone1_buildings.md
-   - `/home/maro1/learning/games/anemora/docs/draft/` (existing): g1_opening_text.md, g3_npc_dialogue.md
+   - `<linux-repo>/docs/asset_prompts/` (existing): bgm_zone1_ambient.md, hero_v1.md, npc_residents.md, sfx_zone1.md, zone1_buildings.md
+   - `<linux-repo>/docs/draft/` (existing): g1_opening_text.md, g3_npc_dialogue.md
 
    **Confirmed Content Designs (not yet saved to file):**
    
@@ -117,7 +117,7 @@ Summary:
    - Resolved scene 2 consistency by choosing 案 D (Mia house independent)
    - Designed detailed 動線 specifications meeting user's quality bar
    - Created task tracking for remaining work
-   - Identified anemora repo as github.com/marvelousu/anemora.git for Windows synchronization
+   - Identified anemora repo as github.com/<repo-remote>.git for Windows synchronization
 
 6. All user messages:
    - "アリアはどのような関係の設定でしたっけ"
@@ -146,11 +146,11 @@ Summary:
    - Task #3: シーン3動線詳細設計 (街角 + T4予兆) - pending
    - Task #4: シーン4動線詳細設計 (カイア畑 + T4発動) - pending
    - Task #5: 全シーンをスクリプトファイル化 - pending
-   - Implicit immediate task: Create graphics handover document at `/home/maro1/learning/games/anemora/docs/draft/chapter1_s1_s2_handover_2026-05-08.md` containing 序章 + シーン 1-5 全体スケルトン + シーン 1-2 詳細
+   - Implicit immediate task: Create graphics handover document at `<linux-repo>/docs/draft/chapter1_s1_s2_handover_2026-05-08.md` containing 序章 + シーン 1-5 全体スケルトン + シーン 1-2 詳細
 
 8. Current Work:
    Immediately before this summary request, I was preparing to create the graphics handover document. I had:
-   - Confirmed Anemora repo location at `/home/maro1/learning/games/anemora` with remote `git@github.com:marvelousu/anemora.git`
+   - Confirmed Anemora repo location at `<linux-repo>` with remote `<repo-remote>`
    - Identified `docs/draft/` as the appropriate location (existing慣例 with g1_opening_text.md, g3_npc_dialogue.md)
    - User confirmed scope: "序章 + シーン 1-5 全体スケルトン + シーン 1-2 詳細"
    - User confirmed location: "Windows側に引き継げる場所であればどこでも" (Anemora repo via git is the answer)
@@ -165,16 +165,16 @@ Summary:
    - VFX/UI requirements (時の窓, 痕跡可視化, 種の包みインベントリ)
 
 9. Optional Next Step:
-   Create the handover document at `/home/maro1/learning/games/anemora/docs/draft/chapter1_s1_s2_handover_2026-05-08.md`. This is directly in line with the user's explicit request:
+   Create the handover document at `<linux-repo>/docs/draft/chapter1_s1_s2_handover_2026-05-08.md`. This is directly in line with the user's explicit request:
    
    "一旦グラフィック製作セッションに渡す引き継ぎ書を作成してからシーン２の続きを進めましょう"
    
    And confirmed scope:
    "序章 + シーン 1-5 全体スケルトン + シーン 1-2 詳細"
    
-   And followed by repeated "続けて" prompts requesting progression. The file content should include all confirmed designs (序章 v1 final, シーン 1 v3 with [1.D] modification, シーン 2 動線詳細, 案 D シーン構成全体, Antela物理マップ, アートディレクション要件) consolidated for handoff to a graphics production session that will access the file via Windows-side git pull from the marvelousu/anemora repo.
+   And followed by repeated "続けて" prompts requesting progression. The file content should include all confirmed designs (序章 v1 final, シーン 1 v3 with [1.D] modification, シーン 2 動線詳細, 案 D シーン構成全体, Antela物理マップ, アートディレクション要件) consolidated for handoff to a graphics production session that will access the file via Windows-side git pull from the <repo-remote> repo.
 
-If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /home/maro1/.claude/projects/-home-maro1/4d5af91a-e4ed-4c4d-b66b-9b3c81d85a3a.jsonl
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: <local-memory>/4d5af91a-e4ed-4c4d-b66b-9b3c81d85a3a.jsonl
 Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
 
 ---
@@ -202,39 +202,39 @@ Summary:
    - 部分空間ギミック re-design: P2/P7 削除、G1-G12 新案 (複数窓、Portal、時間流速、重ね合わせ、物理化、Pin 固定、窓越し会話、同期、物受渡し、方向性、時間ロック、階層)
    - 操作方式 C 自由描画 + クリック干渉 (操作 A=ポイント&クリック / B=コンテキスト / D=観察ポイント方式 却下)
    - silent protagonist (Niro はセリフなし、心情のみ)
-   - 感情表現 E3 (顔 + 短い感情テキスト、Undertale 型)
+   - 感情表現 E3 (顔 + 短い感情テキスト、silent 主人公の独立タイトル 型)
    - Linux↔Win bridge: scp + win-codex-send (ScheduledTask Interactive、UIPI回避)
    - Codex セッション ID 指定不可、前面ウィンドウに SendKeys
 
 3. Files and Code Sections:
 
-   - `/home/maro1/learning/games/anemora/docs/PROTOTYPE_TIME_FRAME_v0.md` (created)
+   - `<linux-repo>/docs/PROTOTYPE_TIME_FRAME_v0.md` (created)
      - 機能確認用プロトタイプ仕様書
      - 自由描画 + Q/E 切替 + クリック干渉 + ESC 閉じる
      - テストシーン: 建物 1 + 木箱/扉
      - 5541 bytes、scp で Win 側に送信済
    
-   - `/home/maro1/learning/games/anemora/docs/STORY_BIBLE_v1.md` (v1.7)
+   - `<linux-repo>/docs/STORY_BIBLE_v1.md` (v1.7)
      - All chapter names, climax structures, scene details
      - 14 NPC final names with internal codes
      - Updated through v1.7 改訂履歴
    
-   - `/home/maro1/learning/games/anemora/docs/DESIGN_RATIONALE.md`
+   - `<linux-repo>/docs/DESIGN_RATIONALE.md`
      - §1.1-1.11 命名由来 (Anemora, Antela, Niro, Robot_X, 全章名, 14 NPC)
      - §4.1-4.7 各章クライマックス由来
      - §10 メタ運用ルール
    
-   - `/home/maro1/.claude/projects/-home-maro1/memory/project_anemora_story_bible_v1.md`
+   - `<local-memory>/memory/project_anemora_story_bible_v1.md`
      - §5.3.1-5.3.4 第 2-5 章 + 真層詳細
      - 14 NPC 名、ネタバレ防止注意
    
-   - `/home/maro1/.claude/projects/-home-maro1/memory/feedback_anemora_no_abbreviation_in_dialogue.md` (created)
+   - `<local-memory>/memory/feedback_anemora_no_abbreviation_in_dialogue.md` (created)
      - 略号を毎回展開するルール (TC-3-1 等を直書き)
    
-   - `/home/maro1/.claude/projects/-home-maro1/memory/reference_anemora_design_rationale.md` (created)
+   - `<local-memory>/memory/reference_anemora_design_rationale.md` (created)
      - DESIGN_RATIONALE.md の場所参照
    
-   - `/home/maro1/dotfiles/win-codex-send.sh` (read for understanding)
+   - `<dotfiles>/win-codex-send.sh` (read for understanding)
      - ScheduledTask Interactive 経由で SendKeys
      - 前面ウィンドウに送信、フォーカス必須
 
@@ -347,7 +347,7 @@ Summary:
    - 時の筆発動前に、レトと Niro のもう一往復のやり取りを追加 (例: レトが図書館の歴史をもう少し語る、または Niro が空の棚をじっと見る → レトが何かを言う等)
    - これにより、時の筆発動が「図書館の違和感を確かめたい」という Niro の動機から自然に生まれる流れに
 
-If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /home/maro1/.claude/projects/-home-maro1/4d5af91a-e4ed-4c4d-b66b-9b3c81d85a3a.jsonl
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: <local-memory>/4d5af91a-e4ed-4c4d-b66b-9b3c81d85a3a.jsonl
 Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
 
 ---
@@ -366,7 +366,7 @@ Summary:
 2. Key Technical Concepts:
    - Codex CLI (resume, exec resume, mcp-server, app-server)
    - tmux send-keys with C-j for Codex TUI input
-   - SSH OpenSSH Server on Windows, Tailscale (tom 100.82.105.12, desktop-ujpvog2 100.79.112.99)
+   - SSH OpenSSH Server on Windows, Tailnet (laptop / desktop hosts)
    - Windows Session 0 isolation (UserInteractive=False), UIPI bypass via ScheduledTask Interactive
    - PowerShell SendKeys, clipboard paste (Ctrl+Shift+V), STA apartment state
    - Hashtable splat vs Array splat in PowerShell
@@ -377,27 +377,27 @@ Summary:
 
 3. Files and Code Sections:
    
-   - `/home/maro1/dotfiles/ssh-config` (created)
-     - SSH config for tom and desktop hosts via Tailscale
+   - `<dotfiles>/ssh-config` (created)
+     - SSH config for laptop and desktop hosts via Tailnet
      - Important for establishing Linux↔Windows SSH bridge
      ```
-     Host tom
-         HostName tom
-         User maro6
+     Host laptop
+         HostName <laptop-host>
+         User <user>
          IdentityFile ~/.ssh/id_ed25519
      Host desktop
-         HostName desktop-ujpvog2
-         User maro6
+         HostName <desktop-host>
+         User <user>
          IdentityFile ~/.ssh/id_ed25519
      ```
    
-   - `/home/maro1/dotfiles/win-codex-send.sh` (Linux CLI for sending to Win)
+   - `<dotfiles>/win-codex-send.sh` (Linux CLI for sending to Win)
      - Uses jq to create JSON, scp to remote tmp file, ssh to schtasks /run codex-keysend
    
-   - `/home/maro1/dotfiles/win-send-to-foreground.ps1` (Win-side SendKeys executor)
+   - `<dotfiles>/win-send-to-foreground.ps1` (Win-side SendKeys executor)
      - Add-Type System.Windows.Forms, clipboard set + Ctrl+Shift+V paste, then Enter
    
-   - `/home/maro1/dotfiles/win-codex-send-wrapper.ps1` (ScheduledTask trigger wrapper)
+   - `<dotfiles>/win-codex-send-wrapper.ps1` (ScheduledTask trigger wrapper)
      - Reads JSON from $env:USERPROFILE\.codex\tmp\keysend-input.json, calls sender with Hashtable splat
      ```powershell
      $senderArgs = @{ Text = $cfg.text }
@@ -406,25 +406,25 @@ Summary:
      if ($cfg.directSendKeys) { $senderArgs.DirectSendKeys = $true }
      ```
    
-   - `/home/maro1/dotfiles/win-codex-fetch.sh` and `win-codex-tail.sh` (Win→Linux jsonl retrieval)
+   - `<dotfiles>/win-codex-fetch.sh` and `win-codex-tail.sh` (Win→Linux jsonl retrieval)
      - --tail N / --full / --format jsonl|md options, BOM/CRLF stripping with sed
    
-   - `/home/maro1/.claude/projects/-home-maro1/memory/project_anemora_story_bible_v1.md`
+   - `<local-memory>/memory/project_anemora_story_bible_v1.md`
      - Master memory of Phase 1-4 confirmed items
      - Contains real layer policy, chapter structure, time differences, 14 main characters, 2-loop A, robot design, puzzle axes A+B+C, gimmick parallel maintenance with provisional note, world view meta specs A-D, hierarchical disclosure
    
-   - `/home/maro1/.claude/projects/-home-maro1/memory/feedback_anemora_no_recommend_pushing.md`
+   - `<local-memory>/memory/feedback_anemora_no_recommend_pushing.md`
      - "Don't push (推奨) notation, parallel maintain options"
    
-   - `/home/maro1/learning/games/anemora/docs/STORY_BIBLE_v1.md` (21,672 B, scp'd to tom)
+   - `<linux-repo>/docs/STORY_BIBLE_v1.md` (21,672 B, scp'd to laptop)
      - Complete integrated doc for Codex handover with all Phase 1-4 confirmed items
      - Sections: Overall structure, world view meta specs (A-D), chapter structure, 14 characters, robot design, puzzle axes, meta expression gradient, Codex work instructions, references, remaining tasks
    
-   - `/home/maro1/learning/games/anemora/docs/AUTONOMOUS_WORK_GUIDELINE.md` (6,604 B, scp'd to tom)
+   - `<linux-repo>/docs/AUTONOMOUS_WORK_GUIDELINE.md` (6,604 B, scp'd to laptop)
      - Guidelines for Codex autonomous work (graphics polish, technical improvements, doc maintenance)
      - §1 OK to proceed independently, §2 needs user judgment
    
-   - `/home/maro1/notes/_handover/anemora-story-bible-v1-handover-2026-05-07.md` (committed 3bf5898)
+   - `<linux-notes>/_handover/anemora-story-bible-v1-handover-2026-05-07.md` (committed 3bf5898)
      - notes-side handover pointer + summary
 
 4. Errors and fixes:
@@ -463,7 +463,7 @@ Summary:
    3. "Windows機のセッション: 019df3ac-8190-7342-bca4-de0eb78110f9 に介入することは可能ですか。現状方法がなければ方法を検討してください"
    4. "4で。Windows（ラップトップ機）はWindows Terminal経由で動かしています。基本的に常駐運用ではないので、tmuxなど利用せず、直でターミナルからClaude/codexを起動しています。セッションに介入できることが望ましいです。"
    5. "同一 LAN に居る (IP 直打ちで試せる), Tailscale / WireGuard / VPN あり, Win 側に OpenSSH Server / sshd が起動している"
-   6. "tom です。また、デスクトップ機は半常駐状態ですが、こちらは現在使用するときのみ起動されるような、Deep-Standbyのような状態になっていますか？今回の別機Codexへのアクセスの意図は、例えばLinux機をリモートで利用時に、Windows機でのみ行える作業をLinux機から行いたいという意図があります。"
+   6. "ノートPC です。また、デスクトップ機は半常駐状態ですが、こちらは現在使用するときのみ起動されるような、Deep-Standbyのような状態になっていますか？今回の別機Codexへのアクセスの意図は、例えばLinux機をリモートで利用時に、Windows機でのみ行える作業をLinux機から行いたいという意図があります。"
    7. "Win側codexへの指示プロンプトを提示してください"
    8. "Win Laptop: 完了しました。" + sshd setup completion details
    9. "dotfiles 管理下に置いて symlink (推奨), Windowsで開いているセッションに直接送り込める方法は？"
@@ -481,7 +481,7 @@ Summary:
    21. "いや結構な時代差を想定しているので、同一人物は辻褄が合わないですね。そこの認識も合わせる必要がありますね。時代というのはそれぞれどのくらい離れているのか。Xかなと。" / "複数案並列記録"
    22. "中世、現在、廃墟というイメージですね。また、空間を活かした案についてですが、パズル要素を入れると良いかもしれません。現状ゲーム性に物足りなさを感じていましたが、かといってRPGにしても面白くできそうにありませんでした。パズル系であればゲーム性もできますし、いい具合に部分空間を活かせそうです。"
    23. "B 軸: 部分空間ギミック (P1-P7) で空間思考パズル, C 軸: 知識・推理パズル (NPC 言葉 / 残響 / 世界ルール), A 軸: 因果の連鎖長を伸ばす (複多ステップパズル), A,Bを軸にCの要素も入れる感じで。" / "Phase 3 人物設計を先に詳細化"
-   24. "なぜそんなにも薦めたがるのですか？ここで詳細に決めた方が効率的ですよ。人数をもっと増やしても良いかもしれません。どちらかというと過去に行くほど人を増やして活気を演出したいですね。それから、かなりクロノトリガーになりますが、未来にはロボットとかがいるような世界にしても良いかもしれません。"
+   24. "なぜそんなにも薦めたがるのですか？ここで詳細に決めた方が効率的ですよ。人数をもっと増やしても良いかもしれません。どちらかというと過去に行くほど人を増やして活気を演出したいですね。それから、かなり古典 RPG (時間旅行系)になりますが、未来にはロボットとかがいるような世界にしても良いかもしれません。"
    25. "R2: 中世の機巧, R4: 観測者の副産物, R1: 古代の遗産"
    26. "基本的にはB1で背景としての役割ですが、先ほど挙げられていた2体だけは弱い知性があり、交流を図れる、という感じで。" / "S3: 観測者の象徴, S2: 痕跡・反映"
    27. "E-α: 記憶保持者を慎重維持" / "H-α: 塔の管理人を慎重維持" / "主要 6-7 + 背景人物多数"
@@ -491,7 +491,7 @@ Summary:
    31. "案 2: \"古代型\" vs \"中世型\" (起源で差別化)" / "1 体に絞る" / "章4-5でグラデーションして登場で。それから完全に思いつきなのですが、重要な変更点を思いつきました。ループ世界であることを活かして、主人公にも一度ループを体験してほしいという思いがあります。そこで、一度世界をループさせるのはどうでしょう。1周目でうまくいかなかったことを2周目で回収していくイメージで。背景などは使い回しで済むので、工数も少ないです。セリフやストーリーは増えますが。"
    32. "A: 完全 2 周 (1 周目通し → 2 周目短縮再プレイ), Aで。ロボットが観測の影響がある存在だとすると、ロボットに何かしらの変化がループ1と2であると面白いかもですね" / "定めずに、プレイヤーに解釈を委ねる"
    33. "γ,δ系ですかね。1周目最終盤までループということは分かりにくくして..." / "M1の主人公も覚えている前提で..." / "あくまで主人公以外はいつも通り何も変わらないループ世界です..." / "2周目で主人公の行動をまねる、とかがいいかもですね..."
-   34. "そのまま進める" / "案 1: 知識ベース (Outer Wilds 型), 案 2: 能力獲得 (1 周目末で青シンボル / 未来解禁)"
+   34. "そのまま進める" / "案 1: 知識ベース (単線知識探索系既存作 型), 案 2: 能力獲得 (1 周目末で青シンボル / 未来解禁)"
    35. "干渉できるで進めるのが良いと思いますが、その理由付けや、見ているのは別世界観なのか否か、というのは決めておかないと齟齬が生まれたり、決めずにリリースするとわたしみたいに引っかかる人が出てきてゲーム体験を損ねると思います。"
    36. "A-4: 段階的開示 (A-1 → A-2 → A-3)" / "B-4: 観測者が次のループへ (物語的説明)" / "C-3: Niro と Robot_X だけが覚えている"
    37. "D-2: Niro 以前の累積観測がすでにある"
@@ -507,7 +507,7 @@ Summary:
    47. "順次型: 第 1 章 → 2 → 3 → 4 → 5 → 真層の順、ゾーン/ゲート/章名は並走"
    48. "1で。また、要素は大きくなくていいので、バタフライエフェクトのように小さな変化が関係のなさそうなところで大きな変化を生んでいる、という演出がどこかであると面白いです" / "P3: 複数枠同時展開, P1: 内側ルール変化, P4: 枠の重ね合わせ"
    49. "Z: 二段階気付き" (only this answered, others left blank requesting clarification)
-   50. "E3: 顔 + 短い感情テキスト (Undertale 型)"
+   50. "E3: 顔 + 短い感情テキスト (silent 主人公の独立タイトル 型)"
    51. "C4ベースで。カメラはみないとわからないところも多いので仮置きで。"
    52. "Other / 追加候補から選んで提示"
    53. "もっと違う角度で。町の退廃している雰囲気とか、終末ものっぽい感じのも。"
@@ -530,7 +530,7 @@ Summary:
 8. Current Work:
    Just before this summary request, I was working on Phase 5 detail of Chapter 1 climax演出. The user has confirmed:
    - **Z: Two-stage realization** (climax structure)
-   - **E3: Face + short emotion text (Undertale type)** (emotion expression)
+   - **E3: Face + short emotion text (silent 主人公の独立タイトル type)** (emotion expression)
    - **C4 base placeholder** (camera work, isometric strict + time window inner zoom, with note "camera needs to be seen to know - placeholder OK")
    
    I was working on N (chapter name) for Chapter 1. I provided initial candidates N1-N5, then additional N6-N15. User's most recent feedback (verbatim quote): "もっと違う角度で。町の退廃している雰囲気とか、終末ものっぽい感じのも。"
@@ -554,7 +554,7 @@ Summary:
    
    Will present 3-4 of these with the option for further variants, maintaining the no-recommendation-push principle established by feedback_anemora_no_recommend_pushing memory.
 
-If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /home/maro1/.claude/projects/-home-maro1/4d5af91a-e4ed-4c4d-b66b-9b3c81d85a3a.jsonl
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: <local-memory>/4d5af91a-e4ed-4c4d-b66b-9b3c81d85a3a.jsonl
 Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
 
 ---

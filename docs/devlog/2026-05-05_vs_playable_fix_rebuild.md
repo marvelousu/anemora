@@ -10,7 +10,7 @@ Source commit:
 
 Temporary worktree:
 
-`C:\Users\maro6\Documents\Unity\Anemora-vs-fix-build`
+`<worktree:Anemora-vs-fix-build>`
 
 ## 1. Scope
 
@@ -24,7 +24,7 @@ No scene, setting, script, prefab, asset, or import-setting fix is included in t
 | --- | --- |
 | Build target | Windows Standalone 64-bit |
 | Unity | `6000.3.14f1` |
-| Output exe | `C:\Users\maro6\Documents\Unity\Anemora-vs-fix-build\Builds\VSFix\Anemora_VS_Fix.exe` |
+| Output exe | `<worktree:Anemora-vs-fix-build>\Builds\VSFix\Anemora_VS_Fix.exe` |
 | Build result | Success |
 | Build duration | `69.608s` |
 | Build payload size | `117.869 MiB` |
@@ -98,7 +98,7 @@ Audio could not be auditorily verified from this Codex session. The runtime log 
 
 Player log checked:
 
-`C:\Users\maro6\Documents\Unity\Anemora-vs-fix-build\Builds\VSFix\Anemora_VS_Fix_Player.log`
+`<worktree:Anemora-vs-fix-build>\Builds\VSFix\Anemora_VS_Fix_Player.log`
 
 | Pattern | Count | Notes |
 | --- | ---: | --- |

@@ -12,11 +12,11 @@ Measured project state:
 | --- | --- |
 | Repository commit measured | `8bd0d01` (`e6e3c61` audio rebuild plus later docs commits) |
 | Baseline comparison | v0.1 devlog commit `2e3569f`, measured project commit `4029cc0` |
-| Worktree | `C:\Users\maro6\Documents\Unity\Anemora-perf-baseline-v0-2` |
+| Worktree | `<worktree:Anemora-perf-baseline-v0-2>` |
 | Unity | 6000.3.14f1 |
 | URP | 17.3.0 |
 | Scene | `Assets/Scenes/Anemora_Main.unity` |
-| Build output | `C:\Users\maro6\Documents\Unity\Anemora-perf-baseline-v0-2\Builds\PerfBaselineV02\AnemoraPerfBaselineV02.exe` |
+| Build output | `<worktree:Anemora-perf-baseline-v0-2>\Builds\PerfBaselineV02\AnemoraPerfBaselineV02.exe` |
 
 Measured PC environment:
 

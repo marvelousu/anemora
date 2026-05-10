@@ -12,9 +12,7 @@ Anemora is developed from a Windows notebook that can access both native Windows
 The Stage 3 handover asked B track to decide where the Unity project should live and to define the initial Unity directory layout before the vertical-slice prototype starts.
 
 ## Decision
-Keep the Unity project in a Windows-native checkout:
-
-- `C:\Users\maro6\Documents\Unity\Anemora`
+Keep the Unity project in a Windows-native checkout under the developer's Unity working tree (e.g. `<documents>\Unity\Anemora`).
 
 Use Git as the synchronization boundary between machines and environments. Do not treat WSL2 as the primary Unity working tree. WSL2 may still be used for documentation, CLI review, or automation after cloning the same Git remote.
 

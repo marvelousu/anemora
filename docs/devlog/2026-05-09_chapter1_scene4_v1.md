@@ -166,7 +166,7 @@
 | ファイル | 変更内容 |
 |---|---|
 | `docs/draft/chapter1_s1_s2_handover_2026-05-08.md` | v1.4: §3.6 にオート発動例外追記、§9.2 シーン 4 を v1 動線骨格 9 セクション [4.A]-[4.I] に詳細化、§10.2 カイア設定追加、§17 改訂履歴 |
-| `~/.claude/projects/-home-maro1/memory/project_anemora_story_bible_v1.md` | エリュトリア (失われた交易相手の街)、カイア設定 (一人暮らし、観察力寡黙)、シーン 4 v1 動線概要を反映 |
+| `<local-memory>/memory/project_anemora_story_bible_v1.md` | エリュトリア (失われた交易相手の街)、カイア設定 (一人暮らし、観察力寡黙)、シーン 4 v1 動線概要を反映 |
 | `docs/devlog/2026-05-09_chapter1_scene4_v1.md` | 新規 (本ファイル) |
 | `docs/devlog/INDEX.md` | v2.3 |
 

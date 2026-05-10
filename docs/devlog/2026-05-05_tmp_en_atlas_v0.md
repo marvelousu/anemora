@@ -55,7 +55,7 @@ Measured files:
 Runtime texture estimate:
 
 - 2048 x 2048 x Alpha8 = 4,194,304 bytes = 4.0 MiB VRAM
-- Against TOM VRAM 2 GiB: 4.0 MiB is about 0.20%
+- Against the laptop VRAM 2 GiB: 4.0 MiB is about 0.20%
 
 The serialized atlas asset is larger than runtime Alpha8 VRAM because Unity stores YAML/native asset data around the texture payload.
 

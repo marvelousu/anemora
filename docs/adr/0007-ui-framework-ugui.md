@@ -32,14 +32,14 @@ Anemora の VS 制作 (Stage 3) と Stage 4-5 の本実装で、UI フレーム�
 
 - Unity 6.3 LTS + URP (ADR-0001)
 - HD-2D Tier 2 簡素版 (動的影 + 単一方向光、レトロ調 UI と整合)
-- Silent protagonist (Undertale 型、ボイスなし)
+- Silent protagonist (silent 主人公の独立タイトル型、ボイスなし)
 - 1 ヶ月集中開発 (AI 開発支援前提)
 - VS_SCOPE.md §6 で UI 完成度は「VS 時点暫定完成」(Stage 4 で小修正許容)
 - ローカライズ対応 (Stage 4-5 で英語追加)
 
 ### 美術方向性
 
-- HD-2D 系スクエニ作品 (Octopath / Triangle Strategy / Sea of Stars 序盤 / DQ3HD2D) の **テクスチャベース UI**
+- HD-2D 系既存作 (主系列 / 汎用 RPG 系 / 序盤調 / HD-2D RPG remake) の **テクスチャベース UI**
 - ピクセル絵 + 軽量装飾、現代風スマートフォン UI ではなく古典的ゲーム UI 寄り
 
 ---
@@ -51,8 +51,8 @@ Anemora の VS 制作 (Stage 3) と Stage 4-5 の本実装で、UI フレーム�
 #### 理由
 
 1. **HD-2D Tier 2 のテクスチャベース UI と相性が良い** — uGUI は Canvas / Image / RawImage で 9-slice / Sprite を直接扱え、ピクセル絵 + 装飾の UI に直感的
-2. **AI 開発支援 (Claude / Codex) の知識ベースが圧倒的に厚い** — uGUI は Unity の長年の標準、コード生成・トラブルシュート支援が安定
-3. **コミュニティ事例 / アセット / チュートリアルが豊富** — HD-2D 風 UI / Undertale 型対話 UI / シンボル選択ホイールなど、uGUI ベースの実装例が多数
+2. **AI 開発支援 (Claude / Codex) の知識ベースが豊富** — uGUI は Unity の長年の標準、コード生成・トラブルシュート支援が安定
+3. **コミュニティ事例 / アセット / チュートリアルが豊富** — HD-2D 風 UI / silent protagonist 型対話 UI / シンボル選択ホイールなど、uGUI ベースの実装例が多数
 4. **TextMeshPro が標準採用** — 日本語表示が高品質、Stage 4-5 ローカライズ対応で英語フォントも安定
 5. **Unity Animator で UI アニメ可能** — シンボル選択ホイールの回転、対話ボックスのフェードイン等が容易
 6. **Unity Localization Package と uGUI の連携が安定** — Stage 4-5 の多言語化で実績ある組合せ
@@ -189,7 +189,7 @@ Stage 3 では以下を運用方針として扱う。フォント資産の最終
 
 1. **TextMeshPro 日本語フォント運用** — 日本語ピクセルフォント候補の **商用可否、fallback 構成、Atlas 容量** を `asset_ledger.md` に記録、選定済資産で実装
 2. **時の窓シンボル選択 UI のホイール実装** — Canvas (Screen Space - Camera) でホイール表示、シェーダで選択可/不可の視覚区別、Animator で回転アニメ
-3. **対話 UI の Undertale 型実装** — NPC セリフ + 主人公感情アイコン + 反応選択肢、即時表示既定 + 一文字送り補助オプション、**会話ログ保持の有無とテキスト送り速度の UX**
+3. **対話 UI の silent protagonist 型実装** — NPC セリフ + 主人公感情アイコン + 反応選択肢、即時表示既定 + 一文字送り補助オプション、**会話ログ保持の有無とテキスト送り速度の UX**
 4. **Pixel Perfect 設定** — Canvas Scaler + Pixel Perfect Camera + Sprite Atlas の整合確認、整数解像度を保つ
 5. **アクセシビリティ実装** — UI 拡大 / 字幕サイズ / コントラスト切替が VS 時点で機能するか、**設定データの永続化方針も含めて確認** (実装可否を Stage 3 で確定、VS_SCOPE §6)
 6. **入力ナビゲーション (ゲームパッド対応)** — uGUI + EventSystem でフォーカス遷移、決定、キャンセル動作が **キーボード / ゲームパッド** で破綻なく動作
@@ -222,8 +222,8 @@ Stage 3 では以下を運用方針として扱う。フォント資産の最終
 
 ### コミュニティ事例 (実装着手時に参照)
 
-- Undertale 型対話 UI 実装事例 (Code Monkey / Brackeys 系)
-- HD-2D 風 UI のピクセルフォント選定例 (Octopath Traveler の UI 分析記事)
+- silent protagonist 型対話 UI 実装事例 (Code Monkey / Brackeys 系)
+- HD-2D 風 UI のピクセルフォント選定例 (HD-2D 系既存作の UI 分析記事)
 - 時の窓ポータル UI のシンボルホイール実装事例
 - TextMeshPro 日本語フォント生成チュートリアル
 

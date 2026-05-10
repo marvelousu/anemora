@@ -6,7 +6,7 @@ Date: 2026-05-05
 
 Stage 3 Day 1 late-baseline measurement for `docs/G5_ACCEPTANCE_MATRIX.md` §K. The measured project commit was `4029cc0` in a temporary worktree:
 
-`C:\Users\maro6\Documents\Unity\Anemora-perf-baseline`
+`<worktree:Anemora-perf-baseline>`
 
 Only this devlog is intended for commit. Measurement scripts, generated bootstrap scene, build output, and raw result logs were temporary measurement artifacts and are not part of the repository baseline.
 

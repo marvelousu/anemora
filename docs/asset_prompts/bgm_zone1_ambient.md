@@ -28,11 +28,11 @@
 
 ### 1.3 参照作品 (絵柄ではなく音響)
 
-- ICO / Shadow of the Colossus アンビエント (大島ミチル系)
-- Yume Nikki / OFF の sparse ambient
-- 久石譲のミニマル・ピアノ曲 (もののけ姫 静かな場面など)
-- Sakuzyo / TIDLOOP のアンビエント
-- William Basinski - Disintegration Loops の静的反復
+- 静謐系ゲームアンビエント (オーケストラ系コンポーザのライン)
+- 中性的主人公の独立タイトル系の sparse ambient
+- 内省的アニメ系ピアノ曲 (有名作品の静かな場面など)
+- インディーアンビエントアーティストの静的反復系
+- 環境音楽の長尺ループ系
 
 ただし**直接的な模倣は避ける** (法的整合 / Anemora の独自性確保)。雰囲気の方向性を共有する目安として使う。
 
@@ -63,8 +63,8 @@ game. Sparse solo piano with occasional cello phrases, no percussion at all. Qui
 contemplative mood, like walking alone through a quiet street at dusk. Minor key but
 not despairing. Should loop seamlessly. Avoid bright major-key resolutions, dramatic
 swells, drums, electronic elements, and modern pop chord progressions. Inspired by
-the quiet ambient music of Studio Ghibli's introspective scenes and the early-game
-exploration music of Octopath Traveler.
+the quiet ambient music of introspective animated film scenes and the early-game
+exploration music of mainstream HD-2D RPG.
 ```
 
 ### 2.3 出力期待値
@@ -92,9 +92,9 @@ Suno はテキストプロンプト + style tags のスタイル。AIVA の骨�
 ```
 slow melancholic ambient instrumental, sparse solo piano, cello, no drums, no
 percussion, no beat, no vocals, quiet contemplative mood, fading town atmosphere,
-HD-2D RPG exploration music, minor key, 60 BPM, looping ambient, Studio Ghibli
-inspired quiet scenes, no electronic elements, no modern pop, no auto-tune, no rap,
-no aggressive instruments
+HD-2D RPG exploration music, minor key, 60 BPM, looping ambient, introspective
+animated film inspired quiet scenes, no electronic elements, no modern pop, no
+auto-tune, no rap, no aggressive instruments
 ```
 
 ### 3.3 出力期待値

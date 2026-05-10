@@ -25,9 +25,9 @@ Anemora は **AI 主体個人開発** を「売り」にする 1 ヶ月集中プ
 
 ### 美術方向性 (Stage 1-2 で確定)
 
-- **絵柄参照**: HD-2D 系スクエニ作品 (Octopath Traveler / Triangle Strategy / Sea of Stars 序盤 / DQ3HD2D)
-- **空気感参照**: メイドインアビス / 少女終末旅行 / けものフレンズ (テーマ・物語的方向性のみ、絵柄は参照しない)
-- **構造参照**: Outer Wilds / NieR:Automata (ベール剥離アーキテクチャ)
+- **絵柄参照**: HD-2D 系既存作 (主系列 / 汎用 RPG 系 / 序盤調) / HD-2D RPG remake
+- **空気感参照**: 段階開示型残酷ファンタジー / 静謐終末紀行 / 無垢視点アニメ (テーマ・物語的方向性のみ、絵柄は参照しない)
+- **構造参照**: 単線知識探索系既存作 / メタ構造系既存作 (段階反転アーキテクチャ)
 
 ### 音響方向性 (Stage 1-2 で確定)
 
@@ -146,7 +146,7 @@ Claude / Codex のサブスクは別枠 (現行枠内)。`PITCH.md` §11.4 と�
 
 - **`docs/legal/asset_ledger.md` 起草** — **Stage 3 Day 0-1 で最低限のテンプレートを先行起草**、各アセットの生成日 / ツール / プラン / 入力素材 / 商用利用可否 / 手修正有無 / 公開可否 / Steam 開示区分を記録
 - **`docs/legal/steam_ai_disclosure.md` 起草** — **Stage 3 Day 0-1 で開示区分整理表と文面草案を置く**、Stage 5 (Steam リリース判断時) に提出文面を確定
-- **Aseprite + Blender + Studio One のセットアップ** — Windows 側 (デスクトップ UJPVOG2 + ノート PC TOM) で別途準備、ADR-0004 (プロジェクトディレクトリ構造) と整合
+- **Aseprite + Blender + Studio One のセットアップ** — Windows 側 (デスクトップ + ノートPC) で別途準備、ADR-0004 (プロジェクトディレクトリ構造) と整合
 - **プロンプトテンプレート** — `docs/asset_prompts/` に各種別の生成プロンプトを保管 (Stage 3 中に整備)
 - **VS_SCOPE.md §4 アセット規模** — 本 ADR の予算配分と照らして、新規作成上限と再利用前提を維持
 

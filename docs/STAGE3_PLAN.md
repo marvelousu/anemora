@@ -137,33 +137,33 @@ Stage 3 の最初に着手する foundational tasks:
 
 ## 10. 開発環境の使い分け戦略
 
-二拠点運用 (ノート PC TOM + デスクトップ UJPVOG2) を前提に、作業性質ごとに機材と環境を使い分ける。スペック詳細は `~/notes/tech/thinkbook-14-g6-abp-spec.md` (TOM) と `reference_pc_desktop_spec.md` (UJPVOG2) 参照。
+二拠点運用 (ノートPC + デスクトップ) を前提に、作業性質ごとに機材と環境を使い分ける。
 
 ### 10.1 機材スペック概要
 
 | 機材 | OS | CPU | RAM | GPU | 用途 |
 |---|---|---|---|---|---|
-| **ノート TOM** (主軸) | Windows 11 Home + WSL2 | Ryzen 5 7430U (6C12T Zen 3, 15W) | 16GB DDR4 | 統合 Radeon (VRAM 2GB) | 平時の主作業機 |
-| **デスクトップ UJPVOG2** | Windows 11 | i7-10700 (8C16T) | 16GB | RTX 2070S (8GB) | 重い局面のみ赴く |
+| **ノートPC** (主軸) | Windows 11 Home + WSL2 | Ryzen 5 7430U (6C12T Zen 3, 15W) | 16GB DDR4 | 統合 Radeon (VRAM 2GB) | 平時の主作業機 |
+| **デスクトップ** | Windows 11 | i7-10700 (8C16T) | 16GB | RTX 2070S (8GB) | 重い局面のみ赴く |
 
-ノート TOM は Windows + WSL2 構成で **Linux CLI と Windows GUI を 1 台で完結**できる。デスクトップは GPU 強化 (RTX 2070S) と CPU マルチコア (8C16T) で重い作業に優位。
+ノートPC は Windows + WSL2 構成で **Linux CLI と Windows GUI を 1 台で完結**できる。デスクトップは GPU 強化 (RTX 2070S) と CPU マルチコア (8C16T) で重い作業に優位。
 
 ### 10.2 ロール分担表
 
 | 作業 | 機材 | OS / 環境 | 理由 |
 |---|---|---|---|
-| ドキュメント / 仕様 / Codex / Git / Claude | ノート TOM | **WSL2 (Linux)** | テキスト中心、Claude/Codex/CLI に最適 |
-| Unity Editor 軽編集 (スクリプト・基本シーン) | ノート TOM | Windows | Unity は Windows GUI が公式サポート手厚い |
-| Aseprite / 軽量 Blender (低ポリ) | ノート TOM | Windows | 軽量 GUI 作業、ノートで十分 |
-| Reaper / 音響制作 | ノート TOM | Windows or WSL2 | 主に CPU 負荷、ノートで実用 |
-| **HD-2D シェーダ仕上げ / Visual テスト** | **デスクトップ UJPVOG2** | Windows | RTX 2070S + 8C16T、ターゲット PC 性能で確認 |
+| ドキュメント / 仕様 / Codex / Git / Claude | ノートPC | **WSL2 (Linux)** | テキスト中心、Claude/Codex/CLI に最適 |
+| Unity Editor 軽編集 (スクリプト・基本シーン) | ノートPC | Windows | Unity は Windows GUI が公式サポート手厚い |
+| Aseprite / 軽量 Blender (低ポリ) | ノートPC | Windows | 軽量 GUI 作業、ノートで十分 |
+| Reaper / 音響制作 | ノートPC | Windows or WSL2 | 主に CPU 負荷、ノートで実用 |
+| **HD-2D シェーダ仕上げ / Visual テスト** | **デスクトップ** | Windows | RTX 2070S + 8C16T、ターゲット PC 性能で確認 |
 | 重い Blender (高ポリ・サブディビジョン) | デスクトップ | Windows | GPU + メモリ余裕 |
 | 大規模 Build / プロファイラ | デスクトップ | Windows | Build 時間短縮、計測精度 |
 | Steam リリースビルド (最終) | デスクトップ | Windows | 品質保証、ターゲット環境 |
 
 ### 10.3 切替トリガー (デスクトップに赴くタイミング)
 
-ノート TOM での作業が以下に該当したら、commit + push でデスクトップに移動:
+ノートPC での作業が以下に該当したら、commit + push でデスクトップに移動:
 
 - HD-2D Tier 2 のシェーダ調整 (URP Renderer Feature の試行錯誤)
 - ライティング / ポストプロセスの仕上げ
@@ -173,19 +173,19 @@ Stage 3 の最初に着手する foundational tasks:
 - プロファイラ / Frame Debugger
 - Steam リリース最終ビルド
 
-> ノート TOM の統合 GPU (VRAM 2GB) は HD-2D Tier 2 程度なら動くが、シェーダ調整時のトライ&エラーで thermal throttling、Visual テストで実機性能を見誤るリスクが高い。早めに切替えるのが安全。
+> ノートPC の統合 GPU (VRAM 2GB) は HD-2D Tier 2 程度なら動くが、シェーダ調整時のトライ&エラーで thermal throttling、Visual テストで実機性能を見誤るリスクが高い。早めに切替えるのが安全。
 
 ### 10.4 同期戦略
 
 | 同期対象 | 方法 |
 |---|---|
-| コード / docs (Anemora repo) | **Git remote** (GitHub Public 予定 = `marvelousu/anemora`) |
-| Obsidian / handover 文書 | **notes vault** (`marvelousu/notes`) |
+| コード / docs (Anemora repo) | **Git remote** (GitHub Public 予定) |
+| Obsidian / handover 文書 | **notes vault** (別 git repo) |
 | Unity Personal ライセンス | 複数マシンで使用可 (Unity ID 共通) |
 | Unity Asset Store 購入物 | 同一 Unity ID で両機ダウンロード可 |
 | Unity プロジェクトの `Library/` `Temp/` | **Git 除外済** (`.gitignore` 反映済)、各機で再生成 |
 
-### 10.5 ノート PC 単独運用の回避リスク (備忘)
+### 10.5 ノートPC 単独運用の回避リスク (備忘)
 
 - 統合 GPU (VRAM 2GB) で HD-2D シェーダ作業 → thermal throttling、編集ストレス
 - Visual テストで実機性能を見誤る (統合 GPU 基準 → ターゲット PC で過剰品質と気づく)
@@ -198,9 +198,9 @@ WSL2 (Ubuntu 想定) と Windows 間のファイル共有は以下を運用:
 
 - **WSL2 → Windows**: `/mnt/c/...` 経由でアクセス可、ただし I/O は遅い
 - **Windows → WSL2**: `\\wsl$\Ubuntu\...` でアクセス可
-- **Anemora プロジェクト**: WSL2 ホーム配下 (`~/learning/games/anemora/`) に置く現状運用を維持
+- **Anemora プロジェクト**: WSL2 ホーム配下に置く現状運用を維持
   - Unity Editor を Windows で起動する場合、`\\wsl$\...` 経由でプロジェクトを開く実用性は要検証 (起動遅延・ファイルロックの懸念)
-  - 代替: Windows 側 `C:\Users\...` にも別ディレクトリで checkout、Git で同期する手もある (検証ポイント)
+  - 代替: Windows 側ホームに別ディレクトリで checkout、Git で同期する手もある (検証ポイント)
 
 > **Stage 3 入口の検証タスク**: Unity install + プロジェクト初期化時に、WSL2 配下と Windows 配下のどちらに Unity プロジェクトを置くべきかを実機で判定する (ADR-0004 プロジェクトディレクトリ構造 で記録)。
 
@@ -215,8 +215,8 @@ WSL2 (Ubuntu 想定) と Windows 間のファイル共有は以下を運用:
 - `docs/STAGE3_TBD_RESOLUTION.md` (Stage 3 A トラック /spec 確定事項)
 - `docs/adr/` (本 Stage で起草開始)
 - `docs/devlog/` (Stage 3 devlog は完了時に Stage 全体まとめを起こす)
-- `~/notes/tech/thinkbook-14-g6-abp-spec.md` (ノート TOM スペック)
-- `reference_pc_desktop_spec.md` memory (デスクトップ UJPVOG2 スペック)
+- ノートPC スペック (ローカル参照、リポジトリ外)
+- デスクトップ スペック (ローカル memory、リポジトリ外)
 
 ---
 

@@ -7,7 +7,7 @@ Status: Retroactive (本 devlog は task 完了後に orchestrator が memory + 
 
 Linux Claude orchestrator session で実施した /spec resolution interview の確定事項を、Anemora 全 doc に反映する大型 reflection task。
 
-interview 結果 (詳細は `~/.claude/projects/-home-maro1-learning-games-anemora/memory/project_anemora_lore_decisions.md`):
+interview 結果 (詳細は `<orchestrator-memory>/memory/project_anemora_lore_decisions.md`):
 
 - 主人公: **Niro** (provisional) / 中性表現で最終確定 / 15-19 歳 / スナフキン的帽子
 - 主人公の家族 / 知人: 不在 (CONCEPT v1.3 整合)

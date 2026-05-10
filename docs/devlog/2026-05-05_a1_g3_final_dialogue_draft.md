@@ -71,7 +71,7 @@ A1 self-audit (`77e5dee`) で identify した 4 改善提案を適用:
 - `docs/api/dialogue_localization.md` (A1 `cc72aa7`、後段 `47aa775` で stale placeholder 例除去)
 - `docs/api/dialogue_asset_authoring.md` (A5 `c4b1fd4`、6 step authoring guide)
 - `docs/devlog/2026-05-05_g3_final_dialogue_self_audit.md` (A1 `77e5dee`、5 観点 audit + 4 改善提案)
-- `~/.claude/projects/-home-maro1-learning-games-anemora/memory/project_anemora_lore_decisions.md` (interview 確定情報の orchestrator memory)
+- `<orchestrator-memory>/memory/project_anemora_lore_decisions.md` (interview 確定情報の orchestrator memory)
 
 ## 5. caveats / 既知 issue
 

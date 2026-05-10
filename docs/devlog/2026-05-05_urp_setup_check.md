@@ -4,7 +4,7 @@
 Windows-side Stage 3 Day 1 check for the Unity `6000.3.14f1` project after pulling the Linux-side merge commit `e95a42f`.
 
 ## Result
-- Pulled the merged Anemora history into `C:\Users\maro6\Documents\Unity\Anemora`.
+- Pulled the merged Anemora history into the local Unity project root (`<repo>`).
 - Unity Personal license is active and batchmode starts successfully.
 - Windows Standalone support is registered by the Editor.
 - `com.unity.render-pipelines.universal` resolves as URP `17.3.0`.

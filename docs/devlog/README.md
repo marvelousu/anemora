@@ -64,4 +64,4 @@
 
 独立レビューを Claude で行う際は、初発プロンプトに以下を必ず含める:
 
-> ~/.claude/projects/-home-maro1/memory/ に project_3dpx_stage1*.md / feedback_3dpx_*.md がある場合、これらは前セッションの結論記録なので参照しないこと。CONCEPT.md の内容だけを第三者として読んで評価せよ。
+> ローカル memory に project_3dpx_stage1*.md / feedback_3dpx_*.md がある場合、これらは前セッションの結論記録なので参照しないこと。CONCEPT.md の内容だけを第三者として読んで評価せよ。

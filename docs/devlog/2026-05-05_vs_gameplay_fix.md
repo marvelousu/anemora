@@ -10,7 +10,7 @@ Base commit:
 
 Temporary worktree:
 
-`C:\Users\maro6\Documents\Unity\Anemora-vs-gameplay-fix`
+`<worktree:Anemora-vs-gameplay-fix>`
 
 ## 1. Scope
 
@@ -74,7 +74,7 @@ Final PlayMode log checks:
 
 Output:
 
-`C:\Users\maro6\Documents\Unity\Anemora-vs-gameplay-fix\Builds\VSGameplayFix\Anemora_VS_Gameplay_Fix.exe`
+`<worktree:Anemora-vs-gameplay-fix>\Builds\VSGameplayFix\Anemora_VS_Gameplay_Fix.exe`
 
 | Item | Result |
 | --- | --- |
@@ -92,9 +92,9 @@ Output:
 
 Runtime screenshot paths:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-vs-gameplay-fix\Builds\VSGameplayFix\runtime_final_start.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-vs-gameplay-fix\Builds\VSGameplayFix\runtime_final_after_w.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-vs-gameplay-fix\Builds\VSGameplayFix\runtime_final_after_brush.png`
+- `<worktree:Anemora-vs-gameplay-fix>\Builds\VSGameplayFix\runtime_final_start.png`
+- `<worktree:Anemora-vs-gameplay-fix>\Builds\VSGameplayFix\runtime_final_after_w.png`
+- `<worktree:Anemora-vs-gameplay-fix>\Builds\VSGameplayFix\runtime_final_after_brush.png`
 
 Observed runtime behavior:
 

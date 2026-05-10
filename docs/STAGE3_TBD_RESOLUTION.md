@@ -31,7 +31,7 @@
 | ~~CHR-01~~ | キャラクター | Resolved 2026-05-05。主人公名は Niro / ニロ。 | provisional name として採用。 | Resolved | 中 (Stage 3 quality に影響) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md`, `README.md`, `CHANGELOG.md` by `c0cb631` | Stage 3 内 (VS 完成前) |
 | ~~CHR-02~~ | キャラクター | Resolved 2026-05-05。主人公の性別表現は中性表現で最終確定。 | 男 / 女 / その他案は Stage 3 VS では採用しない。 | Resolved | 高 (Stage 3 死守ライン直撃) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md`, `docs/legal/asset_ledger.md` by `c0cb631` | Stage 3 内 (VS 完成前) |
 | ~~CHR-03~~ | キャラクター | Resolved 2026-05-05。主人公の年齢は若者 15-19 歳。 | Stage 4 で必要に応じ sprite / copy の調整対象。 | Resolved | 中 (Stage 3 quality に影響) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md`, `docs/legal/asset_ledger.md` by `c0cb631` | Stage 3 内 (VS 完成前) |
-| ~~CHR-04~~ | キャラクター | Resolved 2026-05-05。見た目はスナフキン的帽子。家族 / 知人は不在。 | 出身は Antela の住人扱い。詳細 story bible は Stage 4 以降。 | Resolved | 低 (Stage 4 以降で OK) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md` by `c0cb631` | Stage 4 入口 |
+| ~~CHR-04~~ | キャラクター | Resolved 2026-05-05。見た目はつばのある旅人風の帽子。家族 / 知人は不在。 | 出身は Antela の住人扱い。詳細 story bible は Stage 4 以降。 | Resolved | 低 (Stage 4 以降で OK) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md` by `c0cb631` | Stage 4 入口 |
 | ~~NPC-01~~ | キャラクター | Resolved 2026-05-05。Resident_A は過去側の街の過去住人。 | Niro と面識なし。廃墟 / 図書館跡を指差す witness / hook。 | Resolved | 高 (Stage 3 死守ライン直撃) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md`, `docs/api/dialogue_localization.md`, `docs/legal/asset_ledger.md` by `c0cb631` | Stage 3 内 (VS 完成前) |
 | ~~NPC-02~~ | キャラクター | Resolved 2026-05-05。Resident_B は現在側の廃墟 / 図書館跡で座る観察者 / 記録者。 | Niro と面識なし。 | Resolved | 中 (Stage 3 quality に影響) | Reflected in `SPEC.md`, `docs/VS_SCOPE.md`, `docs/api/dialogue_localization.md`, `docs/legal/asset_ledger.md` by `c0cb631` | Stage 3 内 (VS 完成前) |
 | ~~STORY-01~~ | 物語 | Resolved 2026-05-05。衰退原因は表向きは実体的な環境変化 / 自然災害、真因は観測者累積による世界摩耗の二層構造。 | 細部演出は Stage 4 で具体化。 | Resolved | 低 (Stage 4 以降で OK) | Reflected in `SPEC.md` by `c0cb631` | Stage 4 入口 |
@@ -63,7 +63,7 @@
 - ~~CHR-01~~: 主人公名 = Niro / ニロ (provisional)
 - ~~CHR-02~~: 主人公性別 = 中性表現で最終確定
 - ~~CHR-03~~: 主人公年齢 = 15-19 歳
-- ~~CHR-04~~: 主人公出身詳細 = Antela 住人扱い、家族 / 知人不在、スナフキン的帽子
+- ~~CHR-04~~: 主人公出身詳細 = Antela 住人扱い、家族 / 知人不在、つばのある旅人風の帽子
 - ~~NPC-01~~: Resident_A = 過去側の街の過去住人、面識なし、witness / hook
 - ~~NPC-02~~: Resident_B = 現在側の廃墟 / 図書館跡の観察者 / 記録者、面識なし
 - ~~STORY-01~~: 衰退原因 = 表向きは実体的環境変化、真因は観測者累積による世界摩耗

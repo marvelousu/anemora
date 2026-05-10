@@ -129,7 +129,7 @@ Stage 3 Day 1 milestone navigation draft. This is not a public release tag yet; 
 #### Assets
 
 - F1: Added PixelLab Hero / Resident_A / Resident_B draft sprite generation outputs, including intermediate PNG review material and selected draft sprites. (commit 4a420a5)
-- F2: Added palette-finished Hero and Resident_A/B v1 sprite sheets, then re-exported with the Steam version of Aseprite for the final indexed PNG pass. (commit 08f61b8; related commit 4d2092a)
+- F2: Added palette-finished Hero and Resident_A/B v1 sprite sheets, then re-exported with Aseprite for the final indexed PNG pass. (commit 08f61b8; related commit 4d2092a)
 - F4: Added Hero / Resident_A / Resident_B prefabs, animator controllers, animation clips, `HeroAnimatorBinder`, and prefab / PlayMode tests for basic locomotion state machines. (commit d2c95c2)
 - A3: Added Zone1 building asset set from Meshy v6 through Blender repair and Unity import, including atlas, manifest, and helper scripts. (commit a547e96)
 

@@ -123,7 +123,7 @@
 | 4 方向歩き / 走り / アイドル | ✅ 実装 |
 | 表情差分 | プレースホルダ可 (Stage 4 で拡充) |
 | 名前 / 性別 / 年齢 | Niro (ニロ、provisional) / 中性表現で最終確定 / 15-19 歳 |
-| 見た目 | スナフキン的な帽子を含む静かな旅人シルエット |
+| 見た目 | つばのある旅人風の帽子を含む静かな旅人シルエット |
 | 家族 / 知人 | 不在。VS では不在そのものを違和感として扱う |
 
 ### 3.4 層遷移片鱗 (VS フィナーレ)
@@ -134,7 +134,7 @@
 | 層 2 片鱗 | **1 カットのみ**: 「ルールが書き換わる予兆」を視覚演出 |
 | 層 2 のルール本体 | ❌ VS では実装しない (Stage 4 マイルストン) |
 
-> **設計用語注記**: 「層」「ベール剥離」は制作・設計用の便宜語であり、インゲーム UI / dialogue には出さない。VS の表示文言は違和感、記憶、痕跡、風景変化として表現する。
+> **設計用語注記**: 「層」「段階反転」(旧称: ベール剥離) は制作・設計用の便宜語であり、インゲーム UI / dialogue には出さない。VS の表示文言は違和感、記憶、痕跡、風景変化として表現する。
 
 ### 3.5 Stage 3 Day 1 機能ブロック状態
 
@@ -152,7 +152,7 @@
 | A4 Audio | TBD | ✅ 完了。BGM `Zone1_Ambient.ogg` + SFX 30 種 (環境 6 / 足音 12 / 時の窓 6 / NPC 3 / UI 3) + `Zone1AudioController` wiring 到達済み。 |
 | A5 UI 基盤 + ローカライズ | TBD | ✅ JP TMP Atlas (美咲ゴシック) + EN draft (Press Start 2P) + Anemora パレット v0。Stage 3 /spec resolution で provisional 採用。 |
 | F1 PixelLab drafts | TBD | ✅ 完了。Hero front / side / back、Resident_A front / back / left、Resident_B seated。 |
-| F2 Aseprite 仕上げ | TBD | ✅ 完了。Steam Aseprite 正式版で再エクスポート (`08f61b8`, `4d2092a`)。 |
+| F2 Aseprite 仕上げ | TBD | ✅ 完了。Aseprite 正式版で再エクスポート (`08f61b8`, `4d2092a`)。 |
 | F3 Retro Diffusion 補助 | TBD | VS では不要。Stage 4 で revision / alternate candidate が必要になった場合のみ再検討。 |
 | F4 Hero/NPC.prefab + Animator | TBD | ✅ 完了 (`d2c95c2`)。Hero / Resident_A / Resident_B prefab + 個別 `AnimatorController` + `HeroAnimatorBinder` + `Anemora_Main` placeholder 置換。 |
 | G1/G2 Buildings 採用方針 | TBD | ✅ 解決。A3 Meshy 再生成 = 案 b 採用。 |
@@ -292,7 +292,7 @@ VS 達成判定は **3 段階** に分ける。**必須** 全 YES = VS 完成。
 | ✅ | **層 2 への片鱗演出が 1 カット** 入っている | VSでは本の反映、現在側痕跡、時の窓ジオラマによる minimum hint を採用。ルール本体はStage 4以降。 |
 | ✅ | 主人公スプライト v1 が動作 (品質は VS 時点暫定で可) | F2 / F4 完了。Hero prefab + Animator + `HeroAnimatorBinder` 導入済み。 |
 | ✅ | 街中央広場 + 周辺の HD-2D Tier 2 レンダリングが動作 (1 ゾーン成立) | A3 buildings 完了。F4 prefab、UI 基盤 v0 も到達済み。 |
-| ✅ | **Windows ビルドが起動 → タイトル → ゲーム本体まで動作** | Latest build: `C:\Users\maro6\Documents\Unity\Anemora-demo-repair\Builds\DemoPlayable\Anemora_Demo_Playable.exe`。build success、runtime Player.log exception-free。 |
+| ✅ | **Windows ビルドが起動 → タイトル → ゲーム本体まで動作** | Latest build: `<worktree:Anemora-demo-repair>\Builds\DemoPlayable\Anemora_Demo_Playable.exe`。build success、runtime Player.log exception-free。 |
 | ✅ | 詰みが起きない (時の窓再描画で必ず解除可能) | `Shift` + left-drag preview / generated window一致、右クリック削除、再描画導線を user manual confirmation 済み。 |
 
 ### 推奨 (達成すべきだが、削減トリガー時に外せる)
@@ -405,7 +405,7 @@ VS_SCOPE は完成定義と確定済み実装状態を扱う。Stage 3 /spec res
 | v0.1a | 2026-05-04 | Stage 3 A トラック /spec 反映: §2 オープニング詳細化 (家ベッド + D-3/D-7/D-6 含み演出 + 時の筆発見タイミング) / §3.2 NPC 配置を「普通の住人 1-2 人、異物原則」に訂正 (老人撤回) / §6 対話 UI に silent protagonist 反映 |
 | v0.2 | 2026-05-05 | Stage 3 Day 1 進捗の整合反映 (E0-E5 / A1-A3 / F1-F4 / G4 完了状態) / ADR-0002, ADR-0005, ADR-0008, ADR-0009 改訂結果反映 / TBD 項目を `docs/STAGE3_TBD_RESOLUTION.md` へ移譲 / §3.1 コアループ最小成立達成を明記 / 残タスク表 (G3 final / G5 / Audio) を最新化 |
 | v0.3 | 2026-05-05 | Audio 完成 (BGM + SFX 30 種 + `Zone1AudioController`) / G3 Localization 完成 (`LocalizationSettings` + Locale switch test) / §8 死守ラインを G5 残のみに整理 |
-| v0.4 | 2026-05-05 | Stage 3 /spec resolution interview 反映: Niro / Antela provisional 採用、主人公中性表現・15-19 歳・スナフキン的帽子、Resident_A / Resident_B 役割、art / palette / font provisional 採用、設計用語をインゲームに出さない注記 |
+| v0.4 | 2026-05-05 | Stage 3 /spec resolution interview 反映: Niro / Antela provisional 採用、主人公中性表現・15-19 歳・旅人風の帽子、Resident_A / Resident_B 役割、art / palette / font provisional 採用、設計用語をインゲームに出さない注記 |
 | v1.0 | 2026-05-06 | Stage 3 closeout。`a0bd50b` demo brush repair、EditMode `32/32`、PlayMode `29/29`、Windows demo build success、user manual confirmation を反映し、VS 必須条件を完了扱いへ更新。 |
 
 ---

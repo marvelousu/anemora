@@ -9,7 +9,7 @@ Stage 3 is accepted as complete for the Vertical Slice. The final blocker class 
 
 The closeout state is:
 
-- Latest build path: `C:\Users\maro6\Documents\Unity\Anemora-demo-repair\Builds\DemoPlayable\Anemora_Demo_Playable.exe`.
+- Latest build path: `<worktree:Anemora-demo-repair>\Builds\DemoPlayable\Anemora_Demo_Playable.exe`.
 - Latest pushed implementation commit: `a0bd50b Repair demo playable time-window brush flow`.
 - EditMode: `32/32` passed in the Codex rerun.
 - PlayMode: `29/29` passed in the Codex rerun.

@@ -54,9 +54,9 @@ Measured files:
 Runtime texture estimate:
 
 - 4096 x 4096 x Alpha8 = 16,777,216 bytes = 16.0 MiB VRAM
-- Against TOM VRAM 2 GiB: 16.0 MiB is about 0.78%
+- Against the laptop VRAM 2 GiB: 16.0 MiB is about 0.78%
 
-Conclusion: v0 Atlas texture itself is acceptable under the 2GB VRAM constraint, but UI scene + URP + other textures must still be checked on TOM. The serialized `.asset` is larger than runtime Alpha8 VRAM because it stores Unity asset data.
+Conclusion: v0 Atlas texture itself is acceptable under the 2GB VRAM constraint, but UI scene + URP + other textures must still be checked on the laptop. The serialized `.asset` is larger than runtime Alpha8 VRAM because it stores Unity asset data.
 
 ## Caveats
 

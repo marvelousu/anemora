@@ -198,7 +198,7 @@
 |---|---|
 | `docs/draft/chapter1_s1_s2_handover_2026-05-08.md` | v1.5: §4 新マップ、§3.6 白窓 1 周目なし追記、§9.3 シーン 5 v1、§9.2 [4.H] Z 用語整理、§11.4 未来 2 周目修正、§13.6 モブ NPC 使いまわし追記、§17 改訂履歴、各シーンの方角表記修正 |
 | `docs/draft/chapter1_map_handover_2026-05-08.md` | v1.3: §2 新マップ反映、§3 シーン構成 (方角)、§7.3 シーン 5 v1 反映 |
-| `~/.claude/projects/-home-maro1/memory/project_anemora_story_bible_v1.md` | 動線再設計、未来 2 周目、白窓 1 周目なし、シーン 5 v1、Z 用語整理 |
+| `<local-memory>/memory/project_anemora_story_bible_v1.md` | 動線再設計、未来 2 周目、白窓 1 周目なし、シーン 5 v1、Z 用語整理 |
 | `docs/devlog/2026-05-09_chapter1_scene5_v1_and_map_redesign.md` | 新規 (本ファイル) |
 | `docs/devlog/INDEX.md` | v2.4 |
 

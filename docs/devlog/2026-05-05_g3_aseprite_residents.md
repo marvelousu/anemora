@@ -8,7 +8,7 @@
   - `Assets/Art/Sprites/NPC/Resident_A/v1/_draft/left_v1.png`
   - `Assets/Art/Sprites/NPC/Resident_B/v1/_draft/seated_v1.png`
 - Palette: `Assets/Art/anemora_palette_v0.gpl`
-- Initial pass used deterministic local palette compression because Aseprite was not installed yet. Follow-up validation used Steam Aseprite `1.3.17.2-x64` at `C:\Program Files (x86)\Steam\steamapps\common\Aseprite\aseprite.exe` to re-export the final PNGs as indexed palette-v0 sprites.
+- Initial pass used deterministic local palette compression because Aseprite was not installed yet. Follow-up validation used Aseprite `1.3.17.2-x64` to re-export the final PNGs as indexed palette-v0 sprites.
 - Status: draft/v1 review stop. Resident age contrast and Resident_B darkness remain user-review items.
 
 ## Outputs

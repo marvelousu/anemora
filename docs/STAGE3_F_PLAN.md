@@ -32,7 +32,7 @@ VS_SCOPE.md §4.1 / §7 「ヒーロービジュアルは VS 時点暫定完成�
 
 - §0.1 の 1-5 がすべて揃い、E5 (ActionRecord 痕跡反映の現在側) と G トラック (第 1 ゾーン配置) が **主人公スプライトを参照して画面が成立する** 状態
 - 検証マトリクス §6 の必須項目すべて pass
-- ユーザー (maro6052@gmail.com) が「中性的・両読み可能・Anemora らしい」と最終判断したものが v1 として確定
+- ユーザーが「中性的・両読み可能・Anemora らしい」と最終判断したものが v1 として確定
 
 ---
 
@@ -54,7 +54,7 @@ VS_SCOPE.md §4.1 / §7 「ヒーロービジュアルは VS 時点暫定完成�
 
 | 軸 | 確定値 | 視覚化への影響 |
 |---|---|---|
-| 性別 | 中性的・両読み可能 | 髪型 / 服装 / 体格を中性的シルエットへ。Frisk (Undertale) / Yume Nikki 系統が参照 |
+| 性別 | 中性的・両読み可能 | 髪型 / 服装 / 体格を中性的シルエットへ。silent 主人公の独立タイトル系統が参照 |
 | 年齢 | 仮置き 10 代後半〜20 代前半 | 顔立ちは若いが大人寄り、全体的に細身でやや背が低め程度 |
 | 沈黙 | Silent protagonist | 口元は閉じ気味、叫び / 笑顔の強い表情を v1 では作らない |
 | 偽記憶 | ぼんやり覚えている程度 | 表情は穏やか、神妙さや力みは出さない |
@@ -87,12 +87,12 @@ VS_SCOPE.md §4.1 / §7 「ヒーロービジュアルは VS 時点暫定完成�
 
 **手順**:
 1. **PixelLab paid plan** の契約状態を確認 (asset_ledger §1.2 PixelLab 行を更新)
-   - 未契約の場合: ユーザー (maro6052@gmail.com) に契約意思を確認、契約済になるまで F1 着手を保留
+   - 未契約の場合: ユーザーに契約意思を確認、契約済になるまで F1 着手を保留
 2. **Retro Diffusion paid plan** の契約状態を確認 (補助ツール、必須ではない。F1 で必要になった時点で再判定)
 3. プロンプトテンプレートを `docs/asset_prompts/hero_v1.md` に起草:
    - **基本軸**: "androgynous teenage protagonist, neutral expression, plain everyday clothing, HD-2D inspired pixel art, 32x48 resolution, side profile / front / back views"
    - **避けるべき要素**: "no glowing eyes, no exotic hair color, no fantasy armor, no obvious weapons, no aura effects"
-   - **絵柄参照**: "Octopath Traveler / Triangle Strategy / Sea of Stars early game inspired"
+   - **絵柄参照**: "HD-2D pixel art with painterly 3D backgrounds, mainstream HD-2D RPG inspired"
    - **空気感**: "calm, slightly melancholic, quiet"
 4. プロンプトテンプレートを v0 として commit、F1 で結果を見て v1 へ改訂
 
@@ -139,7 +139,7 @@ VS_SCOPE.md §4.1 / §7 「ヒーロービジュアルは VS 時点暫定完成�
 - Anemora パレット v0 (Aseprite palette ファイル `Assets/Art/anemora_palette_v0.aseprite-palette` または `.gpl`)
 
 **手順**:
-1. F1 の 3 枚を Aseprite で開き、解像度 32x48 に揃える (HD-2D 風 = Octopath より少し大きめ)
+1. F1 の 3 枚を Aseprite で開き、解像度 32x48 に揃える (HD-2D 風 = HD-2D 系既存作の主系列より少し大きめ)
 2. 色数を限定パレットに圧縮 (16-32 色目安)、Anemora パレット v0 を `anemora_palette_v0` として保存
 3. 立ち姿 (Idle 起点) を確定 → Idle 4 frames (微妙な呼吸 / 揺れ)
 4. Walk 4 方向 (前 / 後 / 左 / 右、左右は反転で可) を各 4 frames
@@ -235,7 +235,7 @@ VS_SCOPE.md §4.1 / §7 「ヒーロービジュアルは VS 時点暫定完成�
 | Walk × 4 方向 | 32x48 px × 4 frames each | 32 |
 | D-7 用ハンド (1 cut) | 64x32 px (横長想定、要調整) | 32 |
 
-`32x48` は Octopath Traveler の `16x32` より一回り大きく、Sea of Stars 序盤の主人公 (~32x48) に近い HD-2D Tier 2 想定。E トラック / G トラックでカメラ設計と合わなければ Stage 3 中に再調整 (ADR 改訂は不要、実装計画書の改訂で吸収)。
+`32x48` は HD-2D 系既存作 (主系列) の `16x32` より一回り大きく、HD-2D 系既存作 (序盤調) の主人公 (~32x48) に近い HD-2D Tier 2 想定。E トラック / G トラックでカメラ設計と合わなければ Stage 3 中に再調整 (ADR 改訂は不要、実装計画書の改訂で吸収)。
 
 ### 4.2 パレット
 
@@ -301,8 +301,8 @@ art/_intermediate/                              (gitignore)
 | V10 | 商用利用条項を満たすプランで生成 | ✓ | F0 / F5 |
 | V11 | asset_ledger 記載完了 | ✓ | F5 |
 | V12 | E5 / G トラックから Prefab 参照可能 | ✓ | F4 |
-| V13 | デスクトップ UJPVOG2 (RTX 2070S) で見栄え確認 | △ | F4 後 |
-| V14 | ノート PC TOM で動作確認 | △ | F4 後 |
+| V13 | デスクトップ (RTX 2070S) で見栄え確認 | △ | F4 後 |
+| V14 | ノートPC で動作確認 | △ | F4 後 |
 
 `✓` = F トラック完了に必須、`△` = 観察項目。
 
@@ -313,7 +313,7 @@ art/_intermediate/                              (gitignore)
 | リスク | 兆候 | 対応 |
 |---|---|---|
 | PixelLab paid 未契約 | F0 で確認時点 | ユーザーに契約意思確認、契約まで F1 保留。F2 / F4 は PixelLab 出力なしでは進めない |
-| 中性表現が「無個性」になる | F1 候補がどれも印象薄い | プロンプトに「distinct silhouette」「memorable simple design」を追加、参照画像を Frisk / Madeline (Celeste) 等に絞る |
+| 中性表現が「無個性」になる | F1 候補がどれも印象薄い | プロンプトに「distinct silhouette」「memorable simple design」を追加、参照画像を silent 主人公の独立タイトル系に絞る |
 | 異物性が滲む (奇抜要素が消えない) | F1 でどの候補も髪色 / 装飾が派手 | ネガティブプロンプト強化、それでもダメなら手描き寄りに切替 (Aseprite 直描画で v0 を作り、PixelLab で参考バリエーション程度に格下げ) |
 | HD-2D で動的影が乗らない | F4 で影が消える / 線が潰れる | アウトラインを 1 px 太く、シルエット内のディテールを減らす、光源方向に合わせた左右非対称シェーディングに修正 |
 | 32x48 がカメラと合わない | E1 / G トラックで主人公が小さすぎ / 大きすぎ | Pixel Per Unit を 16 / 24 / 48 で試す、Camera orthographic size を Stage 3 中に確定 |

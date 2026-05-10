@@ -25,7 +25,7 @@
 
 ### 1.3 美術参照 (主人公と同じ系統)
 
-- HD-2D Tier 2 (Octopath Traveler / Triangle Strategy / Sea of Stars 序盤)
+- HD-2D Tier 2 (HD-2D 系既存作の主系列 / 汎用 RPG 系 / 序盤調)
 - 動的影 + 単一方向光に乗る単純シルエット
 - 衰退した街の住人として整合 (派手 / 富裕 / 異界感を出さない)
 
@@ -52,7 +52,7 @@ shirt, simple cloth trousers, soft canvas shoes), short to medium grey-streaked 
 hair, average build of slightly shorter than average height, gentle relaxed posture,
 rendered in HD-2D inspired pixel art style at 32x48 resolution, limited palette of
 16-24 colors shared with the protagonist sprite, soft directional lighting from
-upper-left, clean readable silhouette, inspired by Octopath Traveler and Sea of Stars
+upper-left, clean readable silhouette, inspired by mainstream HD-2D RPG
 early-game NPC sprites, quiet weathered mood befitting a fading town inhabitant.
 ```
 
@@ -93,7 +93,7 @@ build of average height, seated posture (sitting on a low stone bench, hands res
 loosely in the lap, knees together), rendered in HD-2D inspired pixel art style at
 32x48 resolution, limited palette of 16-24 colors shared with the protagonist
 sprite, soft directional lighting from upper-left, clean readable silhouette,
-inspired by Octopath Traveler and Sea of Stars NPC sprites, contemplative reserved
+inspired by mainstream HD-2D RPG NPC sprites, contemplative reserved
 mood, no smile, no obvious emotional display.
 ```
 

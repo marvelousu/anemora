@@ -4,7 +4,7 @@ Date: 2026-05-05
 
 Target build:
 
-`C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Builds\G5Audio\Anemora_G5_Audio.exe`
+`<worktree:Anemora-g5-audio-build>\Builds\G5Audio\Anemora_G5_Audio.exe`
 
 Target commit:
 
@@ -20,10 +20,10 @@ No implementation, scene, project setting, or asset change is included in this t
 
 Sources checked:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Library\Bee\buildreport.json`
-- `C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Library\LastBuild.buildreport`
-- `C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Builds\G5Audio\Anemora_G5_Audio_Data\globalgamemanagers`
-- `C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\ProjectSettings\EditorBuildSettings.asset`
+- `<worktree:Anemora-g5-audio-build>\Library\Bee\buildreport.json`
+- `<worktree:Anemora-g5-audio-build>\Library\LastBuild.buildreport`
+- `<worktree:Anemora-g5-audio-build>\Builds\G5Audio\Anemora_G5_Audio_Data\globalgamemanagers`
+- `<worktree:Anemora-g5-audio-build>\ProjectSettings\EditorBuildSettings.asset`
 
 Build scene order is the primary finding:
 
@@ -56,7 +56,7 @@ Build log warnings / errors:
 
 Latest local Player log checked:
 
-`C:\Users\maro6\AppData\LocalLow\DefaultCompany\Anemora\Player.log`
+`<player-data>\Player.log`
 
 Key lines:
 

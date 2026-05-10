@@ -129,7 +129,7 @@ This repository may include AI-generated or AI-assisted assets. For exact asset 
 
 The following tools are used to create or process assets but are not distributed as part of the Anemora runtime by this repository:
 
-- Aseprite, Steam version owned by the user, used for pixel-art palette/indexed sprite finishing.
+- Aseprite, owned by the user, used for pixel-art palette/indexed sprite finishing.
 - Blender 4.5.5 LTS, GPL-licensed development tool, used to repair and postprocess 3D assets. Blender's GPL does not automatically license the exported FBX assets; exported asset licensing still depends on the source asset and project rights.
 - Python standard library scripts under `tools/`, including Meshy API helpers and Blender automation. No committed Python dependency file currently lists Pillow or other third-party Python packages.
 - Studio One, user-owned DAW license, used for audio finishing workflow planning and available for BGM/SFX finishing.

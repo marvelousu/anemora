@@ -33,7 +33,7 @@ The Stage 3 closeout confirmed that `Shift` + left-drag now creates a window mat
 - Full EditMode: `32/32` passed.
 - Full PlayMode: `29/29` passed.
 - Windows Standalone build: success.
-- Build output: `C:\Users\maro6\Documents\Unity\Anemora-stage4-brushux\Builds\Stage4BrushUX\Anemora_Stage4_BrushUX.exe`.
+- Build output: `<worktree:Anemora-stage4-brushux>\Builds\Stage4BrushUX\Anemora_Stage4_BrushUX.exe`.
 
 The first implementation used runtime TMP text and produced a TMP missing-font warning during hint creation. The final implementation uses legacy uGUI `Text` with a runtime font fallback, and the targeted PlayMode rerun no longer reports `BrushTutorialHintText_Runtime` / `LiberationSans` warnings.
 

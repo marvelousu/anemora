@@ -20,10 +20,10 @@
 |---|---|---|---|
 | 1 | 主対話 (PITCH 起草) | Claude Opus 4.7 (Claude Code) | `/spec` 対話で章 8 → 章 1-7・9-10 を順次起こす |
 | 1-sub | 並列研究 | Claude general-purpose Agent × 3 並列 | エンジン/開発環境、AI 画像、AI 音響/3D/ローカライズの最新調査 |
-| 1-sub | クロスモデルレビュー (PITCH §8 章立て) | Codex gpt-5.4-mini (fast) | §8 章立て妥当性検証 |
-| 1-sub | クロスモデルレビュー (PITCH §8 技術スタック) | Codex gpt-5.4-mini (fast) | 技術スタック追加調査 + 事実誤認補正 |
+| 1-sub | クロスモデルレビュー (PITCH §8 章立て) | Codex (fast tier) | §8 章立て妥当性検証 |
+| 1-sub | クロスモデルレビュー (PITCH §8 技術スタック) | Codex (fast tier) | 技術スタック追加調査 + 事実誤認補正 |
 | 2 | 主対話 (SPEC 起草) | Claude Opus 4.7 (Claude Code) | breadth-first 13 章を一括起草 (対話なし、PITCH/CONCEPT を素材に) |
-| 2-sub | クロスモデルレビュー (SPEC v0) | Codex gpt-5.4-mini (fast) | A/B/C/D/E 5 軸レビュー → 12 件差分案 |
+| 2-sub | クロスモデルレビュー (SPEC v0) | Codex (fast tier) | A/B/C/D/E 5 軸レビュー → 12 件差分案 |
 
 ## Phase A: PITCH.md 起草 (10 章)
 
@@ -54,7 +54,7 @@
 - **AI 画像** — PixelLab / Aseprite / Retro Diffusion / Adobe Firefly / 各社の商用利用条項
 - **AI 音響 / 3D / ローカライズ** — AIVA Pro / Suno v5.5 / Stable Audio 2.5 / Meshy v6 / Reaper / 多言語化選択肢
 
-### Codex レビュー (fast = gpt-5.4-mini) の反映
+### Codex レビュー (fast tier) の反映
 
 | 検出項目 | 反映 |
 |---|---|
@@ -67,9 +67,9 @@
 
 ### グラフィック方針の混同訂正
 
-研究 Agent が「メイドインアビス / 少女終末旅行 / けものフレンズ」を絵柄参照として扱っていた。ユーザー指摘で訂正:
+研究 Agent が空気感参照 3 作 (段階開示型残酷ファンタジー / 静謐終末紀行 / 無垢視点アニメ) を絵柄参照として扱っていた。ユーザー指摘で訂正:
 
-- **絵柄参照**: HD-2D 系スクエニ作品 (Octopath / Triangle Strategy / Sea of Stars 序盤 / DQ3HD2D)
+- **絵柄参照**: HD-2D 系既存作 (大手パブリッシャ HD-2D ライン)
 - **空気感参照**: 上記 3 作品 (テーマ・物語的方向性のみ、絵柄は参照しない)
 
 ### ボイス採用見送り
@@ -78,7 +78,7 @@
 
 ### HD-2D Tier 議論
 
-動的ライティングの工数増加リスクをユーザーが懸念 → Tier 0-4 フレームワーク提示 → **Tier 2 (動的影 + 単一方向光) を採用**、Tier 3-4 (volumetric / sprite normal map / multiple lights) は不採用。Sea of Stars 等の参考作品を参照してプロトタイプで検証。
+動的ライティングの工数増加リスクをユーザーが懸念 → Tier 0-4 フレームワーク提示 → **Tier 2 (動的影 + 単一方向光) を採用**、Tier 3-4 (volumetric / sprite normal map / multiple lights) は不採用。HD-2D 系既存作を参照してプロトタイプで検証。
 
 ### 三段階公開モデル (private memory 由来)
 
@@ -86,13 +86,13 @@
 - **itch.io** ($0) — Vertical Slice 完成後 (Stage 3 後半)
 - **Steam** ($100 サンクコスト判断後) — 完成度しきい値超過後 (Stage 5)
 
-`~/.claude/projects/-home-maro1-private-career/memory/project_game_3dpx_kickoff.md` で 2026-05-04 確定済の三段階モデルを公開ドックに反映。私的メモの内容自体は公開せず、結論のみ転載。
+2026-05-04 確定済の三段階モデルを公開ドックに反映。私的メモの内容自体は公開せず、結論のみ転載。
 
 ### Obsidian / workflow 更新
 
-- `~/notes/games/anemora/` に PITCH/CONCEPT/README をコピー
-- Working Copy (iOS) で表示されない問題 → notes は git repo (`marvelousu/notes`) のため commit + push が必要と判明
-- `~/shared-context/workflow.md` §6 にルール追加: 「`~/notes/` 配下にファイルを書込み・コピーした場合は commit + push まで一連で行う」
+- ローカル Obsidian vault に PITCH/CONCEPT/README をコピー
+- Working Copy (iOS) で表示されない問題 → vault は git repo のため commit + push が必要と判明
+- 共通 workflow ルールに追加: 「vault 配下にファイルを書込み・コピーした場合は commit + push まで一連で行う」
 
 ### 工数見積もりバイアスの矯正
 
@@ -115,9 +115,9 @@
 - **重複は避ける** (PITCH.md / CONCEPT.md と二層構造、SPEC は実装観点で再展開)
 - **TBD を明示** (Stage 3 で確定すべき項目を Stage 2 で勝手に決めない、`feedback_anemora_no_premature_lockin` 遵守)
 
-### Write tool 不発の障害切り分け
+### 起草フローの障害切り分け
 
-複数回「着手します」と宣言しながら同レスポンス内で `Write` を発行せず、会話が停止する事象が発生。原因は Claude 側の応答パターン (宣言文で終了し tool を呼ばない) と判明、Write tool 自体は正常動作。修正後、宣言なしで直接 `Write` を発行して 758 行の v0 を作成。
+複数回「着手します」と宣言しながら同レスポンス内でファイル書き込みが行われず、会話が停止する事象が発生。原因は応答パターン (宣言文で終了し書き込みに進まない) 側にあると判定、書き込み機能自体は正常動作。修正後、宣言なしで直接書き込みを発行して 758 行の v0 を作成。
 
 ### Codex (fast) v0 レビュー → 差分案 → P0+P1 適用
 
@@ -177,11 +177,10 @@
 
 - `project_anemora_stage1_complete.md` (Stage 1 完了)
 - `feedback_anemora_no_premature_lockin.md` (世界観・コンセプト軸の早期確定回避)
-- `~/.claude/projects/-home-maro1-private-career/memory/project_game_3dpx_kickoff.md` (kickoff 全体方針、三段階公開モデル)
 
 ## 反省点 / 次回への申送り
 
 1. **工数見積もりバイアス** — Claude の時間見積もりは保守的に出やすい。Stage 3 以降は数値を出さないか、ユーザーに「枠」として提示するに留める
-2. **Write tool 宣言だけ問題** — 「着手します」で応答終了せず、同レスポンス内で必ず tool 発行
+2. **起草宣言だけで停止する問題** — 「着手します」で応答終了せず、同レスポンス内で書き込みまで進める
 3. **クロスモデルレビューの定常化** — Stage 1 で確立した 3 ラウンドレビューを Stage 2 でも実施 (Codex × 3 回)、Stage 3 でも継続予定
 4. **早期確定回避の境界** — 世界観・コンセプト軸 = 確定回避 / システム機構 = Stage 2 で固定可、の判断軸が明確化。P2 群の扱いはユーザー判断に委ねる方針が機能

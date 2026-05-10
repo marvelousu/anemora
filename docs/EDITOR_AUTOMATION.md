@@ -27,7 +27,7 @@ git diff --stat
 ```powershell
 & "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" `
   -batchmode `
-  -projectPath "C:\Users\maro6\Documents\Unity\Anemora" `
+  -projectPath "<repo>" `
   -executeMethod Anemora.EditorTools.AnemoraE0Setup.Run `
   -quit
 ```
@@ -51,8 +51,8 @@ git diff --stat
   - Batchmode execute methods:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.Run -quit
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.CaptureE1Screenshots -quit
+& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.Run -quit
+& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.CaptureE1Screenshots -quit
 ```
 
 - Prerequisites: Unity Editor, URP, portal shaders, `SymbolWheelController`, and TimeManagement scripts compiled.
@@ -77,7 +77,7 @@ git diff --stat
   - Batchmode execute method:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -executeMethod AnemoraTmpJapaneseAtlasBuilder.Build -quit
+& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod AnemoraTmpJapaneseAtlasBuilder.Build -quit
 ```
 
 - Prerequisites: `Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf`, TextMeshPro, and TMP essential resources or package cache access.
@@ -97,7 +97,7 @@ git diff --stat
   - Batchmode execute method:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -executeMethod Anemora.Editor.AnemoraZone1BuildingAssetSetup.ApplyZone1BuildingImport -quit
+& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod Anemora.Editor.AnemoraZone1BuildingAssetSetup.ApplyZone1BuildingImport -quit
 ```
 
 - Prerequisites: FBX files under `Assets/Art/Models/Zone1/` and the Zone1 atlas PNG if the shared material should receive a texture.
@@ -188,7 +188,7 @@ powershell -ExecutionPolicy Bypass -File tools/generate_zone1_sfx_elevenlabs.ps1
 powershell -ExecutionPolicy Bypass -File tools/generate_zone1_sfx_elevenlabs.ps1 -Force
 ```
 
-- Prerequisites: PowerShell, network access, `ELEVENLABS_API_KEY`, and the ffmpeg-static executable currently referenced at `C:\Users\maro6\.codex\tools\ffmpeg-static\node_modules\ffmpeg-static\ffmpeg.exe`.
+- Prerequisites: PowerShell, network access, `ELEVENLABS_API_KEY`, and the ffmpeg-static executable referenced at the Codex tools directory (e.g. `<codex-tools>/ffmpeg-static/node_modules/ffmpeg-static/ffmpeg.exe`).
 - Authentication: `ELEVENLABS_API_KEY` read from Process, User, then Machine environment scopes.
 - Expected behavior: calls ElevenLabs sound generation, stores MP3 intermediates, converts to mono 44.1 kHz OGG Vorbis q6 with HPF / trim / fade / loudnorm, writes final Zone1 paths and compatibility paths, and updates the manifest.
 - Output paths:

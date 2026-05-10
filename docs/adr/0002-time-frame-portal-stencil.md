@@ -26,7 +26,7 @@ Anemora の中核機構である **時の窓 (Time Frame)** は、3D 空間中�
 - Unity 6.3 LTS + URP (Universal Render Pipeline) を採用 (ADR-0001)
 - HD-2D Tier 2 (動的影 + 単一方向光) を採用、Tier 3-4 (volumetric / sprite normal map / multiple lights) は不採用
 - 固定アイソメ視点 (自由視点排除、SPEC §7.4)
-- 開発機: ノート PC TOM (統合 Radeon, VRAM 2GB) で軽量検証 → デスクトップ UJPVOG2 (RTX 2070S) で仕上げ (STAGE3_PLAN §10)
+- 開発機: ノートPC (統合 Radeon, VRAM 2GB) で軽量検証 → デスクトップ (RTX 2070S) で仕上げ (STAGE3_PLAN §10)
 
 ### E1 確定メモ (2026-05-05)
 
@@ -136,7 +136,7 @@ VS_SCOPE §7 で **「FIX エリア (Stage 4 でも改修しない、コア機�
 ### 欠点 / 注意点
 
 - **シェーダ作業に HLSL カスタムシェーダが必要** — URP のシェーダグラフだけでは Stencil 制御が完結しないケースがある、HLSL を直接書く工程が発生
-- **マルチパスレンダリングで GPU 負荷増** — ノート PC TOM の統合 Radeon (VRAM 2GB) で動作確認必須、VS_SCOPE §7 FIX エリアの実装は **デスクトップ UJPVOG2 (RTX 2070S) での仕上げ** が前提 (STAGE3_PLAN §10.2 切替トリガー)
+- **マルチパスレンダリングで GPU 負荷増** — ノートPC の統合 Radeon (VRAM 2GB) で動作確認必須、VS_SCOPE §7 FIX エリアの実装は **デスクトップ (RTX 2070S) での仕上げ** が前提 (STAGE3_PLAN §10.2 切替トリガー)
 - **HD-2D Tier 2 動的影との干渉確認が必須** — 動的影自体は stencil とは独立だが、URP の内部予約ビット・レンダリング設定との非競合を実機検証で確認する。必要なら Forward 固定 + 予約ビット運用に寄せる (`_RenderingLayerMask` 経由の分離も検証候補)
 - **URP public pass 依存へ移行済み** — E1/E4 時点では `DrawObjectsPass` internal API に依存していたが、Stage 4 v1.2 で public `RenderObjectsPass` へ移行した。今後 URP package が `RenderObjectsPass` API を変える場合は、RenderGraph-capable custom pass への再移行を検討する
 - **ポータル踏込み時のシーン遷移ロジックは別 ADR** — ADR-0005 (時間管理 / シーン切替) で詳細化、本 ADR では「踏込みフレームで主従反転」という方針のみ定義
@@ -218,8 +218,8 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 
 ### 描画品質と GPU 負荷
 
-5. **GPU 負荷 (ノート PC TOM 統合 Radeon)** — 60 FPS 維持できるか、ノート PC TOM でのフレーム時間内訳が許容範囲か、できない場合のフォールバック (Tier 2 → Tier 1 への退避基準)
-6. **Visual テスト基準** — デスクトップ UJPVOG2 (RTX 2070S) でターゲット品質を確認、ノート PC との見え方差を記録
+5. **GPU 負荷 (ノートPC 統合 Radeon)** — 60 FPS 維持できるか、ノートPC でのフレーム時間内訳が許容範囲か、できない場合のフォールバック (Tier 2 → Tier 1 への退避基準)
+6. **Visual テスト基準** — デスクトップ (RTX 2070S) でターゲット品質を確認、ノート PC との見え方差を記録
 
 ### 可視アーティファクト
 
@@ -253,7 +253,7 @@ VS 制作開始時の Vertical Slice プロトタイプで以下を検証:
 - Brackeys "Portals in Unity" 系チュートリアル
 - Code Monkey "Portal Effect Unity"
 - Catlike Coding "Custom SRP" シリーズ
-- HD-2D 風シェーダ事例: Sea of Stars (公開資料があれば) / Octopath Traveler GDC 講演
+- HD-2D 風シェーダ事例: HD-2D 系既存作の公開資料 / 大手 HD-2D タイトルの GDC 講演
 
 ### Anemora 内部文書
 

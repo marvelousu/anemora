@@ -54,7 +54,7 @@ Stage 3 /spec resolution interview (2026-05-05) でユーザー承認を受け�
 
 | 種別 | 生成 | 中間処理 / 仕上げ | 必要プラン / 備考 |
 |---|---|---|---|
-| **2D character / object** | PixelLab | Aseprite (Steam 正式版) | PixelLab Pixel Apprentice: `$13.20/month` (税額込み実支払)、Aseprite は Steam 正式版 |
+| **2D character / object** | PixelLab | Aseprite | PixelLab Pixel Apprentice paid plan、Aseprite は購入済み |
 | **3D building / prop** | Meshy v6 paid | Blender 4.5.5 LTS、Unity prefab 化 | Meshy は credits 制 paid plan。Blender で scale / origin / material / collider / mesh 破綻を修復 |
 | **Audio BGM** | AIVA Pro + Suno paid + Stable Audio | Studio One | 役割分担は ADR-0003 / `docs/asset_prompts/bgm_zone1_ambient.md` に従う |
 | **Audio SFX** | ElevenLabs / Stable Audio | Studio One | 詳細は `docs/asset_prompts/sfx_zone1.md`。Voice 用途とは分離 |
@@ -258,7 +258,7 @@ Tier は「使用した tool」ではなく「最終成果物への AI 生成物
 ### 外部 tool / license source
 
 - PixelLab: Pixel Apprentice plan
-- Aseprite: Steam 正式版
+- Aseprite: 購入済み正式版
 - Meshy v6 paid credits
 - Blender 4.5.5 LTS
 - Studio One

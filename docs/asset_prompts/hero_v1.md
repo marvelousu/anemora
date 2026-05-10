@@ -19,7 +19,7 @@
 | 動機 | 家族に会いたい | プロンプトには反映せず、表情の柔らかさで間接表現 |
 | 時の筆 | ポケットに忍ばせる | v1 では描画対象外、別アセット |
 | 解像度 | 32x48 px | `32x48 pixel art`, `low resolution sprite` |
-| 美術参照 | HD-2D Tier 2 簡素版 | `Octopath Traveler / Sea of Stars early game inspired pixel art` |
+| 美術参照 | HD-2D Tier 2 簡素版 | `mainstream HD-2D RPG early game inspired pixel art` |
 
 ---
 
@@ -32,7 +32,7 @@ in muted earth tones (worn brown jacket, soft beige tunic, simple cloth trousers
 short to medium dark brown hair with a slight asymmetric cut, slim build of average
 height, gentle posture, rendered in HD-2D inspired pixel art style at 32x48 resolution,
 limited palette of 16-24 colors, soft directional lighting from upper-left, clean
-silhouette readable at small sizes, inspired by Octopath Traveler and Sea of Stars
+silhouette readable at small sizes, inspired by mainstream HD-2D RPG
 early-game character sprites, quiet melancholic mood without being grim.
 ```
 
@@ -64,7 +64,7 @@ short to medium dark brown hair with a slight asymmetric cut, slim build of aver
 height, gentle posture, facing the viewer, front view, standing still, arms relaxed
 at sides, rendered in HD-2D inspired pixel art style at 32x48 resolution, limited
 palette of 16-24 colors, soft directional lighting from upper-left, clean silhouette
-readable at small sizes, inspired by Octopath Traveler and Sea of Stars early-game
+readable at small sizes, inspired by mainstream HD-2D RPG early-game
 character sprites, quiet melancholic mood without being grim.
 ```
 

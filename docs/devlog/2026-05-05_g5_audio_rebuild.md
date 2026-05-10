@@ -12,13 +12,13 @@ This pass rebuilt the Windows Standalone player from clean `origin/main` at:
 
 Temporary worktree:
 
-`C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build`
+`<worktree:Anemora-g5-audio-build>`
 
 ## 2. Output
 
 Audio-enabled Windows build:
 
-`C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Builds\G5Audio\Anemora_G5_Audio.exe`
+`<worktree:Anemora-g5-audio-build>\Builds\G5Audio\Anemora_G5_Audio.exe`
 
 Build command shape:
 

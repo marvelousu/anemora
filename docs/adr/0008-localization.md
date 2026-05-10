@@ -408,7 +408,7 @@ Stage 5 で言語を 1 つ追加する場合:
 
 ### 欠点 / 注意点
 
-- **TMP Atlas 容量**: 日本語 6,000-7,000 字で 4096x4096 SDF1 想定、メモリ占有が大きい (ノート PC TOM の VRAM 2GB で動作確認必須)
+- **TMP Atlas 容量**: 日本語 6,000-7,000 字で 4096x4096 SDF1 想定、メモリ占有が大きい (ノートPC の VRAM 2GB で動作確認必須)
 - **Fallback 設計**: 日本語 / 英語 Atlas のフォールバック関係を双方向で設定する必要、設定漏れで「□」表示が出るリスク
 - **LocalizationSettings YAML の trailing space**: `Assets/Localization/LocalizationSettings.asset` には Unity `SerializeReference` の空 value として `data: ` / `- ` が出る。これらを blanket trim すると `LocalizationSettings` 初期化失敗や PlayMode localization test timeout を招くため、通常の Markdown / C# と同じ whitespace cleanup 対象にしない。
 - **DeepL の機械訳と用語集の整合**: 自動翻訳が用語集を尊重しないため、人手校正の負荷
@@ -502,7 +502,7 @@ Stage 5 で言語を 1 つ追加する場合:
 
 - Unity Localization + TMP 日本語 Atlas 連携チュートリアル
 - DeepL API + Unity Editor 拡張事例
-- HD-2D / RPG ローカライズ事例 (Octopath Traveler の多言語対応分析記事があれば)
+- HD-2D / RPG ローカライズ事例 (HD-2D 系既存作の多言語対応分析記事があれば)
 
 ### Anemora 内部文書
 

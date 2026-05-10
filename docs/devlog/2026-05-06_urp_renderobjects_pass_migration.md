@@ -30,7 +30,7 @@ Automated tests:
 Build and runtime:
 
 - Windows Standalone build: success.
-- Build path: `C:\Users\maro6\Documents\Unity\Anemora-stage4-phase0\Builds\Stage4Phase0URP\Anemora_Stage4_URP.exe`.
+- Build path: `<worktree:Anemora-stage4-phase0>\Builds\Stage4Phase0URP\Anemora_Stage4_URP.exe`.
 - 30 second player run log: `stage4_phase0_player_30s.log`.
 - `DrawObjectsPass does not have an implementation of the RecordRenderGraph method` count: `0`.
 - No `Exception`, `Error`, `Warning`, `DrawObjectsPass`, or `RecordRenderGraph` lines were found in the 30 second player log.

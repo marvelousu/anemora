@@ -168,8 +168,8 @@ Unity Editor:
 CLI (batchmode examples):
 
 ```powershell
-Unity.exe -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -runTests -testPlatform EditMode -testResults editmode_results.xml
-Unity.exe -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -runTests -testPlatform PlayMode -testResults playmode_results.xml
+Unity.exe -batchmode -projectPath "<repo>" -runTests -testPlatform EditMode -testResults editmode_results.xml
+Unity.exe -batchmode -projectPath "<repo>" -runTests -testPlatform PlayMode -testResults playmode_results.xml
 ```
 
 Windows build:
@@ -178,7 +178,7 @@ Windows build:
 - Batchmode form, when build scripting is available:
 
 ```powershell
-Unity.exe -batchmode -projectPath "C:\Users\maro6\Documents\Unity\Anemora" -buildWindows64Player "<output>\Anemora.exe"
+Unity.exe -batchmode -projectPath "<repo>" -buildWindows64Player "<output>\Anemora.exe"
 ```
 
 ## 7. 更新履歴

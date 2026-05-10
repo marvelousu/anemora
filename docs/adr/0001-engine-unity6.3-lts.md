@@ -41,7 +41,7 @@ Anemora の中核機構である「時の窓 (Time Frame)」は、3D 空間に�
 ### 利点
 
 - ステンシルバッファ + Renderer Feature の事例 / アセット / コミュニティが豊富
-- HD-2D 風シェーダの実装事例が多数 (Octopath / Triangle Strategy 系の研究記事)
+- HD-2D 風シェーダの実装事例が多数 (HD-2D 系既存作の研究記事)
 - C# の表現力と AI コード支援 (Claude / Codex の C# 知識) の親和性が高い
 - Unity Asset Store で時間 / VFX / UI 系の補助資産が入手可能
 - マルチプラットフォーム対応の手数が最小

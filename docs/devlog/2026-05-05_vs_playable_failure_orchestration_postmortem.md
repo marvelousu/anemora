@@ -6,7 +6,7 @@ Date: 2026-05-05
 
 user が以下の Windows Standalone build を起動した結果、VS が actually playable な体になっていないことが発覚:
 
-`C:\Users\maro6\Documents\Unity\Anemora-g5-audio-build\Builds\G5Audio\Anemora_G5_Audio.exe` (commit `e6e3c61`、A4 audio 入り)
+`<worktree:Anemora-g5-audio-build>\Builds\G5Audio\Anemora_G5_Audio.exe` (commit `e6e3c61`、A4 audio 入り)
 
 症状:
 

@@ -28,7 +28,7 @@ Unity `SceneRoots` order:
 | `Root_Past` | 0 | `Transform` | Parent for Past-side visual geometry, the past book interactable, and Resident NPC prefab instances. Children use Layer 11. |
 | `Camera_Past` | 0 | inactive `Camera`, `PastCameraSync` | Disabled Past camera skeleton. It syncs to `Main Camera` and culls Layer 11 when enabled, but the current VS path uses `Main Camera` culling flips instead. |
 | `SceneRootRegistry` | 0 | `SceneRootRegistry` | Registry for `Root_Current`, `Root_Past`, `Main Camera`, and `Camera_Past`. `pastRootVisibleOnStart` is true in the scene. |
-| `Player` | 8 | tag `Player`, `PrototypePlayerController`, `CapsuleCollider` | Prototype controllable player. It starts on Layer 8, drives footstep audio through `Zone1AudioController`, and has Current/Past visual prefab children under it. The character identity is Niro / ニロ: gender-neutral, 15-19, Snufkin-like hat direction, provisionally adopted for Stage 3. |
+| `Player` | 8 | tag `Player`, `PrototypePlayerController`, `CapsuleCollider` | Prototype controllable player. It starts on Layer 8, drives footstep audio through `Zone1AudioController`, and has Current/Past visual prefab children under it. The character identity is Niro / ニロ: gender-neutral, 15-19, brimmed traveler-style hat direction, provisionally adopted for Stage 3. |
 | `PortalSpawnPoint` | 0 | `Transform` | Spawn and plane reference for the time-frame portal. Position is `(0, 0.9, -0.25)` and the scene rotation points the portal normal along back. |
 | `SymbolWheel` | 5 | PrefabInstance: `Assets/UI/Prefabs/SymbolWheel.prefab`, `SymbolWheelController` | Root UI for symbol choice. The scene overrides the prefab root and child UI layers to Layer 5. |
 | `TimeFramePortalSystem` | 0 | `TimeFramePortalController`, `PortalCrossingDetector`, `SceneSidePolarity`, `PortalVisualSwitcher`, `PortalFlashPlayer`, `Volume`, `ActionRecordRuntime`, `BookReflector` | Central runtime object for portal generation, side flip, visual layer switching, flash, ActionRecord dispatch, and book reflection. |
@@ -74,7 +74,7 @@ The three Current visual instances and three Past visual instances are what the 
 Niro prefab note:
 
 - The scene still references the F2/F4 `Hero.prefab` visual set. Stage 3 /spec resolution names this character Niro / ニロ, fixes gender-neutral expression, and sets the age range to 15-19.
-- The Snufkin-like hat direction is part of the provisional character direction, but the current F2 v1 sprite set does not fully reflect that hat silhouette yet. Treat it as a Stage 4 revision caveat, not a scene wiring blocker.
+- The brimmed traveler-style hat direction is part of the provisional character direction, but the current F2 v1 sprite set does not fully reflect that hat silhouette yet. Treat it as a Stage 4 revision caveat, not a scene wiring blocker.
 
 Audio branch:
 
@@ -234,7 +234,7 @@ Audio trigger wiring:
 - Prefab contents can add child objects beyond what the scene YAML stores directly. This tour records scene-local objects and named PrefabInstance roots/overrides visible from the scan.
 - `Camera_Past` exists as an inactive skeleton. VS runtime switching is currently driven by `Main Camera` culling masks through `PortalVisualSwitcher`.
 - `Resident_B_Instance` is still parented under `Root_Past` in the scanned scene YAML, while the lore role documented in v0.2 treats Resident_B as the current-side ruins / library observer. If G3 final placement moves the instance, update this tour after the scene commit.
-- Niro's Snufkin-like hat is a character-direction decision reflected in docs, but the current F2 v1 `Hero.prefab` visuals do not yet fully show that silhouette.
+- Niro's brimmed traveler-style hat is a character-direction decision reflected in docs, but the current F2 v1 `Hero.prefab` visuals do not yet fully show that silhouette.
 
 ## 9. Revision History
 
