@@ -9,6 +9,10 @@ Thumbs.db
 NOTES_LOCAL.md
 *.local.md
 
+# Session terminal logs / conversation fragments (公開対象外)
+conversation-*.txt
+conversation-*.log
+
 # ===========================
 # Unity (Stage 3 で initialize 後に有効化)
 # ===========================
