@@ -1,8 +1,10 @@
 # Stage 3 Retrospective
 
-Status: v1.0 Stage 3 closeout (2026-05-06)
+> **Note (current state)**: 本 retrospective は **2026-05-06 時点で Stage 3 を closeout 区切りとした際の振り返り** です。その後 Chapter 1 拡張・HD-2D polish 等の追加実装が継続中で、通しプレイ可能な build はまだ存在しません。最新の制作状態は README の Status と最新の `docs/devlog/` を参照してください。
 
-本 doc は、Stage 3 Vertical Slice 完了後の retrospective である。`docs/G5_ACCEPTANCE_MATRIX.md` に user manual G5 結果を反映し、`docs/VS_SCOPE.md` v1.0 で Stage 3 完了判定を確定した。
+Status: v1.0 Stage 3 closeout snapshot (recorded 2026-05-06, historical)
+
+本 doc は、2026-05-06 時点で Stage 3 Vertical Slice を closeout 区切りとした際の retrospective である。`docs/G5_ACCEPTANCE_MATRIX.md` に当時の user manual G5 結果を反映し、`docs/VS_SCOPE.md` v1.0 で当時の Stage 3 完了判定を確定した記録。
 
 ## 1. VS_SCOPE evolution
 

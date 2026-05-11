@@ -1,6 +1,8 @@
 # G5 Acceptance Matrix
 
-Status: Final Stage 3 closeout record (2026-05-06)
+> **Note (current state)**: 本マトリクスは **2026-05-06 時点の Stage 3 closeout 区切り時点のスナップショット記録** であり、当時の通過判定結果を残したものです。その後 Chapter 1 拡張・HD-2D polish 等が継続中で、現時点で同等の build が動作することを示すものではありません。最新の制作状態は README の Status と最新の `docs/devlog/` を参照してください。
+
+Status: 2026-05-06 時点の Stage 3 closeout 区切り時点のスナップショット記録 (historical)
 
 Purpose: Stage 3 Day 1 の G5 通し体験で、VS_SCOPE §8 の完了条件と E0-E5 / A2 / G4 / F4 / G3 / Audio / Windows build を一括検証するための記入用マトリクス。
 
