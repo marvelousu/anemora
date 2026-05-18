@@ -2,7 +2,41 @@
 
 > HD-2D 探索アクション・アドベンチャー。衰退する街で「時の窓」を開き、過去で取った小さな行動が現在の風景を変える、短い循環の体験を目指しています。
 
-> 現在 Stage 3 Vertical Slice を制作中です。スクリーンショットや trailer は VS 完成後に追加予定です。
+> 2026-05-18 時点の Fast VS 公開 baseline は `vs-public-2026-05-18` です。Chapter 1 のニロの家、外、広場、図書館、時の窓 V24、レトの本イベントまでを確認できます。
+
+## Play the Fast VS
+
+Windows build を受け取っている場合は、展開したフォルダ内の `Anemora_FastVS_HouseSlice.exe` を実行してください。`.exe` だけを別の場所へ移動せず、同じ階層の `Anemora_FastVS_HouseSlice_Data/`, `UnityPlayer.dll`, `MonoBleedingEdge/`, `D3D12/` と一緒に置いたまま起動します。
+
+この作業環境で直接確認する場合:
+
+```text
+Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe
+```
+
+この作業環境には release 添付用の zip も生成しています。
+
+```text
+Builds/Anemora_FastVS_HouseSlice_20260518.zip
+```
+
+`Builds/` は Git 管理対象外です。GitHub で公開する場合は、この zip を release asset として添付してください。
+
+### Controls
+
+| Action | Input |
+|---|---|
+| Move | `WASD` / Arrow keys |
+| Interact / advance text | `E`, `Space`, or `Enter` |
+| Move between maps | Walk onto glowing floor pads |
+| Create Time Window | After the Reto event unlocks it, left-drag on the screen |
+| Close Time Window | Right-click or `Esc` while Niro is in the current-time side |
+
+Expected route:
+
+```text
+Niro house interior -> house exterior -> central plaza -> library -> Reto / book / Time Window event -> VS clear
+```
 
 ## このリポジトリの読みどころ
 
@@ -21,8 +55,8 @@
 
 | Item | Status |
 |---|---|
-| Development stage | Stage 3 Vertical Slice 制作中 (Chapter 1 拡張・HD-2D polish 進行中) |
-| Playable state | 通しプレイ可能な build はまだ存在しません。リポジトリ上は実装作業中の状態です |
+| Development stage | Fast VS public baseline fixed at `vs-public-2026-05-18`; post-VS polish continues on branches |
+| Playable state | Windows Fast VS build exists locally under `Builds/FastVS_HouseSlice/`; attach the full folder as a release zip for public play |
 | Unity / URP | `6000.3.14f1` / URP `17.3.0` |
 | Public release path | Steam Early Access を主軸として想定 (時期・条件は Stage 4 review で確定) |
 | Code license | All Rights Reserved by default (Stage 4 entry で再評価) |
@@ -47,6 +81,23 @@
 | Localization | TMP SDF Atlas (JP: 美咲ゴシック / EN: Press Start 2P) + LocalizationSettings |
 | Source control | Git + GitHub (worktree-per-feature ワークフロー) |
 
+## Technical Basics
+
+Fast VS は、旧 `Anemora_Main` の統合状態とは別に、V24 の時の窓挙動をベースに最短で遊べる形へまとめた公開用スライスです。
+
+| Area | Entry point |
+|---|---|
+| Fast VS generated scene | `Assets/Scenes/Anemora_FastVS_HouseSlice.unity` |
+| Scene generator / build validation | `Assets/Editor/AnemoraFastVsHouseSliceSetup.cs` |
+| Time Window V24 controller | `Assets/Scripts/TimeManagement/TimeWindowPairedSpacePortalController.cs` |
+| Fast VS route / map switching | `Assets/Scripts/FastVS/FastVsHouseAreaVisibility.cs`, `Assets/Scripts/FastVS/FastVsAreaDoorTransition.cs` |
+| Fast VS story flow | `Assets/Scripts/FastVS/FastVsStoryFlowController.cs` |
+| Devlog index | [`docs/devlog/INDEX.md`](docs/devlog/INDEX.md) |
+| Public baseline record | [`docs/devlog/2026-05-18_fast_vs_public_repo_promotion.md`](docs/devlog/2026-05-18_fast_vs_public_repo_promotion.md) |
+| Verification log for current build | `Logs/fast_vs_build_validate_20260518_skip_opening_wake_line.log` |
+
+Unity Editor で再生成 / 再ビルドする場合は、Unity `6000.3.14f1` でプロジェクトを開き、menu から `Anemora/Fast VS/Create House Slice` または `Anemora/Fast VS/Build House Slice` を実行します。
+
 ## Development Model
 
 Anemora は個人開発プロジェクトで、AI を協働者として扱うパイプラインで運用しています。
@@ -64,13 +115,15 @@ Anemora は個人開発プロジェクトで、AI を協働者として扱うパ
 
 ## Getting Started
 
-Vertical Slice は現在制作中で、リポジトリを clone してもそのまま遊べる状態ではありません。Editor 上で動作確認したい場合の手順:
+Editor 上で Fast VS を確認したい場合の手順:
 
 1. Unity Hub で Unity `6000.3.14f1` をインストール
 2. このリポジトリを clone
-3. Unity Hub で `anemora/` プロジェクトを開く
-4. `Assets/Scenes/Anemora_Main.unity` を開く
-5. Unity Editor で Play (制作途中のため、シーン・スクリプト・アセットの整合性は時期により変動します)
+3. Unity Hub でプロジェクト root を開く
+4. `Assets/Scenes/Anemora_FastVS_HouseSlice.unity` を開く
+5. Unity Editor で Play
+
+広い本編側の作業状態を確認したい場合は `Assets/Scenes/Anemora_Main.unity` を開きます。ただし、公開 VS として固定しているのは `Anemora_FastVS_HouseSlice.unity` です。
 
 ## Directory Layout
 
@@ -88,8 +141,8 @@ Vertical Slice は現在制作中で、リポジトリを clone してもその�
 
 ## Roadmap
 
-- **Stage 3** (進行中): Vertical Slice。時の窓、ActionRecord、第 1 ゾーン Antela の最小体験を実装。Chapter 1 拡張・HD-2D polish 作業中。
-- **Stage 4** (準備中): Vertical Slice 完成後の発展フェーズ。graphics polish、Steam Early Access 提出準備、public-facing docs / store assets の整備。
+- **Fast VS public baseline** (2026-05-18): ニロの家から図書館、レトの本イベント、時の窓 V24 操作までの公開確認版。
+- **Post-VS polish**: graphics polish、Steam Early Access 提出準備、public-facing docs / store assets の整備。
 - **Stage 5+**: Steam Early Access feedback / full release planning.
 
 ## Contributing

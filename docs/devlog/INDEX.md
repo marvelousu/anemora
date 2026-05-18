@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 110 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
+Current root-level Markdown coverage: 111 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
 
 ### 2.0.0a Fast VS V24 Sample (2026-05-18)
 
@@ -39,6 +39,7 @@ Current root-level Markdown coverage: 110 files under `docs/devlog/`, including 
 | 2026-05-18 | [2026-05-18_fast_vs_left_bottom_timewindow_hint.md](2026-05-18_fast_vs_left_bottom_timewindow_hint.md) | Fast VS lower-left HUD narrowed to a brief Time Window creation hint only, with pre-unlock/after-unlock validation and worker-cycle record | This task | Fast VS / UI guidance | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_skip_opening_wake_line.md](2026-05-18_fast_vs_skip_opening_wake_line.md) | Fast VS branch-only removal of the initial wake dialogue line, with playable-start validation and worker-cycle record | This task | Fast VS / story pacing | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_public_repo_promotion.md](2026-05-18_fast_vs_public_repo_promotion.md) | Fast VS public baseline promotion plan: stable main, archive tags, continuation branch, and preservation of devlogs | This task | Fast VS / repository management | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-18 | [2026-05-18_fast_vs_public_readme_playability.md](2026-05-18_fast_vs_public_readme_playability.md) | Fast VS public README playability pass: play-first Windows build instructions, controls, technical entry points, and release zip note | This task | Fast VS / public onboarding | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0.0 Chapter 1 Narrative Design (2026-05-09)
 
