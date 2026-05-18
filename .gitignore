@@ -103,3 +103,8 @@ dist/
 art/_intermediate/
 audio/_intermediate/
 3d/_intermediate/
+
+# MCP client config.
+# Keep machine-resolved local paths out of git; track only .example templates.
+/.mcp.json
+/.codex/config.toml

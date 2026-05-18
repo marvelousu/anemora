@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v2.6 Fast VS public hygiene scan (2026-05-18). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v2.8 Fast VS public hygiene scan + Unity MCP foundation carry-forward (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,14 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 112 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
+Current root-level Markdown coverage: 114 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, Fast VS implementation records, and Unity MCP foundation records.
+
+### 2.0.0b Stage 4 Tooling - Unity MCP Foundation (2026-05-18)
+
+| 日付 | ファイル | topic | 関連 commit | 関連 milestone | CHANGELOG |
+|---|---|---|---|---|---|
+| 2026-05-19 | [2026-05-19_mcp_foundation_carry_forward.md](2026-05-19_mcp_foundation_carry_forward.md) | MCP foundation carried from `feat/unity-mcp-foundation` into `work/post-vs-public-20260518`; package lock hash, Node server build, and remote branch cleanup boundaries recorded | This task | Stage 4 / tooling | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-18 | [2026-05-18_unity_mcp_foundation.md](2026-05-18_unity_mcp_foundation.md) | Unity MCP foundation carry-forward: Synaptic Code rejected, CoderGamester/mcp-unity adopted, ADR-0010 and G1-G3 guardrails retained for post-VS work | `c6344e3` carry-forward | Stage 4 / tooling | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0.0a Fast VS V24 Sample (2026-05-18)
 
@@ -175,8 +182,10 @@ Current root-level Markdown coverage: 112 files under `docs/devlog/`, including 
 - [2026-05-05_g5_automated_run.md](2026-05-05_g5_automated_run.md) — G5 automated preflight, tests, build, and matrix results.
 - [2026-05-05_g5_audio_rebuild.md](2026-05-05_g5_audio_rebuild.md) — G5 audio-enabled rebuild for manual §H verification.
 
-### Documentation / ADR (0001-0009)
+### Documentation / ADR (0001-0010)
 
+- [2026-05-18_unity_mcp_foundation.md](2026-05-18_unity_mcp_foundation.md) — Unity MCP (ADR-0010) foundation and operation guardrails.
+- [2026-05-19_mcp_foundation_carry_forward.md](2026-05-19_mcp_foundation_carry_forward.md) — MCP foundation carry-forward into the post-VS development branch.
 - [README.md](README.md) — Devlog operating rules.
 - [2026-05-04_stage1_concept_dialogue.md](2026-05-04_stage1_concept_dialogue.md) — Stage 1 concept dialogue log.
 - [2026-05-04_stage2_pitch_spec.md](2026-05-04_stage2_pitch_spec.md) — Stage 2 PITCH / SPEC drafting log.
@@ -234,3 +243,5 @@ Current root-level Markdown coverage: 112 files under `docs/devlog/`, including 
 | v2.4 | 2026-05-09 | Chapter 1 Scene 5 v1 + 動線再設計 + Z 用語整理 + 白窓 1 周目なし + Niro 家伏線 2 周目修正 + モブ NPC 使いまわし devlog を追加し、root-level Markdown coverage を 60 件へ更新。第 1 章「忘れられた街」全シーン動線骨格完成。 |
 | v2.5 | 2026-05-18 | Fast VS rejected outdoor sky/background pass reverted; root-level Markdown coverage remains 107 files. |
 | v2.6 | 2026-05-18 | Public repo hygiene scan devlog added; root-level Markdown coverage updated to 112 files. |
+| v2.7 | 2026-05-19 | Unity MCP foundation devlog and ADR-0010 carried forward from `feat/unity-mcp-foundation`; root-level Markdown coverage updated to 113 files. |
+| v2.8 | 2026-05-19 | MCP foundation carry-forward devlog added with package-lock hash, Node server build verification, and live-handshake boundary; root-level Markdown coverage updated to 114 files. |

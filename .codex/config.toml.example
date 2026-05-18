@@ -1,0 +1,5 @@
+# Template only. Copy to .codex/config.toml, run the Server~ npm build, and replace RESOLVED_HASH per tools/mcp/SETUP.md.
+# The concrete .codex/config.toml is gitignored (machine-resolved path under Library/).
+[mcp_servers.mcp-unity]
+command = "node"
+args = ["Library/PackageCache/com.gamelovers.mcp-unity@RESOLVED_HASH/Server~/build/index.js"]
