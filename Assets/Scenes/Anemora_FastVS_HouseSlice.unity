@@ -58885,9 +58885,7 @@ MonoBehaviour:
   title: Anemora Fast VS Chapter 1 route - house / plaza / library
   currentStateLabel: CURRENT / Chapter 1 route
   otherStateLabel: PAST / Chapter 1 route
-  controlHint: Walk into glowing floor pads to switch maps along Interior > House
-    Exterior > Central Plaza > Library. Left-drag creates the V24 Time Window; close
-    it after returning to current time.
+  controlHint: "\u5DE6\u30C9\u30E9\u30C3\u30B0\u3067\u6642\u306E\u7A93\u3092\u63CF\u304F"
   isolateActiveTimeLayer: 1
   isolateActiveTimePhysics: 1
 --- !u!4 &1758961509

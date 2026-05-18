@@ -5,6 +5,8 @@ namespace Anemora.FastVS
 {
     public sealed class FastVsStoryFlowController : MonoBehaviour
     {
+        public const string TimeWindowCreationHintTextForReview = "左ドラッグで時の窓を描く";
+
         private const float QuestionHeadWorldOffset = 1.46f;
 
         private enum StoryMode
@@ -331,29 +333,10 @@ namespace Anemora.FastVS
                 return;
             }
 
-            if (waitingForPastObservation)
+            var timeWindowHint = ResolveTimeWindowCreationHintText();
+            if (!string.IsNullOrWhiteSpace(timeWindowHint))
             {
-                DrawSmallObjective(ResolvePastObservationObjective());
-                return;
-            }
-
-            if (waitingForRetoBookShow)
-            {
-                DrawSmallObjective(ResolveRetoBookShowObjective());
-                return;
-            }
-
-            if (showOpeningHint && !doorBrushBeatComplete && areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.Interior)
-            {
-                DrawSmallObjective("ベッドから起きた。外へ出る。");
-            }
-            else if (!retoEventComplete && IsRetoInteractionReady())
-            {
-                DrawSmallObjective("E: レトと話す");
-            }
-            else if (vsClear)
-            {
-                DrawSmallObjective("レトの話を聞いた。");
+                DrawSmallObjective(timeWindowHint);
             }
         }
 
@@ -410,33 +393,10 @@ namespace Anemora.FastVS
                 return;
             }
 
-            if (waitingForPastObservation)
+            var timeWindowHint = ResolveTimeWindowCreationHintText();
+            if (!string.IsNullOrWhiteSpace(timeWindowHint))
             {
-                dialoguePresenter.ShowObjective(ResolvePastObservationObjective());
-                return;
-            }
-
-            if (waitingForRetoBookShow)
-            {
-                dialoguePresenter.ShowObjective(ResolveRetoBookShowObjective());
-                return;
-            }
-
-            if (showOpeningHint && !doorBrushBeatComplete && areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.Interior)
-            {
-                dialoguePresenter.ShowObjective("ベッドから起きた。外へ出る。");
-                return;
-            }
-
-            if (!retoEventComplete && IsRetoInteractionReady())
-            {
-                dialoguePresenter.ShowObjective("E: レトと話す");
-                return;
-            }
-
-            if (vsClear)
-            {
-                dialoguePresenter.ShowObjective("レトの話を聞いた。");
+                dialoguePresenter.ShowObjective(timeWindowHint);
                 return;
             }
 
@@ -660,36 +620,6 @@ namespace Anemora.FastVS
                 return true;
             }
 
-            if (waitingForPastObservation)
-            {
-                runtimeHud.ShowObjective(ResolvePastObservationObjective());
-                return true;
-            }
-
-            if (waitingForRetoBookShow)
-            {
-                runtimeHud.ShowObjective(ResolveRetoBookShowObjective());
-                return true;
-            }
-
-            if (showOpeningHint && !doorBrushBeatComplete && areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.Interior)
-            {
-                runtimeHud.ShowObjective("ベッドから起きた。外へ出る。");
-                return true;
-            }
-
-            if (!retoEventComplete && IsRetoInteractionReady())
-            {
-                runtimeHud.ShowObjective("E: レトと話す");
-                return true;
-            }
-
-            if (vsClear)
-            {
-                runtimeHud.ShowObjective("レトの話を聞いた。");
-                return true;
-            }
-
             runtimeHud.HideAll();
             return true;
         }
@@ -839,101 +769,22 @@ namespace Anemora.FastVS
 
         private string ResolvePersistentObjectiveText()
         {
+            return ResolveTimeWindowCreationHintText();
+        }
+
+        private string ResolveTimeWindowCreationHintText()
+        {
             if (mode != StoryMode.None)
             {
                 return string.Empty;
             }
-            if (!openingWakeComplete)
-            {
-                return "ベッドから起きる。";
-            }
 
-            if (mode == StoryMode.DoorBrushBeat)
+            if (!PortalInputUnlockedForReview)
             {
                 return string.Empty;
             }
 
-            if (waitingForPastObservation)
-            {
-                return ResolvePastObservationObjective();
-            }
-
-            if (waitingForRetoBookShow)
-            {
-                return ResolveRetoBookShowObjective();
-            }
-
-            if (vsClear)
-            {
-                return "レトの話を聞いた。";
-            }
-
-            if (areaVisibility == null)
-            {
-                return "外へ出る。";
-            }
-
-            switch (areaVisibility.ActiveAreaForReview)
-            {
-                case FastVsHouseArea.Interior:
-                    return doorBrushBeatComplete ? "外へ出る。" : "外へ出る。";
-                case FastVsHouseArea.Exterior:
-                    return "北東の道を進む。";
-                case FastVsHouseArea.CentralPlaza:
-                    return "図書館へ向かう。";
-                case FastVsHouseArea.Library:
-                    return !retoEventComplete && IsRetoInteractionReady()
-                        ? "E: レトと話す"
-                        : "レトの机へ向かう。";
-                default:
-                    return "進む。";
-            }
-        }
-
-        private string ResolvePastObservationObjective()
-        {
-            if (IsAriaInteractionReady())
-            {
-                return "E: 過去の人影を見る";
-            }
-
-            if (IsPastBookInteractionReady())
-            {
-                return "E: 光っている本を調べる";
-            }
-
-            if (areaVisibility != null &&
-                portalController != null &&
-                areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library &&
-                portalController.PlayerInOtherTime)
-            {
-                return "過去の図書館で、光る本か人影の近くへ行く。";
-            }
-
-            return "黄色い光の近くで、時の窓を開く。";
-        }
-
-        private string ResolveRetoBookShowObjective()
-        {
-            if (IsRetoBookShowReady())
-            {
-                return "E: レトに本を見せる";
-            }
-
-            if (areaVisibility != null &&
-                portalController != null &&
-                areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library &&
-                portalController.PlayerInOtherTime)
-            {
-                return "時の窓から、現在の図書館へ戻る。";
-            }
-
-            if (areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library)
-            {
-                return "レトの机へ戻る。";
-            }
-
-            return "図書館でレトの机へ戻る。";
+            return TimeWindowCreationHintTextForReview;
         }
 
         private void ApplyRetoStepPresentationForCurrentLine()

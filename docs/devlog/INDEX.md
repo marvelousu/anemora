@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 107 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
+Current root-level Markdown coverage: 108 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
 
 ### 2.0.0a Fast VS V24 Sample (2026-05-18)
 
@@ -36,6 +36,7 @@ Current root-level Markdown coverage: 107 files under `docs/devlog/`, including 
 | 2026-05-18 | [2026-05-18_fast_vs_question_pause_portal_transition_close.md](2026-05-18_fast_vs_question_pause_portal_transition_close.md) | Fast VS head-close question marker, restored Reto silent pause before `いえ。今のは、ただの独り言です。`, and current-time Time Window close on map transition with worker-cycle record and validation evidence | This task | Fast VS / review fix | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_library_shelf_window_objective_cleanup.md](2026-05-18_fast_vs_library_shelf_window_objective_cleanup.md) | Fast VS library side-shelf height, left overlap-box removal, post-past-flags objective text, and library/plaza window pane cleanup with worker-cycle record and validation evidence | This task | Fast VS / review fix | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_outdoor_sky_background_revert.md](2026-05-18_fast_vs_outdoor_sky_background_revert.md) | Fast VS rejected outdoor sky/background pass reverted to no-added-backdrop state with worker-cycle record and validation evidence | This task | Fast VS / visual background | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-18 | [2026-05-18_fast_vs_left_bottom_timewindow_hint.md](2026-05-18_fast_vs_left_bottom_timewindow_hint.md) | Fast VS lower-left HUD narrowed to a brief Time Window creation hint only, with pre-unlock/after-unlock validation and worker-cycle record | This task | Fast VS / UI guidance | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0.0 Chapter 1 Narrative Design (2026-05-09)
 

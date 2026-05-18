@@ -1320,7 +1320,7 @@ namespace Anemora.EditorTools
             SerializedSet(guide, "title", "Anemora Fast VS Chapter 1 route - house / plaza / library");
             SerializedSet(guide, "currentStateLabel", "CURRENT / Chapter 1 route");
             SerializedSet(guide, "otherStateLabel", "PAST / Chapter 1 route");
-            SerializedSet(guide, "controlHint", "Walk into glowing floor pads to switch maps along Interior > House Exterior > Central Plaza > Library. Left-drag creates the V24 Time Window; close it after returning to current time.");
+            SerializedSet(guide, "controlHint", FastVsStoryFlowController.TimeWindowCreationHintTextForReview);
             SerializedSet(guide, "showDebugOverlay", false);
             return guide;
         }
@@ -3534,6 +3534,12 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Time Window input and current-side cues must be locked before the Reto event unlocks them.");
             }
 
+            story.RefreshPresentationForReview();
+            if (story.RuntimeHudObjectiveTextForReview != string.Empty)
+            {
+                throw new InvalidOperationException("House slice validation failed: lower-left HUD must stay empty until the Time Window is unlocked.");
+            }
+
             story.TriggerOpeningWakeForReview();
             story.RefreshPresentationForReview();
             if (!guide.MovementFrozenForReview ||
@@ -3686,6 +3692,12 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Reto [1.B]-[1.D] did not wait for player-controlled past observation or unlock both current-side Time Window cues.");
             }
 
+            story.RefreshPresentationForReview();
+            if (story.RuntimeHudObjectiveTextForReview != FastVsStoryFlowController.TimeWindowCreationHintTextForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: lower-left HUD must show only the brief Time Window creation method after the Time Window unlocks.");
+            }
+
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerOtherTimeLocalForReview(new Vector3(PastLibraryPersonCueLocalPosition.x, 0.02f, PastLibraryPersonCueLocalPosition.z));
             if (!story.AriaInteractionReadyForReview)
@@ -3774,9 +3786,9 @@ namespace Anemora.EditorTools
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(-2.20f, 0.02f, -1.85f));
             story.RefreshPresentationForReview();
-            if (story.RuntimeHudObjectiveTextForReview != "レトの机へ戻る。")
+            if (story.RuntimeHudObjectiveTextForReview != FastVsStoryFlowController.TimeWindowCreationHintTextForReview)
             {
-                throw new InvalidOperationException("House slice validation failed: after both past-library flags, current-side guide must point back to Reto's desk instead of the Time Window.");
+                throw new InvalidOperationException("House slice validation failed: after both past-library flags, lower-left HUD must remain a brief Time Window creation method instead of story guidance.");
             }
 
             controller.ForcePlayerCurrentLocalForReview(RetoLibraryDeskLocalPosition);
