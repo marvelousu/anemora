@@ -80,7 +80,7 @@
 
 動的ライティングの工数増加リスクをユーザーが懸念 → Tier 0-4 フレームワーク提示 → **Tier 2 (動的影 + 単一方向光) を採用**、Tier 3-4 (volumetric / sprite normal map / multiple lights) は不採用。HD-2D 系既存作を参照してプロトタイプで検証。
 
-### 三段階公開モデル (private memory 由来)
+### 三段階公開モデル
 
 - **GitHub Public** (Day 0) — 最低保証、ソース + docs + devlog
 - **itch.io** ($0) — Vertical Slice 完成後 (Stage 3 後半)

@@ -4,7 +4,7 @@ Date: 2026-05-18
 
 Project:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
+- `<repo>`
 
 ## User Review Points Addressed
 
@@ -22,13 +22,13 @@ Fast VS now adopts Scene 1 v4 as the working source.
 
 Canonical source files checked:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-09_chapter1_layer1_revision_and_scene3_design.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\draft\chapter1_s1_s2_handover_2026-05-08.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-runtime\docs\draft\chapter1_graphic_session_handover_2026-05-09.md`
+- `<story-source>/docs/devlog/2026-05-09_chapter1_layer1_revision_and_scene3_design.md`
+- `<story-source>/docs/draft/chapter1_s1_s2_handover_2026-05-08.md`
+- `<runtime-source>/docs/draft/chapter1_graphic_session_handover_2026-05-09.md`
 
 Old/provisional source intentionally superseded:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-12_chapter1_vs_story_canon_inventory.md`
+- `<story-source>/docs/devlog/2026-05-12_chapter1_vs_story_canon_inventory.md`
 
 Direct answer:
 
@@ -48,12 +48,12 @@ Parent review corrected one worker-side canon slip: `...本物だ` had briefly b
 
 ## Changed Files
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\2026-05-18_fast_vs_story_canon_v4_source_check.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\2026-05-18_fast_vs_story_v4_review_fix.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\INDEX.md`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/docs/devlog/2026-05-18_fast_vs_story_canon_v4_source_check.md`
+- `<repo>/docs/devlog/2026-05-18_fast_vs_story_v4_review_fix.md`
+- `<repo>/docs/devlog/INDEX.md`
 
 ## Story / UI Changes
 
@@ -93,19 +93,19 @@ Parent review corrected one worker-side canon slip: `...本物だ` had briefly b
 
 Unity build/validation:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_story_canon_v4_review_fix_rerun2.log`
+- `<repo>/Logs/fast_vs_build_validate_20260518_story_canon_v4_review_fix_rerun2.log`
 - Result: pass.
 
 Review screenshots:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518`
-- Capture log: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_story_canon_v4_review_fix.log`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518`
+- Capture log: `<repo>/Logs/fast_vs_capture_review_20260518_story_canon_v4_review_fix.log`
 - Result: pass.
 
 Player smoke:
 
-- EXE: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
-- Log: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_story_canon_v4_review_fix.log`
+- EXE: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- Log: `<repo>/Logs/fast_vs_player_smoke_20260518_story_canon_v4_review_fix.log`
 - Result: 0 matches for error / exception / NullReference / MissingReference / TMP glyph / LiberationSans.
 
 ## Remaining Review Notes

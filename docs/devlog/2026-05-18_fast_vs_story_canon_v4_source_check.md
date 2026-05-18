@@ -4,7 +4,7 @@ Date: 2026-05-18
 
 Project:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
+- `<repo>`
 
 ## Trigger
 
@@ -12,25 +12,25 @@ Project:
 
 ## Checked Sources
 
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-09_chapter1_scene1_v3_final.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-09_chapter1_layer1_revision_and_scene3_design.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\draft\chapter1_s1_s2_handover_2026-05-08.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-12_chapter1_vs_story_canon_inventory.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-runtime\docs\draft\chapter1_graphic_session_handover_2026-05-09.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-runtime\docs\draft\chapter1_map_handover_2026-05-08.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-runtime\docs\DESIGN_RATIONALE.md`
+- `<story-source>/docs/devlog/2026-05-09_chapter1_scene1_v3_final.md`
+- `<story-source>/docs/devlog/2026-05-09_chapter1_layer1_revision_and_scene3_design.md`
+- `<story-source>/docs/draft/chapter1_s1_s2_handover_2026-05-08.md`
+- `<story-source>/docs/devlog/2026-05-12_chapter1_vs_story_canon_inventory.md`
+- `<runtime-source>/docs/draft/chapter1_graphic_session_handover_2026-05-09.md`
+- `<runtime-source>/docs/draft/chapter1_map_handover_2026-05-08.md`
+- `<runtime-source>/docs/DESIGN_RATIONALE.md`
 
 ## Finding
 
 The current implementation had drifted across incompatible source versions.
 
-`C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-12_chapter1_vs_story_canon_inventory.md` is not the latest Scene 1 source. It explicitly treats `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-09_chapter1_scene1_v3_final.md` as a provisional VS reference until a later revision is selected.
+`<story-source>/docs/devlog/2026-05-12_chapter1_vs_story_canon_inventory.md` is not the latest Scene 1 source. It explicitly treats `<story-source>/docs/devlog/2026-05-09_chapter1_scene1_v3_final.md` as a provisional VS reference until a later revision is selected.
 
 The later revision is Scene 1 v4, recorded in:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\devlog\2026-05-09_chapter1_layer1_revision_and_scene3_design.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-impl\docs\draft\chapter1_s1_s2_handover_2026-05-08.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-chapter1-runtime\docs\draft\chapter1_graphic_session_handover_2026-05-09.md`
+- `<story-source>/docs/devlog/2026-05-09_chapter1_layer1_revision_and_scene3_design.md`
+- `<story-source>/docs/draft/chapter1_s1_s2_handover_2026-05-08.md`
+- `<runtime-source>/docs/draft/chapter1_graphic_session_handover_2026-05-09.md`
 
 ## Adopted Canon For Fast VS
 

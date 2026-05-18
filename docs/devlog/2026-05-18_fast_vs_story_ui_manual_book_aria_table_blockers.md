@@ -33,7 +33,7 @@ Date: 2026-05-18
 
 ## Source Assets
 - Aria source:
-  - `C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2\docs\review_gallery\imports\stage4_chapter1_character_asset_pack_v46_2026-05-12\selected_64x96_review_only\stateflow_loops_transitions\resident_a_aria\resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png`
+  - `<character-source>/docs/review_gallery/imports/stage4_chapter1_character_asset_pack_v46_2026-05-12/selected_64x96_review_only/stateflow_loops_transitions/resident_a_aria/resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png`
 - FastVS import:
   - `Assets/Art/Characters/FastVS/Aria/resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png`
 

@@ -42,7 +42,7 @@ Deterministic repro command shape:
 
 ```powershell
 $exe = "<worktree:Anemora-perf-baseline-v0-2>\Builds\PerfBaselineV02\AnemoraPerfBaselineV02.exe"
-$log = "C:\Temp\Anemora_urp_warning_repro.log"
+$log = "<temp>/Anemora_urp_warning_repro.log"
 Start-Process -FilePath $exe -ArgumentList @("-screen-fullscreen","0","-screen-width","1280","-screen-height","720","-logFile",$log) -Wait
 (Select-String -Path $log -Pattern "DrawObjectsPass does not have an implementation of the RecordRenderGraph method").Count
 ```

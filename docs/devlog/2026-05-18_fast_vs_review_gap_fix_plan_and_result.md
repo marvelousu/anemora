@@ -19,7 +19,7 @@ User review flagged several visible gaps in the Fast VS V24 sample:
 
 ## Plan
 
-1. Dispatch a bounded `gpt-5.4-mini` worker for scene-construction-only cleanup in `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`.
+1. Dispatch a bounded `gpt-5.4-mini` worker for scene-construction-only cleanup in `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`.
 2. In the parent session, review and integrate the worker result, then fix runtime story/HUD state where the issue is not purely scene layout.
 3. Add or update validation so old behavior fails automatically:
    - past plaza temporary person must not exist,
@@ -35,7 +35,7 @@ Worker:
 
 - Agent: `019e3880-7040-7f90-8e65-b4d21d188875`
 - Model requested: `gpt-5.4-mini`
-- Assigned write scope: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- Assigned write scope: `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
 
 Worker output integrated:
 
@@ -62,34 +62,34 @@ Parent corrections after review:
 
 ## Files Changed
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\INDEX.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\2026-05-18_fast_vs_review_gap_fix_plan_and_result.md`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
+- `<repo>/docs/devlog/INDEX.md`
+- `<repo>/docs/devlog/2026-05-18_fast_vs_review_gap_fix_plan_and_result.md`
 
 ## Validation
 
 Build and scene validation:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_review_gap_fix_rerun3.log`
+- `<repo>/Logs/fast_vs_build_validate_20260518_review_gap_fix_rerun3.log`
 - Result: success.
 
 Screenshot capture:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_review_gap_fix_rerun3.log`
+- `<repo>/Logs/fast_vs_capture_review_20260518_review_gap_fix_rerun3.log`
 - Result: success.
 
 Review screenshots:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\01_interior_niro_shadow.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\03_library_reto_desk.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/01_interior_niro_shadow.png`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/03_library_reto_desk.png`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
 
 Generated EXE smoke test:
 
-- EXE: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
-- Log: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_review_gap_fix_rerun3.log`
+- EXE: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- Log: `<repo>/Logs/fast_vs_player_smoke_20260518_review_gap_fix_rerun3.log`
 - Result: success.
 
 ## MCP Note

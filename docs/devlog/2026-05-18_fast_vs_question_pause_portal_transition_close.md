@@ -2,9 +2,9 @@
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- Scene: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
-- Build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+- Project: `<repo>`
+- Scene: `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
+- Build: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## User Review Items
 
@@ -21,20 +21,20 @@
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
   - Lowered the door-beat `?` anchor from `1.72` to `1.46` world units over Niro, putting it closer to the character's head.
   - Exposed the offset for editor validation.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryDialoguePresenter.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryDialoguePresenter.cs`
   - Matched the TMP fallback `?` anchor to the runtime HUD offset.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
   - Matched the OnGUI fallback `?` anchor to the runtime HUD offset.
   - Inserted `scene1.reto.1c.library_history.pause_before_resolve_to_record` as a 1.85 second silent looking-up pause before `いえ。今のは、ただの独り言です。`.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsAreaDoorTransition.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsAreaDoorTransition.cs`
   - Area transitions now close an open current-time Time Window before changing map sets and warping the player.
   - If Niro is in other-time space, the area transition is rejected instead of leaving a mismatched portal.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\TimeManagement\TimeWindowPairedSpacePortalController.cs`
+- `<repo>/Assets/Scripts/TimeManagement/TimeWindowPairedSpacePortalController.cs`
   - Added `TryClosePortalForAreaTransition()` to close committed/preview portals and clear pending drag state during map transitions.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
   - Validation now asserts the head-close `?` offset range.
   - Validation now asserts the silent pause occurs before Reto's `いえ。今のは、ただの独り言です。`.
   - Validation now opens a current-time Time Window, triggers exterior-to-plaza map travel, and asserts that no portal pair/preview remains afterward.
@@ -42,9 +42,9 @@
 ## Verification
 
 - Build and validation passed:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_question_pause_portal_transition_close.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_question_pause_portal_transition_close.log`
 - Windows EXE updated:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## Notes
 

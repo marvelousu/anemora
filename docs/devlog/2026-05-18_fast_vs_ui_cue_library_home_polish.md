@@ -16,10 +16,10 @@ This pass addressed the latest review items for the Fast VS V24 sample:
 Plan -> gpt-5.4-mini worker instructions -> parent review / integration -> validation was followed.
 
 - UI worker: `019e38c5-2a5e-7a91-b77e-3409d424ef23`
-  - Edited `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
-  - Edited `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+  - Edited `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
+  - Edited `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
 - Scene worker: `019e38c6-6a17-7c53-9f1e-6e3fa86b3de3`
-  - Edited `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+  - Edited `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
 - Parent integration then fixed:
   - residual `"筆を確かめる。"` objective text
   - a `void` method `return true;` compile break
@@ -30,22 +30,22 @@ Plan -> gpt-5.4-mini worker instructions -> parent review / integration -> valid
 
 ## Changed Files
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\2026-05-18_fast_vs_ui_cue_library_home_polish.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\INDEX.md`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/docs/devlog/2026-05-18_fast_vs_ui_cue_library_home_polish.md`
+- `<repo>/docs/devlog/INDEX.md`
 
 ## Validation
 
 - Build and structural validation passed.
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_ui_cue_library_home_polish.log`
-  - Built player: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_ui_cue_library_home_polish.log`
+  - Built player: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 - Review screenshot capture passed.
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_ui_cue_library_home_polish.log`
-  - Screenshot folder: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_ui_cue_library_home_polish.log`
+  - Screenshot folder: `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518`
 - Headless player smoke passed with no exception matches.
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_ui_cue_library_home_polish.log`
+  - `<repo>/Logs/fast_vs_player_smoke_20260518_ui_cue_library_home_polish.log`
 
 ## Visual Review Notes
 

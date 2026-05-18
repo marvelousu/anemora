@@ -4,11 +4,11 @@
 
 ## Primary Author
 
-Anemora is currently a single-developer project led by Maro.
+Anemora is currently a single-maintainer project.
 
 The repository commit history was checked with `git log --format='%an <%ae>' | Sort-Object -Unique` on 2026-05-05. One unique commit author identity was observed. For this public-facing draft, only the display name is listed:
 
-- Maro
+- Project maintainer
 
 The associated commit email is intentionally not repeated here. External contribution intake is not open through Stage 3 Day 1 and remains a Stage 4 decision; see `CONTRIBUTING.md`.
 

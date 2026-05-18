@@ -2,9 +2,9 @@
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- Public VS build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
-- Public VS scene: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
+- Project: `<repo>`
+- Public VS build: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- Public VS scene: `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
 
 ## Decision
 
@@ -23,12 +23,12 @@
 ## Verification
 
 - Latest build and validation log:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_skip_opening_wake_line.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_skip_opening_wake_line.log`
 - The log contains:
   - `Fast VS house slice validation passed.`
   - `Build Finished, Result: Success.`
 - The Windows EXE was rebuilt at:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## Repository Cleanup Plan Applied
 

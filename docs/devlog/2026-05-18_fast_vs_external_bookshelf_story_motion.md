@@ -4,9 +4,9 @@ Date: 2026-05-18
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- Scene builder: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-- Story flow: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+- Project: `<repo>`
+- Scene builder: `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+- Story flow: `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
 
 ## Worker Cycle
 
@@ -22,8 +22,8 @@ Date: 2026-05-18
   - Source page: `https://opengameart.org/content/bookshelf-3`
   - Author: `AlejandroHaibi`
   - License: `CC0`
-  - Original file: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\External\opengameart_bookshelf_alejandrohaibi_cc0.png`
-  - Unity opaque derivative: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\External\opengameart_bookshelf_alejandrohaibi_cc0_opaque.png`
+  - Original file: `<repo>/Assets/Art/Textures/FastVS/HouseSlice/External/opengameart_bookshelf_alejandrohaibi_cc0.png`
+  - Unity opaque derivative: `<repo>/Assets/Art/Textures/FastVS/HouseSlice/External/opengameart_bookshelf_alejandrohaibi_cc0_opaque.png`
 
 ## Implementation
 
@@ -39,23 +39,23 @@ Date: 2026-05-18
 ## Validation
 
 - Build and structural validation:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_external_bookshelf_story_motion.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_external_bookshelf_story_motion.log`
   - Result: success
 - Review screenshot capture:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_external_bookshelf_story_motion.log`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_external_bookshelf_story_motion.log`
   - Result: success
 - Player launch smoke:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_external_bookshelf_story_motion.log`
+  - `<repo>/Logs/fast_vs_player_smoke_20260518_external_bookshelf_story_motion.log`
   - Result: launched for 10 seconds in batch/null graphics mode and was stopped manually.
 
 ## Visual Evidence
 
 - Past library bookshelf review:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
 - Current library desk review:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\03_library_reto_desk.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/03_library_reto_desk.png`
 
 ## Build
 
 - Updated executable:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`

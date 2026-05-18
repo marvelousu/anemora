@@ -1,7 +1,7 @@
 # Fast VS House Slice
 
 Date: 2026-05-17
-Worktree: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
+Worktree: `<repo>`
 Branch: `codex/fast-vs-v24-sample-20260517`
 
 ## Purpose
@@ -54,7 +54,7 @@ must:
 - verify live aperture creation;
 - transfer current to past;
 - transfer past back to current;
-- reject old visual-reference tokens (`GfxPolish`, `Meshy`, `DQ3R`, `TimeWindow_Diorama`, `V32`) in
+- reject old visual-reference tokens (`GfxPolish`, `Meshy`, `TimeWindow_Diorama`, `V32`) in
   the generated scene;
 - build the Windows player.
 

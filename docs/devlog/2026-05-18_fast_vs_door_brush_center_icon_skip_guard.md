@@ -2,9 +2,9 @@
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- Scene: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
-- Build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+- Project: `<repo>`
+- Scene: `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
+- Build: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## User Review Items
 
@@ -22,40 +22,40 @@
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
   - Door beat now keeps page 0 as `?` only above Niro.
   - Door beat page 1/2 hides `?` and shows the brush picture at the screen center.
   - Interior-to-exterior transition can force-start the brush beat if the player reaches the actual door trigger without hitting the pre-trigger.
   - Reto's post-`...本物だ` motion now uses explicit lowering and raising animation states before `...そうですか。`.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
-  - Runtime HUD now renders the brush as a centered framed `RawImage`, using `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_timewriter_brush_icon_v01.png`.
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
+  - Runtime HUD now renders the brush as a centered framed `RawImage`, using `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_timewriter_brush_icon_v01.png`.
   - Review properties expose question state, brush state, brush position, and brush texture name.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryDialoguePresenter.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryDialoguePresenter.cs`
   - TMP presenter fallback now uses the same centered brush-image UI.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsAreaDoorTransition.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsAreaDoorTransition.cs`
   - Interior door transitions now expose whether `storyFlow` is serialized, and runtime transition checks the story block again at the actual trigger.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsRetoWritingAnimator.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsRetoWritingAnimator.cs`
   - Added explicit `SetLoweringForReview()` and `SetRaisingForReview()` entry points.
   - `LookingUp` now holds the last talk-loop frame instead of visually matching normal dialogue idle.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
   - Scene generation serializes `storyFlow` into all area door transitions.
-  - Generates and imports `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_timewriter_brush_icon_v01.png`.
+  - Generates and imports `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_timewriter_brush_icon_v01.png`.
   - Validation asserts the actual door trigger starts the brush beat, page 0 is question-only, page 1/2 are centered brush-only, and the Reto post-`...本物だ` beats enter lowering/raising states.
   - The current-library toppled book stack was moved lower and away from the right-back bookshelf silhouette.
 
 ## Verification
 
 - Build and validation passed:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_door_brush_center_icon_skip_guard.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_door_brush_center_icon_skip_guard.log`
 - Windows EXE updated:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 - Screenshot capture passed:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_door_brush_center_icon_skip_guard.log`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\03_library_reto_desk.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\07_plaza_library_facade_current.png`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_door_brush_center_icon_skip_guard.log`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/03_library_reto_desk.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/07_plaza_library_facade_current.png`
 
 ## Notes
 
-- The brush picture is a speed-first generated local PNG, not a final art lock. It is intentionally isolated at `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_timewriter_brush_icon_v01.png` so it can be replaced by Meshy/API art later without touching story flow.
+- The brush picture is a speed-first generated local PNG, not a final art lock. It is intentionally isolated at `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_timewriter_brush_icon_v01.png` so it can be replaced by Meshy/API art later without touching story flow.
 - Existing screenshot capture still does not reliably include ScreenSpaceOverlay HUD layers, so the door-beat visual order is enforced by editor assertions.

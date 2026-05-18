@@ -42,7 +42,6 @@ namespace Anemora.EditorTools
         private const string RetoTalkLoopStripPath = "Assets/Art/Characters/FastVS/Reto/reto_talk_loop_v02_4f_64x96.png";
         private const string RetoRaiseArmsStripPath = "Assets/Art/Characters/FastVS/Reto/reto_raise_arms_v02_6f_64x96.png";
         private const string AriaNormalLoopStripPath = "Assets/Art/Characters/FastVS/Aria/resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png";
-        private const string AriaNormalLoopSourcePath = @"C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2\docs\review_gallery\imports\stage4_chapter1_character_asset_pack_v46_2026-05-12\selected_64x96_review_only\stateflow_loops_transitions\resident_a_aria\resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png";
         private const int RetoExpectedFrameWidth = 64;
         private const int RetoExpectedTextureHeight = 96;
         private const int RetoTransitionFrameCount = 6;
@@ -110,7 +109,6 @@ namespace Anemora.EditorTools
         {
             "GfxPolish",
             "Meshy",
-            "DQ3R",
             "TimeWindow_Diorama",
             "V32",
             "BroadInteriorExteriorRoute"
@@ -4916,38 +4914,14 @@ namespace Anemora.EditorTools
 
         private static void EnsureExternalCharacterAssets()
         {
-            EnsureCopiedExternalTexture(AriaNormalLoopSourcePath, AriaNormalLoopStripPath);
-        }
-
-        private static void EnsureCopiedExternalTexture(string sourcePath, string assetPath)
-        {
-            if (!File.Exists(sourcePath))
+            if (!File.Exists(AriaNormalLoopStripPath))
             {
-                Debug.LogWarning($"Fast VS source character asset missing: {sourcePath}");
+                Debug.LogWarning($"Fast VS bundled Aria character asset missing: {AriaNormalLoopStripPath}");
                 return;
             }
 
-            var folder = Path.GetDirectoryName(assetPath)?.Replace('\\', '/');
-            if (!string.IsNullOrEmpty(folder))
-            {
-                EnsureFolder(folder);
-            }
-
-            var shouldCopy = !File.Exists(assetPath);
-            if (!shouldCopy)
-            {
-                var sourceInfo = new FileInfo(sourcePath);
-                var destinationInfo = new FileInfo(assetPath);
-                shouldCopy = sourceInfo.Length != destinationInfo.Length;
-            }
-
-            if (shouldCopy)
-            {
-                FileUtil.CopyFileOrDirectory(sourcePath, assetPath);
-            }
-
-            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport);
-            EnsureTextureImporter(assetPath);
+            AssetDatabase.ImportAsset(AriaNormalLoopStripPath, ImportAssetOptions.ForceSynchronousImport);
+            EnsureTextureImporter(AriaNormalLoopStripPath);
         }
 
         private static void EnsureFolder(string path)

@@ -183,7 +183,7 @@ Do not assert final narrative text while content remains TBD. Assert keys or `[T
 Use the standard Unity Test Runner batchmode path from `docs/VERIFICATION_SUITE.md`:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" `
+& "<unity-editor>" `
   -batchmode `
   -projectPath "<repo>" `
   -runTests `

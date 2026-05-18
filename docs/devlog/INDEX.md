@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v2.4 Chapter 1 Scene 5 v1 + map redesign + Z terminology cleanup (2026-05-09). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v2.6 Fast VS public hygiene scan (2026-05-18). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,7 +13,7 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 111 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
+Current root-level Markdown coverage: 112 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
 
 ### 2.0.0a Fast VS V24 Sample (2026-05-18)
 
@@ -40,6 +40,7 @@ Current root-level Markdown coverage: 111 files under `docs/devlog/`, including 
 | 2026-05-18 | [2026-05-18_fast_vs_skip_opening_wake_line.md](2026-05-18_fast_vs_skip_opening_wake_line.md) | Fast VS branch-only removal of the initial wake dialogue line, with playable-start validation and worker-cycle record | This task | Fast VS / story pacing | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_public_repo_promotion.md](2026-05-18_fast_vs_public_repo_promotion.md) | Fast VS public baseline promotion plan: stable main, archive tags, continuation branch, and preservation of devlogs | This task | Fast VS / repository management | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_public_readme_playability.md](2026-05-18_fast_vs_public_readme_playability.md) | Fast VS public README playability pass: play-first Windows build instructions, controls, technical entry points, and release zip note | This task | Fast VS / public onboarding | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
+| 2026-05-18 | [2026-05-18_public_repo_hygiene_scan.md](2026-05-18_public_repo_hygiene_scan.md) | Public repo hygiene scan: devlog/path sanitization, credential-status redaction, personal attribution cleanup, and other-game reference removal | This task | Fast VS / public hygiene | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 
 ### 2.0.0 Chapter 1 Narrative Design (2026-05-09)
 
@@ -232,3 +233,4 @@ Current root-level Markdown coverage: 111 files under `docs/devlog/`, including 
 | v2.3 | 2026-05-09 | Chapter 1 Scene 4 v1 動線骨格 devlog (9 セクション [4.A]-[4.I]、エリュトリア確定、カイア設定確定、仕様 v3.2 例外追記) を追加し、root-level Markdown coverage を 59 件へ更新。 |
 | v2.4 | 2026-05-09 | Chapter 1 Scene 5 v1 + 動線再設計 + Z 用語整理 + 白窓 1 周目なし + Niro 家伏線 2 周目修正 + モブ NPC 使いまわし devlog を追加し、root-level Markdown coverage を 60 件へ更新。第 1 章「忘れられた街」全シーン動線骨格完成。 |
 | v2.5 | 2026-05-18 | Fast VS rejected outdoor sky/background pass reverted; root-level Markdown coverage remains 107 files. |
+| v2.6 | 2026-05-18 | Public repo hygiene scan devlog added; root-level Markdown coverage updated to 112 files. |

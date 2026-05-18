@@ -1,7 +1,7 @@
 # Fast VS House Connection And Character Sprite
 
 Date: 2026-05-17
-Worktree: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
+Worktree: `<repo>`
 Branch: `codex/fast-vs-v24-sample-20260517`
 
 ## Purpose

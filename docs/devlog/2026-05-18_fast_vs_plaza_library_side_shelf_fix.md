@@ -24,33 +24,33 @@ Addressed the latest visual/structure review notes for the Fast VS V24 sample:
 
 ## Files
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryRuntimeHud.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryRuntimeHud.cs`
+- `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
 
 ## Validation
 
 - Build and structure validation:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_plaza_library_side_shelf_fix_final.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_plaza_library_side_shelf_fix_final.log`
   - Result: `Fast VS house slice validation passed.`
   - Result: `Build Finished, Result: Success.`
 - Screenshot capture:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_plaza_library_side_shelf_fix_final.log`
-  - Output directory: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_plaza_library_side_shelf_fix_final.log`
+  - Output directory: `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518`
 - Player smoke:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_plaza_library_side_shelf_fix_final.log`
+  - `<repo>/Logs/fast_vs_player_smoke_20260518_plaza_library_side_shelf_fix_final.log`
   - No matching runtime exception patterns were found.
 
 ## Review Images
 
 - Current library desk / entrance debris:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\03_library_reto_desk.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/03_library_reto_desk.png`
 - Past library shelves / book runs:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
 - Current plaza library facade:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\07_plaza_library_facade_current.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/07_plaza_library_facade_current.png`
 - Past plaza library facade / market awning:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\08_plaza_library_facade_past.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/08_plaza_library_facade_past.png`
 
 ## MCP Note
 

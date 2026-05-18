@@ -34,5 +34,5 @@ Time Window opening and closing are not currently managed by a cooldown timer in
 
 Known non-fatal batch warnings:
 
-- Unity licensing access-token update warning.
+- Unity licensing warning during batchmode startup.
 - `RenderTexture.Create failed` warnings under `-nographics`.

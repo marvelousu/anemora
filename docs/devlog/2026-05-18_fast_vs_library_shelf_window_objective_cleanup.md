@@ -2,9 +2,9 @@
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- Scene: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
-- Build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+- Project: `<repo>`
+- Scene: `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
+- Build: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## User Review Items
 
@@ -22,7 +22,7 @@
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
   - Removed `Current_Library_Ruin_CollapsedShelfPile`, the current-library left-side overlap box.
   - Lowered both current and past side bookshelf frames so their top caps stay below the second-floor balcony.
   - Lowered the side bookshelf front texture panels to match the shorter frame.
@@ -30,7 +30,7 @@
   - Added a dedicated `PixelPattern.Window` material pattern for `window_light` and `empty_window`, replacing the checker pattern that read as tile-like blocks.
   - Expanded validation for facade window pane materials, side bookshelf height, side bookshelf texture panel placement, and absence of the removed overlap box.
   - Added a story validation assertion that the post-past-flags current-side guide becomes `レトの机へ戻る。`.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
   - Centralized the `waitingForRetoBookShow` objective text.
   - Current side away from Reto now shows `レトの机へ戻る。`; near Reto shows `E: レトに本を見せる`; other-time side still tells the player to return through the Time Window.
   - Exposed runtime HUD objective text for editor validation.
@@ -38,15 +38,15 @@
 ## Verification
 
 - Build and validation passed:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_library_shelf_window_objective_cleanup.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_library_shelf_window_objective_cleanup.log`
 - Review screenshots regenerated:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_library_shelf_window_objective_cleanup.log`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\03_library_reto_desk.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\07_plaza_library_facade_current.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\08_plaza_library_facade_past.png`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_library_shelf_window_objective_cleanup.log`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/03_library_reto_desk.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/07_plaza_library_facade_current.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/08_plaza_library_facade_past.png`
 - Windows EXE updated:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## Notes
 

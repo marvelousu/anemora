@@ -23,7 +23,7 @@ Worker:
 
 - Agent: `019e38a6-8510-78c1-8e2e-d6a7864de41f`
 - Model requested: `gpt-5.4-mini`
-- Assigned write scope: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- Assigned write scope: `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
 
 Worker result:
 
@@ -41,35 +41,35 @@ Parent review corrections:
 
 ## Files Changed
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsAreaDoorTransition.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\INDEX.md`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\2026-05-18_fast_vs_pre_exit_bookshelf_tabletop_fix.md`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsAreaDoorTransition.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
+- `<repo>/docs/devlog/INDEX.md`
+- `<repo>/docs/devlog/2026-05-18_fast_vs_pre_exit_bookshelf_tabletop_fix.md`
 
 ## Validation
 
 Build and scene validation:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_pre_exit_bookshelf_tabletop_fix_rerun2.log`
+- `<repo>/Logs/fast_vs_build_validate_20260518_pre_exit_bookshelf_tabletop_fix_rerun2.log`
 - Result: success.
 
 Screenshot capture:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_pre_exit_bookshelf_tabletop_fix.log`
+- `<repo>/Logs/fast_vs_capture_review_20260518_pre_exit_bookshelf_tabletop_fix.log`
 - Result: success.
 
 Generated EXE smoke test:
 
-- EXE: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
-- Log: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_pre_exit_bookshelf_tabletop_fix.log`
+- EXE: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- Log: `<repo>/Logs/fast_vs_player_smoke_20260518_pre_exit_bookshelf_tabletop_fix.log`
 - Result: success.
 
 Updated screenshots:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\01_interior_niro_shadow.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\03_library_reto_desk.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/01_interior_niro_shadow.png`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/03_library_reto_desk.png`
+- `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
 
 ## Remaining Review Risk
 

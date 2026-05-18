@@ -21,10 +21,10 @@ Date: 2026-05-18
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
   - `(...筆)` -> `(...筆が...?)`
   - `(...)` in the house-exit brush beat -> `(...筆?)`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
   - Current plaza library door panels now use current wood/fence materials, not `DoorwayDark`.
   - Past plaza library window panes all use `WindowLight`.
   - Red floor cue uses the same flat glow-material style as the map-move pads.
@@ -36,20 +36,20 @@ Date: 2026-05-18
 ## Validation
 
 - Build and structure validation:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_facade_redcue_text_fix.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_facade_redcue_text_fix.log`
   - Result: no error patterns found.
 - Screenshot capture:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_facade_redcue_text_fix.log`
-  - Output directory: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_facade_redcue_text_fix.log`
+  - Output directory: `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518`
 - Player smoke:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_facade_redcue_text_fix.log`
+  - `<repo>/Logs/fast_vs_player_smoke_20260518_facade_redcue_text_fix.log`
   - No matching runtime exception patterns were found.
 
 ## Review Images
 
 - Current plaza facade:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\07_plaza_library_facade_current.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/07_plaza_library_facade_current.png`
 - Past plaza facade:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\08_plaza_library_facade_past.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/08_plaza_library_facade_past.png`
 - Past library shelves and red marker:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`

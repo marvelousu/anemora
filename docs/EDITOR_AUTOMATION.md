@@ -25,7 +25,7 @@ git diff --stat
   - Batchmode example:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" `
+& "<unity-editor>" `
   -batchmode `
   -projectPath "<repo>" `
   -executeMethod Anemora.EditorTools.AnemoraE0Setup.Run `
@@ -51,8 +51,8 @@ git diff --stat
   - Batchmode execute methods:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.Run -quit
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.CaptureE1Screenshots -quit
+& "<unity-editor>" -batchmode -projectPath "<repo>" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.Run -quit
+& "<unity-editor>" -batchmode -projectPath "<repo>" -executeMethod Anemora.EditorTools.AnemoraE1ParallelSetup.CaptureE1Screenshots -quit
 ```
 
 - Prerequisites: Unity Editor, URP, portal shaders, `SymbolWheelController`, and TimeManagement scripts compiled.
@@ -77,7 +77,7 @@ git diff --stat
   - Batchmode execute method:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod AnemoraTmpJapaneseAtlasBuilder.Build -quit
+& "<unity-editor>" -batchmode -projectPath "<repo>" -executeMethod AnemoraTmpJapaneseAtlasBuilder.Build -quit
 ```
 
 - Prerequisites: `Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf`, TextMeshPro, and TMP essential resources or package cache access.
@@ -97,7 +97,7 @@ git diff --stat
   - Batchmode execute method:
 
 ```powershell
-& "C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe" -batchmode -projectPath "<repo>" -executeMethod Anemora.Editor.AnemoraZone1BuildingAssetSetup.ApplyZone1BuildingImport -quit
+& "<unity-editor>" -batchmode -projectPath "<repo>" -executeMethod Anemora.Editor.AnemoraZone1BuildingAssetSetup.ApplyZone1BuildingImport -quit
 ```
 
 - Prerequisites: FBX files under `Assets/Art/Models/Zone1/` and the Zone1 atlas PNG if the shared material should receive a texture.

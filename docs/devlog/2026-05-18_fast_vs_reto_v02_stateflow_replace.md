@@ -9,7 +9,7 @@
 
 Accepted source:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-stage4-hero-v2\docs\review_gallery\imports\stage4_character_stateflow_minimum_v02_reto_scale_2026-05-11\`
+- `<character-source>/docs/review_gallery/imports/stage4_character_stateflow_minimum_v02_reto_scale_2026-05-11/`
 
 Reason:
 
@@ -83,5 +83,5 @@ Observed result:
 
 Known non-fatal batch warnings:
 
-- Unity licensing access-token update warning.
+- Unity licensing warning during batchmode startup.
 - Existing Code Coverage `System.Numerics.Vector*` resolution warnings.

@@ -2,9 +2,9 @@
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- Scene: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
-- Build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+- Project: `<repo>`
+- Scene: `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
+- Build: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## User Review Item
 
@@ -19,7 +19,7 @@
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
   - Removed procedural outdoor backdrop generation from house exterior and central plaza.
   - Removed `CreateOutdoorBackdrop(...)` and `CreateOutdoorCloudCluster(...)`.
   - Removed outdoor backdrop validation helpers and their validation hook.
@@ -27,34 +27,34 @@
   - Reverted the camera clear color to the previous dark neutral value.
   - Removed the unused `PixelPattern.Sky` and `PixelPattern.Cloud` cases.
 - Removed generated outdoor background assets:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_current_cloud_soft.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_current_distant_tree_line.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_current_outdoor_horizon.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_current_outdoor_sky.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_past_cloud_soft.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_past_distant_tree_line.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_past_outdoor_horizon.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Materials\FastVS\HouseSlice\FastVS_House_past_outdoor_sky.mat`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_current_cloud_soft.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_current_distant_tree_line.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_current_outdoor_horizon.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_current_outdoor_sky.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_past_cloud_soft.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_past_distant_tree_line.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_past_outdoor_horizon.asset`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Art\Textures\FastVS\HouseSlice\FastVS_House_past_outdoor_sky.asset`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_cloud_soft.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_distant_tree_line.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_outdoor_horizon.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_outdoor_sky.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_cloud_soft.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_distant_tree_line.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_outdoor_horizon.mat`
+  - `<repo>/Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_outdoor_sky.mat`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_current_cloud_soft.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_current_distant_tree_line.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_current_outdoor_horizon.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_current_outdoor_sky.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_past_cloud_soft.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_past_distant_tree_line.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_past_outdoor_horizon.asset`
+  - `<repo>/Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_past_outdoor_sky.asset`
 
 ## Verification
 
 - Build and validation passed:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_outdoor_sky_background_revert.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_outdoor_sky_background_revert.log`
 - Review screenshots regenerated:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_outdoor_sky_background_revert.log`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\02_exterior_niro_shadow.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\07_plaza_library_facade_current.png`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\08_plaza_library_facade_past.png`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_outdoor_sky_background_revert.log`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/02_exterior_niro_shadow.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/07_plaza_library_facade_current.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/08_plaza_library_facade_past.png`
 - Windows EXE updated:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
 
 ## Notes
 

@@ -2,10 +2,10 @@
 
 ## Scope
 
-- Project: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample`
-- README: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\README.md`
-- Local Windows build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
-- Local release zip: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\Anemora_FastVS_HouseSlice_20260518.zip`
+- Project: `<repo>`
+- README: `<repo>/README.md`
+- Local Windows build: `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- Local release zip: `<repo>/Builds/Anemora_FastVS_HouseSlice_20260518.zip`
 
 ## User Review Items
 
@@ -21,7 +21,7 @@
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\README.md`
+- `<repo>/README.md`
   - Replaced the old work-in-progress playable-state text.
   - Added `Play the Fast VS` with the executable path, required neighboring Unity build files, and release-zip note.
   - Added controls for movement, interaction, map transitions, Time Window creation, and Time Window close.
@@ -31,12 +31,12 @@
 ## Verification
 
 - Confirmed all README-referenced local paths exist:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\Anemora_FastVS_HouseSlice_20260518.zip`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scenes\Anemora_FastVS_HouseSlice.unity`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\TimeManagement\TimeWindowPairedSpacePortalController.cs`
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_skip_opening_wake_line.log`
+  - `<repo>/Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+  - `<repo>/Builds/Anemora_FastVS_HouseSlice_20260518.zip`
+  - `<repo>/Assets/Scenes/Anemora_FastVS_HouseSlice.unity`
+  - `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
+  - `<repo>/Assets/Scripts/TimeManagement/TimeWindowPairedSpacePortalController.cs`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_skip_opening_wake_line.log`
 - Confirmed `Builds/` remains ignored by Git, so the zip must be attached as a release asset rather than committed.
 - Confirmed the old README phrases `通しプレイ可能な build はまだ存在しません` and `現在 Stage 3 Vertical Slice を制作中` are no longer present.
 

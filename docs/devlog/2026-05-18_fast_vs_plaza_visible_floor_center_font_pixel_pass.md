@@ -66,5 +66,5 @@ Sources:
 
 Known non-fatal batch warnings:
 
-- Unity licensing access-token update warning.
+- Unity licensing warning during batchmode startup.
 - `RenderTexture.Create failed` warnings under `-nographics`.

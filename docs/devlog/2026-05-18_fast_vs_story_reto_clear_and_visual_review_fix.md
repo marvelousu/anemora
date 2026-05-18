@@ -96,6 +96,6 @@ Added validation for:
 
 Known non-fatal batch warnings:
 
-- Unity licensing access-token update warning.
+- Unity licensing warning during batchmode startup.
 - Existing Code Coverage `System.Numerics.Vector*` resolution warnings.
 - `RenderTexture.Create failed` warnings can still appear under `-nographics` validation runs.

@@ -85,5 +85,5 @@ Note: the screenshot capture path uses direct camera rendering, so the final OnG
 
 Known non-fatal batch warnings:
 
-- Unity licensing access-token update warning.
+- Unity licensing warning during batchmode startup.
 - Existing Code Coverage `System.Numerics.Vector*` resolution warnings during player build.

@@ -17,9 +17,9 @@ Date: 2026-05-18
 
 ## Changes
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Scripts\FastVS\FastVsStoryFlowController.cs`
+- `<repo>/Assets/Scripts/FastVS/FastVsStoryFlowController.cs`
   - Updated Niro's Reto-event brush line to `(筆が...!)`.
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Assets\Editor\AnemoraFastVsHouseSliceSetup.cs`
+- `<repo>/Assets/Editor/AnemoraFastVsHouseSliceSetup.cs`
   - Red floor cues now use the round glow primitive without the map-move pulse component, so the current-side cue stays visually stable.
   - The target-book red cube marker is now a fixed flat red marker and validation rejects retained `_BaseMap` / `_MainTex` textures.
   - `FlatMaterial` now clears retained texture slots, preventing old procedural textures from staying on reused material assets.
@@ -30,20 +30,20 @@ Date: 2026-05-18
 ## Validation
 
 - Build and structure validation:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_build_validate_20260518_marker_glow_bookshelf_revert.log`
+  - `<repo>/Logs/fast_vs_build_validate_20260518_marker_glow_bookshelf_revert.log`
   - Result: build succeeded and batchmode exited with return code 0.
 - Screenshot capture:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_capture_review_20260518_marker_glow_bookshelf_revert.log`
-  - Output directory: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518`
+  - `<repo>/Logs/fast_vs_capture_review_20260518_marker_glow_bookshelf_revert.log`
+  - Output directory: `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518`
 - Player smoke:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Logs\fast_vs_player_smoke_20260518_marker_glow_bookshelf_revert.log`
+  - `<repo>/Logs/fast_vs_player_smoke_20260518_marker_glow_bookshelf_revert.log`
   - No matching runtime exception patterns were found during the short launch check.
 
 ## Review Images
 
 - Past library shelves and red marker:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\05_library_past_no_temp_people.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/05_library_past_no_temp_people.png`
 - Current plaza facade:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\07_plaza_library_facade_current.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/07_plaza_library_facade_current.png`
 - Past plaza facade:
-  - `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\docs\devlog\screenshots\fast_vs_story_reto_shadow_20260518\08_plaza_library_facade_past.png`
+  - `<repo>/docs/devlog/screenshots/fast_vs_story_reto_shadow_20260518/08_plaza_library_facade_past.png`
