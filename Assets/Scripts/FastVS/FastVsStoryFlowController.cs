@@ -139,7 +139,7 @@ namespace Anemora.FastVS
         private StoryMode mode;
         private RetoSequence activeRetoSequence;
         private FastVsHouseArea lastArea;
-        private string currentBeatId = "opening.wake_from_bed";
+        private string currentBeatId = "opening.house_interior";
         private int ignoreInputFrame = -1;
         private int doorBeatPage;
         private int retoStepIndex = -1;
@@ -212,13 +212,7 @@ namespace Anemora.FastVS
             SetPastTargetBookVisible(true);
             SetTimewriterPocketGlowVisible(false);
             portalController?.SetRuntimeInputEnabledForReview(false);
-            if (!openingWakeComplete)
-            {
-                mode = StoryMode.OpeningWake;
-                currentBeatId = "opening.wake_from_bed";
-                ignoreInputFrame = Time.frameCount;
-                FreezeMovement(true);
-            }
+            CompleteOpeningWakeWithoutDialogue();
         }
 
         private void Update()
@@ -309,7 +303,6 @@ namespace Anemora.FastVS
 
             if (mode == StoryMode.OpeningWake)
             {
-                DrawStoryPanel("ニロ", "夢を見ていたような、夢を見ていなかったような。", "▽");
                 return;
             }
 
@@ -355,7 +348,7 @@ namespace Anemora.FastVS
             dialoguePresenter.SetCameraForReview(storyCamera);
             if (mode == StoryMode.OpeningWake)
             {
-                dialoguePresenter.ShowDialogue("ニロ", "夢を見ていたような、夢を見ていなかったような。", "▽");
+                dialoguePresenter.HideAll();
                 return;
             }
 
@@ -463,16 +456,7 @@ namespace Anemora.FastVS
 
         public void TriggerOpeningWakeForReview()
         {
-            if (openingWakeComplete)
-            {
-                return;
-            }
-
-            mode = StoryMode.OpeningWake;
-            activeRetoSequence = RetoSequence.None;
-            currentBeatId = "opening.wake_from_bed";
-            ignoreInputFrame = Time.frameCount;
-            FreezeMovement(true);
+            CompleteOpeningWakeWithoutDialogue();
         }
 
         public void TriggerRetoEventForReview()
@@ -563,7 +547,7 @@ namespace Anemora.FastVS
 
             if (mode == StoryMode.OpeningWake)
             {
-                runtimeHud.ShowDialogue("ニロ", "夢を見ていたような、夢を見ていなかったような。", "▽");
+                runtimeHud.HideAll();
                 return true;
             }
 
@@ -643,10 +627,7 @@ namespace Anemora.FastVS
 
             if (mode == StoryMode.OpeningWake)
             {
-                openingWakeComplete = true;
-                mode = StoryMode.None;
-                currentBeatId = "opening.house_interior";
-                FreezeMovement(false);
+                CompleteOpeningWakeWithoutDialogue();
                 return;
             }
 
@@ -760,6 +741,16 @@ namespace Anemora.FastVS
 
             runtimeHud.CompleteTypingNow();
             return true;
+        }
+
+        private void CompleteOpeningWakeWithoutDialogue()
+        {
+            openingWakeComplete = true;
+            mode = StoryMode.None;
+            activeRetoSequence = RetoSequence.None;
+            currentBeatId = "opening.house_interior";
+            ignoreInputFrame = -1;
+            FreezeMovement(false);
         }
 
         private static bool IsGuideStep(StoryStep step)

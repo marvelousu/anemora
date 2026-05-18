@@ -3542,19 +3542,13 @@ namespace Anemora.EditorTools
 
             story.TriggerOpeningWakeForReview();
             story.RefreshPresentationForReview();
-            if (!guide.MovementFrozenForReview ||
-                story.CurrentBeatIdForReview != "opening.wake_from_bed" ||
-                story.CurrentLineTextForReview.IndexOf("なんとなく", StringComparison.Ordinal) >= 0)
-            {
-                throw new InvalidOperationException("House slice validation failed: opening wake beat is not initialized correctly.");
-            }
-
-            story.AdvanceStoryForReview();
             if (!story.OpeningWakeCompleteForReview ||
                 story.CurrentBeatIdForReview != "opening.house_interior" ||
-                guide.MovementFrozenForReview)
+                guide.MovementFrozenForReview ||
+                story.CurrentLineTextForReview != string.Empty ||
+                story.RuntimeHudActiveTextForReview != string.Empty)
             {
-                throw new InvalidOperationException("House slice validation failed: opening wake line did not complete and release movement.");
+                throw new InvalidOperationException("House slice validation failed: VS branch must skip the opening wake dialogue and start playable in the house interior.");
             }
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
