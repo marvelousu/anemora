@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v3.1 recovered cross-worktree + notes devlog index (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v3.2 Fast VS HD2D local shape pass (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 237 files including INDEX.md and README.md.
-- Dated devlog records: 235 files.
-- Linked evidence files present under docs/devlog/screenshots/: 163 files.
+- Root-level Markdown coverage: 238 files including INDEX.md and README.md.
+- Dated devlog records: 236 files.
+- Linked evidence files present under docs/devlog/screenshots/: 173 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -29,7 +29,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-16 | 1 |
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
-| 2026-05-19 | 1 |
+| 2026-05-19 | 2 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -38,6 +38,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | File | Area | Title |
 |---|---|---|
 | [2026-05-19_mcp_foundation_carry_forward.md](2026-05-19_mcp_foundation_carry_forward.md) | Tooling / Repo | 2026-05-19 MCP Foundation Carry-Forward |
+| [2026-05-19_fast_vs_hd2d_local_shape_pass.md](2026-05-19_fast_vs_hd2d_local_shape_pass.md) | Fast VS | 2026-05-19 Fast VS HD2D Local Shape Pass |
 
 ### 2026-05-18
 
@@ -358,5 +359,6 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v3.2 | 2026-05-19 | Added Fast VS HD2D local shape pass devlog and 10 PNG review screenshots. |
 | v3.1 | 2026-05-19 | Added notes-based retroactive devlogs for Pass 8 reception and Chapter 1 TimeWindow/public-preview recovery on 2026-05-14 through 2026-05-16. |
 | v3.0 | 2026-05-18 | Rebuilt index after recovering missing 2026-05-07 through 2026-05-18 devlogs across local worktrees, refs, and fetched remotes. |
