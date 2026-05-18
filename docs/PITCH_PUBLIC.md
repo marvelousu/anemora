@@ -1,8 +1,8 @@
-# Anemora Public Pitch
+# Anemora 公開ピッチ
 
-> Status: v0 draft (2026-05-05)
-> Purpose: Steam Early Access description / trailer script / press-kit source text.
-> Note: Niro / ニロ、Antela / アンテラは Stage 4 計画時点の provisional name。
+> ステータス: v0 ドラフト（2026-05-05）
+> 用途: Steam Early Access 用説明文 / トレーラー台本 / プレスキットの元テキスト。
+> 注記: Niro / ニロ、Antela / アンテラは Stage 4 計画時点の仮名称。
 
 ## 1. 一文サマリ
 
@@ -46,21 +46,21 @@ Anemora パレットは、擦れた茶、柔らかなベージュ、風化した
 
 画面は派手さよりも静けさを優先します。建物や小物は、使われていた時間と、いま失われつつある役割を感じられることを目指します。
 
-UI と文字にはピクセルフォントを使用します。日本語は美咲ゴシック、英語は Press Start 2P を draft とし、公開前に視認性と作品トーンを再確認します。
+UI と文字にはピクセルフォントを使用します。日本語は美咲ゴシック、英語は Press Start 2P をドラフトとし、公開前に視認性と作品トーンを再確認します。
 
 ## 6. 音響
 
-第 1 ゾーンの BGM は `Zone1_Ambient.ogg` です。3:04.84 の静かな loop として、歩く、気付く、戻るという体験を支えることを目的にしています。
+第 1 ゾーンの BGM は `Zone1_Ambient.ogg` です。3:04.84 の静かなループとして、歩く、気付く、戻るという体験を支えることを目的にしています。
 
-Vertical Slice では 30 種の SFX を用意します。環境音、足音、時の窓の反応音、NPC cue、UI 音を含みます。
+Vertical Slice では 30 種の SFX を用意します。環境音、足音、時の窓の反応音、NPC のキュー音、UI 音を含みます。
 
 音響は空気感を主軸にします。風、静けさ、足元の素材感、フレームの反応が、説明しすぎずに場所と状態を伝える設計です。
 
-BGM と SFX は、5-8 分の通し体験中に dialogue や操作 feedback を妨げない音量を目標にします。
+BGM と SFX は、5〜8 分の通し体験中に、セリフや操作フィードバックを妨げない音量を目標にします。
 
 ## 7. 比較タイトル
 
-古典 RPG (時間旅行系) は、普通の人物が時間を越える力に触れ、大きな出来事へ関わっていく冒険構造の参照です。
+古典 RPG（時間旅行系）は、普通の人物が時間を越える力に触れ、大きな出来事へ関わっていく冒険構造の参照です。
 
 単線知識探索系既存作は、発見と再訪によって世界の見え方が変わっていく体験の参照です。
 
@@ -70,30 +70,30 @@ BGM と SFX は、5-8 分の通し体験中に dialogue や操作 feedback を�
 
 ## 8. 規模感
 
-Full game の想定プレイ時間は 6-10 時間です。
+フル版の想定プレイ時間は 6〜10 時間です。
 
-想定ゾーン数は 4-6 です。各ゾーンは、異なる場所、時間の見え方、変化の手触りを持つ予定です。
+想定ゾーン数は 4〜6 です。各ゾーンは、異なる場所、時間の見え方、変化の手触りを持つ予定です。
 
-Dialogue は日本語 / 英語あわせて 500-1500 行を目安とします。最終的なローカライズ範囲は Stage 4 で再確認します。
+セリフは日本語 / 英語あわせて 500〜1500 行を目安とします。最終的なローカライズ範囲は Stage 4 で再確認します。
 
-Stage 3 の Vertical Slice では、第 1 ゾーン、時の窓の基本操作、行動結果の最小 loop、NPC dialogue、UI font、初期 audio を確認します。
+Stage 3 の Vertical Slice では、第 1 ゾーン、時の窓の基本操作、行動結果の最小ループ、NPC のセリフ、UI フォント、初期オーディオを確認します。
 
 ## 9. 開発体制
 
 Anemora は個人開発プロジェクトです。制作には AI 支援を併用します。
 
-現在の asset pipeline では、sprite draft に PixelLab、building mesh に Meshy、music support に AIVA / Suno、SFX に ElevenLabs SFX / Stable Audio を使用します。Studio One は audio 仕上げに使用します。
+現在のアセットパイプラインでは、スプライトのドラフトに PixelLab、建物メッシュに Meshy、楽曲補助に AIVA / Suno、SFX に ElevenLabs SFX / Stable Audio を使用します。Studio One はオーディオ仕上げに使用します。
 
-AI 支援の出力は `docs/legal/asset_ledger.md` で追跡します。公開向けの license / attribution summary は `NOTICES.md`、著作者情報は `AUTHORS.md` を参照します。
+AI 支援の出力は `docs/legal/asset_ledger.md` で追跡します。公開向けのライセンス / クレジットの要約は `NOTICES.md`、著作者情報は `AUTHORS.md` を参照します。
 
-現時点では、Anemora の code と project-owned assets は、第三者 license が明示されるものを除き All Rights Reserved として扱います。
+現時点では、Anemora のコードとプロジェクト所有アセットは、第三者ライセンスが明示されるものを除き All Rights Reserved として扱います。
 
 ## 10. 公開計画
 
-現在の primary public release path は Steam Early Access 予定です。
+現在の主たる公開リリース経路は Steam Early Access の予定です。
 
-Stage 4 では、コンテンツ拡張、ローカライズ整備、公開向け asset review、store-page 文面、trailer script を進めます。
+Stage 4 では、コンテンツ拡張、ローカライズ整備、公開向けアセットレビュー、ストアページ文面、トレーラー台本を進めます。
 
-GitHub Public、itch.io、その他の配布経路は、開発可視化、検証配布、補助公開が必要な場合に検討します。主経路は Steam Early Access です。
+GitHub での公開、itch.io、その他の配布経路は、開発の可視化、検証配布、補助的な公開が必要な場合に検討します。主経路は Steam Early Access です。
 
-価格、公開時期、store-page copy、trailer script、最終 license 方針は Stage 4 review で決定します。
+価格、公開時期、ストアページ文面、トレーラー台本、最終的なライセンス方針は Stage 4 レビューで決定します。
