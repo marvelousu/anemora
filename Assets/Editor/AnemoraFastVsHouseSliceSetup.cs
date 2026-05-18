@@ -7,6 +7,8 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace Anemora.EditorTools
@@ -20,6 +22,7 @@ namespace Anemora.EditorTools
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
         private const string ExternalBookshelfFrontTexturePath = "Assets/Art/Textures/FastVS/HouseSlice/External/opengameart_bookshelf_alejandrohaibi_cc0_opaque.png";
+        private const string Hd2dVolumeProfilePath = "Assets/Settings/FastVS_HD2D_80_20_VolumeProfile.asset";
         private const string TimewriterBrushIconTexturePath = TextureDirectory + "/FastVS_House_timewriter_brush_icon_v01.png";
         private const string MusicClipPath = "Assets/Audio/Music/Zone1_Ambient.ogg";
         private const string WindClipPath = "Assets/Audio/SFX/env/sfx_env_wind_loop_01.ogg";
@@ -135,6 +138,7 @@ namespace Anemora.EditorTools
 
             var camera = CreateCamera(currentRoot);
             CreateLighting();
+            CreateHd2dGlobalVolume();
             CreateAudio(currentRoot, areaVisibility);
             var player = CreateNiroPlayer(currentRoot, camera, materials);
             var controller = CreateController(camera, currentRoot, pastRoot, player, materials);
@@ -1383,7 +1387,7 @@ namespace Anemora.EditorTools
 
         private static Camera CreateCamera(Transform currentRoot)
         {
-            var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
+            var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener), typeof(UniversalAdditionalCameraData));
             cameraObject.tag = "MainCamera";
             var camera = cameraObject.GetComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
@@ -1391,6 +1395,8 @@ namespace Anemora.EditorTools
             camera.fieldOfView = 38f;
             camera.nearClipPlane = 0.03f;
             camera.farClipPlane = 140f;
+            var cameraData = cameraObject.GetComponent<UniversalAdditionalCameraData>();
+            cameraData.renderPostProcessing = true;
             var position = currentRoot.TransformPoint(HouseInteriorCenter + new Vector3(-0.90f, 2.78f, -5.15f));
             var lookAt = currentRoot.TransformPoint(HouseInteriorCenter + new Vector3(-0.20f, 0.72f, 0.20f));
             camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
@@ -1430,10 +1436,87 @@ namespace Anemora.EditorTools
             var light = lightObject.GetComponent<Light>();
             light.type = LightType.Directional;
             light.intensity = 1.10f;
+            light.color = new Color(1.00f, 0.96f, 0.90f, 1f);
             light.shadows = LightShadows.Soft;
             lightObject.transform.rotation = Quaternion.Euler(52f, -35f, 0f);
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.30f, 0.30f, 0.34f);
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.14f, 0.15f, 0.18f, 1f);
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = new Color(0.16f, 0.17f, 0.20f, 1f);
+            RenderSettings.fogStartDistance = 20f;
+            RenderSettings.fogEndDistance = 90f;
+        }
+
+        private static void CreateHd2dGlobalVolume()
+        {
+            var volumeObject = new GameObject("FastVS_HD2D_GlobalVolume", typeof(Volume));
+            var volume = volumeObject.GetComponent<Volume>();
+            volume.isGlobal = true;
+            volume.priority = 4f;
+            volume.weight = 1f;
+            volume.sharedProfile = EnsureHd2dVolumeProfile();
+        }
+
+        private static VolumeProfile EnsureHd2dVolumeProfile()
+        {
+            EnsureFolder("Assets/Settings");
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(Hd2dVolumeProfilePath);
+            if (profile == null)
+            {
+                profile = ScriptableObject.CreateInstance<VolumeProfile>();
+                profile.name = "FastVS_HD2D_80_20_VolumeProfile";
+                AssetDatabase.CreateAsset(profile, Hd2dVolumeProfilePath);
+            }
+
+            var bloom = EnsureHd2dVolumeComponent<Bloom>(profile);
+
+            bloom.active = true;
+            bloom.threshold.Override(1.05f);
+            bloom.intensity.Override(0.18f);
+            bloom.scatter.Override(0.42f);
+            bloom.tint.Override(new Color(1.00f, 0.93f, 0.82f, 1f));
+
+            var colorAdjustments = EnsureHd2dVolumeComponent<ColorAdjustments>(profile);
+
+            colorAdjustments.active = true;
+            colorAdjustments.postExposure.Override(-0.08f);
+            colorAdjustments.contrast.Override(12f);
+            colorAdjustments.saturation.Override(-4f);
+            colorAdjustments.colorFilter.Override(new Color(1.00f, 0.97f, 0.92f, 1f));
+
+            var vignette = EnsureHd2dVolumeComponent<Vignette>(profile);
+
+            vignette.active = true;
+            vignette.color.Override(new Color(0.04f, 0.045f, 0.055f, 1f));
+            vignette.center.Override(new Vector2(0.5f, 0.5f));
+            vignette.intensity.Override(0.12f);
+            vignette.smoothness.Override(0.46f);
+            vignette.rounded.Override(false);
+
+            EditorUtility.SetDirty(profile);
+            return profile;
+        }
+
+        private static T EnsureHd2dVolumeComponent<T>(VolumeProfile profile) where T : VolumeComponent
+        {
+            profile.components.RemoveAll(component => component == null);
+            if (!profile.TryGet(out T component))
+            {
+                component = ScriptableObject.CreateInstance<T>();
+                component.name = typeof(T).Name;
+                component.hideFlags = HideFlags.HideInInspector | HideFlags.HideInHierarchy;
+                AssetDatabase.AddObjectToAsset(component, profile);
+                profile.components.Add(component);
+            }
+            else if (!AssetDatabase.Contains(component))
+            {
+                AssetDatabase.AddObjectToAsset(component, profile);
+            }
+
+            EditorUtility.SetDirty(component);
+            EditorUtility.SetDirty(profile);
+            return component;
         }
 
         private static void CreateAudio(Transform currentRoot, FastVsHouseAreaVisibility areaVisibility)
@@ -4837,6 +4920,20 @@ namespace Anemora.EditorTools
                 material.SetFloat("_Cull", 0f);
             }
 
+            if (!unlit)
+            {
+                if (material.HasProperty("_Metallic"))
+                {
+                    material.SetFloat("_Metallic", 0f);
+                }
+
+                if (material.HasProperty("_Smoothness"))
+                {
+                    material.SetFloat("_Smoothness", 0.10f);
+                }
+            }
+
+            EditorUtility.SetDirty(material);
             return material;
         }
 

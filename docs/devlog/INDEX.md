@@ -1,6 +1,6 @@
 # Devlog Index
 
-> Status: v2.6 Fast VS public hygiene scan (2026-05-18). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v2.7 Fast VS HD-2D 80/20 pass (2026-05-18). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. 概要
 
@@ -13,12 +13,13 @@ This file indexes the current `docs/devlog/` Markdown files by stage, milestone 
 
 ## 2. Stage 別 Devlog 一覧
 
-Current root-level Markdown coverage: 112 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
+Current root-level Markdown coverage: 113 files under `docs/devlog/`, including this index, the Stage 3 closeout record, the Stage 4 Phase 0 triage records, the Chapter 1 narrative design records, and Fast VS implementation records.
 
 ### 2.0.0a Fast VS V24 Sample (2026-05-18)
 
 | 日付 | ファイル | topic | 関連 commit | 関連 milestone | CHANGELOG |
 |---|---|---|---|---|---|
+| 2026-05-18 | [2026-05-18_fast_vs_hd2d_80_20_lighting_volume.md](2026-05-18_fast_vs_hd2d_80_20_lighting_volume.md) | Fast VS HD-2D 80/20 lighting/volume pass: low ambient, warm key light, fog, generated post volume, soft shadows, matte environment materials, screenshot/build evidence, and deferred SSAO decision | This task | Fast VS / HD-2D visual polish | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_story_canon_v4_source_check.md](2026-05-18_fast_vs_story_canon_v4_source_check.md) | Fast VS story canon source check: Scene 1 v4 adoption, parent/child material assigned to Scene 3 Aria/Karla, Niro house separate hidden foreshadowing | This task | Fast VS / story canon | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_story_v4_review_fix.md](2026-05-18_fast_vs_story_v4_review_fix.md) | Fast VS story v4 review fix: Reto/Aria wording cleanup, book pickup/returned-book gating, past book marker replacement, HUD positioning, validation evidence | This task | Fast VS / story implementation | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
 | 2026-05-18 | [2026-05-18_fast_vs_review_gap_fix_plan_and_result.md](2026-05-18_fast_vs_review_gap_fix_plan_and_result.md) | Fast VS review gap fix: worker-cycle record, persistent guide HUD, house-exit brush trigger, Reto desk book overlap, past library clean tables, book pickup/return gating, validation evidence | This task | Fast VS / review fix | [Unreleased](../../CHANGELOG.md#unreleased) documentation |
