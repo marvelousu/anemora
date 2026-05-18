@@ -1,151 +1,151 @@
-# NOTICES
+# NOTICES（第三者ライセンス通知）
 
-> Status: v0.2 draft (2026-05-05). This file is a public-facing summary of third-party notices for the Anemora repository. It is not a substitute for legal review before a public release.
+> ステータス: v0.2 ドラフト（2026-05-05）。本ファイルは Anemora リポジトリの第三者通知を公開向けに要約したものです。公開前の法務レビューの代替にはなりません。
 
 ## 1. 概要
 
-This file summarizes third-party fonts, Unity packages, and generated-asset sources that are included in or relevant to Anemora.
+本ファイルは、Anemora に含まれる、または関連する第三者フォント、Unity パッケージ、生成アセットの出典を要約します。
 
-- **Scope**: binaries, media assets, fonts, and runtime packages included in this repository or expected to be included in a playable Anemora build.
-- **Relationship to asset ledger**: this file is consumer-facing. `docs/legal/asset_ledger.md` remains the internal per-asset tracking sheet with generation dates, prompts, source IDs, paid-plan evidence, and review status.
-- **Out of scope**: development tools that are not distributed as part of the game runtime, such as Aseprite, Blender, Python, and Studio One. These are acknowledged in §5.
+- **対象範囲**: 本リポジトリに含まれる、またはプレイ可能な Anemora ビルドに含まれる見込みのバイナリ、メディアアセット、フォント、ランタイムパッケージ。
+- **アセット台帳との関係**: 本ファイルは利用者向けです。`docs/legal/asset_ledger.md` は、生成日・プロンプト・出典 ID・有料プランの証跡・レビュー状況を記録する内部のアセット別追跡表です。
+- **対象外**: ゲームランタイムの一部として配布されない開発ツール（Aseprite、Blender、Python、Studio One など）。これらは §5 で言及します。
 
-Anemora's own code and asset license remains All Rights Reserved by default. Stage 3 /spec resolution locked the planned public release direction to Steam Early Access, with license re-evaluation at Stage 4. See §6.
+Anemora 自身のコードおよびアセットのライセンスは、既定で All Rights Reserved のままです。Stage 3 の /spec resolution で公開リリース方針を Steam Early Access に確定し、ライセンスは Stage 4 で再評価します。§6 を参照。
 
 ## 2. 第三者フォント
 
 ### 2.1 美咲ゴシック
 
-- **Name**: 美咲ゴシック (`misaki_gothic.ttf`)
-- **License**: free software license. The bundled Misaki documentation grants use, copy, distribution, and modification with or without commercial use, without warranty.
-- **Source**: https://littlelimit.net/misaki.htm
-- **Included file**: `Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf`
-- **Derived TMP assets**:
+- **名称**: 美咲ゴシック (`misaki_gothic.ttf`)
+- **ライセンス**: フリーソフトウェアライセンス。同梱の美咲フォント付属文書により、商用・非商用を問わず、利用・複製・再配布・改変が無保証で許諾されています。
+- **出典**: https://littlelimit.net/misaki.htm
+- **同梱ファイル**: `Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf`
+- **派生 TMP アセット**:
   - `Assets/UI/Localization/Fonts/Anemora_JP.asset`
   - `Assets/UI/Localization/Fonts/Anemora_JP_Atlas.asset`
-- **License text status**: no Misaki license text file is currently committed under `Assets/UI/Localization/Fonts/ThirdParty/`. The original downloaded archive contains `misaki.txt` and `readme.txt`; `docs/legal/asset_ledger.md` records the checked license source. If this repository is made public with the TTF included, add the Misaki license text alongside the font or keep this notice updated with the exact license source.
+- **ライセンス本文の状況**: 現時点で `Assets/UI/Localization/Fonts/ThirdParty/` に美咲フォントのライセンス本文ファイルはコミットされていません。ダウンロード元アーカイブには `misaki.txt` と `readme.txt` が含まれ、確認したライセンス出典は `docs/legal/asset_ledger.md` に記録しています。TTF を同梱したまま本リポジトリを公開する場合は、フォントと併せて美咲フォントのライセンス本文を追加するか、本通知に正確なライセンス出典を反映し続けてください。
 
 ### 2.2 Press Start 2P
 
-- **Name**: Press Start 2P
-- **License**: SIL Open Font License 1.1
-- **Sources**:
+- **名称**: Press Start 2P
+- **ライセンス**: SIL Open Font License 1.1
+- **出典**:
   - https://fonts.google.com/specimen/Press+Start+2P
   - https://github.com/google/fonts/tree/main/ofl/pressstart2p
-- **Included file**: `Assets/UI/Localization/Fonts/ThirdParty/PressStart2P-Regular.ttf`
-- **License file**: `Assets/UI/Localization/Fonts/ThirdParty/PressStart2P_LICENSE.txt`
-- **Derived TMP assets**:
+- **同梱ファイル**: `Assets/UI/Localization/Fonts/ThirdParty/PressStart2P-Regular.ttf`
+- **ライセンスファイル**: `Assets/UI/Localization/Fonts/ThirdParty/PressStart2P_LICENSE.txt`
+- **派生 TMP アセット**:
   - `Assets/UI/Localization/Fonts/Anemora_EN.asset`
   - `Assets/UI/Localization/Fonts/Anemora_EN_Atlas.asset`
 
-## 3. 第三者 Unity Packages
+## 3. 第三者 Unity パッケージ
 
-### 3.1 Unity Engine
+### 3.1 Unity エンジン
 
-- **Engine version**: Unity `6000.3.14f1`, from `ProjectSettings/ProjectVersion.txt`
-- **License**: governed by the user's Unity plan and Unity Editor Software Terms.
-- **Reference**: https://unity.com/legal/editor-terms-of-service/software
-- **Note**: Anemora does not redistribute the Unity Editor. Built game releases may include Unity Runtime components under the applicable Unity terms.
+- **エンジンバージョン**: Unity `6000.3.14f1`（`ProjectSettings/ProjectVersion.txt` より）
+- **ライセンス**: ユーザーの Unity プランおよび Unity Editor Software Terms に従います。
+- **参照**: https://unity.com/legal/editor-terms-of-service/software
+- **注記**: Anemora は Unity Editor を再配布しません。ビルドしたゲームのリリースには、適用される Unity 規約に基づき Unity Runtime コンポーネントが含まれる場合があります。
 
 ### 3.2 Universal Render Pipeline (URP)
 
-- **Package**: `com.unity.render-pipelines.universal`
-- **Version**: `17.3.0`
-- **License**: Unity Companion License
-- **Reference**: https://unity.com/legal/licenses/unity-companion-license
+- **パッケージ**: `com.unity.render-pipelines.universal`
+- **バージョン**: `17.3.0`
+- **ライセンス**: Unity Companion License
+- **参照**: https://unity.com/legal/licenses/unity-companion-license
 
 ### 3.3 TextMeshPro
 
-- **Runtime use**: Anemora uses TextMeshPro font assets and `Assets/TextMesh Pro/Resources/TMP Settings.asset`.
-- **Package status**: `Packages/manifest.json` and `Packages/packages-lock.json` do not currently list a standalone `com.unity.textmeshpro` package. TextMeshPro support is present through Unity/TMP project resources and Unity UI integration in this Unity version.
-- **License**: Unity package/runtime terms apply to Unity-provided TextMeshPro components. Re-check this section if Unity adds a separate `com.unity.textmeshpro` package entry later.
+- **ランタイム利用**: Anemora は TextMeshPro のフォントアセットと `Assets/TextMesh Pro/Resources/TMP Settings.asset` を使用します。
+- **パッケージ状況**: `Packages/manifest.json` および `Packages/packages-lock.json` には現在、単体の `com.unity.textmeshpro` パッケージは記載されていません。TextMeshPro 機能は、この Unity バージョンの Unity/TMP プロジェクトリソースおよび Unity UI 統合を通じて提供されます。
+- **ライセンス**: Unity 提供の TextMeshPro コンポーネントには Unity のパッケージ / ランタイム規約が適用されます。後に Unity が単体の `com.unity.textmeshpro` パッケージ項目を追加した場合は、本節を再確認してください。
 
 ### 3.4 Localization
 
-- **Package**: `com.unity.localization`
-- **Version**: `1.5.9`
-- **License**: Unity Companion License
-- **Reference**: https://unity.com/legal/licenses/unity-companion-license
-- **Package third-party notices**: the local Unity PackageCache for this package includes third-party notices for components such as SmartFormat, Google APIs, and CsvHelper. Review package-level notices before a binary release.
+- **パッケージ**: `com.unity.localization`
+- **バージョン**: `1.5.9`
+- **ライセンス**: Unity Companion License
+- **参照**: https://unity.com/legal/licenses/unity-companion-license
+- **パッケージの第三者通知**: このパッケージのローカル Unity PackageCache には、SmartFormat、Google APIs、CsvHelper などのコンポーネントの第三者通知が含まれます。バイナリリリース前にパッケージ単位の通知を確認してください。
 
 ### 3.5 Addressables
 
-- **Package**: `com.unity.addressables`
-- **Version**: `2.9.1`
-- **Source in this project**: transitive dependency in `Packages/packages-lock.json`, brought in by `com.unity.localization`
-- **License**: Unity Companion License
-- **Reference**: https://unity.com/legal/licenses/unity-companion-license
+- **パッケージ**: `com.unity.addressables`
+- **バージョン**: `2.9.1`
+- **本プロジェクトでの取り込み元**: `Packages/packages-lock.json` の推移的依存。`com.unity.localization` により取り込まれます。
+- **ライセンス**: Unity Companion License
+- **参照**: https://unity.com/legal/licenses/unity-companion-license
 
-### 3.6 その他 Unity packages
+### 3.6 その他の Unity パッケージ
 
-Direct dependencies from `Packages/manifest.json` are listed below. Resolved versions are from `Packages/packages-lock.json`.
+`Packages/manifest.json` の直接依存を以下に示します。解決済みバージョンは `Packages/packages-lock.json` に基づきます。
 
-| Package | Manifest version | Resolved version | Source | License / notice |
+| パッケージ | manifest 版 | 解決版 | 取得元 | ライセンス / 通知 |
 |---|---:|---:|---|---|
-| `com.unity.feature.development` | `1.0.2` | `1.0.2` | builtin | Unity package terms; development feature set |
-| `com.unity.ide.visualstudio` | `2.0.25` | `2.0.27` | registry | Unity Companion License; package includes MIT and Zero-Clause BSD third-party notices |
+| `com.unity.feature.development` | `1.0.2` | `1.0.2` | builtin | Unity パッケージ規約。開発用フィーチャセット |
+| `com.unity.ide.visualstudio` | `2.0.25` | `2.0.27` | registry | Unity Companion License。MIT および Zero-Clause BSD の第三者通知を含む |
 | `com.unity.inputsystem` | `1.14.0` | `1.14.0` | registry | Unity Companion License |
-| `com.unity.localization` | `1.5.9` | `1.5.9` | registry | Unity Companion License; see §3.4 |
-| `com.unity.nuget.newtonsoft-json` | `3.2.1` | `3.2.1` | registry | Unity Companion License package; bundled Newtonsoft-related components use MIT notices |
-| `com.unity.render-pipelines.universal` | `17.3.0` | `17.3.0` | builtin | Unity Companion License; see §3.2 |
-| `com.unity.test-framework` | `1.5.1` | `1.6.0` | builtin | Unity Companion License; test package, not a game runtime feature |
+| `com.unity.localization` | `1.5.9` | `1.5.9` | registry | Unity Companion License。§3.4 参照 |
+| `com.unity.nuget.newtonsoft-json` | `3.2.1` | `3.2.1` | registry | Unity Companion License パッケージ。同梱の Newtonsoft 関連コンポーネントは MIT 通知を使用 |
+| `com.unity.render-pipelines.universal` | `17.3.0` | `17.3.0` | builtin | Unity Companion License。§3.2 参照 |
+| `com.unity.test-framework` | `1.5.1` | `1.6.0` | builtin | Unity Companion License。テスト用パッケージで、ゲームランタイム機能ではない |
 | `com.unity.timeline` | `1.8.7` | `1.8.7` | registry | Unity Companion License |
 | `com.unity.ugui` | `2.0.0` | `2.0.0` | builtin | Unity Companion License |
 
-Additional transitive package explicitly tracked for runtime/localization:
+ランタイム / ローカライズ向けに明示的に追跡している追加の推移的パッケージ:
 
-| Package | Resolved version | Source | License / notice |
+| パッケージ | 解決版 | 取得元 | ライセンス / 通知 |
 |---|---:|---|---|
-| `com.unity.addressables` | `2.9.1` | registry | Unity Companion License; see §3.5 |
+| `com.unity.addressables` | `2.9.1` | registry | Unity Companion License。§3.5 参照 |
 
-`Packages/packages-lock.json` also contains Unity built-in modules and transitive packages used by the above dependencies. For a binary release, review Unity PackageCache `LICENSE.md` and third-party notice files generated by the exact Unity Editor version used for the release build.
+`Packages/packages-lock.json` には、上記依存が使用する Unity 組み込みモジュールおよび推移的パッケージも含まれます。バイナリリリースに際しては、リリースビルドに使用した正確な Unity Editor バージョンが生成する Unity PackageCache の `LICENSE.md` および第三者通知ファイルを確認してください。
 
-Observed package-level third-party notices in the local PackageCache include:
+ローカル PackageCache で確認したパッケージ単位の第三者通知には次が含まれます:
 
-- `com.unity.render-pipelines.universal`: NVIDIA FXAA3_11 notice.
-- `com.unity.localization`: SmartFormat (MIT), Google APIs (Apache 2.0), and CsvHelper (MS-PL / Apache 2.0) notices.
-- `com.unity.nuget.newtonsoft-json`: Newtonsoft.Json and related JSON.NET-for-Unity MIT notices.
-- `com.unity.ide.visualstudio`: VSWhere (MIT) and EnvDTE (Zero-Clause BSD) notices; editor integration only.
+- `com.unity.render-pipelines.universal`: NVIDIA FXAA3_11 通知。
+- `com.unity.localization`: SmartFormat (MIT)、Google APIs (Apache 2.0)、CsvHelper (MS-PL / Apache 2.0) の通知。
+- `com.unity.nuget.newtonsoft-json`: Newtonsoft.Json および関連する JSON.NET-for-Unity の MIT 通知。
+- `com.unity.ide.visualstudio`: VSWhere (MIT) および EnvDTE (Zero-Clause BSD) の通知。エディタ統合のみ。
 
-These package-level notices are summarized here and should be rechecked against the final PackageCache before a binary release.
+これらのパッケージ単位の通知はここに要約したものであり、バイナリリリース前に最終的な PackageCache と照合し直してください。
 
-## 4. AI 生成アセット (商用利用 / 公開可否 notes)
+## 4. AI 生成アセット（商用利用 / 公開可否の注記）
 
-Detailed per-asset provenance is tracked in `docs/legal/asset_ledger.md`. This section is a summary of generation sources and current Stage 3 Day 1 status.
+アセット別の詳細な来歴は `docs/legal/asset_ledger.md` で追跡しています。本節は生成元と現時点（Stage 3 Day 1）の状況の要約です。
 
-| Tool / service | Current role in Anemora | License / public release status in `asset_ledger.md` |
+| ツール / サービス | Anemora での現在の役割 | `asset_ledger.md` 上のライセンス / 公開可否 |
 |---|---|---|
-| PixelLab | Character sprite drafts and derived finished sprites | Pixel Apprentice paid plan confirmed; generated/derived sprite assets tracked as Tier 1 player-consumed |
-| Meshy v6 | Zone1 3D building meshes, textures, and Unity prefab derivatives | API key/credits confirmed; paid/premium output ownership tracked per generated asset |
-| AIVA Pro | BGM comparison workflow; Stage 3 Day 1 candidate was rejected for final use | Pro plan tracked; rejected comparison material remains intermediate |
-| Suno v5.5 | BGM candidate generation and selected Zone1 ambient source (`Dustlight Piano B`) | Paid plan tracked; selected BGM row recorded in `asset_ledger.md`; intermediate candidates remain ignored |
-| Stable Audio 2.5 | Planned fallback/inpainting or SFX ambience support | Commercial/API status must be verified at generation time before any final asset is included |
-| ElevenLabs SFX v2 | SFX generation workflow | Creator paid plan tracked; Zone1 SFX 30 generation / import is tracked in `asset_ledger.md` |
-| Studio One | DAW finishing tool for BGM/SFX | Development/production tool only; final exported audio rights depend on lawful inputs and project ownership |
+| PixelLab | キャラクタースプライトのドラフトおよび派生の完成スプライト | Pixel Apprentice 有料プラン確認済み。生成 / 派生スプライトは Tier 1（プレイヤーが触れる）として追跡 |
+| Meshy v6 | Zone1 の 3D 建物メッシュ、テクスチャ、Unity プレハブ派生物 | API 利用 / クレジット確認済み。有料 / premium 出力の所有権を生成アセットごとに追跡 |
+| AIVA Pro | BGM 比較ワークフロー。Stage 3 Day 1 の候補は最終採用を見送り | Pro プランを追跡。不採用の比較素材は中間ファイルのまま |
+| Suno v5.5 | BGM 候補生成および採用した Zone1 アンビエント音源（`Dustlight Piano B`） | 有料プランを追跡。採用 BGM の行は `asset_ledger.md` に記録。中間候補は gitignore のまま |
+| Stable Audio 2.5 | フォールバック / インペイント、または SFX アンビエンス補助として予定 | 最終アセットを含める前に、生成時点で商用 / API の利用条件を確認すること |
+| ElevenLabs SFX v2 | SFX 生成ワークフロー | Creator 有料プランを追跡。Zone1 の SFX 30 種の生成 / 取り込みは `asset_ledger.md` で追跡 |
+| Studio One | BGM / SFX 仕上げ用の DAW | 開発 / 制作用ツールのみ。最終的な書き出し音声の権利は、適法な入力素材とプロジェクトの権利に依存 |
 
-This repository may include AI-generated or AI-assisted assets. For exact asset IDs, prompts, selected takes, manual edits, and Steam AI disclosure classification, see `docs/legal/asset_ledger.md`.
+本リポジトリには AI 生成または AI 支援アセットが含まれる場合があります。正確なアセット ID、プロンプト、採用テイク、手作業の編集、Steam の AI 開示分類については `docs/legal/asset_ledger.md` を参照してください。
 
-## 5. 開発ツール (Acknowledgements)
+## 5. 開発ツール（謝辞）
 
-The following tools are used to create or process assets but are not distributed as part of the Anemora runtime by this repository:
+以下のツールはアセットの作成・加工に使用しますが、本リポジトリでは Anemora ランタイムの一部として配布されません:
 
-- Aseprite, owned by the user, used for pixel-art palette/indexed sprite finishing.
-- Blender 4.5.5 LTS, GPL-licensed development tool, used to repair and postprocess 3D assets. Blender's GPL does not automatically license the exported FBX assets; exported asset licensing still depends on the source asset and project rights.
-- Python standard library scripts under `tools/`, including Meshy API helpers and Blender automation. No committed Python dependency file currently lists Pillow or other third-party Python packages.
-- Studio One, user-owned DAW license, used for audio finishing workflow planning and available for BGM/SFX finishing.
+- Aseprite（ユーザー保有）。ピクセルアートのパレット / インデックススプライトの仕上げに使用。
+- Blender 4.5.5 LTS。GPL ライセンスの開発ツールで、3D アセットの修復・後処理に使用。Blender の GPL は書き出した FBX アセットに自動的にライセンスを及ぼしません。書き出しアセットのライセンスは、元アセットとプロジェクトの権利に依存します。
+- `tools/` 配下の Python 標準ライブラリスクリプト（Meshy API ヘルパーや Blender 自動化を含む）。コミット済みの Python 依存ファイルに Pillow など第三者 Python パッケージは現在記載されていません。
+- Studio One（ユーザー保有の DAW ライセンス）。オーディオ仕上げワークフローの計画に使用し、BGM / SFX の仕上げに利用可能。
 
-Development-tool licenses should be reviewed separately if any tool binary, plugin, or third-party Python dependency is later committed or redistributed.
+ツールのバイナリ、プラグイン、第三者 Python 依存を後にコミットまたは再配布する場合は、開発ツールのライセンスを別途確認してください。
 
-## 6. Anemora 自身の license
+## 6. Anemora 自身のライセンス
 
-- **Code license**: All Rights Reserved remains the current default. Stage 4 may re-evaluate, but no OSS code license is granted by this file.
-- **Project-owned assets**: All Rights Reserved remains the current default for original Anemora sprites, models, audio selections, UI assets, and derivative TMP atlas assets, except where a separate third-party license expressly applies.
-- **Public release direction**: Steam Early Access is the planned public release path as of the Stage 3 /spec resolution interview.
-- **Current default**: Until a license is added, commercial use, redistribution, and derivative works of Anemora's original code/assets require author permission, except where a separate third-party license expressly applies.
+- **コードライセンス**: 現時点の既定は All Rights Reserved のままです。Stage 4 で再評価する可能性がありますが、本ファイルはいかなる OSS コードライセンスも付与しません。
+- **プロジェクト所有アセット**: Anemora オリジナルのスプライト、モデル、採用音声、UI アセット、派生 TMP アトラスアセットは、第三者ライセンスが明示的に適用される場合を除き、既定で All Rights Reserved のままです。
+- **公開リリース方針**: Stage 3 の /spec resolution インタビュー時点で、公開リリース経路は Steam Early Access を予定しています。
+- **現在の既定**: ライセンスが追加されるまで、Anemora オリジナルのコード / アセットの商用利用、再配布、二次的著作物の作成には、第三者ライセンスが明示的に適用される場合を除き、著作者の許諾が必要です。
 
 ## 7. 更新履歴
 
-| Version | Date | Change |
+| 版 | 日付 | 変更 |
 |---|---|---|
-| v0.1 | 2026-05-05 | 初版起草。Stage 3 Day 1 時点の third-party fonts, Unity packages, AI-generated asset sources, development-tool acknowledgements, and Anemora license TBD status を集約 |
-| v0.2 | 2026-05-05 | Stage 3 /spec resolution を反映。Code license は All Rights Reserved 継続、public release direction は Steam Early Access 予定として記録 |
+| v0.1 | 2026-05-05 | 初版起草。Stage 3 Day 1 時点の第三者フォント、Unity パッケージ、AI 生成アセットの出典、開発ツールの謝辞、Anemora ライセンス未定状況を集約 |
+| v0.2 | 2026-05-05 | Stage 3 の /spec resolution を反映。コードライセンスは All Rights Reserved 継続、公開リリース方針は Steam Early Access 予定として記録 |
