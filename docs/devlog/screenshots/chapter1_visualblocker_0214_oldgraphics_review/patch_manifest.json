@@ -1,0 +1,26 @@
+{
+    "package":  "Chapter1VisualBlocker0214RouteCompositionPolish",
+    "date":  "2026-05-12",
+    "verdict":  "needs polish",
+    "build":  "<temp>\\anemora_ch1_playable_visualblockerfix_20260512_0214\\Anemora_Chapter1.exe",
+    "evidence":  "<temp>\\anemora_ch1_visualblocker_visible_smoke_20260512_0214",
+    "owned_scope":  [
+                        "route/background/detail/camera-edge visual review",
+                        "house interior wall/boundary readability from route/background/coverage perspective",
+                        "exterior/background scale and closer-camera coverage",
+                        "plaza library facade/readboost visibility as route destination",
+                        "library/reto composition readability only"
+                    ],
+    "patch_intent":  [
+                         "keep house interior and exterior coverage as non-blocking",
+                         "add/activate a stronger central plaza north/back library facade read boost above ground/debris without changing plaza ground material",
+                         "reduce plaza visual competition by making sign/debris secondary to facade destination",
+                         "keep library endpoint composition intact; only add optional left-boundary crop mask if future close-camera frames expose empty side block"
+                     ],
+    "artifacts":  [
+                      "chapter1_visualblocker_0214_contact_sheet.png",
+                      "chapter1_visualblocker_0214_patch_preview.png",
+                      "manifest.json",
+                      "patch_manifest.json"
+                  ]
+}
