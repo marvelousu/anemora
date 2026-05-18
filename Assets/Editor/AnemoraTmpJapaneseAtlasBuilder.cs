@@ -7,7 +7,7 @@ using UnityEngine.TextCore.LowLevel;
 
 public static class AnemoraTmpJapaneseAtlasBuilder
 {
-    private const string SourceFontPath = "Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf";
+    private const string SourceFontPath = "Assets/UI/Localization/Fonts/ThirdParty/DotGothic16-Regular.ttf";
     private const string FontAssetPath = "Assets/UI/Localization/Fonts/Anemora_JP.asset";
     private const string AtlasAssetPath = "Assets/UI/Localization/Fonts/Anemora_JP_Atlas.asset";
 

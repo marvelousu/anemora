@@ -6,6 +6,8 @@
 
 > **役割分離**: 本書 (VS_SCOPE) は **VS の "定義書"** (何を作れば VS 完成か)。`docs/STAGE3_PLAN.md` は **VS の "実行計画書"** (どう進めるか・どの順序で何日かけて作るか)。両者の混線を防ぐため、完了条件は本書 §8 を主とし、STAGE3_PLAN 側はそこへの参照に統一する。
 
+> **現状 (2026-05-18 更新)**: 下の "Status (2026-05-06 = Stage 3 closeout)" および本書中の `Anemora_Demo_Playable.exe` 等のビルドパス参照は **当時のスナップショット(歴史的記録)** です。その後 Chapter 1 を絞った Fast Vertical Slice を制作し、2026-05-18 に公開ベースライン `vs-public-2026-05-18`(Windows ビルドを GitHub Releases に添付)をリリースしました。プレイ可否・最新仕様は README「ステータス」、GitHub Releases、最新の `docs/devlog/` を参照してください。
+>
 > **Status (2026-05-06 = Stage 3 closeout)**: v1.0。E0-E5 + A1-A5 + F1-F4 + G3-G5 の Vertical Slice 必須範囲は完了。Latest closeout commit は `a0bd50b`。G5 manual confirmation により、Windows demo build の通し操作、時の窓 brush preview / generation 精度、右クリック削除、UI 表示、book reflection を Stage 3 完了として受け入れた。残項目は Stage 4 backlog / polish として扱う。
 
 ---

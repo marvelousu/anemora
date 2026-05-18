@@ -84,7 +84,7 @@ Builds/Anemora_FastVS_HouseSlice_20260518.zip
 | 2D アセットパイプライン | PixelLab + Aseprite |
 | 3D アセットパイプライン | Meshy v6 + Blender 4.5 LTS |
 | オーディオパイプライン | AIVA + Suno + ElevenLabs SFX + Stable Audio + Studio One |
-| ローカライズ | TMP SDF Atlas（日本語: 美咲ゴシック / 英語: Press Start 2P）+ LocalizationSettings |
+| ローカライズ | TMP SDF Atlas（日本語: DotGothic16 / 英語: Press Start 2P）+ LocalizationSettings |
 | ソース管理 | Git + GitHub（feature ごとに worktree を切るワークフロー） |
 
 ## 技術的な要点
@@ -143,7 +143,7 @@ Editor 上で Fast VS を確認したい場合の手順:
 - **コード**: 既定で All Rights Reserved。Stage 4 入口で公開方針と合わせて再評価予定。この README はオープンソースライセンスを付与しません。
 - **第三者アセット**: 個別ライセンスは [`docs/legal/asset_ledger.md`](docs/legal/asset_ledger.md) を参照。
 - **AI 生成アセット**: 各ツールの有料プランを前提に生成し、商用利用可否と公開可否を `asset_ledger.md` に記録。
-- **フォント**: 美咲ゴシック（フリー使用許諾）、Press Start 2P（SIL Open Font License 1.1）。
+- **フォント**: DotGothic16（SIL Open Font License 1.1）、Press Start 2P（SIL Open Font License 1.1）。
 
 ## ロードマップ
 

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> **Note (current state)**: 以下は **2026-05-06 時点で Stage 3 closeout 区切りとした際のスナップショット記録** です。その後 Chapter 1 拡張・HD-2D polish 等の追加実装が継続中で、通しプレイ可能な build はまだ存在しません。最新の制作状態は README の Status と最新の `docs/devlog/` を参照してください。
+> **Note (current state, 2026-05-18 更新)**: 以下の節は **2026-05-06 時点で Stage 3 closeout 区切りとした際のスナップショット(歴史的記録)** です。その後、Chapter 1 を絞った Fast Vertical Slice を制作し、**2026-05-18 に公開ビルドをリリース済み**です(タグ `vs-public-2026-05-18`、Windows ビルドを GitHub Releases に添付)。最新の制作状態とプレイ可否は README の「ステータス」、GitHub Releases、最新の `docs/devlog/` を参照してください。
 
 Stage 3 Vertical Slice closeout notes (recorded 2026-05-06). 2026-05-06 時点で Stage 3 を一旦 closeout 区切りとしたタイミングの記録です。G5 manual confirmation と demo brush repair を経て、Stage 3 /spec resolution で Niro / Antela を provisional name として採用、code license を All Rights Reserved by default に維持、public release direction を Steam Early Access に固定しました。
 
