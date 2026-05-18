@@ -6,8 +6,8 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 235 files including INDEX.md and README.md.
-- Dated devlog records: 233 files.
+- Root-level Markdown coverage: 234 files including INDEX.md and README.md.
+- Dated devlog records: 232 files.
 - Linked evidence files present under docs/devlog/screenshots/: 163 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -28,7 +28,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-15 | 1 |
 | 2026-05-16 | 1 |
 | 2026-05-17 | 5 |
-| 2026-05-18 | 47 |
+| 2026-05-18 | 46 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -45,7 +45,6 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-18_fast_vs_external_bookshelf_story_motion.md](2026-05-18_fast_vs_external_bookshelf_story_motion.md) | Fast VS | Fast VS external bookshelf and Reto motion fix |
 | [2026-05-18_fast_vs_facade_redcue_text_fix.md](2026-05-18_fast_vs_facade_redcue_text_fix.md) | Fast VS | Fast VS facade, red cue, and text fix |
 | [2026-05-18_fast_vs_house_orientation_walk_camera_fix.md](2026-05-18_fast_vs_house_orientation_walk_camera_fix.md) | Fast VS | 2026-05-18 Fast VS house orientation / walk / camera fix |
-| [2026-05-18_fast_vs_left_bottom_timewindow_hint.md](2026-05-18_fast_vs_left_bottom_timewindow_hint.md) | Fast VS | 2026-05-18 Fast VS left-bottom Time Window hint |
 | [2026-05-18_fast_vs_library_depth_mezzanine_dotgothic_lock.md](2026-05-18_fast_vs_library_depth_mezzanine_dotgothic_lock.md) | Fast VS | 2026-05-18 Fast VS Library Depth/Mezzanine Prototype and DotGothic16 Lock |
 | [2026-05-18_fast_vs_library_entrance_alignment_and_hero_shadow_plan.md](2026-05-18_fast_vs_library_entrance_alignment_and_hero_shadow_plan.md) | Fast VS | 2026-05-18 Fast VS Library Entrance Alignment and Hero Shadow Plan |
 | [2026-05-18_fast_vs_library_expand_debug_label_cleanup_dot_font_candidates.md](2026-05-18_fast_vs_library_expand_debug_label_cleanup_dot_font_candidates.md) | Fast VS | 2026-05-18 Fast VS Library Expansion, Debug Label Cleanup, and Dot Font Candidates |
