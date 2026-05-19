@@ -6,8 +6,8 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 239 files including INDEX.md and README.md.
-- Dated devlog records: 237 files.
+- Root-level Markdown coverage: 240 files including INDEX.md and README.md.
+- Dated devlog records: 238 files.
 - Linked evidence files present under docs/devlog/screenshots/: 170 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -30,8 +30,15 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
+| 2026-05-20 | 1 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-05-20
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-20_post_vs_parallel_branch_strategy.md](2026-05-20_post_vs_parallel_branch_strategy.md) | Fast VS / Chapter 1 | 2026-05-20 Post-VS Parallel Branch Strategy |
 
 ### 2026-05-19
 
@@ -360,6 +367,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v3.3 | 2026-05-20 | Added post-VS parallel branch strategy and Chapter 1 continuation session prompt. |
 | v3.2 | 2026-05-19 | Added work-branch Fast VS HD2D/MCP/guidance records and preserved the left-bottom Time Window hint record after the public-main merge. |
 | v3.1 | 2026-05-19 | Added notes-based retroactive devlogs for Pass 8 reception and Chapter 1 TimeWindow/public-preview recovery on 2026-05-14 through 2026-05-16. |
 | v3.0 | 2026-05-18 | Rebuilt index after recovering missing 2026-05-07 through 2026-05-18 devlogs across local worktrees, refs, and fetched remotes. |
