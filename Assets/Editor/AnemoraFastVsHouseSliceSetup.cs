@@ -187,6 +187,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
             ValidateFastVsHd2dFifthCycleObjectDetails();
             ValidateFastVsHd2dEighthCycleBookPalette();
+            ValidateFastVsHd2dNinthCyclePathStone();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -310,6 +311,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dEighthCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_book_palette_20260520");
+        }
+
+        public static void CaptureHd2dNinthCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_path_stone_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -4360,6 +4366,20 @@ namespace Anemora.EditorTools
             ValidateBookSpinePaletteSamples(true, 0.70f, 0.78f);
         }
 
+        private static void ValidateFastVsHd2dNinthCyclePathStone()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_path_hd2d_plate", 128, 128, 30);
+            ValidateGeneratedRepeatTextureAsset("past_path_hd2d_plate", 128, 128, 30);
+            ValidateGeneratedTextureExactSize("current_path_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("past_path_hd2d_plate", 128, 128);
+            ValidateGeneratedSurfaceMaterialTexture("current_path", "current_path_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_path", "past_path_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_StoneSquare", "current_path_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_StoneSquare", "past_path_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_PathToInterior", "current_path_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_PathToInterior", "past_path_hd2d_plate");
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -6336,6 +6356,247 @@ namespace Anemora.EditorTools
                 false);
         }
 
+        private static Color SampleCurrentPathHd2dPixel(int x, int y)
+        {
+            return SamplePathFlagstoneHd2dPixel(
+                x,
+                y,
+                128,
+                128,
+                401,
+                false,
+                new Color(0.30f, 0.27f, 0.22f, 1f),
+                new Color(0.35f, 0.31f, 0.26f, 1f),
+                new Color(0.24f, 0.22f, 0.18f, 1f),
+                new Color(0.40f, 0.36f, 0.30f, 1f),
+                new Color(0.19f, 0.17f, 0.14f, 1f),
+                new Color(0.27f, 0.24f, 0.20f, 1f),
+                new Color(0.16f, 0.14f, 0.11f, 1f),
+                new Color(0.13f, 0.11f, 0.09f, 1f),
+                new Color(0.21f, 0.18f, 0.15f, 1f));
+        }
+
+        private static Color SamplePastPathHd2dPixel(int x, int y)
+        {
+            return SamplePathFlagstoneHd2dPixel(
+                x,
+                y,
+                128,
+                128,
+                419,
+                true,
+                new Color(0.36f, 0.31f, 0.25f, 1f),
+                new Color(0.42f, 0.36f, 0.29f, 1f),
+                new Color(0.30f, 0.26f, 0.21f, 1f),
+                new Color(0.48f, 0.42f, 0.34f, 1f),
+                new Color(0.23f, 0.19f, 0.15f, 1f),
+                new Color(0.32f, 0.28f, 0.23f, 1f),
+                new Color(0.18f, 0.15f, 0.12f, 1f),
+                new Color(0.15f, 0.12f, 0.10f, 1f),
+                new Color(0.27f, 0.22f, 0.18f, 1f));
+        }
+
+        private static Color SamplePathFlagstoneHd2dPixel(int x, int y, int width, int height, int seed, bool past, Color stoneA, Color stoneB, Color stoneC, Color stoneD, Color seamColor, Color highlightColor, Color shadowColor, Color crackColor, Color dustColor)
+        {
+            if (x <= 0 || y <= 0 || x >= width - 1 || y >= height - 1)
+            {
+                var edge = LerpColor(seamColor, shadowColor, past ? 0.34f : 0.48f);
+                return ShadeSurface(edge, x, y, width, height, 0.04f, 0.01f);
+            }
+
+            if (!TryResolvePathFlagstoneCell(x, y, width, height, seed, past, out var cellColumnIndex, out var cellRowIndex, out var cellStartX, out var cellStartY, out var cellWidth, out var cellHeight, out var withinX, out var withinY))
+            {
+                var fallback = LerpColor(seamColor, shadowColor, past ? 0.52f : 0.66f);
+                return ShadeSurface(fallback, x, y, width, height, past ? 0.08f : 0.10f, past ? 0.03f : 0.02f);
+            }
+
+            var stoneRoll = Hash01(cellColumnIndex, cellRowIndex, seed + 3);
+            var stoneTone = stoneRoll < 0.22f ? stoneA :
+                stoneRoll < 0.44f ? stoneB :
+                stoneRoll < 0.66f ? stoneC :
+                stoneRoll < 0.84f ? stoneD :
+                LerpColor(stoneB, stoneD, 0.42f);
+
+            stoneTone = LerpColor(stoneTone, past ? highlightColor : shadowColor, past ? 0.07f + stoneRoll * 0.06f : 0.05f + stoneRoll * 0.05f);
+
+            var edgeBand = withinX <= 1 || withinX >= cellWidth - 2 || withinY <= 1 || withinY >= cellHeight - 2;
+            if (edgeBand)
+            {
+                stoneTone = LerpColor(stoneTone, seamColor, past ? 0.56f : 0.70f);
+            }
+
+            if (withinX == 2 || withinY == 2 || withinX == cellWidth - 3 || withinY == cellHeight - 3)
+            {
+                stoneTone = LerpColor(stoneTone, seamColor, past ? 0.18f : 0.24f);
+            }
+
+            var centerLift = Mathf.Clamp01(1f - (
+                Mathf.Abs((withinX - ((cellWidth - 1) * 0.5f)) / Mathf.Max(1f, cellWidth * 0.5f)) * 0.92f +
+                Mathf.Abs((withinY - ((cellHeight - 1) * 0.5f)) / Mathf.Max(1f, cellHeight * 0.5f)) * 0.86f));
+            if (past)
+            {
+                stoneTone = LerpColor(stoneTone, highlightColor, centerLift * 0.12f);
+            }
+            else
+            {
+                stoneTone = LerpColor(stoneTone, shadowColor, (1f - centerLift) * 0.09f);
+            }
+
+            var crackRoll = Hash01(cellColumnIndex, cellRowIndex, seed + 11);
+            if (crackRoll > (past ? 0.80f : 0.64f))
+            {
+                var diagonalA = Mathf.Abs(((withinX * 2) + withinY + cellColumnIndex + seed) % 19 - 9);
+                var diagonalB = Mathf.Abs((withinX + (withinY * 2) + cellRowIndex + seed + 7) % 17 - 8);
+                if (diagonalA <= 1 || diagonalB <= 1 || Mathf.Abs(withinX - withinY) <= 1)
+                {
+                    stoneTone = LerpColor(stoneTone, crackColor, past ? 0.26f : 0.42f);
+                }
+            }
+
+            var chipRoll = Hash01(cellStartX + withinX, cellStartY + withinY, seed + 19);
+            if (!past && chipRoll > 0.984f)
+            {
+                stoneTone = LerpColor(stoneTone, shadowColor, 0.62f);
+            }
+            else if (past && chipRoll > 0.992f)
+            {
+                stoneTone = LerpColor(stoneTone, highlightColor, 0.16f);
+            }
+
+            var dustRoll = Hash01(cellColumnIndex, cellRowIndex, seed + 23);
+            if (!past && dustRoll > 0.58f && withinX > 1 && withinX < cellWidth - 2 && withinY > 1 && withinY < cellHeight - 2)
+            {
+                var dustBand = Mathf.Abs(((withinX + withinY + seed) % 13) - 6);
+                if (dustBand <= 1)
+                {
+                    stoneTone = LerpColor(stoneTone, dustColor, 0.22f);
+                }
+            }
+            else if (past && dustRoll > 0.72f && withinX > 1 && withinX < cellWidth - 2 && withinY > 1 && withinY < cellHeight - 2)
+            {
+                stoneTone = LerpColor(stoneTone, highlightColor, 0.08f);
+            }
+
+            if (Hash01(x, y, seed + 29) > (past ? 0.994f : 0.989f))
+            {
+                stoneTone = past ? Lighten(stoneTone, 0.02f) : Darken(stoneTone, 0.05f);
+            }
+
+            return ShadeSurface(stoneTone, x, y, width, height, past ? 0.08f : 0.11f, past ? 0.05f : 0.03f);
+        }
+
+        private static bool TryResolvePathFlagstoneCell(int x, int y, int width, int height, int seed, bool past, out int cellColumnIndex, out int cellRowIndex, out int cellStartX, out int cellStartY, out int cellWidth, out int cellHeight, out int withinX, out int withinY)
+        {
+            cellColumnIndex = 0;
+            cellRowIndex = 0;
+            cellStartX = 0;
+            cellStartY = 0;
+            cellWidth = 0;
+            cellHeight = 0;
+            withinX = 0;
+            withinY = 0;
+
+            var rowCursor = 0;
+            for (var rowIndex = 0; rowIndex < 16 && rowCursor < height; rowIndex++)
+            {
+                var rowHeight = GetPathStoneHeight(rowIndex, seed, past);
+                if (rowCursor + rowHeight > height)
+                {
+                    rowHeight = height - rowCursor;
+                }
+
+                if (rowHeight <= 0)
+                {
+                    break;
+                }
+
+                var rowEnd = rowCursor + rowHeight;
+                if (y >= rowCursor && y < rowEnd)
+                {
+                    withinY = y - rowCursor;
+                    var columnCursor = 0;
+                    for (var columnIndex = 0; columnIndex < 16 && columnCursor < width; columnIndex++)
+                    {
+                        var columnWidth = GetPathStoneWidth(columnIndex, rowIndex, seed, past);
+                        if (columnCursor + columnWidth > width)
+                        {
+                            columnWidth = width - columnCursor;
+                        }
+
+                        if (columnWidth <= 0)
+                        {
+                            break;
+                        }
+
+                        var columnEnd = columnCursor + columnWidth;
+                        if (x >= columnCursor && x < columnEnd)
+                        {
+                            cellColumnIndex = columnIndex;
+                            cellRowIndex = rowIndex;
+                            cellStartX = columnCursor;
+                            cellStartY = rowCursor;
+                            cellWidth = columnWidth;
+                            cellHeight = rowHeight;
+                            withinX = x - columnCursor;
+                            return true;
+                        }
+
+                        columnCursor = columnEnd;
+                    }
+                }
+
+                rowCursor = rowEnd;
+            }
+
+            return false;
+        }
+
+        private static int GetPathStoneWidth(int stoneColumnIndex, int stoneRowIndex, int seed, bool past)
+        {
+            var roll = Hash01(stoneColumnIndex, stoneRowIndex, seed + (past ? 517 : 509));
+            if (past)
+            {
+                if (roll < 0.12f) return 12;
+                if (roll < 0.28f) return 13;
+                if (roll < 0.46f) return 14;
+                if (roll < 0.63f) return 16;
+                if (roll < 0.79f) return 18;
+                if (roll < 0.91f) return 20;
+                return 22;
+            }
+
+            if (roll < 0.12f) return 11;
+            if (roll < 0.28f) return 12;
+            if (roll < 0.45f) return 13;
+            if (roll < 0.62f) return 15;
+            if (roll < 0.78f) return 17;
+            if (roll < 0.90f) return 19;
+            return 22;
+        }
+
+        private static int GetPathStoneHeight(int stoneRowIndex, int seed, bool past)
+        {
+            var roll = Hash01(stoneRowIndex, seed, past ? 541 : 533);
+            if (past)
+            {
+                if (roll < 0.12f) return 12;
+                if (roll < 0.28f) return 13;
+                if (roll < 0.46f) return 14;
+                if (roll < 0.64f) return 15;
+                if (roll < 0.80f) return 17;
+                if (roll < 0.92f) return 19;
+                return 20;
+            }
+
+            if (roll < 0.12f) return 11;
+            if (roll < 0.28f) return 12;
+            if (roll < 0.45f) return 13;
+            if (roll < 0.62f) return 14;
+            if (roll < 0.78f) return 16;
+            if (roll < 0.90f) return 18;
+            return 20;
+        }
+
         private static Color SampleFabricPlatePixel(int x, int y, int width, int height, Color fabricA, Color fabricB, Color stitchColor, Color borderColor, Color highlightColor, Color shadowColor, int seed, bool worn)
         {
             var color = LerpColor(fabricA, fabricB, Hash01(x / 4, y / 4, seed));
@@ -7011,7 +7272,7 @@ namespace Anemora.EditorTools
             return new Materials(
                 PixelMaterial("current_ground", new Color32(42, 41, 38, 255), new Color32(63, 58, 51, 255), new Color32(31, 31, 30, 255), PixelPattern.Noise, false, new Vector2(4f, 4f)),
                 PixelMaterial("current_grass", new Color32(38, 55, 36, 255), new Color32(53, 76, 48, 255), new Color32(28, 38, 27, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
-                PixelMaterial("current_path", new Color32(95, 72, 52, 255), new Color32(132, 102, 70, 255), new Color32(65, 52, 42, 255), PixelPattern.Stone, false, new Vector2(4f, 4f)),
+                PaintedSurfaceMaterial("current_path", "current_path_hd2d_plate", 128, 128, SampleCurrentPathHd2dPixel, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("current_interior_floor", "current_interior_floor_hd2d_plate", 128, 128, SampleCurrentInteriorFloorHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_interior_wall", "current_interior_wall_hd2d_plate", 128, 128, SampleCurrentInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_exterior_wall", "current_exterior_wall_hd2d_plate", 128, 128, SampleCurrentExteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
@@ -7024,7 +7285,7 @@ namespace Anemora.EditorTools
                 PaintedSurfaceMaterial("current_bed", "current_bed_hd2d_plate", 128, 128, SampleCurrentBedHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("current_leaf", new Color32(38, 65, 40, 255), new Color32(53, 82, 47, 255), new Color32(28, 45, 32, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PixelMaterial("past_grass", new Color32(58, 106, 65, 255), new Color32(89, 139, 74, 255), new Color32(41, 82, 54, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
-                PixelMaterial("past_path", new Color32(139, 111, 70, 255), new Color32(171, 139, 87, 255), new Color32(96, 79, 58, 255), PixelPattern.Stone, false, new Vector2(4f, 4f)),
+                PaintedSurfaceMaterial("past_path", "past_path_hd2d_plate", 128, 128, SamplePastPathHd2dPixel, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("past_wood_floor", "past_wood_floor_hd2d_plate", 128, 128, SamplePastWoodFloorHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("past_interior_wall", "past_interior_wall_hd2d_plate", 128, 128, SamplePastInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("past_exterior_wall", "past_exterior_wall_hd2d_plate", 128, 128, SamplePastExteriorWallHd2dPixel, false, new Vector2(4f, 3f)),

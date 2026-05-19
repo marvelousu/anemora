@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v4.1 fast VS HD2D book palette cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v4.2 fast VS HD2D path stone cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 248 files including INDEX.md and README.md.
-- Dated devlog records: 246 files.
-- Linked evidence files present under docs/devlog/screenshots/: 246 files.
+- Root-level Markdown coverage: 249 files including INDEX.md and README.md.
+- Dated devlog records: 247 files.
+- Linked evidence files present under docs/devlog/screenshots/: 256 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 9 |
+| 2026-05-20 | 10 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -44,6 +44,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_first_cycle.md](2026-05-20_fast_vs_hd2d_first_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D First Cycle |
 | [2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md](2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Hero Prop Texture Cycle |
 | [2026-05-20_fast_vs_hd2d_object_detail_cycle.md](2026-05-20_fast_vs_hd2d_object_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Object Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_path_stone_cycle.md](2026-05-20_fast_vs_hd2d_path_stone_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Path Stone Cycle |
 | [2026-05-20_fast_vs_hd2d_second_cycle.md](2026-05-20_fast_vs_hd2d_second_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Second Cycle |
 | [2026-05-20_fast_vs_hd2d_surface_texture_cycle.md](2026-05-20_fast_vs_hd2d_surface_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Surface Texture Cycle |
 | [2026-05-20_post_vs_parallel_branch_strategy.md](2026-05-20_post_vs_parallel_branch_strategy.md) | Fast VS / Chapter 1 | 2026-05-20 Post-VS Parallel Branch Strategy |
@@ -375,6 +376,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v4.2 | 2026-05-20 | Added Fast VS HD2D path stone cycle record with procedural current/past path plates, validation, screenshot, build, and player-smoke evidence. |
 | v4.1 | 2026-05-20 | Added Fast VS HD2D book palette cycle record with muted procedural shelf colors, variable book widths, validation, screenshot, build, and player-smoke evidence. |
 | v4.0 | 2026-05-20 | Added Fast VS HD2D depth framing cycle record with local shadow/warm-pool staging, validation, screenshot, build, and player-smoke evidence. |
 | v3.9 | 2026-05-20 | Added Fast VS HD2D close review screenshot cycle record with close-up evidence for interior props, facade doors/windows, Reto desk book, and library rubble. |
