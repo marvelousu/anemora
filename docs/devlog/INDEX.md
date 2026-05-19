@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v3.5 fast VS HD2D second cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v3.6 fast VS HD2D surface texture cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 242 files including INDEX.md and README.md.
-- Dated devlog records: 240 files.
-- Linked evidence files present under docs/devlog/screenshots/: 190 files.
+- Root-level Markdown coverage: 243 files including INDEX.md and README.md.
+- Dated devlog records: 241 files.
+- Linked evidence files present under docs/devlog/screenshots/: 200 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 3 |
+| 2026-05-20 | 4 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 |---|---|---|
 | [2026-05-20_fast_vs_hd2d_first_cycle.md](2026-05-20_fast_vs_hd2d_first_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D First Cycle |
 | [2026-05-20_fast_vs_hd2d_second_cycle.md](2026-05-20_fast_vs_hd2d_second_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Second Cycle |
+| [2026-05-20_fast_vs_hd2d_surface_texture_cycle.md](2026-05-20_fast_vs_hd2d_surface_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Surface Texture Cycle |
 | [2026-05-20_post_vs_parallel_branch_strategy.md](2026-05-20_post_vs_parallel_branch_strategy.md) | Fast VS / Chapter 1 | 2026-05-20 Post-VS Parallel Branch Strategy |
 
 ### 2026-05-19
@@ -369,6 +370,8 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v3.6 | 2026-05-20 | Added Fast VS HD2D surface texture cycle record with generated texture assets, validation, screenshot, build, and player-smoke evidence. |
+| v3.5 | 2026-05-20 | Added Fast VS HD2D second-cycle atmosphere, validation, screenshot, build, and player-smoke record. |
 | v3.4 | 2026-05-20 | Added Fast VS HD2D first-cycle render, validation, screenshot, build, and player-smoke record. |
 | v3.3 | 2026-05-20 | Added post-VS parallel branch strategy and Chapter 1 continuation session prompt. |
 | v3.2 | 2026-05-19 | Added work-branch Fast VS HD2D/MCP/guidance records and preserved the left-bottom Time Window hint record after the public-main merge. |

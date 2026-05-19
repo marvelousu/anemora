@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Anemora.FastVS;
 using Anemora.TimeManagement;
@@ -21,7 +22,6 @@ namespace Anemora.EditorTools
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
-        private const string ExternalBookshelfFrontTexturePath = "Assets/Art/Textures/FastVS/HouseSlice/External/opengameart_bookshelf_alejandrohaibi_cc0_opaque.png";
         private const string TimewriterBrushIconTexturePath = TextureDirectory + "/FastVS_House_timewriter_brush_icon_v01.png";
         private const string MusicClipPath = "Assets/Audio/Music/Zone1_Ambient.ogg";
         private const string WindClipPath = "Assets/Audio/SFX/env/sfx_env_wind_loop_01.ogg";
@@ -186,6 +186,7 @@ namespace Anemora.EditorTools
             ValidatePlayerSpritePresentation();
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dSecondCycleAtmosphere();
+            ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
 
@@ -283,6 +284,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSecondCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_second_cycle_20260520");
+        }
+
+        public static void CaptureHd2dThirdCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_surface_textures_20260520");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -2798,18 +2804,13 @@ namespace Anemora.EditorTools
 
         private static void ValidatePastLibraryBackWallBookRuns()
         {
-            if (AssetDatabase.LoadAssetAtPath<Texture2D>(ExternalBookshelfFrontTexturePath) == null)
-            {
-                throw new InvalidOperationException($"House slice validation failed: external bookshelf texture is missing: {ExternalBookshelfFrontTexturePath}");
-            }
-
             var panel = FindSceneObjectIncludingInactive("Past_Library_BackWallBookshelfFrontTexturePanel");
             var renderer = panel != null ? panel.GetComponent<Renderer>() : null;
             if (renderer == null ||
                 renderer.sharedMaterial == null ||
-                renderer.sharedMaterial.name.IndexOf("opengameart", StringComparison.OrdinalIgnoreCase) < 0)
+                renderer.sharedMaterial.name.IndexOf("painted_hd2d", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                throw new InvalidOperationException("House slice validation failed: past back-wall bookshelf must use the external OpenGameArt front-facing bookshelf texture panel.");
+                throw new InvalidOperationException("House slice validation failed: past back-wall bookshelf must use the painted_hd2d front-facing bookshelf texture panel.");
             }
         }
 
@@ -3004,9 +3005,9 @@ namespace Anemora.EditorTools
             var textureRenderer = texturePanel != null ? texturePanel.GetComponent<Renderer>() : null;
             if (textureRenderer == null ||
                 textureRenderer.sharedMaterial == null ||
-                textureRenderer.sharedMaterial.name.IndexOf("opengameart", StringComparison.OrdinalIgnoreCase) < 0)
+                textureRenderer.sharedMaterial.name.IndexOf("painted_hd2d", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                throw new InvalidOperationException($"House slice validation failed: past {side.ToLowerInvariant()} library side bookshelf must use the external OpenGameArt front-facing bookshelf texture panel.");
+                throw new InvalidOperationException($"House slice validation failed: past {side.ToLowerInvariant()} library side bookshelf must use the painted_hd2d front-facing bookshelf texture panel.");
             }
 
             ValidateVectorNear($"{side} past side bookshelf texture panel position", texturePanel.localPosition, new Vector3(0f, LibrarySideShelfTexturePanelCenterY, 0.70f));
@@ -3873,6 +3874,26 @@ namespace Anemora.EditorTools
             ValidateAtmosphereParticleSystem("FastVS_HD2D_PastPlaza_MemoryDrift", OtherTimeSpaceRenderLayer, atmosphereMaterial);
         }
 
+        private static void ValidateFastVsHd2dThirdCycleSurfaceTextures()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_interior_floor_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("past_wood_floor_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("current_interior_wall_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("past_interior_wall_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("current_furniture_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("past_furniture_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("book_spines_hd2d_plate", 128, 64, 30);
+            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 30);
+
+            ValidateGeneratedSurfaceMaterialTexture("current_interior_floor", "current_interior_floor_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_wood_floor", "past_wood_floor_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_interior_wall", "current_interior_wall_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_interior_wall", "past_interior_wall_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_furniture", "current_furniture_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_furniture", "past_furniture_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("book", "book_spines_hd2d_plate");
+        }
+
         private static void ValidateAtmosphereParticleSystem(string objectName, int expectedLayer, Material expectedMaterial)
         {
             var atmosphere = FindSceneObjectIncludingInactive(objectName);
@@ -3913,6 +3934,96 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use the generated atmosphere material with shadows disabled.");
             }
+        }
+
+        private static void ValidateGeneratedRepeatTextureAsset(string textureId, int minWidth, int minHeight, int minimumDistinctColors)
+        {
+            var path = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing generated texture asset {path}.");
+            }
+
+            if (texture.width < minWidth || texture.height < minHeight)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} must be at least {minWidth}x{minHeight}, but was {texture.width}x{texture.height}.");
+            }
+
+            if (texture.filterMode != FilterMode.Point || texture.wrapMode != TextureWrapMode.Repeat)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} must use point filtering and repeat wrap.");
+            }
+
+            if (CountDistinctOpaqueColors(texture) < minimumDistinctColors)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} must contain enough opaque color variation.");
+            }
+        }
+
+        private static void ValidateGeneratedSurfaceMaterialTexture(string materialId, string textureId)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var texturePath = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing material asset {materialPath}.");
+            }
+
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing texture asset {texturePath}.");
+            }
+
+            if (!MaterialUsesTexture(material, texture))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialId} must reference {textureId}.");
+            }
+        }
+
+        private static bool MaterialUsesTexture(Material material, Texture2D texture)
+        {
+            var matched = false;
+
+            if (material.HasProperty("_BaseMap"))
+            {
+                var baseMap = material.GetTexture("_BaseMap") as Texture2D;
+                if (baseMap == texture)
+                {
+                    matched = true;
+                }
+            }
+
+            if (material.HasProperty("_MainTex"))
+            {
+                var mainTex = material.GetTexture("_MainTex") as Texture2D;
+                if (mainTex == texture)
+                {
+                    matched = true;
+                }
+            }
+
+            return matched;
+        }
+
+        private static int CountDistinctOpaqueColors(Texture2D texture)
+        {
+            var distinct = new HashSet<int>();
+            var pixels = texture.GetPixels32();
+            for (var index = 0; index < pixels.Length; index++)
+            {
+                var pixel = pixels[index];
+                if (pixel.a < 255)
+                {
+                    continue;
+                }
+
+                distinct.Add((pixel.r << 24) | (pixel.g << 16) | (pixel.b << 8) | pixel.a);
+            }
+
+            return distinct.Count;
         }
 
         private static void ValidateMaterialSmoothness(string materialPath)
@@ -5029,6 +5140,433 @@ namespace Anemora.EditorTools
             return texture;
         }
 
+        private static Texture2D EnsureGeneratedRepeatTexture(string id, int width, int height, Func<int, int, Color> sample)
+        {
+            var path = $"{TextureDirectory}/FastVS_House_{id}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture != null && (texture.width != width || texture.height != height))
+            {
+                AssetDatabase.DeleteAsset(path);
+                texture = null;
+            }
+
+            if (texture == null)
+            {
+                texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                AssetDatabase.CreateAsset(texture, path);
+            }
+
+            texture.name = $"FastVS_House_{id}";
+            texture.filterMode = FilterMode.Point;
+            texture.wrapMode = TextureWrapMode.Repeat;
+
+            for (var y = 0; y < height; y++)
+            {
+                for (var x = 0; x < width; x++)
+                {
+                    texture.SetPixel(x, y, sample(x, y));
+                }
+            }
+
+            texture.Apply(false, false);
+            EditorUtility.SetDirty(texture);
+            return texture;
+        }
+
+        private static Material PaintedSurfaceMaterial(string materialId, string textureId, int width, int height, Func<int, int, Color> sample, bool unlit, Vector2 tiling)
+        {
+            var material = FlatMaterial(materialId, Color.white, unlit);
+            var texture = EnsureGeneratedRepeatTexture(textureId, width, height, sample);
+            AssignMaterialTexture(material, texture, tiling);
+            return material;
+        }
+
+        private static Color SampleCurrentInteriorFloorHd2dPixel(int x, int y)
+        {
+            return SamplePlankPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.25f, 0.18f, 0.13f, 1f),
+                new Color(0.32f, 0.23f, 0.16f, 1f),
+                new Color(0.13f, 0.10f, 0.08f, 1f),
+                new Color(0.46f, 0.37f, 0.26f, 1f),
+                new Color(0.20f, 0.15f, 0.11f, 1f),
+                31,
+                true);
+        }
+
+        private static Color SamplePastWoodFloorHd2dPixel(int x, int y)
+        {
+            return SamplePlankPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.45f, 0.29f, 0.15f, 1f),
+                new Color(0.54f, 0.36f, 0.20f, 1f),
+                new Color(0.24f, 0.16f, 0.10f, 1f),
+                new Color(0.64f, 0.47f, 0.31f, 1f),
+                new Color(0.30f, 0.21f, 0.14f, 1f),
+                47,
+                false);
+        }
+
+        private static Color SampleCurrentInteriorWallHd2dPixel(int x, int y)
+        {
+            return SampleBrickPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.40f, 0.36f, 0.31f, 1f),
+                new Color(0.50f, 0.44f, 0.38f, 1f),
+                new Color(0.22f, 0.20f, 0.18f, 1f),
+                new Color(0.56f, 0.49f, 0.43f, 1f),
+                new Color(0.28f, 0.25f, 0.23f, 1f),
+                61,
+                true);
+        }
+
+        private static Color SamplePastInteriorWallHd2dPixel(int x, int y)
+        {
+            return SampleBrickPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.50f, 0.41f, 0.28f, 1f),
+                new Color(0.63f, 0.52f, 0.35f, 1f),
+                new Color(0.27f, 0.22f, 0.17f, 1f),
+                new Color(0.68f, 0.58f, 0.42f, 1f),
+                new Color(0.34f, 0.28f, 0.22f, 1f),
+                73,
+                false);
+        }
+
+        private static Color SampleCurrentFurnitureHd2dPixel(int x, int y)
+        {
+            return SampleFurnitureWoodPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.28f, 0.17f, 0.10f, 1f),
+                new Color(0.36f, 0.22f, 0.13f, 1f),
+                new Color(0.13f, 0.09f, 0.06f, 1f),
+                new Color(0.48f, 0.30f, 0.18f, 1f),
+                83,
+                true);
+        }
+
+        private static Color SamplePastFurnitureHd2dPixel(int x, int y)
+        {
+            return SampleFurnitureWoodPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.43f, 0.26f, 0.13f, 1f),
+                new Color(0.54f, 0.34f, 0.18f, 1f),
+                new Color(0.20f, 0.13f, 0.08f, 1f),
+                new Color(0.64f, 0.41f, 0.24f, 1f),
+                97,
+                false);
+        }
+
+        private static Color SampleBookSpinesHd2dPixel(int x, int y)
+        {
+            return SampleBookShelfTexturePixel(x, y, 128, 64, 1, 109, false);
+        }
+
+        private static Color SampleBookshelfFrontPaintedHd2dPixel(int x, int y)
+        {
+            return SampleBookShelfTexturePixel(x, y, 256, 128, 3, 131, true);
+        }
+
+        private static Color SamplePlankPlatePixel(int x, int y, int width, int height, Color boardA, Color boardB, Color seamColor, Color highlightColor, Color shadowColor, int seed, bool aged)
+        {
+            var boardWidth = 16;
+            var boardIndex = x / boardWidth;
+            var boardPhase = x % boardWidth;
+            var boardMix = Hash01(boardIndex, y / 8, seed);
+            var grain = Mathf.Sin((y * 0.18f) + (boardIndex * 0.75f) + seed * 0.021f) * 0.5f + 0.5f;
+            var color = LerpColor(boardA, boardB, boardMix * 0.72f + grain * 0.28f);
+            color = LerpColor(color, highlightColor, Mathf.Clamp01(0.22f - (x / (float)(width - 1)) * 0.18f));
+            color = LerpColor(color, shadowColor, Mathf.Clamp01((x / (float)(width - 1)) * 0.22f + (y / (float)(height - 1)) * 0.18f));
+
+            if (boardPhase <= 1 || boardPhase >= boardWidth - 2 || x == 0 || x == width - 1)
+            {
+                color = LerpColor(color, seamColor, 0.78f);
+            }
+
+            if ((y == 0 || y == height - 1) || ((y % 32 == 7 || y % 32 == 23) && (boardPhase == 3 || boardPhase == 12)))
+            {
+                color = LerpColor(color, Darken(seamColor, 0.32f), 0.88f);
+            }
+
+            if ((boardPhase == 6 || boardPhase == 7) && (y % 24 == 8 || y % 24 == 19))
+            {
+                color = LerpColor(color, Darken(highlightColor, 0.55f), 0.72f);
+            }
+
+            if (Hash01(x, y, seed + 17) > (aged ? 0.956f : 0.979f))
+            {
+                var scuff = Hash01(x, y, seed + 19);
+                color = scuff > 0.55f ? Darken(color, aged ? 0.22f : 0.12f) : Lighten(color, aged ? 0.10f : 0.08f);
+            }
+
+            if (aged)
+            {
+                var dust = Hash01(x, y, seed + 23);
+                if (dust > 0.92f)
+                {
+                    color = LerpColor(color, new Color(0.26f, 0.22f, 0.18f, 1f), 0.18f);
+                }
+            }
+
+            return ShadeSurface(color, x, y, width, height, 0.16f, 0.10f);
+        }
+
+        private static Color SampleBrickPlatePixel(int x, int y, int width, int height, Color brickA, Color brickB, Color mortar, Color highlightColor, Color shadowColor, int seed, bool dusty)
+        {
+            var brickW = 16;
+            var brickH = 12;
+            var row = y / brickH;
+            var rowOffset = (row & 1) == 0 ? 0 : brickW / 2;
+            var shiftedX = (x + rowOffset) % width;
+            var column = shiftedX / brickW;
+            var withinX = shiftedX % brickW;
+            var withinY = y % brickH;
+            var brickTone = LerpColor(brickA, brickB, Hash01(column, row, seed));
+            var seam = withinX <= 1 || withinX >= brickW - 2 || withinY <= 1 || withinY >= brickH - 2 || x == 0 || x == width - 1 || y == 0 || y == height - 1;
+            if (seam)
+            {
+                brickTone = LerpColor(brickTone, mortar, 0.84f);
+            }
+
+            var diagonalWear = Mathf.Abs(((x * 2) + y + seed) % 29 - 14);
+            if (diagonalWear <= 1 && withinX > 1 && withinX < brickW - 2)
+            {
+                brickTone = LerpColor(brickTone, Darken(brickTone, 0.35f), 0.72f);
+            }
+
+            var stainChance = Hash01(column, row, seed + 11);
+            if (stainChance > 0.72f)
+            {
+                var stain = Hash01(x, y, seed + 13);
+                var stainColor = dusty ? new Color(0.36f, 0.31f, 0.28f, 1f) : new Color(0.48f, 0.38f, 0.26f, 1f);
+                brickTone = LerpColor(brickTone, stainColor, stain * 0.24f);
+            }
+
+            if (Hash01(x, y, seed + 17) > 0.985f)
+            {
+                brickTone = Darken(brickTone, 0.40f);
+            }
+
+            return ShadeSurface(brickTone, x, y, width, height, 0.18f, 0.12f);
+        }
+
+        private static Color SampleFurnitureWoodPlatePixel(int x, int y, int width, int height, Color woodA, Color woodB, Color seamColor, Color highlightColor, int seed, bool darkerUnderside)
+        {
+            var boardW = 32;
+            var boardIndex = x / boardW;
+            var withinX = x % boardW;
+            var tone = LerpColor(woodA, woodB, Hash01(boardIndex, y / 6, seed));
+            var grain = Mathf.Sin((y * 0.22f) + (boardIndex * 1.2f) + seed * 0.015f) * 0.5f + 0.5f;
+            tone = LerpColor(tone, highlightColor, grain * 0.22f);
+
+            if (withinX <= 1 || withinX >= boardW - 2 || x == 0 || x == width - 1)
+            {
+                tone = LerpColor(tone, seamColor, 0.82f);
+            }
+
+            if (Mathf.Abs(((x + seed) % 41) - 20) <= 1 || Mathf.Abs(((y + seed) % 37) - 18) <= 1)
+            {
+                tone = LerpColor(tone, Darken(seamColor, 0.18f), 0.62f);
+            }
+
+            var knotChance = Hash01(boardIndex, y / 18, seed + 7);
+            if (knotChance > 0.66f)
+            {
+                var knotCx = boardIndex * boardW + 8 + (int)(Hash01(boardIndex, y, seed + 9) * 14f);
+                var knotCy = 24 + (int)(Hash01(boardIndex, y, seed + 11) * 80f);
+                var knotDx = Mathf.Abs(x - knotCx) / 8f;
+                var knotDy = Mathf.Abs(y - knotCy) / 6f;
+                var knot = Mathf.Clamp01(1f - (knotDx + knotDy));
+                if (knot > 0f)
+                {
+                    tone = LerpColor(tone, Darken(highlightColor, 0.55f), knot * 0.34f);
+                }
+            }
+
+            if (darkerUnderside)
+            {
+                tone = LerpColor(tone, seamColor, Mathf.Clamp01((y / (float)(height - 1)) * 0.42f));
+            }
+
+            return ShadeSurface(tone, x, y, width, height, 0.20f, 0.12f);
+        }
+
+        private static Color SampleBookShelfTexturePixel(int x, int y, int width, int height, int rowCount, int seed, bool bookshelfFront)
+        {
+            var rowTopMargin = bookshelfFront ? 6 : 5;
+            var rowHeight = bookshelfFront ? 34 : 50;
+            var rowGap = bookshelfFront ? 6 : 0;
+            var rowStride = rowHeight + rowGap;
+            var rowIndex = (y - rowTopMargin) / rowStride;
+            if (rowIndex < 0 || rowIndex >= rowCount)
+            {
+                return SampleShelfGapPixel(x, y, width, height, seed, bookshelfFront);
+            }
+
+            var rowStart = rowTopMargin + rowIndex * rowStride;
+            var rowEnd = rowStart + rowHeight;
+            if (y < rowStart || y >= rowEnd)
+            {
+                return SampleShelfGapPixel(x, y, width, height, seed, bookshelfFront);
+            }
+
+            var columnWidth = 8;
+            var columnIndex = x / columnWidth;
+            var withinColumn = x % columnWidth;
+            var color = PickBookSpineColor(columnIndex, rowIndex, seed, bookshelfFront);
+
+            if (withinColumn <= 1)
+            {
+                color = Darken(color, 0.24f);
+            }
+            else if (withinColumn >= columnWidth - 2)
+            {
+                color = Lighten(color, 0.10f);
+            }
+
+            if ((withinColumn == 3 || withinColumn == 4) && (y - rowStart) % 9 < 7)
+            {
+                color = LerpColor(color, new Color(0.95f, 0.88f, 0.72f, 1f), bookshelfFront ? 0.10f : 0.14f);
+            }
+
+            if ((withinColumn == 2 || withinColumn == 5) && (y - rowStart) % 13 == 3)
+            {
+                color = LerpColor(color, Darken(color, 0.42f), 0.68f);
+            }
+
+            if ((y == rowStart || y == rowEnd - 1) && withinColumn > 1 && withinColumn < columnWidth - 2)
+            {
+                color = Darken(color, 0.28f);
+            }
+
+            if (Hash01(x, y, seed + 29) > (bookshelfFront ? 0.972f : 0.981f))
+            {
+                color = Lighten(color, bookshelfFront ? 0.14f : 0.10f);
+            }
+
+            return ShadeSurface(color, x, y, width, height, bookshelfFront ? 0.18f : 0.14f, bookshelfFront ? 0.11f : 0.08f);
+        }
+
+        private static Color SampleShelfGapPixel(int x, int y, int width, int height, int seed, bool bookshelfFront)
+        {
+            var shelf = bookshelfFront
+                ? new Color(0.18f, 0.11f, 0.07f, 1f)
+                : new Color(0.14f, 0.09f, 0.06f, 1f);
+            var band = Mathf.Clamp01(1f - Mathf.Abs((y / (float)(height - 1)) - 0.5f) * 2f);
+            var shadow = bookshelfFront ? 0.34f : 0.28f;
+            shelf = LerpColor(shelf, Darken(shelf, 0.32f), shadow * 0.8f);
+            if ((y % 16) <= 1 || (y % 16) >= 14)
+            {
+                shelf = Lighten(shelf, 0.08f);
+            }
+
+            if (Hash01(x, y, seed + 41) > 0.968f)
+            {
+                shelf = Lighten(shelf, 0.12f);
+            }
+
+            return ShadeSurface(shelf, x, y, width, height, 0.16f, 0.05f + band * 0.05f);
+        }
+
+        private static Color PickBookSpineColor(int columnIndex, int rowIndex, int seed, bool bookshelfFront)
+        {
+            var selector = Math.Abs((columnIndex * 7) + (rowIndex * 13) + seed) % (bookshelfFront ? 12 : 8);
+            switch (selector)
+            {
+                case 0:
+                    return new Color(0.62f, 0.16f, 0.16f, 1f);
+                case 1:
+                    return new Color(0.22f, 0.33f, 0.64f, 1f);
+                case 2:
+                    return new Color(0.70f, 0.55f, 0.18f, 1f);
+                case 3:
+                    return new Color(0.82f, 0.76f, 0.57f, 1f);
+                case 4:
+                    return new Color(0.38f, 0.20f, 0.42f, 1f);
+                case 5:
+                    return new Color(0.22f, 0.49f, 0.36f, 1f);
+                case 6:
+                    return new Color(0.58f, 0.28f, 0.12f, 1f);
+                case 7:
+                    return new Color(0.76f, 0.42f, 0.18f, 1f);
+                case 8:
+                    return new Color(0.76f, 0.18f, 0.22f, 1f);
+                case 9:
+                    return new Color(0.18f, 0.24f, 0.52f, 1f);
+                case 10:
+                    return new Color(0.85f, 0.65f, 0.26f, 1f);
+                default:
+                    return new Color(0.91f, 0.85f, 0.66f, 1f);
+            }
+        }
+
+        private static Color ShadeSurface(Color color, int x, int y, int width, int height, float shadowAmount, float highlightAmount)
+        {
+            var u = width <= 1 ? 0f : x / (float)(width - 1);
+            var v = height <= 1 ? 0f : y / (float)(height - 1);
+            var light = Mathf.Clamp01(1f - (u * 0.62f + v * 0.28f));
+            var shaded = LerpColor(Darken(color, shadowAmount), Lighten(color, highlightAmount), light);
+            return shaded;
+        }
+
+        private static float Hash01(int x, int y, int seed)
+        {
+            unchecked
+            {
+                var hash = seed;
+                hash ^= x * 374761393;
+                hash = (hash << 13) ^ hash;
+                hash ^= y * 668265263;
+                hash *= 1274126177;
+                hash ^= hash >> 16;
+                return (hash & 0x7fffffff) / (float)int.MaxValue;
+            }
+        }
+
+        private static Color LerpColor(Color a, Color b, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Color(
+                a.r + ((b.r - a.r) * t),
+                a.g + ((b.g - a.g) * t),
+                a.b + ((b.b - a.b) * t),
+                a.a + ((b.a - a.a) * t));
+        }
+
+        private static Color Darken(Color color, float amount)
+        {
+            var factor = 1f - Mathf.Clamp01(amount);
+            return new Color(color.r * factor, color.g * factor, color.b * factor, color.a);
+        }
+
+        private static Color Lighten(Color color, float amount)
+        {
+            amount = Mathf.Clamp01(amount);
+            return new Color(
+                color.r + ((1f - color.r) * amount),
+                color.g + ((1f - color.g) * amount),
+                color.b + ((1f - color.b) * amount),
+                color.a);
+        }
+
         private static void CreateNameLabel(Transform parent, string text, Vector3 localPosition, Material material)
         {
             var label = new GameObject($"{text}_NameLabel");
@@ -5107,29 +5645,29 @@ namespace Anemora.EditorTools
                 PixelMaterial("current_ground", new Color32(42, 41, 38, 255), new Color32(63, 58, 51, 255), new Color32(31, 31, 30, 255), PixelPattern.Noise, false, new Vector2(4f, 4f)),
                 PixelMaterial("current_grass", new Color32(38, 55, 36, 255), new Color32(53, 76, 48, 255), new Color32(28, 38, 27, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
                 PixelMaterial("current_path", new Color32(95, 72, 52, 255), new Color32(132, 102, 70, 255), new Color32(65, 52, 42, 255), PixelPattern.Stone, false, new Vector2(4f, 4f)),
-                PixelMaterial("current_interior_floor", new Color32(77, 50, 35, 255), new Color32(102, 68, 44, 255), new Color32(46, 35, 29, 255), PixelPattern.Planks, false, new Vector2(4f, 3f)),
-                PixelMaterial("current_interior_wall", new Color32(83, 73, 64, 255), new Color32(116, 99, 78, 255), new Color32(53, 47, 43, 255), PixelPattern.Bricks, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("current_interior_floor", "current_interior_floor_hd2d_plate", 128, 128, SampleCurrentInteriorFloorHd2dPixel, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("current_interior_wall", "current_interior_wall_hd2d_plate", 128, 128, SampleCurrentInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
                 PixelMaterial("current_exterior_wall", new Color32(91, 69, 55, 255), new Color32(124, 89, 65, 255), new Color32(57, 47, 42, 255), PixelPattern.Bricks, false, new Vector2(4f, 3f)),
                 PixelMaterial("current_roof", new Color32(87, 39, 35, 255), new Color32(117, 54, 45, 255), new Color32(55, 28, 27, 255), PixelPattern.Roof, false, new Vector2(4f, 3f)),
-                PixelMaterial("current_furniture", new Color32(76, 45, 28, 255), new Color32(103, 65, 39, 255), new Color32(44, 31, 24, 255), PixelPattern.Planks, false, new Vector2(2f, 2f)),
+                PaintedSurfaceMaterial("current_furniture", "current_furniture_hd2d_plate", 128, 128, SampleCurrentFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("current_fence", new Color32(58, 48, 36, 255), new Color32(86, 69, 48, 255), new Color32(40, 34, 28, 255), PixelPattern.Planks, false, new Vector2(6f, 2f)),
                 PixelMaterial("current_stone", new Color32(68, 67, 64, 255), new Color32(95, 93, 86, 255), new Color32(43, 43, 41, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PixelMaterial("current_bed", new Color32(74, 73, 85, 255), new Color32(96, 93, 108, 255), new Color32(54, 53, 62, 255), PixelPattern.Cloth, false, new Vector2(2f, 2f)),
                 PixelMaterial("current_leaf", new Color32(38, 65, 40, 255), new Color32(53, 82, 47, 255), new Color32(28, 45, 32, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PixelMaterial("past_grass", new Color32(58, 106, 65, 255), new Color32(89, 139, 74, 255), new Color32(41, 82, 54, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
                 PixelMaterial("past_path", new Color32(139, 111, 70, 255), new Color32(171, 139, 87, 255), new Color32(96, 79, 58, 255), PixelPattern.Stone, false, new Vector2(4f, 4f)),
-                PixelMaterial("past_wood_floor", new Color32(121, 76, 42, 255), new Color32(155, 103, 57, 255), new Color32(83, 54, 37, 255), PixelPattern.Planks, false, new Vector2(4f, 3f)),
-                PixelMaterial("past_interior_wall", new Color32(149, 126, 89, 255), new Color32(184, 154, 103, 255), new Color32(100, 83, 65, 255), PixelPattern.Bricks, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("past_wood_floor", "past_wood_floor_hd2d_plate", 128, 128, SamplePastWoodFloorHd2dPixel, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("past_interior_wall", "past_interior_wall_hd2d_plate", 128, 128, SamplePastInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
                 PixelMaterial("past_exterior_wall", new Color32(155, 112, 72, 255), new Color32(190, 138, 82, 255), new Color32(111, 78, 54, 255), PixelPattern.Bricks, false, new Vector2(4f, 3f)),
                 PixelMaterial("past_roof", new Color32(149, 66, 48, 255), new Color32(194, 89, 58, 255), new Color32(101, 45, 40, 255), PixelPattern.Roof, false, new Vector2(4f, 3f)),
-                PixelMaterial("past_furniture", new Color32(128, 78, 40, 255), new Color32(166, 105, 52, 255), new Color32(90, 57, 35, 255), PixelPattern.Planks, false, new Vector2(2f, 2f)),
+                PaintedSurfaceMaterial("past_furniture", "past_furniture_hd2d_plate", 128, 128, SamplePastFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("past_fence", new Color32(119, 84, 46, 255), new Color32(154, 108, 58, 255), new Color32(83, 62, 42, 255), PixelPattern.Planks, false, new Vector2(6f, 2f)),
                 PixelMaterial("past_stone", new Color32(118, 115, 100, 255), new Color32(151, 146, 123, 255), new Color32(83, 82, 75, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PixelMaterial("past_bed", new Color32(87, 121, 162, 255), new Color32(117, 151, 190, 255), new Color32(61, 82, 120, 255), PixelPattern.Cloth, false, new Vector2(2f, 2f)),
                 PixelMaterial("leaf", new Color32(62, 122, 64, 255), new Color32(93, 158, 78, 255), new Color32(39, 91, 53, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PixelMaterial("pillow", new Color32(212, 204, 177, 255), new Color32(236, 225, 190, 255), new Color32(166, 157, 137, 255), PixelPattern.Cloth, false, new Vector2(1f, 1f)),
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
-                PixelMaterial("book", new Color32(166, 45, 42, 255), new Color32(215, 177, 65, 255), new Color32(43, 62, 128, 255), PixelPattern.Book, false, new Vector2(1f, 1f)),
+                PaintedSurfaceMaterial("book", "book_spines_hd2d_plate", 128, 64, SampleBookSpinesHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("lamp", new Color32(255, 204, 88, 255), new Color32(255, 236, 150, 255), new Color32(197, 126, 38, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
                 FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true),
                 FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true),
@@ -5314,39 +5852,11 @@ namespace Anemora.EditorTools
 
         private static Material BookshelfFrontMaterial(string panelId, Vector2 textureScale)
         {
-            var texture = EnsureExternalBookshelfFrontTexture();
-            var material = FlatMaterial($"bookshelf_front_opengameart_cc0_{panelId}", Color.white, true);
-            material.name = $"bookshelf_front_opengameart_cc0_{panelId}";
+            var material = FlatMaterial($"bookshelf_front_painted_hd2d_{panelId}", Color.white, true);
+            material.name = $"FastVS_House_bookshelf_front_painted_hd2d_{panelId}";
+            var texture = EnsureGeneratedRepeatTexture("bookshelf_front_painted_hd2d", 256, 128, SampleBookshelfFrontPaintedHd2dPixel);
             AssignMaterialTexture(material, texture, textureScale);
             return material;
-        }
-
-        private static Texture2D EnsureExternalBookshelfFrontTexture()
-        {
-            AssetDatabase.ImportAsset(ExternalBookshelfFrontTexturePath, ImportAssetOptions.ForceSynchronousImport);
-            var importer = AssetImporter.GetAtPath(ExternalBookshelfFrontTexturePath) as TextureImporter;
-            if (importer != null)
-            {
-                importer.textureType = TextureImporterType.Default;
-                importer.alphaIsTransparency = false;
-                importer.isReadable = true;
-                importer.mipmapEnabled = false;
-                importer.npotScale = TextureImporterNPOTScale.None;
-                importer.filterMode = FilterMode.Point;
-                importer.wrapMode = TextureWrapMode.Repeat;
-                importer.textureCompression = TextureImporterCompression.Uncompressed;
-                importer.SaveAndReimport();
-            }
-
-            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(ExternalBookshelfFrontTexturePath);
-            if (texture == null)
-            {
-                throw new InvalidOperationException($"Required external bookshelf texture missing: {ExternalBookshelfFrontTexturePath}");
-            }
-
-            texture.wrapMode = TextureWrapMode.Repeat;
-            texture.filterMode = FilterMode.Point;
-            return texture;
         }
 
         private static Material PixelMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, bool unlit, Vector2 tiling)
