@@ -7,6 +7,8 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 namespace Anemora.EditorTools
@@ -135,6 +137,7 @@ namespace Anemora.EditorTools
 
             var camera = CreateCamera(currentRoot);
             CreateLighting();
+            CreateHd2dGlobalVolume();
             CreateAudio(currentRoot, areaVisibility);
             var player = CreateNiroPlayer(currentRoot, camera, materials);
             var controller = CreateController(camera, currentRoot, pastRoot, player, materials);
@@ -180,6 +183,7 @@ namespace Anemora.EditorTools
             ValidateHouseMapSeparationAndDoorTransitions(controller);
             ValidateDirectionalSpriteAnimator();
             ValidatePlayerSpritePresentation();
+            ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
 
@@ -267,6 +271,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_local_shape_20260519");
+        }
+
+        public static void CaptureHd2dFirstCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_first_cycle_20260520");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -1491,6 +1500,14 @@ namespace Anemora.EditorTools
         {
             var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
             cameraObject.tag = "MainCamera";
+            var additionalData = cameraObject.GetComponent<UniversalAdditionalCameraData>();
+            if (additionalData == null)
+            {
+                additionalData = cameraObject.AddComponent<UniversalAdditionalCameraData>();
+            }
+
+            additionalData.renderPostProcessing = true;
+            additionalData.requiresDepthTexture = true;
             var camera = cameraObject.GetComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.075f, 0.078f, 0.084f, 1f);
@@ -1535,11 +1552,35 @@ namespace Anemora.EditorTools
             var lightObject = new GameObject("Directional Light", typeof(Light));
             var light = lightObject.GetComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 1.10f;
+            light.intensity = 1.15f;
             light.shadows = LightShadows.Soft;
+            light.color = new Color(1.00f, 0.96f, 0.88f, 1f);
             lightObject.transform.rotation = Quaternion.Euler(52f, -35f, 0f);
-            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.30f, 0.30f, 0.34f);
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.22f, 0.23f, 0.27f);
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = new Color(0.13f, 0.15f, 0.18f);
+            RenderSettings.fogStartDistance = 18f;
+            RenderSettings.fogEndDistance = 75f;
+        }
+
+        private static void CreateHd2dGlobalVolume()
+        {
+            var volumeObject = new GameObject("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject.AddComponent<Volume>();
+            volume.isGlobal = true;
+            volume.priority = 0f;
+            volume.weight = 1f;
+
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(profilePath);
+            if (profile == null)
+            {
+                throw new InvalidOperationException($"Fast VS HD-2D global volume profile is missing: {profilePath}");
+            }
+
+            volume.sharedProfile = profile;
         }
 
         private static void CreateAudio(Transform currentRoot, FastVsHouseAreaVisibility areaVisibility)
@@ -3528,6 +3569,120 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dFirstCycleVisuals()
+        {
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: main camera is missing.");
+            }
+
+            var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+            if (additionalData == null ||
+                !additionalData.renderPostProcessing ||
+                !additionalData.requiresDepthTexture)
+            {
+                throw new InvalidOperationException("House slice validation failed: main camera must enable URP post-processing and depth texture rendering.");
+            }
+
+            var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject != null ? volumeObject.GetComponent<Volume>() : null;
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            if (volumeObject == null ||
+                volume == null ||
+                !volume.isGlobal ||
+                !Mathf.Approximately(volume.priority, 0f) ||
+                !Mathf.Approximately(volume.weight, 1f) ||
+                volume.sharedProfile == null ||
+                AssetDatabase.GetAssetPath(volume.sharedProfile) != profilePath)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_GlobalVolume must be global, weighted at 1, and backed by Assets/Settings/DefaultVolumeProfile.asset.");
+            }
+
+            if (!RenderSettings.fog)
+            {
+                throw new InvalidOperationException("House slice validation failed: render fog must be enabled.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            var targetAmbient = new Color(0.22f, 0.23f, 0.27f);
+            if (Mathf.Abs(ambient.r - targetAmbient.r) > 0.02f ||
+                Mathf.Abs(ambient.g - targetAmbient.g) > 0.02f ||
+                Mathf.Abs(ambient.b - targetAmbient.b) > 0.02f)
+            {
+                throw new InvalidOperationException("House slice validation failed: ambient light must remain near the HD-2D target tint.");
+            }
+
+            if (Mathf.Abs(ambient.r - 0.30f) < 0.001f &&
+                Mathf.Abs(ambient.g - 0.30f) < 0.001f &&
+                Mathf.Abs(ambient.b - 0.34f) < 0.001f)
+            {
+                throw new InvalidOperationException("House slice validation failed: ambient light still matches the old flat preset.");
+            }
+
+            var activeScene = SceneManager.GetActiveScene();
+            Light directionalLight = null;
+            var directionalCount = 0;
+            foreach (var light in Resources.FindObjectsOfTypeAll<Light>())
+            {
+                if (light == null ||
+                    !light.gameObject.scene.IsValid() ||
+                    light.gameObject.scene != activeScene ||
+                    light.type != LightType.Directional)
+                {
+                    continue;
+                }
+
+                directionalCount++;
+                directionalLight = light;
+            }
+
+            if (directionalCount != 1 || directionalLight == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: expected exactly one directional light in the house slice scene, found {directionalCount}.");
+            }
+
+            if (directionalLight.shadows != LightShadows.Soft)
+            {
+                throw new InvalidOperationException("House slice validation failed: directional light must use soft shadows.");
+            }
+
+            if (Mathf.Abs(directionalLight.color.r - 1f) < 0.001f &&
+                Mathf.Abs(directionalLight.color.g - 1f) < 0.001f &&
+                Mathf.Abs(directionalLight.color.b - 1f) < 0.001f)
+            {
+                throw new InvalidOperationException("House slice validation failed: directional light color must not be pure white.");
+            }
+
+            var contactShadow = FindSceneObjectIncludingInactive("FastVS_PlayerContactShadow_Niro");
+            if (contactShadow == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing FastVS_PlayerContactShadow_Niro.");
+            }
+
+            if (FindSceneObjectIncludingInactive("FastVS_PlayerSpriteShadingOverlay_Niro") != null)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_PlayerSpriteShadingOverlay_Niro must not exist.");
+            }
+
+            ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_floor.mat");
+            ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat");
+        }
+
+        private static void ValidateMaterialSmoothness(string materialPath)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing material asset {materialPath}.");
+            }
+
+            if (material.HasProperty("_Smoothness") && material.GetFloat("_Smoothness") > 0.20f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must remain matte with _Smoothness <= 0.20.");
+            }
+        }
+
         private static void ValidateFastVsStoryFlow()
         {
             var story = UnityEngine.Object.FindFirstObjectByType<FastVsStoryFlowController>(FindObjectsInactive.Include);
@@ -4824,7 +4979,7 @@ namespace Anemora.EditorTools
             var v = y / Mathf.Max(1f, height - 1f);
             var rightSide = Mathf.Clamp01((u - 0.54f) / 0.46f);
             var lowerBody = Mathf.Clamp01((0.34f - v) / 0.34f);
-            var softShade = 1f - rightSide * 0.13f - lowerBody * 0.09f;
+            var softShade = 1f - rightSide * 0.16f - lowerBody * 0.10f;
             var softWarmth = 1f + Mathf.Clamp01((0.34f - u) / 0.34f) * Mathf.Clamp01((v - 0.55f) / 0.45f) * 0.035f;
             return new Color(
                 Mathf.Clamp01(source.r * softShade * softWarmth),
@@ -5012,7 +5167,33 @@ namespace Anemora.EditorTools
                 material.SetFloat("_Cull", 0f);
             }
 
+            if (!unlit && ShouldApplyHd2dMatteMaterial(id))
+            {
+                if (material.HasProperty("_Metallic"))
+                {
+                    material.SetFloat("_Metallic", 0f);
+                }
+
+                if (material.HasProperty("_Smoothness"))
+                {
+                    material.SetFloat("_Smoothness", 0.16f);
+                }
+
+                if (material.HasProperty("_SpecularHighlights"))
+                {
+                    material.SetFloat("_SpecularHighlights", 0f);
+                }
+            }
+
             return material;
+        }
+
+        private static bool ShouldApplyHd2dMatteMaterial(string id)
+        {
+            return id != "current_frame" &&
+                id != "past_frame" &&
+                id != "preview_frame" &&
+                id != "threshold";
         }
 
         private static Material ApertureMaterial(string id)

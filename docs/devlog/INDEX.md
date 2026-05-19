@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v3.1 recovered cross-worktree + notes devlog index (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v3.4 recovered cross-worktree + notes devlog index (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 240 files including INDEX.md and README.md.
-- Dated devlog records: 238 files.
-- Linked evidence files present under docs/devlog/screenshots/: 170 files.
+- Root-level Markdown coverage: 241 files including INDEX.md and README.md.
+- Dated devlog records: 239 files.
+- Linked evidence files present under docs/devlog/screenshots/: 180 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 1 |
+| 2026-05-20 | 2 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -38,6 +38,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-20_fast_vs_hd2d_first_cycle.md](2026-05-20_fast_vs_hd2d_first_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D First Cycle |
 | [2026-05-20_post_vs_parallel_branch_strategy.md](2026-05-20_post_vs_parallel_branch_strategy.md) | Fast VS / Chapter 1 | 2026-05-20 Post-VS Parallel Branch Strategy |
 
 ### 2026-05-19
@@ -367,6 +368,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v3.4 | 2026-05-20 | Added Fast VS HD2D first-cycle render, validation, screenshot, build, and player-smoke record. |
 | v3.3 | 2026-05-20 | Added post-VS parallel branch strategy and Chapter 1 continuation session prompt. |
 | v3.2 | 2026-05-19 | Added work-branch Fast VS HD2D/MCP/guidance records and preserved the left-bottom Time Window hint record after the public-main merge. |
 | v3.1 | 2026-05-19 | Added notes-based retroactive devlogs for Pass 8 reception and Chapter 1 TimeWindow/public-preview recovery on 2026-05-14 through 2026-05-16. |
