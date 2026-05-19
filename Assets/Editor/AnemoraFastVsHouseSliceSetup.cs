@@ -186,6 +186,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
             ValidateFastVsHd2dFifthCycleObjectDetails();
+            ValidateFastVsHd2dEighthCycleBookPalette();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -304,6 +305,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSeventhCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_depth_framing_20260520");
+        }
+
+        public static void CaptureHd2dEighthCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_book_palette_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -4341,6 +4347,19 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dEighthCycleBookPalette()
+        {
+            ValidateGeneratedRepeatTextureAsset("book_spines_hd2d_plate", 128, 64, 30);
+            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 30);
+            ValidateGeneratedTextureExactSize("book_spines_hd2d_plate", 128, 64);
+            ValidateGeneratedTextureExactSize("bookshelf_front_painted_hd2d", 256, 128);
+            ValidateSceneObjectMaterialTexture("Past_Library_BackWallBookshelfFrontTexturePanel", "bookshelf_front_painted_hd2d");
+            ValidateBookSpineWidthVariation(false);
+            ValidateBookSpineWidthVariation(true);
+            ValidateBookSpinePaletteSamples(false, 0.75f, 0.84f);
+            ValidateBookSpinePaletteSamples(true, 0.70f, 0.78f);
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -4525,6 +4544,75 @@ namespace Anemora.EditorTools
             if (renderQueue < minRenderQueue || renderQueue > maxRenderQueue)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep renderQueue in the {minRenderQueue}-{maxRenderQueue} range, but was {renderQueue}.");
+            }
+        }
+
+        private static void ValidateGeneratedTextureExactSize(string textureId, int expectedWidth, int expectedHeight)
+        {
+            var path = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing generated texture asset {path}.");
+            }
+
+            if (texture.width != expectedWidth || texture.height != expectedHeight)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} must be exactly {expectedWidth}x{expectedHeight}, but was {texture.width}x{texture.height}.");
+            }
+        }
+
+        private static void ValidateBookSpinePaletteSamples(bool bookshelfFront, float maxSaturation, float maxValue)
+        {
+            var label = bookshelfFront ? "bookshelf front" : "book spine";
+            var samples = bookshelfFront
+                ? new (int columnIndex, int rowIndex, int seed)[]
+                {
+                    (0, 0, 131),
+                    (2, 1, 131),
+                    (4, 0, 131),
+                    (7, 2, 131),
+                    (10, 1, 131),
+                    (13, 2, 131)
+                }
+                : new (int columnIndex, int rowIndex, int seed)[]
+                {
+                    (0, 0, 109),
+                    (2, 1, 109),
+                    (4, 0, 109),
+                    (7, 1, 109),
+                    (10, 0, 109),
+                    (13, 2, 109)
+                };
+
+            foreach (var sample in samples)
+            {
+                var color = PickBookSpineColor(sample.columnIndex, sample.rowIndex, sample.seed, bookshelfFront);
+                Color.RGBToHSV(color, out _, out var saturation, out var value);
+                if (saturation > maxSaturation || value > maxValue)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} palette sample {sample.columnIndex}/{sample.rowIndex} is too vivid. saturation={saturation:0.000}, value={value:0.000}");
+                }
+            }
+        }
+
+        private static void ValidateBookSpineWidthVariation(bool bookshelfFront)
+        {
+            var widths = new HashSet<int>();
+            for (var index = 0; index < 16; index++)
+            {
+                var width = GetBookSpineWidth(index, index % 3, bookshelfFront ? 131 : 109, bookshelfFront);
+                if (width < 5 || width > 14)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {(bookshelfFront ? "bookshelf front" : "book spine")} width {width} is outside the expected 5-14 px range.");
+                }
+
+                widths.Add(width);
+            }
+
+            if (widths.Count < 4)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {(bookshelfFront ? "bookshelf front" : "book spine")} widths do not vary enough to avoid barcode-like repetition.");
             }
         }
 
@@ -6600,94 +6688,201 @@ namespace Anemora.EditorTools
                 return SampleShelfGapPixel(x, y, width, height, seed, bookshelfFront);
             }
 
-            var columnWidth = 8;
-            var columnIndex = x / columnWidth;
-            var withinColumn = x % columnWidth;
+            if (!TryResolveBookSpineRun(x, rowIndex, seed, bookshelfFront, width, out var columnIndex, out var bookStart, out var bookWidth, out var withinBook))
+            {
+                return SampleShelfGapPixel(x, y, width, height, seed, bookshelfFront);
+            }
+
             var color = PickBookSpineColor(columnIndex, rowIndex, seed, bookshelfFront);
+            var bookEnd = bookStart + bookWidth - 1;
 
-            if (withinColumn <= 1)
+            if (x == bookStart)
             {
-                color = Darken(color, 0.24f);
+                color = Darken(color, bookshelfFront ? 0.36f : 0.40f);
             }
-            else if (withinColumn >= columnWidth - 2)
+            else if (withinBook == 1)
             {
-                color = Lighten(color, 0.10f);
+                color = LerpColor(color, Darken(color, 0.44f), 0.58f);
             }
-
-            if ((withinColumn == 3 || withinColumn == 4) && (y - rowStart) % 9 < 7)
+            else if (x == bookEnd - 1)
             {
-                color = LerpColor(color, new Color(0.95f, 0.88f, 0.72f, 1f), bookshelfFront ? 0.10f : 0.14f);
+                color = LerpColor(color, Darken(color, 0.38f), 0.42f);
             }
-
-            if ((withinColumn == 2 || withinColumn == 5) && (y - rowStart) % 13 == 3)
+            else if (x == bookEnd)
             {
-                color = LerpColor(color, Darken(color, 0.42f), 0.68f);
-            }
-
-            if ((y == rowStart || y == rowEnd - 1) && withinColumn > 1 && withinColumn < columnWidth - 2)
-            {
-                color = Darken(color, 0.28f);
+                color = Lighten(color, bookshelfFront ? 0.03f : 0.05f);
             }
 
-            if (Hash01(x, y, seed + 29) > (bookshelfFront ? 0.972f : 0.981f))
+            var centerLine = Mathf.Clamp(bookWidth / 2, 1, Mathf.Max(1, bookWidth - 2));
+            var paperAccent = ((columnIndex + rowIndex + seed) % 5) == 0;
+            if (paperAccent && (withinBook == centerLine || withinBook == centerLine - 1))
             {
-                color = Lighten(color, bookshelfFront ? 0.14f : 0.10f);
+                color = LerpColor(color, new Color(0.82f, 0.76f, 0.62f, 1f), bookshelfFront ? 0.18f : 0.14f);
             }
 
-            return ShadeSurface(color, x, y, width, height, bookshelfFront ? 0.18f : 0.14f, bookshelfFront ? 0.11f : 0.08f);
+            if (withinBook > 2 && withinBook < bookWidth - 3 && (withinBook == centerLine || withinBook == centerLine - 1))
+            {
+                color = LerpColor(color, new Color(0.86f, 0.80f, 0.68f, 1f), bookshelfFront ? 0.06f : 0.08f);
+            }
+
+            if (withinBook > 1 && withinBook < bookWidth - 1 && ((y - rowStart) % 11 == 3))
+            {
+                color = LerpColor(color, Darken(color, 0.30f), 0.38f);
+            }
+
+            if ((y == rowStart || y == rowEnd - 1) && withinBook > 0 && withinBook < bookWidth - 1)
+            {
+                color = Darken(color, bookshelfFront ? 0.28f : 0.32f);
+            }
+
+            if ((y == rowStart + 1 || y == rowEnd - 2) && withinBook > 0 && withinBook < bookWidth - 1)
+            {
+                color = LerpColor(color, new Color(0.84f, 0.79f, 0.68f, 1f), bookshelfFront ? 0.05f : 0.07f);
+            }
+
+            if (Hash01(x, y, seed + 29) > (bookshelfFront ? 0.991f : 0.994f))
+            {
+                color = Lighten(color, bookshelfFront ? 0.04f : 0.03f);
+            }
+
+            return ShadeSurface(color, x, y, width, height, bookshelfFront ? 0.11f : 0.09f, bookshelfFront ? 0.04f : 0.03f);
         }
 
         private static Color SampleShelfGapPixel(int x, int y, int width, int height, int seed, bool bookshelfFront)
         {
             var shelf = bookshelfFront
-                ? new Color(0.18f, 0.11f, 0.07f, 1f)
-                : new Color(0.14f, 0.09f, 0.06f, 1f);
+                ? new Color(0.15f, 0.11f, 0.08f, 1f)
+                : new Color(0.12f, 0.09f, 0.06f, 1f);
             var band = Mathf.Clamp01(1f - Mathf.Abs((y / (float)(height - 1)) - 0.5f) * 2f);
-            var shadow = bookshelfFront ? 0.34f : 0.28f;
-            shelf = LerpColor(shelf, Darken(shelf, 0.32f), shadow * 0.8f);
+            var shadow = bookshelfFront ? 0.24f : 0.20f;
+            shelf = LerpColor(shelf, Darken(shelf, 0.24f), shadow * 0.8f);
             if ((y % 16) <= 1 || (y % 16) >= 14)
             {
-                shelf = Lighten(shelf, 0.08f);
+                shelf = Lighten(shelf, 0.02f);
             }
 
-            if (Hash01(x, y, seed + 41) > 0.968f)
+            if (Hash01(x, y, seed + 41) > 0.988f)
             {
-                shelf = Lighten(shelf, 0.12f);
+                shelf = Lighten(shelf, 0.03f);
             }
 
-            return ShadeSurface(shelf, x, y, width, height, 0.16f, 0.05f + band * 0.05f);
+            return ShadeSurface(shelf, x, y, width, height, 0.11f, 0.02f + band * 0.02f);
         }
 
         private static Color PickBookSpineColor(int columnIndex, int rowIndex, int seed, bool bookshelfFront)
         {
-            var selector = Math.Abs((columnIndex * 7) + (rowIndex * 13) + seed) % (bookshelfFront ? 12 : 8);
+            var selector = Math.Abs((columnIndex * 5) + (rowIndex * 11) + seed) % (bookshelfFront ? 7 : 8);
+            if (bookshelfFront)
+            {
+                switch (selector)
+                {
+                    case 0:
+                        return new Color(0.41f, 0.18f, 0.16f, 1f);
+                    case 1:
+                        return new Color(0.47f, 0.26f, 0.25f, 1f);
+                    case 2:
+                        return new Color(0.25f, 0.31f, 0.40f, 1f);
+                    case 3:
+                        return new Color(0.57f, 0.46f, 0.27f, 1f);
+                    case 4:
+                        return new Color(0.72f, 0.64f, 0.52f, 1f);
+                    case 5:
+                        return new Color(0.40f, 0.32f, 0.37f, 1f);
+                    default:
+                        return new Color(0.28f, 0.39f, 0.31f, 1f);
+                }
+            }
+
             switch (selector)
             {
                 case 0:
-                    return new Color(0.62f, 0.16f, 0.16f, 1f);
+                    return new Color(0.51f, 0.22f, 0.19f, 1f);
                 case 1:
-                    return new Color(0.22f, 0.33f, 0.64f, 1f);
+                    return new Color(0.27f, 0.36f, 0.51f, 1f);
                 case 2:
-                    return new Color(0.70f, 0.55f, 0.18f, 1f);
+                    return new Color(0.64f, 0.54f, 0.31f, 1f);
                 case 3:
-                    return new Color(0.82f, 0.76f, 0.57f, 1f);
+                    return new Color(0.78f, 0.70f, 0.58f, 1f);
                 case 4:
-                    return new Color(0.38f, 0.20f, 0.42f, 1f);
+                    return new Color(0.50f, 0.36f, 0.41f, 1f);
                 case 5:
-                    return new Color(0.22f, 0.49f, 0.36f, 1f);
+                    return new Color(0.30f, 0.45f, 0.35f, 1f);
                 case 6:
-                    return new Color(0.58f, 0.28f, 0.12f, 1f);
+                    return new Color(0.58f, 0.41f, 0.23f, 1f);
                 case 7:
-                    return new Color(0.76f, 0.42f, 0.18f, 1f);
-                case 8:
-                    return new Color(0.76f, 0.18f, 0.22f, 1f);
-                case 9:
-                    return new Color(0.18f, 0.24f, 0.52f, 1f);
-                case 10:
-                    return new Color(0.85f, 0.65f, 0.26f, 1f);
+                    return new Color(0.38f, 0.44f, 0.40f, 1f);
                 default:
-                    return new Color(0.91f, 0.85f, 0.66f, 1f);
+                    return new Color(0.44f, 0.36f, 0.28f, 1f);
             }
+        }
+
+        private static bool TryResolveBookSpineRun(int x, int rowIndex, int seed, bool bookshelfFront, int width, out int bookIndex, out int bookStart, out int bookWidth, out int withinBook)
+        {
+            bookIndex = 0;
+            bookStart = 0;
+            bookWidth = 0;
+            withinBook = 0;
+
+            var cursor = 0;
+            for (var index = 0; index < 40 && cursor < width; index++)
+            {
+                var widthForBook = GetBookSpineWidth(index, rowIndex, seed, bookshelfFront);
+                if (widthForBook < 5)
+                {
+                    widthForBook = 5;
+                }
+                else if (widthForBook > 14)
+                {
+                    widthForBook = 14;
+                }
+
+                if (cursor + widthForBook > width)
+                {
+                    widthForBook = width - cursor;
+                }
+
+                if (widthForBook <= 0)
+                {
+                    break;
+                }
+
+                var bookEnd = cursor + widthForBook;
+                if (x >= cursor && x < bookEnd)
+                {
+                    bookIndex = index;
+                    bookStart = cursor;
+                    bookWidth = widthForBook;
+                    withinBook = x - cursor;
+                    return true;
+                }
+
+                cursor = bookEnd;
+            }
+
+            return false;
+        }
+
+        private static int GetBookSpineWidth(int bookIndex, int rowIndex, int seed, bool bookshelfFront)
+        {
+            var roll = Hash01(bookIndex, rowIndex, seed + (bookshelfFront ? 37 : 43));
+            if (bookshelfFront)
+            {
+                if (roll < 0.16f) return 5;
+                if (roll < 0.30f) return 6;
+                if (roll < 0.48f) return 7;
+                if (roll < 0.65f) return 8;
+                if (roll < 0.78f) return 10;
+                if (roll < 0.90f) return 12;
+                return 14;
+            }
+
+            if (roll < 0.10f) return 5;
+            if (roll < 0.24f) return 6;
+            if (roll < 0.40f) return 7;
+            if (roll < 0.58f) return 8;
+            if (roll < 0.72f) return 10;
+            if (roll < 0.86f) return 12;
+            return 14;
         }
 
         private static Color ShadeSurface(Color color, int x, int y, int width, int height, float shadowAmount, float highlightAmount)
@@ -7029,7 +7224,7 @@ namespace Anemora.EditorTools
 
         private static Material BookshelfFrontMaterial(string panelId, Vector2 textureScale)
         {
-            var material = FlatMaterial($"bookshelf_front_painted_hd2d_{panelId}", Color.white, true);
+            var material = FlatMaterial($"bookshelf_front_painted_hd2d_{panelId}", new Color(0.97f, 0.95f, 0.92f, 1f), true);
             material.name = $"FastVS_House_bookshelf_front_painted_hd2d_{panelId}";
             var texture = EnsureGeneratedRepeatTexture("bookshelf_front_painted_hd2d", 256, 128, SampleBookshelfFrontPaintedHd2dPixel);
             AssignMaterialTexture(material, texture, textureScale);
