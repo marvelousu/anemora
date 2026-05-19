@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v4.6 fast VS HD2D library prop detail cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v4.7 fast VS HD2D house interior detail cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 253 files including INDEX.md and README.md.
-- Dated devlog records: 251 files.
-- Linked evidence files present under docs/devlog/screenshots/: 292 files.
+- Root-level Markdown coverage: 254 files including INDEX.md and README.md.
+- Dated devlog records: 252 files.
+- Linked evidence files present under docs/devlog/screenshots/: 296 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 14 |
+| 2026-05-20 | 15 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | File | Area | Title |
 |---|---|---|
 | [2026-05-20_fast_vs_hd2d_book_palette_cycle.md](2026-05-20_fast_vs_hd2d_book_palette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Book Palette Cycle |
+| [2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_close_review_cycle.md](2026-05-20_fast_vs_hd2d_close_review_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Close Review Cycle |
 | [2026-05-20_fast_vs_hd2d_depth_framing_cycle.md](2026-05-20_fast_vs_hd2d_depth_framing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Depth Framing Cycle |
@@ -380,6 +381,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v4.7 | 2026-05-20 | Added Fast VS HD2D house interior detail cycle record with current/past bed and table detail screenshots, validation, and review evidence. |
 | v4.3 | 2026-05-20 | Added Fast VS HD2D grass texture cycle record with procedural current/past grass plates, review-fix screenshots, validation, build, and player-smoke evidence. |
 | v4.2 | 2026-05-20 | Added Fast VS HD2D path stone cycle record with procedural current/past path plates, validation, screenshot, build, and player-smoke evidence. |
 | v4.1 | 2026-05-20 | Added Fast VS HD2D book palette cycle record with muted procedural shelf colors, variable book widths, validation, screenshot, build, and player-smoke evidence. |
