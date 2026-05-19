@@ -190,6 +190,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dNinthCyclePathStone();
             ValidateFastVsHd2dTenthCycleGrassTexture();
             ValidateFastVsHd2dEleventhCycleOutdoorGroundDetails();
+            ValidateFastVsHd2dTwelfthCycleFacadeDetails();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -328,6 +329,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dEleventhCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_outdoor_ground_detail_20260520");
+        }
+
+        public static void CaptureHd2dTwelfthCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_facade_detail_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1046,6 +1052,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryRoofBlock", root, c + new Vector3(0f, 3.08f, 7.94f), new Vector3(10.05f, 0.48f, 1.36f), Quaternion.identity, past ? materials.PastRoof : materials.CurrentRoof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.library_roof");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeBaseCourse", root, c + new Vector3(0f, 0.20f, 8.02f), new Vector3(9.95f, 0.10f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade.base_course");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeHeaderTrim", root, c + new Vector3(0f, 2.84f, 8.00f), new Vector3(9.95f, 0.08f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade.header_trim");
+            CreateCentralPlazaLibraryFacadeDepthDetails(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryFacadeDoor(root, prefix, c + new Vector3(0f, 1.02f, 7.78f), past ? materials.PastFence : materials.CurrentFence, past ? materials.PastLibraryDoorDetail : materials.CurrentLibraryDoorDetail, past ? materials.PastFence : materials.CurrentFence);
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryEntranceStep", root, c + new Vector3(0f, 0.10f, 7.30f), new Vector3(1.70f, 0.12f, 0.78f), Quaternion.identity, stone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.library_entrance_step");
             CreateCentralPlazaLibraryFacadeWindow(root, prefix, "Left", c + new Vector3(-2.35f, 1.45f, 7.82f), past ? materials.PastFence : materials.CurrentFence, past ? materials.WindowLight : materials.EmptyWindow);
@@ -1560,6 +1567,19 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_DoorFrameRight", root, c + new Vector3(-0.55f, 0.86f, -1.30f), new Vector3(0.14f, 1.40f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.door_frame.right");
             CreateLandmarkCube($"{prefix}_HouseExterior_PorchDeck", root, c + new Vector3(-1.05f, 0.20f, -1.86f), new Vector3(2.12f, 0.16f, 1.18f), Quaternion.identity, wood, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_exterior.porch_deck");
             CreateLandmarkCube($"{prefix}_HouseExterior_PorchStepLower", root, c + new Vector3(-1.05f, 0.10f, -2.50f), new Vector3(2.42f, 0.12f, 0.42f), Quaternion.identity, stone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_exterior.porch_step_lower");
+            CreateExteriorFacadeDepthDetails(root, prefix, c, stone, trim, wood);
+        }
+
+        private static void CreateExteriorFacadeDepthDetails(Transform root, string prefix, Vector3 center, Material stone, Material trim, Material wood)
+        {
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_LeftCornerPost", root, center + new Vector3(-3.36f, 1.12f, -1.34f), new Vector3(0.12f, 2.08f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.left_corner_post");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_RightCornerPost", root, center + new Vector3(1.26f, 1.12f, -1.34f), new Vector3(0.12f, 2.08f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.right_corner_post");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_EaveBraceLeft", root, center + new Vector3(-2.58f, 1.76f, -1.26f), new Vector3(0.12f, 0.54f, 0.10f), Quaternion.Euler(0f, 0f, -13f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.eave_brace_left");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_EaveBraceRight", root, center + new Vector3(0.50f, 1.76f, -1.26f), new Vector3(0.12f, 0.54f, 0.10f), Quaternion.Euler(0f, 0f, 13f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.eave_brace_right");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_LeftWindowStoneSill", root, center + new Vector3(-2.38f, 0.76f, -1.26f), new Vector3(0.88f, 0.10f, 0.16f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.left_window_sill");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_RightWindowStoneSill", root, center + new Vector3(0.22f, 0.76f, -1.26f), new Vector3(0.88f, 0.10f, 0.16f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.right_window_sill");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_FoundationJointLeft", root, center + new Vector3(-2.56f, 0.42f, -1.31f), new Vector3(0.10f, 0.24f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.foundation_joint_left");
+            CreateLandmarkCube($"{prefix}_HouseExterior_FacadeDetail_FoundationJointRight", root, center + new Vector3(0.42f, 0.42f, -1.31f), new Vector3(0.10f, 0.24f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade_detail.foundation_joint_right");
         }
 
         private static void CreateExteriorDetails(Transform root, string prefix, bool past, Materials materials)
@@ -1632,6 +1652,19 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_WindowTrim_{side}_Left", root, center + new Vector3(-0.39f, 0f, 0f), new Vector3(0.08f, 0.66f, 0.08f), Quaternion.identity, material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.window.{side}.trim_left");
             CreateLandmarkCube($"{prefix}_HouseExterior_WindowTrim_{side}_Right", root, center + new Vector3(0.39f, 0f, 0f), new Vector3(0.08f, 0.66f, 0.08f), Quaternion.identity, material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.window.{side}.trim_right");
             CreateLandmarkCube($"{prefix}_HouseExterior_WindowShadow_{side}", root, center + new Vector3(0.02f, -0.48f, 0.05f), new Vector3(0.92f, 0.10f, 0.06f), Quaternion.identity, material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.window.{side}.shadow_lip");
+        }
+
+        private static void CreateCentralPlazaLibraryFacadeDepthDetails(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
+        {
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_LeftPilaster", root, center + new Vector3(-4.18f, 1.48f, 7.74f), new Vector3(0.16f, 2.52f, 0.14f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.left_pilaster");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_RightPilaster", root, center + new Vector3(4.18f, 1.48f, 7.74f), new Vector3(0.16f, 2.52f, 0.14f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.right_pilaster");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_RoofUnderThinBand", root, center + new Vector3(0f, 2.62f, 7.70f), new Vector3(8.78f, 0.08f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.roof_under_thin_band");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_EntranceCanopyLip", root, center + new Vector3(0f, 1.82f, 7.62f), new Vector3(1.94f, 0.12f, 0.18f), Quaternion.identity, roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.entrance_canopy_lip");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_LeftWindowStoneSill", root, center + new Vector3(-2.35f, 1.02f, 7.70f), new Vector3(1.00f, 0.08f, 0.16f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.left_window_sill");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_RightWindowStoneSill", root, center + new Vector3(2.35f, 1.02f, 7.70f), new Vector3(1.00f, 0.08f, 0.16f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.right_window_sill");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_BaseJointLeft", root, center + new Vector3(-2.62f, 0.28f, 7.68f), new Vector3(0.10f, 0.24f, 0.10f), Quaternion.identity, wall, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.base_joint_left");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeDetail_BaseJointRight", root, center + new Vector3(2.62f, 0.28f, 7.68f), new Vector3(0.10f, 0.24f, 0.10f), Quaternion.identity, wall, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade_detail.base_joint_right");
         }
 
         private static void CreateFlowerPatch(Transform root, string prefix, Vector3 center, Material leaf, Material flowerA, Material flowerB)
@@ -4472,6 +4505,31 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dTwelfthCycleFacadeDetails()
+        {
+            ValidateFacadeDetailObject("Current_HouseExterior_FacadeDetail_LeftCornerPost", "current_fence");
+            ValidateFacadeDetailObject("Current_HouseExterior_FacadeDetail_EaveBraceLeft", "current_furniture");
+            ValidateFacadeDetailObject("Current_HouseExterior_FacadeDetail_LeftWindowStoneSill", "current_stone");
+            ValidateFacadeDetailObject("Past_HouseExterior_FacadeDetail_LeftCornerPost", "past_fence");
+            ValidateFacadeDetailObject("Past_HouseExterior_FacadeDetail_EaveBraceLeft", "past_furniture");
+            ValidateFacadeDetailObject("Past_HouseExterior_FacadeDetail_LeftWindowStoneSill", "past_stone");
+            ValidateFacadeDetailObject("Current_CentralPlaza_LibraryFacadeDetail_LeftPilaster", "current_fence");
+            ValidateFacadeDetailObject("Current_CentralPlaza_LibraryFacadeDetail_EntranceCanopyLip", "current_roof");
+            ValidateFacadeDetailObject("Current_CentralPlaza_LibraryFacadeDetail_LeftWindowStoneSill", "current_stone");
+            ValidateFacadeDetailObject("Past_CentralPlaza_LibraryFacadeDetail_LeftPilaster", "past_fence");
+            ValidateFacadeDetailObject("Past_CentralPlaza_LibraryFacadeDetail_EntranceCanopyLip", "past_roof");
+            ValidateFacadeDetailObject("Past_CentralPlaza_LibraryFacadeDetail_LeftWindowStoneSill", "past_stone");
+
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_LibraryDoorPanelsLeft", "current_library_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_LibraryDoorPanelsLeft", "past_library_door_detail_hd2d_plate");
+
+            if (FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_ToLibrary_MapMoveGlowPad") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: facade detail pass must keep library route glow pads present.");
+            }
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -4656,6 +4714,47 @@ namespace Anemora.EditorTools
             if (renderQueue < minRenderQueue || renderQueue > maxRenderQueue)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep renderQueue in the {minRenderQueue}-{maxRenderQueue} range, but was {renderQueue}.");
+            }
+        }
+
+        private static void ValidateFacadeDetailObject(string objectName, string expectedMaterialToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing facade detail object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding facade decoration.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
         }
 
