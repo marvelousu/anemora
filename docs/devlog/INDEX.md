@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v3.7 fast VS HD2D hero prop texture cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v3.8 fast VS HD2D object detail cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 244 files including INDEX.md and README.md.
-- Dated devlog records: 242 files.
-- Linked evidence files present under docs/devlog/screenshots/: 210 files.
+- Root-level Markdown coverage: 245 files including INDEX.md and README.md.
+- Dated devlog records: 243 files.
+- Linked evidence files present under docs/devlog/screenshots/: 220 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 5 |
+| 2026-05-20 | 6 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 |---|---|---|
 | [2026-05-20_fast_vs_hd2d_first_cycle.md](2026-05-20_fast_vs_hd2d_first_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D First Cycle |
 | [2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md](2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Hero Prop Texture Cycle |
+| [2026-05-20_fast_vs_hd2d_object_detail_cycle.md](2026-05-20_fast_vs_hd2d_object_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Object Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_second_cycle.md](2026-05-20_fast_vs_hd2d_second_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Second Cycle |
 | [2026-05-20_fast_vs_hd2d_surface_texture_cycle.md](2026-05-20_fast_vs_hd2d_surface_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Surface Texture Cycle |
 | [2026-05-20_post_vs_parallel_branch_strategy.md](2026-05-20_post_vs_parallel_branch_strategy.md) | Fast VS / Chapter 1 | 2026-05-20 Post-VS Parallel Branch Strategy |
@@ -371,6 +372,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v3.8 | 2026-05-20 | Added Fast VS HD2D object detail cycle record with generated door/rubble materials, open-book line detail, validation, screenshot, build, and player-smoke evidence. |
 | v3.7 | 2026-05-20 | Added Fast VS HD2D hero prop texture cycle record with generated bed, facade, roof, window, plank, validation, screenshot, build, and player-smoke evidence. |
 | v3.6 | 2026-05-20 | Added Fast VS HD2D surface texture cycle record with generated texture assets, validation, screenshot, build, and player-smoke evidence. |
 | v3.5 | 2026-05-20 | Added Fast VS HD2D second-cycle atmosphere, validation, screenshot, build, and player-smoke record. |

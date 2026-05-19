@@ -188,6 +188,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
+            ValidateFastVsHd2dFifthCycleObjectDetails();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
 
@@ -295,6 +296,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dFourthCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_hero_props_20260520");
+        }
+
+        public static void CaptureHd2dFifthCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_object_details_20260520");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -545,8 +551,8 @@ namespace Anemora.EditorTools
 
         private static void CreateHouseDoorMarkers(Transform interiorRoot, Transform exteriorRoot, string prefix, bool past, Materials materials)
         {
-            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
             var trim = past ? materials.PastFence : materials.CurrentFence;
+            var doorPanelDetail = past ? materials.PastHouseDoorDetail : materials.CurrentHouseDoorDetail;
             var glow = FlatMaterial(
                 past ? "past_map_move_floor_glow" : "current_map_move_floor_glow",
                 past ? new Color(0.42f, 0.95f, 1.00f, 1f) : new Color(1.00f, 0.56f, 0.20f, 1f),
@@ -556,7 +562,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_ReturnDoorHandleCue", exteriorRoot, HouseExteriorCenter + new Vector3(-0.72f, 0.94f, -1.29f), new Vector3(0.10f, 0.10f, 0.08f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.return_door_handle_cue");
             CreateGlowDisc($"{prefix}_HouseExterior_MapMoveGlowPad", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.58f, 0.02f), new Vector3(0.46f, 0.018f, 0.30f), glow, true);
             CreateGlowDisc($"{prefix}_HouseExterior_DoorEntrySmallGlow", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.50f, 0.02f), new Vector3(0.30f, 0.015f, 0.20f), glow, true);
-            CreateLandmarkCube($"{prefix}_HouseExterior_DoorClosedPanel", exteriorRoot, HouseExteriorCenter + new Vector3(-1.05f, 0.83f, -1.48f), new Vector3(0.74f, 1.38f, 0.07f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.closed_door_panel");
+            CreateLandmarkCube($"{prefix}_HouseExterior_DoorClosedPanel", exteriorRoot, HouseExteriorCenter + new Vector3(-1.05f, 0.83f, -1.48f), new Vector3(0.74f, 1.38f, 0.07f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.closed_door_panel");
         }
 
         private static void CreateRouteMoveMarkers(Transform exteriorRoot, Transform plazaRoot, Transform libraryRoot, string prefix, bool past, Materials materials)
@@ -662,7 +668,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryRoofBlock", root, c + new Vector3(0f, 3.08f, 7.94f), new Vector3(10.05f, 0.48f, 1.36f), Quaternion.identity, past ? materials.PastRoof : materials.CurrentRoof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.library_roof");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeBaseCourse", root, c + new Vector3(0f, 0.20f, 8.02f), new Vector3(9.95f, 0.10f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade.base_course");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeHeaderTrim", root, c + new Vector3(0f, 2.84f, 8.00f), new Vector3(9.95f, 0.08f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade.header_trim");
-            CreateCentralPlazaLibraryFacadeDoor(root, prefix, c + new Vector3(0f, 1.02f, 7.78f), past ? materials.PastFence : materials.CurrentFence, past ? materials.PastFurniture : materials.CurrentFurniture, past ? materials.PastFence : materials.CurrentFence);
+            CreateCentralPlazaLibraryFacadeDoor(root, prefix, c + new Vector3(0f, 1.02f, 7.78f), past ? materials.PastFence : materials.CurrentFence, past ? materials.PastLibraryDoorDetail : materials.CurrentLibraryDoorDetail, past ? materials.PastFence : materials.CurrentFence);
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryEntranceStep", root, c + new Vector3(0f, 0.10f, 7.30f), new Vector3(1.70f, 0.12f, 0.78f), Quaternion.identity, stone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.library_entrance_step");
             CreateCentralPlazaLibraryFacadeWindow(root, prefix, "Left", c + new Vector3(-2.35f, 1.45f, 7.82f), past ? materials.PastFence : materials.CurrentFence, past ? materials.WindowLight : materials.EmptyWindow);
             CreateCentralPlazaLibraryFacadeWindow(root, prefix, "Right", c + new Vector3(2.35f, 1.45f, 7.82f), past ? materials.PastFence : materials.CurrentFence, past ? materials.WindowLight : materials.EmptyWindow);
@@ -795,6 +801,10 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_Library_Ruin_ScatteredBoardPile_PlankA", root, c + new Vector3(0.52f, 0.15f, -1.78f), new Vector3(0.62f, 0.07f, 0.16f), Quaternion.Euler(0f, 22f, -5f), materials.CurrentFurniture, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.scattered_board_pile.plank_a");
                 CreateLandmarkCube("Current_Library_Ruin_ScatteredBoardPile_PlankB", root, c + new Vector3(1.32f, 0.14f, -1.30f), new Vector3(0.74f, 0.07f, 0.14f), Quaternion.Euler(0f, -38f, 4f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.scattered_board_pile.plank_b");
                 CreateLandmarkCube("Current_Library_Ruin_ScatteredBoardPile_DustPatch", root, c + new Vector3(0.96f, 0.045f, -1.55f), new Vector3(0.72f, 0.035f, 0.40f), Quaternion.Euler(0f, -12f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.scattered_board_pile.dust_patch");
+                CreateLandmarkCube("Current_Library_Ruin_Detail_BookShardA", root, c + new Vector3(3.00f, 0.21f, -2.50f), new Vector3(0.24f, 0.04f, 0.10f), Quaternion.Euler(0f, 18f, -8f), materials.CurrentRubbleDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.detail.book_shard_a");
+                CreateLandmarkCube("Current_Library_Ruin_Detail_BookShardB", root, c + new Vector3(3.22f, 0.18f, -2.82f), new Vector3(0.18f, 0.04f, 0.08f), Quaternion.Euler(0f, -32f, 12f), materials.CurrentRubbleDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.detail.book_shard_b");
+                CreateLandmarkCube("Current_Library_Ruin_Detail_BrokenPlankA", root, c + new Vector3(0.70f, 0.18f, -1.92f), new Vector3(0.42f, 0.04f, 0.08f), Quaternion.Euler(0f, -24f, 6f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.detail.broken_plank_a");
+                CreateLandmarkCube("Current_Library_Ruin_Detail_StoneChipA", root, c + new Vector3(1.28f, 0.09f, -1.25f), new Vector3(0.16f, 0.05f, 0.12f), Quaternion.Euler(0f, 14f, -9f), materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.detail.stone_chip_a");
                 CreateLandmarkCube("Current_Library_Ruin_ToppledBookStack", root, c + new Vector3(3.12f, 0.16f, 0.52f), CurrentLibraryRuinBookPileScale, Quaternion.Euler(0f, 28f, -11f), materials.Book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.toppled_book_stack");
                 CreateLandmarkCube("Current_Library_Ruin_DustSheetNearEntry", root, c + new Vector3(-4.05f, 0.05f, -3.88f), new Vector3(0.82f, 0.045f, 0.34f), Quaternion.Euler(0f, -18f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.dust_sheet_near_entry");
                 CreateLandmarkCube("Current_Library_Ruin_BrokenBackShelfBoard", root, c + new Vector3(-1.80f, 1.26f, 7.02f), new Vector3(2.10f, 0.10f, 0.16f), Quaternion.Euler(0f, 0f, -7f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.broken_back_shelf_board");
@@ -1017,6 +1027,10 @@ namespace Anemora.EditorTools
             {
                 CreateLandmarkCube($"{objectName}_OpenPageLeft", book.transform, new Vector3(-localScale.x * 0.04f, 0.039f, -localScale.z * 0.08f), new Vector3(localScale.x * 0.30f, 0.012f, localScale.z * 0.66f), Quaternion.Euler(0f, 0f, -10f), pages, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkId}.open_page_left");
                 CreateLandmarkCube($"{objectName}_OpenPageRight", book.transform, new Vector3(localScale.x * 0.18f, 0.041f, localScale.z * 0.02f), new Vector3(localScale.x * 0.26f, 0.012f, localScale.z * 0.62f), Quaternion.Euler(0f, 0f, 10f), pages, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkId}.open_page_right");
+                CreateLandmarkCube($"{objectName}_OpenPageLeft_LineA", book.transform, new Vector3(-localScale.x * 0.12f, 0.048f, -localScale.z * 0.08f), new Vector3(localScale.x * 0.14f, 0.0025f, localScale.z * 0.035f), Quaternion.Euler(0f, 0f, -8f), spine, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkId}.open_page_left.line_a");
+                CreateLandmarkCube($"{objectName}_OpenPageLeft_LineB", book.transform, new Vector3(-localScale.x * 0.10f, 0.028f, localScale.z * 0.00f), new Vector3(localScale.x * 0.12f, 0.0022f, localScale.z * 0.030f), Quaternion.Euler(0f, 0f, -5f), pages, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkId}.open_page_left.line_b");
+                CreateLandmarkCube($"{objectName}_OpenPageRight_LineA", book.transform, new Vector3(localScale.x * 0.17f, 0.049f, -localScale.z * 0.04f), new Vector3(localScale.x * 0.13f, 0.0025f, localScale.z * 0.034f), Quaternion.Euler(0f, 0f, 7f), spine, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkId}.open_page_right.line_a");
+                CreateLandmarkCube($"{objectName}_OpenPageRight_LineB", book.transform, new Vector3(localScale.x * 0.15f, 0.030f, localScale.z * 0.04f), new Vector3(localScale.x * 0.11f, 0.0022f, localScale.z * 0.028f), Quaternion.Euler(0f, 0f, 4f), pages, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkId}.open_page_right.line_b");
             }
 
             return book;
@@ -1081,13 +1095,13 @@ namespace Anemora.EditorTools
                 $"Past.library.{side.ToLowerInvariant()}.shelf.front_texture");
         }
 
-        private static void CreateCentralPlazaLibraryFacadeDoor(Transform root, string prefix, Vector3 center, Material frame, Material panel, Material handle)
+        private static void CreateCentralPlazaLibraryFacadeDoor(Transform root, string prefix, Vector3 center, Material frame, Material doorPanelDetail, Material handle)
         {
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorFrameTop", root, center + new Vector3(0f, 0.64f, 0f), new Vector3(1.42f, 0.10f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.frame_top");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorFrameLeft", root, center + new Vector3(-0.70f, -0.05f, 0f), new Vector3(0.12f, 1.48f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.frame_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorFrameRight", root, center + new Vector3(0.70f, -0.05f, 0f), new Vector3(0.12f, 1.48f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.frame_right");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorPanelsLeft", root, center + new Vector3(-0.24f, -0.05f, 0.01f), new Vector3(0.44f, 1.34f, 0.08f), Quaternion.identity, panel, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.panel_left");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorPanelsRight", root, center + new Vector3(0.24f, -0.05f, 0.01f), new Vector3(0.44f, 1.34f, 0.08f), Quaternion.identity, panel, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.panel_right");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorPanelsLeft", root, center + new Vector3(-0.24f, -0.05f, 0.01f), new Vector3(0.44f, 1.34f, 0.08f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.panel_left");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorPanelsRight", root, center + new Vector3(0.24f, -0.05f, 0.01f), new Vector3(0.44f, 1.34f, 0.08f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.panel_right");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorTopLip", root, center + new Vector3(0f, 0.74f, 0.012f), new Vector3(1.46f, 0.04f, 0.06f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.top_lip");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorCenterPlank", root, center + new Vector3(0f, -0.02f, 0.015f), new Vector3(0.12f, 1.40f, 0.09f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.center_plank");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryDoorHandle", root, center + new Vector3(0.44f, 0.05f, 0.04f), new Vector3(0.08f, 0.16f, 0.05f), Quaternion.identity, handle, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_door.handle");
@@ -3293,7 +3307,11 @@ namespace Anemora.EditorTools
                 "Current_Library_Ruin_ToppledBookStack",
                 "Current_Library_Ruin_DustSheetNearEntry",
                 "Current_Library_Ruin_BrokenBackShelfBoard",
-                "Current_Library_Ruin_FallenBookSpines"
+                "Current_Library_Ruin_FallenBookSpines",
+                "Current_Library_Ruin_Detail_BookShardA",
+                "Current_Library_Ruin_Detail_BookShardB",
+                "Current_Library_Ruin_Detail_BrokenPlankA",
+                "Current_Library_Ruin_Detail_StoneChipA"
             };
 
             var pastObjects = new[]
@@ -3303,7 +3321,11 @@ namespace Anemora.EditorTools
                 "Past_Library_Ruin_ToppledBookStack",
                 "Past_Library_Ruin_DustSheetNearEntry",
                 "Past_Library_Ruin_BrokenBackShelfBoard",
-                "Past_Library_Ruin_FallenBookSpines"
+                "Past_Library_Ruin_FallenBookSpines",
+                "Past_Library_Ruin_Detail_BookShardA",
+                "Past_Library_Ruin_Detail_BookShardB",
+                "Past_Library_Ruin_Detail_BrokenPlankA",
+                "Past_Library_Ruin_Detail_StoneChipA"
             };
 
             foreach (var objectName in currentObjects)
@@ -3932,6 +3954,37 @@ namespace Anemora.EditorTools
             ValidateSceneObjectMaterialTexture("Past_HouseExterior_RoofWidePixelPlane", "past_roof_hd2d_plate");
             ValidateSceneObjectMaterialTexture("Current_NiroBed_PaperPixelBed_Blanket", "current_bed_hd2d_plate");
             ValidateSceneObjectMaterialTexture("Past_NiroBed_PaperPixelBed_Blanket", "past_bed_hd2d_plate");
+        }
+
+        private static void ValidateFastVsHd2dFifthCycleObjectDetails()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_house_door_detail_hd2d_plate", 96, 160, 18);
+            ValidateGeneratedRepeatTextureAsset("past_house_door_detail_hd2d_plate", 96, 160, 18);
+            ValidateGeneratedRepeatTextureAsset("current_library_door_detail_hd2d_plate", 96, 160, 18);
+            ValidateGeneratedRepeatTextureAsset("past_library_door_detail_hd2d_plate", 96, 160, 18);
+            ValidateGeneratedRepeatTextureAsset("current_rubble_detail_hd2d_plate", 128, 64, 18);
+
+            ValidateGeneratedSurfaceMaterialTexture("current_house_door_detail", "current_house_door_detail_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_house_door_detail", "past_house_door_detail_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_library_door_detail", "current_library_door_detail_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_library_door_detail", "past_library_door_detail_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_rubble_detail", "current_rubble_detail_hd2d_plate");
+
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_DoorClosedPanel", "current_house_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_DoorClosedPanel", "past_house_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_LibraryDoorPanelsLeft", "current_library_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_LibraryDoorPanelsRight", "current_library_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_LibraryDoorPanelsLeft", "past_library_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_LibraryDoorPanelsRight", "past_library_door_detail_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_Library_Ruin_Detail_BookShardA", "current_rubble_detail_hd2d_plate");
+
+            ValidateCurrentLibraryRuinObjects();
+
+            var openPageLineDetail = FindSceneObjectIncludingInactive("Current_HouseInterior_TimewriterBookCue_OpenPageLeft_LineA");
+            if (openPageLineDetail == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: open book page line details are missing from the Timewriter cue book.");
+            }
         }
 
         private static void ValidateAtmosphereParticleSystem(string objectName, int expectedLayer, Material expectedMaterial)
@@ -5512,6 +5565,229 @@ namespace Anemora.EditorTools
                 true);
         }
 
+        private static Color SampleCurrentHouseDoorDetailHd2dPixel(int x, int y)
+        {
+            return SampleDoorDetailPlatePixel(x, y, 96, 160,
+                new Color(0.30f, 0.20f, 0.12f, 1f),
+                new Color(0.39f, 0.27f, 0.16f, 1f),
+                new Color(0.16f, 0.12f, 0.09f, 1f),
+                new Color(0.48f, 0.35f, 0.21f, 1f),
+                new Color(0.56f, 0.47f, 0.28f, 1f),
+                new Color(0.30f, 0.28f, 0.18f, 1f),
+                359,
+                true);
+        }
+
+        private static Color SamplePastHouseDoorDetailHd2dPixel(int x, int y)
+        {
+            return SampleDoorDetailPlatePixel(x, y, 96, 160,
+                new Color(0.46f, 0.30f, 0.16f, 1f),
+                new Color(0.57f, 0.38f, 0.20f, 1f),
+                new Color(0.24f, 0.17f, 0.11f, 1f),
+                new Color(0.63f, 0.48f, 0.28f, 1f),
+                new Color(0.74f, 0.61f, 0.35f, 1f),
+                new Color(0.42f, 0.34f, 0.18f, 1f),
+                373,
+                false);
+        }
+
+        private static Color SampleCurrentLibraryDoorDetailHd2dPixel(int x, int y)
+        {
+            return SampleDoorDetailPlatePixel(x, y, 96, 160,
+                new Color(0.27f, 0.18f, 0.11f, 1f),
+                new Color(0.36f, 0.25f, 0.15f, 1f),
+                new Color(0.15f, 0.11f, 0.08f, 1f),
+                new Color(0.44f, 0.33f, 0.21f, 1f),
+                new Color(0.55f, 0.45f, 0.30f, 1f),
+                new Color(0.28f, 0.24f, 0.16f, 1f),
+                389,
+                true);
+        }
+
+        private static Color SamplePastLibraryDoorDetailHd2dPixel(int x, int y)
+        {
+            return SampleDoorDetailPlatePixel(x, y, 96, 160,
+                new Color(0.39f, 0.26f, 0.15f, 1f),
+                new Color(0.50f, 0.34f, 0.20f, 1f),
+                new Color(0.21f, 0.15f, 0.10f, 1f),
+                new Color(0.60f, 0.46f, 0.28f, 1f),
+                new Color(0.71f, 0.58f, 0.36f, 1f),
+                new Color(0.36f, 0.30f, 0.18f, 1f),
+                401,
+                false);
+        }
+
+        private static Color SampleCurrentRubbleDetailHd2dPixel(int x, int y)
+        {
+            return SampleRubbleDetailPlatePixel(x, y, 128, 64,
+                new Color(0.22f, 0.18f, 0.15f, 1f),
+                new Color(0.34f, 0.28f, 0.22f, 1f),
+                new Color(0.15f, 0.13f, 0.11f, 1f),
+                new Color(0.60f, 0.51f, 0.35f, 1f),
+                new Color(0.54f, 0.55f, 0.57f, 1f),
+                new Color(0.80f, 0.74f, 0.60f, 1f),
+                419);
+        }
+
+        private static Color SampleDoorDetailPlatePixel(int x, int y, int width, int height, Color boardA, Color boardB, Color seamColor, Color insetColor, Color edgeHighlight, Color handleColor, int seed, bool currentTone)
+        {
+            var boardWidth = 12;
+            var boardIndex = x / boardWidth;
+            var withinBoard = x % boardWidth;
+            var boardTone = LerpColor(boardA, boardB, Hash01(boardIndex, y / 11, seed));
+            var grain = Mathf.Sin((y * 0.15f) + (boardIndex * 0.82f) + seed * 0.011f) * 0.5f + 0.5f;
+            boardTone = LerpColor(boardTone, edgeHighlight, grain * 0.20f);
+            boardTone = LerpColor(boardTone, Darken(boardTone, 0.26f), Mathf.Clamp01((y / (float)(height - 1)) * 0.18f));
+
+            if (withinBoard <= 1 || withinBoard >= boardWidth - 2 || x == 0 || x == width - 1)
+            {
+                boardTone = LerpColor(boardTone, seamColor, 0.88f);
+            }
+
+            var leftRail = Mathf.Abs(x - width * 0.33f) <= 1.8f;
+            var rightRail = Mathf.Abs(x - width * 0.66f) <= 1.8f;
+            var upperBand = Mathf.Abs(y - height * 0.30f) <= 2.5f;
+            var lowerBand = Mathf.Abs(y - height * 0.67f) <= 2.5f;
+            if (leftRail || rightRail || upperBand || lowerBand)
+            {
+                boardTone = LerpColor(boardTone, insetColor, 0.80f);
+            }
+
+            if (Mathf.Abs(x - width * 0.50f) <= 1.0f && y > height * 0.20f && y < height * 0.78f)
+            {
+                boardTone = LerpColor(boardTone, Darken(seamColor, 0.20f), 0.58f);
+            }
+
+            var handleCenterX = width * 0.77f;
+            var handleCenterY = height * 0.55f;
+            var handleDx = Mathf.Abs(x - handleCenterX);
+            var handleDy = Mathf.Abs(y - handleCenterY);
+            if (handleDx <= 4f && handleDy <= 10f)
+            {
+                var handleMask = Mathf.Clamp01(1f - ((handleDx / 4f) * 0.72f + (handleDy / 10f) * 0.48f));
+                boardTone = LerpColor(boardTone, handleColor, handleMask * 0.66f);
+            }
+
+            var panelMask = Mathf.Clamp01(1f - (Mathf.Abs(x - width * 0.50f) / (width * 0.50f) * 0.84f + Mathf.Abs(y - height * 0.50f) / (height * 0.50f) * 0.52f));
+            if (panelMask > 0f)
+            {
+                boardTone = LerpColor(boardTone, currentTone ? Lighten(insetColor, 0.08f) : Darken(insetColor, 0.04f), panelMask * 0.10f);
+            }
+
+            if (Hash01(x, y, seed + 19) > (currentTone ? 0.972f : 0.982f))
+            {
+                boardTone = Hash01(x, y, seed + 23) > 0.52f ? Darken(boardTone, currentTone ? 0.18f : 0.12f) : Lighten(boardTone, currentTone ? 0.08f : 0.05f);
+            }
+
+            return ShadeSurface(boardTone, x, y, width, height, currentTone ? 0.16f : 0.14f, currentTone ? 0.10f : 0.08f);
+        }
+
+        private static Color SampleRubbleDetailPlatePixel(int x, int y, int width, int height, Color dustA, Color dustB, Color seamColor, Color boardColor, Color bookColor, Color stoneColor, int seed)
+        {
+            var cellSize = 8;
+            var cellX = x / cellSize;
+            var cellY = y / cellSize;
+            var withinX = x % cellSize;
+            var withinY = y % cellSize;
+            var cellType = (int)(Hash01(cellX, cellY, seed) * 4f);
+            var baseTone = LerpColor(dustA, dustB, Hash01(cellX * 2, cellY * 3, seed + 5));
+            baseTone = LerpColor(baseTone, seamColor, Mathf.Clamp01((withinY / (float)(cellSize - 1)) * 0.12f));
+
+            switch (cellType)
+            {
+                case 0:
+                {
+                    var boardMask = Mathf.Clamp01(1f - (Mathf.Abs(withinX - 3.4f) * 0.28f + Mathf.Abs(withinY - 3.7f) * 0.26f));
+                    var boardTone = LerpColor(boardColor, Lighten(boardColor, 0.18f), Hash01(cellX, cellY, seed + 11));
+                    boardTone = LerpColor(boardTone, seamColor, 0.36f);
+                    if (withinX <= 1 || withinX >= cellSize - 2 || withinY <= 1 || withinY >= cellSize - 2)
+                    {
+                        boardTone = LerpColor(boardTone, Darken(seamColor, 0.12f), 0.70f);
+                    }
+
+                    if (withinY == 3 || withinY == 4)
+                    {
+                        boardTone = LerpColor(boardTone, Darken(boardColor, 0.24f), 0.42f);
+                    }
+
+                    if (Hash01(cellX, cellY, seed + 17) > 0.64f)
+                    {
+                        var crack = Mathf.Abs(withinX - withinY - 1.5f);
+                        if (crack <= 1.2f)
+                        {
+                            boardTone = Darken(boardTone, 0.22f);
+                        }
+                    }
+
+                    baseTone = LerpColor(baseTone, boardTone, boardMask);
+                    break;
+                }
+                case 1:
+                {
+                    var bookMask = Mathf.Clamp01(1f - (Mathf.Abs(withinX - 3.1f) * 0.24f + Mathf.Abs(withinY - 3.5f) * 0.26f));
+                    var coverTone = LerpColor(bookColor, Darken(bookColor, 0.18f), Hash01(cellX, cellY, seed + 13));
+                    var pageTone = LerpColor(new Color(0.80f, 0.75f, 0.62f, 1f), new Color(0.92f, 0.88f, 0.77f, 1f), Hash01(cellX, cellY, seed + 15));
+                    if (withinX <= 1)
+                    {
+                        coverTone = Darken(coverTone, 0.32f);
+                    }
+
+                    if (withinX >= cellSize - 2)
+                    {
+                        pageTone = Lighten(pageTone, 0.12f);
+                    }
+
+                    if (withinY == 2 || withinY == 5)
+                    {
+                        pageTone = LerpColor(pageTone, seamColor, 0.40f);
+                    }
+
+                    var split = Mathf.Abs(withinX - 4.4f) <= 0.9f ? coverTone : pageTone;
+                    if (withinY < 2 || withinY > 5)
+                    {
+                        split = LerpColor(split, seamColor, 0.60f);
+                    }
+
+                    baseTone = LerpColor(baseTone, split, bookMask);
+                    break;
+                }
+                case 2:
+                {
+                    var stoneMask = Mathf.Clamp01(1f - (Mathf.Abs(withinX - 3.5f) * 0.22f + Mathf.Abs(withinY - 3.5f) * 0.30f));
+                    var stoneTone = LerpColor(stoneColor, Lighten(stoneColor, 0.14f), Hash01(cellX, cellY, seed + 21));
+                    stoneTone = LerpColor(stoneTone, seamColor, 0.28f);
+                    if (withinX <= 1 || withinX >= cellSize - 2 || withinY <= 1 || withinY >= cellSize - 2)
+                    {
+                        stoneTone = LerpColor(stoneTone, Darken(seamColor, 0.18f), 0.70f);
+                    }
+
+                    if (((withinX + withinY + seed) & 3) == 0)
+                    {
+                        stoneTone = Darken(stoneTone, 0.20f);
+                    }
+
+                    baseTone = LerpColor(baseTone, stoneTone, stoneMask);
+                    break;
+                }
+                default:
+                {
+                    if (Hash01(x, y, seed + 29) > 0.92f)
+                    {
+                        baseTone = Lighten(baseTone, 0.08f);
+                    }
+
+                    break;
+                }
+            }
+
+            if (Hash01(x, y, seed + 31) > 0.988f)
+            {
+                baseTone = Darken(baseTone, 0.20f);
+            }
+
+            return ShadeSurface(baseTone, x, y, width, height, 0.16f, 0.08f);
+        }
+
         private static Color SamplePastPlankHd2dPixel(int x, int y)
         {
             return SamplePlankDebrisPlatePixel(
@@ -6103,6 +6379,8 @@ namespace Anemora.EditorTools
                 PaintedSurfaceMaterial("current_roof", "current_roof_hd2d_plate", 128, 128, SampleCurrentRoofHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_furniture", "current_furniture_hd2d_plate", 128, 128, SampleCurrentFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("current_fence", "current_plank_debris_hd2d_plate", 128, 64, SampleCurrentPlankDebrisHd2dPixel, false, new Vector2(6f, 2f)),
+                PaintedSurfaceMaterial("current_house_door_detail", "current_house_door_detail_hd2d_plate", 96, 160, SampleCurrentHouseDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
+                PaintedSurfaceMaterial("current_library_door_detail", "current_library_door_detail_hd2d_plate", 96, 160, SampleCurrentLibraryDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("current_stone", new Color32(68, 67, 64, 255), new Color32(95, 93, 86, 255), new Color32(43, 43, 41, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PaintedSurfaceMaterial("current_bed", "current_bed_hd2d_plate", 128, 128, SampleCurrentBedHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("current_leaf", new Color32(38, 65, 40, 255), new Color32(53, 82, 47, 255), new Color32(28, 45, 32, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
@@ -6114,11 +6392,14 @@ namespace Anemora.EditorTools
                 PaintedSurfaceMaterial("past_roof", "past_roof_hd2d_plate", 128, 128, SamplePastRoofHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("past_furniture", "past_furniture_hd2d_plate", 128, 128, SamplePastFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("past_fence", "past_plank_hd2d_plate", 128, 64, SamplePastPlankHd2dPixel, false, new Vector2(6f, 2f)),
+                PaintedSurfaceMaterial("past_house_door_detail", "past_house_door_detail_hd2d_plate", 96, 160, SamplePastHouseDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
+                PaintedSurfaceMaterial("past_library_door_detail", "past_library_door_detail_hd2d_plate", 96, 160, SamplePastLibraryDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("past_stone", new Color32(118, 115, 100, 255), new Color32(151, 146, 123, 255), new Color32(83, 82, 75, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PaintedSurfaceMaterial("past_bed", "past_bed_hd2d_plate", 128, 128, SamplePastBedHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("leaf", new Color32(62, 122, 64, 255), new Color32(93, 158, 78, 255), new Color32(39, 91, 53, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PaintedSurfaceMaterial("pillow", "pillow_hd2d_plate", 96, 64, SamplePillowHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
+                PaintedSurfaceMaterial("current_rubble_detail", "current_rubble_detail_hd2d_plate", 128, 64, SampleCurrentRubbleDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PaintedSurfaceMaterial("book", "book_spines_hd2d_plate", 128, 64, SampleBookSpinesHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("lamp", new Color32(255, 204, 88, 255), new Color32(255, 236, 150, 255), new Color32(197, 126, 38, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
                 FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true),
@@ -6630,6 +6911,8 @@ namespace Anemora.EditorTools
                 Material currentRoof,
                 Material currentFurniture,
                 Material currentFence,
+                Material currentHouseDoorDetail,
+                Material currentLibraryDoorDetail,
                 Material currentStone,
                 Material currentBed,
                 Material currentLeaf,
@@ -6641,11 +6924,14 @@ namespace Anemora.EditorTools
                 Material pastRoof,
                 Material pastFurniture,
                 Material pastFence,
+                Material pastHouseDoorDetail,
+                Material pastLibraryDoorDetail,
                 Material pastStone,
                 Material pastBed,
                 Material leaf,
                 Material pillow,
                 Material dust,
+                Material currentRubbleDetail,
                 Material book,
                 Material lamp,
                 Material redLight,
@@ -6686,6 +6972,8 @@ namespace Anemora.EditorTools
                 CurrentRoof = currentRoof;
                 CurrentFurniture = currentFurniture;
                 CurrentFence = currentFence;
+                CurrentHouseDoorDetail = currentHouseDoorDetail;
+                CurrentLibraryDoorDetail = currentLibraryDoorDetail;
                 CurrentStone = currentStone;
                 CurrentBed = currentBed;
                 CurrentLeaf = currentLeaf;
@@ -6697,11 +6985,14 @@ namespace Anemora.EditorTools
                 PastRoof = pastRoof;
                 PastFurniture = pastFurniture;
                 PastFence = pastFence;
+                PastHouseDoorDetail = pastHouseDoorDetail;
+                PastLibraryDoorDetail = pastLibraryDoorDetail;
                 PastStone = pastStone;
                 PastBed = pastBed;
                 Leaf = leaf;
                 Pillow = pillow;
                 Dust = dust;
+                CurrentRubbleDetail = currentRubbleDetail;
                 Book = book;
                 Lamp = lamp;
                 RedLight = redLight;
@@ -6743,6 +7034,8 @@ namespace Anemora.EditorTools
             public Material CurrentRoof { get; }
             public Material CurrentFurniture { get; }
             public Material CurrentFence { get; }
+            public Material CurrentHouseDoorDetail { get; }
+            public Material CurrentLibraryDoorDetail { get; }
             public Material CurrentStone { get; }
             public Material CurrentBed { get; }
             public Material CurrentLeaf { get; }
@@ -6754,11 +7047,14 @@ namespace Anemora.EditorTools
             public Material PastRoof { get; }
             public Material PastFurniture { get; }
             public Material PastFence { get; }
+            public Material PastHouseDoorDetail { get; }
+            public Material PastLibraryDoorDetail { get; }
             public Material PastStone { get; }
             public Material PastBed { get; }
             public Material Leaf { get; }
             public Material Pillow { get; }
             public Material Dust { get; }
+            public Material CurrentRubbleDetail { get; }
             public Material Book { get; }
             public Material Lamp { get; }
             public Material RedLight { get; }
