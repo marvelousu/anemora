@@ -187,6 +187,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
+            ValidateFastVsHd2dFourthCycleHeroPropTextures();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
 
@@ -289,6 +290,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dThirdCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_surface_textures_20260520");
+        }
+
+        public static void CaptureHd2dFourthCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_hero_props_20260520");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -3894,6 +3900,40 @@ namespace Anemora.EditorTools
             ValidateGeneratedSurfaceMaterialTexture("book", "book_spines_hd2d_plate");
         }
 
+        private static void ValidateFastVsHd2dFourthCycleHeroPropTextures()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_bed_hd2d_plate", 128, 128, 20);
+            ValidateGeneratedRepeatTextureAsset("past_bed_hd2d_plate", 128, 128, 20);
+            ValidateGeneratedRepeatTextureAsset("pillow_hd2d_plate", 96, 64, 18);
+            ValidateGeneratedRepeatTextureAsset("current_exterior_wall_hd2d_plate", 128, 128, 20);
+            ValidateGeneratedRepeatTextureAsset("past_exterior_wall_hd2d_plate", 128, 128, 20);
+            ValidateGeneratedRepeatTextureAsset("current_roof_hd2d_plate", 128, 128, 20);
+            ValidateGeneratedRepeatTextureAsset("past_roof_hd2d_plate", 128, 128, 20);
+            ValidateGeneratedRepeatTextureAsset("window_light_hd2d_plate", 96, 96, 18);
+            ValidateGeneratedRepeatTextureAsset("empty_window_hd2d_plate", 96, 96, 18);
+            ValidateGeneratedRepeatTextureAsset("current_plank_debris_hd2d_plate", 128, 64, 20);
+            ValidateGeneratedRepeatTextureAsset("past_plank_hd2d_plate", 128, 64, 20);
+
+            ValidateGeneratedSurfaceMaterialTexture("current_bed", "current_bed_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_bed", "past_bed_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("pillow", "pillow_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_exterior_wall", "current_exterior_wall_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_exterior_wall", "past_exterior_wall_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_roof", "current_roof_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_roof", "past_roof_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("window_light", "window_light_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("empty_window", "empty_window_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_fence", "current_plank_debris_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_fence", "past_plank_hd2d_plate");
+
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_WindowLeft", "empty_window_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_WindowLeft", "window_light_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_RoofWidePixelPlane", "current_roof_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_RoofWidePixelPlane", "past_roof_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_NiroBed_PaperPixelBed_Blanket", "current_bed_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_NiroBed_PaperPixelBed_Blanket", "past_bed_hd2d_plate");
+        }
+
         private static void ValidateAtmosphereParticleSystem(string objectName, int expectedLayer, Material expectedMaterial)
         {
             var atmosphere = FindSceneObjectIncludingInactive(objectName);
@@ -3980,6 +4020,28 @@ namespace Anemora.EditorTools
             if (!MaterialUsesTexture(material, texture))
             {
                 throw new InvalidOperationException($"House slice validation failed: {materialId} must reference {textureId}.");
+            }
+        }
+
+        private static void ValidateSceneObjectMaterialTexture(string objectName, string textureId)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing scene object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            var texture = ResolveMaterialTexture(renderer.sharedMaterial);
+            var expectedName = $"FastVS_House_{textureId}";
+            if (texture == null || !string.Equals(texture.name, expectedName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must reference {expectedName}.");
             }
         }
 
@@ -5285,6 +5347,396 @@ namespace Anemora.EditorTools
             return SampleBookShelfTexturePixel(x, y, 256, 128, 3, 131, true);
         }
 
+        private static Color SampleCurrentBedHd2dPixel(int x, int y)
+        {
+            return SampleFabricPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.36f, 0.33f, 0.42f, 1f),
+                new Color(0.48f, 0.44f, 0.56f, 1f),
+                new Color(0.24f, 0.21f, 0.29f, 1f),
+                new Color(0.20f, 0.18f, 0.24f, 1f),
+                new Color(0.58f, 0.55f, 0.67f, 1f),
+                new Color(0.16f, 0.14f, 0.20f, 1f),
+                211,
+                true);
+        }
+
+        private static Color SamplePastBedHd2dPixel(int x, int y)
+        {
+            return SampleFabricPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.38f, 0.52f, 0.72f, 1f),
+                new Color(0.50f, 0.66f, 0.84f, 1f),
+                new Color(0.24f, 0.32f, 0.44f, 1f),
+                new Color(0.18f, 0.23f, 0.33f, 1f),
+                new Color(0.70f, 0.80f, 0.91f, 1f),
+                new Color(0.20f, 0.29f, 0.40f, 1f),
+                223,
+                false);
+        }
+
+        private static Color SamplePillowHd2dPixel(int x, int y)
+        {
+            return SampleFabricPlatePixel(
+                x,
+                y,
+                96,
+                64,
+                new Color(0.84f, 0.82f, 0.77f, 1f),
+                new Color(0.93f, 0.90f, 0.85f, 1f),
+                new Color(0.66f, 0.62f, 0.57f, 1f),
+                new Color(0.72f, 0.69f, 0.64f, 1f),
+                new Color(0.97f, 0.95f, 0.92f, 1f),
+                new Color(0.62f, 0.58f, 0.53f, 1f),
+                239,
+                false);
+        }
+
+        private static Color SampleCurrentExteriorWallHd2dPixel(int x, int y)
+        {
+            return SampleWeatheredWallPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.40f, 0.34f, 0.30f, 1f),
+                new Color(0.48f, 0.41f, 0.36f, 1f),
+                new Color(0.22f, 0.19f, 0.17f, 1f),
+                new Color(0.56f, 0.49f, 0.42f, 1f),
+                new Color(0.26f, 0.22f, 0.20f, 1f),
+                251,
+                true);
+        }
+
+        private static Color SamplePastExteriorWallHd2dPixel(int x, int y)
+        {
+            return SampleWeatheredWallPlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.52f, 0.42f, 0.30f, 1f),
+                new Color(0.63f, 0.52f, 0.38f, 1f),
+                new Color(0.27f, 0.22f, 0.18f, 1f),
+                new Color(0.70f, 0.60f, 0.46f, 1f),
+                new Color(0.32f, 0.27f, 0.22f, 1f),
+                263,
+                false);
+        }
+
+        private static Color SampleCurrentRoofHd2dPixel(int x, int y)
+        {
+            return SampleRoofShinglePlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.34f, 0.17f, 0.16f, 1f),
+                new Color(0.42f, 0.21f, 0.19f, 1f),
+                new Color(0.18f, 0.09f, 0.09f, 1f),
+                new Color(0.52f, 0.27f, 0.23f, 1f),
+                new Color(0.26f, 0.13f, 0.12f, 1f),
+                277,
+                true);
+        }
+
+        private static Color SamplePastRoofHd2dPixel(int x, int y)
+        {
+            return SampleRoofShinglePlatePixel(
+                x,
+                y,
+                128,
+                128,
+                new Color(0.50f, 0.28f, 0.20f, 1f),
+                new Color(0.60f, 0.34f, 0.24f, 1f),
+                new Color(0.26f, 0.14f, 0.11f, 1f),
+                new Color(0.72f, 0.42f, 0.30f, 1f),
+                new Color(0.34f, 0.20f, 0.15f, 1f),
+                283,
+                false);
+        }
+
+        private static Color SampleWindowLightHd2dPixel(int x, int y)
+        {
+            return SampleWindowPlatePixel(
+                x,
+                y,
+                96,
+                96,
+                new Color(0.80f, 0.78f, 0.62f, 1f),
+                new Color(0.94f, 0.92f, 0.80f, 1f),
+                new Color(0.39f, 0.31f, 0.18f, 1f),
+                new Color(0.58f, 0.49f, 0.24f, 1f),
+                new Color(0.98f, 0.96f, 0.88f, 1f),
+                new Color(0.28f, 0.22f, 0.11f, 1f),
+                307,
+                true);
+        }
+
+        private static Color SampleEmptyWindowHd2dPixel(int x, int y)
+        {
+            return SampleWindowPlatePixel(
+                x,
+                y,
+                96,
+                96,
+                new Color(0.06f, 0.07f, 0.09f, 1f),
+                new Color(0.12f, 0.13f, 0.16f, 1f),
+                new Color(0.18f, 0.15f, 0.10f, 1f),
+                new Color(0.28f, 0.25f, 0.18f, 1f),
+                new Color(0.20f, 0.22f, 0.24f, 1f),
+                new Color(0.03f, 0.03f, 0.04f, 1f),
+                313,
+                false);
+        }
+
+        private static Color SampleCurrentPlankDebrisHd2dPixel(int x, int y)
+        {
+            return SamplePlankDebrisPlatePixel(
+                x,
+                y,
+                128,
+                64,
+                new Color(0.28f, 0.24f, 0.21f, 1f),
+                new Color(0.36f, 0.30f, 0.26f, 1f),
+                new Color(0.18f, 0.16f, 0.14f, 1f),
+                new Color(0.46f, 0.40f, 0.34f, 1f),
+                new Color(0.16f, 0.14f, 0.13f, 1f),
+                331,
+                true);
+        }
+
+        private static Color SamplePastPlankHd2dPixel(int x, int y)
+        {
+            return SamplePlankDebrisPlatePixel(
+                x,
+                y,
+                128,
+                64,
+                new Color(0.40f, 0.29f, 0.18f, 1f),
+                new Color(0.51f, 0.38f, 0.24f, 1f),
+                new Color(0.23f, 0.17f, 0.12f, 1f),
+                new Color(0.62f, 0.48f, 0.30f, 1f),
+                new Color(0.24f, 0.18f, 0.14f, 1f),
+                347,
+                false);
+        }
+
+        private static Color SampleFabricPlatePixel(int x, int y, int width, int height, Color fabricA, Color fabricB, Color stitchColor, Color borderColor, Color highlightColor, Color shadowColor, int seed, bool worn)
+        {
+            var color = LerpColor(fabricA, fabricB, Hash01(x / 4, y / 4, seed));
+            var weave = ((x + y + seed) & 3) < 2 ? 0.06f : -0.04f;
+            color = LerpColor(color, weave > 0f ? highlightColor : shadowColor, Mathf.Abs(weave));
+
+            if ((x % 4) < 2)
+            {
+                color = LerpColor(color, highlightColor, 0.07f);
+            }
+            else
+            {
+                color = LerpColor(color, shadowColor, 0.05f);
+            }
+
+            if ((y % 5) <= 1)
+            {
+                color = LerpColor(color, stitchColor, 0.28f);
+            }
+
+            if ((x % 16) <= 1 || (x % 16) >= 14 || (y % 16) <= 1 || (y % 16) >= 14)
+            {
+                color = LerpColor(color, borderColor, 0.62f);
+            }
+
+            if (x < 3 || x >= width - 3)
+            {
+                color = LerpColor(color, highlightColor, 0.12f);
+            }
+
+            if (y < 3 || y >= height - 3)
+            {
+                color = LerpColor(color, shadowColor, 0.12f);
+            }
+
+            if (Mathf.Abs(((y + seed) % 24) - 12) <= 1)
+            {
+                color = LerpColor(color, Darken(stitchColor, 0.18f), 0.45f);
+            }
+
+            if (Hash01(x, y, seed + 13) > (worn ? 0.962f : 0.982f))
+            {
+                color = Hash01(x, y, seed + 17) > 0.5f ? Darken(color, worn ? 0.20f : 0.12f) : Lighten(color, worn ? 0.08f : 0.06f);
+            }
+
+            if (worn && Hash01(x, y, seed + 19) > 0.948f)
+            {
+                color = LerpColor(color, new Color(0.30f, 0.27f, 0.25f, 1f), 0.16f);
+            }
+
+            return ShadeSurface(color, x, y, width, height, 0.12f, 0.08f);
+        }
+
+        private static Color SampleWeatheredWallPlatePixel(int x, int y, int width, int height, Color wallA, Color wallB, Color seamColor, Color highlightColor, Color shadowColor, int seed, bool worn)
+        {
+            var boardWidth = 14;
+            var boardIndex = x / boardWidth;
+            var withinX = x % boardWidth;
+            var bandTone = LerpColor(wallA, wallB, Hash01(boardIndex, y / 9, seed));
+            var verticalLight = Mathf.Clamp01(1f - (y / (float)(height - 1)) * 0.55f);
+            bandTone = LerpColor(bandTone, highlightColor, verticalLight * 0.14f);
+            bandTone = LerpColor(bandTone, shadowColor, Mathf.Clamp01((y / (float)(height - 1)) * 0.24f));
+
+            if (withinX <= 1 || withinX >= boardWidth - 2 || x == 0 || x == width - 1)
+            {
+                bandTone = LerpColor(bandTone, seamColor, 0.80f);
+            }
+
+            if ((y % 18) <= 1)
+            {
+                bandTone = LerpColor(bandTone, Darken(seamColor, 0.18f), 0.42f);
+            }
+
+            if (((boardIndex + (y / 7) + seed) & 3) == 0 && withinX > 2 && withinX < boardWidth - 2)
+            {
+                bandTone = LerpColor(bandTone, Lighten(wallB, worn ? 0.05f : 0.10f), worn ? 0.20f : 0.12f);
+            }
+
+            if (Hash01(x, y, seed + 11) > 0.972f)
+            {
+                bandTone = LerpColor(bandTone, new Color(0.67f, 0.62f, 0.56f, 1f), worn ? 0.16f : 0.11f);
+            }
+
+            if (Hash01(x, y, seed + 17) > (worn ? 0.974f : 0.986f))
+            {
+                bandTone = Darken(bandTone, worn ? 0.18f : 0.10f);
+            }
+
+            return ShadeSurface(bandTone, x, y, width, height, 0.18f, 0.11f);
+        }
+
+        private static Color SampleRoofShinglePlatePixel(int x, int y, int width, int height, Color tileA, Color tileB, Color seamColor, Color highlightColor, Color shadowColor, int seed, bool weathered)
+        {
+            var rowHeight = 8;
+            var rowIndex = y / rowHeight;
+            var withinY = y % rowHeight;
+            var rowOffset = (rowIndex & 1) == 0 ? 0 : 6;
+            var shiftedX = (x + rowOffset) % width;
+            var tileWidth = 12;
+            var tileIndex = shiftedX / tileWidth;
+            var withinX = shiftedX % tileWidth;
+            var roofTone = LerpColor(tileA, tileB, Hash01(tileIndex, rowIndex, seed));
+            roofTone = LerpColor(roofTone, highlightColor, Mathf.Clamp01(0.22f - withinY * 0.02f));
+            roofTone = LerpColor(roofTone, shadowColor, Mathf.Clamp01((withinY / (float)(rowHeight - 1)) * 0.28f));
+
+            if (withinX <= 1 || withinX >= tileWidth - 2 || withinY <= 1 || withinY >= rowHeight - 2 || x == 0 || x == width - 1 || y == 0 || y == height - 1)
+            {
+                roofTone = LerpColor(roofTone, seamColor, 0.84f);
+            }
+
+            if ((withinX == 4 || withinX == 7) && withinY >= 2 && withinY <= 5)
+            {
+                roofTone = LerpColor(roofTone, Darken(highlightColor, 0.42f), 0.42f);
+            }
+
+            if (Hash01(x, y, seed + 19) > (weathered ? 0.966f : 0.981f))
+            {
+                roofTone = Hash01(x, y, seed + 23) > 0.55f ? Darken(roofTone, weathered ? 0.18f : 0.11f) : Lighten(roofTone, weathered ? 0.08f : 0.05f);
+            }
+
+            return ShadeSurface(roofTone, x, y, width, height, 0.16f, 0.10f);
+        }
+
+        private static Color SampleWindowPlatePixel(int x, int y, int width, int height, Color glassA, Color glassB, Color frameColor, Color crossbarColor, Color highlightColor, Color shadowColor, int seed, bool lit)
+        {
+            var color = LerpColor(glassA, glassB, Hash01(x / 4, y / 4, seed));
+            if (lit)
+            {
+                color = LerpColor(color, highlightColor, 0.24f);
+                if (Hash01(x, y, seed + 7) > 0.962f)
+                {
+                    color = Lighten(color, 0.14f);
+                }
+            }
+            else
+            {
+                color = LerpColor(color, shadowColor, 0.36f);
+                if (Hash01(x, y, seed + 7) > 0.968f)
+                {
+                    color = Lighten(color, 0.08f);
+                }
+            }
+
+            if (x < 3 || x >= width - 3 || y < 3 || y >= height - 3)
+            {
+                color = LerpColor(color, frameColor, 0.88f);
+            }
+
+            if (Mathf.Abs(x - (width / 2f)) <= 1f || Mathf.Abs(y - (height / 2f)) <= 1f)
+            {
+                color = LerpColor(color, crossbarColor, 0.84f);
+            }
+
+            if (Mathf.Abs(x - (width * 0.34f)) <= 1f && Mathf.Abs(y - (height * 0.34f)) <= 4f)
+            {
+                color = LerpColor(color, highlightColor, lit ? 0.32f : 0.12f);
+            }
+
+            if (Mathf.Abs(x - (width * 0.66f)) <= 1f && Mathf.Abs(y - (height * 0.66f)) <= 4f)
+            {
+                color = LerpColor(color, shadowColor, 0.18f);
+            }
+
+            return ShadeSurface(color, x, y, width, height, lit ? 0.10f : 0.14f, lit ? 0.08f : 0.05f);
+        }
+
+        private static Color SamplePlankDebrisPlatePixel(int x, int y, int width, int height, Color woodA, Color woodB, Color seamColor, Color highlightColor, Color shadowColor, int seed, bool worn)
+        {
+            var boardWidth = 16;
+            var boardIndex = x / boardWidth;
+            var withinX = x % boardWidth;
+            var grain = Mathf.Sin((y * 0.22f) + (boardIndex * 1.1f) + seed * 0.017f) * 0.5f + 0.5f;
+            var tone = LerpColor(woodA, woodB, Hash01(boardIndex, y / 7, seed) * 0.66f + grain * 0.34f);
+            tone = LerpColor(tone, highlightColor, Mathf.Clamp01(0.24f - (x / (float)(width - 1)) * 0.16f));
+            tone = LerpColor(tone, shadowColor, Mathf.Clamp01((x / (float)(width - 1)) * 0.18f + (y / (float)(height - 1)) * 0.20f));
+
+            if (withinX <= 1 || withinX >= boardWidth - 2 || x == 0 || x == width - 1)
+            {
+                tone = LerpColor(tone, seamColor, 0.84f);
+            }
+
+            if ((y % 18) == 7 || (y % 18) == 8)
+            {
+                tone = LerpColor(tone, Darken(seamColor, 0.14f), 0.44f);
+            }
+
+            if (withinX == 5 || withinX == 10)
+            {
+                tone = LerpColor(tone, highlightColor, 0.12f);
+            }
+
+            if (Hash01(x, y, seed + 17) > 0.968f)
+            {
+                tone = Darken(tone, worn ? 0.34f : 0.22f);
+            }
+
+            if (Hash01(x, y, seed + 23) > 0.988f)
+            {
+                tone = Lighten(tone, 0.16f);
+            }
+
+            if (worn && Hash01(x, y, seed + 29) > 0.944f)
+            {
+                tone = LerpColor(tone, new Color(0.30f, 0.27f, 0.24f, 1f), 0.20f);
+            }
+
+            return ShadeSurface(tone, x, y, width, height, 0.18f, 0.11f);
+        }
+
         private static Color SamplePlankPlatePixel(int x, int y, int width, int height, Color boardA, Color boardB, Color seamColor, Color highlightColor, Color shadowColor, int seed, bool aged)
         {
             var boardWidth = 16;
@@ -5647,32 +6099,32 @@ namespace Anemora.EditorTools
                 PixelMaterial("current_path", new Color32(95, 72, 52, 255), new Color32(132, 102, 70, 255), new Color32(65, 52, 42, 255), PixelPattern.Stone, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("current_interior_floor", "current_interior_floor_hd2d_plate", 128, 128, SampleCurrentInteriorFloorHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_interior_wall", "current_interior_wall_hd2d_plate", 128, 128, SampleCurrentInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
-                PixelMaterial("current_exterior_wall", new Color32(91, 69, 55, 255), new Color32(124, 89, 65, 255), new Color32(57, 47, 42, 255), PixelPattern.Bricks, false, new Vector2(4f, 3f)),
-                PixelMaterial("current_roof", new Color32(87, 39, 35, 255), new Color32(117, 54, 45, 255), new Color32(55, 28, 27, 255), PixelPattern.Roof, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("current_exterior_wall", "current_exterior_wall_hd2d_plate", 128, 128, SampleCurrentExteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("current_roof", "current_roof_hd2d_plate", 128, 128, SampleCurrentRoofHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_furniture", "current_furniture_hd2d_plate", 128, 128, SampleCurrentFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
-                PixelMaterial("current_fence", new Color32(58, 48, 36, 255), new Color32(86, 69, 48, 255), new Color32(40, 34, 28, 255), PixelPattern.Planks, false, new Vector2(6f, 2f)),
+                PaintedSurfaceMaterial("current_fence", "current_plank_debris_hd2d_plate", 128, 64, SampleCurrentPlankDebrisHd2dPixel, false, new Vector2(6f, 2f)),
                 PixelMaterial("current_stone", new Color32(68, 67, 64, 255), new Color32(95, 93, 86, 255), new Color32(43, 43, 41, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
-                PixelMaterial("current_bed", new Color32(74, 73, 85, 255), new Color32(96, 93, 108, 255), new Color32(54, 53, 62, 255), PixelPattern.Cloth, false, new Vector2(2f, 2f)),
+                PaintedSurfaceMaterial("current_bed", "current_bed_hd2d_plate", 128, 128, SampleCurrentBedHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("current_leaf", new Color32(38, 65, 40, 255), new Color32(53, 82, 47, 255), new Color32(28, 45, 32, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PixelMaterial("past_grass", new Color32(58, 106, 65, 255), new Color32(89, 139, 74, 255), new Color32(41, 82, 54, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
                 PixelMaterial("past_path", new Color32(139, 111, 70, 255), new Color32(171, 139, 87, 255), new Color32(96, 79, 58, 255), PixelPattern.Stone, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("past_wood_floor", "past_wood_floor_hd2d_plate", 128, 128, SamplePastWoodFloorHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("past_interior_wall", "past_interior_wall_hd2d_plate", 128, 128, SamplePastInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
-                PixelMaterial("past_exterior_wall", new Color32(155, 112, 72, 255), new Color32(190, 138, 82, 255), new Color32(111, 78, 54, 255), PixelPattern.Bricks, false, new Vector2(4f, 3f)),
-                PixelMaterial("past_roof", new Color32(149, 66, 48, 255), new Color32(194, 89, 58, 255), new Color32(101, 45, 40, 255), PixelPattern.Roof, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("past_exterior_wall", "past_exterior_wall_hd2d_plate", 128, 128, SamplePastExteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("past_roof", "past_roof_hd2d_plate", 128, 128, SamplePastRoofHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("past_furniture", "past_furniture_hd2d_plate", 128, 128, SamplePastFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
-                PixelMaterial("past_fence", new Color32(119, 84, 46, 255), new Color32(154, 108, 58, 255), new Color32(83, 62, 42, 255), PixelPattern.Planks, false, new Vector2(6f, 2f)),
+                PaintedSurfaceMaterial("past_fence", "past_plank_hd2d_plate", 128, 64, SamplePastPlankHd2dPixel, false, new Vector2(6f, 2f)),
                 PixelMaterial("past_stone", new Color32(118, 115, 100, 255), new Color32(151, 146, 123, 255), new Color32(83, 82, 75, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
-                PixelMaterial("past_bed", new Color32(87, 121, 162, 255), new Color32(117, 151, 190, 255), new Color32(61, 82, 120, 255), PixelPattern.Cloth, false, new Vector2(2f, 2f)),
+                PaintedSurfaceMaterial("past_bed", "past_bed_hd2d_plate", 128, 128, SamplePastBedHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("leaf", new Color32(62, 122, 64, 255), new Color32(93, 158, 78, 255), new Color32(39, 91, 53, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
-                PixelMaterial("pillow", new Color32(212, 204, 177, 255), new Color32(236, 225, 190, 255), new Color32(166, 157, 137, 255), PixelPattern.Cloth, false, new Vector2(1f, 1f)),
+                PaintedSurfaceMaterial("pillow", "pillow_hd2d_plate", 96, 64, SamplePillowHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("book", "book_spines_hd2d_plate", 128, 64, SampleBookSpinesHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("lamp", new Color32(255, 204, 88, 255), new Color32(255, 236, 150, 255), new Color32(197, 126, 38, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
                 FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true),
                 FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true),
-                PixelMaterial("window_light", new Color32(133, 211, 255, 255), new Color32(215, 247, 255, 255), new Color32(52, 107, 151, 255), PixelPattern.Window, true, new Vector2(1f, 1f)),
-                PixelMaterial("empty_window", new Color32(24, 31, 38, 255), new Color32(52, 60, 64, 255), new Color32(12, 17, 22, 255), PixelPattern.Window, true, new Vector2(1f, 1f)),
+                PaintedSurfaceMaterial("window_light", "window_light_hd2d_plate", 96, 96, SampleWindowLightHd2dPixel, true, new Vector2(1f, 1f)),
+                PaintedSurfaceMaterial("empty_window", "empty_window_hd2d_plate", 96, 96, SampleEmptyWindowHd2dPixel, true, new Vector2(1f, 1f)),
                 PixelMaterial("water", new Color32(56, 119, 151, 255), new Color32(91, 171, 195, 255), new Color32(33, 72, 112, 255), PixelPattern.Water, true, new Vector2(1f, 1f)),
                 PixelMaterial("rope", new Color32(142, 112, 70, 255), new Color32(181, 146, 89, 255), new Color32(89, 70, 47, 255), PixelPattern.Planks, false, new Vector2(1f, 1f)),
                 PixelMaterial("flower_red", new Color32(190, 46, 54, 255), new Color32(239, 87, 79, 255), new Color32(117, 35, 53, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
