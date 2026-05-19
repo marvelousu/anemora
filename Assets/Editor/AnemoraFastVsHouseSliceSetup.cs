@@ -189,6 +189,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEighthCycleBookPalette();
             ValidateFastVsHd2dNinthCyclePathStone();
             ValidateFastVsHd2dTenthCycleGrassTexture();
+            ValidateFastVsHd2dEleventhCycleOutdoorGroundDetails();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -322,6 +323,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTenthCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_grass_texture_20260520");
+        }
+
+        public static void CaptureHd2dEleventhCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_outdoor_ground_detail_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1075,6 +1081,21 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_DryFountainCrack", root, c + new Vector3(0.18f, 0.515f, 2.27f), new Vector3(0.72f, 0.035f, 0.10f), Quaternion.Euler(0f, 22f, 0f), materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.dry_fountain_crack");
             }
 
+            if (past)
+            {
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_StoneSquareWestEdgePebble", c + new Vector3(-5.40f, 0.03f, 1.28f), new Vector3(0.22f, 0.05f, 0.16f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), -13f, stone, materials.Leaf, materials.Shadow, $"{prefix}.central_plaza.ground_detail.west_edge_pebble");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_FountainSideLeaf", c + new Vector3(1.52f, 0.03f, 3.42f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), 17f, materials.Leaf, materials.FlowerYellow, materials.Shadow, $"{prefix}.central_plaza.ground_detail.fountain_side_leaf");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_NoticeBoardShoulder", c + new Vector3(-4.10f, 0.03f, 1.48f), new Vector3(0.24f, 0.04f, 0.16f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), -8f, trim, stone, materials.Shadow, $"{prefix}.central_plaza.ground_detail.notice_board_shoulder");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_LibraryApproachChip", c + new Vector3(3.52f, 0.03f, 4.16f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), 9f, stone, materials.PastFence, materials.Shadow, $"{prefix}.central_plaza.ground_detail.library_approach_chip");
+            }
+            else
+            {
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_StoneSquareWestEdgePebble", c + new Vector3(-5.40f, 0.03f, 1.28f), new Vector3(0.22f, 0.05f, 0.16f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), -13f, stone, materials.CurrentLeaf, materials.Shadow, $"{prefix}.central_plaza.ground_detail.west_edge_pebble");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_FountainSideDust", c + new Vector3(1.52f, 0.03f, 3.42f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), 17f, materials.Dust, materials.CurrentStone, materials.Shadow, $"{prefix}.central_plaza.ground_detail.fountain_side_dust");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_NoticeBoardShoulder", c + new Vector3(-4.10f, 0.03f, 1.48f), new Vector3(0.24f, 0.04f, 0.16f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), -8f, trim, materials.CurrentStone, materials.Shadow, $"{prefix}.central_plaza.ground_detail.notice_board_shoulder");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_LibraryApproachChip", c + new Vector3(3.52f, 0.03f, 4.16f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), 9f, stone, materials.CurrentFence, materials.Shadow, $"{prefix}.central_plaza.ground_detail.library_approach_chip");
+            }
+
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleBackBoundary", root, c + new Vector3(0f, 0.75f, 13.35f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.back_boundary");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleLeftBoundary", root, c + new Vector3(-8.95f, 0.75f, 2.95f), new Vector3(0.24f, 1.50f, 20.90f), $"{prefix}.central_plaza.left_boundary");
@@ -1582,6 +1603,20 @@ namespace Anemora.EditorTools
             CreateGrassTuft(root, prefix, c + new Vector3(-3.72f, 0.20f, 3.55f), plant, 1);
             CreateGrassTuft(root, prefix, c + new Vector3(4.18f, 0.20f, 1.55f), plant, 2);
             CreateGrassTuft(root, prefix, c + new Vector3(3.70f, 0.20f, -2.20f), plant, 3);
+            if (past)
+            {
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_FrontYardPebble", c + new Vector3(-2.36f, 0.03f, -2.06f), new Vector3(0.24f, 0.05f, 0.18f), new Vector3(0.11f, 0.03f, 0.08f), new Vector3(0.28f, 0.02f, 0.20f), 12f, materials.PastStone, materials.Leaf, materials.Shadow, $"{prefix}.house_exterior.ground_detail.front_yard_pebble");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_NorthEastRoadShoulder", c + new Vector3(4.26f, 0.03f, -0.92f), new Vector3(0.28f, 0.04f, 0.16f), new Vector3(0.10f, 0.03f, 0.10f), new Vector3(0.30f, 0.02f, 0.18f), -18f, materials.PastFence, materials.PastStone, materials.Shadow, $"{prefix}.house_exterior.ground_detail.northeast_road_shoulder");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_GardenEdgeLeaf", c + new Vector3(-3.86f, 0.03f, 3.18f), new Vector3(0.22f, 0.05f, 0.18f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), 21f, materials.Leaf, materials.FlowerYellow, materials.Shadow, $"{prefix}.house_exterior.ground_detail.garden_edge_leaf");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_SideYardBloom", c + new Vector3(3.52f, 0.03f, -2.02f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), -7f, materials.PastStone, materials.FlowerYellow, materials.Shadow, $"{prefix}.house_exterior.ground_detail.side_yard_bloom");
+            }
+            else
+            {
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_FrontYardPebble", c + new Vector3(-2.36f, 0.03f, -2.06f), new Vector3(0.24f, 0.05f, 0.18f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.28f, 0.02f, 0.20f), 12f, materials.CurrentStone, materials.CurrentLeaf, materials.Shadow, $"{prefix}.house_exterior.ground_detail.front_yard_pebble");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_NorthEastRoadShoulder", c + new Vector3(4.26f, 0.03f, -0.92f), new Vector3(0.28f, 0.04f, 0.16f), new Vector3(0.10f, 0.03f, 0.10f), new Vector3(0.30f, 0.02f, 0.18f), -18f, materials.Dust, materials.CurrentStone, materials.Shadow, $"{prefix}.house_exterior.ground_detail.northeast_road_shoulder");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_GardenEdgeLeaf", c + new Vector3(-3.86f, 0.03f, 3.18f), new Vector3(0.22f, 0.05f, 0.18f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), 21f, materials.CurrentLeaf, materials.CurrentFence, materials.Shadow, $"{prefix}.house_exterior.ground_detail.garden_edge_leaf");
+                CreateOutdoorGroundDetailCluster(root, $"{prefix}_HouseExterior_GroundDetail_SideYardChip", c + new Vector3(3.52f, 0.03f, -2.02f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), -7f, materials.CurrentFence, materials.CurrentStone, materials.Shadow, $"{prefix}.house_exterior.ground_detail.side_yard_chip");
+            }
             CreateInvisibleColliderBox(
                 $"{prefix}_HouseExterior_InvisibleFrontDropGuard",
                 root,
@@ -1612,6 +1647,13 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_A", root, center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.a");
             CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_B", root, center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.b");
             CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_C", root, center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.c");
+        }
+
+        private static void CreateOutdoorGroundDetailCluster(Transform root, string objectName, Vector3 center, Vector3 mainScale, Vector3 accentScale, Vector3 shadowScale, float yaw, Material mainMaterial, Material accentMaterial, Material shadowMaterial, string landmarkIdBase)
+        {
+            CreateLandmarkCube(objectName, root, center, mainScale, Quaternion.Euler(0f, yaw, 0f), mainMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkIdBase}.main");
+            CreateLandmarkCube($"{objectName}_Accent", root, center + new Vector3(0.06f, 0.01f, -0.03f), accentScale, Quaternion.Euler(0f, yaw + 17f, 0f), accentMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkIdBase}.accent");
+            CreateLandmarkCube($"{objectName}_Shadow", root, center + new Vector3(-0.02f, -0.005f, 0.02f), shadowScale, Quaternion.Euler(0f, yaw - 11f, 0f), shadowMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkIdBase}.shadow");
         }
 
         private static CharacterController CreateNiroPlayer(Transform currentRoot, Camera camera, Materials materials)
@@ -4400,6 +4442,36 @@ namespace Anemora.EditorTools
             ValidateSceneObjectMaterialTexture("Past_CentralPlaza_PixelGround", "past_grass_hd2d_plate");
         }
 
+        private static void ValidateFastVsHd2dEleventhCycleOutdoorGroundDetails()
+        {
+            ValidateOutdoorGroundDetailObject("Current_HouseExterior_GroundDetail_FrontYardPebble", "current_stone", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_HouseExterior_GroundDetail_NorthEastRoadShoulder", "dust", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_HouseExterior_GroundDetail_GardenEdgeLeaf", "current_leaf", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_HouseExterior_GroundDetail_SideYardChip", "current_fence", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_HouseExterior_GroundDetail_FrontYardPebble", "past_stone", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_HouseExterior_GroundDetail_NorthEastRoadShoulder", "past_fence", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_HouseExterior_GroundDetail_GardenEdgeLeaf", "leaf", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_HouseExterior_GroundDetail_SideYardBloom", "past_stone", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_GroundDetail_StoneSquareWestEdgePebble", "current_stone", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_GroundDetail_FountainSideDust", "dust", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_GroundDetail_NoticeBoardShoulder", "current_fence", 0.20f);
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_GroundDetail_LibraryApproachChip", "current_stone", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_GroundDetail_StoneSquareWestEdgePebble", "past_stone", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_GroundDetail_FountainSideLeaf", "leaf", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_GroundDetail_NoticeBoardShoulder", "past_fence", 0.20f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_GroundDetail_LibraryApproachChip", "past_stone", 0.20f);
+
+            if (FindSceneObjectIncludingInactive("Current_HouseExterior_ToPlaza_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseExterior_ToPlaza_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_ToHouseExterior_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_ToHouseExterior_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_ToLibrary_MapMoveGlowPad") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: route glow pads must remain present while outdoor ground details are added.");
+            }
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -4584,6 +4656,52 @@ namespace Anemora.EditorTools
             if (renderQueue < minRenderQueue || renderQueue > maxRenderQueue)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep renderQueue in the {minRenderQueue}-{maxRenderQueue} range, but was {renderQueue}.");
+            }
+        }
+
+        private static void ValidateOutdoorGroundDetailObject(string objectName, string expectedMaterialToken, float maxScaleY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor ground detail object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not have a collider.");
+            }
+
+            if (sceneObject.transform.localScale.y > maxScaleY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay very low to the ground.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
         }
 

@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v4.3 fast VS HD2D grass texture cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v4.4 fast VS HD2D outdoor ground detail cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 250 files including INDEX.md and README.md.
-- Dated devlog records: 248 files.
-- Linked evidence files present under docs/devlog/screenshots/: 266 files.
+- Root-level Markdown coverage: 251 files including INDEX.md and README.md.
+- Dated devlog records: 249 files.
+- Linked evidence files present under docs/devlog/screenshots/: 276 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 11 |
+| 2026-05-20 | 12 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_depth_framing_cycle.md](2026-05-20_fast_vs_hd2d_depth_framing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Depth Framing Cycle |
 | [2026-05-20_fast_vs_hd2d_first_cycle.md](2026-05-20_fast_vs_hd2d_first_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D First Cycle |
 | [2026-05-20_fast_vs_hd2d_grass_texture_cycle.md](2026-05-20_fast_vs_hd2d_grass_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Grass Texture Cycle |
+| [2026-05-20_fast_vs_hd2d_outdoor_ground_detail_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_ground_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Ground Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md](2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Hero Prop Texture Cycle |
 | [2026-05-20_fast_vs_hd2d_object_detail_cycle.md](2026-05-20_fast_vs_hd2d_object_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Object Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_path_stone_cycle.md](2026-05-20_fast_vs_hd2d_path_stone_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Path Stone Cycle |
