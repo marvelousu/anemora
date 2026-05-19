@@ -188,6 +188,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFifthCycleObjectDetails();
             ValidateFastVsHd2dEighthCycleBookPalette();
             ValidateFastVsHd2dNinthCyclePathStone();
+            ValidateFastVsHd2dTenthCycleGrassTexture();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -316,6 +317,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dNinthCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_path_stone_20260520");
+        }
+
+        public static void CaptureHd2dTenthCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_grass_texture_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -4380,6 +4386,20 @@ namespace Anemora.EditorTools
             ValidateSceneObjectMaterialTexture("Past_HouseExterior_PathToInterior", "past_path_hd2d_plate");
         }
 
+        private static void ValidateFastVsHd2dTenthCycleGrassTexture()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_grass_hd2d_plate", 128, 128, 30);
+            ValidateGeneratedRepeatTextureAsset("past_grass_hd2d_plate", 128, 128, 30);
+            ValidateGeneratedTextureExactSize("current_grass_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("past_grass_hd2d_plate", 128, 128);
+            ValidateGeneratedSurfaceMaterialTexture("current_grass", "current_grass_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_grass", "past_grass_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_YardPixelGround", "current_grass_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_YardPixelGround", "past_grass_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_PixelGround", "current_grass_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_PixelGround", "past_grass_hd2d_plate");
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -6396,6 +6416,137 @@ namespace Anemora.EditorTools
                 new Color(0.27f, 0.22f, 0.18f, 1f));
         }
 
+        private static Color SampleCurrentGrassHd2dPixel(int x, int y)
+        {
+            return SampleGrassAndSoilHd2dPixel(
+                x,
+                y,
+                128,
+                128,
+                503,
+                false,
+                new Color(0.16f, 0.19f, 0.12f, 1f),
+                new Color(0.20f, 0.24f, 0.14f, 1f),
+                new Color(0.26f, 0.29f, 0.18f, 1f),
+                new Color(0.31f, 0.33f, 0.22f, 1f),
+                new Color(0.17f, 0.14f, 0.09f, 1f),
+                new Color(0.24f, 0.19f, 0.13f, 1f),
+                new Color(0.12f, 0.12f, 0.09f, 1f),
+                new Color(0.31f, 0.29f, 0.18f, 1f),
+                new Color(0.14f, 0.15f, 0.10f, 1f),
+                new Color(0.23f, 0.25f, 0.16f, 1f));
+        }
+
+        private static Color SamplePastGrassHd2dPixel(int x, int y)
+        {
+            return SampleGrassAndSoilHd2dPixel(
+                x,
+                y,
+                128,
+                128,
+                521,
+                true,
+                new Color(0.19f, 0.25f, 0.13f, 1f),
+                new Color(0.24f, 0.30f, 0.16f, 1f),
+                new Color(0.28f, 0.35f, 0.19f, 1f),
+                new Color(0.34f, 0.39f, 0.23f, 1f),
+                new Color(0.19f, 0.16f, 0.10f, 1f),
+                new Color(0.27f, 0.22f, 0.14f, 1f),
+                new Color(0.14f, 0.15f, 0.11f, 1f),
+                new Color(0.40f, 0.37f, 0.24f, 1f),
+                new Color(0.17f, 0.18f, 0.12f, 1f),
+                new Color(0.30f, 0.31f, 0.19f, 1f));
+        }
+
+        private static Color SampleGrassAndSoilHd2dPixel(int x, int y, int width, int height, int seed, bool pastTone, Color grassA, Color grassB, Color grassC, Color grassD, Color soilA, Color soilB, Color seamColor, Color highlightColor, Color shadowColor, Color bladeColor)
+        {
+            if (x <= 0 || y <= 0 || x >= width - 1 || y >= height - 1)
+            {
+                var border = LerpColor(seamColor, shadowColor, pastTone ? 0.30f : 0.46f);
+                return ShadeSurface(border, x, y, width, height, pastTone ? 0.06f : 0.08f, 0.02f);
+            }
+
+            var u = width <= 1 ? 0f : x / (float)(width - 1);
+            var v = height <= 1 ? 0f : y / (float)(height - 1);
+
+            var broadNoise = SampleSmoothValueNoise2D((x * 0.0625f) + (seed * 0.11f), (y * 0.0625f) + (seed * 0.07f), seed + 3);
+            var mediumNoise = SampleSmoothValueNoise2D((x * 0.125f) + 11.3f, (y * 0.125f) + 7.9f, seed + 7);
+            var fineNoise = SampleSmoothValueNoise2D((x * 0.25f) + 3.7f, (y * 0.25f) + 5.1f, seed + 11);
+            var leafNoise = SampleSmoothValueNoise2D((x * 0.5f) + 19.4f, (y * 0.5f) + 23.8f, seed + 13);
+            var soilNoise = SampleSmoothValueNoise2D((x * 0.08f) + 41.6f, (y * 0.08f) + 27.2f, seed + 17);
+
+            var tone = LerpColor(grassA, grassD, broadNoise * 0.28f);
+            tone = LerpColor(tone, grassB, Mathf.Clamp01(mediumNoise * 0.75f));
+            tone = LerpColor(tone, grassC, Mathf.Clamp01((1f - broadNoise) * 0.32f));
+
+            var soilTone = LerpColor(soilA, soilB, Mathf.Clamp01(soilNoise));
+            var soilMask = Mathf.Clamp01((soilNoise - (pastTone ? 0.44f : 0.50f)) * (pastTone ? 1.55f : 1.75f));
+            soilMask = Mathf.Clamp01(soilMask + Mathf.Abs(mediumNoise - 0.5f) * (pastTone ? 0.12f : 0.18f));
+            if (soilMask > 0f)
+            {
+                tone = LerpColor(tone, soilTone, soilMask * (pastTone ? 0.44f : 0.58f));
+            }
+
+            var clumpNoise = SampleSmoothValueNoise2D((x * 0.10f) + 8.8f, (y * 0.10f) + 2.4f, seed + 19);
+            var clumpMask = Mathf.Clamp01((clumpNoise - (pastTone ? 0.58f : 0.62f)) * 2.1f);
+            if (clumpMask > 0f)
+            {
+                tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, clumpMask * (pastTone ? 0.16f : 0.20f));
+            }
+
+            var tuftNoise = SampleSmoothValueNoise2D((x * 0.17f) + 14.7f, (y * 0.17f) + 9.1f, seed + 23);
+            if (tuftNoise > (pastTone ? 0.63f : 0.68f))
+            {
+                var tuftMask = Mathf.Clamp01((tuftNoise - (pastTone ? 0.63f : 0.68f)) * (pastTone ? 2.6f : 2.9f));
+                tone = LerpColor(tone, bladeColor, tuftMask * (pastTone ? 0.08f : 0.06f));
+            }
+
+            var diagonalA = Mathf.Abs(Mathf.Sin((x * 0.22f) + (y * 0.11f) + seed * 0.013f + broadNoise * 2.4f));
+            var diagonalB = Mathf.Abs(Mathf.Sin((x * -0.18f) + (y * 0.31f) + seed * 0.017f + mediumNoise * 1.8f));
+            if (diagonalA > 0.965f && y > 1 && y < height - 2)
+            {
+                tone = LerpColor(tone, bladeColor, pastTone ? 0.11f : 0.09f);
+            }
+
+            if (diagonalB > 0.976f && x > 1 && x < width - 2)
+            {
+                tone = LerpColor(tone, shadowColor, pastTone ? 0.08f : 0.10f);
+            }
+
+            if (fineNoise > 0.70f)
+            {
+                tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, pastTone ? 0.05f : 0.07f);
+            }
+
+            if (Hash01(x, y, seed + 29) > (pastTone ? 0.994f : 0.991f))
+            {
+                tone = pastTone ? Lighten(tone, 0.02f) : Darken(tone, 0.04f);
+            }
+
+            var edgeFade = Mathf.Lerp(0.08f, 0.02f, Mathf.Clamp01(1f - Mathf.Abs(0.5f - v) * 1.6f));
+            tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, (1f - broadNoise) * edgeFade);
+
+            return ShadeSurface(tone, x, y, width, height, pastTone ? 0.07f : 0.09f, pastTone ? 0.03f : 0.02f);
+        }
+
+        private static float SampleSmoothValueNoise2D(float x, float y, int seed)
+        {
+            var x0 = Mathf.FloorToInt(x);
+            var y0 = Mathf.FloorToInt(y);
+            var fx = x - x0;
+            var fy = y - y0;
+            fx = fx * fx * (3f - (2f * fx));
+            fy = fy * fy * (3f - (2f * fy));
+
+            var n00 = Hash01(x0, y0, seed);
+            var n10 = Hash01(x0 + 1, y0, seed);
+            var n01 = Hash01(x0, y0 + 1, seed);
+            var n11 = Hash01(x0 + 1, y0 + 1, seed);
+            var nx0 = Mathf.Lerp(n00, n10, fx);
+            var nx1 = Mathf.Lerp(n01, n11, fx);
+            return Mathf.Lerp(nx0, nx1, fy);
+        }
+
         private static Color SamplePathFlagstoneHd2dPixel(int x, int y, int width, int height, int seed, bool past, Color stoneA, Color stoneB, Color stoneC, Color stoneD, Color seamColor, Color highlightColor, Color shadowColor, Color crackColor, Color dustColor)
         {
             if (x <= 0 || y <= 0 || x >= width - 1 || y >= height - 1)
@@ -7271,7 +7422,7 @@ namespace Anemora.EditorTools
         {
             return new Materials(
                 PixelMaterial("current_ground", new Color32(42, 41, 38, 255), new Color32(63, 58, 51, 255), new Color32(31, 31, 30, 255), PixelPattern.Noise, false, new Vector2(4f, 4f)),
-                PixelMaterial("current_grass", new Color32(38, 55, 36, 255), new Color32(53, 76, 48, 255), new Color32(28, 38, 27, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
+                PaintedSurfaceMaterial("current_grass", "current_grass_hd2d_plate", 128, 128, SampleCurrentGrassHd2dPixel, false, new Vector2(6f, 6f)),
                 PaintedSurfaceMaterial("current_path", "current_path_hd2d_plate", 128, 128, SampleCurrentPathHd2dPixel, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("current_interior_floor", "current_interior_floor_hd2d_plate", 128, 128, SampleCurrentInteriorFloorHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_interior_wall", "current_interior_wall_hd2d_plate", 128, 128, SampleCurrentInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
@@ -7284,7 +7435,7 @@ namespace Anemora.EditorTools
                 PixelMaterial("current_stone", new Color32(68, 67, 64, 255), new Color32(95, 93, 86, 255), new Color32(43, 43, 41, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PaintedSurfaceMaterial("current_bed", "current_bed_hd2d_plate", 128, 128, SampleCurrentBedHd2dPixel, false, new Vector2(2f, 2f)),
                 PixelMaterial("current_leaf", new Color32(38, 65, 40, 255), new Color32(53, 82, 47, 255), new Color32(28, 45, 32, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
-                PixelMaterial("past_grass", new Color32(58, 106, 65, 255), new Color32(89, 139, 74, 255), new Color32(41, 82, 54, 255), PixelPattern.Grass, false, new Vector2(6f, 6f)),
+                PaintedSurfaceMaterial("past_grass", "past_grass_hd2d_plate", 128, 128, SamplePastGrassHd2dPixel, false, new Vector2(6f, 6f)),
                 PaintedSurfaceMaterial("past_path", "past_path_hd2d_plate", 128, 128, SamplePastPathHd2dPixel, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("past_wood_floor", "past_wood_floor_hd2d_plate", 128, 128, SamplePastWoodFloorHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("past_interior_wall", "past_interior_wall_hd2d_plate", 128, 128, SamplePastInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
