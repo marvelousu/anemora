@@ -195,6 +195,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFourteenthCycleHouseInteriorDetails();
             ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails();
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
+            ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -358,6 +359,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSixteenthCycleScreenshotsBatch()
         {
             CaptureHd2dSixteenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_exterior_detail_20260520");
+        }
+
+        public static void CaptureHd2dSeventeenthCycleScreenshotsBatch()
+        {
+            CaptureHd2dSeventeenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_character_contact_shadow_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -825,6 +831,77 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS sixteenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dSeventeenthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS seventeenth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(-0.28f, 0.02f, -0.42f),
+                HouseInteriorCenter + new Vector3(-0.28f, 0.12f, -0.24f),
+                new Vector3(0.18f, 1.02f, -2.00f),
+                new Vector3(0.04f, 0.10f, 0.12f),
+                outputDirectory,
+                "01_interior_niro_contact_shadow.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                ExteriorDoorExitTarget,
+                ExteriorDoorExitTarget + new Vector3(-0.08f, 0.05f, 0.16f),
+                new Vector3(0.20f, 1.02f, -1.98f),
+                new Vector3(0.08f, 0.12f, 0.10f),
+                outputDirectory,
+                "02_exterior_niro_contact_shadow.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-1.08f, 0.02f, -1.18f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.03f, 0.35f, 0.05f),
+                new Vector3(0.22f, 1.02f, -2.00f),
+                new Vector3(0.10f, 0.18f, 0.08f),
+                outputDirectory,
+                "03_library_reto_contact_shadow.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                PastLibraryPersonCueLocalPosition + new Vector3(-1.06f, 0.02f, -1.16f),
+                PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.34f, 0.02f),
+                new Vector3(0.22f, 1.00f, -1.98f),
+                new Vector3(0.08f, 0.18f, 0.08f),
+                outputDirectory,
+                "04_past_library_aria_contact_shadow.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS seventeenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureReviewScreenshot(
@@ -1537,6 +1614,12 @@ namespace Anemora.EditorTools
                 SerializedSet(ariaAnimator, "spriteRenderer", ariaRenderer);
                 SerializedSet(ariaAnimator, "frameCount", 4);
                 SerializedSet(ariaAnimator, "framesPerSecond", 2.2f);
+                CreateCharacterContactShadow(
+                    "Past_Library_Aria_ContactShadow",
+                    root,
+                    PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.035f, 0.02f),
+                    new Vector3(0.70f, 0.24f, 1f),
+                    EnsureAriaContactShadowMaterial());
                 CreateRedCubeMarkerWithOutline("Past_Library_Aria_RedCubeMarker", root, PastLibraryPersonCueLocalPosition + new Vector3(0f, 1.32f, 0f), PastLibraryTargetBookMarkerScale, Quaternion.Euler(10f, -14f, 0f), materials.RedMarker, materials.DoorwayDark, "Past.library.aria_marker");
             }
             else
@@ -1563,6 +1646,12 @@ namespace Anemora.EditorTools
                 var returnedBook = CreateReadableBookProp(root, "Current_Library_ReturnedBookOnDesk", CurrentLibraryReturnedBookLocalPosition, FaceTargetOnPlane(CurrentLibraryReturnedBookLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.48f, 0.05f, 0.28f), materials.Book, materials.SignPaint, materials.RedLight, true, "Current.library.returned_book_on_desk");
                 returnedBook.SetActive(false);
                 CreateRetoAtLibraryDesk(root, materials);
+                CreateCharacterContactShadow(
+                    "Current_Library_Reto_ContactShadow",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.035f, 0.03f),
+                    new Vector3(0.66f, 0.24f, 1f),
+                    EnsureRetoContactShadowMaterial());
             }
 
             CreateInvisibleColliderBox($"{prefix}_Library_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.85f), new Vector3(12.25f, 1.50f, 0.24f), $"{prefix}.library.front_drop_guard");
@@ -2190,13 +2279,12 @@ namespace Anemora.EditorTools
                 EnsureTimewriterPocketGlowMaterial());
             pocketGlow.AddComponent<FastVsMapMoveGlowPulse>();
             pocketGlow.SetActive(false);
-            var contactShadow = CreateQuad(
+            CreateCharacterContactShadow(
                 "FastVS_PlayerContactShadow_Niro",
                 player.transform,
-                new Vector3(0f, 0.025f, -0.02f),
-                new Vector3(0.74f, 0.34f, 1f),
+                new Vector3(0f, 0.022f, -0.02f),
+                new Vector3(0.66f, 0.24f, 1f),
                 EnsureNiroContactShadowMaterial());
-            contactShadow.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             var directional = visual.AddComponent<FastVsDirectionalSpriteAnimator>();
             SerializedSet(directional, "player", player.transform);
             SerializedSet(directional, "spriteRenderer", spriteRenderer);
@@ -5087,6 +5175,20 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows()
+        {
+            ValidateCharacterContactShadowObject("FastVS_PlayerContactShadow_Niro", "FastVS_Player_NiroHouseSlice");
+            ValidateCharacterContactShadowObject("Current_Library_Reto_ContactShadow", "Current_LibraryMap_SeparateSpace");
+            ValidateCharacterContactShadowObject("Past_Library_Aria_ContactShadow", "Past_LibraryMap_SeparateSpace");
+
+            if (FindSceneObjectIncludingInactive("FastVS_Player_NiroHouseSlice") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Reto_WritingAtDesk") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_AriaIdleAtTable") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: seventeenth-cycle contact-shadow pass must keep Niro, Reto, and Aria present.");
+            }
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -5271,6 +5373,42 @@ namespace Anemora.EditorTools
             if (renderQueue < minRenderQueue || renderQueue > maxRenderQueue)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep renderQueue in the {minRenderQueue}-{maxRenderQueue} range, but was {renderQueue}.");
+            }
+        }
+
+        private static void ValidateCharacterContactShadowObject(string objectName, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing contact-shadow object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (Quaternion.Angle(sceneObject.transform.localRotation, Quaternion.Euler(90f, 0f, 0f)) > 1.5f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay horizontal with a local X rotation near 90 degrees.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("contact_shadow", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing contact_shadow in its name.");
             }
         }
 
@@ -6274,6 +6412,13 @@ namespace Anemora.EditorTools
             animator.SetWritingImmediateForReview();
         }
 
+        private static GameObject CreateCharacterContactShadow(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
+        {
+            var shadow = CreateQuad(name, parent, localPosition, localScale, material);
+            shadow.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            return shadow;
+        }
+
         private static void CreatePaperCardParts(Transform parent, string displayName, float height, Material body, Material accent, Material face, Material label)
         {
             CreateQuad($"{displayName}_PaperBody", parent, new Vector3(0f, height * 0.52f, 0f), new Vector3(height * 0.42f, height * 0.88f, 1f), body);
@@ -6332,10 +6477,35 @@ namespace Anemora.EditorTools
 
         private static Material EnsureNiroContactShadowMaterial()
         {
-            var material = FlatMaterial("niro_contact_shadow", Color.white, true);
+            return EnsureCharacterContactShadowMaterial("niro_contact_shadow");
+        }
+
+        private static Material EnsureRetoContactShadowMaterial()
+        {
+            return EnsureCharacterContactShadowMaterial("reto_contact_shadow");
+        }
+
+        private static Material EnsureAriaContactShadowMaterial()
+        {
+            return EnsureCharacterContactShadowMaterial("aria_contact_shadow");
+        }
+
+        private static Material EnsureCharacterContactShadowMaterial(string materialId)
+        {
+            var material = FlatMaterial(materialId, Color.white, true);
             ConfigureTransparentUnlitMaterial(material, 2995);
-            var texture = EnsureNiroContactShadowTexture();
+            var texture = EnsureCharacterContactShadowTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.96f));
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.96f));
+            }
+
             return material;
         }
 
@@ -6526,20 +6696,31 @@ namespace Anemora.EditorTools
 
         private static Texture2D EnsureNiroContactShadowTexture()
         {
+            return EnsureCharacterContactShadowTexture();
+        }
+
+        private static Texture2D EnsureCharacterContactShadowTexture()
+        {
             return EnsureGeneratedTexture(
-                "niro_contact_shadow",
-                64,
-                32,
+                "character_contact_shadow",
+                96,
+                48,
                 FilterMode.Bilinear,
                 (x, y) =>
                 {
-                    var u = x / 63f;
-                    var v = y / 31f;
+                    var u = x / 95f;
+                    var v = y / 47f;
                     var dx = (u - 0.5f) / 0.5f;
                     var dy = (v - 0.5f) / 0.5f;
-                    var ellipse = Mathf.Sqrt((dx * dx * 0.92f) + (dy * dy * 2.45f));
-                    var alpha = Mathf.Clamp01(1f - ellipse);
-                    alpha = alpha * alpha * 0.46f;
+                    var ellipse = Mathf.Sqrt((dx * dx * 0.88f) + (dy * dy * 2.55f));
+                    var core = Mathf.Clamp01(1f - ellipse);
+                    var alpha = core * core * 0.34f;
+                    if (core < 0.45f)
+                    {
+                        var dither = (((x * 17) + (y * 31) + (x * y * 7)) & 7) / 7f;
+                        alpha *= Mathf.Lerp(0.72f, 1f, dither);
+                    }
+
                     return new Color(0.02f, 0.03f, 0.05f, alpha);
                 });
         }

@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v4.9 fast VS HD2D house exterior detail cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v5.0 fast VS HD2D character contact-shadow cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 256 files including INDEX.md and README.md.
-- Dated devlog records: 254 files.
-- Linked evidence files present under docs/devlog/screenshots/: 304 files.
+- Root-level Markdown coverage: 257 files including INDEX.md and README.md.
+- Dated devlog records: 255 files.
+- Linked evidence files present under docs/devlog/screenshots/: 308 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 17 |
+| 2026-05-20 | 18 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_book_palette_cycle.md](2026-05-20_fast_vs_hd2d_book_palette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Book Palette Cycle |
 | [2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_house_exterior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md](2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Contact Shadow Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_close_review_cycle.md](2026-05-20_fast_vs_hd2d_close_review_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Close Review Cycle |
