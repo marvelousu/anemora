@@ -138,6 +138,7 @@ namespace Anemora.EditorTools
             var camera = CreateCamera(currentRoot);
             CreateLighting();
             CreateHd2dGlobalVolume();
+            CreateHd2dAtmosphere(currentRoot, pastRoot);
             CreateAudio(currentRoot, areaVisibility);
             var player = CreateNiroPlayer(currentRoot, camera, materials);
             var controller = CreateController(camera, currentRoot, pastRoot, player, materials);
@@ -184,6 +185,7 @@ namespace Anemora.EditorTools
             ValidateDirectionalSpriteAnimator();
             ValidatePlayerSpritePresentation();
             ValidateFastVsHd2dFirstCycleVisuals();
+            ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
 
@@ -276,6 +278,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dFirstCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_first_cycle_20260520");
+        }
+
+        public static void CaptureHd2dSecondCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_second_cycle_20260520");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -1581,6 +1588,190 @@ namespace Anemora.EditorTools
             }
 
             volume.sharedProfile = profile;
+        }
+
+        private static void CreateHd2dAtmosphere(Transform currentRoot, Transform pastRoot)
+        {
+            var material = EnsureHd2dAtmosphereParticleMaterial();
+
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_CurrentInterior_DustMotes",
+                HouseInteriorCenter + new Vector3(0f, 1.25f, 0.20f),
+                new Vector3(4.4f, 0.85f, 2.6f),
+                new Color(0.90f, 0.86f, 0.78f, 0.16f),
+                60,
+                12f,
+                10.5f,
+                6f,
+                0.03f,
+                0.045f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_CurrentLibrary_DustMotes",
+                LibraryVsCenter + new Vector3(0f, 1.55f, 2.75f),
+                new Vector3(6.4f, 1.10f, 4.2f),
+                new Color(0.90f, 0.88f, 0.82f, 0.15f),
+                64,
+                12f,
+                11f,
+                5.5f,
+                0.035f,
+                0.042f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_CurrentExterior_DustDrift",
+                HouseExteriorCenter + new Vector3(0f, 1.20f, 0.55f),
+                new Vector3(5.8f, 1.30f, 4.8f),
+                new Color(0.86f, 0.82f, 0.74f, 0.13f),
+                48,
+                10f,
+                8.5f,
+                4.5f,
+                0.08f,
+                0.060f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_CurrentPlaza_DustDrift",
+                CentralPlazaVsCenter + new Vector3(0f, 1.40f, 3.35f),
+                new Vector3(7.2f, 1.50f, 5.0f),
+                new Color(0.88f, 0.84f, 0.76f, 0.12f),
+                52,
+                10f,
+                9f,
+                3.5f,
+                0.09f,
+                0.070f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                pastRoot,
+                "FastVS_HD2D_PastInterior_WarmMotes",
+                HouseInteriorCenter + new Vector3(0f, 1.25f, 0.38f),
+                new Vector3(4.4f, 0.85f, 2.6f),
+                new Color(0.96f, 0.82f, 0.62f, 0.18f),
+                56,
+                12f,
+                10f,
+                6f,
+                0.04f,
+                0.050f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                pastRoot,
+                "FastVS_HD2D_PastLibrary_WarmMotes",
+                LibraryVsCenter + new Vector3(0f, 1.55f, 3.10f),
+                new Vector3(6.4f, 1.10f, 4.2f),
+                new Color(0.96f, 0.84f, 0.58f, 0.17f),
+                60,
+                12f,
+                11f,
+                5f,
+                0.04f,
+                0.050f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                pastRoot,
+                "FastVS_HD2D_PastExterior_MemoryDrift",
+                HouseExteriorCenter + new Vector3(0f, 1.20f, 0.45f),
+                new Vector3(5.8f, 1.30f, 4.8f),
+                new Color(0.95f, 0.72f, 0.52f, 0.14f),
+                44,
+                10f,
+                8f,
+                4f,
+                0.08f,
+                0.065f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateAtmosphereParticleSystem(
+                pastRoot,
+                "FastVS_HD2D_PastPlaza_MemoryDrift",
+                CentralPlazaVsCenter + new Vector3(0f, 1.40f, 3.95f),
+                new Vector3(7.2f, 1.50f, 5.0f),
+                new Color(0.92f, 0.76f, 0.58f, 0.13f),
+                46,
+                10f,
+                9f,
+                3.5f,
+                0.09f,
+                0.075f,
+                ParticleSystemSimulationSpace.World,
+                material);
+        }
+
+        private static void CreateAtmosphereParticleSystem(
+            Transform parent,
+            string name,
+            Vector3 localPosition,
+            Vector3 boxSize,
+            Color startColor,
+            int maxParticles,
+            float duration,
+            float lifetime,
+            float emissionRate,
+            float startSpeed,
+            float startSize,
+            ParticleSystemSimulationSpace simulationSpace,
+            Material material)
+        {
+            var particleObject = new GameObject(name, typeof(ParticleSystem));
+            particleObject.transform.SetParent(parent, false);
+            particleObject.transform.localPosition = localPosition;
+            particleObject.transform.localRotation = Quaternion.identity;
+            particleObject.transform.localScale = Vector3.one;
+
+            var system = particleObject.GetComponent<ParticleSystem>();
+            var main = system.main;
+            main.loop = true;
+            main.prewarm = true;
+            main.playOnAwake = true;
+            main.duration = duration;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(lifetime);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(startSpeed);
+            main.startSize = new ParticleSystem.MinMaxCurve(startSize);
+            main.startColor = new ParticleSystem.MinMaxGradient(startColor);
+            main.maxParticles = maxParticles;
+            main.gravityModifier = 0f;
+            main.simulationSpace = simulationSpace;
+            main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
+            main.scalingMode = ParticleSystemScalingMode.Local;
+            main.stopAction = ParticleSystemStopAction.None;
+
+            var emission = system.emission;
+            emission.enabled = true;
+            emission.rateOverTime = new ParticleSystem.MinMaxCurve(emissionRate);
+
+            var shape = system.shape;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = boxSize;
+            shape.position = Vector3.zero;
+            shape.rotation = Vector3.zero;
+            shape.randomDirectionAmount = 0.30f;
+
+            var renderer = particleObject.GetComponent<ParticleSystemRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.renderMode = ParticleSystemRenderMode.Billboard;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.alignment = ParticleSystemRenderSpace.View;
+            renderer.sortingOrder = 0;
         }
 
         private static void CreateAudio(Transform currentRoot, FastVsHouseAreaVisibility areaVisibility)
@@ -3669,6 +3860,61 @@ namespace Anemora.EditorTools
             ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat");
         }
 
+        private static void ValidateFastVsHd2dSecondCycleAtmosphere()
+        {
+            var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_CurrentInterior_DustMotes", CurrentSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_CurrentLibrary_DustMotes", CurrentSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_CurrentExterior_DustDrift", CurrentSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_CurrentPlaza_DustDrift", CurrentSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_PastInterior_WarmMotes", OtherTimeSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_PastLibrary_WarmMotes", OtherTimeSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_PastExterior_MemoryDrift", OtherTimeSpaceRenderLayer, atmosphereMaterial);
+            ValidateAtmosphereParticleSystem("FastVS_HD2D_PastPlaza_MemoryDrift", OtherTimeSpaceRenderLayer, atmosphereMaterial);
+        }
+
+        private static void ValidateAtmosphereParticleSystem(string objectName, int expectedLayer, Material expectedMaterial)
+        {
+            var atmosphere = FindSceneObjectIncludingInactive(objectName);
+            if (atmosphere == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing atmosphere object {objectName}.");
+            }
+
+            var system = atmosphere.GetComponent<ParticleSystem>();
+            var renderer = atmosphere.GetComponent<ParticleSystemRenderer>();
+            if (system == null || renderer == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have ParticleSystem and ParticleSystemRenderer components.");
+            }
+
+            if (atmosphere.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be on layer {expectedLayer}, but was {atmosphere.layer}.");
+            }
+
+            var main = system.main;
+            var emission = system.emission;
+            if (main.maxParticles > 80 ||
+                !main.loop ||
+                !main.prewarm ||
+                main.duration <= 0f ||
+                main.startLifetime.constant <= 0f ||
+                main.startSpeed.constant <= 0f ||
+                main.startSize.constant <= 0f ||
+                emission.rateOverTime.constant <= 0f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be a looping prewarmed atmosphere emitter with nonzero timing values and maxParticles <= 80.");
+            }
+
+            if (renderer.sharedMaterial != expectedMaterial ||
+                renderer.shadowCastingMode != ShadowCastingMode.Off ||
+                renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the generated atmosphere material with shadows disabled.");
+            }
+        }
+
         private static void ValidateMaterialSmoothness(string materialPath)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -4418,6 +4664,46 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material EnsureHd2dAtmosphereParticleMaterial()
+        {
+            var path = $"{MaterialDirectory}/FastVS_House_hd2d_atmosphere_particle.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            var shader = Shader.Find("Universal Render Pipeline/Particles/Unlit");
+            if (shader == null)
+            {
+                shader = Shader.Find("Universal Render Pipeline/Unlit");
+            }
+
+            if (shader == null)
+            {
+                throw new InvalidOperationException("Atmosphere particle shader not found.");
+            }
+
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+
+            material.shader = shader;
+            material.doubleSidedGI = true;
+            ConfigureTransparentParticleMaterial(material, 3000);
+            AssignMaterialTexture(material, EnsureHd2dAtmosphereParticleTexture(), Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.92f));
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.92f));
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
         private static Material EnsureTimewriterPocketGlowMaterial()
         {
             var material = FlatMaterial("timewriter_pocket_yellow_glow", Color.white, true);
@@ -4438,10 +4724,29 @@ namespace Anemora.EditorTools
 
         private static void ConfigureTransparentUnlitMaterial(Material material, int renderQueue)
         {
-            var shader = Shader.Find("Universal Render Pipeline/Unlit");
+            ConfigureTransparentMaterial(material, renderQueue, "Universal Render Pipeline/Unlit");
+        }
+
+        private static void ConfigureTransparentParticleMaterial(Material material, int renderQueue)
+        {
+            ConfigureTransparentMaterial(material, renderQueue, "Universal Render Pipeline/Particles/Unlit", "Universal Render Pipeline/Unlit");
+        }
+
+        private static void ConfigureTransparentMaterial(Material material, int renderQueue, params string[] shaderNames)
+        {
+            Shader shader = null;
+            foreach (var shaderName in shaderNames)
+            {
+                shader = Shader.Find(shaderName);
+                if (shader != null)
+                {
+                    break;
+                }
+            }
+
             if (shader == null)
             {
-                throw new InvalidOperationException("Required shader not found: Universal Render Pipeline/Unlit");
+                throw new InvalidOperationException($"Required shader not found: {string.Join(", ", shaderNames)}");
             }
 
             material.shader = shader;
@@ -4490,6 +4795,25 @@ namespace Anemora.EditorTools
             material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             material.renderQueue = renderQueue;
             EditorUtility.SetDirty(material);
+        }
+
+        private static Texture2D EnsureHd2dAtmosphereParticleTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_atmosphere_particle_soft",
+                64,
+                64,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var centeredX = ((x + 0.5f) / 64f) * 2f - 1f;
+                    var centeredY = ((y + 0.5f) / 64f) * 2f - 1f;
+                    var distance = Mathf.Sqrt((centeredX * centeredX) + (centeredY * centeredY));
+                    var core = Mathf.Clamp01(1f - distance);
+                    var alpha = core * core * 0.95f;
+                    var tone = 0.96f + (core * 0.04f);
+                    return new Color(tone, tone, tone, alpha);
+                });
         }
 
         private static void AssignMaterialTexture(Material material, Texture2D texture, Vector2 scale)
