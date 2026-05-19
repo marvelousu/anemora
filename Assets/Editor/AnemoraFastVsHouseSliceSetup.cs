@@ -303,6 +303,112 @@ namespace Anemora.EditorTools
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_object_details_20260520");
         }
 
+        public static void CaptureHd2dCloseReviewScreenshotsBatch()
+        {
+            const string outputDirectory = "docs/devlog/screenshots/fast_vs_hd2d_close_review_20260520";
+
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS close-review screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(-2.95f, 0.02f, -1.80f),
+                HouseInteriorCenter + new Vector3(0.55f, 0.58f, -0.68f),
+                new Vector3(0f, 1.10f, -2.55f),
+                new Vector3(0f, 0.08f, 0.10f),
+                outputDirectory,
+                "01_house_interior_bed_book_close.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-3.40f, 0.02f, 0.55f),
+                HouseExteriorCenter + new Vector3(-1.05f, 0.85f, -1.45f),
+                new Vector3(0f, 1.22f, -2.12f),
+                new Vector3(0f, 0.18f, 0.22f),
+                outputDirectory,
+                "02_house_exterior_door_close.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-2.10f, 0.02f, 5.15f),
+                CentralPlazaVsCenter + new Vector3(0f, 1.10f, 7.78f),
+                new Vector3(0f, 1.30f, -2.30f),
+                new Vector3(0f, 0.16f, 0.22f),
+                outputDirectory,
+                "03_plaza_library_door_current_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-2.10f, 0.02f, 5.15f),
+                CentralPlazaVsCenter + new Vector3(-2.35f, 1.42f, 7.82f),
+                new Vector3(0f, 0.76f, -2.35f),
+                new Vector3(0f, 0.02f, 0.18f),
+                outputDirectory,
+                "04_plaza_library_windows_past_close.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-3.55f, 0.02f, -1.05f),
+                RetoLibraryDeskLocalPosition + new Vector3(-0.30f, 0.42f, 0.10f),
+                new Vector3(0f, 1.08f, -1.82f),
+                new Vector3(0f, 0.14f, 0.18f),
+                outputDirectory,
+                "05_library_reto_book_close.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-2.65f, 0.02f, -2.15f),
+                LibraryVsCenter + new Vector3(2.55f, 0.22f, -2.50f),
+                new Vector3(0f, 0.82f, -1.38f),
+                new Vector3(0f, 0.04f, 0.06f),
+                outputDirectory,
+                "06_library_rubble_current_close.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_house_interior_bed_book_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_house_exterior_door_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_plaza_library_door_current_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_plaza_library_windows_past_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "05_library_reto_book_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "06_library_rubble_current_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS close-review screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -386,6 +492,27 @@ namespace Anemora.EditorTools
             SaveCameraPng(camera, outputPath);
         }
 
+        private static void CaptureCloseReviewScreenshot(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            Vector3 anchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputDirectory,
+            string fileName)
+        {
+            visibility.SetActiveAreaForReview(area);
+            controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(anchorLocalPosition), cameraOffset, lookOffset);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
+            ValidateCloseReviewOutputExists(outputDirectory, fileName);
+        }
+
         private static void CaptureOtherTimeReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -408,6 +535,51 @@ namespace Anemora.EditorTools
             camera.cullingMask = previousMask;
             controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
             guide.ApplyActiveTimeIsolationForReview();
+        }
+
+        private static void CaptureCloseOtherTimeReviewScreenshot(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            Vector3 anchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputDirectory,
+            string fileName)
+        {
+            visibility.SetActiveAreaForReview(area);
+            controller.ForcePlayerOtherTimeLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            var previousMask = camera.cullingMask;
+            var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+            var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = (previousMask & ~currentBit) | otherBit | playerBit;
+            PositionCloseReviewCamera(camera, controller.OtherTimeSpaceRootForReview.TransformPoint(anchorLocalPosition), cameraOffset, lookOffset);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
+            ValidateCloseReviewOutputExists(outputDirectory, fileName);
+            camera.cullingMask = previousMask;
+            controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+        }
+
+        private static void PositionCloseReviewCamera(Camera camera, Vector3 anchor, Vector3 offset, Vector3 lookOffset)
+        {
+            var position = anchor + offset;
+            var lookAt = anchor + lookOffset;
+            camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
+        }
+
+        private static void ValidateCloseReviewOutputExists(string outputDirectory, string fileName)
+        {
+            var outputPath = Path.Combine(outputDirectory, fileName);
+            if (!File.Exists(outputPath))
+            {
+                throw new InvalidOperationException($"Fast VS close-review screenshot capture failed: missing output file {outputPath}");
+            }
         }
 
         private static void PositionReviewCamera(Camera camera, Vector3 anchor)
