@@ -2,11 +2,17 @@
 
 > HD-2D 探索アクション・アドベンチャー。衰退する街で「時の窓」を開き、過去で取った小さな行動が現在の風景を変える、短い循環の体験を目指しています。
 
-> 2026-05-18 時点の Fast VS 公開ベースラインは `vs-public-2026-05-18` です。Chapter 1 のニロの家、外、広場、図書館、時の窓 V24、レトの本イベントまでを確認できます。
+> 2026-05-18 時点の Fast VS 公開ベースラインは `vs-public-2026-05-18` です。Chapter 1 のニロの家、外、広場、図書館、時の窓、レトの本イベントまでを確認できます。
 
-## Fast VS を遊ぶ
+## Fast VS を遊ぶ（Windows）
 
-Windows ビルドを受け取っている場合は、展開したフォルダ内の `Anemora_FastVS_HouseSlice.exe` を実行してください。`.exe` だけを別の場所へ移動せず、同じ階層の `Anemora_FastVS_HouseSlice_Data/`、`UnityPlayer.dll`、`MonoBleedingEdge/`、`D3D12/` と一緒に置いたまま起動します。
+最新のプレイ可能ビルドは GitHub の Releases から入手できます。
+
+▶ **[最新リリースをダウンロード](https://github.com/marvelousu/anemora/releases/latest)**
+
+zip をダウンロードして展開し、フォルダ内の `Anemora_FastVS_HouseSlice.exe` を実行します。署名なしビルドのため、Windows SmartScreen の警告が出たら「詳細情報」→「実行」で起動できます。
+
+配布した Windows ビルドを受け取っている場合も、展開したフォルダ内の `Anemora_FastVS_HouseSlice.exe` を実行してください。`.exe` だけを別の場所へ移動せず、同じ階層の `Anemora_FastVS_HouseSlice_Data/`、`UnityPlayer.dll`、`MonoBleedingEdge/`、`D3D12/` と一緒に置いたまま起動します。
 
 ローカルのビルド環境で直接確認する場合のパスは次のとおりです。
 
@@ -20,7 +26,7 @@ Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe
 Builds/Anemora_FastVS_HouseSlice_20260518.zip
 ```
 
-`Builds/` は Git の管理対象外です。GitHub で公開する場合は、この zip をリリースアセットとして添付してください。
+`Builds/` は Git の管理対象外のため、リポジトリのクローンに動くビルドは含まれません。配布用ビルドは [Releases](https://github.com/marvelousu/anemora/releases/latest) で公開しています。
 
 ### 操作
 
@@ -78,18 +84,18 @@ Builds/Anemora_FastVS_HouseSlice_20260518.zip
 | 2D アセットパイプライン | PixelLab + Aseprite |
 | 3D アセットパイプライン | Meshy v6 + Blender 4.5 LTS |
 | オーディオパイプライン | AIVA + Suno + ElevenLabs SFX + Stable Audio + Studio One |
-| ローカライズ | TMP SDF Atlas（日本語: 美咲ゴシック / 英語: Press Start 2P）+ LocalizationSettings |
+| ローカライズ | TMP SDF Atlas（日本語: DotGothic16 / 英語: Press Start 2P）+ LocalizationSettings |
 | ソース管理 | Git + GitHub（feature ごとに worktree を切るワークフロー） |
 
 ## 技術的な要点
 
-Fast VS は、旧 `Anemora_Main` の統合状態とは別に、V24 の時の窓挙動をベースに最短で遊べる形へまとめた公開用スライスです。
+Fast VS は、旧 `Anemora_Main` の統合状態とは別に、時の窓の挙動をベースに最短で遊べる形へまとめた公開用スライスです。
 
 | 領域 | 参照先 |
 |---|---|
 | Fast VS 生成シーン | `Assets/Scenes/Anemora_FastVS_HouseSlice.unity` |
 | シーン生成 / ビルド検証 | `Assets/Editor/AnemoraFastVsHouseSliceSetup.cs` |
-| 時の窓 V24 コントローラ | `Assets/Scripts/TimeManagement/TimeWindowPairedSpacePortalController.cs` |
+| 時の窓コントローラ | `Assets/Scripts/TimeManagement/TimeWindowPairedSpacePortalController.cs` |
 | Fast VS のルート / マップ切替 | `Assets/Scripts/FastVS/FastVsHouseAreaVisibility.cs`、`Assets/Scripts/FastVS/FastVsAreaDoorTransition.cs` |
 | Fast VS ストーリーフロー | `Assets/Scripts/FastVS/FastVsStoryFlowController.cs` |
 | Devlog 索引 | [`docs/devlog/INDEX.md`](docs/devlog/INDEX.md) |
@@ -137,11 +143,11 @@ Editor 上で Fast VS を確認したい場合の手順:
 - **コード**: 既定で All Rights Reserved。Stage 4 入口で公開方針と合わせて再評価予定。この README はオープンソースライセンスを付与しません。
 - **第三者アセット**: 個別ライセンスは [`docs/legal/asset_ledger.md`](docs/legal/asset_ledger.md) を参照。
 - **AI 生成アセット**: 各ツールの有料プランを前提に生成し、商用利用可否と公開可否を `asset_ledger.md` に記録。
-- **フォント**: 美咲ゴシック（フリー使用許諾）、Press Start 2P（SIL Open Font License 1.1）。
+- **フォント**: DotGothic16（SIL Open Font License 1.1）、Press Start 2P（SIL Open Font License 1.1）。
 
 ## ロードマップ
 
-- **Fast VS 公開ベースライン**（2026-05-18）: ニロの家から図書館、レトの本イベント、時の窓 V24 操作までの公開確認版。
+- **Fast VS 公開ベースライン**（2026-05-18）: ニロの家から図書館、レトの本イベント、時の窓操作までの公開確認版。
 - **VS 後のポリッシュ**: グラフィックのポリッシュ、Steam Early Access 提出準備、公開向けドキュメント / ストアアセットの整備。
 - **Stage 5 以降**: Steam Early Access のフィードバック反映とフル版リリース計画。
 

@@ -14,16 +14,19 @@ Anemora 自身のコードおよびアセットのライセンスは、既定で
 
 ## 2. 第三者フォント
 
-### 2.1 美咲ゴシック
+### 2.1 DotGothic16
 
-- **名称**: 美咲ゴシック (`misaki_gothic.ttf`)
-- **ライセンス**: フリーソフトウェアライセンス。同梱の美咲フォント付属文書により、商用・非商用を問わず、利用・複製・再配布・改変が無保証で許諾されています。
-- **出典**: https://littlelimit.net/misaki.htm
-- **同梱ファイル**: `Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf`
+- **名称**: DotGothic16 (`DotGothic16-Regular.ttf`)
+- **ライセンス**: SIL Open Font License 1.1
+- **出典**:
+  - https://fonts.google.com/specimen/DotGothic16
+  - https://github.com/google/fonts/tree/main/ofl/dotgothic16
+- **同梱ファイル**: `Assets/UI/Localization/Fonts/ThirdParty/DotGothic16-Regular.ttf`
+- **ライセンスファイル**: `Assets/UI/Localization/Fonts/ThirdParty/DotGothic16_OFL.txt`
 - **派生 TMP アセット**:
   - `Assets/UI/Localization/Fonts/Anemora_JP.asset`
   - `Assets/UI/Localization/Fonts/Anemora_JP_Atlas.asset`
-- **ライセンス本文の状況**: 現時点で `Assets/UI/Localization/Fonts/ThirdParty/` に美咲フォントのライセンス本文ファイルはコミットされていません。ダウンロード元アーカイブには `misaki.txt` と `readme.txt` が含まれ、確認したライセンス出典は `docs/legal/asset_ledger.md` に記録しています。TTF を同梱したまま本リポジトリを公開する場合は、フォントと併せて美咲フォントのライセンス本文を追加するか、本通知に正確なライセンス出典を反映し続けてください。
+- **備考**: 2026-05-18 に JP アトラスのソースフォントを DotGothic16 に変更しました（`Assets/Editor/AnemoraTmpJapaneseAtlasBuilder.cs`）。`Anemora_JP.asset` / `Anemora_JP_Atlas.asset` の再生成は Unity Editor 上で実施予定で、再生成が完了するまではアトラス実体が旧フォント由来のまま残ります。
 
 ### 2.2 Press Start 2P
 
@@ -37,6 +40,14 @@ Anemora 自身のコードおよびアセットのライセンスは、既定で
 - **派生 TMP アセット**:
   - `Assets/UI/Localization/Fonts/Anemora_EN.asset`
   - `Assets/UI/Localization/Fonts/Anemora_EN_Atlas.asset`
+
+### 2.3 美咲ゴシック（同梱・現在 JP アトラス未使用）
+
+- **名称**: 美咲ゴシック (`misaki_gothic.ttf`)
+- **ライセンス**: フリーソフトウェアライセンス。同梱の美咲フォント付属文書により、商用・非商用を問わず、利用・複製・再配布・改変が無保証で許諾されています。
+- **出典**: https://littlelimit.net/misaki.htm
+- **同梱ファイル**: `Assets/UI/Localization/Fonts/ThirdParty/misaki_gothic.ttf`（リポジトリに同梱のまま）
+- **状況**: 2026-05-18 まで JP TMP アトラスのソースフォントとして暫定採用していましたが、現在は DotGothic16（§2.1）に置き換えています。TTF はリポジトリに残置していますが、現行の JP アトラス生成元ではありません。ライセンス本文の同梱状況は従来どおり `docs/legal/asset_ledger.md` に記録しています。
 
 ## 3. 第三者 Unity パッケージ
 

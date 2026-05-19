@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v3.2 Fast VS HD2D local shape pass (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v3.1 recovered cross-worktree + notes devlog index (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 238 files including INDEX.md and README.md.
-- Dated devlog records: 236 files.
-- Linked evidence files present under docs/devlog/screenshots/: 173 files.
+- Root-level Markdown coverage: 239 files including INDEX.md and README.md.
+- Dated devlog records: 237 files.
+- Linked evidence files present under docs/devlog/screenshots/: 170 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -29,7 +29,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-16 | 1 |
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
-| 2026-05-19 | 2 |
+| 2026-05-19 | 3 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -37,8 +37,9 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
-| [2026-05-19_mcp_foundation_carry_forward.md](2026-05-19_mcp_foundation_carry_forward.md) | Tooling / Repo | 2026-05-19 MCP Foundation Carry-Forward |
+| [2026-05-19_fast_vs_guidance_mainbase_validation.md](2026-05-19_fast_vs_guidance_mainbase_validation.md) | Fast VS | 2026-05-19 Fast VS Guidance Mainbase Validation |
 | [2026-05-19_fast_vs_hd2d_local_shape_pass.md](2026-05-19_fast_vs_hd2d_local_shape_pass.md) | Fast VS | 2026-05-19 Fast VS HD2D Local Shape Pass |
+| [2026-05-19_mcp_foundation_carry_forward.md](2026-05-19_mcp_foundation_carry_forward.md) | Tooling / Repo | 2026-05-19 MCP Foundation Carry-Forward |
 
 ### 2026-05-18
 
@@ -91,7 +92,6 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-18_fast_vs_ui_cue_library_home_polish.md](2026-05-18_fast_vs_ui_cue_library_home_polish.md) | Fast VS | 2026-05-18 Fast VS UI Cue / Library / Home Polish |
 | [2026-05-18_fast_vs_ui_timewindow_unlock_aria_followup.md](2026-05-18_fast_vs_ui_timewindow_unlock_aria_followup.md) | Fast VS | 2026-05-18 Fast VS UI / Time Window Unlock / Aria Follow-up |
 | [2026-05-18_public_repo_hygiene_scan.md](2026-05-18_public_repo_hygiene_scan.md) | Tooling / Repo | Public Repo Hygiene Scan |
-| [2026-05-18_unity_mcp_foundation.md](2026-05-18_unity_mcp_foundation.md) | Tooling / Repo | 2026-05-18 Unity MCP 基盤整備 (Synaptic Code 調査からの派生) |
 
 ### 2026-05-17
 
@@ -350,6 +350,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 - 2026-05-13 still has no source-backed root-level `docs/devlog/YYYY-MM-DD_*.md` record or notes-side primary record beyond role-split policy mentions.
 - 2026-05-15 and 2026-05-16 had no surviving root-level devlog file, but were retroactively reconstructed from notes-side public-preview handover/procedure records on 2026-05-19.
 - `2026-05-09_stage4_chapter1_map_dq3r_pass8_reception.md` was referenced by the surviving Pass 8 staging prompt but absent as a file, and was retroactively reconstructed on 2026-05-19.
+- `2026-05-18_unity_mcp_foundation.md` is intentionally not present in `main` because it records the MCP foundation branch state rather than the `main` branch state.
 - Evidence copying was limited to screenshot/report files directly linked from the recovered Markdown records, rather than every image artifact in every worktree.
 - The following linked evidence paths were mentioned by recovered records but the files were not present in any recovered worktree/ref source checked:
   - `docs/devlog/screenshots/stage4_chapter1_map_unity_atlas_v3_v4_compare_sheet.png`
@@ -359,6 +360,6 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
-| v3.2 | 2026-05-19 | Added Fast VS HD2D local shape pass devlog and 10 PNG review screenshots. |
+| v3.2 | 2026-05-19 | Added work-branch Fast VS HD2D/MCP/guidance records and preserved the left-bottom Time Window hint record after the public-main merge. |
 | v3.1 | 2026-05-19 | Added notes-based retroactive devlogs for Pass 8 reception and Chapter 1 TimeWindow/public-preview recovery on 2026-05-14 through 2026-05-16. |
 | v3.0 | 2026-05-18 | Rebuilt index after recovering missing 2026-05-07 through 2026-05-18 devlogs across local worktrees, refs, and fetched remotes. |

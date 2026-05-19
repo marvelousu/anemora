@@ -108,11 +108,11 @@ namespace Anemora.FastVS
         public void ShowObjective(string fullText)
         {
             EnsureUi();
-            SetPersistentObjective(fullText);
             dialoguePanel.gameObject.SetActive(false);
             guidePanel.gameObject.SetActive(false);
             questionRoot.gameObject.SetActive(false);
             brushRoot.gameObject.SetActive(false);
+            SetPersistentObjective(fullText);
         }
 
         public void ShowDoorBeat(Transform player, Camera storyCamera, string speaker, string fullText, string advanceHint, bool showQuestion, bool showBrushIcon)
@@ -145,9 +145,9 @@ namespace Anemora.FastVS
             EnsureUi();
             dialoguePanel.gameObject.SetActive(false);
             guidePanel.gameObject.SetActive(false);
-            ApplyPersistentObjectiveVisibility();
             questionRoot.gameObject.SetActive(false);
             brushRoot.gameObject.SetActive(false);
+            ApplyPersistentObjectiveVisibility();
             activeFullText = string.Empty;
             visibleText = string.Empty;
             typing = false;

@@ -10,6 +10,7 @@ public static class AnemoraTmpJapaneseAtlasBuilder
     private const string SourceFontPath = "Assets/UI/Localization/Fonts/ThirdParty/DotGothic16-Regular.ttf";
     private const string FontAssetPath = "Assets/UI/Localization/Fonts/Anemora_JP.asset";
     private const string AtlasAssetPath = "Assets/UI/Localization/Fonts/Anemora_JP_Atlas.asset";
+    private const string MaterialAssetPath = "Assets/UI/Localization/Fonts/Anemora_JP_DistanceField.mat";
 
     [MenuItem("Anemora/Build TMP Japanese Atlas v0")]
     public static void Build()
@@ -54,12 +55,49 @@ public static class AnemoraTmpJapaneseAtlasBuilder
         AssetDatabase.CreateAsset(atlasCopy, AtlasAssetPath);
 
         fontAsset.atlasTextures = new[] { atlasCopy };
+        var material = EnsureFontMaterial(atlasCopy);
+        AssignFontMaterial(fontAsset, material);
         EditorUtility.SetDirty(fontAsset);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
         Debug.Log(
             $"Anemora TMP JP Atlas built. requested={characters.Length}, missing={missingCharacters.Length}, atlas={atlasCopy.width}x{atlasCopy.height}, format={atlasCopy.format}");
+    }
+
+    private static Material EnsureFontMaterial(Texture atlasTexture)
+    {
+        var material = AssetDatabase.LoadAssetAtPath<Material>(MaterialAssetPath);
+        if (material == null)
+        {
+            var shader = Shader.Find("TextMeshPro/Mobile/Distance Field") ??
+                Shader.Find("TextMeshPro/Distance Field") ??
+                Shader.Find("Hidden/TMP/Internal/Editor/Distance Field SSD");
+            if (shader == null)
+            {
+                throw new System.InvalidOperationException("TextMeshPro distance field shader not found.");
+            }
+
+            material = new Material(shader)
+            {
+                name = "Anemora_JP_DistanceField"
+            };
+            AssetDatabase.CreateAsset(material, MaterialAssetPath);
+        }
+
+        material.SetTexture("_MainTex", atlasTexture);
+        material.SetFloat("_TextureWidth", atlasTexture.width);
+        material.SetFloat("_TextureHeight", atlasTexture.height);
+        EditorUtility.SetDirty(material);
+        return material;
+    }
+
+    private static void AssignFontMaterial(TMP_FontAsset fontAsset, Material material)
+    {
+        var serializedFont = new SerializedObject(fontAsset);
+        var materialProperty = serializedFont.FindProperty("m_Material");
+        materialProperty.objectReferenceValue = material;
+        serializedFont.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static void EnsureTmpSettings()
@@ -111,11 +149,13 @@ public static class AnemoraTmpJapaneseAtlasBuilder
     public static string BuildJapaneseCharacterSet()
     {
         var set = new SortedSet<char>();
+        AddRange(set, 0x0020, 0x007E); // Basic ASCII / UI shortcuts
         AddRange(set, 0x3041, 0x3096); // Hiragana
         AddRange(set, 0x30A1, 0x30FA); // Katakana
         AddRange(set, 0xFF01, 0xFF5E); // Full-width ASCII forms
         AddRange(set, 0x3000, 0x303F); // Japanese punctuation
         AddRange(set, 0x2010, 0x203B); // Common dashes, quotes, ellipsis, reference mark
+        set.Add('\u25BD'); // TMP advance marker
 
         var shiftJis = Encoding.GetEncoding(932);
         for (var row = 16; row <= 84; row++)

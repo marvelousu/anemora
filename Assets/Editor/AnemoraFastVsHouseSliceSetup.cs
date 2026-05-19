@@ -1424,7 +1424,7 @@ namespace Anemora.EditorTools
             SerializedSet(guide, "title", "Anemora Fast VS Chapter 1 route - house / plaza / library");
             SerializedSet(guide, "currentStateLabel", "CURRENT / Chapter 1 route");
             SerializedSet(guide, "otherStateLabel", "PAST / Chapter 1 route");
-            SerializedSet(guide, "controlHint", FastVsStoryFlowController.TimeWindowCreationHintTextForReview);
+            SerializedSet(guide, "controlHint", "Walk into glowing floor pads to switch maps along Interior > House Exterior > Central Plaza > Library. Left-drag creates the V24 Time Window; close it after returning to current time.");
             SerializedSet(guide, "showDebugOverlay", false);
             return guide;
         }
@@ -3618,6 +3618,34 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: story validation needs the portal controller and area visibility controller.");
             }
 
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
+            controller.ForcePlayerCurrentLocalForReview(HouseInteriorPlayerStart);
+
+            void ValidateVisibleObjective(string expected, string context)
+            {
+                ValidateVisibleObjectiveAny(context, expected);
+            }
+
+            void ValidateVisibleObjectiveAny(string context, params string[] expected)
+            {
+                story.RefreshPresentationForReview();
+                var matched = false;
+                foreach (var candidate in expected)
+                {
+                    if (story.RuntimeHudObjectiveTextForReview == candidate)
+                    {
+                        matched = true;
+                        break;
+                    }
+                }
+
+                if (!matched || !story.RuntimeHudObjectivePanelActiveForReview)
+                {
+                    throw new InvalidOperationException(
+                        $"House slice validation failed: lower-left HUD objective mismatch at {context}. expected='{string.Join("' or '", expected)}', actual='{story.RuntimeHudObjectiveTextForReview}', active={story.RuntimeHudObjectivePanelActiveForReview}, activeText='{story.RuntimeHudActiveTextForReview}', question={story.RuntimeHudQuestionActiveForReview}, brush={story.RuntimeHudBrushActiveForReview}");
+                }
+            }
+
             if (story.UsesTmpDialoguePresenterForReview &&
                 story.DialoguePresenterFontNameForReview.IndexOf("Anemora_JP", StringComparison.OrdinalIgnoreCase) < 0)
             {
@@ -3638,11 +3666,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Time Window input and current-side cues must be locked before the Reto event unlocks them.");
             }
 
-            story.RefreshPresentationForReview();
-            if (story.RuntimeHudObjectiveTextForReview != string.Empty)
-            {
-                throw new InvalidOperationException("House slice validation failed: lower-left HUD must stay empty until the Time Window is unlocked.");
-            }
+            ValidateVisibleObjectiveAny("start route objective", "ベッドから起きる。", "外へ出る。", "ベッドから起きた。外へ出る。");
 
             story.TriggerOpeningWakeForReview();
             story.RefreshPresentationForReview();
@@ -3650,10 +3674,25 @@ namespace Anemora.EditorTools
                 story.CurrentBeatIdForReview != "opening.house_interior" ||
                 guide.MovementFrozenForReview ||
                 story.CurrentLineTextForReview != string.Empty ||
-                story.RuntimeHudActiveTextForReview != string.Empty)
+                story.RuntimeHudActiveTextForReview != string.Empty ||
+                (story.RuntimeHudObjectiveTextForReview != "外へ出る。" &&
+                 story.RuntimeHudObjectiveTextForReview != "ベッドから起きた。外へ出る。") ||
+                !story.RuntimeHudObjectivePanelActiveForReview)
             {
-                throw new InvalidOperationException("House slice validation failed: VS branch must skip the opening wake dialogue and start playable in the house interior.");
+                throw new InvalidOperationException(
+                    $"House slice validation failed: VS branch must skip the opening wake dialogue and start playable in the house interior. opening={story.OpeningWakeCompleteForReview}, beat='{story.CurrentBeatIdForReview}', frozen={guide.MovementFrozenForReview}, line='{story.CurrentLineTextForReview}', hudActive='{story.RuntimeHudActiveTextForReview}', objective='{story.RuntimeHudObjectiveTextForReview}', objectiveActive={story.RuntimeHudObjectivePanelActiveForReview}");
             }
+
+            ValidateVisibleObjectiveAny("house interior route", "外へ出る。", "ベッドから起きた。外へ出る。");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
+            controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter + new Vector3(0.10f, 0.02f, -0.90f));
+            ValidateVisibleObjective("北東の道を進む。", "house exterior route");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            controller.ForcePlayerCurrentLocalForReview(CentralPlazaVsCenter + new Vector3(-1.80f, 0.02f, -1.20f));
+            ValidateVisibleObjective("図書館へ向かう。", "central plaza route");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
+            controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(-2.80f, 0.02f, -2.40f));
+            ValidateVisibleObjective("レトの机へ向かう。", "library approach route");
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
             controller.ForcePlayerCurrentLocalForReview(InteriorDoorTriggerCenter);
@@ -3675,6 +3714,7 @@ namespace Anemora.EditorTools
                 story.RuntimeHudActiveTextForReview != string.Empty ||
                 !story.RuntimeHudQuestionActiveForReview ||
                 story.RuntimeHudBrushActiveForReview ||
+                story.RuntimeHudObjectivePanelActiveForReview ||
                 story.RuntimeHudQuestionHeadWorldOffsetForReview < 1.38f ||
                 story.RuntimeHudQuestionHeadWorldOffsetForReview > 1.52f)
             {
@@ -3687,6 +3727,7 @@ namespace Anemora.EditorTools
                 story.RuntimeHudActiveTextForReview != "(ポケットに、何か...)" ||
                 story.RuntimeHudQuestionActiveForReview ||
                 !story.RuntimeHudBrushActiveForReview ||
+                story.RuntimeHudObjectivePanelActiveForReview ||
                 story.RuntimeHudBrushIconTextureNameForReview.IndexOf("timewriter_brush_icon", StringComparison.OrdinalIgnoreCase) < 0 ||
                 story.RuntimeHudBrushAnchoredPositionForReview.magnitude > 0.01f)
             {
@@ -3698,7 +3739,8 @@ namespace Anemora.EditorTools
             if (story.DoorBrushBeatPageForReview != 2 ||
                 story.RuntimeHudActiveTextForReview != "(...筆?)" ||
                 story.RuntimeHudQuestionActiveForReview ||
-                !story.RuntimeHudBrushActiveForReview)
+                !story.RuntimeHudBrushActiveForReview ||
+                story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: door Timewriter beat must keep the brush reveal before Niro notices the brush.");
             }
@@ -3709,13 +3751,26 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: door Timewriter beat did not complete and release movement after advancing.");
             }
 
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
+            controller.ForcePlayerCurrentLocalForReview(RetoLibraryDeskLocalPosition + new Vector3(-1.15f, 0.02f, -1.35f));
+            story.RefreshPresentationForReview();
+            if (!story.RetoInteractionReadyForReview ||
+                story.RuntimeHudObjectiveTextForReview != "E: レトと話す" ||
+                !story.RuntimeHudObjectivePanelActiveForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: Reto must be talkable from the reachable front-of-desk player position with a lower-left interaction prompt.");
+            }
+
             story.TriggerRetoEventForReview();
             story.RefreshPresentationForReview();
+            story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
                 story.RetoBeatIndexForReview != 0 ||
                 story.CurrentBeatIdForReview != "scene1.reto.1b.initial" ||
                 story.CurrentLineSpeakerForReview != "レト" ||
-                story.CurrentLineTextForReview != "...見ない顔ですね。")
+                story.CurrentLineTextForReview != "...見ない顔ですね。" ||
+                story.RuntimeHudVisibleTextForReview != "...見ない顔ですね。" ||
+                story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto event did not begin at the initial encounter beat.");
             }
@@ -3790,23 +3845,24 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Reto [1.B]-[1.D] did not wait for player-controlled past observation or unlock both current-side Time Window cues.");
             }
 
-            story.RefreshPresentationForReview();
-            if (story.RuntimeHudObjectiveTextForReview != FastVsStoryFlowController.TimeWindowCreationHintTextForReview)
-            {
-                throw new InvalidOperationException("House slice validation failed: lower-left HUD must show only the brief Time Window creation method after the Time Window unlocks.");
-            }
+            ValidateVisibleObjective("黄色い光の近くに、左ドラッグで時の窓を開く。", "time window unlock");
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerOtherTimeLocalForReview(new Vector3(PastLibraryPersonCueLocalPosition.x, 0.02f, PastLibraryPersonCueLocalPosition.z));
+            ValidateVisibleObjective("E: 過去の人影を見る", "past person cue");
+
             if (!story.AriaInteractionReadyForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: past Aria monologue interaction is not available near Aria.");
             }
 
             story.TriggerAriaObservationForReview();
+            story.RefreshPresentationForReview();
+            story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
                 story.CurrentLineSpeakerForReview != "ニロ" ||
-                story.CurrentLineTextForReview != "(...人)")
+                story.CurrentLineTextForReview != "(...人)" ||
+                story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Aria interaction must start with Niro noticing a person, not the book event.");
             }
@@ -3834,16 +3890,21 @@ namespace Anemora.EditorTools
             }
 
             controller.ForcePlayerOtherTimeLocalForReview(new Vector3(PastLibraryBookCueLocalPosition.x, 0.02f, PastLibraryBookCueLocalPosition.z));
+            ValidateVisibleObjective("E: 光っている本を調べる", "past book cue");
+
             if (!story.PastBookInteractionReadyForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: past book event must require the player to stand on the past-side book guide and press E/Space.");
             }
 
             story.TriggerPastObservationForReview();
+            story.RefreshPresentationForReview();
+            story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
                 story.CurrentBeatIdForReview != "scene1.reto.1e.past_library_observation.book_location" ||
                 story.CurrentLineTextForReview != "(...ここに、本が)" ||
-                story.CurrentTimeWindowBookCueVisibleForReview)
+                story.CurrentTimeWindowBookCueVisibleForReview ||
+                story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto [1.E] past observation did not start with the canonical Niro thought.");
             }
@@ -3883,23 +3944,24 @@ namespace Anemora.EditorTools
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(-2.20f, 0.02f, -1.85f));
-            story.RefreshPresentationForReview();
-            if (story.RuntimeHudObjectiveTextForReview != FastVsStoryFlowController.TimeWindowCreationHintTextForReview)
-            {
-                throw new InvalidOperationException("House slice validation failed: after both past-library flags, lower-left HUD must remain a brief Time Window creation method instead of story guidance.");
-            }
+            ValidateVisibleObjective("レトの机へ戻る。", "return to Reto desk after past observations");
 
-            controller.ForcePlayerCurrentLocalForReview(RetoLibraryDeskLocalPosition);
+            controller.ForcePlayerCurrentLocalForReview(RetoLibraryDeskLocalPosition + new Vector3(-1.15f, 0.02f, -1.35f));
+            ValidateVisibleObjective("E: レトに本を見せる", "Reto book-show prompt");
+
             if (!story.RetoBookShowReadyForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: returning to current time must wait for the player to talk to Reto before showing the book.");
             }
 
             story.TriggerRetoBookReturnForReview();
+            story.RefreshPresentationForReview();
+            story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
                 story.CurrentBeatIdForReview != "scene1.reto.1f.return_present.show_book" ||
                 story.CurrentLineTextForReview != "(...本を、レトに見せる)" ||
-                !story.BookShownToRetoForReview)
+                !story.BookShownToRetoForReview ||
+                story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto [1.F] did not start with Niro showing the book.");
             }
@@ -3985,6 +4047,13 @@ namespace Anemora.EditorTools
                 guide.MovementFrozenForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto v4 book-show story event did not reach VS clear and release movement.");
+            }
+
+            story.RefreshPresentationForReview();
+            if (story.RuntimeHudObjectiveTextForReview != "レトの話を聞いた。" ||
+                !story.RuntimeHudObjectivePanelActiveForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: lower-left HUD must remain visible after VS clear with the completion objective.");
             }
 
             retoAnimator.SetWritingImmediateForReview();
