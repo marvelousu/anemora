@@ -197,6 +197,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
+            ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -370,6 +371,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dEighteenthCycleScreenshotsBatch()
         {
             CaptureHd2dEighteenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_facade_close_detail_20260520");
+        }
+
+        public static void CaptureHd2dNineteenthCycleScreenshotsBatch()
+        {
+            CaptureHd2dNineteenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_side_shelves_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -983,6 +989,82 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighteenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dNineteenthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS nineteenth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var currentLeftShelfPlayerLocal = LibraryVsCenter + new Vector3(-4.78f, 0.02f, 1.20f);
+            var currentLeftShelfAnchorLocal = LibraryVsCenter + new Vector3(-4.78f, 0.92f, 0.42f);
+            var currentRightShelfPlayerLocal = LibraryVsCenter + new Vector3(4.78f, 0.02f, 1.20f);
+            var currentRightShelfAnchorLocal = LibraryVsCenter + new Vector3(4.78f, 0.92f, 0.42f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentLeftShelfPlayerLocal,
+                currentLeftShelfAnchorLocal,
+                new Vector3(4.15f, 1.52f, 1.18f),
+                new Vector3(0.55f, 0.20f, 0.08f),
+                outputDirectory,
+                "01_current_library_left_empty_shelf.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentRightShelfPlayerLocal,
+                currentRightShelfAnchorLocal,
+                new Vector3(-4.15f, 1.52f, 1.18f),
+                new Vector3(-0.55f, 0.20f, 0.08f),
+                outputDirectory,
+                "02_current_library_right_empty_shelf.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentLeftShelfPlayerLocal,
+                currentLeftShelfAnchorLocal,
+                new Vector3(4.15f, 1.52f, 1.18f),
+                new Vector3(0.55f, 0.20f, 0.08f),
+                outputDirectory,
+                "03_past_library_left_full_shelf_reference.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentRightShelfPlayerLocal,
+                currentRightShelfAnchorLocal,
+                new Vector3(-4.15f, 1.52f, 1.18f),
+                new Vector3(-0.55f, 0.20f, 0.08f),
+                outputDirectory,
+                "04_past_library_right_full_shelf_reference.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS nineteenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureReviewScreenshot(
@@ -1649,6 +1731,11 @@ namespace Anemora.EditorTools
                 CreatePastLibrarySideBookshelf(root, "Left", c + new Vector3(-4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, 90f, 0f), wood, materials.Book, materials.Lamp, materials.RedLight);
                 CreatePastLibrarySideBookshelf(root, "Right", c + new Vector3(4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, -90f, 0f), wood, materials.Book, materials.Lamp, materials.RedLight);
             }
+            else
+            {
+                CreateCurrentLibrarySideBookshelfSilhouette(root, "Left", c + new Vector3(-4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, 90f, 0f), materials);
+                CreateCurrentLibrarySideBookshelfSilhouette(root, "Right", c + new Vector3(4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, -90f, 0f), materials);
+            }
             CreateLandmarkCube($"{prefix}_Library_ServiceDesk", root, c + new Vector3(-2.45f, 0.34f, -3.20f), new Vector3(1.55f, 0.38f, 0.54f), Quaternion.Euler(0f, -4f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.service_desk");
             if (!past)
             {
@@ -1706,8 +1793,6 @@ namespace Anemora.EditorTools
             }
             else
             {
-                CreateCurrentLibrarySideBookshelfSilhouette(root, "Left", c + new Vector3(-4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, 90f, 0f), wood);
-                CreateCurrentLibrarySideBookshelfSilhouette(root, "Right", c + new Vector3(4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, -90f, 0f), wood);
                 CreateLandmarkCube("Current_Library_Ruin_ScatteredBoardPile", root, c + new Vector3(0.90f, 0.13f, -1.52f), new Vector3(0.86f, 0.08f, 0.22f), Quaternion.Euler(0f, -14f, 7f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.scattered_board_pile");
                 CreateLandmarkCube("Current_Library_Ruin_ScatteredBoardPile_PlankA", root, c + new Vector3(0.52f, 0.15f, -1.78f), new Vector3(0.62f, 0.07f, 0.16f), Quaternion.Euler(0f, 22f, -5f), materials.CurrentFurniture, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.scattered_board_pile.plank_a");
                 CreateLandmarkCube("Current_Library_Ruin_ScatteredBoardPile_PlankB", root, c + new Vector3(1.32f, 0.14f, -1.30f), new Vector3(0.74f, 0.07f, 0.14f), Quaternion.Euler(0f, -38f, 4f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.scattered_board_pile.plank_b");
@@ -2023,14 +2108,34 @@ namespace Anemora.EditorTools
                 $"{landmarkId}.bang.dot");
         }
 
-        private static void CreateCurrentLibrarySideBookshelfSilhouette(Transform root, string side, Vector3 localPosition, Quaternion localRotation, Material frame)
+        private static void CreateCurrentLibrarySideBookshelfSilhouette(Transform root, string side, Vector3 localPosition, Quaternion localRotation, Materials materials)
+        {
+            CreateCurrentLibraryEmptySideBookshelf(root, side, localPosition, localRotation, materials.CurrentFurniture, materials.Dust, materials.CurrentFence, materials.Shadow, materials.Book);
+        }
+
+        private static void CreateCurrentLibraryEmptySideBookshelf(Transform root, string side, Vector3 localPosition, Quaternion localRotation, Material frame, Material dust, Material trim, Material shadow, Material book)
         {
             var shelfRoot = new GameObject($"Current_Library_{side}SideBookshelf");
             shelfRoot.transform.SetParent(root, false);
             shelfRoot.transform.localPosition = localPosition;
             shelfRoot.transform.localRotation = localRotation;
 
-            CreateLibrarySideBookshelfFrame(shelfRoot.transform, "Current", side, frame);
+            CreateLibrarySideBookshelfFrame(shelfRoot.transform, "Current", side, frame, false);
+
+            var sideToken = side.ToLowerInvariant();
+            const float frontZ = 0.72f;
+            CreateLandmarkCube($"{shelfRoot.name}_DustLine_0", shelfRoot.transform, new Vector3(0f, 0.34f, frontZ), new Vector3(LibrarySideShelfRunLength - 0.30f, 0.02f, 0.03f), Quaternion.identity, dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.dust_line.0");
+            CreateLandmarkCube($"{shelfRoot.name}_DustLine_1", shelfRoot.transform, new Vector3(0.14f, 0.75f, frontZ), new Vector3(LibrarySideShelfRunLength - 0.68f, 0.02f, 0.03f), Quaternion.identity, dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.dust_line.1");
+            CreateLandmarkCube($"{shelfRoot.name}_DustLine_2", shelfRoot.transform, new Vector3(-0.12f, 1.15f, frontZ), new Vector3(LibrarySideShelfRunLength - 0.52f, 0.02f, 0.03f), Quaternion.identity, dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.dust_line.2");
+            CreateLandmarkCube($"{shelfRoot.name}_MissingBookGapA", shelfRoot.transform, new Vector3(-1.06f, 0.72f, frontZ + 0.01f), new Vector3(0.18f, 0.48f, 0.02f), Quaternion.identity, shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.missing_gap.a");
+            CreateLandmarkCube($"{shelfRoot.name}_MissingBookGapB", shelfRoot.transform, new Vector3(0.76f, 0.72f, frontZ + 0.01f), new Vector3(0.16f, 0.44f, 0.02f), Quaternion.identity, shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.missing_gap.b");
+            CreateLandmarkCube($"{shelfRoot.name}_BrokenBoardA", shelfRoot.transform, new Vector3(-1.16f, 0.40f, frontZ + 0.02f), new Vector3(0.88f, 0.05f, 0.10f), Quaternion.Euler(0f, 4f, -14f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.broken_board.a");
+            CreateLandmarkCube($"{shelfRoot.name}_BrokenBoardB", shelfRoot.transform, new Vector3(1.12f, 0.82f, frontZ + 0.02f), new Vector3(0.72f, 0.05f, 0.10f), Quaternion.Euler(0f, -6f, 13f), frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.broken_board.b");
+            CreateLandmarkCube($"{shelfRoot.name}_BrokenBoardC", shelfRoot.transform, new Vector3(-0.36f, 1.25f, frontZ + 0.02f), new Vector3(0.56f, 0.04f, 0.08f), Quaternion.Euler(0f, 11f, -10f), shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.broken_board.c");
+            CreateLandmarkCube($"{shelfRoot.name}_ResidualBook_0", shelfRoot.transform, new Vector3(-0.60f, 0.43f, frontZ + 0.04f), new Vector3(0.22f, 0.035f, 0.14f), Quaternion.Euler(0f, 8f, 14f), book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.residual_book.0");
+            CreateLandmarkCube($"{shelfRoot.name}_ResidualBook_1", shelfRoot.transform, new Vector3(0.94f, 0.43f, frontZ + 0.04f), new Vector3(0.20f, 0.033f, 0.13f), Quaternion.Euler(0f, -12f, -9f), book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.residual_book.1");
+            CreateLandmarkCube($"{shelfRoot.name}_PaperSlip_0", shelfRoot.transform, new Vector3(-0.22f, 0.39f, frontZ + 0.05f), new Vector3(0.20f, 0.01f, 0.08f), Quaternion.Euler(0f, 6f, 18f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.paper_slip.0");
+            CreateLandmarkCube($"{shelfRoot.name}_PaperSlip_1", shelfRoot.transform, new Vector3(1.26f, 0.79f, frontZ + 0.05f), new Vector3(0.18f, 0.01f, 0.07f), Quaternion.Euler(0f, -10f, -12f), shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Current.library.{sideToken}.shelf.paper_slip.1");
         }
 
         private static GameObject CreateReadableBookProp(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material cover, Material pages, Material spine, bool openPages, string landmarkId)
@@ -2093,21 +2198,21 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static void CreateLibrarySideBookshelfFrame(Transform shelfRoot, string prefix, string side, Material frame)
+        private static void CreateLibrarySideBookshelfFrame(Transform shelfRoot, string prefix, string side, Material frame, bool keepCollider)
         {
             var sideToken = side.ToLowerInvariant();
             var halfRun = LibrarySideShelfRunLength * 0.5f;
             var postX = halfRun - 0.07f;
-            CreateLandmarkCube($"{shelfRoot.name}_BackPanel", shelfRoot, new Vector3(0f, LibrarySideShelfBackPanelCenterY, 0.08f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfBackPanelHeight, 1.16f), Quaternion.identity, frame, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.back_panel");
-            CreateLandmarkCube($"{shelfRoot.name}_LeftPost", shelfRoot, new Vector3(-postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), Quaternion.identity, frame, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.left_post");
-            CreateLandmarkCube($"{shelfRoot.name}_RightPost", shelfRoot, new Vector3(postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), Quaternion.identity, frame, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.right_post");
-            CreateLandmarkCube($"{shelfRoot.name}_TopCap", shelfRoot, new Vector3(0f, LibrarySideShelfTopCapCenterY, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), Quaternion.identity, frame, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.top_cap");
-            CreateLandmarkCube($"{shelfRoot.name}_BottomBase", shelfRoot, new Vector3(0f, 0.06f, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), Quaternion.identity, frame, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.bottom_base");
+            CreateLandmarkCube($"{shelfRoot.name}_BackPanel", shelfRoot, new Vector3(0f, LibrarySideShelfBackPanelCenterY, 0.08f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfBackPanelHeight, 1.16f), Quaternion.identity, frame, keepCollider, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.back_panel");
+            CreateLandmarkCube($"{shelfRoot.name}_LeftPost", shelfRoot, new Vector3(-postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), Quaternion.identity, frame, keepCollider, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.left_post");
+            CreateLandmarkCube($"{shelfRoot.name}_RightPost", shelfRoot, new Vector3(postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), Quaternion.identity, frame, keepCollider, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.right_post");
+            CreateLandmarkCube($"{shelfRoot.name}_TopCap", shelfRoot, new Vector3(0f, LibrarySideShelfTopCapCenterY, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), Quaternion.identity, frame, keepCollider, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.top_cap");
+            CreateLandmarkCube($"{shelfRoot.name}_BottomBase", shelfRoot, new Vector3(0f, 0.06f, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), Quaternion.identity, frame, keepCollider, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.bottom_base");
 
             for (var row = 0; row < 3; row++)
             {
                 var rowY = LibrarySideShelfBoardFirstY + row * LibrarySideShelfBoardStepY;
-                CreateLandmarkCube($"{shelfRoot.name}_ShelfBoard_{row}", shelfRoot, new Vector3(0f, rowY, 0.00f), new Vector3(LibrarySideShelfRunLength - 0.10f, LibrarySideShelfBoardThickness, LibrarySideShelfBoardDepth), Quaternion.identity, frame, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.board.{row}");
+                CreateLandmarkCube($"{shelfRoot.name}_ShelfBoard_{row}", shelfRoot, new Vector3(0f, rowY, 0.00f), new Vector3(LibrarySideShelfRunLength - 0.10f, LibrarySideShelfBoardThickness, LibrarySideShelfBoardDepth), Quaternion.identity, frame, keepCollider, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.{sideToken}.shelf.board.{row}");
             }
         }
 
@@ -2118,7 +2223,7 @@ namespace Anemora.EditorTools
             shelfRoot.transform.localPosition = localPosition;
             shelfRoot.transform.localRotation = localRotation;
 
-            CreateLibrarySideBookshelfFrame(shelfRoot.transform, "Past", side, frame);
+            CreateLibrarySideBookshelfFrame(shelfRoot.transform, "Past", side, frame, true);
 
             CreateBookRowTexturePanel(
                 $"{shelfRoot.name}_BookshelfFrontTexturePanel",
@@ -4188,34 +4293,31 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: missing current/past library side bookshelf roots: {side}");
             }
 
+            ValidateLibrarySideBookshelfParent(currentRoot, "Current");
+            ValidateLibrarySideBookshelfParent(pastRoot, "Past");
             ValidateVectorNear($"{side} library side bookshelf root position", currentRoot.transform.localPosition, pastRoot.transform.localPosition);
             if (Quaternion.Angle(currentRoot.transform.localRotation, pastRoot.transform.localRotation) > 0.02f)
             {
                 throw new InvalidOperationException($"House slice validation failed: current/past {side.ToLowerInvariant()} library side bookshelf roots no longer share the same rotation.");
             }
 
-            ValidateLibrarySideBookshelfFrame(currentRoot.transform, "Current", side);
-            ValidateLibrarySideBookshelfFrame(pastRoot.transform, "Past", side);
+            ValidateLibrarySideBookshelfFrame(currentRoot.transform, "Current", side, false);
+            ValidateLibrarySideBookshelfFrame(pastRoot.transform, "Past", side, true);
             ValidateLibrarySideBookshelfFrameParity(currentRoot.transform, pastRoot.transform, side);
-
-            if (currentRoot.transform.childCount != 8)
-            {
-                throw new InvalidOperationException($"House slice validation failed: current {side.ToLowerInvariant()} library side bookshelf should stay empty and only expose the frame boards.");
-            }
 
             if (pastRoot.transform.childCount < 9)
             {
                 throw new InvalidOperationException($"House slice validation failed: past {side.ToLowerInvariant()} library side bookshelf should keep the frame plus front-facing bookshelf texture panels.");
             }
 
-            if (HasBookDescendant(currentRoot.transform))
-            {
-                throw new InvalidOperationException($"House slice validation failed: current {side.ToLowerInvariant()} library side bookshelf must not contain book children.");
-            }
-
             if (!HasBookDescendant(pastRoot.transform))
             {
                 throw new InvalidOperationException($"House slice validation failed: past {side.ToLowerInvariant()} library side bookshelf must contain book children.");
+            }
+
+            if (currentRoot.transform.Find($"{currentRoot.name}_BookshelfFrontTexturePanel") != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: current {side.ToLowerInvariant()} library side bookshelf must not use a front texture panel.");
             }
 
             var texturePanel = pastRoot.transform.Find($"{pastRoot.name}_BookshelfFrontTexturePanel");
@@ -4229,31 +4331,82 @@ namespace Anemora.EditorTools
 
             ValidateVectorNear($"{side} past side bookshelf texture panel position", texturePanel.localPosition, new Vector3(0f, LibrarySideShelfTexturePanelCenterY, 0.70f));
             ValidateVectorNear($"{side} past side bookshelf texture panel scale", texturePanel.localScale, new Vector3(LibrarySideShelfRunLength - 0.38f, LibrarySideShelfTexturePanelHeight, 0.040f));
+        }
 
-            for (var row = 0; row < 3; row++)
+        private static void ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves()
+        {
+            ValidateCurrentLibraryEmptySideShelf("Left");
+            ValidateCurrentLibraryEmptySideShelf("Right");
+        }
+
+        private static void ValidateCurrentLibraryEmptySideShelf(string side)
+        {
+            var root = FindSceneObjectIncludingInactive($"Current_Library_{side}SideBookshelf");
+            if (root == null)
             {
-                if (currentRoot.transform.Find($"{currentRoot.name}_Row{row}") != null)
-                {
-                    throw new InvalidOperationException($"House slice validation failed: current {side.ToLowerInvariant()} library side bookshelf must remain empty.");
-                }
+                throw new InvalidOperationException($"House slice validation failed: missing current library side bookshelf root: {side}");
+            }
+
+            ValidateLibrarySideBookshelfParent(root, "Current");
+            ValidateLibrarySideBookshelfFrame(root.transform, "Current", side, false);
+
+            var required = new[]
+            {
+                $"{root.name}_BackPanel",
+                $"{root.name}_TopCap",
+                $"{root.name}_BottomBase",
+                $"{root.name}_ShelfBoard_0",
+                $"{root.name}_ShelfBoard_1",
+                $"{root.name}_ShelfBoard_2",
+                $"{root.name}_DustLine_0",
+                $"{root.name}_DustLine_1",
+                $"{root.name}_DustLine_2",
+                $"{root.name}_MissingBookGapA",
+                $"{root.name}_MissingBookGapB",
+                $"{root.name}_BrokenBoardA",
+                $"{root.name}_BrokenBoardB",
+                $"{root.name}_BrokenBoardC",
+                $"{root.name}_ResidualBook_0",
+                $"{root.name}_ResidualBook_1",
+                $"{root.name}_PaperSlip_0",
+                $"{root.name}_PaperSlip_1"
+            };
+
+            foreach (var objectName in required)
+            {
+                ValidateLibraryShelfDetailObject(objectName, root.name);
+            }
+
+            if (FindSceneObjectIncludingInactive($"{root.name}_BookshelfFrontTexturePanel") != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: current library side bookshelf must not include a book-filled texture panel: {root.name}");
             }
         }
 
-        private static void ValidateLibrarySideBookshelfFrame(Transform shelfRoot, string prefix, string side)
+        private static void ValidateLibrarySideBookshelfParent(GameObject shelfRoot, string prefix)
+        {
+            var parent = shelfRoot.transform.parent;
+            if (parent == null || parent.name != $"{prefix}_LibraryMap_SeparateSpace")
+            {
+                throw new InvalidOperationException($"House slice validation failed: {shelfRoot.name} must stay under {prefix.ToLowerInvariant()} library map space.");
+            }
+        }
+
+        private static void ValidateLibrarySideBookshelfFrame(Transform shelfRoot, string prefix, string side, bool expectCollider)
         {
             var sideToken = side.ToLowerInvariant();
             var halfRun = LibrarySideShelfRunLength * 0.5f;
             var postX = halfRun - 0.07f;
-            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_BackPanel", new Vector3(0f, LibrarySideShelfBackPanelCenterY, 0.08f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfBackPanelHeight, 1.16f), $"{prefix}.library.{sideToken}.shelf.back_panel");
-            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_LeftPost", new Vector3(-postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), $"{prefix}.library.{sideToken}.shelf.left_post");
-            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_RightPost", new Vector3(postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), $"{prefix}.library.{sideToken}.shelf.right_post");
-            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_TopCap", new Vector3(0f, LibrarySideShelfTopCapCenterY, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), $"{prefix}.library.{sideToken}.shelf.top_cap");
-            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_BottomBase", new Vector3(0f, 0.06f, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), $"{prefix}.library.{sideToken}.shelf.bottom_base");
+            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_BackPanel", new Vector3(0f, LibrarySideShelfBackPanelCenterY, 0.08f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfBackPanelHeight, 1.16f), $"{prefix}.library.{sideToken}.shelf.back_panel", expectCollider);
+            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_LeftPost", new Vector3(-postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), $"{prefix}.library.{sideToken}.shelf.left_post", expectCollider);
+            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_RightPost", new Vector3(postX, LibrarySideShelfPostCenterY, 0.02f), new Vector3(LibrarySideShelfPostThickness, LibrarySideShelfPostHeight, LibrarySideShelfPostThickness), $"{prefix}.library.{sideToken}.shelf.right_post", expectCollider);
+            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_TopCap", new Vector3(0f, LibrarySideShelfTopCapCenterY, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), $"{prefix}.library.{sideToken}.shelf.top_cap", expectCollider);
+            ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_BottomBase", new Vector3(0f, 0.06f, 0.02f), new Vector3(LibrarySideShelfRunLength, LibrarySideShelfCapThickness, 0.16f), $"{prefix}.library.{sideToken}.shelf.bottom_base", expectCollider);
 
             for (var row = 0; row < 3; row++)
             {
                 var rowY = LibrarySideShelfBoardFirstY + row * LibrarySideShelfBoardStepY;
-                ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_ShelfBoard_{row}", new Vector3(0f, rowY, 0.00f), new Vector3(LibrarySideShelfRunLength - 0.10f, LibrarySideShelfBoardThickness, LibrarySideShelfBoardDepth), $"{prefix}.library.{sideToken}.shelf.board.{row}");
+                ValidateLibraryShelfChild(shelfRoot, $"{shelfRoot.name}_ShelfBoard_{row}", new Vector3(0f, rowY, 0.00f), new Vector3(LibrarySideShelfRunLength - 0.10f, LibrarySideShelfBoardThickness, LibrarySideShelfBoardDepth), $"{prefix}.library.{sideToken}.shelf.board.{row}", expectCollider);
             }
 
             var topCap = shelfRoot.Find($"{shelfRoot.name}_TopCap");
@@ -4261,6 +4414,31 @@ namespace Anemora.EditorTools
                 shelfRoot.localPosition.y + topCap.localPosition.y + topCap.localScale.y * 0.5f > 2.02f)
             {
                 throw new InvalidOperationException($"House slice validation failed: {prefix.ToLowerInvariant()} {side.ToLowerInvariant()} library side bookshelf penetrates the second-floor balcony.");
+            }
+        }
+
+        private static void ValidateLibraryShelfDetailObject(string objectName, string rootName)
+        {
+            var detail = FindSceneObjectIncludingInactive(objectName);
+            if (detail == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing current library side bookshelf detail: {objectName}");
+            }
+
+            if (!objectName.StartsWith(rootName + "_", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: bookshelf detail must remain under the expected shelf root prefix: {objectName}");
+            }
+
+            if (detail.GetComponent<Collider>() != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: current library side bookshelf detail must not have a collider: {objectName}");
+            }
+
+            var renderer = detail.GetComponent<Renderer>() ?? detail.GetComponentInChildren<Renderer>(true);
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: current library side bookshelf detail must keep a renderer and material: {objectName}");
             }
         }
 
@@ -4296,7 +4474,7 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static void ValidateLibraryShelfChild(Transform shelfRoot, string childName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, string landmarkId)
+        private static void ValidateLibraryShelfChild(Transform shelfRoot, string childName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, string landmarkId, bool expectCollider)
         {
             var child = shelfRoot.Find(childName);
             if (child == null)
@@ -4306,6 +4484,25 @@ namespace Anemora.EditorTools
 
             ValidateVectorNear($"{landmarkId} position", child.localPosition, expectedLocalPosition);
             ValidateVectorNear($"{landmarkId} scale", child.localScale, expectedLocalScale);
+
+            var collider = child.GetComponent<Collider>();
+            if (expectCollider)
+            {
+                if (collider == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: library side bookshelf child must keep its collider for the past shelf: {landmarkId}");
+                }
+            }
+            else if (collider != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: current library side bookshelf child must not have a collider: {landmarkId}");
+            }
+
+            var renderer = child.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: library side bookshelf child must keep a renderer and material: {landmarkId}");
+            }
         }
 
         private static bool HasBookDescendant(Transform root)
