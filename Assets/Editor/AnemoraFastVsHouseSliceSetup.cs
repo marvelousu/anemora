@@ -193,6 +193,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwelfthCycleFacadeDetails();
             ValidateFastVsHd2dThirteenthCycleLibraryPropDetails();
             ValidateFastVsHd2dFourteenthCycleHouseInteriorDetails();
+            ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -346,6 +347,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dFourteenthCycleScreenshotsBatch()
         {
             CaptureHd2dFourteenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_interior_detail_20260520");
+        }
+
+        public static void CaptureHd2dFifteenthCycleScreenshotsBatch()
+        {
+            CaptureHd2dFifteenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_central_plaza_detail_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -685,6 +691,77 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS fourteenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dFifteenthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS fifteenth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var fountainPlayerLocal = CentralPlazaVsCenter + new Vector3(-0.72f, 0.02f, -0.46f);
+            var libraryApproachPlayerLocal = CentralPlazaVsCenter + new Vector3(3.14f, 0.02f, 3.95f);
+            var libraryApproachAnchorLocal = CentralPlazaVsCenter + new Vector3(3.42f, 0.02f, 4.28f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                fountainPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_plaza_fountain_detail.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_plaza_fountain_detail.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                libraryApproachPlayerLocal,
+                libraryApproachAnchorLocal,
+                new Vector3(0.20f, 1.02f, -2.12f),
+                new Vector3(0.05f, 0.10f, 0.12f),
+                outputDirectory,
+                "02_current_plaza_library_approach_detail.png");
+            ValidateScreenshotOutputExists(outputDirectory, "02_current_plaza_library_approach_detail.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                fountainPlayerLocal,
+                Path.Combine(outputDirectory, "03_past_plaza_fountain_detail.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "03_past_plaza_fountain_detail.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                libraryApproachPlayerLocal,
+                libraryApproachAnchorLocal,
+                new Vector3(0.20f, 1.02f, -2.12f),
+                new Vector3(0.05f, 0.10f, 0.12f),
+                outputDirectory,
+                "04_past_plaza_library_approach_detail.png");
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_plaza_library_approach_detail.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS fifteenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -788,6 +865,15 @@ namespace Anemora.EditorTools
             if (!File.Exists(outputPath))
             {
                 throw new InvalidOperationException($"Fast VS close-review screenshot capture failed: missing output file {outputPath}");
+            }
+        }
+
+        private static void ValidateScreenshotOutputExists(string outputDirectory, string fileName)
+        {
+            var outputPath = Path.Combine(outputDirectory, fileName);
+            if (!File.Exists(outputPath))
+            {
+                throw new InvalidOperationException($"Fast VS screenshot capture failed: missing output file {outputPath}");
             }
         }
 
@@ -1283,6 +1369,19 @@ namespace Anemora.EditorTools
                 CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_FountainSideDust", c + new Vector3(1.52f, 0.03f, 3.42f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), 17f, materials.Dust, materials.CurrentStone, materials.Shadow, $"{prefix}.central_plaza.ground_detail.fountain_side_dust");
                 CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_NoticeBoardShoulder", c + new Vector3(-4.10f, 0.03f, 1.48f), new Vector3(0.24f, 0.04f, 0.16f), new Vector3(0.09f, 0.03f, 0.08f), new Vector3(0.26f, 0.02f, 0.18f), -8f, trim, materials.CurrentStone, materials.Shadow, $"{prefix}.central_plaza.ground_detail.notice_board_shoulder");
                 CreateOutdoorGroundDetailCluster(root, $"{prefix}_CentralPlaza_GroundDetail_LibraryApproachChip", c + new Vector3(3.52f, 0.03f, 4.16f), new Vector3(0.20f, 0.05f, 0.14f), new Vector3(0.10f, 0.03f, 0.08f), new Vector3(0.24f, 0.02f, 0.16f), 9f, stone, materials.CurrentFence, materials.Shadow, $"{prefix}.central_plaza.ground_detail.library_approach_chip");
+            }
+
+            if (past)
+            {
+                CreateLandmarkCube("Past_CentralPlaza_PropDetail_FountainWaterSparkleA", root, c + new Vector3(-0.42f, 0.51f, 2.10f), new Vector3(0.14f, 0.03f, 0.06f), Quaternion.Euler(0f, -14f, 0f), materials.Water, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.prop_detail.fountain_water_sparkle.a");
+                CreateLandmarkCube("Past_CentralPlaza_PropDetail_NoticeBoardPaperA", root, c + new Vector3(-3.10f, 1.41f, 2.10f), new Vector3(0.12f, 0.04f, 0.08f), Quaternion.Euler(0f, -6f, -3f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.prop_detail.notice_board_paper.a");
+                CreateLandmarkCube("Past_CentralPlaza_PropDetail_LibraryApproachPetalA", root, c + new Vector3(3.64f, 0.07f, 4.56f), new Vector3(0.09f, 0.04f, 0.09f), Quaternion.Euler(0f, -18f, 7f), materials.FlowerYellow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.prop_detail.library_approach_petal.a");
+            }
+            else
+            {
+                CreateLandmarkCube("Current_CentralPlaza_PropDetail_FountainRimChipA", root, c + new Vector3(0.58f, 0.54f, 2.06f), new Vector3(0.16f, 0.05f, 0.08f), Quaternion.Euler(0f, 12f, 5f), materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.prop_detail.fountain_rim_chip.a");
+                CreateLandmarkCube("Current_CentralPlaza_PropDetail_NoticeBoardPaperA", root, c + new Vector3(-3.06f, 1.44f, 2.08f), new Vector3(0.12f, 0.04f, 0.08f), Quaternion.Euler(0f, -4f, -3f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.prop_detail.notice_board_paper.a");
+                CreateLandmarkCube("Current_CentralPlaza_PropDetail_LibraryApproachPebbleA", root, c + new Vector3(3.34f, 0.07f, 4.34f), new Vector3(0.10f, 0.04f, 0.08f), Quaternion.Euler(0f, 20f, 10f), materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.prop_detail.library_approach_pebble.a");
             }
 
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
@@ -4860,6 +4959,26 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("Current_HouseInterior_TimewriterBookCue") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: the bed, glow pad, and current timewriter book cue must remain present while interior details are added.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails()
+        {
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_PropDetail_FountainRimChipA", "current_stone", 0.12f);
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_PropDetail_NoticeBoardPaperA", "sign_paint", 0.12f);
+            ValidateOutdoorGroundDetailObject("Current_CentralPlaza_PropDetail_LibraryApproachPebbleA", "current_stone", 0.12f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_PropDetail_FountainWaterSparkleA", "water", 0.12f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_PropDetail_NoticeBoardPaperA", "sign_paint", 0.12f);
+            ValidateOutdoorGroundDetailObject("Past_CentralPlaza_PropDetail_LibraryApproachPetalA", "flower_yellow", 0.12f);
+
+            if (FindSceneObjectIncludingInactive("Current_CentralPlaza_FountainNoStepCollider") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_FountainNoStepCollider") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_LibraryNorthFacade") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_LibraryNorthFacade") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: central plaza prop detail pass must keep the fountain, route glow pads, and library facade present.");
             }
         }
 
