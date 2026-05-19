@@ -145,6 +145,7 @@ namespace Anemora.EditorTools
             var guide = CreateGuide(camera, controller, player, areaVisibility);
             var story = CreateStoryFlow(camera, controller, player, areaVisibility, guide);
             CreateHouseDoorTransitions(controller, player, areaVisibility, story);
+            CreateHd2dDepthFraming(currentAreas, pastAreas);
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -155,11 +156,7 @@ namespace Anemora.EditorTools
 
         public static void ValidateHouseSliceBatch()
         {
-            if (!File.Exists(ScenePath))
-            {
-                CreateHouseSliceScene();
-            }
-
+            CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             if (controller == null)
@@ -189,6 +186,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
             ValidateFastVsHd2dFifthCycleObjectDetails();
+            ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
 
@@ -301,6 +299,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dFifthCycleScreenshotsBatch()
         {
             CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_object_details_20260520");
+        }
+
+        public static void CaptureHd2dSeventhCycleScreenshotsBatch()
+        {
+            CaptureReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_depth_framing_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -735,6 +738,185 @@ namespace Anemora.EditorTools
             CreateGlowDisc($"{prefix}_HouseExterior_MapMoveGlowPad", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.58f, 0.02f), new Vector3(0.46f, 0.018f, 0.30f), glow, true);
             CreateGlowDisc($"{prefix}_HouseExterior_DoorEntrySmallGlow", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.50f, 0.02f), new Vector3(0.30f, 0.015f, 0.20f), glow, true);
             CreateLandmarkCube($"{prefix}_HouseExterior_DoorClosedPanel", exteriorRoot, HouseExteriorCenter + new Vector3(-1.05f, 0.83f, -1.48f), new Vector3(0.74f, 1.38f, 0.07f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.closed_door_panel");
+        }
+
+        private static void CreateHd2dDepthFraming(HouseMapAreas currentAreas, HouseMapAreas pastAreas)
+        {
+            var depthShadow = EnsureHd2dDepthShadowMaterial();
+            var warmPool = EnsureHd2dWarmLightPoolMaterial();
+            var currentInteriorRoot = currentAreas.Interior.transform;
+            var pastInteriorRoot = pastAreas.Interior.transform;
+            var currentExteriorRoot = currentAreas.Exterior.transform;
+            var pastExteriorRoot = pastAreas.Exterior.transform;
+            var currentPlazaRoot = currentAreas.CentralPlaza.transform;
+            var pastPlazaRoot = pastAreas.CentralPlaza.transform;
+            var currentLibraryRoot = currentAreas.Library.transform;
+            var pastLibraryRoot = pastAreas.Library.transform;
+
+            CreateLandmarkCube(
+                "Current_HouseInterior_BackWall_DepthBand",
+                currentInteriorRoot,
+                HouseInteriorCenter + new Vector3(0f, 0.05f, 2.74f),
+                new Vector3(6.80f, 0.05f, 0.04f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.house_interior.back_wall_depth_band");
+
+            CreateLandmarkCube(
+                "Past_HouseInterior_BackWall_DepthBand",
+                pastInteriorRoot,
+                HouseInteriorCenter + new Vector3(0f, 0.05f, 2.74f),
+                new Vector3(6.80f, 0.05f, 0.04f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.house_interior.back_wall_depth_band");
+
+            CreateLandmarkCube(
+                "Current_HouseInterior_Table_WarmLightPool",
+                currentInteriorRoot,
+                HouseInteriorCenter + new Vector3(1.02f, 0.021f, -0.78f),
+                new Vector3(1.24f, 0.04f, 0.88f),
+                Quaternion.Euler(0f, -8f, 0f),
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.house_interior.table_warm_pool");
+
+            CreateLandmarkCube(
+                "Past_HouseInterior_Table_WarmLightPool",
+                pastInteriorRoot,
+                HouseInteriorCenter + new Vector3(1.02f, 0.021f, -0.78f),
+                new Vector3(1.24f, 0.04f, 0.88f),
+                Quaternion.Euler(0f, -8f, 0f),
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.house_interior.table_warm_pool");
+
+            CreateLandmarkCube(
+                "Current_HouseExterior_Door_DepthPool",
+                currentExteriorRoot,
+                HouseExteriorCenter + new Vector3(-1.02f, 0.135f, -1.80f),
+                new Vector3(1.60f, 0.04f, 0.76f),
+                Quaternion.Euler(0f, -5f, 0f),
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.house_exterior.door_depth_pool");
+
+            CreateLandmarkCube(
+                "Past_HouseExterior_Door_WarmPool",
+                pastExteriorRoot,
+                HouseExteriorCenter + new Vector3(-1.02f, 0.135f, -1.76f),
+                new Vector3(1.54f, 0.04f, 0.82f),
+                Quaternion.Euler(0f, -5f, 0f),
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.house_exterior.door_warm_pool");
+
+            CreateLandmarkCube(
+                "Current_CentralPlaza_LibraryFacade_DepthUnderEave",
+                currentPlazaRoot,
+                CentralPlazaVsCenter + new Vector3(0f, 2.71f, 7.96f),
+                new Vector3(9.20f, 0.05f, 0.04f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.central_plaza.library_facade.depth_under_eave");
+
+            CreateLandmarkCube(
+                "Past_CentralPlaza_LibraryFacade_WindowWarmPool",
+                pastPlazaRoot,
+                CentralPlazaVsCenter + new Vector3(0f, 0.025f, 7.44f),
+                new Vector3(6.60f, 0.04f, 0.56f),
+                Quaternion.identity,
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.central_plaza.library_facade.window_warm_pool");
+
+            CreateLandmarkCube(
+                "Current_Library_BackShelf_DepthBand",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(0f, 0.61f, 7.18f),
+                new Vector3(9.10f, 0.05f, 0.04f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.back_shelf_depth_band");
+
+            CreateLandmarkCube(
+                "Past_Library_BackShelf_DepthBand",
+                pastLibraryRoot,
+                LibraryVsCenter + new Vector3(0f, 0.61f, 7.18f),
+                new Vector3(9.10f, 0.05f, 0.04f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.library.back_shelf_depth_band");
+
+            CreateLandmarkCube(
+                "Current_Library_RetoDesk_WarmPool",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(1.34f, 0.022f, 0.22f),
+                new Vector3(1.72f, 0.04f, 0.72f),
+                Quaternion.Euler(0f, 4f, 0f),
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.reto_desk_warm_pool");
+
+            CreateLandmarkCube(
+                "Current_Library_SecondFloor_UnderGalleryDepth_Left",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(-4.05f, 1.94f, 0.10f),
+                new Vector3(0.84f, 0.05f, 9.00f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.second_floor.under_gallery_depth.left");
+
+            CreateLandmarkCube(
+                "Current_Library_SecondFloor_UnderGalleryDepth_Right",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(4.05f, 1.94f, 0.10f),
+                new Vector3(0.84f, 0.05f, 9.00f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.second_floor.under_gallery_depth.right");
+
+            CreateLandmarkCube(
+                "Past_Library_SecondFloor_UnderGalleryDepth_Left",
+                pastLibraryRoot,
+                LibraryVsCenter + new Vector3(-4.05f, 1.94f, 0.10f),
+                new Vector3(0.84f, 0.05f, 9.00f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.library.second_floor.under_gallery_depth.left");
+
+            CreateLandmarkCube(
+                "Past_Library_SecondFloor_UnderGalleryDepth_Right",
+                pastLibraryRoot,
+                LibraryVsCenter + new Vector3(4.05f, 1.94f, 0.10f),
+                new Vector3(0.84f, 0.05f, 9.00f),
+                Quaternion.identity,
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Past.library.second_floor.under_gallery_depth.right");
         }
 
         private static void CreateRouteMoveMarkers(Transform exteriorRoot, Transform plazaRoot, Transform libraryRoot, string prefix, bool past, Materials materials)
@@ -4159,6 +4341,25 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
+        {
+            ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Past_HouseInteriorMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_HouseInterior_Table_WarmLightPool", "hd2d_warm_light_pool", 3005, 3015, "Current_HouseInteriorMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_HouseInterior_Table_WarmLightPool", "hd2d_warm_light_pool", 3005, 3015, "Past_HouseInteriorMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_HouseExterior_Door_DepthPool", "hd2d_depth_shadow", 2985, 2995, "Current_HouseExteriorMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_HouseExterior_Door_WarmPool", "hd2d_warm_light_pool", 3005, 3015, "Past_HouseExteriorMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_CentralPlaza_LibraryFacade_DepthUnderEave", "hd2d_depth_shadow", 2985, 2995, "Current_CentralPlazaMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_CentralPlaza_LibraryFacade_WindowWarmPool", "hd2d_warm_light_pool", 3005, 3015, "Past_CentralPlazaMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_BackShelf_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_Library_BackShelf_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Past_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_RetoDesk_WarmPool", "hd2d_warm_light_pool", 3005, 3015, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_SecondFloor_UnderGalleryDepth_Left", "hd2d_depth_shadow", 2985, 2995, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_SecondFloor_UnderGalleryDepth_Right", "hd2d_depth_shadow", 2985, 2995, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_Library_SecondFloor_UnderGalleryDepth_Left", "hd2d_depth_shadow", 2985, 2995, "Past_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Past_Library_SecondFloor_UnderGalleryDepth_Right", "hd2d_depth_shadow", 2985, 2995, "Past_LibraryMap_SeparateSpace");
+        }
+
         private static void ValidateAtmosphereParticleSystem(string objectName, int expectedLayer, Material expectedMaterial)
         {
             var atmosphere = FindSceneObjectIncludingInactive(objectName);
@@ -4267,6 +4468,63 @@ namespace Anemora.EditorTools
             if (texture == null || !string.Equals(texture.name, expectedName, StringComparison.Ordinal))
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must reference {expectedName}.");
+            }
+        }
+
+        private static void ValidateHd2dDepthFramingObject(string objectName, string expectedMaterialToken, int minRenderQueue, int maxRenderQueue, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing depth-framing object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not have a collider.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            if (sceneObject.transform.localScale.y > 0.08f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay very thin on the Y axis.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+
+            var renderQueue = renderer.sharedMaterial.renderQueue;
+            if (renderQueue < minRenderQueue || renderQueue > maxRenderQueue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep renderQueue in the {minRenderQueue}-{maxRenderQueue} range, but was {renderQueue}.");
             }
         }
 
@@ -5059,6 +5317,20 @@ namespace Anemora.EditorTools
             ConfigureTransparentUnlitMaterial(material, 2995);
             var texture = EnsureNiroContactShadowTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
+            return material;
+        }
+
+        private static Material EnsureHd2dDepthShadowMaterial()
+        {
+            var material = FlatMaterial("hd2d_depth_shadow", new Color(0.04f, 0.035f, 0.035f, 0.12f), true);
+            ConfigureTransparentUnlitMaterial(material, 2990);
+            return material;
+        }
+
+        private static Material EnsureHd2dWarmLightPoolMaterial()
+        {
+            var material = FlatMaterial("hd2d_warm_light_pool", new Color(1.0f, 0.72f, 0.30f, 0.18f), true);
+            ConfigureTransparentUnlitMaterial(material, 3009);
             return material;
         }
 
