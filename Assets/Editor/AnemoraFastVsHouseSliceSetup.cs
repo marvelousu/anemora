@@ -205,6 +205,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyThirdCycleOutdoorEdgeDressing();
             ValidateFastVsHd2dThirtySixthCycleOutdoorBoundaryNatureDetails();
             ValidateFastVsHd2dFortySixthCycleHouseExteriorTreeFencePolish();
+            ValidateFastVsHd2dFortySeventhCycleHouseExteriorTreeCrownSilhouette();
             ValidateFastVsHd2dTwentyFourthCycleLibraryWindowLight();
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
@@ -797,6 +798,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dFortySixthCycleScreenshotsBatch()
         {
             CaptureHd2dFortySixthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_exterior_tree_fence_silhouette_20260520");
+        }
+
+        public static void CaptureHd2dFortySeventhCycleScreenshotsBatch()
+        {
+            CaptureHd2dFortySeventhCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_exterior_tree_crown_silhouette_20260520");
         }
 
         public static void CaptureHd2dTwentySixthCycleScreenshotsBatch()
@@ -2692,6 +2698,86 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS forty-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dFortySeventhCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS forty-seventh-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f);
+            var overviewAnchorLocal = HouseExteriorCenter + new Vector3(3.42f, 1.92f, 2.92f);
+            var closePlayerLocal = HouseExteriorCenter + new Vector3(2.82f, 0.02f, 0.92f);
+            var closeAnchorLocal = HouseExteriorCenter + new Vector3(3.42f, 2.02f, 2.84f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                overviewAnchorLocal,
+                new Vector3(1.10f, 1.96f, -4.90f),
+                new Vector3(0.10f, 0.24f, 0.12f),
+                outputDirectory,
+                "01_current_house_exterior_tree_crown_overview.png");
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_tree_crown_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.72f, 1.08f, -2.20f),
+                new Vector3(0.10f, 0.18f, 0.12f),
+                outputDirectory,
+                "02_current_house_exterior_tree_crown_close.png");
+            ValidateScreenshotOutputExists(outputDirectory, "02_current_house_exterior_tree_crown_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                overviewAnchorLocal,
+                new Vector3(1.10f, 1.96f, -4.90f),
+                new Vector3(0.10f, 0.24f, 0.12f),
+                outputDirectory,
+                "03_past_house_exterior_tree_crown_overview.png");
+            ValidateScreenshotOutputExists(outputDirectory, "03_past_house_exterior_tree_crown_overview.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.72f, 1.08f, -2.20f),
+                new Vector3(0.10f, 0.18f, 0.12f),
+                outputDirectory,
+                "04_past_house_exterior_tree_crown_close.png");
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_house_exterior_tree_crown_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS forty-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureHd2dTwentySixthCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -3847,6 +3933,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_TreeBillboardLikeTrunk", root, c + new Vector3(3.35f, 0.72f, 2.85f), new Vector3(0.34f, 1.44f, 0.34f), Quaternion.identity, wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree.trunk");
             CreateLandmarkCube($"{prefix}_TreePixelCrown", root, c + new Vector3(3.35f, 1.78f, 2.85f), new Vector3(1.45f, 1.05f, 1.45f), Quaternion.identity, past ? materials.Leaf : materials.CurrentLeaf, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree.crown");
             CreateHouseExteriorTreeFenceSilhouettePolish(root, prefix, past, materials);
+            CreateHouseExteriorTreeCrownSilhouetteBreakup(root, prefix, past, materials);
             CreateExteriorDetails(root, prefix, past, materials);
 
             if (!past)
@@ -3897,6 +3984,31 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Past_HouseExterior_TreeFencePolish_NorthFenceCapStrip", root, c + new Vector3(-1.25f, 0.84f, 5.12f), new Vector3(10.58f, 0.06f, 0.14f), Quaternion.identity, fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.tree_fence_polish.north_fence_cap_strip");
                 CreateLandmarkCube("Past_HouseExterior_TreeFencePolish_WestFenceFlowerA", root, c + new Vector3(-5.72f, 0.77f, 1.82f), new Vector3(0.18f, 0.16f, 0.18f), Quaternion.identity, flower, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.tree_fence_polish.west_fence_flower_a");
                 CreateLandmarkCube("Past_HouseExterior_TreeFencePolish_NorthFenceLeafA", root, c + new Vector3(-0.86f, 0.77f, 4.88f), new Vector3(0.22f, 0.16f, 0.18f), Quaternion.Euler(0f, 11f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.tree_fence_polish.north_fence_leaf_a");
+            }
+        }
+
+        private static void CreateHouseExteriorTreeCrownSilhouetteBreakup(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+
+            if (!past)
+            {
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", root, c + new Vector3(2.58f, 1.45f, 2.06f), new Vector3(0.68f, 0.36f, 0.48f), Quaternion.identity, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", root, c + new Vector3(3.98f, 1.47f, 2.14f), new Vector3(0.62f, 0.34f, 0.46f), Quaternion.identity, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_b");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", root, c + new Vector3(2.38f, 1.94f, 2.96f), new Vector3(0.34f, 0.62f, 0.40f), Quaternion.Euler(0f, 9f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.left_edge_break_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", root, c + new Vector3(4.28f, 1.95f, 2.98f), new Vector3(0.34f, 0.58f, 0.40f), Quaternion.Euler(0f, -11f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.right_edge_break_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", root, c + new Vector3(4.20f, 2.18f, 3.36f), new Vector3(0.20f, 0.18f, 0.20f), Quaternion.Euler(0f, 14f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", root, c + new Vector3(2.58f, 2.12f, 3.30f), new Vector3(0.20f, 0.16f, 0.20f), Quaternion.Euler(0f, -12f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_b");
+            }
+            else
+            {
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", root, c + new Vector3(2.58f, 1.45f, 2.06f), new Vector3(0.68f, 0.36f, 0.48f), Quaternion.identity, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", root, c + new Vector3(3.98f, 1.47f, 2.14f), new Vector3(0.62f, 0.34f, 0.46f), Quaternion.identity, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_b");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", root, c + new Vector3(2.38f, 1.94f, 2.96f), new Vector3(0.34f, 0.62f, 0.40f), Quaternion.Euler(0f, 9f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.left_edge_break_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", root, c + new Vector3(4.28f, 1.95f, 2.98f), new Vector3(0.34f, 0.58f, 0.40f), Quaternion.Euler(0f, -11f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.right_edge_break_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", root, c + new Vector3(4.20f, 2.18f, 3.36f), new Vector3(0.20f, 0.18f, 0.20f), Quaternion.Euler(0f, 14f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_a");
+                CreateLandmarkCube($"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", root, c + new Vector3(2.58f, 2.12f, 3.30f), new Vector3(0.20f, 0.16f, 0.20f), Quaternion.Euler(0f, -12f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_b");
             }
         }
 
@@ -10019,6 +10131,36 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_HouseExterior_DoorEntrySmallGlow", "Past_HouseExteriorMap_SeparateSpace");
         }
 
+        private static void ValidateFastVsHd2dFortySeventhCycleHouseExteriorTreeCrownSilhouette()
+        {
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Current_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", "Current_HouseExteriorMap_SeparateSpace", "current_leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Current_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", "Current_HouseExteriorMap_SeparateSpace", "current_leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Current_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", "Current_HouseExteriorMap_SeparateSpace", "current_leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Current_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", "Current_HouseExteriorMap_SeparateSpace", "current_leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Current_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Current_HouseExteriorMap_SeparateSpace", "current_leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Current_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Current_HouseExteriorMap_SeparateSpace", "current_leaf");
+
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Past_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", "Past_HouseExteriorMap_SeparateSpace", "leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Past_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", "Past_HouseExteriorMap_SeparateSpace", "leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Past_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", "Past_HouseExteriorMap_SeparateSpace", "leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Past_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", "Past_HouseExteriorMap_SeparateSpace", "leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Past_HouseExteriorMap_SeparateSpace", "leaf");
+            ValidateHouseExteriorTreeCrownSilhouetteObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Past_HouseExteriorMap_SeparateSpace", "leaf");
+
+            if (FindSceneObjectIncludingInactive("Current_TreeBillboardLikeTrunk") == null ||
+                FindSceneObjectIncludingInactive("Current_TreePixelCrown") == null ||
+                FindSceneObjectIncludingInactive("Past_TreeBillboardLikeTrunk") == null ||
+                FindSceneObjectIncludingInactive("Past_TreePixelCrown") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the base house exterior tree trunk and crown must remain present.");
+            }
+
+            ValidateLandmarkExists("Current_HouseExterior_ToPlaza_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ToPlaza_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_DoorEntrySmallGlow", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_DoorEntrySmallGlow", "Past_HouseExteriorMap_SeparateSpace");
+        }
+
         private static void ValidateFastVsHd2dTwentyFourthCycleLibraryWindowLight()
         {
             ValidateGeneratedTextureExactSize("hd2d_library_window_light_soft", 128, 160);
@@ -11167,6 +11309,52 @@ namespace Anemora.EditorTools
             if (sceneObject.transform.localScale.y > maxScaleY)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay thin on the Y axis.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateHouseExteriorTreeCrownSilhouetteObject(string objectName, string expectedParentName, string expectedMaterialToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing tree crown silhouette object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not have a collider.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
             }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
