@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.1 fast VS HD2D library bookshelf readability cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.2 fast VS HD2D library reading table detail cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 268 files including INDEX.md and README.md.
-- Dated devlog records: 266 files.
-- Linked evidence files present under docs/devlog/screenshots/: 347 files.
+- Root-level Markdown coverage: 269 files including INDEX.md and README.md.
+- Dated devlog records: 267 files.
+- Linked evidence files present under docs/devlog/screenshots/: 350 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 29 |
+| 2026-05-20 | 30 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -55,6 +55,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf Readability Cycle |
 | [2026-05-20_fast_vs_hd2d_library_window_light_cycle.md](2026-05-20_fast_vs_hd2d_library_window_light_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Window Light Cycle |
 | [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Reading Table Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_close_review_cycle.md](2026-05-20_fast_vs_hd2d_close_review_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Close Review Cycle |
 | [2026-05-20_fast_vs_hd2d_depth_framing_cycle.md](2026-05-20_fast_vs_hd2d_depth_framing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Depth Framing Cycle |
 | [2026-05-20_fast_vs_hd2d_facade_detail_cycle.md](2026-05-20_fast_vs_hd2d_facade_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Facade Detail Cycle |
@@ -395,6 +396,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.2 | 2026-05-20 | Added Fast VS HD2D library reading table detail cycle record with current/past bench pairs, table-top seams, validation, and screenshot evidence. |
 | v6.1 | 2026-05-20 | Added Fast VS HD2D library bookshelf readability cycle record with current/past side shelf lips, refreshed generated bookshelf textures, validation, build, and player-smoke evidence. |
 | v6.0 | 2026-05-20 | Added Fast VS HD2D house interior wall/floor warmth cycle record with current/past house interior screenshots, validation, build, and player-smoke evidence. |
 | v5.6 | 2026-05-20 | Added Fast VS HD2D outdoor edge dressing cycle record with current/past house and plaza boundary screenshots, validation, and review evidence. |

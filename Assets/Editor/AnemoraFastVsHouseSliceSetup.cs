@@ -208,6 +208,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentySixthCycleHouseBedTextilePolish();
             ValidateFastVsHd2dTwentySeventhCycleHouseInteriorWallFloorWarmth();
             ValidateFastVsHd2dTwentyEighthCycleLibraryBookshelfReadability();
+            ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
@@ -435,6 +436,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentyEighthCycleScreenshotsBatch()
         {
             CaptureHd2dTwentyEighthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_bookshelf_readability_20260520");
+        }
+
+        public static void CaptureHd2dTwentyNinthCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentyNinthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_reading_tables_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1704,6 +1710,68 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-eighth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dTwentyNinthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-ninth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(1.12f, 0.02f, 0.12f),
+                LibraryVsCenter + new Vector3(1.12f, 0.40f, 0.10f),
+                new Vector3(-0.34f, 1.18f, -2.18f),
+                new Vector3(0f, 0.14f, 0.06f),
+                outputDirectory,
+                "01_current_library_reto_table_details.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(0f, 0.02f, -0.92f),
+                LibraryVsCenter + new Vector3(0f, 0.40f, -0.88f),
+                new Vector3(-0.18f, 1.34f, -2.92f),
+                new Vector3(0f, 0.12f, -0.18f),
+                outputDirectory,
+                "02_past_library_clean_reading_tables_details.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-1.72f, 0.02f, 1.42f),
+                LibraryVsCenter + new Vector3(-1.72f, 0.40f, 1.40f),
+                new Vector3(-0.08f, 1.16f, -2.02f),
+                new Vector3(0f, 0.16f, -0.04f),
+                outputDirectory,
+                "03_current_library_side_table_details.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_library_reto_table_details.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_library_clean_reading_tables_details.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_side_table_details.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-ninth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -2448,8 +2516,11 @@ namespace Anemora.EditorTools
             if (!past)
             {
                 CreateLibraryReadingTableAssembly($"{prefix}_Library_ReadingTableLong", root, c + new Vector3(1.08f, 0.32f, 0.12f), Quaternion.Euler(0f, 4f, 0f), new Vector3(2.28f, 0.18f, 0.72f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table");
+                CreateLibraryReadingSeatPair($"{prefix}_Library_ReadingTableLong", root, c + new Vector3(1.08f, 0.32f, 0.12f), Quaternion.Euler(0f, 4f, 0f), new Vector3(2.28f, 0.18f, 0.72f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table.long.seat_pair");
                 CreateLibraryReadingTableAssembly($"{prefix}_Library_ReadingTableSideA", root, c + new Vector3(-1.72f, 0.32f, 1.42f), Quaternion.Euler(0f, -5f, 0f), new Vector3(1.80f, 0.18f, 0.62f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table_side_a");
+                CreateLibraryReadingSeatPair($"{prefix}_Library_ReadingTableSideA", root, c + new Vector3(-1.72f, 0.32f, 1.42f), Quaternion.Euler(0f, -5f, 0f), new Vector3(1.80f, 0.18f, 0.62f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table.side_a.seat_pair");
                 CreateLibraryReadingTableAssembly($"{prefix}_Library_ReadingTableSideB", root, c + new Vector3(2.98f, 0.32f, -1.48f), Quaternion.Euler(0f, 8f, 0f), new Vector3(1.65f, 0.18f, 0.58f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table_side_b");
+                CreateLibraryReadingSeatPair($"{prefix}_Library_ReadingTableSideB", root, c + new Vector3(2.98f, 0.32f, -1.48f), Quaternion.Euler(0f, 8f, 0f), new Vector3(1.65f, 0.18f, 0.58f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table.side_b.seat_pair");
                 CreateInvisibleColliderBox($"{prefix}_Library_ReadingTableLong_NoStepCollider", root, c + new Vector3(1.08f, 0.88f, 0.12f), new Vector3(2.42f, 1.32f, 0.88f), $"{prefix}.library.reading_table.long.no_step");
                 CreateInvisibleColliderBox($"{prefix}_Library_ReadingTableSideA_NoStepCollider", root, c + new Vector3(-1.72f, 0.88f, 1.42f), new Vector3(1.96f, 1.32f, 0.78f), $"{prefix}.library.reading_table.side_a.no_step");
                 CreateInvisibleColliderBox($"{prefix}_Library_ReadingTableSideB_NoStepCollider", root, c + new Vector3(2.98f, 0.88f, -1.48f), new Vector3(1.82f, 1.32f, 0.74f), $"{prefix}.library.reading_table.side_b.no_step");
@@ -2658,10 +2729,90 @@ namespace Anemora.EditorTools
         private static void CreatePastLibraryCleanReadingTable(Transform root, string id, Vector3 localPosition, Quaternion rotation, Material wood, Material book, Material page, Material trim, Material shadow)
         {
             CreateLibraryReadingTableAssembly($"Past_Library_ReadingTableClean_{id}", root, localPosition, rotation, PastLibraryReadingTableCleanScale, wood, trim, shadow, $"Past.library.reading_table_clean.{id}");
+            CreateLibraryReadingSeatPair($"Past_Library_ReadingTableClean_{id}", root, localPosition, rotation, PastLibraryReadingTableCleanScale, wood, trim, shadow, $"Past.library.reading_table_clean.{id}.seat_pair");
             CreateInvisibleColliderBox($"Past_Library_ReadingTableClean_{id}_NoStepCollider", root, localPosition + new Vector3(0f, 0.56f, 0f), PastLibraryReadingTableCleanColliderSize, $"Past.library.reading_table_clean.{id}.no_step");
             CreateReadableBookProp(root, $"Past_Library_ReadingTableClean_{id}_BookA", localPosition + new Vector3(-0.55f, 0.085f, -0.06f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.28f, 0.04f, 0.18f), book, page, wood, true, $"Past.library.reading_table_clean.{id}.book_a");
             CreateReadableBookProp(root, $"Past_Library_ReadingTableClean_{id}_BookB", localPosition + new Vector3(0.55f, 0.085f, 0.06f), Quaternion.Euler(0f, -12f, 0f), new Vector3(0.24f, 0.04f, 0.16f), book, page, wood, true, $"Past.library.reading_table_clean.{id}.book_b");
             CreateReadableBookProp(root, $"Past_Library_ReadingTableClean_{id}_BookC", localPosition + new Vector3(0.03f, 0.085f, 0.17f), Quaternion.Euler(0f, 4f, 0f), new Vector3(0.20f, 0.035f, 0.14f), book, page, wood, false, $"Past.library.reading_table_clean.{id}.book_c");
+        }
+
+        private static void CreateLibraryReadingSeatPair(string objectName, Transform root, Vector3 tableCenter, Quaternion tableRotation, Vector3 tableScale, Material wood, Material trim, Material shadow, string landmarkIdBase)
+        {
+            var seatWidth = Mathf.Clamp(tableScale.x * 0.72f, tableScale.x * 0.68f, tableScale.x * 0.75f);
+            var seatThickness = Mathf.Clamp(Mathf.Max(0.08f, tableScale.y * 0.56f), 0.08f, 0.12f);
+            var seatDepth = Mathf.Clamp(tableScale.z * 0.20f, 0.12f, 0.16f);
+            var seatOffsetZ = tableScale.z * 0.5f + seatDepth * 0.5f + 0.04f;
+            var seatOffsetY = -0.18f;
+
+            var seatScale = new Vector3(seatWidth, seatThickness, seatDepth);
+            var shadowScale = new Vector3(seatWidth * 0.88f, 0.03f, seatDepth * 0.84f);
+            var trimScale = new Vector3(seatWidth * 0.76f, 0.016f, seatDepth * 0.56f);
+
+            CreateLandmarkCube(
+                $"{objectName}_FrontBenchSeat",
+                root,
+                tableCenter + tableRotation * new Vector3(0f, seatOffsetY, -seatOffsetZ),
+                seatScale,
+                tableRotation,
+                wood,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkIdBase}.front_bench_seat");
+
+            CreateLandmarkCube(
+                $"{objectName}_RearBenchSeat",
+                root,
+                tableCenter + tableRotation * new Vector3(0f, seatOffsetY, seatOffsetZ),
+                seatScale,
+                tableRotation,
+                wood,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkIdBase}.rear_bench_seat");
+
+            CreateLandmarkCube(
+                $"{objectName}_FrontBenchShadow",
+                root,
+                tableCenter + tableRotation * new Vector3(0f, -0.22f, -seatOffsetZ),
+                shadowScale,
+                tableRotation,
+                shadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkIdBase}.front_bench_shadow");
+
+            CreateLandmarkCube(
+                $"{objectName}_RearBenchShadow",
+                root,
+                tableCenter + tableRotation * new Vector3(0f, -0.22f, seatOffsetZ),
+                shadowScale,
+                tableRotation,
+                shadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkIdBase}.rear_bench_shadow");
+
+            CreateLandmarkCube(
+                $"{objectName}_FrontBenchTrim",
+                root,
+                tableCenter + tableRotation * new Vector3(0f, -0.11f, -seatOffsetZ),
+                trimScale,
+                tableRotation,
+                trim,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkIdBase}.front_bench_trim");
+
+            CreateLandmarkCube(
+                $"{objectName}_RearBenchTrim",
+                root,
+                tableCenter + tableRotation * new Vector3(0f, -0.11f, seatOffsetZ),
+                trimScale,
+                tableRotation,
+                trim,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkIdBase}.rear_bench_trim");
         }
 
         private static GameObject CreateLibraryReadingTableAssembly(string objectName, Transform parent, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material wood, Material trim, Material shadow, string landmarkId)
@@ -2702,6 +2853,62 @@ namespace Anemora.EditorTools
                 localScale,
                 new Vector3(0f, localScale.y * 0.16f, localScale.z * 0.5f - 0.02f),
                 new Vector3(localScale.x - 0.20f, Mathf.Max(0.016f, localScale.y * 0.10f), 0.03f),
+                trim);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_TabletopPlankSeamA",
+                tableRoot.transform,
+                localScale,
+                new Vector3(-localScale.x * 0.24f, localScale.y * 0.39f, 0f),
+                new Vector3(0.03f, Mathf.Max(0.015f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.18f)),
+                trim);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_TabletopPlankSeamB",
+                tableRoot.transform,
+                localScale,
+                new Vector3(0f, localScale.y * 0.40f, 0f),
+                new Vector3(0.03f, Mathf.Max(0.015f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.18f)),
+                shadow);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_TabletopPlankSeamC",
+                tableRoot.transform,
+                localScale,
+                new Vector3(localScale.x * 0.24f, localScale.y * 0.39f, 0f),
+                new Vector3(0.03f, Mathf.Max(0.015f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.18f)),
+                trim);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_LeftEdgeHighlight",
+                tableRoot.transform,
+                localScale,
+                new Vector3(-localScale.x * 0.5f + 0.04f, localScale.y * 0.24f, 0f),
+                new Vector3(0.03f, Mathf.Max(0.016f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.14f)),
+                trim);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_RightEdgeHighlight",
+                tableRoot.transform,
+                localScale,
+                new Vector3(localScale.x * 0.5f - 0.04f, localScale.y * 0.24f, 0f),
+                new Vector3(0.03f, Mathf.Max(0.016f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.14f)),
+                trim);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_FrontThicknessRim",
+                tableRoot.transform,
+                localScale,
+                new Vector3(0f, localScale.y * 0.21f, -localScale.z * 0.5f + 0.05f),
+                new Vector3(localScale.x - 0.20f, 0.022f, 0.03f),
+                shadow);
+
+            CreateLibraryReadingTablePart(
+                $"{objectName}_RearThicknessRim",
+                tableRoot.transform,
+                localScale,
+                new Vector3(0f, localScale.y * 0.21f, localScale.z * 0.5f - 0.05f),
+                new Vector3(localScale.x - 0.20f, 0.022f, 0.03f),
                 trim);
 
             var legHeight = 0.30f;
@@ -4880,6 +5087,92 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateLibraryReadingTableDetailObject(string objectName, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library reading table detail object {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer and material.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("fence", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("shadow", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the trim/shadow material family.");
+            }
+        }
+
+        private static void ValidateLibraryReadingSeatVisualObject(string objectName, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library reading seat object {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer and material.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (objectName.IndexOf("Shadow", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (materialName.IndexOf("shadow", StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must use the shadow material family.");
+                }
+            }
+            else if (materialName.IndexOf("furniture", StringComparison.OrdinalIgnoreCase) < 0 &&
+                     materialName.IndexOf("fence", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the wood material family.");
+            }
+        }
+
         private static void ValidateNoDebugWorldLabel(string objectName)
         {
             if (FindSceneObjectIncludingInactive(objectName) != null)
@@ -5307,6 +5600,66 @@ namespace Anemora.EditorTools
             ValidateLibrarySideBookshelfFrontLips("Current", "Right");
             ValidateLibrarySideBookshelfFrontLips("Past", "Left");
             ValidateLibrarySideBookshelfFrontLips("Past", "Right");
+        }
+
+        private static void ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails()
+        {
+            var currentTableRoots = new[]
+            {
+                "Current_Library_ReadingTableLong",
+                "Current_Library_ReadingTableSideA",
+                "Current_Library_ReadingTableSideB"
+            };
+
+            var pastTableRoots = new[]
+            {
+                "Past_Library_ReadingTableClean_LeftFront",
+                "Past_Library_ReadingTableClean_CenterFront",
+                "Past_Library_ReadingTableClean_RightFront",
+                "Past_Library_ReadingTableClean_LeftRear",
+                "Past_Library_ReadingTableClean_CenterRear",
+                "Past_Library_ReadingTableClean_RightRear"
+            };
+
+            foreach (var tableRoot in currentTableRoots)
+            {
+                ValidateInvisibleDropGuard($"{tableRoot}_NoStepCollider");
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamA", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamB", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamC", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_LeftEdgeHighlight", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_RightEdgeHighlight", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_FrontThicknessRim", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_RearThicknessRim", tableRoot);
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_FrontBenchSeat", "Current_LibraryMap_SeparateSpace");
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_RearBenchSeat", "Current_LibraryMap_SeparateSpace");
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_FrontBenchShadow", "Current_LibraryMap_SeparateSpace");
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_RearBenchShadow", "Current_LibraryMap_SeparateSpace");
+            }
+
+            foreach (var tableRoot in pastTableRoots)
+            {
+                ValidateInvisibleDropGuard($"{tableRoot}_NoStepCollider");
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamA", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamB", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamC", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_LeftEdgeHighlight", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_RightEdgeHighlight", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_FrontThicknessRim", tableRoot);
+                ValidateLibraryReadingTableDetailObject($"{tableRoot}_RearThicknessRim", tableRoot);
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_FrontBenchSeat", "Past_LibraryMap_SeparateSpace");
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_RearBenchSeat", "Past_LibraryMap_SeparateSpace");
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_FrontBenchShadow", "Past_LibraryMap_SeparateSpace");
+                ValidateLibraryReadingSeatVisualObject($"{tableRoot}_RearBenchShadow", "Past_LibraryMap_SeparateSpace");
+            }
+
+            if (FindSceneObjectIncludingInactive("Current_Library_RetoDeskBook_Initial") == null ||
+                FindSceneObjectIncludingInactive("Current_Library_ReturnedBookOnDesk") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_TargetBook_ForPickup") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_ReadingTableClean_LeftFront_BookA") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the current Reto books and past library pickup/books must remain present.");
+            }
         }
 
         private static void ValidateCurrentLibraryEmptySideShelf(string side)
