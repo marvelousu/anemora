@@ -231,6 +231,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
+            ValidateFastVsHd2dSixtiethCycleLibraryReadableMicroprops();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorFacadeTextures();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dThirtySecondCycleLibraryFacadeArchitecturePolish();
@@ -475,6 +476,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dThirtyEighthCycleScreenshotsBatch()
         {
             CaptureHd2dThirtyEighthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_readable_book_props_20260520");
+        }
+
+        public static void CaptureHd2dSixtiethCycleScreenshotsBatch()
+        {
+            CaptureHd2dSixtiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_readable_microprops_20260521");
         }
 
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
@@ -2823,6 +2829,99 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS thirty-eighth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dSixtiethCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS sixtieth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(-0.96f, 0.02f, -0.82f),
+                CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.02f, 0.05f, 0.01f),
+                new Vector3(-0.22f, 1.12f, -2.02f),
+                new Vector3(0f, 0.12f, 0.04f),
+                outputDirectory,
+                "01_current_library_reto_desk_microprops.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(2.58f, 0.02f, -1.36f),
+                LibraryVsCenter + new Vector3(2.58f, 0.10f, -1.30f),
+                new Vector3(0.18f, 1.02f, -1.50f),
+                new Vector3(0f, 0.08f, 0.04f),
+                outputDirectory,
+                "02_current_library_floor_book_microprops.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-2.98f, 0.02f, -2.42f),
+                LibraryVsCenter + new Vector3(-3.34f, 0.10f, -0.98f),
+                new Vector3(0.04f, 1.18f, -2.18f),
+                new Vector3(-0.02f, 0.12f, 0.04f),
+                outputDirectory,
+                "03_past_library_table_microprops.png");
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
+            controller.ForcePlayerOtherTimeLocalForReview(LibraryVsCenter + new Vector3(-4.78f, 0.02f, -0.16f));
+            guide.ApplyActiveTimeIsolationForReview();
+            SetSceneObjectActiveIfPresent("Past_Library_TargetBook_RedCubeMarker", false);
+            SetSceneObjectActiveIfPresent("Past_Library_Aria_RedCubeMarker", false);
+            var previousMask = camera.cullingMask;
+            var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+            var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = (previousMask & ~currentBit) | otherBit | playerBit;
+            PositionCloseReviewCamera(
+                camera,
+                controller.OtherTimeSpaceRootForReview.TransformPoint(LibraryVsCenter + new Vector3(-4.56f, 0.56f, 0.92f)),
+                new Vector3(2.70f, 1.10f, 1.02f),
+                new Vector3(0.20f, 0.14f, 0.05f));
+            SaveCameraPng(camera, Path.Combine(outputDirectory, "04_past_library_side_shelf_microprops.png"));
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_library_side_shelf_microprops.png");
+            camera.cullingMask = previousMask;
+            controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(-4.78f, 0.02f, -0.16f));
+            guide.ApplyActiveTimeIsolationForReview();
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_library_reto_desk_microprops.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_current_library_floor_book_microprops.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_past_library_table_microprops.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_library_side_shelf_microprops.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS sixtieth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void SetSceneObjectActiveIfPresent(string objectName, bool active)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject != null)
+            {
+                sceneObject.SetActive(active);
+            }
         }
 
         private static void CaptureHd2dThirtyNinthCycleScreenshotsToDirectory(string outputDirectory)
@@ -5560,6 +5659,7 @@ namespace Anemora.EditorTools
                     "Current.library.prop_detail.shelf_debris_east");
             }
 
+            CreateLibraryReadableMicropropPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryFloorDecayDetails(root, prefix, past, materials, c, floor, wood, trim);
         }
 
@@ -5776,6 +5876,138 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_Library_FloorDecay_WoodShardWest", root, c + new Vector3(-3.52f, 0.055f, -0.56f), new Vector3(0.42f, 0.040f, 0.08f), Quaternion.Euler(0f, -16f, 6f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_west");
                 CreateLandmarkCube("Current_Library_FloorDecay_WoodShardBack", root, c + new Vector3(1.68f, 0.052f, 6.00f), new Vector3(0.34f, 0.036f, 0.08f), Quaternion.Euler(0f, 21f, -4f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_back");
                 CreateLandmarkCube("Current_Library_FloorDecay_WoodShardEast", root, c + new Vector3(4.12f, 0.050f, 0.90f), new Vector3(0.36f, 0.035f, 0.08f), Quaternion.Euler(0f, -23f, 8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_east");
+            }
+        }
+
+        private static void CreateLibraryReadableMicropropPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
+        {
+            if (past)
+            {
+                var tableOpenBook = CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadableMicroprops_TableOpenBook_LeftFront",
+                    root,
+                    c + new Vector3(-3.34f, 0.405f, -1.02f),
+                    new Vector3(0.22f, 0.022f, 0.15f),
+                    Quaternion.Euler(0f, 12f, 0f),
+                    materials.Book,
+                    "Past.library.readable_microprops.table_open_book_left_front");
+                var tableOpenBookDetail = CreateReadableBookProp(
+                    tableOpenBook.transform,
+                    "Past_Library_ReadableMicroprops_TableOpenBook_LeftFront_Detail",
+                    new Vector3(0f, 0.016f, 0f),
+                    Quaternion.Euler(0f, 8f, 0f),
+                    new Vector3(0.16f, 0.04f, 0.11f),
+                    materials.Book,
+                    trim,
+                    wood,
+                    true,
+                    "Past.library.readable_microprops.table_open_book_left_front.detail");
+                SetLandmarksCountForArrival(tableOpenBookDetail.transform, false);
+
+                var tableClosedBook = CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadableMicroprops_TableClosedBook_CenterRear",
+                    root,
+                    c + new Vector3(0.10f, 0.405f, 2.06f),
+                    new Vector3(0.18f, 0.020f, 0.12f),
+                    Quaternion.Euler(0f, -8f, 0f),
+                    materials.Book,
+                    "Past.library.readable_microprops.table_closed_book_center_rear");
+                var tableClosedBookDetail = CreateReadableBookProp(
+                    tableClosedBook.transform,
+                    "Past_Library_ReadableMicroprops_TableClosedBook_CenterRear_Detail",
+                    new Vector3(0f, 0.014f, 0f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    new Vector3(0.12f, 0.032f, 0.08f),
+                    materials.Book,
+                    trim,
+                    wood,
+                    false,
+                    "Past.library.readable_microprops.table_closed_book_center_rear.detail");
+                SetLandmarksCountForArrival(tableClosedBookDetail.transform, false);
+
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadableMicroprops_LeftShelfLedgerA",
+                    root,
+                    c + new Vector3(-4.56f, 0.46f, 0.92f),
+                    new Vector3(0.11f, 0.040f, 0.07f),
+                    Quaternion.Euler(0f, 18f, 0f),
+                    materials.Book,
+                    "Past.library.readable_microprops.left_shelf_ledger_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadableMicroprops_RightShelfLedgerA",
+                    root,
+                    c + new Vector3(4.56f, 0.46f, 0.92f),
+                    new Vector3(0.11f, 0.040f, 0.07f),
+                    Quaternion.Euler(0f, -18f, 0f),
+                    materials.Book,
+                    "Past.library.readable_microprops.right_shelf_ledger_a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadableMicroprops_RetoDeskPaperLineA",
+                    root,
+                    CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.08f, 0.022f, -0.03f),
+                    new Vector3(0.18f, 0.012f, 0.05f),
+                    Quaternion.Euler(0f, -11f, 0f),
+                    materials.Dust,
+                    "Current.library.readable_microprops.reto_desk_paper_line_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadableMicroprops_RetoDeskBookmarkA",
+                    root,
+                    CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.14f, 0.044f, 0.06f),
+                    new Vector3(0.04f, 0.028f, 0.10f),
+                    Quaternion.Euler(0f, 9f, 0f),
+                    materials.CurrentFence,
+                    "Current.library.readable_microprops.reto_desk_bookmark_a");
+
+                var floorOpenBook = CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadableMicroprops_FloorOpenBookA",
+                    root,
+                    c + new Vector3(2.58f, 0.072f, -1.30f),
+                    new Vector3(0.20f, 0.022f, 0.14f),
+                    Quaternion.Euler(0f, 22f, -7f),
+                    materials.Book,
+                    "Current.library.readable_microprops.floor_open_book_a");
+                var floorOpenBookDetail = CreateReadableBookProp(
+                    floorOpenBook.transform,
+                    "Current_Library_ReadableMicroprops_FloorOpenBookA_Detail",
+                    new Vector3(0f, 0.016f, 0f),
+                    Quaternion.Euler(0f, 16f, 0f),
+                    new Vector3(0.15f, 0.040f, 0.11f),
+                    materials.Book,
+                    trim,
+                    trim,
+                    true,
+                    "Current.library.readable_microprops.floor_open_book_a.detail");
+                SetLandmarksCountForArrival(floorOpenBookDetail.transform, false);
+
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadableMicroprops_LeftShelfLooseBookA",
+                    root,
+                    c + new Vector3(-4.56f, 0.47f, 0.90f),
+                    new Vector3(0.10f, 0.040f, 0.06f),
+                    Quaternion.Euler(0f, 14f, 0f),
+                    materials.Book,
+                    "Current.library.readable_microprops.left_shelf_loose_book_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadableMicroprops_RightShelfLooseBookA",
+                    root,
+                    c + new Vector3(4.56f, 0.47f, 0.90f),
+                    new Vector3(0.10f, 0.040f, 0.06f),
+                    Quaternion.Euler(0f, -14f, 0f),
+                    materials.Book,
+                    "Current.library.readable_microprops.right_shelf_loose_book_a");
+            }
+
+            _ = prefix;
+        }
+
+        private static void SetLandmarksCountForArrival(Transform root, bool countsForArrival)
+        {
+            foreach (var landmark in root.GetComponentsInChildren<TimeWindowPairedSpaceLandmark>(true))
+            {
+                SerializedSet(landmark, "countsForArrival", countsForArrival);
             }
         }
 
@@ -9690,6 +9922,96 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dSixtiethCycleLibraryReadableMicroprops()
+        {
+            ValidateLibraryReadableMicropropObject(
+                "Current_Library_ReadableMicroprops_RetoDeskPaperLineA",
+                "Current_LibraryMap_SeparateSpace",
+                CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.08f, 0.022f, -0.03f),
+                new Vector3(0.18f, 0.012f, 0.05f),
+                "dust");
+            ValidateLibraryReadableMicropropObject(
+                "Current_Library_ReadableMicroprops_RetoDeskBookmarkA",
+                "Current_LibraryMap_SeparateSpace",
+                CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.14f, 0.044f, 0.06f),
+                new Vector3(0.04f, 0.028f, 0.10f),
+                "current_fence");
+            ValidateLibraryReadableMicropropObject(
+                "Current_Library_ReadableMicroprops_FloorOpenBookA",
+                "Current_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(2.58f, 0.072f, -1.30f),
+                new Vector3(0.20f, 0.022f, 0.14f),
+                "book");
+            ValidateLibraryReadableMicropropObject(
+                "Current_Library_ReadableMicroprops_LeftShelfLooseBookA",
+                "Current_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(-4.56f, 0.47f, 0.90f),
+                new Vector3(0.10f, 0.040f, 0.06f),
+                "book");
+            ValidateLibraryReadableMicropropObject(
+                "Current_Library_ReadableMicroprops_RightShelfLooseBookA",
+                "Current_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(4.56f, 0.47f, 0.90f),
+                new Vector3(0.10f, 0.040f, 0.06f),
+                "book");
+
+            ValidateLibraryReadableMicropropObject(
+                "Past_Library_ReadableMicroprops_TableOpenBook_LeftFront",
+                "Past_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(-3.34f, 0.405f, -1.02f),
+                new Vector3(0.22f, 0.022f, 0.15f),
+                "book");
+            ValidateLibraryReadableMicropropObject(
+                "Past_Library_ReadableMicroprops_TableClosedBook_CenterRear",
+                "Past_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(0.10f, 0.405f, 2.06f),
+                new Vector3(0.18f, 0.020f, 0.12f),
+                "book");
+            ValidateLibraryReadableMicropropObject(
+                "Past_Library_ReadableMicroprops_LeftShelfLedgerA",
+                "Past_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(-4.56f, 0.46f, 0.92f),
+                new Vector3(0.11f, 0.040f, 0.07f),
+                "book");
+            ValidateLibraryReadableMicropropObject(
+                "Past_Library_ReadableMicroprops_RightShelfLedgerA",
+                "Past_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(4.56f, 0.46f, 0.92f),
+                new Vector3(0.11f, 0.040f, 0.07f),
+                "book");
+
+            if (FindSceneObjectIncludingInactive("Current_Library_RetoDeskBook_Initial") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_TargetBook_ForPickup") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the library readable microprop cycle must keep the story books present.");
+            }
+
+            ValidateLandmarkChildrenDoNotCountForArrival("Current_Library_ReadableMicroprops_FloorOpenBookA_Detail");
+            ValidateLandmarkChildrenDoNotCountForArrival("Past_Library_ReadableMicroprops_TableOpenBook_LeftFront_Detail");
+            ValidateLandmarkChildrenDoNotCountForArrival("Past_Library_ReadableMicroprops_TableClosedBook_CenterRear_Detail");
+        }
+
+        private static void ValidateLandmarkChildrenDoNotCountForArrival(string rootName)
+        {
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing readable microprop detail root {rootName}.");
+            }
+
+            foreach (var landmark in root.GetComponentsInChildren<TimeWindowPairedSpaceLandmark>(true))
+            {
+                var serialized = new SerializedObject(landmark);
+                var countsProperty = serialized.FindProperty("countsForArrival");
+                if (countsProperty == null ||
+                    countsProperty.propertyType != SerializedPropertyType.Boolean ||
+                    countsProperty.boolValue)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {rootName} child landmarks must not count for arrival.");
+                }
+            }
+        }
+
         private static void ValidateReadableBookDetailSet(string objectName, bool openPages)
         {
             ValidateReadableBookDetailObject($"{objectName}_CoverBorderTop", objectName);
@@ -9703,6 +10025,65 @@ namespace Anemora.EditorTools
             {
                 ValidateReadableBookDetailObject($"{objectName}_OpenPageCenterFold", objectName);
                 ValidateReadableBookDetailObject($"{objectName}_OpenPageCornerHighlight", objectName);
+            }
+        }
+
+        private static void ValidateLibraryReadableMicropropObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, string expectedMaterialToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library readable microprop {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer and material.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var countsProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsProperty == null || countsProperty.propertyType != SerializedPropertyType.Boolean || countsProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not count for arrival.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+            if (sceneObject.transform.localScale.y > 0.12f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay small on the Y axis.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
         }
 
