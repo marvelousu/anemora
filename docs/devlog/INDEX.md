@@ -6,9 +6,9 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 279 files including INDEX.md and README.md.
-- Dated devlog records: 277 files.
-- Linked evidence files present under docs/devlog/screenshots/: 386 files.
+- Root-level Markdown coverage: 280 files including INDEX.md and README.md.
+- Dated devlog records: 278 files.
+- Linked evidence files present under docs/devlog/screenshots/: 390 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_readable_book_props_cycle.md](2026-05-20_fast_vs_hd2d_readable_book_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Readable Book Props Cycle |
 | [2026-05-20_fast_vs_hd2d_book_palette_cycle.md](2026-05-20_fast_vs_hd2d_book_palette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Book Palette Cycle |
 | [2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_plaza_library_facade_landmark_cycle.md](2026-05-20_fast_vs_hd2d_plaza_library_facade_landmark_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Plaza Library Facade Landmark Cycle |
 | [2026-05-20_fast_vs_hd2d_central_plaza_floor_fountain_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_floor_fountain_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Floor Fountain Cycle |
 | [2026-05-20_fast_vs_hd2d_character_ground_bounce_cycle.md](2026-05-20_fast_vs_hd2d_character_ground_bounce_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Ground Bounce Cycle |
 | [2026-05-20_fast_vs_hd2d_current_library_side_shelf_visibility_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelf_visibility_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelf Visibility Cycle |
