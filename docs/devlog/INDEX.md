@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.7 fast VS HD2D house bed soft textile cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.8 fast VS HD2D current library wall shelf depth cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 282 files including INDEX.md and README.md.
-- Dated devlog records: 280 files.
-- Linked evidence files present under docs/devlog/screenshots/: 398 files.
+- Root-level Markdown coverage: 284 files including INDEX.md and README.md.
+- Dated devlog records: 282 files.
+- Linked evidence files present under docs/devlog/screenshots/: 406 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 42 |
+| 2026-05-20 | 45 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -57,6 +57,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md](2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Contact Shadow Cycle |
 | [2026-05-20_fast_vs_hd2d_library_side_shelf_slab_cleanup_cycle.md](2026-05-20_fast_vs_hd2d_library_side_shelf_slab_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Side Shelf Slab Cleanup Cycle |
 | [2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelves Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_wall_shelf_depth_cycle.md](2026-05-20_fast_vs_hd2d_current_library_wall_shelf_depth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Wall Shelf Depth Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Life Props Cycle |
 | [2026-05-20_fast_vs_hd2d_current_library_ruin_floor_detail_cycle.md](2026-05-20_fast_vs_hd2d_current_library_ruin_floor_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Ruin Floor Detail Cycle |
@@ -410,6 +411,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.8 | 2026-05-20 | Added Fast VS HD2D current library wall shelf depth cycle record with current-side shadow/dust bands, validation, build, player-smoke, and screenshot evidence. |
 | v6.6 | 2026-05-20 | Added Fast VS HD2D current library ruin floor detail cycle record with current-side floor clutter, validation, build, player-smoke, and screenshot evidence. |
 | v6.5 | 2026-05-20 | Added Fast VS HD2D house interior room depth cycle record with upper wall caps, corner posts, dark shadow framing, validation, and screenshot evidence. |
 | v6.4 | 2026-05-20 | Added Fast VS HD2D outdoor boundary nature cycle record with low boundary vegetation, stone, dust, and shadow accents plus validation and screenshot evidence. |
