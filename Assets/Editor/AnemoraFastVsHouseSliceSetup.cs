@@ -236,6 +236,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dThirtySecondCycleLibraryFacadeArchitecturePolish();
             ValidateFastVsHd2dThirtyNinthCyclePlazaLibraryFacadeLandmark();
+            ValidateFastVsHd2dSixtyFirstCyclePlazaLibraryFacadeMicrodepth();
             ValidateFastVsHd2dFortyFourthCyclePlazaLibraryApproach();
             ValidateFastVsHd2dThirtyThirdCycleLibraryFloorDecayDetails();
             ValidateFastVsHd2dFortySecondCycleCurrentLibraryRuinFloorDetail();
@@ -481,6 +482,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSixtiethCycleScreenshotsBatch()
         {
             CaptureHd2dSixtiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_readable_microprops_20260521");
+        }
+
+        public static void CaptureHd2dSixtyFirstCycleScreenshotsBatch()
+        {
+            CaptureHd2dSixtyFirstCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_plaza_library_facade_microdepth_20260521");
         }
 
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
@@ -2996,6 +3002,78 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS thirty-ninth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dSixtyFirstCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS sixty-first-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var currentFacadePlayerLocal = CentralPlazaVsCenter + new Vector3(0f, 0.02f, 4.58f);
+            var closePlayerLocal = CentralPlazaVsCenter + new Vector3(-1.88f, 0.02f, 5.24f);
+            var closeAnchorLocal = CentralPlazaVsCenter + new Vector3(0.00f, 1.00f, 7.86f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                currentFacadePlayerLocal,
+                Path.Combine(outputDirectory, "01_current_plaza_library_facade_microdepth_overview.png"));
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                currentFacadePlayerLocal,
+                Path.Combine(outputDirectory, "02_past_plaza_library_facade_microdepth_overview.png"));
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0f, 1.26f, -2.30f),
+                new Vector3(0f, 0.32f, 0.16f),
+                outputDirectory,
+                "03_current_plaza_library_door_window_microdepth_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0f, 1.26f, -2.30f),
+                new Vector3(0f, 0.32f, 0.16f),
+                outputDirectory,
+                "04_past_plaza_library_door_window_microdepth_close.png");
+
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_plaza_library_facade_microdepth_overview.png");
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_plaza_library_facade_microdepth_overview.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_plaza_library_door_window_microdepth_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_plaza_library_door_window_microdepth_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS sixty-first-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureHd2dTwentyFourthCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -5181,6 +5259,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryFacadeCloseDetails(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryFacadeArchitecturePolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryFacadeLandmarkPolish(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaLibraryFacadeMicrodepthPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryApproachHd2dPolish(root, prefix, past, materials, c, stone, trim, path);
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareNorthBorder", root, c + new Vector3(0f, 0.066f, 8.14f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_north");
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareSouthBorder", root, c + new Vector3(0f, 0.066f, -3.64f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_south");
@@ -7049,6 +7128,31 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_LibraryFacadeLandmark_RightWindowCrackA", root, new Vector3(center.x + 2.46f, center.y + 1.42f, z), new Vector3(0.52f, 0.03f, 0.018f), Quaternion.Euler(0f, 6f, 0f), wall, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.library_facade_landmark.right_window_crack_a");
                 CreateLandmarkCube("Current_CentralPlaza_LibraryFacadeLandmark_BaseDustScatterA", root, new Vector3(center.x - 0.02f, center.y + 0.10f, z), new Vector3(1.62f, 0.024f, 0.048f), Quaternion.identity, materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.library_facade_landmark.base_dust_scatter_a");
                 CreateLandmarkCube("Current_CentralPlaza_LibraryFacadeLandmark_WestWingShadowBandA", root, new Vector3(center.x - 4.16f, center.y + 1.98f, z), new Vector3(0.82f, 0.08f, 0.022f), Quaternion.identity, wall, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.library_facade_landmark.west_wing_shadow_band_a");
+            }
+        }
+
+        private static void CreateCentralPlazaLibraryFacadeMicrodepthPolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
+        {
+            var z = center.z + 7.876f;
+            var doorDetail = past ? materials.PastLibraryDoorDetail : materials.CurrentLibraryDoorDetail;
+            var edgeTrim = past ? materials.PastFence : materials.CurrentFence;
+            var windowMaterial = past ? materials.WindowLight : materials.Dust;
+
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube("Past_CentralPlaza_LibraryFacadeMicrodepth_DoorLeftWarmEdgeA", root, new Vector3(center.x - 0.53f, center.y + 0.88f, z), new Vector3(0.46f, 0.035f, 0.018f), Quaternion.Euler(0f, 0f, 90f), doorDetail, "Past.central_plaza.library_facade_microdepth.door_left_warm_edge_a");
+                CreateNonArrivalLandmarkCube("Past_CentralPlaza_LibraryFacadeMicrodepth_DoorRightWarmEdgeA", root, new Vector3(center.x + 0.53f, center.y + 0.88f, z), new Vector3(0.44f, 0.035f, 0.018f), Quaternion.Euler(0f, 0f, -90f), edgeTrim, "Past.central_plaza.library_facade_microdepth.door_right_warm_edge_a");
+                CreateNonArrivalLandmarkCube("Past_CentralPlaza_LibraryFacadeMicrodepth_LeftWindowInnerGlowA", root, new Vector3(center.x - 2.35f, center.y + 1.47f, z), new Vector3(0.54f, 0.032f, 0.018f), Quaternion.Euler(0f, -4f, 0f), windowMaterial, "Past.central_plaza.library_facade_microdepth.left_window_inner_glow_a");
+                CreateNonArrivalLandmarkCube("Past_CentralPlaza_LibraryFacadeMicrodepth_RightWindowInnerGlowA", root, new Vector3(center.x + 2.35f, center.y + 1.47f, z), new Vector3(0.54f, 0.032f, 0.018f), Quaternion.Euler(0f, 4f, 0f), windowMaterial, "Past.central_plaza.library_facade_microdepth.right_window_inner_glow_a");
+                CreateNonArrivalLandmarkCube("Past_CentralPlaza_LibraryFacadeMicrodepth_BaseTileAccentA", root, new Vector3(center.x + 0.52f, center.y + 0.22f, z), new Vector3(0.26f, 0.030f, 0.020f), Quaternion.Euler(0f, 8f, 0f), stone, "Past.central_plaza.library_facade_microdepth.base_tile_accent_a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube("Current_CentralPlaza_LibraryFacadeMicrodepth_DoorLeftEdgeWearA", root, new Vector3(center.x - 0.53f, center.y + 0.88f, z), new Vector3(0.46f, 0.035f, 0.018f), Quaternion.Euler(0f, 0f, 90f), doorDetail, "Current.central_plaza.library_facade_microdepth.door_left_edge_wear_a");
+                CreateNonArrivalLandmarkCube("Current_CentralPlaza_LibraryFacadeMicrodepth_DoorRightEdgeWearA", root, new Vector3(center.x + 0.53f, center.y + 0.88f, z), new Vector3(0.44f, 0.035f, 0.018f), Quaternion.Euler(0f, 0f, -90f), edgeTrim, "Current.central_plaza.library_facade_microdepth.door_right_edge_wear_a");
+                CreateNonArrivalLandmarkCube("Current_CentralPlaza_LibraryFacadeMicrodepth_LeftWindowLowerDustA", root, new Vector3(center.x - 2.35f, center.y + 1.07f, z), new Vector3(0.60f, 0.032f, 0.018f), Quaternion.identity, windowMaterial, "Current.central_plaza.library_facade_microdepth.left_window_lower_dust_a");
+                CreateNonArrivalLandmarkCube("Current_CentralPlaza_LibraryFacadeMicrodepth_RightWindowLowerDustA", root, new Vector3(center.x + 2.35f, center.y + 1.07f, z), new Vector3(0.60f, 0.032f, 0.018f), Quaternion.identity, windowMaterial, "Current.central_plaza.library_facade_microdepth.right_window_lower_dust_a");
+                CreateNonArrivalLandmarkCube("Current_CentralPlaza_LibraryFacadeMicrodepth_BaseStoneChipA", root, new Vector3(center.x + 0.54f, center.y + 0.24f, z), new Vector3(0.24f, 0.030f, 0.020f), Quaternion.Euler(0f, 10f, 0f), stone, "Current.central_plaza.library_facade_microdepth.base_stone_chip_a");
             }
         }
 
@@ -9187,6 +9291,26 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Current_CentralPlaza_LibraryDoorPanelsLeft", "Current_CentralPlazaMap_SeparateSpace");
         }
 
+        private static void ValidateFastVsHd2dSixtyFirstCyclePlazaLibraryFacadeMicrodepth()
+        {
+            ValidatePlazaLibraryFacadeMicrodepthObject("Current_CentralPlaza_LibraryFacadeMicrodepth_DoorLeftEdgeWearA", "current_library_door_detail", "Current_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Current_CentralPlaza_LibraryFacadeMicrodepth_DoorRightEdgeWearA", "current_fence", "Current_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Current_CentralPlaza_LibraryFacadeMicrodepth_LeftWindowLowerDustA", "dust", "Current_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Current_CentralPlaza_LibraryFacadeMicrodepth_RightWindowLowerDustA", "dust", "Current_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Current_CentralPlaza_LibraryFacadeMicrodepth_BaseStoneChipA", "current_stone", "Current_CentralPlazaMap_SeparateSpace");
+
+            ValidatePlazaLibraryFacadeMicrodepthObject("Past_CentralPlaza_LibraryFacadeMicrodepth_DoorLeftWarmEdgeA", "past_library_door_detail", "Past_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Past_CentralPlaza_LibraryFacadeMicrodepth_DoorRightWarmEdgeA", "past_fence", "Past_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Past_CentralPlaza_LibraryFacadeMicrodepth_LeftWindowInnerGlowA", "window_light", "Past_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Past_CentralPlaza_LibraryFacadeMicrodepth_RightWindowInnerGlowA", "window_light", "Past_CentralPlazaMap_SeparateSpace");
+            ValidatePlazaLibraryFacadeMicrodepthObject("Past_CentralPlaza_LibraryFacadeMicrodepth_BaseTileAccentA", "past_stone", "Past_CentralPlazaMap_SeparateSpace");
+
+            ValidateLandmarkExists("Current_CentralPlaza_LibraryDoorPanelsLeft", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsLeft", "Past_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_ToLibrary_MapMoveGlowPad", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_ToLibrary_MapMoveGlowPad", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
         private static void ValidateFastVsHd2dFortyFourthCyclePlazaLibraryApproach()
         {
             ValidateCentralPlazaLibraryApproachObject("Current_CentralPlaza_LibraryApproach_StepLowerVisual", "Current_CentralPlazaMap_SeparateSpace", "stone", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.13f);
@@ -9463,6 +9587,65 @@ namespace Anemora.EditorTools
                 kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidatePlazaLibraryFacadeMicrodepthObject(string objectName, string expectedMaterialToken, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing central plaza library facade microdepth object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not have a collider.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var arrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (arrivalProperty == null ||
+                arrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                arrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not count for arrival.");
+            }
+
+            if (sceneObject.transform.localScale.y > 0.08f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay thin on the Y axis.");
             }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
