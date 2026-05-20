@@ -222,6 +222,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtySecondCycleLibraryFacadeArchitecturePolish();
             ValidateFastVsHd2dThirtyNinthCyclePlazaLibraryFacadeLandmark();
             ValidateFastVsHd2dThirtyThirdCycleLibraryFloorDecayDetails();
+            ValidateFastVsHd2dFortySecondCycleCurrentLibraryRuinFloorDetail();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
             ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere();
@@ -475,6 +476,11 @@ namespace Anemora.EditorTools
             CaptureHd2dFortyFirstCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_interior_room_depth_20260520");
         }
 
+        public static void CaptureHd2dFortySecondCycleScreenshotsBatch()
+        {
+            CaptureHd2dFortySecondCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_ruin_floor_detail_20260520");
+        }
+
         private static void CaptureHd2dFortyFirstCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -541,6 +547,78 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS forty-first-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dFortySecondCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS forty-second-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.20f, 0.02f, -0.72f),
+                $"{outputDirectory}/01_current_library_ruin_floor_overview.png");
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_library_ruin_floor_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-2.96f, 0.02f, -4.12f),
+                LibraryVsCenter + new Vector3(-2.80f, 0.07f, -4.50f),
+                new Vector3(0.12f, 1.02f, -2.05f),
+                new Vector3(0.05f, 0.10f, 0.12f),
+                outputDirectory,
+                "02_current_library_ruin_floor_entry_detail.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-1.50f, 0.02f, 0.58f),
+                LibraryVsCenter + new Vector3(-1.20f, 0.06f, 0.80f),
+                new Vector3(0.22f, 1.00f, -2.00f),
+                new Vector3(0.08f, 0.12f, 0.10f),
+                outputDirectory,
+                "03_current_library_ruin_floor_reto_detail.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.08f, 0.02f, 2.30f),
+                LibraryVsCenter + new Vector3(-3.45f, 0.05f, 2.05f),
+                new Vector3(0.18f, 1.00f, -1.95f),
+                new Vector3(0.06f, 0.10f, 0.10f),
+                outputDirectory,
+                "04_current_library_ruin_floor_west_detail.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "02_current_library_ruin_floor_entry_detail.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_ruin_floor_reto_detail.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_current_library_ruin_floor_west_detail.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS forty-second-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         public static void CaptureHd2dTwentyFourthCycleScreenshotsBatch()
@@ -3752,6 +3830,7 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_Library_Ruin_DustSheetNearEntry", root, c + new Vector3(-4.05f, 0.05f, -3.88f), new Vector3(0.82f, 0.045f, 0.34f), Quaternion.Euler(0f, -18f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.dust_sheet_near_entry");
                 CreateLandmarkCube("Current_Library_Ruin_BrokenBackShelfBoard", root, c + new Vector3(-1.80f, 1.26f, 7.02f), new Vector3(2.10f, 0.10f, 0.16f), Quaternion.Euler(0f, 0f, -7f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.broken_back_shelf_board");
                 CreateLandmarkCube("Current_Library_Ruin_FallenBookSpines", root, c + new Vector3(3.50f, 0.16f, -2.70f), new Vector3(0.96f, 0.16f, 0.32f), Quaternion.Euler(0f, 24f, 0f), materials.Book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin.fallen_book_spines");
+                CreateCurrentLibraryRuinFloorDetailPolish(root, c, materials, floor, wood, trim);
                 var windowCue = CreateFloorGlowCue("Current_Library_TimeWindowOpenCue_Book", root, new Vector3(PastLibraryBookCueLocalPosition.x, CurrentLibraryCueFloorY, PastLibraryBookCueLocalPosition.z), CurrentLibraryBookCueGlowScale, materials.RedLight, "Current.library.timewindow_book_cue");
                 windowCue.SetActive(false);
                 var ariaCue = CreateFloorGlowCue("Current_Library_TimeWindowOpenCue_Aria", root, new Vector3(PastLibraryPersonCueLocalPosition.x, CurrentLibraryCueFloorY, PastLibraryPersonCueLocalPosition.z), CurrentLibraryAriaCueGlowScale, materials.RedLight, "Current.library.timewindow_aria_cue");
@@ -4063,6 +4142,18 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_Library_FloorDecay_WoodShardBack", root, c + new Vector3(1.68f, 0.052f, 6.00f), new Vector3(0.34f, 0.036f, 0.08f), Quaternion.Euler(0f, 21f, -4f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_back");
                 CreateLandmarkCube("Current_Library_FloorDecay_WoodShardEast", root, c + new Vector3(4.12f, 0.050f, 0.90f), new Vector3(0.36f, 0.035f, 0.08f), Quaternion.Euler(0f, -23f, 8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_east");
             }
+        }
+
+        private static void CreateCurrentLibraryRuinFloorDetailPolish(Transform root, Vector3 c, Materials materials, Material floor, Material wood, Material trim)
+        {
+            CreateLandmarkCube("Current_Library_RuinFloorDetail_DustMatCenterA", root, c + new Vector3(-0.55f, 0.036f, -0.80f), new Vector3(1.15f, 0.018f, 0.42f), Quaternion.Euler(0f, -11f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin_floor_detail.dust_mat_center_a");
+            CreateLandmarkCube("Current_Library_RuinFloorDetail_PaperFanNearRetoA", root, c + new Vector3(-1.20f, 0.055f, 0.80f), new Vector3(0.46f, 0.025f, 0.20f), Quaternion.Euler(0f, 18f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin_floor_detail.paper_fan_near_reto_a");
+            CreateLandmarkCube("Current_Library_RuinFloorDetail_BrokenPlankNearEntryA", root, c + new Vector3(-2.80f, 0.070f, -4.50f), new Vector3(0.72f, 0.055f, 0.12f), Quaternion.Euler(0f, -25f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin_floor_detail.broken_plank_near_entry_a");
+            CreateLandmarkCube("Current_Library_RuinFloorDetail_StoneChipsEastA", root, c + new Vector3(4.25f, 0.065f, -1.75f), new Vector3(0.34f, 0.050f, 0.20f), Quaternion.Euler(0f, 14f, 0f), materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin_floor_detail.stone_chips_east_a");
+            CreateLandmarkCube("Current_Library_RuinFloorDetail_BookPageTrailWestA", root, c + new Vector3(-3.45f, 0.045f, 2.05f), new Vector3(0.52f, 0.020f, 0.18f), Quaternion.Euler(0f, 9f, 0f), materials.Book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin_floor_detail.book_page_trail_west_a");
+            CreateLandmarkCube("Current_Library_RuinFloorDetail_LowShadowUnderDebrisA", root, c + new Vector3(0.10f, 0.032f, -1.00f), new Vector3(1.50f, 0.015f, 0.46f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.ruin_floor_detail.low_shadow_under_debris_a");
+            _ = floor;
+            _ = trim;
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -6937,6 +7028,52 @@ namespace Anemora.EditorTools
             if (FindSceneObjectIncludingInactive("Past_Library_TargetBook_ForPickup") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: library floor decay pass must keep Past_Library_TargetBook_ForPickup present.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dFortySecondCycleCurrentLibraryRuinFloorDetail()
+        {
+            foreach (var objectName in new[]
+                     {
+                         "Current_Library_RuinFloorDetail_DustMatCenterA",
+                         "Current_Library_RuinFloorDetail_PaperFanNearRetoA",
+                         "Current_Library_RuinFloorDetail_BrokenPlankNearEntryA",
+                         "Current_Library_RuinFloorDetail_StoneChipsEastA",
+                         "Current_Library_RuinFloorDetail_BookPageTrailWestA",
+                         "Current_Library_RuinFloorDetail_LowShadowUnderDebrisA"
+                     })
+            {
+                ValidateLibraryFloorDecayDetailObject(objectName, "Current_LibraryMap_SeparateSpace", 0.08f);
+
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                if (sceneObject == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing current library ruin floor detail object {objectName}.");
+                }
+
+                if (sceneObject.transform.position.y < 0.02f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must stay above the floor line.");
+                }
+            }
+
+            foreach (var requiredObjectName in new[]
+                     {
+                         "Current_Library_TimeWindowOpenCue_Book",
+                         "Current_Library_TimeWindowOpenCue_Aria",
+                         "Past_Library_TargetBook_ForPickup",
+                         "Past_Library_AriaIdleAtTable",
+                         "Current_Library_RetoDeskBook_Initial",
+                         "Current_Library_ReturnedBookOnDesk",
+                         "FastVS_Reto_WritingAtDesk",
+                         "Current_Library_ToCentralPlaza_MapMoveGlowPad",
+                         "Past_Library_ToCentralPlaza_MapMoveGlowPad"
+                     })
+            {
+                if (FindSceneObjectIncludingInactive(requiredObjectName) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: current library ruin floor detail pass must keep {requiredObjectName} present.");
+                }
             }
         }
 

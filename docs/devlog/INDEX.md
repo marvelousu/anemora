@@ -6,9 +6,9 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 281 files including INDEX.md and README.md.
-- Dated devlog records: 279 files.
-- Linked evidence files present under docs/devlog/screenshots/: 394 files.
+- Root-level Markdown coverage: 282 files including INDEX.md and README.md.
+- Dated devlog records: 280 files.
+- Linked evidence files present under docs/devlog/screenshots/: 398 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 41 |
+| 2026-05-20 | 42 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -59,6 +59,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelves Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Life Props Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_ruin_floor_detail_cycle.md](2026-05-20_fast_vs_hd2d_current_library_ruin_floor_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Ruin Floor Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_facade_close_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_facade_close_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Facade Close Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_facade_architecture_cycle.md](2026-05-20_fast_vs_hd2d_library_facade_architecture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Facade Architecture Cycle |
 | [2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf Readability Cycle |
@@ -409,6 +410,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.6 | 2026-05-20 | Added Fast VS HD2D current library ruin floor detail cycle record with current-side floor clutter, validation, build, player-smoke, and screenshot evidence. |
 | v6.5 | 2026-05-20 | Added Fast VS HD2D house interior room depth cycle record with upper wall caps, corner posts, dark shadow framing, validation, and screenshot evidence. |
 | v6.4 | 2026-05-20 | Added Fast VS HD2D outdoor boundary nature cycle record with low boundary vegetation, stone, dust, and shadow accents plus validation and screenshot evidence. |
 | v6.3 | 2026-05-20 | Added Fast VS HD2D house exterior facade texture cycle record with updated wall and roof procedural textures, validation, and close screenshot evidence. |
