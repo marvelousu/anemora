@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.34 fast VS HD2D plaza library facade surface breakup cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.35 fast VS HD2D plaza library exterior depth cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 310 files including INDEX.md and README.md.
-- Dated devlog records: 308 files.
-- Linked evidence files present under docs/devlog/screenshots/: 506 files.
+- Root-level Markdown coverage: 311 files including INDEX.md and README.md.
+- Dated devlog records: 309 files.
+- Linked evidence files present under docs/devlog/screenshots/: 510 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 17 |
+| 2026-05-21 | 18 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Exterior Depth Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Facade Surface Breakup Cycle |
 | [2026-05-21_fast_vs_hd2d_current_library_gallery_floor_seam_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_current_library_gallery_floor_seam_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Gallery Floor Seam Cleanup Cycle |
 | [2026-05-21_fast_vs_hd2d_current_library_wall_recess_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_current_library_wall_recess_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Wall Recess Cleanup Cycle |
