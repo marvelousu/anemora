@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.2 fast VS HD2D library floor decay cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.3 fast VS HD2D library upper-gallery cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 275 files including INDEX.md and README.md.
-- Dated devlog records: 273 files.
-- Linked evidence files present under docs/devlog/screenshots/: 370 files.
+- Root-level Markdown coverage: 276 files including INDEX.md and README.md.
+- Dated devlog records: 274 files.
+- Linked evidence files present under docs/devlog/screenshots/: 374 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -59,6 +59,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf Readability Cycle |
 | [2026-05-20_fast_vs_hd2d_library_side_shelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_side_shelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Side Shelf Readability Cycle |
 | [2026-05-20_fast_vs_hd2d_library_floor_decay_cycle.md](2026-05-20_fast_vs_hd2d_library_floor_decay_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Floor Decay Cycle |
+| [2026-05-20_fast_vs_hd2d_library_upper_gallery_cycle.md](2026-05-20_fast_vs_hd2d_library_upper_gallery_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Upper Gallery Cycle |
 | [2026-05-20_fast_vs_hd2d_library_window_light_cycle.md](2026-05-20_fast_vs_hd2d_library_window_light_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Window Light Cycle |
 | [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Reading Table Detail Cycle |
