@@ -45,6 +45,7 @@ namespace Anemora.EditorTools
         private const string RetoRaiseArmsStripPath = "Assets/Art/Characters/FastVS/Reto/reto_raise_arms_v02_6f_64x96.png";
         private const string AriaNormalLoopStripPath = "Assets/Art/Characters/FastVS/Aria/resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png";
         private const string OpenGameArtTreeSpritePath = "Assets/Art/External/OpenGameArt/edomin_tree_sprites_cc0/tree3_0.png";
+        private const string OpenGameArtBookshelfTexturePath = "Assets/Art/External/OpenGameArt/alejandrohaibi_bookshelf_cc0/bookshelf_2.png";
         private const int RetoExpectedFrameWidth = 64;
         private const int RetoExpectedTextureHeight = 96;
         private const int RetoTransitionFrameCount = 6;
@@ -220,6 +221,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFortyFirstCycleHouseInteriorRoomDepth();
             ValidateFastVsHd2dTwentyEighthCycleLibraryBookshelfReadability();
             ValidateFastVsHd2dThirtyFourthCycleLibrarySideShelfReadability();
+            ValidateFastVsHd2dFiftySecondCycleLibraryBookshelfExternalTexture();
             ValidateFastVsHd2dThirtyFifthCycleLibraryUpperGalleryDetails();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -821,6 +823,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dFiftiethCycleScreenshotsBatch()
         {
             CaptureHd2dFiftiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_central_plaza_tree_line_sprites_20260520");
+        }
+
+        public static void CaptureHd2dFiftySecondCycleScreenshotsBatch()
+        {
+            CaptureHd2dFiftySecondCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_bookshelf_external_texture_20260520");
         }
 
         public static void CaptureHd2dTwentySixthCycleScreenshotsBatch()
@@ -1710,6 +1717,82 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS thirty-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dFiftySecondCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS fifty-second-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(0f, 0.02f, 0.60f),
+                LibraryVsCenter + new Vector3(0f, 1.34f, 6.99f),
+                new Vector3(0.10f, 1.26f, -3.18f),
+                new Vector3(0.05f, 0.18f, 0.10f),
+                outputDirectory,
+                "01_past_library_back_wall_external_bookshelf_texture.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.78f, 0.02f, -0.16f),
+                LibraryVsCenter + new Vector3(-4.78f, 0.96f, 0.48f),
+                new Vector3(4.22f, 1.58f, 1.44f),
+                new Vector3(0.42f, 0.18f, 0.08f),
+                outputDirectory,
+                "02_past_library_left_side_external_bookshelf_texture.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.78f, 0.02f, 1.20f),
+                LibraryVsCenter + new Vector3(4.78f, 0.88f, 0.54f),
+                new Vector3(-4.22f, 1.58f, 1.44f),
+                new Vector3(-0.42f, 0.18f, 0.08f),
+                outputDirectory,
+                "03_past_library_right_side_external_bookshelf_texture.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.78f, 0.02f, -0.16f),
+                LibraryVsCenter + new Vector3(-4.78f, 0.96f, 0.48f),
+                new Vector3(4.22f, 1.58f, 1.44f),
+                new Vector3(0.42f, 0.18f, 0.08f),
+                outputDirectory,
+                "04_current_library_empty_side_shelf_regression.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_past_library_back_wall_external_bookshelf_texture.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_library_left_side_external_bookshelf_texture.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_past_library_right_side_external_bookshelf_texture.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_current_library_empty_side_shelf_regression.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS fifty-second-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureHd2dThirtyFifthCycleScreenshotsToDirectory(string outputDirectory)
@@ -8466,13 +8549,12 @@ namespace Anemora.EditorTools
         private static void ValidateFastVsHd2dThirtyFourthCycleLibrarySideShelfReadability()
         {
             ValidateGeneratedRepeatTextureAsset("current_empty_bookshelf_front_hd2d", 256, 128, 20);
-            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 28);
+            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 17);
             ValidateGeneratedTextureExactSize("current_empty_bookshelf_front_hd2d", 256, 128);
             ValidateGeneratedTextureExactSize("bookshelf_front_painted_hd2d", 256, 128);
             ValidateTextureLuminanceContrast("current_empty_bookshelf_front_hd2d", new Vector2Int(18, 15), new Vector2Int(18, 27), 0.035f, "current empty shelf row recess contrast");
             ValidateTextureLuminanceContrast("current_empty_bookshelf_front_hd2d", new Vector2Int(83, 69), new Vector2Int(95, 69), 0.025f, "current empty shelf gap contrast");
-            ValidateTextureLuminanceContrast("bookshelf_front_painted_hd2d", new Vector2Int(12, 18), new Vector2Int(18, 18), 0.020f, "bookshelf front spine variation");
-            ValidateTextureLuminanceContrast("bookshelf_front_painted_hd2d", new Vector2Int(12, 8), new Vector2Int(12, 18), 0.002f, "bookshelf front shelf band contrast");
+            ValidateTextureLuminanceRange("bookshelf_front_painted_hd2d", 0.10f, "bookshelf front external source luminance range");
             ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Left");
             ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Right");
             ValidatePastLibrarySideBookshelfFrontTexturePanel("Left");
@@ -8485,6 +8567,40 @@ namespace Anemora.EditorTools
             ValidateLibrarySideBookshelfFrontLips("Current", "Right");
             ValidateLibrarySideBookshelfFrontLips("Past", "Left");
             ValidateLibrarySideBookshelfFrontLips("Past", "Right");
+        }
+
+        private static void ValidateFastVsHd2dFiftySecondCycleLibraryBookshelfExternalTexture()
+        {
+            EnsureTextureImporter(OpenGameArtBookshelfTexturePath);
+            var sourceImporter = AssetImporter.GetAtPath(OpenGameArtBookshelfTexturePath) as TextureImporter;
+            if (sourceImporter == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing source importer for {OpenGameArtBookshelfTexturePath}.");
+            }
+
+            if (!sourceImporter.isReadable ||
+                sourceImporter.mipmapEnabled ||
+                sourceImporter.filterMode != FilterMode.Point ||
+                sourceImporter.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                throw new InvalidOperationException("House slice validation failed: OpenGameArt bookshelf source must be readable, point-filtered, mipmap-free, and uncompressed.");
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<Texture2D>(OpenGameArtBookshelfTexturePath) == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing OpenGameArt bookshelf texture at {OpenGameArtBookshelfTexturePath}.");
+            }
+
+            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 17);
+            ValidateGeneratedTextureExactSize("bookshelf_front_painted_hd2d", 256, 128);
+            ValidateSceneObjectMaterialTexture("Past_Library_BackWallBookshelfFrontTexturePanel", "bookshelf_front_painted_hd2d");
+            ValidatePastLibrarySideBookshelfFrontTexturePanel("Left");
+            ValidatePastLibrarySideBookshelfFrontTexturePanel("Right");
+            ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Left");
+            ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Right");
+            ValidateCurrentLibraryEmptySideShelf("Left");
+            ValidateCurrentLibraryEmptySideShelf("Right");
+            ValidateTextureLuminanceRange("bookshelf_front_painted_hd2d", 0.10f, "bookshelf front source book color contrast");
         }
 
         private static void ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails()
@@ -9875,7 +9991,7 @@ namespace Anemora.EditorTools
             ValidateGeneratedRepeatTextureAsset("current_furniture_hd2d_plate", 128, 128, 18);
             ValidateGeneratedRepeatTextureAsset("past_furniture_hd2d_plate", 128, 128, 18);
             ValidateGeneratedRepeatTextureAsset("book_spines_hd2d_plate", 128, 64, 30);
-            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 30);
+            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 17);
 
             ValidateGeneratedSurfaceMaterialTexture("current_interior_floor", "current_interior_floor_hd2d_plate");
             ValidateGeneratedSurfaceMaterialTexture("past_wood_floor", "past_wood_floor_hd2d_plate");
@@ -9954,7 +10070,7 @@ namespace Anemora.EditorTools
         private static void ValidateFastVsHd2dEighthCycleBookPalette()
         {
             ValidateGeneratedRepeatTextureAsset("book_spines_hd2d_plate", 128, 64, 30);
-            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 30);
+            ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 17);
             ValidateGeneratedTextureExactSize("book_spines_hd2d_plate", 128, 64);
             ValidateGeneratedTextureExactSize("bookshelf_front_painted_hd2d", 256, 128);
             ValidateSceneObjectMaterialTexture("Past_Library_BackWallBookshelfFrontTexturePanel", "bookshelf_front_painted_hd2d");
@@ -11882,6 +11998,35 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateTextureLuminanceRange(string textureId, float minRange, string label)
+        {
+            var path = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing generated texture asset {path}.");
+            }
+
+            var minLuma = float.MaxValue;
+            var maxLuma = float.MinValue;
+            foreach (var color in texture.GetPixels())
+            {
+                if (color.a <= 0.03f)
+                {
+                    continue;
+                }
+
+                var luma = 0.2126f * color.r + 0.7152f * color.g + 0.0722f * color.b;
+                minLuma = Mathf.Min(minLuma, luma);
+                maxLuma = Mathf.Max(maxLuma, luma);
+            }
+
+            if (minLuma == float.MaxValue || maxLuma - minLuma < minRange)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} must have at least {minRange:0.000} luminance range, but range was {(maxLuma - minLuma):0.000}.");
+            }
+        }
+
         private static void ValidateBookSpinePaletteSamples(bool bookshelfFront, float maxSaturation, float maxValue)
         {
             var label = bookshelfFront ? "bookshelf front" : "book spine";
@@ -13276,6 +13421,63 @@ namespace Anemora.EditorTools
                 for (var x = 0; x < width; x++)
                 {
                     texture.SetPixel(x, y, sample(x, y));
+                }
+            }
+
+            texture.Apply(false, false);
+            EditorUtility.SetDirty(texture);
+            return texture;
+        }
+
+        private static Texture2D EnsureOpenGameArtBookshelfFrontTexture()
+        {
+            EnsureTextureImporter(OpenGameArtBookshelfTexturePath);
+            var source = AssetDatabase.LoadAssetAtPath<Texture2D>(OpenGameArtBookshelfTexturePath);
+            if (source == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing OpenGameArt bookshelf source texture at {OpenGameArtBookshelfTexturePath}.");
+            }
+
+            var path = $"{TextureDirectory}/FastVS_House_bookshelf_front_painted_hd2d.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture != null && (texture.width != 256 || texture.height != 128))
+            {
+                AssetDatabase.DeleteAsset(path);
+                texture = null;
+            }
+
+            if (texture == null)
+            {
+                texture = new Texture2D(256, 128, TextureFormat.RGBA32, false);
+                AssetDatabase.CreateAsset(texture, path);
+            }
+
+            texture.name = "FastVS_House_bookshelf_front_painted_hd2d";
+            texture.filterMode = FilterMode.Point;
+            texture.wrapMode = TextureWrapMode.Repeat;
+
+            const int cropX = 16;
+            const int cropY = 2;
+            const int cropWidth = 34;
+            const int cropHeight = 60;
+            var shelfRecess = new Color(0.10f, 0.075f, 0.045f, 1f);
+
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var sample = source.GetPixel(cropX + (x % cropWidth), cropY + (y % cropHeight));
+                    if (sample.a <= 0.03f)
+                    {
+                        sample = shelfRecess;
+                    }
+                    else
+                    {
+                        sample = LerpColor(sample, new Color(0.24f, 0.16f, 0.09f, 1f), 0.38f);
+                        sample = Darken(sample, 0.10f);
+                    }
+
+                    texture.SetPixel(x, y, sample);
                 }
             }
 
@@ -15313,7 +15515,7 @@ namespace Anemora.EditorTools
         {
             var material = FlatMaterial($"bookshelf_front_painted_hd2d_{panelId}", new Color(0.97f, 0.95f, 0.92f, 1f), true);
             material.name = $"FastVS_House_bookshelf_front_painted_hd2d_{panelId}";
-            var texture = EnsureGeneratedRepeatTexture("bookshelf_front_painted_hd2d", 256, 128, SampleBookshelfFrontPaintedHd2dPixel);
+            var texture = EnsureOpenGameArtBookshelfFrontTexture();
             AssignMaterialTexture(material, texture, textureScale);
             return material;
         }

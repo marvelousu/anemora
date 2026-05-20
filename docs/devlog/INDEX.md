@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.15 fast VS HD2D central plaza tree-line sprite cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.16 fast VS HD2D library bookshelf external texture cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 291 files including INDEX.md and README.md.
-- Dated devlog records: 289 files.
-- Linked evidence files present under docs/devlog/screenshots/: 434 files.
+- Root-level Markdown coverage: 292 files including INDEX.md and README.md.
+- Dated devlog records: 290 files.
+- Linked evidence files present under docs/devlog/screenshots/: 438 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 52 |
+| 2026-05-20 | 53 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -38,6 +38,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-20_fast_vs_hd2d_library_bookshelf_external_texture_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_external_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf External Texture Cycle |
 | [2026-05-20_fast_vs_hd2d_central_plaza_tree_line_sprites_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_tree_line_sprites_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Tree Line Sprites Cycle |
 | [2026-05-20_fast_vs_hd2d_house_exterior_hedge_sprites_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_hedge_sprites_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Hedge Sprites Cycle |
 | [2026-05-20_fast_vs_hd2d_readable_book_props_cycle.md](2026-05-20_fast_vs_hd2d_readable_book_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Readable Book Props Cycle |
@@ -418,6 +419,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.16 | 2026-05-20 | Added Fast VS HD2D library bookshelf external texture cycle record with OpenGameArt CC0 bookshelf source, validation, and screenshot evidence. |
 | v6.13 | 2026-05-20 | Added Fast VS HD2D house exterior external tree sprite cycle record with OpenGameArt CC0 tree source, hidden collision shells, validation, and screenshot evidence. |
 | v6.9 | 2026-05-20 | Added Fast VS HD2D plaza library approach cycle record with current/past low-profile steps, curbs, validation, build, player-smoke, and screenshot evidence. |
 | v6.8 | 2026-05-20 | Added Fast VS HD2D current library wall shelf depth cycle record with current-side shadow/dust bands, validation, build, player-smoke, and screenshot evidence. |
