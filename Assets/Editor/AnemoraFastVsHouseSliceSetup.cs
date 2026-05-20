@@ -199,6 +199,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
+            ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -382,6 +383,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentiethCycleScreenshotsBatch()
         {
             CaptureHd2dTwentiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_side_shelf_visibility_20260520");
+        }
+
+        public static void CaptureHd2dTwentyFirstCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentyFirstCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_atmosphere_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1154,6 +1160,77 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twentieth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dTwentyFirstCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-first-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(0f, 0.02f, -4.52f),
+                LibraryVsCenter + new Vector3(0f, 0.32f, -4.12f),
+                new Vector3(0.05f, 1.52f, -3.92f),
+                new Vector3(0.02f, 0.14f, 0.14f),
+                outputDirectory,
+                "01_current_library_entry_dust_pool.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.78f, 0.02f, 1.12f),
+                LibraryVsCenter + new Vector3(-4.58f, 1.02f, 0.42f),
+                new Vector3(0.66f, 1.60f, -3.36f),
+                new Vector3(0.10f, 0.30f, 0.10f),
+                outputDirectory,
+                "02_current_library_left_shelf_dust_lift.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.02f, -0.18f),
+                LibraryVsCenter + new Vector3(2.02f, 0.96f, -0.02f),
+                new Vector3(-0.14f, 1.54f, -3.28f),
+                new Vector3(0.12f, 0.24f, 0.08f),
+                outputDirectory,
+                "03_current_library_reto_desk_falloff.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.78f, 0.02f, 1.12f),
+                LibraryVsCenter + new Vector3(4.58f, 1.02f, 0.42f),
+                new Vector3(-0.66f, 1.60f, -3.36f),
+                new Vector3(-0.10f, 0.30f, 0.10f),
+                outputDirectory,
+                "04_past_library_reference_unchanged.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-first-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -1563,6 +1640,50 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.library.reto_desk_warm_pool");
+
+            CreateLandmarkCube(
+                "Current_Library_LeftSideShelf_SoftDustLift",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(-4.58f, 0.045f, 0.35f),
+                new Vector3(0.74f, 0.035f, 8.80f),
+                Quaternion.identity,
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.left_side_shelf.soft_dust_lift");
+
+            CreateLandmarkCube(
+                "Current_Library_RightSideShelf_SoftDustLift",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(4.58f, 0.045f, 0.35f),
+                new Vector3(0.74f, 0.035f, 8.80f),
+                Quaternion.identity,
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.right_side_shelf.soft_dust_lift");
+
+            CreateLandmarkCube(
+                "Current_Library_EntryFloor_SoftDustPool",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(0f, 0.026f, -5.22f),
+                new Vector3(3.80f, 0.035f, 1.25f),
+                Quaternion.identity,
+                warmPool,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.entry_floor.soft_dust_pool");
+
+            CreateLandmarkCube(
+                "Current_Library_RetoDesk_SideFalloffShadow",
+                currentLibraryRoot,
+                LibraryVsCenter + new Vector3(2.15f, 0.055f, -0.10f),
+                new Vector3(1.30f, 0.035f, 2.15f),
+                Quaternion.Euler(0f, 8f, 0f),
+                depthShadow,
+                false,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                "Current.library.reto_desk.side_falloff_shadow");
 
             CreateLandmarkCube(
                 "Current_Library_SecondFloor_UnderGalleryDepth_Left",
@@ -4446,6 +4567,22 @@ namespace Anemora.EditorTools
             ValidatePastLibrarySideBookshelfFrontTexturePanel("Left");
             ValidatePastLibrarySideBookshelfFrontTexturePanel("Right");
             ValidateGeneratedRepeatTextureAsset("current_empty_bookshelf_front_hd2d", 256, 128, 24);
+        }
+
+        private static void ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere()
+        {
+            ValidateHd2dDepthFramingObject("Current_Library_LeftSideShelf_SoftDustLift", "hd2d_warm_light_pool", 3005, 3015, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_RightSideShelf_SoftDustLift", "hd2d_warm_light_pool", 3005, 3015, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_EntryFloor_SoftDustPool", "hd2d_warm_light_pool", 3005, 3015, "Current_LibraryMap_SeparateSpace");
+            ValidateHd2dDepthFramingObject("Current_Library_RetoDesk_SideFalloffShadow", "hd2d_depth_shadow", 2985, 2995, "Current_LibraryMap_SeparateSpace");
+
+            if (FindSceneObjectIncludingInactive("Past_Library_LeftSideShelf_SoftDustLift") != null ||
+                FindSceneObjectIncludingInactive("Past_Library_RightSideShelf_SoftDustLift") != null ||
+                FindSceneObjectIncludingInactive("Past_Library_EntryFloor_SoftDustPool") != null ||
+                FindSceneObjectIncludingInactive("Past_Library_RetoDesk_SideFalloffShadow") != null)
+            {
+                throw new InvalidOperationException("House slice validation failed: twenty-first-cycle atmosphere pass must not add past-side counterparts.");
+            }
         }
 
         private static void ValidateCurrentLibraryEmptySideShelf(string side)
