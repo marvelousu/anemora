@@ -199,6 +199,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyFourthCycleLibraryWindowLight();
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
+            ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
@@ -406,6 +407,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentyFourthCycleScreenshotsBatch()
         {
             CaptureHd2dTwentyFourthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_window_light_20260520");
+        }
+
+        public static void CaptureHd2dTwentyFifthCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentyFifthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_character_ground_bounce_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1446,6 +1452,77 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dTwentyFifthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-fifth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorPlayerStart,
+                HouseInteriorPlayerStart + new Vector3(0f, 0.10f, 0.18f),
+                new Vector3(0.18f, 1.00f, -2.00f),
+                new Vector3(0.04f, 0.12f, 0.10f),
+                outputDirectory,
+                "01_niro_interior_ground_bounce.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                ExteriorDoorExitTarget,
+                ExteriorDoorExitTarget + new Vector3(0f, 0.08f, 0.16f),
+                new Vector3(0.18f, 1.00f, -1.96f),
+                new Vector3(0.04f, 0.12f, 0.08f),
+                outputDirectory,
+                "02_niro_exterior_ground_bounce.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-1.08f, 0.02f, -1.18f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.03f, 0.36f, 0.05f),
+                new Vector3(0.22f, 1.00f, -1.98f),
+                new Vector3(0.10f, 0.18f, 0.08f),
+                outputDirectory,
+                "03_reto_library_ground_bounce.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                PastLibraryPersonCueLocalPosition + new Vector3(-1.06f, 0.02f, -1.16f),
+                PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.36f, 0.02f),
+                new Vector3(0.22f, 1.00f, -1.96f),
+                new Vector3(0.08f, 0.18f, 0.08f),
+                outputDirectory,
+                "04_aria_past_library_ground_bounce.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -2227,6 +2304,12 @@ namespace Anemora.EditorTools
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.035f, 0.02f),
                     new Vector3(0.70f, 0.24f, 1f),
                     EnsureAriaContactShadowMaterial());
+                CreateCharacterGroundBounce(
+                    "Past_Library_Aria_GroundBounce",
+                    root,
+                    PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.039f, 0.02f),
+                    new Vector3(0.60f, 0.20f, 1f),
+                    EnsureHd2dCharacterGroundBounceMaterial());
                 CreateRedCubeMarkerWithOutline("Past_Library_Aria_RedCubeMarker", root, PastLibraryPersonCueLocalPosition + new Vector3(0f, 1.32f, 0f), PastLibraryTargetBookMarkerScale, Quaternion.Euler(10f, -14f, 0f), materials.RedMarker, materials.DoorwayDark, "Past.library.aria_marker");
             }
             else
@@ -2257,6 +2340,12 @@ namespace Anemora.EditorTools
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.035f, 0.03f),
                     new Vector3(0.66f, 0.24f, 1f),
                     EnsureRetoContactShadowMaterial());
+                CreateCharacterGroundBounce(
+                    "Current_Library_Reto_GroundBounce",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.039f, 0.03f),
+                    new Vector3(0.58f, 0.19f, 1f),
+                    EnsureHd2dCharacterGroundBounceMaterial());
             }
 
             CreateInvisibleColliderBox($"{prefix}_Library_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.85f), new Vector3(12.25f, 1.50f, 0.24f), $"{prefix}.library.front_drop_guard");
@@ -3117,6 +3206,12 @@ namespace Anemora.EditorTools
                 new Vector3(0f, 0.022f, -0.02f),
                 new Vector3(0.66f, 0.24f, 1f),
                 EnsureNiroContactShadowMaterial());
+            CreateCharacterGroundBounce(
+                "FastVS_PlayerGroundBounce_Niro",
+                player.transform,
+                new Vector3(0f, 0.026f, -0.02f),
+                new Vector3(0.58f, 0.20f, 1f),
+                EnsureHd2dCharacterGroundBounceMaterial());
             var directional = visual.AddComponent<FastVsDirectionalSpriteAnimator>();
             SerializedSet(directional, "player", player.transform);
             SerializedSet(directional, "spriteRenderer", spriteRenderer);
@@ -6491,6 +6586,50 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dCharacterGroundBounceTexture()
+        {
+            var path = $"{TextureDirectory}/FastVS_House_hd2d_character_ground_bounce_soft.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing ground bounce texture asset {path}.");
+            }
+
+            if (texture.width != 96 || texture.height != 48)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft must be 96x48, but was {texture.width}x{texture.height}.");
+            }
+
+            if (texture.filterMode != FilterMode.Bilinear || texture.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException("House slice validation failed: hd2d_character_ground_bounce_soft must use bilinear clamp sampling.");
+            }
+
+            var center = texture.GetPixel(texture.width / 2, texture.height / 2).a;
+            var edge = texture.GetPixel(0, texture.height / 2).a;
+            var corner = texture.GetPixel(0, 0).a;
+            var maxAlpha = 0f;
+            foreach (var pixel in texture.GetPixels32())
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
+            }
+
+            if (center < 0.18f || center > 0.30f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft center alpha must stay in the 0.18-0.30 range, but was {center:0.000}.");
+            }
+
+            if (edge > center * 0.55f || corner > 0.025f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft alpha falloff looks broken. edge={edge:0.000}, corner={corner:0.000}.");
+            }
+
+            if (maxAlpha < 0.20f || maxAlpha > 0.30f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft max alpha must stay in the 0.20-0.30 range, but was {maxAlpha:0.000}.");
+            }
+        }
+
         private static void ValidateSceneObjectMaterialTexture(string objectName, string textureId)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -6668,6 +6807,84 @@ namespace Anemora.EditorTools
             if (materialName.IndexOf("contact_shadow", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing contact_shadow in its name.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce()
+        {
+            ValidateHd2dCharacterGroundBounceTexture();
+
+            if (FindSceneObjectIncludingInactive("FastVS_PlayerContactShadow_Niro") == null ||
+                FindSceneObjectIncludingInactive("Current_Library_Reto_ContactShadow") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_Aria_ContactShadow") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the existing character contact shadows must stay present.");
+            }
+
+            ValidateCharacterGroundBounceObject(
+                "FastVS_PlayerGroundBounce_Niro",
+                "FastVS_Player_NiroHouseSlice",
+                new Vector3(0f, 0.026f, -0.02f),
+                new Vector3(0.58f, 0.20f, 1f));
+
+            ValidateCharacterGroundBounceObject(
+                "Current_Library_Reto_GroundBounce",
+                "Current_LibraryMap_SeparateSpace",
+                RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.039f, 0.03f),
+                new Vector3(0.58f, 0.19f, 1f));
+
+            ValidateCharacterGroundBounceObject(
+                "Past_Library_Aria_GroundBounce",
+                "Past_LibraryMap_SeparateSpace",
+                PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.039f, 0.02f),
+                new Vector3(0.60f, 0.20f, 1f));
+
+            if (FindSceneObjectIncludingInactive("FastVS_PlayerVisual_NiroShadingOverlay") != null ||
+                FindSceneObjectIncludingInactive("FastVS_PlayerSpriteShadingOverlay_Niro") != null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the old Niro full-body shading overlay must not exist.");
+            }
+        }
+
+        private static void ValidateCharacterGroundBounceObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing ground-bounce object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null || !renderer.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have an enabled renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (Quaternion.Angle(sceneObject.transform.localRotation, Quaternion.Euler(90f, 0f, 0f)) > 1.5f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay horizontal with a local X rotation near 90 degrees.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            var texture = ResolveMaterialTexture(renderer.sharedMaterial);
+            var textureName = texture?.name ?? string.Empty;
+            if (materialName.IndexOf("hd2d_character_ground_bounce", StringComparison.OrdinalIgnoreCase) < 0 &&
+                textureName.IndexOf("hd2d_character_ground_bounce", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a ground-bounce material or texture name.");
             }
         }
 
@@ -7780,6 +7997,13 @@ namespace Anemora.EditorTools
             return shadow;
         }
 
+        private static GameObject CreateCharacterGroundBounce(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
+        {
+            var bounce = CreateQuad(name, parent, localPosition, localScale, material);
+            bounce.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            return bounce;
+        }
+
         private static void CreatePaperCardParts(Transform parent, string displayName, float height, Material body, Material accent, Material face, Material label)
         {
             CreateQuad($"{displayName}_PaperBody", parent, new Vector3(0f, height * 0.52f, 0f), new Vector3(height * 0.42f, height * 0.88f, 1f), body);
@@ -7867,6 +8091,27 @@ namespace Anemora.EditorTools
                 material.SetColor("_Color", new Color(1f, 1f, 1f, 0.96f));
             }
 
+            return material;
+        }
+
+        private static Material EnsureHd2dCharacterGroundBounceMaterial()
+        {
+            var material = FlatMaterial("hd2d_character_ground_bounce", Color.white, true);
+            ConfigureTransparentUnlitMaterial(material, 3014);
+            var texture = EnsureHd2dCharacterGroundBounceTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", new Color(1f, 0.86f, 0.58f, 1f));
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", new Color(1f, 0.86f, 0.58f, 1f));
+            }
+
+            EditorUtility.SetDirty(material);
             return material;
         }
 
@@ -8128,6 +8373,29 @@ namespace Anemora.EditorTools
                     }
 
                     return new Color(0.02f, 0.03f, 0.05f, alpha);
+                });
+        }
+
+        private static Texture2D EnsureHd2dCharacterGroundBounceTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_character_ground_bounce_soft",
+                96,
+                48,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var u = x / 95f;
+                    var v = y / 47f;
+                    var dx = (u - 0.50f) / 0.50f;
+                    var dy = (v - 0.56f) / 0.44f;
+                    var ellipse = Mathf.Sqrt((dx * dx * 0.86f) + (dy * dy * 2.70f));
+                    var core = Mathf.Clamp01(1f - ellipse);
+                    var glow = Mathf.Clamp01(1f - ellipse * 0.78f);
+                    var baseAlpha = (core * core * 0.30f) + (glow * 0.04f);
+                    var dither = ((((x * 19) ^ (y * 11) ^ (x * y * 5)) & 15) / 15f);
+                    var alpha = Mathf.Clamp(baseAlpha * Mathf.Lerp(0.90f, 1f, dither), 0f, 0.26f);
+                    return new Color(1f, 0.78f, 0.40f, alpha);
                 });
         }
 
