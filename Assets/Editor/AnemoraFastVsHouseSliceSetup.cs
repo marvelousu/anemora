@@ -207,6 +207,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyFourthCycleLibraryWindowLight();
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
+            ValidateFastVsHd2dFortyFifthCycleCharacterFootContact();
             ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateFastVsHd2dTwentySixthCycleHouseBedTextilePolish();
             ValidateFastVsHd2dFortiethCycleHouseBedSoftTextilePolish();
@@ -785,6 +786,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentyFifthCycleScreenshotsBatch()
         {
             CaptureHd2dTwentyFifthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_character_ground_bounce_20260520");
+        }
+
+        public static void CaptureHd2dFortyFifthCycleScreenshotsBatch()
+        {
+            CaptureHd2dFortyFifthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_character_foot_contact_20260520");
         }
 
         public static void CaptureHd2dTwentySixthCycleScreenshotsBatch()
@@ -2529,6 +2535,77 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dFortyFifthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS forty-fifth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorPlayerStart,
+                HouseInteriorPlayerStart + new Vector3(0f, 0.04f, 0.10f),
+                new Vector3(0.22f, 0.88f, -1.66f),
+                new Vector3(0.08f, 0.03f, 0.06f),
+                outputDirectory,
+                "01_niro_interior_foot_contact.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                ExteriorDoorExitTarget,
+                ExteriorDoorExitTarget + new Vector3(0f, 0.04f, 0.11f),
+                new Vector3(0.24f, 0.86f, -1.58f),
+                new Vector3(0.08f, 0.03f, 0.05f),
+                outputDirectory,
+                "02_niro_exterior_foot_contact.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-1.02f, 0.02f, -1.02f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.08f, 0.00f),
+                new Vector3(0.24f, 0.92f, -1.76f),
+                new Vector3(0.07f, 0.03f, 0.04f),
+                outputDirectory,
+                "03_reto_library_foot_contact.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                PastLibraryPersonCueLocalPosition + new Vector3(-1.00f, 0.02f, -1.00f),
+                PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.08f, 0.00f),
+                new Vector3(0.24f, 0.92f, -1.74f),
+                new Vector3(0.07f, 0.03f, 0.04f),
+                outputDirectory,
+                "04_aria_past_library_foot_contact.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS forty-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureHd2dTwentySixthCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -3966,6 +4043,12 @@ namespace Anemora.EditorTools
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.035f, 0.02f),
                     new Vector3(0.70f, 0.24f, 1f),
                     EnsureAriaContactShadowMaterial());
+                CreateCharacterFootContactShadow(
+                    "Past_Library_Aria_FootContact",
+                    root,
+                    PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.041f, -0.040f),
+                    new Vector3(0.31f, 0.070f, 1f),
+                    EnsureAriaContactShadowMaterial());
                 CreateCharacterGroundBounce(
                     "Past_Library_Aria_GroundBounce",
                     root,
@@ -4002,6 +4085,12 @@ namespace Anemora.EditorTools
                     root,
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.035f, 0.03f),
                     new Vector3(0.66f, 0.24f, 1f),
+                    EnsureRetoContactShadowMaterial());
+                CreateCharacterFootContactShadow(
+                    "Current_Library_Reto_FootContact",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.041f, -0.045f),
+                    new Vector3(0.30f, 0.070f, 1f),
                     EnsureRetoContactShadowMaterial());
                 CreateCharacterGroundBounce(
                     "Current_Library_Reto_GroundBounce",
@@ -5494,6 +5583,12 @@ namespace Anemora.EditorTools
                 player.transform,
                 new Vector3(0f, 0.022f, -0.02f),
                 new Vector3(0.66f, 0.24f, 1f),
+                EnsureNiroContactShadowMaterial());
+            CreateCharacterFootContactShadow(
+                "FastVS_PlayerFootContact_Niro",
+                player.transform,
+                new Vector3(0f, 0.027f, -0.055f),
+                new Vector3(0.34f, 0.075f, 1f),
                 EnsureNiroContactShadowMaterial());
             CreateCharacterGroundBounce(
                 "FastVS_PlayerGroundBounce_Niro",
@@ -9845,6 +9940,43 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dFortyFifthCycleCharacterFootContact()
+        {
+            ValidateCharacterFootContactShadowObject(
+                "FastVS_PlayerFootContact_Niro",
+                "FastVS_Player_NiroHouseSlice",
+                new Vector3(0f, 0.027f, -0.055f),
+                new Vector3(0.34f, 0.075f, 1f));
+
+            ValidateCharacterFootContactShadowObject(
+                "Current_Library_Reto_FootContact",
+                "Current_LibraryMap_SeparateSpace",
+                RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.041f, -0.045f),
+                new Vector3(0.30f, 0.070f, 1f));
+
+            ValidateCharacterFootContactShadowObject(
+                "Past_Library_Aria_FootContact",
+                "Past_LibraryMap_SeparateSpace",
+                PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.041f, -0.040f),
+                new Vector3(0.31f, 0.070f, 1f));
+
+            if (FindSceneObjectIncludingInactive("FastVS_PlayerVisual_NiroShadingOverlay") != null ||
+                FindSceneObjectIncludingInactive("FastVS_PlayerSpriteShadingOverlay_Niro") != null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the old Niro full-body shading overlay must not exist.");
+            }
+
+            if (FindSceneObjectIncludingInactive("FastVS_PlayerContactShadow_Niro") == null ||
+                FindSceneObjectIncludingInactive("FastVS_PlayerGroundBounce_Niro") == null ||
+                FindSceneObjectIncludingInactive("Current_Library_Reto_ContactShadow") == null ||
+                FindSceneObjectIncludingInactive("Current_Library_Reto_GroundBounce") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_Aria_ContactShadow") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_Aria_GroundBounce") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the existing contact shadows and ground bounces must remain present.");
+            }
+        }
+
         private static void ValidateFastVsHd2dSeventhCycleDepthFraming()
         {
             ValidateHd2dDepthFramingObject("Current_HouseInterior_BackWall_DepthBand", "hd2d_depth_shadow", 2985, 2995, "Current_HouseInteriorMap_SeparateSpace");
@@ -10174,6 +10306,47 @@ namespace Anemora.EditorTools
             if (materialName.IndexOf("contact_shadow", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing contact_shadow in its name.");
+            }
+        }
+
+        private static void ValidateCharacterFootContactShadowObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing foot-contact object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null || !renderer.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have an enabled renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (Quaternion.Angle(sceneObject.transform.localRotation, Quaternion.Euler(90f, 0f, 0f)) > 1.5f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay horizontal with a local X rotation near 90 degrees.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("contact_shadow", StringComparison.OrdinalIgnoreCase) < 0 ||
+                materialName.IndexOf("white", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("debug", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a non-debug contact_shadow material.");
             }
         }
 
@@ -11716,6 +11889,11 @@ namespace Anemora.EditorTools
             var shadow = CreateQuad(name, parent, localPosition, localScale, material);
             shadow.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
             return shadow;
+        }
+
+        private static GameObject CreateCharacterFootContactShadow(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
+        {
+            return CreateCharacterContactShadow(name, parent, localPosition, localScale, material);
         }
 
         private static GameObject CreateCharacterGroundBounce(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
