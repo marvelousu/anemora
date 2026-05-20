@@ -187,6 +187,7 @@ namespace Anemora.EditorTools
             ValidateDirectionalSpriteAnimator();
             ValidatePlayerSpritePresentation();
             ValidateFastVsHd2dFirstCycleVisuals();
+            ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
@@ -443,6 +444,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dThirtySixthCycleScreenshotsBatch()
         {
             CaptureHd2dThirtySixthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_outdoor_boundary_nature_20260520");
+        }
+
+        public static void CaptureHd2dThirtySeventhCycleScreenshotsBatch()
+        {
+            CaptureHd2dThirtySeventhCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_lighting_balance_20260520");
         }
 
         public static void CaptureHd2dTwentyFourthCycleScreenshotsBatch()
@@ -1840,6 +1846,70 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS thirty-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dThirtySeventhCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS thirty-seventh-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var housePlayerLocal = HouseExteriorCenter + new Vector3(-3.95f, 0.02f, -1.12f);
+            var plazaPlayerLocal = CentralPlazaVsCenter + new Vector3(-1.55f, 0.02f, 1.28f);
+            var libraryPlayerLocal = LibraryVsCenter + new Vector3(-4.20f, 0.02f, -5.18f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                $"{outputDirectory}/01_current_house_exterior_lighting_balance.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                $"{outputDirectory}/02_current_central_plaza_lighting_balance.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                libraryPlayerLocal,
+                $"{outputDirectory}/03_current_library_lighting_balance.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                $"{outputDirectory}/04_past_central_plaza_lighting_balance.png");
+
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_lighting_balance.png");
+            ValidateScreenshotOutputExists(outputDirectory, "02_current_central_plaza_lighting_balance.png");
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_library_lighting_balance.png");
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_central_plaza_lighting_balance.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS thirty-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureHd2dTwentyFourthCycleScreenshotsToDirectory(string outputDirectory)
@@ -4860,12 +4930,13 @@ namespace Anemora.EditorTools
             var lightObject = new GameObject("Directional Light", typeof(Light));
             var light = lightObject.GetComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 1.15f;
+            light.intensity = 1.10f;
             light.shadows = LightShadows.Soft;
+            light.shadowStrength = 0.52f;
             light.color = new Color(1.00f, 0.96f, 0.88f, 1f);
             lightObject.transform.rotation = Quaternion.Euler(52f, -35f, 0f);
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.22f, 0.23f, 0.27f);
+            RenderSettings.ambientLight = new Color(0.29f, 0.30f, 0.31f);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = new Color(0.13f, 0.15f, 0.18f);
@@ -7873,7 +7944,7 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            var targetAmbient = new Color(0.22f, 0.23f, 0.27f);
+            var targetAmbient = new Color(0.29f, 0.30f, 0.31f);
             if (Mathf.Abs(ambient.r - targetAmbient.r) > 0.02f ||
                 Mathf.Abs(ambient.g - targetAmbient.g) > 0.02f ||
                 Mathf.Abs(ambient.b - targetAmbient.b) > 0.02f)
@@ -7935,6 +8006,62 @@ namespace Anemora.EditorTools
 
             ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_floor.mat");
             ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat");
+        }
+
+        private static void ValidateFastVsHd2dThirtySeventhCycleLightingBalance()
+        {
+            var directionalLightObject = FindSceneObjectIncludingInactive("Directional Light");
+            if (directionalLightObject == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing Directional Light.");
+            }
+
+            var directionalLight = directionalLightObject.GetComponent<Light>();
+            if (directionalLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Directional Light must have a Light component.");
+            }
+
+            if (directionalLight.type != LightType.Directional)
+            {
+                throw new InvalidOperationException("House slice validation failed: Directional Light must remain directional.");
+            }
+
+            if (directionalLight.shadows != LightShadows.Soft)
+            {
+                throw new InvalidOperationException("House slice validation failed: Directional Light must use soft shadows.");
+            }
+
+            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.65f)
+            {
+                throw new InvalidOperationException("House slice validation failed: Directional Light shadow strength must stay in the HD-2D balance range.");
+            }
+
+            if (directionalLight.intensity < 0.95f || directionalLight.intensity > 1.25f)
+            {
+                throw new InvalidOperationException("House slice validation failed: Directional Light intensity must stay in the HD-2D balance range.");
+            }
+
+            if (RenderSettings.ambientMode != AmbientMode.Flat)
+            {
+                throw new InvalidOperationException("House slice validation failed: ambient mode must remain Flat.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            if (ambient.r < 0.24f || ambient.r > 0.38f ||
+                ambient.g < 0.24f || ambient.g > 0.38f ||
+                ambient.b < 0.24f || ambient.b > 0.38f)
+            {
+                throw new InvalidOperationException("House slice validation failed: ambient light must stay within the HD-2D readability range.");
+            }
+
+            if (FindSceneObjectIncludingInactive("Current_HouseExterior_ToPlaza_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Player_NiroHouseSlice") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Reto_WritingAtDesk") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle37 lighting balance must keep the core route objects present.");
+            }
         }
 
         private static void ValidateFastVsHd2dSecondCycleAtmosphere()

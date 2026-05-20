@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.4 fast VS HD2D outdoor boundary nature cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.5 fast VS HD2D lighting balance cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 277 files including INDEX.md and README.md.
-- Dated devlog records: 275 files.
-- Linked evidence files present under docs/devlog/screenshots/: 374 files.
+- Root-level Markdown coverage: 278 files including INDEX.md and README.md.
+- Dated devlog records: 276 files.
+- Linked evidence files present under docs/devlog/screenshots/: 378 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 37 |
+| 2026-05-20 | 38 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -64,6 +64,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_library_window_light_cycle.md](2026-05-20_fast_vs_hd2d_library_window_light_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Window Light Cycle |
 | [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Reading Table Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_lighting_balance_cycle.md](2026-05-20_fast_vs_hd2d_lighting_balance_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Lighting Balance Cycle |
 | [2026-05-20_fast_vs_hd2d_close_review_cycle.md](2026-05-20_fast_vs_hd2d_close_review_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Close Review Cycle |
 | [2026-05-20_fast_vs_hd2d_depth_framing_cycle.md](2026-05-20_fast_vs_hd2d_depth_framing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Depth Framing Cycle |
 | [2026-05-20_fast_vs_hd2d_facade_detail_cycle.md](2026-05-20_fast_vs_hd2d_facade_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Facade Detail Cycle |
