@@ -201,6 +201,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
             ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateFastVsHd2dTwentySixthCycleHouseBedTextilePolish();
+            ValidateFastVsHd2dTwentySeventhCycleHouseInteriorWallFloorWarmth();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
@@ -418,6 +419,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentySixthCycleScreenshotsBatch()
         {
             CaptureHd2dTwentySixthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_bed_textile_20260520");
+        }
+
+        public static void CaptureHd2dTwentySeventhCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentySeventhCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_interior_wall_floor_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1577,6 +1583,54 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dTwentySeventhCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-seventh-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(1.80f, 0.02f, -1.92f),
+                HouseInteriorCenter + new Vector3(-0.60f, 0.54f, 0.60f),
+                new Vector3(0.10f, 1.24f, -2.46f),
+                new Vector3(0f, 0.08f, 0.10f),
+                outputDirectory,
+                "01_current_house_wall_floor_warmth.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(1.80f, 0.02f, -1.92f),
+                HouseInteriorCenter + new Vector3(-0.60f, 0.54f, 0.60f),
+                new Vector3(0.10f, 1.24f, -2.46f),
+                new Vector3(0f, 0.08f, 0.10f),
+                outputDirectory,
+                "02_past_house_wall_floor_warmth.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_house_wall_floor_warmth.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_house_wall_floor_warmth.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -1791,6 +1845,10 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseInterior_LeftWall", root, c + new Vector3(-3.60f, 0.95f, 0.05f), new Vector3(0.18f, 1.90f, 5.70f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_interior.left_wall");
             CreateLandmarkCube($"{prefix}_HouseInterior_RightWall", root, c + new Vector3(3.60f, 0.95f, 0.05f), new Vector3(0.18f, 1.90f, 5.70f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_interior.right_wall");
             CreateLandmarkCube($"{prefix}_HouseInterior_BackWallTopTrim", root, c + new Vector3(0f, 1.92f, 2.74f), new Vector3(6.95f, 0.06f, 0.06f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.back_wall_top_trim");
+            CreateLandmarkCube($"{prefix}_HouseInterior_BackWall_WoodWainscotLower", root, c + new Vector3(0f, 0.62f, 2.70f), new Vector3(6.88f, 0.34f, 0.05f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.back_wall.wood_wainscot_lower");
+            CreateLandmarkCube($"{prefix}_HouseInterior_BackWall_WoodWainscotTopRail", root, c + new Vector3(0f, 0.84f, 2.70f), new Vector3(6.88f, 0.06f, 0.05f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.back_wall.wood_wainscot_top_rail");
+            CreateLandmarkCube($"{prefix}_HouseInterior_LeftWall_WoodWainscotLower", root, c + new Vector3(-3.47f, 0.60f, 0.05f), new Vector3(0.05f, 0.34f, 5.36f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.left_wall.wood_wainscot_lower");
+            CreateLandmarkCube($"{prefix}_HouseInterior_RightWall_WoodWainscotLower", root, c + new Vector3(3.47f, 0.60f, 0.05f), new Vector3(0.05f, 0.34f, 5.36f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.right_wall.wood_wainscot_lower");
 
             var bedMaterial = past ? materials.PastBed : materials.CurrentBed;
             CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed", root, c + new Vector3(-1.25f, 0.26f, 0.96f), new Vector3(1.92f, 0.24f, 1.06f), Quaternion.Euler(0f, 0f, past ? 0f : -3f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed");
@@ -1815,6 +1873,10 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_SmallTable_LegBR", root, c + new Vector3(1.42f, 0.24f, -0.56f), new Vector3(0.10f, 0.42f, 0.10f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.table.leg_br");
             CreateLandmarkCube($"{prefix}_ShelfOrBrokenStack", root, c + new Vector3(2.35f, past ? 0.85f : 0.54f, 1.42f), new Vector3(0.58f, past ? 1.70f : 1.08f, 1.35f), Quaternion.Euler(0f, 0f, past ? 0f : 6f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.shelf");
             CreateLandmarkCube($"{prefix}_HearthPixelBlock", root, c + new Vector3(-2.48f, 0.42f, -1.25f), new Vector3(0.90f, 0.84f, 0.32f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.hearth");
+            CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandA", root, c + new Vector3(0.42f, 0.018f, -1.56f), new Vector3(1.18f, 0.020f, 0.24f), Quaternion.Euler(0f, past ? -1f : -4f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_a");
+            CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandB", root, c + new Vector3(-0.06f, 0.018f, -0.92f), new Vector3(0.96f, 0.020f, 0.22f), Quaternion.Euler(0f, past ? 0f : -3f, 0f), bedMaterial, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_b");
+            CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandFront", root, c + new Vector3(1.02f, 0.019f, -2.08f), new Vector3(3.62f, 0.020f, 0.34f), Quaternion.Euler(0f, past ? 0f : -2f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_front");
+            CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandRight", root, c + new Vector3(2.02f, 0.020f, -0.78f), new Vector3(0.58f, 0.020f, 2.18f), Quaternion.Euler(0f, past ? 1f : -3f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_right");
 
             if (past)
             {
@@ -6426,6 +6488,31 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dTwentySeventhCycleHouseInteriorWallFloorWarmth()
+        {
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_BackWall_WoodWainscotLower", "Current_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.40f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_BackWall_WoodWainscotLower", "Past_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.40f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_LeftWall_WoodWainscotLower", "Current_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.40f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_LeftWall_WoodWainscotLower", "Past_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.40f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_RightWall_WoodWainscotLower", "Current_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.40f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_RightWall_WoodWainscotLower", "Past_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.40f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_BackWall_WoodWainscotTopRail", "Current_HouseInteriorMap_SeparateSpace", "fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.10f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_BackWall_WoodWainscotTopRail", "Past_HouseInteriorMap_SeparateSpace", "fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, 0.10f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_FloorBoardWarmBandA", "Current_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_FloorBoardWarmBandA", "Past_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_FloorBoardWarmBandB", "Current_HouseInteriorMap_SeparateSpace", "bed", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_FloorBoardWarmBandB", "Past_HouseInteriorMap_SeparateSpace", "bed", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_FloorBoardWarmBandFront", "Current_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_FloorBoardWarmBandFront", "Past_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Current_HouseInterior_FloorBoardWarmBandRight", "Current_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+            ValidateHouseInteriorWarmthObject("Past_HouseInterior_FloorBoardWarmBandRight", "Past_HouseInteriorMap_SeparateSpace", "furniture", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.08f);
+
+            ValidateLandmarkExists("Current_HouseInterior_PixelFloor", "Current_HouseInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseInterior_PixelFloor", "Past_HouseInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_NiroBed_PaperPixelBed_Blanket", "Current_HouseInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_NiroBed_PaperPixelBed_Blanket", "Past_HouseInteriorMap_SeparateSpace");
+        }
+
         private static void ValidateFastVsHd2dTwentySecondCycleHouseInteriorLifeProps()
         {
             ValidateHouseInteriorLifePropObject("Current_HouseInterior_LifeProp_BedsideRug", "current_bed", "Current_HouseInteriorMap_SeparateSpace", 0.12f);
@@ -6447,6 +6534,71 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("FastVS_Player_NiroHouseSlice") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle22 house interior life props must keep the glow pads, book cues, and player root present.");
+            }
+        }
+
+        private static void ValidateHouseInteriorWarmthObject(string objectName, string expectedParentName, string expectedMaterialToken, TimeWindowPairedSpaceLandmarkKind expectedKind, float maxScaleY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house interior warmth object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding interior warmth geometry.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(expectedKind))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use {expectedKind}.");
+            }
+
+            if (sceneObject.transform.localScale.y > maxScaleY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay thin on the Y axis.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateLandmarkExists(string objectName, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing required house interior object {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
             }
         }
 
