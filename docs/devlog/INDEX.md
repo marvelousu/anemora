@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.8 fast VS HD2D current library wall shelf depth cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.9 fast VS HD2D plaza library approach cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 284 files including INDEX.md and README.md.
-- Dated devlog records: 282 files.
-- Linked evidence files present under docs/devlog/screenshots/: 406 files.
+- Root-level Markdown coverage: 285 files including INDEX.md and README.md.
+- Dated devlog records: 283 files.
+- Linked evidence files present under docs/devlog/screenshots/: 410 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 45 |
+| 2026-05-20 | 46 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_book_palette_cycle.md](2026-05-20_fast_vs_hd2d_book_palette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Book Palette Cycle |
 | [2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_plaza_library_facade_landmark_cycle.md](2026-05-20_fast_vs_hd2d_plaza_library_facade_landmark_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Plaza Library Facade Landmark Cycle |
+| [2026-05-20_fast_vs_hd2d_plaza_library_approach_cycle.md](2026-05-20_fast_vs_hd2d_plaza_library_approach_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Plaza Library Approach Cycle |
 | [2026-05-20_fast_vs_hd2d_central_plaza_floor_fountain_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_floor_fountain_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Floor Fountain Cycle |
 | [2026-05-20_fast_vs_hd2d_character_ground_bounce_cycle.md](2026-05-20_fast_vs_hd2d_character_ground_bounce_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Ground Bounce Cycle |
 | [2026-05-20_fast_vs_hd2d_current_library_side_shelf_visibility_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelf_visibility_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelf Visibility Cycle |
@@ -411,6 +412,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.9 | 2026-05-20 | Added Fast VS HD2D plaza library approach cycle record with current/past low-profile steps, curbs, validation, build, player-smoke, and screenshot evidence. |
 | v6.8 | 2026-05-20 | Added Fast VS HD2D current library wall shelf depth cycle record with current-side shadow/dust bands, validation, build, player-smoke, and screenshot evidence. |
 | v6.6 | 2026-05-20 | Added Fast VS HD2D current library ruin floor detail cycle record with current-side floor clutter, validation, build, player-smoke, and screenshot evidence. |
 | v6.5 | 2026-05-20 | Added Fast VS HD2D house interior room depth cycle record with upper wall caps, corner posts, dark shadow framing, validation, and screenshot evidence. |
