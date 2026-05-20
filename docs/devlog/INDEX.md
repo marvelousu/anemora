@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.20 fast VS HD2D house exterior path/porch dressing cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.21 fast VS HD2D house exterior vegetation silhouette cleanup cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 296 files including INDEX.md and README.md.
-- Dated devlog records: 294 files.
-- Linked evidence files present under docs/devlog/screenshots/: 450 files.
+- Root-level Markdown coverage: 297 files including INDEX.md and README.md.
+- Dated devlog records: 295 files.
+- Linked evidence files present under docs/devlog/screenshots/: 454 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 3 |
+| 2026-05-21 | 4 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_house_exterior_vegetation_silhouette_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_vegetation_silhouette_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Vegetation Silhouette Cleanup Cycle |
 | [2026-05-21_fast_vs_hd2d_house_exterior_path_porch_dressing_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_path_porch_dressing_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Path/Porch Dressing Cycle |
 | [2026-05-21_fast_vs_hd2d_library_wall_plane_dressing_cycle.md](2026-05-21_fast_vs_hd2d_library_wall_plane_dressing_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Wall Plane Dressing Cycle |
 | [2026-05-21_fast_vs_hd2d_graphics_improvement_22h30m_report.md](2026-05-21_fast_vs_hd2d_graphics_improvement_22h30m_report.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Graphics Improvement 22h30m Report |
@@ -429,6 +430,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.21 | 2026-05-21 | Added Fast VS HD2D house exterior vegetation silhouette cleanup cycle with tree crown sprite breakup, validation, and screenshot evidence. |
 | v6.20 | 2026-05-21 | Added Fast VS HD2D house exterior path/porch dressing cycle with doorway, path shoulder, road edge, and fence-side ground details plus validation and screenshot evidence. |
 | v6.19 | 2026-05-21 | Added Fast VS HD2D library wall plane dressing cycle with thin wall, shelf-contact, pilaster, and window recess details plus validation and screenshot evidence. |
 | v6.18 | 2026-05-21 | Added Fast VS HD2D 22h30m graphics improvement report with branch state, accepted work summary, external asset inventory, rejected attempts, validation state, and next steps. |
