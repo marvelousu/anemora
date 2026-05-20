@@ -193,6 +193,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwelfthCycleFacadeDetails();
             ValidateFastVsHd2dThirteenthCycleLibraryPropDetails();
             ValidateFastVsHd2dFourteenthCycleHouseInteriorDetails();
+            ValidateFastVsHd2dTwentySecondCycleHouseInteriorLifeProps();
             ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails();
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
@@ -388,6 +389,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentyFirstCycleScreenshotsBatch()
         {
             CaptureHd2dTwentyFirstCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_atmosphere_20260520");
+        }
+
+        public static void CaptureHd2dTwentySecondCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentySecondCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_interior_life_props_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1231,6 +1237,77 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-first-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dTwentySecondCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-second-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(-2.10f, 0.02f, 0.62f),
+                HouseInteriorCenter + new Vector3(-1.38f, 0.16f, 0.06f),
+                new Vector3(0.08f, 0.94f, -2.00f),
+                new Vector3(0.05f, 0.06f, 0.08f),
+                outputDirectory,
+                "01_current_house_bedside_life_props.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(1.18f, 0.02f, -0.94f),
+                HouseInteriorCenter + new Vector3(1.10f, 0.64f, -0.86f),
+                new Vector3(-0.02f, 1.02f, -2.10f),
+                new Vector3(-0.02f, 0.14f, 0.10f),
+                outputDirectory,
+                "02_current_house_table_life_props.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(-2.08f, 0.02f, 0.72f),
+                HouseInteriorCenter + new Vector3(-1.42f, 0.36f, 0.18f),
+                new Vector3(0.10f, 1.02f, -2.06f),
+                new Vector3(0.06f, 0.10f, 0.10f),
+                outputDirectory,
+                "03_past_house_bedside_life_props.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(1.18f, 0.02f, -0.94f),
+                HouseInteriorCenter + new Vector3(1.10f, 0.64f, -0.86f),
+                new Vector3(-0.02f, 1.02f, -2.10f),
+                new Vector3(-0.02f, 0.14f, 0.10f),
+                outputDirectory,
+                "04_past_house_table_life_props.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-second-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -1473,6 +1550,11 @@ namespace Anemora.EditorTools
                 CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_PropDetail_BedBlanketFoldA", c + new Vector3(-1.57f, 0.61f, 0.72f), Quaternion.Euler(0f, -6f, 8f), new Vector3(0.46f, 0.05f, 0.18f), bedMaterial, "Past.house_interior.prop_detail.bed_blanket_fold_a");
                 CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_PropDetail_BedPillowEdge", c + new Vector3(-1.82f, 0.66f, 1.16f), Quaternion.Euler(0f, 8f, -6f), new Vector3(0.30f, 0.04f, 0.10f), materials.Pillow, "Past.house_interior.prop_detail.bed_pillow_edge");
                 CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_PropDetail_TableLoosePaper", c + new Vector3(1.26f, 0.58f, -0.63f), Quaternion.Euler(0f, -11f, 4f), new Vector3(0.24f, 0.02f, 0.16f), materials.SignPaint, "Past.house_interior.prop_detail.table_loose_paper");
+                CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_LifeProp_BedsideRug", c + new Vector3(-1.22f, 0.018f, -0.02f), Quaternion.Euler(0f, -2f, 0f), new Vector3(1.12f, 0.025f, 0.42f), bedMaterial, "Past.house_interior.life_prop.bedside_rug");
+                CreateLandmarkCube("Past_HouseInterior_LifeProp_TableInkCup", root, c + new Vector3(0.76f, 0.61f, -0.98f), new Vector3(0.10f, 0.10f, 0.10f), Quaternion.identity, materials.PastFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_interior.life_prop.table_ink_cup");
+                CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_LifeProp_TableBrush", c + new Vector3(1.28f, 0.64f, -0.96f), Quaternion.Euler(0f, -18f, 4f), new Vector3(0.34f, 0.018f, 0.045f), materials.PastFence, "Past.house_interior.life_prop.table_brush");
+                CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_LifeProp_BookPageMarker", c + new Vector3(1.08f, 0.66f, -0.74f), Quaternion.Euler(0f, -10f, 0f), new Vector3(0.16f, 0.010f, 0.045f), materials.SignPaint, "Past.house_interior.life_prop.book_page_marker");
+                CreateHouseInteriorPropDetailSlab(root, "Past_HouseInterior_LifeProp_PillowCreaseB", c + new Vector3(-1.92f, 0.68f, 0.76f), Quaternion.Euler(0f, -4f, 0f), new Vector3(0.24f, 0.018f, 0.045f), materials.Pillow, "Past.house_interior.life_prop.pillow_crease_b");
             }
             else
             {
@@ -1481,6 +1563,11 @@ namespace Anemora.EditorTools
                 CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_PropDetail_BedBlanketFoldA", c + new Vector3(-1.58f, 0.61f, 0.71f), Quaternion.Euler(0f, -7f, 8f), new Vector3(0.48f, 0.05f, 0.18f), bedMaterial, "Current.house_interior.prop_detail.bed_blanket_fold_a");
                 CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_PropDetail_BedPillowEdge", c + new Vector3(-1.82f, 0.66f, 1.16f), Quaternion.Euler(0f, 8f, -6f), new Vector3(0.30f, 0.04f, 0.10f), materials.Pillow, "Current.house_interior.prop_detail.bed_pillow_edge");
                 CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_PropDetail_TableLoosePaper", c + new Vector3(1.25f, 0.58f, -0.64f), Quaternion.Euler(0f, -10f, 4f), new Vector3(0.24f, 0.02f, 0.16f), materials.SignPaint, "Current.house_interior.prop_detail.table_loose_paper");
+                CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_LifeProp_BedsideRug", c + new Vector3(-1.22f, 0.024f, -0.24f), Quaternion.Euler(0f, -4f, 0f), new Vector3(1.12f, 0.025f, 0.50f), materials.CurrentBed, "Current.house_interior.life_prop.bedside_rug");
+                CreateLandmarkCube("Current_HouseInterior_LifeProp_TableInkCup", root, c + new Vector3(0.76f, 0.61f, -0.98f), new Vector3(0.10f, 0.10f, 0.10f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.house_interior.life_prop.table_ink_cup");
+                CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_LifeProp_TableBrush", c + new Vector3(1.28f, 0.64f, -0.96f), Quaternion.Euler(0f, -24f, 5f), new Vector3(0.34f, 0.018f, 0.045f), materials.CurrentFence, "Current.house_interior.life_prop.table_brush");
+                CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_LifeProp_BookPageMarker", c + new Vector3(1.08f, 0.66f, -0.74f), Quaternion.Euler(0f, -12f, 0f), new Vector3(0.16f, 0.010f, 0.045f), materials.SignPaint, "Current.house_interior.life_prop.book_page_marker");
+                CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_LifeProp_PillowCreaseB", c + new Vector3(-1.92f, 0.68f, 0.76f), Quaternion.Euler(0f, -5f, 0f), new Vector3(0.24f, 0.018f, 0.045f), materials.Dust, "Current.house_interior.life_prop.pillow_crease_b");
             }
 
             CreateInvisibleColliderBox(
@@ -5850,6 +5937,30 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dTwentySecondCycleHouseInteriorLifeProps()
+        {
+            ValidateHouseInteriorLifePropObject("Current_HouseInterior_LifeProp_BedsideRug", "current_bed", "Current_HouseInteriorMap_SeparateSpace", 0.12f);
+            ValidateHouseInteriorLifePropObject("Current_HouseInterior_LifeProp_TableInkCup", "doorway_dark", "Current_HouseInteriorMap_SeparateSpace", 0.14f);
+            ValidateHouseInteriorLifePropObject("Current_HouseInterior_LifeProp_TableBrush", "current_fence", "Current_HouseInteriorMap_SeparateSpace", 0.12f);
+            ValidateHouseInteriorLifePropObject("Current_HouseInterior_LifeProp_BookPageMarker", "sign_paint", "Current_HouseInteriorMap_SeparateSpace", 0.12f);
+            ValidateHouseInteriorLifePropObject("Current_HouseInterior_LifeProp_PillowCreaseB", "dust", "Current_HouseInteriorMap_SeparateSpace", 0.12f);
+
+            ValidateHouseInteriorLifePropObject("Past_HouseInterior_LifeProp_BedsideRug", "past_bed", "Past_HouseInteriorMap_SeparateSpace", 0.12f);
+            ValidateHouseInteriorLifePropObject("Past_HouseInterior_LifeProp_TableInkCup", "past_fence", "Past_HouseInteriorMap_SeparateSpace", 0.14f);
+            ValidateHouseInteriorLifePropObject("Past_HouseInterior_LifeProp_TableBrush", "past_fence", "Past_HouseInteriorMap_SeparateSpace", 0.12f);
+            ValidateHouseInteriorLifePropObject("Past_HouseInterior_LifeProp_BookPageMarker", "sign_paint", "Past_HouseInteriorMap_SeparateSpace", 0.12f);
+            ValidateHouseInteriorLifePropObject("Past_HouseInterior_LifeProp_PillowCreaseB", "pillow", "Past_HouseInteriorMap_SeparateSpace", 0.12f);
+
+            if (FindSceneObjectIncludingInactive("Current_HouseInterior_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseInterior_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_HouseInterior_TimewriterBookCue") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseInterior_BookOnTable") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Player_NiroHouseSlice") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle22 house interior life props must keep the glow pads, book cues, and player root present.");
+            }
+        }
+
         private static void ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails()
         {
             ValidateOutdoorGroundDetailObject("Current_CentralPlaza_PropDetail_FountainRimChipA", "current_stone", 0.12f);
@@ -6232,6 +6343,57 @@ namespace Anemora.EditorTools
             if (sceneObject.transform.localScale.y > 0.10f)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay very thin on the Y axis.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateHouseInteriorLifePropObject(string objectName, string expectedMaterialToken, string expectedParentName, float maxScaleY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house interior life prop object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding interior decoration.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            if (sceneObject.transform.localScale.y > maxScaleY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay thin on the Y axis.");
             }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
