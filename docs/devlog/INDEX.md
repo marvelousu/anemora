@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.16 fast VS HD2D library bookshelf external texture cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.18 fast VS HD2D graphics improvement 22h30m report index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 292 files including INDEX.md and README.md.
-- Dated devlog records: 290 files.
-- Linked evidence files present under docs/devlog/screenshots/: 438 files.
+- Root-level Markdown coverage: 294 files including INDEX.md and README.md.
+- Dated devlog records: 292 files.
+- Linked evidence files present under docs/devlog/screenshots/: 442 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,9 +30,16 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 53 |
+| 2026-05-20 | 54 |
+| 2026-05-21 | 1 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-05-21
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-21_fast_vs_hd2d_graphics_improvement_22h30m_report.md](2026-05-21_fast_vs_hd2d_graphics_improvement_22h30m_report.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Graphics Improvement 22h30m Report |
 
 ### 2026-05-20
 
@@ -58,6 +65,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_house_exterior_facade_texture_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_facade_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Facade Texture Cycle |
 | [2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Textile Cycle |
 | [2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Soft Textile Cycle |
+| [2026-05-20_fast_vs_hd2d_house_bed_layered_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_layered_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Layered Textile Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Wall Floor Warmth Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_room_depth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_room_depth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Room Depth Cycle |
 | [2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Edge Dressing Cycle |
@@ -419,6 +427,8 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.18 | 2026-05-21 | Added Fast VS HD2D 22h30m graphics improvement report with branch state, accepted work summary, external asset inventory, rejected attempts, validation state, and next steps. |
+| v6.17 | 2026-05-20 | Added Fast VS HD2D house bed layered textile cycle record with validation and screenshot evidence after rejecting the floating external bed sprite approach. |
 | v6.16 | 2026-05-20 | Added Fast VS HD2D library bookshelf external texture cycle record with OpenGameArt CC0 bookshelf source, validation, and screenshot evidence. |
 | v6.13 | 2026-05-20 | Added Fast VS HD2D house exterior external tree sprite cycle record with OpenGameArt CC0 tree source, hidden collision shells, validation, and screenshot evidence. |
 | v6.9 | 2026-05-20 | Added Fast VS HD2D plaza library approach cycle record with current/past low-profile steps, curbs, validation, build, player-smoke, and screenshot evidence. |
