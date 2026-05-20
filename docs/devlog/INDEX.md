@@ -6,9 +6,9 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 273 files including INDEX.md and README.md.
-- Dated devlog records: 271 files.
-- Linked evidence files present under docs/devlog/screenshots/: 362 files.
+- Root-level Markdown coverage: 275 files including INDEX.md and README.md.
+- Dated devlog records: 273 files.
+- Linked evidence files present under docs/devlog/screenshots/: 370 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 34 |
+| 2026-05-20 | 36 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -50,12 +50,14 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Wall Floor Warmth Cycle |
 | [2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Edge Dressing Cycle |
 | [2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md](2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Contact Shadow Cycle |
+| [2026-05-20_fast_vs_hd2d_library_side_shelf_slab_cleanup_cycle.md](2026-05-20_fast_vs_hd2d_library_side_shelf_slab_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Side Shelf Slab Cleanup Cycle |
 | [2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelves Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Life Props Cycle |
 | [2026-05-20_fast_vs_hd2d_library_facade_close_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_facade_close_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Facade Close Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_library_facade_architecture_cycle.md](2026-05-20_fast_vs_hd2d_library_facade_architecture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Facade Architecture Cycle |
 | [2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf Readability Cycle |
+| [2026-05-20_fast_vs_hd2d_library_side_shelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_side_shelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Side Shelf Readability Cycle |
 | [2026-05-20_fast_vs_hd2d_library_floor_decay_cycle.md](2026-05-20_fast_vs_hd2d_library_floor_decay_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Floor Decay Cycle |
 | [2026-05-20_fast_vs_hd2d_library_window_light_cycle.md](2026-05-20_fast_vs_hd2d_library_window_light_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Window Light Cycle |
 | [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
