@@ -196,6 +196,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentySecondCycleHouseInteriorLifeProps();
             ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails();
             ValidateFastVsHd2dTwentyThirdCycleOutdoorEdgeDressing();
+            ValidateFastVsHd2dTwentyFourthCycleLibraryWindowLight();
             ValidateFastVsHd2dSixteenthCycleHouseExteriorDetails();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
@@ -400,6 +401,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentyThirdCycleScreenshotsBatch()
         {
             CaptureHd2dTwentyThirdCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_outdoor_edge_dressing_20260520");
+        }
+
+        public static void CaptureHd2dTwentyFourthCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentyFourthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_window_light_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1369,6 +1375,77 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-third-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dTwentyFourthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-fourth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.72f, 0.02f, -1.64f),
+                LibraryVsCenter + new Vector3(-4.96f, 0.86f, -1.58f),
+                new Vector3(5.15f, 1.60f, -4.10f),
+                new Vector3(-0.18f, 0.24f, 0.18f),
+                outputDirectory,
+                "01_current_library_left_window_light.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.72f, 0.02f, -1.64f),
+                LibraryVsCenter + new Vector3(4.96f, 0.86f, -1.58f),
+                new Vector3(-5.15f, 1.60f, -4.10f),
+                new Vector3(0.18f, 0.24f, 0.18f),
+                outputDirectory,
+                "02_current_library_right_window_light.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.72f, 0.02f, -1.64f),
+                LibraryVsCenter + new Vector3(-4.96f, 0.86f, -1.58f),
+                new Vector3(5.15f, 1.60f, -4.10f),
+                new Vector3(-0.18f, 0.24f, 0.18f),
+                outputDirectory,
+                "03_past_library_left_window_light.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.72f, 0.02f, -1.64f),
+                LibraryVsCenter + new Vector3(4.96f, 0.86f, -1.58f),
+                new Vector3(-5.15f, 1.60f, -4.10f),
+                new Vector3(0.18f, 0.24f, 0.18f),
+                outputDirectory,
+                "04_past_library_right_window_light.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -2096,6 +2173,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibrarySideBookshelfSilhouette(root, "Left", c + new Vector3(-4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, 90f, 0f), materials);
                 CreateCurrentLibrarySideBookshelfSilhouette(root, "Right", c + new Vector3(4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, -90f, 0f), materials);
             }
+            CreateLibraryWindowLightAccents(root, prefix, past, materials);
             CreateLandmarkCube($"{prefix}_Library_ServiceDesk", root, c + new Vector3(-2.45f, 0.34f, -3.20f), new Vector3(1.55f, 0.38f, 0.54f), Quaternion.Euler(0f, -4f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.service_desk");
             if (!past)
             {
@@ -2401,6 +2479,72 @@ namespace Anemora.EditorTools
         {
             var textureScale = new Vector2(Mathf.Max(1f, localScale.x / 1.14f), Mathf.Max(1f, localScale.y / 0.88f));
             return CreateLandmarkCube(objectName, root, localPosition, localScale, localRotation, CurrentEmptyBookshelfFrontMaterial(objectName, textureScale), false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, landmarkId);
+        }
+
+        private static void CreateLibraryWindowLightAccents(Transform root, string prefix, bool past, Materials materials)
+        {
+            _ = materials.WindowLight;
+            var windowLight = EnsureHd2dLibraryWindowLightMaterial();
+            var shaftScale = past ? new Vector3(1.96f, 1.50f, 1f) : new Vector3(1.80f, 1.38f, 1f);
+            var poolScale = past ? new Vector3(1.18f, 1.84f, 1f) : new Vector3(1.10f, 1.72f, 1f);
+            var shaftY = 1.12f;
+            var poolY = 0.035f;
+            var shaftDepth = past ? -1.95f : -1.88f;
+            var poolDepth = past ? -1.58f : -1.52f;
+
+            CreateHd2dLibraryWindowLightQuad(
+                $"{prefix}_Library_WindowLightShaft_Left",
+                root,
+                LibraryVsCenter + new Vector3(-5.30f, shaftY, shaftDepth),
+                Quaternion.Euler(0f, 90f, -7f),
+                shaftScale,
+                windowLight,
+                $"{prefix}.library.window_light.shaft.left");
+
+            CreateHd2dLibraryWindowLightQuad(
+                $"{prefix}_Library_WindowLightShaft_Right",
+                root,
+                LibraryVsCenter + new Vector3(5.30f, shaftY, shaftDepth),
+                Quaternion.Euler(0f, -90f, 7f),
+                shaftScale,
+                windowLight,
+                $"{prefix}.library.window_light.shaft.right");
+
+            CreateHd2dLibraryWindowLightQuad(
+                $"{prefix}_Library_WindowLightPool_LeftFloor",
+                root,
+                LibraryVsCenter + new Vector3(-4.52f, poolY, poolDepth),
+                Quaternion.Euler(90f, 0f, 0f),
+                poolScale,
+                windowLight,
+                $"{prefix}.library.window_light.pool.left_floor");
+
+            CreateHd2dLibraryWindowLightQuad(
+                $"{prefix}_Library_WindowLightPool_RightFloor",
+                root,
+                LibraryVsCenter + new Vector3(4.52f, poolY, poolDepth),
+                Quaternion.Euler(90f, 0f, 0f),
+                poolScale,
+                windowLight,
+                $"{prefix}.library.window_light.pool.right_floor");
+        }
+
+        private static GameObject CreateHd2dLibraryWindowLightQuad(string name, Transform parent, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string landmarkId)
+        {
+            var quad = CreateQuad(name, parent, localPosition, localScale, material);
+            quad.transform.localRotation = localRotation;
+
+            var collider = quad.GetComponent<Collider>();
+            if (collider != null)
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            var landmark = quad.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", true);
+            return quad;
         }
 
         private static GameObject CreateRedCubeMarkerWithOutline(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material redFill, Material outline, string landmarkId)
@@ -6159,6 +6303,30 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dTwentyFourthCycleLibraryWindowLight()
+        {
+            ValidateGeneratedTextureExactSize("hd2d_library_window_light_soft", 128, 160);
+
+            ValidateLibraryWindowLightObject("Current_Library_WindowLightShaft_Left", "Current_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-5.30f, 1.12f, -1.88f), new Vector3(1.80f, 1.38f, 1f), "Current.library.window_light.shaft.left");
+            ValidateLibraryWindowLightObject("Current_Library_WindowLightShaft_Right", "Current_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(5.30f, 1.12f, -1.88f), new Vector3(1.80f, 1.38f, 1f), "Current.library.window_light.shaft.right");
+            ValidateLibraryWindowLightObject("Current_Library_WindowLightPool_LeftFloor", "Current_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-4.52f, 0.035f, -1.52f), new Vector3(1.10f, 1.72f, 1f), "Current.library.window_light.pool.left_floor");
+            ValidateLibraryWindowLightObject("Current_Library_WindowLightPool_RightFloor", "Current_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(4.52f, 0.035f, -1.52f), new Vector3(1.10f, 1.72f, 1f), "Current.library.window_light.pool.right_floor");
+
+            ValidateLibraryWindowLightObject("Past_Library_WindowLightShaft_Left", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-5.30f, 1.12f, -1.95f), new Vector3(1.96f, 1.50f, 1f), "Past.library.window_light.shaft.left");
+            ValidateLibraryWindowLightObject("Past_Library_WindowLightShaft_Right", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(5.30f, 1.12f, -1.95f), new Vector3(1.96f, 1.50f, 1f), "Past.library.window_light.shaft.right");
+            ValidateLibraryWindowLightObject("Past_Library_WindowLightPool_LeftFloor", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-4.52f, 0.035f, -1.58f), new Vector3(1.18f, 1.84f, 1f), "Past.library.window_light.pool.left_floor");
+            ValidateLibraryWindowLightObject("Past_Library_WindowLightPool_RightFloor", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(4.52f, 0.035f, -1.58f), new Vector3(1.18f, 1.84f, 1f), "Past.library.window_light.pool.right_floor");
+
+            ValidateSceneObjectMaterialTexture("Current_Library_WindowTexture_Left", "empty_window_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_Library_WindowTexture_Left", "window_light_hd2d_plate");
+
+            if (FindSceneObjectIncludingInactive("FastVS_Reto_WritingAtDesk") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_AriaIdleAtTable") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: library window light cycle must keep the existing Reto and Aria setup intact.");
+            }
+        }
+
         private static void ValidateFastVsHd2dFifteenthCycleCentralPlazaDetails()
         {
             ValidateOutdoorGroundDetailObject("Current_CentralPlaza_PropDetail_FountainRimChipA", "current_stone", 0.12f);
@@ -6400,6 +6568,71 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep renderQueue in the {minRenderQueue}-{maxRenderQueue} range, but was {renderQueue}.");
             }
+        }
+
+        private static void ValidateLibraryWindowLightObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, string expectedLandmarkId)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library window light object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not have a collider.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+            if (sceneObject.transform.localScale.x <= 0f ||
+                sceneObject.transform.localScale.y <= 0f ||
+                Mathf.Abs(sceneObject.transform.localScale.z - 1f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay flat and non-degenerate.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var arrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                arrivalProperty == null ||
+                arrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                !arrivalProperty.boolValue ||
+                landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !string.Equals(landmarkIdProperty.stringValue, expectedLandmarkId, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep its paired-space landmark metadata.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("hd2d_library_window_light", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the hd2d_library_window_light material.");
+            }
+
+            ValidateSceneObjectMaterialTexture(objectName, "hd2d_library_window_light_soft");
         }
 
         private static void ValidateCharacterContactShadowObject(string objectName, string expectedParentName)
@@ -7651,6 +7884,27 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material EnsureHd2dLibraryWindowLightMaterial()
+        {
+            var material = FlatMaterial("hd2d_library_window_light", Color.white, true);
+            ConfigureTransparentUnlitMaterial(material, 3012);
+            var texture = EnsureHd2dLibraryWindowLightTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 1f));
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", new Color(1f, 1f, 1f, 1f));
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
         private static Material EnsureHd2dAtmosphereParticleMaterial()
         {
             var path = $"{MaterialDirectory}/FastVS_House_hd2d_atmosphere_particle.mat";
@@ -7800,6 +8054,30 @@ namespace Anemora.EditorTools
                     var alpha = core * core * 0.95f;
                     var tone = 0.96f + (core * 0.04f);
                     return new Color(tone, tone, tone, alpha);
+                });
+        }
+
+        private static Texture2D EnsureHd2dLibraryWindowLightTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_library_window_light_soft",
+                128,
+                160,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var u = x / 127f;
+                    var v = y / 159f;
+                    var edge = Mathf.SmoothStep(0f, 0.22f, u) * Mathf.SmoothStep(0f, 0.22f, 1f - u);
+                    var falloff = Mathf.Lerp(0.78f, 0.16f, v);
+                    var diagonalBand = Mathf.Clamp01(1f - Mathf.Abs(((u * 1.06f) + (v * 0.84f)) - 0.95f));
+                    var wobble = Mathf.Clamp01(1f - Mathf.Abs(Mathf.Sin((u * 8.1f) + (v * 11.3f) + 0.37f)) * 0.58f);
+                    var dither = ((((x * 17) ^ (y * 31) ^ (x * y * 7)) & 15) / 15f);
+                    var alpha = ((edge * 0.78f) + (diagonalBand * 0.22f)) * falloff * 0.26f;
+                    alpha *= Mathf.Lerp(0.86f, 1f, wobble);
+                    alpha *= Mathf.Lerp(0.84f, 1f, dither);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.26f);
+                    return new Color(1f, 0.78f, 0.34f, alpha);
                 });
         }
 
