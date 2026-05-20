@@ -51,6 +51,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Textile Cycle |
 | [2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Soft Textile Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Wall Floor Warmth Cycle |
+| [2026-05-20_fast_vs_hd2d_house_interior_room_depth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_room_depth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Room Depth Cycle |
 | [2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Edge Dressing Cycle |
 | [2026-05-20_fast_vs_hd2d_outdoor_boundary_nature_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_boundary_nature_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Boundary Nature Cycle |
 | [2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md](2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Contact Shadow Cycle |
@@ -408,6 +409,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.5 | 2026-05-20 | Added Fast VS HD2D house interior room depth cycle record with upper wall caps, corner posts, dark shadow framing, validation, and screenshot evidence. |
 | v6.4 | 2026-05-20 | Added Fast VS HD2D outdoor boundary nature cycle record with low boundary vegetation, stone, dust, and shadow accents plus validation and screenshot evidence. |
 | v6.3 | 2026-05-20 | Added Fast VS HD2D house exterior facade texture cycle record with updated wall and roof procedural textures, validation, and close screenshot evidence. |
 | v6.2 | 2026-05-20 | Added Fast VS HD2D library reading table detail cycle record with current/past bench pairs, table-top seams, validation, and screenshot evidence. |
