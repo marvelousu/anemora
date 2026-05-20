@@ -198,6 +198,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
+            ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
@@ -376,6 +377,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dNineteenthCycleScreenshotsBatch()
         {
             CaptureHd2dNineteenthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_side_shelves_20260520");
+        }
+
+        public static void CaptureHd2dTwentiethCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_current_library_side_shelf_visibility_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1065,6 +1071,87 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS nineteenth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dTwentiethCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twentieth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var currentLeftShelfPlayerLocal = LibraryVsCenter + new Vector3(-4.78f, 0.02f, 1.20f);
+            var currentLeftShelfAnchorLocal = LibraryVsCenter + new Vector3(-4.78f, 0.94f, 0.50f);
+            var currentRightShelfPlayerLocal = LibraryVsCenter + new Vector3(4.78f, 0.02f, 1.20f);
+            var currentRightShelfAnchorLocal = LibraryVsCenter + new Vector3(4.78f, 0.94f, 0.50f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentLeftShelfPlayerLocal,
+                currentLeftShelfAnchorLocal,
+                new Vector3(4.05f, 1.60f, 1.44f),
+                new Vector3(0.40f, 0.22f, 0.06f),
+                outputDirectory,
+                "01_current_left_empty_shelf_visibility.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentRightShelfPlayerLocal,
+                currentRightShelfAnchorLocal,
+                new Vector3(-4.05f, 1.60f, 1.44f),
+                new Vector3(-0.40f, 0.22f, 0.06f),
+                outputDirectory,
+                "02_current_right_empty_shelf_visibility.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentLeftShelfPlayerLocal,
+                currentLeftShelfAnchorLocal,
+                new Vector3(4.05f, 1.60f, 1.44f),
+                new Vector3(0.40f, 0.22f, 0.06f),
+                outputDirectory,
+                "03_past_left_full_shelf_reference.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentRightShelfPlayerLocal,
+                currentRightShelfAnchorLocal,
+                new Vector3(-4.05f, 1.60f, 1.44f),
+                new Vector3(-0.40f, 0.22f, 0.06f),
+                outputDirectory,
+                "04_past_right_full_shelf_reference.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_left_empty_shelf_visibility.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_current_right_empty_shelf_visibility.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_past_left_full_shelf_reference.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_right_full_shelf_reference.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twentieth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureReviewScreenshot(
@@ -2037,6 +2124,12 @@ namespace Anemora.EditorTools
             return CreateLandmarkCube(objectName, root, localPosition, localScale, localRotation, BookshelfFrontMaterial(objectName, textureScale), false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, landmarkId);
         }
 
+        private static GameObject CreateCurrentEmptyShelfTexturePanel(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, string landmarkId)
+        {
+            var textureScale = new Vector2(Mathf.Max(1f, localScale.x / 1.14f), Mathf.Max(1f, localScale.y / 0.88f));
+            return CreateLandmarkCube(objectName, root, localPosition, localScale, localRotation, CurrentEmptyBookshelfFrontMaterial(objectName, textureScale), false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, landmarkId);
+        }
+
         private static GameObject CreateRedCubeMarkerWithOutline(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material redFill, Material outline, string landmarkId)
         {
             var marker = new GameObject(objectName);
@@ -2121,6 +2214,13 @@ namespace Anemora.EditorTools
             shelfRoot.transform.localRotation = localRotation;
 
             CreateLibrarySideBookshelfFrame(shelfRoot.transform, "Current", side, frame, false);
+            CreateCurrentEmptyShelfTexturePanel(
+                $"{shelfRoot.name}_EmptyShelfFrontTexturePanel",
+                shelfRoot.transform,
+                new Vector3(0f, LibrarySideShelfTexturePanelCenterY, 0.695f),
+                new Vector3(LibrarySideShelfRunLength - 0.38f, LibrarySideShelfTexturePanelHeight, 0.035f),
+                Quaternion.identity,
+                $"Current.library.{side.ToLowerInvariant()}.shelf.empty_front_texture");
 
             var sideToken = side.ToLowerInvariant();
             const float frontZ = 0.72f;
@@ -4339,6 +4439,15 @@ namespace Anemora.EditorTools
             ValidateCurrentLibraryEmptySideShelf("Right");
         }
 
+        private static void ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility()
+        {
+            ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Left");
+            ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Right");
+            ValidatePastLibrarySideBookshelfFrontTexturePanel("Left");
+            ValidatePastLibrarySideBookshelfFrontTexturePanel("Right");
+            ValidateGeneratedRepeatTextureAsset("current_empty_bookshelf_front_hd2d", 256, 128, 24);
+        }
+
         private static void ValidateCurrentLibraryEmptySideShelf(string side)
         {
             var root = FindSceneObjectIncludingInactive($"Current_Library_{side}SideBookshelf");
@@ -4381,6 +4490,95 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: current library side bookshelf must not include a book-filled texture panel: {root.name}");
             }
+        }
+
+        private static void ValidateCurrentLibraryEmptyShelfFrontTexturePanel(string side)
+        {
+            var root = FindSceneObjectIncludingInactive($"Current_Library_{side}SideBookshelf");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing current library side bookshelf root: {side}");
+            }
+
+            var panelName = $"{root.name}_EmptyShelfFrontTexturePanel";
+            var panel = FindSceneObjectIncludingInactive(panelName);
+            if (panel == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing current empty shelf texture panel: {panelName}");
+            }
+
+            if (panel.transform.parent == null || panel.transform.parent != root.transform)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must stay parented under {root.name}.");
+            }
+
+            if (panel.GetComponent<Collider>() != null || panel.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must not have a collider.");
+            }
+
+            var renderer = panel.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must keep a renderer and material.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("current_empty_bookshelf_front_hd2d", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must use the current_empty_bookshelf_front_hd2d material.");
+            }
+
+            ValidateVectorNear($"{side} current empty shelf texture panel position", panel.transform.localPosition, new Vector3(0f, LibrarySideShelfTexturePanelCenterY, 0.695f));
+            ValidateVectorNear($"{side} current empty shelf texture panel scale", panel.transform.localScale, new Vector3(LibrarySideShelfRunLength - 0.38f, LibrarySideShelfTexturePanelHeight, 0.035f));
+            ValidateSceneObjectMaterialTexture(panelName, "current_empty_bookshelf_front_hd2d");
+
+            if (FindSceneObjectIncludingInactive($"{root.name}_BookshelfFrontTexturePanel") != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: current library side bookshelf must not include a book-filled texture panel: {root.name}");
+            }
+        }
+
+        private static void ValidatePastLibrarySideBookshelfFrontTexturePanel(string side)
+        {
+            var root = FindSceneObjectIncludingInactive($"Past_Library_{side}SideBookshelf");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing past library side bookshelf root: {side}");
+            }
+
+            var panelName = $"{root.name}_BookshelfFrontTexturePanel";
+            var panel = FindSceneObjectIncludingInactive(panelName);
+            if (panel == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing past bookshelf texture panel: {panelName}");
+            }
+
+            if (panel.transform.parent == null || panel.transform.parent != root.transform)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must stay parented under {root.name}.");
+            }
+
+            if (panel.GetComponent<Collider>() != null || panel.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must not have a collider.");
+            }
+
+            var renderer = panel.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must keep a renderer and material.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("bookshelf_front_painted_hd2d", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {panelName} must use the bookshelf_front_painted_hd2d material.");
+            }
+
+            ValidateVectorNear($"{side} past bookshelf texture panel position", panel.transform.localPosition, new Vector3(0f, LibrarySideShelfTexturePanelCenterY, 0.70f));
+            ValidateVectorNear($"{side} past bookshelf texture panel scale", panel.transform.localScale, new Vector3(LibrarySideShelfRunLength - 0.38f, LibrarySideShelfTexturePanelHeight, 0.040f));
+            ValidateSceneObjectMaterialTexture(panelName, "bookshelf_front_painted_hd2d");
         }
 
         private static void ValidateLibrarySideBookshelfParent(GameObject shelfRoot, string prefix)
@@ -7426,6 +7624,141 @@ namespace Anemora.EditorTools
             return SampleBookShelfTexturePixel(x, y, 256, 128, 3, 131, true);
         }
 
+        private static Color SampleCurrentEmptyBookshelfFrontHd2dPixel(int x, int y)
+        {
+            const int width = 256;
+            const int height = 128;
+            const int seed = 563;
+            const int rowCount = 3;
+            const int rowTopMargin = 8;
+            const int rowHeight = 31;
+            const int rowGap = 5;
+            const int rowStride = rowHeight + rowGap;
+            const int dividerOne = 83;
+            const int dividerTwo = 173;
+
+            if (x <= 0 || y <= 0 || x >= width - 1 || y >= height - 1)
+            {
+                return ShadeSurface(new Color(0.11f, 0.08f, 0.06f, 1f), x, y, width, height, 0.08f, 0.02f);
+            }
+
+            var u = x / (float)(width - 1);
+            var v = y / (float)(height - 1);
+            var grain = SampleSmoothValueNoise2D((x * 0.075f) + 4.5f, (y * 0.09f) + 11.2f, seed + 3);
+            var recessNoise = SampleSmoothValueNoise2D((x * 0.12f) + 19.4f, (y * 0.10f) + 7.6f, seed + 7);
+            var dustNoise = SampleSmoothValueNoise2D((x * 0.42f) + 31.1f, (y * 0.45f) + 15.7f, seed + 11);
+            var chipNoise = SampleSmoothValueNoise2D((x * 0.21f) + 47.8f, (y * 0.18f) + 2.4f, seed + 17);
+
+            var woodA = new Color(0.18f, 0.13f, 0.09f, 1f);
+            var woodB = new Color(0.29f, 0.22f, 0.15f, 1f);
+            var woodHighlight = new Color(0.40f, 0.31f, 0.22f, 1f);
+            var woodShadow = new Color(0.09f, 0.07f, 0.05f, 1f);
+            var recessA = new Color(0.10f, 0.08f, 0.06f, 1f);
+            var recessB = new Color(0.15f, 0.11f, 0.08f, 1f);
+            var seam = new Color(0.26f, 0.20f, 0.13f, 1f);
+            var dust = new Color(0.44f, 0.39f, 0.31f, 1f);
+            var paper = new Color(0.76f, 0.71f, 0.58f, 1f);
+            var fadedBook = new Color(0.52f, 0.41f, 0.28f, 1f);
+
+            var tone = LerpColor(woodA, woodB, Mathf.Clamp01(grain * 0.78f + (1f - v) * 0.14f));
+            tone = LerpColor(tone, woodHighlight, Mathf.Clamp01(0.18f - (u * 0.08f) + grain * 0.05f));
+            tone = LerpColor(tone, woodShadow, Mathf.Clamp01((u * 0.20f) + (v * 0.24f)));
+
+            if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
+            {
+                tone = LerpColor(tone, seam, 0.90f);
+            }
+
+            if (Mathf.Abs(x - dividerOne) <= 1 || Mathf.Abs(x - dividerTwo) <= 1)
+            {
+                tone = LerpColor(tone, seam, 0.82f);
+            }
+
+            var rowIndex = (y - rowTopMargin) / rowStride;
+            var inRow = rowIndex >= 0 && rowIndex < rowCount;
+            var rowStart = rowTopMargin + rowIndex * rowStride;
+            var rowEnd = rowStart + rowHeight;
+            var rowBand = inRow ? Mathf.Clamp01((y - rowStart) / (float)Mathf.Max(1, rowHeight - 1)) : 0f;
+
+            if (!inRow)
+            {
+                tone = LerpColor(tone, woodShadow, 0.42f + Mathf.Clamp01(Mathf.Abs((v - 0.5f) * 2f)) * 0.10f);
+            }
+            else if (y <= rowStart + 2 || y >= rowEnd - 3)
+            {
+                var boardTone = LerpColor(woodB, woodHighlight, rowBand * 0.18f + (1f - rowBand) * 0.10f);
+                boardTone = LerpColor(boardTone, seam, 0.76f);
+                tone = LerpColor(tone, boardTone, 0.92f);
+            }
+            else
+            {
+                var cavityTone = LerpColor(recessA, recessB, Mathf.Clamp01(recessNoise * 0.90f + (1f - rowBand) * 0.08f));
+                cavityTone = LerpColor(cavityTone, woodShadow, 0.54f);
+                cavityTone = LerpColor(cavityTone, woodHighlight, Mathf.Clamp01((1f - u) * 0.05f + (1f - v) * 0.03f));
+                tone = cavityTone;
+
+                var verticalLight = Mathf.Clamp01(1f - Mathf.Abs(u - 0.5f) * 1.7f);
+                tone = LerpColor(tone, woodHighlight, verticalLight * 0.03f);
+
+                if (Mathf.Abs(x - dividerOne) <= 2 || Mathf.Abs(x - dividerTwo) <= 2)
+                {
+                    tone = LerpColor(tone, seam, 0.54f);
+                }
+
+                if ((y == rowStart + 6 || y == rowStart + 14 || y == rowStart + 22) && (x % 9) < 2)
+                {
+                    tone = LerpColor(tone, dust, 0.22f);
+                }
+
+                if (Hash01(x, y, seed + 19) > 0.993f)
+                {
+                    tone = Lighten(tone, 0.04f);
+                }
+
+                if (Hash01(x, y, seed + 23) > 0.996f)
+                {
+                    tone = Darken(tone, 0.08f);
+                }
+
+                if (rowIndex == 1 && Hash01(x, y, seed + 29) > 0.971f)
+                {
+                    tone = LerpColor(tone, dust, 0.14f);
+                }
+
+                if (rowIndex == 2 && chipNoise > 0.72f && x > 8 && x < width - 8)
+                {
+                    tone = LerpColor(tone, woodHighlight, 0.06f);
+                }
+
+                if (Hash01(x, y, seed + 31) > 0.989f)
+                {
+                    tone = LerpColor(tone, paper, 0.14f);
+                }
+
+                if (Hash01(x, y, seed + 37) > 0.996f)
+                {
+                    tone = LerpColor(tone, fadedBook, 0.16f);
+                }
+            }
+
+            if (y == rowTopMargin - 1 || y == rowTopMargin + rowStride - 1 || y == rowTopMargin + rowStride * 2 - 1 || y == rowTopMargin + rowStride * 3 - 1)
+            {
+                tone = LerpColor(tone, seam, 0.68f);
+            }
+
+            if (Mathf.Abs(((x + seed) % 37) - 18) <= 1 || Mathf.Abs(((y + seed) % 23) - 11) <= 1)
+            {
+                tone = LerpColor(tone, dust, 0.11f);
+            }
+
+            if (Hash01(x, y, seed + 41) > 0.994f)
+            {
+                tone = Hash01(x, y, seed + 43) > 0.5f ? Lighten(tone, 0.05f) : Darken(tone, 0.05f);
+            }
+
+            return ShadeSurface(tone, x, y, width, height, 0.18f, 0.08f);
+        }
+
         private static Color SampleCurrentBedHd2dPixel(int x, int y)
         {
             return SampleFabricPlatePixel(
@@ -9093,6 +9426,15 @@ namespace Anemora.EditorTools
             var material = FlatMaterial($"bookshelf_front_painted_hd2d_{panelId}", new Color(0.97f, 0.95f, 0.92f, 1f), true);
             material.name = $"FastVS_House_bookshelf_front_painted_hd2d_{panelId}";
             var texture = EnsureGeneratedRepeatTexture("bookshelf_front_painted_hd2d", 256, 128, SampleBookshelfFrontPaintedHd2dPixel);
+            AssignMaterialTexture(material, texture, textureScale);
+            return material;
+        }
+
+        private static Material CurrentEmptyBookshelfFrontMaterial(string panelId, Vector2 textureScale)
+        {
+            var material = FlatMaterial($"current_empty_bookshelf_front_hd2d_{panelId}", new Color(0.92f, 0.89f, 0.83f, 1f), true);
+            material.name = $"FastVS_House_current_empty_bookshelf_front_hd2d_{panelId}";
+            var texture = EnsureGeneratedRepeatTexture("current_empty_bookshelf_front_hd2d", 256, 128, SampleCurrentEmptyBookshelfFrontHd2dPixel);
             AssignMaterialTexture(material, texture, textureScale);
             return material;
         }
