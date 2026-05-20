@@ -97,6 +97,11 @@ namespace Anemora.EditorTools
         private const float LibrarySideShelfTexturePanelHeight = 1.42f;
         private const float LibrarySideShelfBoardFirstY = 0.38f;
         private const float LibrarySideShelfBoardStepY = 0.40f;
+        private const float LibrarySideShelfFrontLipYOffset = 0.018f;
+        private const float LibrarySideShelfFrontLipLocalZ = 0.742f;
+        private const float LibrarySideShelfFrontLipHeight = 0.022f;
+        private const float LibrarySideShelfFrontLipDepth = 0.030f;
+        private const float LibrarySideShelfFrontLipWidthInset = 0.18f;
         private static readonly Vector3 CurrentLibraryBookCueGlowScale = new Vector3(0.62f, 0.018f, 0.62f);
         private static readonly Vector3 CurrentLibraryAriaCueGlowScale = new Vector3(0.68f, 0.018f, 0.68f);
         private const float CurrentLibraryCueFloorY = 0.082f;
@@ -202,6 +207,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateFastVsHd2dTwentySixthCycleHouseBedTextilePolish();
             ValidateFastVsHd2dTwentySeventhCycleHouseInteriorWallFloorWarmth();
+            ValidateFastVsHd2dTwentyEighthCycleLibraryBookshelfReadability();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
@@ -424,6 +430,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentySeventhCycleScreenshotsBatch()
         {
             CaptureHd2dTwentySeventhCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_interior_wall_floor_20260520");
+        }
+
+        public static void CaptureHd2dTwentyEighthCycleScreenshotsBatch()
+        {
+            CaptureHd2dTwentyEighthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_bookshelf_readability_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1629,6 +1640,68 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS twenty-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dTwentyEighthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS twenty-eighth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(0f, 0.02f, 0.60f),
+                LibraryVsCenter + new Vector3(0f, 1.34f, 6.99f),
+                new Vector3(0.10f, 1.26f, -3.18f),
+                new Vector3(0.05f, 0.18f, 0.10f),
+                outputDirectory,
+                "01_past_library_back_bookshelf_readability.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.78f, 0.02f, 1.20f),
+                LibraryVsCenter + new Vector3(4.78f, 0.92f, 0.42f),
+                new Vector3(-4.05f, 1.48f, 1.18f),
+                new Vector3(-0.55f, 0.20f, 0.08f),
+                outputDirectory,
+                "02_past_library_side_bookshelf_readability.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.78f, 0.02f, 1.20f),
+                LibraryVsCenter + new Vector3(4.78f, 0.88f, 0.54f),
+                new Vector3(-4.18f, 1.42f, 1.28f),
+                new Vector3(-0.50f, 0.18f, 0.10f),
+                outputDirectory,
+                "03_current_library_empty_side_bookshelf_lips.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_past_library_back_bookshelf_readability.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_library_side_bookshelf_readability.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_empty_side_bookshelf_lips.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS twenty-eighth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureReviewScreenshot(
@@ -2847,6 +2920,7 @@ namespace Anemora.EditorTools
                 new Vector3(LibrarySideShelfRunLength - 0.38f, LibrarySideShelfTexturePanelHeight, 0.035f),
                 Quaternion.identity,
                 $"Current.library.{side.ToLowerInvariant()}.shelf.empty_front_texture");
+            CreateLibrarySideBookshelfFrontLips(shelfRoot.transform, "Current", side, frame);
 
             var sideToken = side.ToLowerInvariant();
             const float frontZ = 0.72f;
@@ -2942,6 +3016,27 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateLibrarySideBookshelfFrontLips(Transform shelfRoot, string prefix, string side, Material frame, bool keepCollider = false)
+        {
+            var sideToken = side.ToLowerInvariant();
+            var lipScale = new Vector3(LibrarySideShelfRunLength - LibrarySideShelfFrontLipWidthInset, LibrarySideShelfFrontLipHeight, LibrarySideShelfFrontLipDepth);
+
+            for (var row = 0; row < 3; row++)
+            {
+                var rowY = LibrarySideShelfBoardFirstY + row * LibrarySideShelfBoardStepY + LibrarySideShelfFrontLipYOffset;
+                CreateLandmarkCube(
+                    $"{shelfRoot.name}_FrontShelfLip_{row}",
+                    shelfRoot,
+                    new Vector3(0f, rowY, LibrarySideShelfFrontLipLocalZ),
+                    lipScale,
+                    Quaternion.identity,
+                    frame,
+                    keepCollider,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{prefix}.library.{sideToken}.shelf.front_shelf_lip.{row}");
+            }
+        }
+
         private static void CreatePastLibrarySideBookshelf(Transform root, string side, Vector3 localPosition, Quaternion localRotation, Material frame, Material cover, Material pages, Material spine)
         {
             var shelfRoot = new GameObject($"Past_Library_{side}SideBookshelf");
@@ -2959,6 +3054,7 @@ namespace Anemora.EditorTools
                 Quaternion.identity,
                 cover,
                 $"Past.library.{side.ToLowerInvariant()}.shelf.front_texture");
+            CreateLibrarySideBookshelfFrontLips(shelfRoot.transform, "Past", side, frame);
         }
 
         private static void CreateCentralPlazaLibraryFacadeDoor(Transform root, string prefix, Vector3 center, Material frame, Material doorPanelDetail, Material handle)
@@ -5198,6 +5294,21 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dTwentyEighthCycleLibraryBookshelfReadability()
+        {
+            ValidateSceneObjectMaterialTexture("Past_Library_BackWallBookshelfFrontTexturePanel", "bookshelf_front_painted_hd2d");
+            ValidatePastLibrarySideBookshelfFrontTexturePanel("Left");
+            ValidatePastLibrarySideBookshelfFrontTexturePanel("Right");
+            ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Left");
+            ValidateCurrentLibraryEmptyShelfFrontTexturePanel("Right");
+            ValidateCurrentLibraryEmptySideShelf("Left");
+            ValidateCurrentLibraryEmptySideShelf("Right");
+            ValidateLibrarySideBookshelfFrontLips("Current", "Left");
+            ValidateLibrarySideBookshelfFrontLips("Current", "Right");
+            ValidateLibrarySideBookshelfFrontLips("Past", "Left");
+            ValidateLibrarySideBookshelfFrontLips("Past", "Right");
+        }
+
         private static void ValidateCurrentLibraryEmptySideShelf(string side)
         {
             var root = FindSceneObjectIncludingInactive($"Current_Library_{side}SideBookshelf");
@@ -5387,6 +5498,56 @@ namespace Anemora.EditorTools
             if (renderer == null || renderer.sharedMaterial == null)
             {
                 throw new InvalidOperationException($"House slice validation failed: current library side bookshelf detail must keep a renderer and material: {objectName}");
+            }
+        }
+
+        private static void ValidateLibrarySideBookshelfFrontLips(string prefix, string side)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_Library_{side}SideBookshelf");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing {prefix.ToLowerInvariant()} library side bookshelf root for front lips: {side}");
+            }
+
+            ValidateLibrarySideBookshelfParent(root, prefix);
+
+            var expectedScale = new Vector3(LibrarySideShelfRunLength - LibrarySideShelfFrontLipWidthInset, LibrarySideShelfFrontLipHeight, LibrarySideShelfFrontLipDepth);
+            var prefixToken = prefix.ToLowerInvariant();
+            for (var row = 0; row < 3; row++)
+            {
+                var lipName = $"{root.name}_FrontShelfLip_{row}";
+                var lip = FindSceneObjectIncludingInactive(lipName);
+                if (lip == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing library side bookshelf front lip: {lipName}");
+                }
+
+                if (lip.transform.parent == null || lip.transform.parent != root.transform)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {lipName} must stay parented under {root.name}.");
+                }
+
+                if (lip.GetComponent<Collider>() != null || lip.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {lipName} must remain non-colliding.");
+                }
+
+                var renderer = lip.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {lipName} must keep a renderer and material.");
+                }
+
+                var materialName = renderer.sharedMaterial.name ?? string.Empty;
+                if (materialName.IndexOf("furniture", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    materialName.IndexOf("fence", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    materialName.IndexOf("frame", StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {lipName} must use a furniture/fence/frame material, not a blank bar.");
+                }
+
+                ValidateVectorNear($"{side} {prefixToken} front lip {row} position", lip.transform.localPosition, new Vector3(0f, LibrarySideShelfBoardFirstY + row * LibrarySideShelfBoardStepY + LibrarySideShelfFrontLipYOffset, LibrarySideShelfFrontLipLocalZ));
+                ValidateVectorNear($"{side} {prefixToken} front lip {row} scale", lip.transform.localScale, expectedScale);
             }
         }
 
@@ -10251,8 +10412,8 @@ namespace Anemora.EditorTools
         private static Color SampleBookShelfTexturePixel(int x, int y, int width, int height, int rowCount, int seed, bool bookshelfFront)
         {
             var rowTopMargin = bookshelfFront ? 6 : 5;
-            var rowHeight = bookshelfFront ? 34 : 50;
-            var rowGap = bookshelfFront ? 6 : 0;
+            var rowHeight = bookshelfFront ? 33 : 50;
+            var rowGap = bookshelfFront ? 7 : 0;
             var rowStride = rowHeight + rowGap;
             var rowIndex = (y - rowTopMargin) / rowStride;
             if (rowIndex < 0 || rowIndex >= rowCount)
@@ -10275,9 +10436,28 @@ namespace Anemora.EditorTools
             var color = PickBookSpineColor(columnIndex, rowIndex, seed, bookshelfFront);
             var bookEnd = bookStart + bookWidth - 1;
 
-            if (x == bookStart)
+            if (bookshelfFront)
             {
-                color = Darken(color, bookshelfFront ? 0.36f : 0.40f);
+                if (withinBook <= 1)
+                {
+                    color = Darken(color, 0.40f);
+                }
+                else if (withinBook == 2)
+                {
+                    color = LerpColor(color, Darken(color, 0.30f), 0.72f);
+                }
+                else if (withinBook >= bookWidth - 2)
+                {
+                    color = Lighten(color, withinBook == bookWidth - 1 ? 0.08f : 0.04f);
+                }
+                else if (withinBook == bookWidth - 3)
+                {
+                    color = LerpColor(color, Lighten(color, 0.05f), 0.28f);
+                }
+            }
+            else if (x == bookStart)
+            {
+                color = Darken(color, 0.40f);
             }
             else if (withinBook == 1)
             {
@@ -10289,37 +10469,47 @@ namespace Anemora.EditorTools
             }
             else if (x == bookEnd)
             {
-                color = Lighten(color, bookshelfFront ? 0.03f : 0.05f);
+                color = Lighten(color, 0.05f);
             }
 
             var centerLine = Mathf.Clamp(bookWidth / 2, 1, Mathf.Max(1, bookWidth - 2));
             var paperAccent = ((columnIndex + rowIndex + seed) % 5) == 0;
             if (paperAccent && (withinBook == centerLine || withinBook == centerLine - 1))
             {
-                color = LerpColor(color, new Color(0.82f, 0.76f, 0.62f, 1f), bookshelfFront ? 0.18f : 0.14f);
+                color = LerpColor(color, new Color(0.82f, 0.76f, 0.62f, 1f), bookshelfFront ? 0.16f : 0.14f);
             }
 
             if (withinBook > 2 && withinBook < bookWidth - 3 && (withinBook == centerLine || withinBook == centerLine - 1))
             {
-                color = LerpColor(color, new Color(0.86f, 0.80f, 0.68f, 1f), bookshelfFront ? 0.06f : 0.08f);
+                color = LerpColor(color, new Color(0.86f, 0.80f, 0.68f, 1f), bookshelfFront ? 0.08f : 0.08f);
+            }
+
+            if (bookshelfFront && withinBook > 1 && withinBook < bookWidth - 2 && ((withinBook + rowIndex + seed) % 7 == 3))
+            {
+                color = LerpColor(color, Darken(color, 0.24f), 0.36f);
             }
 
             if (withinBook > 1 && withinBook < bookWidth - 1 && ((y - rowStart) % 11 == 3))
             {
-                color = LerpColor(color, Darken(color, 0.30f), 0.38f);
+                color = LerpColor(color, Darken(color, 0.30f), 0.34f);
             }
 
             if ((y == rowStart || y == rowEnd - 1) && withinBook > 0 && withinBook < bookWidth - 1)
             {
-                color = Darken(color, bookshelfFront ? 0.28f : 0.32f);
+                color = Darken(color, bookshelfFront ? 0.32f : 0.32f);
             }
 
             if ((y == rowStart + 1 || y == rowEnd - 2) && withinBook > 0 && withinBook < bookWidth - 1)
             {
-                color = LerpColor(color, new Color(0.84f, 0.79f, 0.68f, 1f), bookshelfFront ? 0.05f : 0.07f);
+                color = LerpColor(color, new Color(0.84f, 0.79f, 0.68f, 1f), bookshelfFront ? 0.06f : 0.07f);
             }
 
-            if (Hash01(x, y, seed + 29) > (bookshelfFront ? 0.991f : 0.994f))
+            if (bookshelfFront && (y == rowStart + 2 || y == rowEnd - 3) && withinBook > 1 && withinBook < bookWidth - 2)
+            {
+                color = LerpColor(color, Darken(color, 0.18f), 0.30f);
+            }
+
+            if (Hash01(x, y, seed + 29) > (bookshelfFront ? 0.993f : 0.994f))
             {
                 color = Lighten(color, bookshelfFront ? 0.04f : 0.03f);
             }
@@ -10330,11 +10520,15 @@ namespace Anemora.EditorTools
         private static Color SampleShelfGapPixel(int x, int y, int width, int height, int seed, bool bookshelfFront)
         {
             var shelf = bookshelfFront
-                ? new Color(0.15f, 0.11f, 0.08f, 1f)
+                ? new Color(0.14f, 0.10f, 0.07f, 1f)
                 : new Color(0.12f, 0.09f, 0.06f, 1f);
             var band = Mathf.Clamp01(1f - Mathf.Abs((y / (float)(height - 1)) - 0.5f) * 2f);
-            var shadow = bookshelfFront ? 0.24f : 0.20f;
+            var shadow = bookshelfFront ? 0.28f : 0.20f;
             shelf = LerpColor(shelf, Darken(shelf, 0.24f), shadow * 0.8f);
+            if (bookshelfFront)
+            {
+                shelf = LerpColor(shelf, new Color(0.08f, 0.06f, 0.04f, 1f), 0.08f + band * 0.07f);
+            }
             if ((y % 16) <= 1 || (y % 16) >= 14)
             {
                 shelf = Lighten(shelf, 0.02f);
