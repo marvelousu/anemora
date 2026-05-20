@@ -235,6 +235,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
             ValidateFastVsHd2dSixtiethCycleLibraryReadableMicroprops();
+            ValidateFastVsHd2dSixtySixthCycleLibraryReadingTableGrounding();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorFacadeTextures();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dThirtySecondCycleLibraryFacadeArchitecturePolish();
@@ -511,6 +512,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSixtyFifthCycleScreenshotsBatch()
         {
             CaptureHd2dSixtyFifthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_central_plaza_paving_readability_20260521");
+        }
+
+        public static void CaptureHd2dSixtySixthCycleScreenshotsBatch()
+        {
+            CaptureHd2dSixtySixthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_reading_table_grounding_20260521");
         }
 
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
@@ -6259,6 +6265,7 @@ namespace Anemora.EditorTools
             }
 
             CreateLibraryReadableMicropropPolish(root, prefix, past, materials, c, wood, trim);
+            CreateLibraryReadingTableGroundingPolish(root, prefix, past, materials, c, wood, trim);
             if (!past)
             {
                 CreateCurrentLibraryRuinGroundingPolish(root, c, materials, wood, trim);
@@ -6606,6 +6613,98 @@ namespace Anemora.EditorTools
             _ = prefix;
         }
 
+        private static void CreateLibraryReadingTableGroundingPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
+        {
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingTableGrounding_LeftTableFloorShadowA",
+                    root,
+                    c + new Vector3(-2.88f, 0.030f, -0.92f),
+                    new Vector3(1.18f, 0.014f, 0.24f),
+                    Quaternion.Euler(0f, -3f, 0f),
+                    materials.Dust,
+                    "Past.library.reading_table_grounding.left_table_floor_shadow_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingTableGrounding_RightTableFloorShadowA",
+                    root,
+                    c + new Vector3(2.88f, 0.030f, -0.92f),
+                    new Vector3(1.18f, 0.014f, 0.24f),
+                    Quaternion.Euler(0f, 3f, 0f),
+                    materials.Dust,
+                    "Past.library.reading_table_grounding.right_table_floor_shadow_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingTableGrounding_LeftTableEdgeAccentA",
+                    root,
+                    c + new Vector3(-2.88f, 0.392f, -1.16f),
+                    new Vector3(1.02f, 0.018f, 0.05f),
+                    Quaternion.Euler(0f, -2f, 0f),
+                    trim,
+                    "Past.library.reading_table_grounding.left_table_edge_accent_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingTableGrounding_RightTableEdgeAccentA",
+                    root,
+                    c + new Vector3(2.88f, 0.392f, -1.16f),
+                    new Vector3(1.02f, 0.018f, 0.05f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    trim,
+                    "Past.library.reading_table_grounding.right_table_edge_accent_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingTableGrounding_LeftBookContactA",
+                    root,
+                    c + new Vector3(-3.39f, 0.398f, -0.98f),
+                    new Vector3(0.28f, 0.016f, 0.08f),
+                    Quaternion.Euler(0f, 8f, 0f),
+                    materials.Book,
+                    "Past.library.reading_table_grounding.left_book_contact_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingTableGrounding_RightBookContactA",
+                    root,
+                    c + new Vector3(3.39f, 0.398f, -0.86f),
+                    new Vector3(0.28f, 0.016f, 0.08f),
+                    Quaternion.Euler(0f, -8f, 0f),
+                    materials.Book,
+                    "Past.library.reading_table_grounding.right_book_contact_a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingTableGrounding_RetoDeskFloorShadowA",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.008f, 0.03f),
+                    new Vector3(0.76f, 0.014f, 0.22f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    materials.Dust,
+                    "Current.library.reading_table_grounding.reto_desk_floor_shadow_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingTableGrounding_RetoBookContactA",
+                    root,
+                    CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.02f, -0.007f, 0.00f),
+                    new Vector3(0.24f, 0.016f, 0.08f),
+                    Quaternion.Euler(0f, -6f, 0f),
+                    materials.Book,
+                    "Current.library.reading_table_grounding.reto_book_contact_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingTableGrounding_CurrentSideTableEdgeChipA",
+                    root,
+                    c + new Vector3(3.58f, 0.392f, -1.84f),
+                    new Vector3(0.18f, 0.020f, 0.05f),
+                    Quaternion.Euler(0f, 14f, -3f),
+                    wood,
+                    "Current.library.reading_table_grounding.current_side_table_edge_chip_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingTableGrounding_CurrentSideTableDustStripA",
+                    root,
+                    c + new Vector3(3.40f, 0.034f, -1.84f),
+                    new Vector3(0.64f, 0.012f, 0.08f),
+                    Quaternion.Euler(0f, -10f, 0f),
+                    materials.Dust,
+                    "Current.library.reading_table_grounding.current_side_table_dust_strip_a");
+            }
+
+            _ = prefix;
+        }
+
         private static void SetLandmarksCountForArrival(Transform root, bool countsForArrival)
         {
             foreach (var landmark in root.GetComponentsInChildren<TimeWindowPairedSpaceLandmark>(true))
@@ -6678,6 +6777,74 @@ namespace Anemora.EditorTools
                 "Current.library.ruin_grounding.floor_book_spine_a");
             _ = wood;
             _ = trim;
+        }
+
+        private static void CaptureHd2dSixtySixthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS sixty-sixth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-1.15f, 0f, -1.35f),
+                Path.Combine(outputDirectory, "01_current_library_reto_desk_grounding_overview.png"));
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-2.98f, 0.02f, -2.10f),
+                Path.Combine(outputDirectory, "02_past_library_reading_tables_grounding_overview.png"));
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(-0.88f, 0.02f, -0.78f),
+                CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.02f, 0.39f, -0.02f),
+                new Vector3(-0.24f, 0.94f, -1.42f),
+                new Vector3(0.00f, 0.10f, 0.03f),
+                outputDirectory,
+                "03_current_library_reto_book_contact_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(4.80f, 0.02f, 4.80f),
+                LibraryVsCenter + new Vector3(-3.39f, 0.398f, -0.98f),
+                new Vector3(0.03f, 0.74f, -0.18f),
+                new Vector3(0.00f, 0.03f, 0.00f),
+                outputDirectory,
+                "04_past_library_table_book_contact_close.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_library_reto_desk_grounding_overview.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_library_reading_tables_grounding_overview.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_reto_book_contact_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_library_table_book_contact_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS sixty-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -10027,6 +10194,38 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dSixtySixthCycleLibraryReadingTableGrounding()
+        {
+            ValidateLibraryReadingTableGroundingObject("Current_Library_ReadingTableGrounding_RetoDeskFloorShadowA", "Current_LibraryMap_SeparateSpace", RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.008f, 0.03f), new Vector3(0.76f, 0.014f, 0.22f), "dust");
+            ValidateLibraryReadingTableGroundingObject("Current_Library_ReadingTableGrounding_RetoBookContactA", "Current_LibraryMap_SeparateSpace", CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(0.02f, -0.007f, 0.00f), new Vector3(0.24f, 0.016f, 0.08f), "book");
+            ValidateLibraryReadingTableGroundingObject("Current_Library_ReadingTableGrounding_CurrentSideTableEdgeChipA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(3.58f, 0.392f, -1.84f), new Vector3(0.18f, 0.020f, 0.05f), "current_furniture");
+            ValidateLibraryReadingTableGroundingObject("Current_Library_ReadingTableGrounding_CurrentSideTableDustStripA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(3.40f, 0.034f, -1.84f), new Vector3(0.64f, 0.012f, 0.08f), "dust");
+
+            ValidateLibraryReadingTableGroundingObject("Past_Library_ReadingTableGrounding_LeftTableFloorShadowA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-2.88f, 0.030f, -0.92f), new Vector3(1.18f, 0.014f, 0.24f), "dust");
+            ValidateLibraryReadingTableGroundingObject("Past_Library_ReadingTableGrounding_RightTableFloorShadowA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(2.88f, 0.030f, -0.92f), new Vector3(1.18f, 0.014f, 0.24f), "dust");
+            ValidateLibraryReadingTableGroundingObject("Past_Library_ReadingTableGrounding_LeftTableEdgeAccentA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-2.88f, 0.392f, -1.16f), new Vector3(1.02f, 0.018f, 0.05f), "past_fence");
+            ValidateLibraryReadingTableGroundingObject("Past_Library_ReadingTableGrounding_RightTableEdgeAccentA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(2.88f, 0.392f, -1.16f), new Vector3(1.02f, 0.018f, 0.05f), "past_fence");
+            ValidateLibraryReadingTableGroundingObject("Past_Library_ReadingTableGrounding_LeftBookContactA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(-3.39f, 0.398f, -0.98f), new Vector3(0.28f, 0.016f, 0.08f), "book");
+            ValidateLibraryReadingTableGroundingObject("Past_Library_ReadingTableGrounding_RightBookContactA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter + new Vector3(3.39f, 0.398f, -0.86f), new Vector3(0.28f, 0.016f, 0.08f), "book");
+
+            foreach (var requiredObject in new[]
+                     {
+                         "FastVS_Reto_WritingAtDesk",
+                         "Current_Library_RetoDeskBook_Initial",
+                         "Current_Library_ReturnedBookOnDesk",
+                         "Past_Library_TargetBook_ForPickup",
+                         "Past_Library_AriaIdleAtTable",
+                         "Current_Library_TimeWindowOpenCue_Book",
+                         "Current_Library_TimeWindowOpenCue_Aria"
+                     })
+            {
+                if (FindSceneObjectIncludingInactive(requiredObject) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: library reading-table grounding must keep {requiredObject} present.");
+                }
+            }
+        }
+
         private static void ValidateCurrentLibraryRuinGroundingObject(string objectName, Vector3 expectedLocalOffset, Vector3 expectedLocalScale, string expectedMaterialToken)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -10071,6 +10270,64 @@ namespace Anemora.EditorTools
             }
 
             ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, LibraryVsCenter + expectedLocalOffset);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+
+            if (sceneObject.transform.localScale.y > 0.06f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay very thin on the Y axis.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateLibraryReadingTableGroundingObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, string expectedMaterialToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library reading-table grounding object {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsProperty == null ||
+                countsProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be a non-arrival prop landmark.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
             ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
 
             if (sceneObject.transform.localScale.y > 0.06f)

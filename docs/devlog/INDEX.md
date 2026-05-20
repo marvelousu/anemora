@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.29 fast VS HD2D central plaza paving readability cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.30 fast VS HD2D library reading table grounding cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 305 files including INDEX.md and README.md.
-- Dated devlog records: 303 files.
-- Linked evidence files present under docs/devlog/screenshots/: 486 files.
+- Root-level Markdown coverage: 306 files including INDEX.md and README.md.
+- Dated devlog records: 304 files.
+- Linked evidence files present under docs/devlog/screenshots/: 490 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 12 |
+| 2026-05-21 | 13 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_library_reading_table_grounding_cycle.md](2026-05-21_fast_vs_hd2d_library_reading_table_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Reading Table Grounding Cycle |
 | [2026-05-21_fast_vs_hd2d_central_plaza_paving_readability_cycle.md](2026-05-21_fast_vs_hd2d_central_plaza_paving_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Central Plaza Paving Readability Cycle |
 | [2026-05-21_fast_vs_hd2d_current_library_ruin_grounding_cycle.md](2026-05-21_fast_vs_hd2d_current_library_ruin_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Ruin Grounding Cycle |
 | [2026-05-21_fast_vs_hd2d_house_interior_furniture_grounding_cycle.md](2026-05-21_fast_vs_hd2d_house_interior_furniture_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Interior Furniture Grounding Cycle |
@@ -438,6 +439,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.30 | 2026-05-21 | Added Fast VS HD2D library reading table grounding cycle record with non-colliding table contact shadows, edge accents, and book contact details plus validation and screenshot evidence. |
 | v6.29 | 2026-05-21 | Added Fast VS HD2D central plaza paving readability cycle record with non-colliding plaza paving chips, contact accents, and seam details plus validation and screenshot evidence. |
 | v6.28 | 2026-05-21 | Added Fast VS HD2D current library ruin grounding cycle record with non-colliding dust, chip, scrap, and floor book details plus validation and screenshot evidence. |
 | v6.27 | 2026-05-21 | Added Fast VS HD2D house exterior facade microdepth cycle record with non-colliding door, window, and base accents plus validation and screenshot evidence. |
