@@ -209,6 +209,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentySeventhCycleHouseInteriorWallFloorWarmth();
             ValidateFastVsHd2dTwentyEighthCycleLibraryBookshelfReadability();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
+            ValidateFastVsHd2dThirtiethCycleHouseExteriorFacadeTextures();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
@@ -441,6 +442,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dTwentyNinthCycleScreenshotsBatch()
         {
             CaptureHd2dTwentyNinthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_reading_tables_20260520");
+        }
+
+        public static void CaptureHd2dThirtiethCycleScreenshotsBatch()
+        {
+            CaptureHd2dThirtiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_exterior_facade_texture_20260520");
         }
 
         public static void CaptureHd2dCloseReviewScreenshotsBatch()
@@ -1770,6 +1776,87 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS twenty-ninth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dThirtiethCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS thirtieth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var currentFacadePlayerLocal = HouseExteriorCenter + new Vector3(-3.28f, 0.02f, -1.28f);
+            var facadeAnchorLocal = HouseExteriorCenter + new Vector3(-2.65f, 1.05f, -1.62f);
+            var roofPlayerLocal = HouseExteriorCenter + new Vector3(-0.72f, 0.02f, -0.92f);
+            var roofAnchorLocal = HouseExteriorCenter + new Vector3(-1.05f, 2.25f, -1.50f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                currentFacadePlayerLocal,
+                facadeAnchorLocal,
+                new Vector3(-0.26f, 0.82f, -1.76f),
+                new Vector3(-0.06f, 0.12f, 0.08f),
+                outputDirectory,
+                "01_current_house_facade_texture_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                currentFacadePlayerLocal,
+                facadeAnchorLocal,
+                new Vector3(-0.26f, 0.82f, -1.76f),
+                new Vector3(-0.06f, 0.12f, 0.08f),
+                outputDirectory,
+                "02_past_house_facade_texture_close.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                roofPlayerLocal,
+                roofAnchorLocal,
+                new Vector3(-0.52f, 1.48f, -2.34f),
+                new Vector3(-0.02f, -0.20f, 0.12f),
+                outputDirectory,
+                "03_current_house_roof_texture_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                roofPlayerLocal,
+                roofAnchorLocal,
+                new Vector3(-0.52f, 1.48f, -2.34f),
+                new Vector3(-0.02f, -0.20f, 0.12f),
+                outputDirectory,
+                "04_past_house_roof_texture_close.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_house_facade_texture_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_house_facade_texture_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_house_roof_texture_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_house_roof_texture_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS thirtieth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureReviewScreenshot(
@@ -5662,6 +5749,26 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dThirtiethCycleHouseExteriorFacadeTextures()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_exterior_wall_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedRepeatTextureAsset("past_exterior_wall_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedRepeatTextureAsset("current_roof_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedRepeatTextureAsset("past_roof_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedTextureExactSize("current_exterior_wall_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("past_exterior_wall_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("current_roof_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("past_roof_hd2d_plate", 128, 128);
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_FacadeWallLeftPanel", "current_exterior_wall_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_FacadeWallLeftPanel", "past_exterior_wall_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_RoofWidePixelPlane", "current_roof_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_RoofWidePixelPlane", "past_roof_hd2d_plate");
+            ValidateTextureLuminanceContrast("current_exterior_wall_hd2d_plate", new Vector2Int(7, 40), new Vector2Int(14, 40), 0.045f, "current exterior wall seam contrast");
+            ValidateTextureLuminanceContrast("past_exterior_wall_hd2d_plate", new Vector2Int(7, 40), new Vector2Int(14, 40), 0.045f, "past exterior wall seam contrast");
+            ValidateTextureLuminanceContrast("current_roof_hd2d_plate", new Vector2Int(6, 4), new Vector2Int(6, 9), 0.050f, "current roof row contrast");
+            ValidateTextureLuminanceContrast("past_roof_hd2d_plate", new Vector2Int(6, 4), new Vector2Int(6, 9), 0.050f, "past roof row contrast");
+        }
+
         private static void ValidateCurrentLibraryEmptySideShelf(string side)
         {
             var root = FindSceneObjectIncludingInactive($"Current_Library_{side}SideBookshelf");
@@ -8006,6 +8113,26 @@ namespace Anemora.EditorTools
             if (texture.width != expectedWidth || texture.height != expectedHeight)
             {
                 throw new InvalidOperationException($"House slice validation failed: {textureId} must be exactly {expectedWidth}x{expectedHeight}, but was {texture.width}x{texture.height}.");
+            }
+        }
+
+        private static void ValidateTextureLuminanceContrast(string textureId, Vector2Int a, Vector2Int b, float minDelta, string label)
+        {
+            var path = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing generated texture asset {path}.");
+            }
+
+            var colorA = texture.GetPixel(a.x, a.y);
+            var colorB = texture.GetPixel(b.x, b.y);
+            var lumaA = 0.2126f * colorA.r + 0.7152f * colorA.g + 0.0722f * colorA.b;
+            var lumaB = 0.2126f * colorB.r + 0.7152f * colorB.g + 0.0722f * colorB.b;
+            var delta = Mathf.Abs(lumaA - lumaB);
+            if (delta < minDelta)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} must have at least {minDelta:0.000} luminance contrast, but delta was {delta:0.000}.");
             }
         }
 
@@ -10487,69 +10614,98 @@ namespace Anemora.EditorTools
             var boardWidth = 14;
             var boardIndex = x / boardWidth;
             var withinX = x % boardWidth;
-            var bandTone = LerpColor(wallA, wallB, Hash01(boardIndex, y / 9, seed));
-            var verticalLight = Mathf.Clamp01(1f - (y / (float)(height - 1)) * 0.55f);
-            bandTone = LerpColor(bandTone, highlightColor, verticalLight * 0.14f);
-            bandTone = LerpColor(bandTone, shadowColor, Mathf.Clamp01((y / (float)(height - 1)) * 0.24f));
+            var courseHeight = worn ? 20 : 18;
+            var courseIndex = y / courseHeight;
+            var withinY = y % courseHeight;
+            var bandTone = LerpColor(wallA, wallB, Hash01(boardIndex, courseIndex, seed));
+            var verticalLight = Mathf.Clamp01(1f - (y / (float)(height - 1)) * 0.50f);
+            bandTone = LerpColor(bandTone, highlightColor, verticalLight * (worn ? 0.10f : 0.14f));
+            bandTone = LerpColor(bandTone, shadowColor, Mathf.Clamp01((y / (float)(height - 1)) * (worn ? 0.18f : 0.14f)));
 
             if (withinX <= 1 || withinX >= boardWidth - 2 || x == 0 || x == width - 1)
             {
-                bandTone = LerpColor(bandTone, seamColor, 0.80f);
+                bandTone = LerpColor(bandTone, seamColor, 0.74f);
             }
-
-            if ((y % 18) <= 1)
+            else if (withinX == 2 || withinX == boardWidth - 3)
             {
-                bandTone = LerpColor(bandTone, Darken(seamColor, 0.18f), 0.42f);
+                bandTone = LerpColor(bandTone, highlightColor, 0.22f);
             }
 
-            if (((boardIndex + (y / 7) + seed) & 3) == 0 && withinX > 2 && withinX < boardWidth - 2)
+            if (withinY <= 1)
             {
-                bandTone = LerpColor(bandTone, Lighten(wallB, worn ? 0.05f : 0.10f), worn ? 0.20f : 0.12f);
+                bandTone = LerpColor(bandTone, highlightColor, worn ? 0.18f : 0.24f);
             }
-
-            if (Hash01(x, y, seed + 11) > 0.972f)
+            else if (withinY >= courseHeight - 2)
             {
-                bandTone = LerpColor(bandTone, new Color(0.67f, 0.62f, 0.56f, 1f), worn ? 0.16f : 0.11f);
+                bandTone = LerpColor(bandTone, shadowColor, worn ? 0.28f : 0.22f);
             }
 
-            if (Hash01(x, y, seed + 17) > (worn ? 0.974f : 0.986f))
+            if (withinY >= 2 && withinY <= 4)
             {
-                bandTone = Darken(bandTone, worn ? 0.18f : 0.10f);
+                bandTone = LerpColor(bandTone, Lighten(wallB, worn ? 0.02f : 0.06f), worn ? 0.09f : 0.07f);
             }
 
-            return ShadeSurface(bandTone, x, y, width, height, 0.18f, 0.11f);
+            if (((boardIndex + courseIndex + seed) & 5) == 0 && withinX > 2 && withinX < boardWidth - 2)
+            {
+                bandTone = LerpColor(bandTone, Darken(wallB, worn ? 0.02f : 0.01f), worn ? 0.08f : 0.05f);
+            }
+
+            if (Hash01(x, y, seed + 11) > (worn ? 0.986f : 0.993f))
+            {
+                bandTone = LerpColor(bandTone, new Color(0.66f, 0.61f, 0.56f, 1f), worn ? 0.10f : 0.06f);
+            }
+
+            if (Hash01(x, y, seed + 17) > (worn ? 0.992f : 0.997f))
+            {
+                bandTone = Darken(bandTone, worn ? 0.12f : 0.06f);
+            }
+
+            return ShadeSurface(bandTone, x, y, width, height, worn ? 0.14f : 0.12f, worn ? 0.08f : 0.06f);
         }
 
         private static Color SampleRoofShinglePlatePixel(int x, int y, int width, int height, Color tileA, Color tileB, Color seamColor, Color highlightColor, Color shadowColor, int seed, bool weathered)
         {
-            var rowHeight = 8;
+            var rowHeight = weathered ? 10 : 9;
             var rowIndex = y / rowHeight;
             var withinY = y % rowHeight;
-            var rowOffset = (rowIndex & 1) == 0 ? 0 : 6;
+            var rowOffset = (rowIndex & 1) == 0 ? 0 : (weathered ? 8 : 7);
             var shiftedX = (x + rowOffset) % width;
-            var tileWidth = 12;
+            var tileWidth = weathered ? 16 : 17;
             var tileIndex = shiftedX / tileWidth;
             var withinX = shiftedX % tileWidth;
             var roofTone = LerpColor(tileA, tileB, Hash01(tileIndex, rowIndex, seed));
-            roofTone = LerpColor(roofTone, highlightColor, Mathf.Clamp01(0.22f - withinY * 0.02f));
-            roofTone = LerpColor(roofTone, shadowColor, Mathf.Clamp01((withinY / (float)(rowHeight - 1)) * 0.28f));
+            roofTone = LerpColor(roofTone, highlightColor, Mathf.Clamp01(0.30f - withinY * (weathered ? 0.025f : 0.030f)));
+            roofTone = LerpColor(roofTone, shadowColor, Mathf.Clamp01((withinY / (float)(rowHeight - 1)) * (weathered ? 0.30f : 0.24f)));
 
-            if (withinX <= 1 || withinX >= tileWidth - 2 || withinY <= 1 || withinY >= rowHeight - 2 || x == 0 || x == width - 1 || y == 0 || y == height - 1)
+            if (withinX <= 1 || withinX >= tileWidth - 2 || withinY <= 0 || withinY >= rowHeight - 2 || x == 0 || x == width - 1 || y == 0 || y == height - 1)
             {
-                roofTone = LerpColor(roofTone, seamColor, 0.84f);
+                roofTone = LerpColor(roofTone, seamColor, weathered ? 0.86f : 0.80f);
+            }
+            else if (withinX == 2 || withinX == tileWidth - 3)
+            {
+                roofTone = LerpColor(roofTone, highlightColor, 0.18f);
             }
 
-            if ((withinX == 4 || withinX == 7) && withinY >= 2 && withinY <= 5)
+            if (withinY == 1)
             {
-                roofTone = LerpColor(roofTone, Darken(highlightColor, 0.42f), 0.42f);
+                roofTone = LerpColor(roofTone, highlightColor, weathered ? 0.24f : 0.28f);
+            }
+            else if (withinY == rowHeight - 2)
+            {
+                roofTone = LerpColor(roofTone, shadowColor, weathered ? 0.28f : 0.22f);
             }
 
-            if (Hash01(x, y, seed + 19) > (weathered ? 0.966f : 0.981f))
+            if ((withinX == 4 || withinX == 8 || withinX == 11) && withinY >= 2 && withinY <= rowHeight - 4)
             {
-                roofTone = Hash01(x, y, seed + 23) > 0.55f ? Darken(roofTone, weathered ? 0.18f : 0.11f) : Lighten(roofTone, weathered ? 0.08f : 0.05f);
+                roofTone = LerpColor(roofTone, Darken(highlightColor, 0.36f), 0.30f);
             }
 
-            return ShadeSurface(roofTone, x, y, width, height, 0.16f, 0.10f);
+            if (Hash01(x, y, seed + 19) > (weathered ? 0.972f : 0.990f))
+            {
+                roofTone = Hash01(x, y, seed + 23) > 0.56f ? Darken(roofTone, weathered ? 0.16f : 0.08f) : Lighten(roofTone, weathered ? 0.06f : 0.04f);
+            }
+
+            return ShadeSurface(roofTone, x, y, width, height, weathered ? 0.14f : 0.11f, weathered ? 0.08f : 0.06f);
         }
 
         private static Color SampleWindowPlatePixel(int x, int y, int width, int height, Color glassA, Color glassB, Color frameColor, Color crossbarColor, Color highlightColor, Color shadowColor, int seed, bool lit)
