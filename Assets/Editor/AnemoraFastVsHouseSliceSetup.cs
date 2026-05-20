@@ -209,6 +209,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
             ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateFastVsHd2dTwentySixthCycleHouseBedTextilePolish();
+            ValidateFastVsHd2dFortiethCycleHouseBedSoftTextilePolish();
             ValidateFastVsHd2dTwentySeventhCycleHouseInteriorWallFloorWarmth();
             ValidateFastVsHd2dTwentyEighthCycleLibraryBookshelfReadability();
             ValidateFastVsHd2dThirtyFourthCycleLibrarySideShelfReadability();
@@ -461,6 +462,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
         {
             CaptureHd2dThirtyNinthCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_plaza_library_facade_landmark_20260520");
+        }
+
+        public static void CaptureHd2dFortiethCycleScreenshotsBatch()
+        {
+            CaptureHd2dFortiethCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_house_bed_soft_textile_20260520");
         }
 
         public static void CaptureHd2dTwentyFourthCycleScreenshotsBatch()
@@ -2263,6 +2269,74 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS twenty-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dFortiethCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS fortieth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(2.32f, 0.02f, -1.78f),
+                HouseInteriorCenter + new Vector3(-1.56f, 0.57f, 0.94f),
+                new Vector3(0.06f, 0.99f, -1.48f),
+                new Vector3(0f, 0.04f, 0.06f),
+                outputDirectory,
+                "01_current_house_bed_soft_textile_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(2.32f, 0.02f, -1.78f),
+                HouseInteriorCenter + new Vector3(-1.86f, 0.58f, 0.94f),
+                new Vector3(-0.08f, 0.98f, -1.32f),
+                new Vector3(0f, 0.03f, 0.04f),
+                outputDirectory,
+                "02_past_house_bed_soft_textile_close.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(-2.14f, 0.02f, 0.90f),
+                Path.Combine(outputDirectory, "03_current_house_bed_soft_textile_gameplay.png"));
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorCenter + new Vector3(-2.08f, 0.02f, 1.04f),
+                Path.Combine(outputDirectory, "04_past_house_bed_soft_textile_gameplay.png"));
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_house_bed_soft_textile_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_house_bed_soft_textile_close.png");
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_house_bed_soft_textile_gameplay.png");
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_house_bed_soft_textile_gameplay.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS fortieth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureHd2dTwentySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -2819,11 +2893,12 @@ namespace Anemora.EditorTools
             var bedMaterial = past ? materials.PastBed : materials.CurrentBed;
             CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed", root, c + new Vector3(-1.25f, 0.26f, 0.96f), new Vector3(1.92f, 0.24f, 1.06f), Quaternion.Euler(0f, 0f, past ? 0f : -3f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed");
             CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed_Blanket", root, c + new Vector3(-1.24f, 0.47f, 0.96f), new Vector3(1.72f, 0.12f, 0.92f), Quaternion.Euler(0f, 0f, past ? -2f : -5f), bedMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed.blanket");
-            CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed_TopFold", root, c + new Vector3(-1.32f, 0.57f, 0.54f), new Vector3(1.48f, 0.04f, 0.16f), Quaternion.Euler(0f, past ? -1f : -4f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed.top_fold");
+            CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed_TopFold", root, c + new Vector3(-1.32f, 0.56f, 0.54f), new Vector3(1.42f, 0.03f, 0.14f), Quaternion.Euler(0f, past ? -1f : -4f, 0f), bedMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed.top_fold");
             CreateHouseInteriorPropDetailSlab(root, $"{prefix}_NiroBed_PaperPixelBed_QuiltLongSeamA", c + new Vector3(-1.37f, 0.635f, 0.72f), Quaternion.Euler(0f, -6f, 8f), new Vector3(1.34f, 0.012f, 0.035f), trim, $"{prefix}.house_interior.bed.quilt_long_seam_a");
             CreateHouseInteriorPropDetailSlab(root, $"{prefix}_NiroBed_PaperPixelBed_QuiltLongSeamB", c + new Vector3(-1.10f, 0.640f, 1.22f), Quaternion.Euler(0f, 4f, -7f), new Vector3(1.18f, 0.012f, 0.034f), trim, $"{prefix}.house_interior.bed.quilt_long_seam_b");
             CreateHouseInteriorPropDetailSlab(root, $"{prefix}_NiroBed_PaperPixelBed_FootFoldSoft", c + new Vector3(-0.62f, 0.595f, 0.96f), Quaternion.Euler(0f, -2f, 0f), new Vector3(0.82f, 0.020f, 0.18f), bedMaterial, $"{prefix}.house_interior.bed.foot_fold_soft");
             CreateHouseInteriorPropDetailSlab(root, $"{prefix}_NiroBed_PillowPixel_TopCrease", c + new Vector3(-1.90f, 0.696f, 0.89f), Quaternion.Euler(0f, 0f, -9f), new Vector3(0.28f, 0.010f, 0.05f), materials.Pillow, $"{prefix}.house_interior.pillow.top_crease");
+            CreateHouseBedSoftTextilePolish(root, prefix, c, past, materials, bedMaterial);
             CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed_UnderShadow", root, c + new Vector3(-1.24f, 0.29f, 0.96f), new Vector3(1.64f, 0.05f, 0.86f), Quaternion.Euler(0f, past ? 0f : -3f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed.under_shadow");
             CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed_Headboard", root, c + new Vector3(-2.16f, 0.54f, 0.96f), new Vector3(0.12f, 0.60f, 1.02f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed.headboard");
             CreateLandmarkCube($"{prefix}_NiroBed_PaperPixelBed_Footboard", root, c + new Vector3(-0.38f, 0.30f, 0.96f), new Vector3(0.10f, 0.28f, 1.00f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.bed.footboard");
@@ -2877,6 +2952,47 @@ namespace Anemora.EditorTools
                 c + new Vector3(0f, 0.75f, -2.99f),
                 new Vector3(7.45f, 1.50f, 0.22f),
                 $"{prefix}.house_interior.front_drop_guard");
+        }
+
+        private static void CreateHouseBedSoftTextilePolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material bedMaterial)
+        {
+            var blanketEdgeMaterial = past ? bedMaterial : materials.Dust;
+
+            CreateHouseInteriorPropDetailSlab(
+                root,
+                $"{prefix}_NiroBed_SoftTextile_BlanketCornerTuckA",
+                center + new Vector3(-1.50f, 0.53f, 0.74f),
+                Quaternion.Euler(0f, past ? -5f : -8f, past ? 6f : 10f),
+                new Vector3(0.30f, 0.032f, 0.16f),
+                bedMaterial,
+                $"{prefix}.house_interior.bed.soft_textile.blanket_corner_tuck_a");
+
+            CreateHouseInteriorPropDetailSlab(
+                root,
+                $"{prefix}_NiroBed_SoftTextile_BlanketEdgeHighlightA",
+                center + new Vector3(-1.17f, 0.515f, 0.77f),
+                Quaternion.Euler(0f, past ? 1f : -3f, past ? -2f : -5f),
+                new Vector3(1.08f, 0.024f, 0.08f),
+                blanketEdgeMaterial,
+                $"{prefix}.house_interior.bed.soft_textile.blanket_edge_highlight_a");
+
+            CreateHouseInteriorPropDetailSlab(
+                root,
+                $"{prefix}_NiroBed_SoftTextile_PillowSideHighlightA",
+                center + new Vector3(-1.95f, 0.62f, 0.96f),
+                Quaternion.Euler(0f, 0f, past ? -8f : -11f),
+                new Vector3(0.22f, 0.028f, 0.42f),
+                materials.Pillow,
+                $"{prefix}.house_interior.bed.soft_textile.pillow_side_highlight_a");
+
+            CreateHouseInteriorPropDetailSlab(
+                root,
+                $"{prefix}_NiroBed_SoftTextile_BedSkirtFrontA",
+                center + new Vector3(-0.78f, 0.335f, 0.96f),
+                Quaternion.Euler(0f, past ? -1f : -4f, 0f),
+                new Vector3(0.84f, 0.028f, 0.10f),
+                bedMaterial,
+                $"{prefix}.house_interior.bed.soft_textile.bed_skirt_front_a");
         }
 
         private static void CreateHouseDoorMarkers(Transform interiorRoot, Transform exteriorRoot, string prefix, bool past, Materials materials)
@@ -8654,6 +8770,28 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("Past_NiroBed_PaperPixelBed_QuiltLongSeamA") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle26 bed textile polish must keep the blanket and seam objects present.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dFortiethCycleHouseBedSoftTextilePolish()
+        {
+            ValidateHouseBedTextileObject("Current_NiroBed_SoftTextile_BlanketCornerTuckA", "bed", "Current_HouseInteriorMap_SeparateSpace", 0.08f);
+            ValidateHouseBedTextileObject("Current_NiroBed_SoftTextile_BlanketEdgeHighlightA", "dust", "Current_HouseInteriorMap_SeparateSpace", 0.08f);
+            ValidateHouseBedTextileObject("Current_NiroBed_SoftTextile_PillowSideHighlightA", "pillow", "Current_HouseInteriorMap_SeparateSpace", 0.08f);
+            ValidateHouseBedTextileObject("Current_NiroBed_SoftTextile_BedSkirtFrontA", "bed", "Current_HouseInteriorMap_SeparateSpace", 0.08f);
+
+            ValidateHouseBedTextileObject("Past_NiroBed_SoftTextile_BlanketCornerTuckA", "bed", "Past_HouseInteriorMap_SeparateSpace", 0.08f);
+            ValidateHouseBedTextileObject("Past_NiroBed_SoftTextile_BlanketEdgeHighlightA", "bed", "Past_HouseInteriorMap_SeparateSpace", 0.08f);
+            ValidateHouseBedTextileObject("Past_NiroBed_SoftTextile_PillowSideHighlightA", "pillow", "Past_HouseInteriorMap_SeparateSpace", 0.08f);
+            ValidateHouseBedTextileObject("Past_NiroBed_SoftTextile_BedSkirtFrontA", "bed", "Past_HouseInteriorMap_SeparateSpace", 0.08f);
+
+            if (FindSceneObjectIncludingInactive("Current_NiroBed_PaperPixelBed_Blanket") == null ||
+                FindSceneObjectIncludingInactive("Past_NiroBed_PaperPixelBed_Blanket") == null ||
+                FindSceneObjectIncludingInactive("Current_NiroBed_PillowPixel") == null ||
+                FindSceneObjectIncludingInactive("Past_NiroBed_PillowPixel") == null ||
+                FindSceneObjectIncludingInactive("Current_HouseInterior_TimewriterBookCue") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle40 soft textile polish must keep the bed blanket, pillow, and timewriter book cue objects present.");
             }
         }
 

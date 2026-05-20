@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.6 fast VS HD2D readable book props cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.7 fast VS HD2D house bed soft textile cycle index update (2026-05-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 280 files including INDEX.md and README.md.
-- Dated devlog records: 278 files.
-- Linked evidence files present under docs/devlog/screenshots/: 390 files.
+- Root-level Markdown coverage: 281 files including INDEX.md and README.md.
+- Dated devlog records: 279 files.
+- Linked evidence files present under docs/devlog/screenshots/: 394 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -30,7 +30,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-17 | 5 |
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
-| 2026-05-20 | 40 |
+| 2026-05-20 | 41 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-20_fast_vs_hd2d_house_exterior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Detail Cycle |
 | [2026-05-20_fast_vs_hd2d_house_exterior_facade_texture_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_facade_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Facade Texture Cycle |
 | [2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Textile Cycle |
+| [2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Soft Textile Cycle |
 | [2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Wall Floor Warmth Cycle |
 | [2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Edge Dressing Cycle |
 | [2026-05-20_fast_vs_hd2d_outdoor_boundary_nature_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_boundary_nature_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Boundary Nature Cycle |
