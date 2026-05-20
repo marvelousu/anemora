@@ -213,6 +213,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtiethCycleHouseExteriorFacadeTextures();
             ValidateFastVsHd2dEighteenthCycleLibraryFacadeCloseDetails();
             ValidateFastVsHd2dThirtySecondCycleLibraryFacadeArchitecturePolish();
+            ValidateFastVsHd2dThirtyThirdCycleLibraryFloorDecayDetails();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
             ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere();
@@ -394,6 +395,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dThirtySecondCycleScreenshotsBatch()
         {
             CaptureHd2dThirtySecondCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_facade_architecture_20260520");
+        }
+
+        public static void CaptureHd2dThirtyThirdCycleScreenshotsBatch()
+        {
+            CaptureHd2dThirtyThirdCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_library_floor_decay_20260520");
         }
 
         public static void CaptureHd2dNineteenthCycleScreenshotsBatch()
@@ -1152,6 +1158,91 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS thirty-second-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dThirtyThirdCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS thirty-third-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var currentEntryPlayerLocal = LibraryVsCenter + new Vector3(-4.20f, 0.02f, -5.18f);
+            var currentEntryAnchorLocal = LibraryVsCenter + new Vector3(-4.10f, 0.40f, -4.98f);
+            var currentRetoSidePlayerLocal = LibraryVsCenter + new Vector3(0.92f, 0.02f, -1.82f);
+            var currentRetoSideAnchorLocal = LibraryVsCenter + new Vector3(1.08f, 0.36f, -1.48f);
+            var currentShelfSidePlayerLocal = LibraryVsCenter + new Vector3(-4.05f, 0.02f, 1.02f);
+            var currentShelfSideAnchorLocal = LibraryVsCenter + new Vector3(-3.88f, 0.42f, 1.12f);
+            var pastOrderedFloorPlayerLocal = LibraryVsCenter + new Vector3(0.92f, 0.02f, -0.84f);
+            var pastOrderedFloorAnchorLocal = LibraryVsCenter + new Vector3(0.72f, 0.40f, -0.98f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentEntryPlayerLocal,
+                currentEntryAnchorLocal,
+                new Vector3(-0.12f, 1.12f, -3.18f),
+                new Vector3(-0.08f, 0.18f, -0.08f),
+                outputDirectory,
+                "01_current_library_floor_decay_near_entry.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentRetoSidePlayerLocal,
+                currentRetoSideAnchorLocal,
+                new Vector3(-1.02f, 1.16f, -2.02f),
+                new Vector3(0.04f, 0.14f, 0.02f),
+                outputDirectory,
+                "02_current_library_floor_decay_reto_side.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentShelfSidePlayerLocal,
+                currentShelfSideAnchorLocal,
+                new Vector3(0.86f, 1.08f, -2.10f),
+                new Vector3(-0.02f, 0.16f, 0.05f),
+                outputDirectory,
+                "03_current_library_floor_decay_shelf_side.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                pastOrderedFloorPlayerLocal,
+                pastOrderedFloorAnchorLocal,
+                new Vector3(-0.26f, 1.20f, -2.66f),
+                new Vector3(-0.08f, 0.16f, -0.04f),
+                outputDirectory,
+                "04_past_library_ordered_floor_details.png");
+
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_library_floor_decay_near_entry.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_current_library_floor_decay_reto_side.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_floor_decay_shelf_side.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_library_ordered_floor_details.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS thirty-third-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureHd2dNineteenthCycleScreenshotsToDirectory(string outputDirectory)
@@ -2974,6 +3065,33 @@ namespace Anemora.EditorTools
                     materials.CurrentRubbleDetail,
                     materials.Dust,
                     "Current.library.prop_detail.shelf_debris_east");
+            }
+
+            CreateLibraryFloorDecayDetails(root, prefix, past, materials, c, floor, wood, trim);
+        }
+
+        private static void CreateLibraryFloorDecayDetails(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material floor, Material wood, Material trim)
+        {
+            if (past)
+            {
+                CreateLandmarkCube("Past_Library_OrderedFloorDetail_BookBundleA", root, c + new Vector3(-3.64f, 0.044f, -0.84f), new Vector3(0.28f, 0.022f, 0.16f), Quaternion.Euler(0f, 7f, 0f), materials.Book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.library.floor_detail.book_bundle.a");
+                CreateLandmarkCube("Past_Library_OrderedFloorDetail_PaperBundleB", root, c + new Vector3(-0.52f, 0.044f, -1.04f), new Vector3(0.24f, 0.020f, 0.14f), Quaternion.Euler(0f, -5f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.library.floor_detail.paper_bundle.b");
+                CreateLandmarkCube("Past_Library_OrderedFloorDetail_BookBundleC", root, c + new Vector3(1.94f, 0.044f, 0.88f), new Vector3(0.30f, 0.022f, 0.16f), Quaternion.Euler(0f, -9f, 0f), materials.Book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.library.floor_detail.book_bundle.c");
+                CreateLandmarkCube("Past_Library_OrderedFloorDetail_PaperBundleD", root, c + new Vector3(4.00f, 0.044f, 0.94f), new Vector3(0.26f, 0.020f, 0.14f), Quaternion.Euler(0f, 13f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.library.floor_detail.paper_bundle.d");
+            }
+            else
+            {
+                CreateLandmarkCube("Current_Library_FloorDecay_ScuffBandEntry", root, c + new Vector3(-4.02f, 0.033f, -5.26f), new Vector3(1.16f, 0.018f, 0.12f), Quaternion.Euler(0f, -4f, 0f), floor, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.scuff_band_entry");
+                CreateLandmarkCube("Current_Library_FloorDecay_DustBandWest", root, c + new Vector3(-4.18f, 0.032f, 1.02f), new Vector3(1.04f, 0.016f, 0.14f), Quaternion.Euler(0f, 8f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.dust_band_west");
+                CreateLandmarkCube("Current_Library_FloorDecay_ScuffBandBack", root, c + new Vector3(-0.72f, 0.033f, 6.02f), new Vector3(1.28f, 0.018f, 0.12f), Quaternion.Euler(0f, 11f, 0f), floor, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.scuff_band_back");
+                CreateLandmarkCube("Current_Library_FloorDecay_DustBandEast", root, c + new Vector3(4.10f, 0.032f, -0.60f), new Vector3(0.96f, 0.016f, 0.14f), Quaternion.Euler(0f, -7f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.dust_band_east");
+                CreateLandmarkCube("Current_Library_FloorDecay_ScuffBandCenter", root, c + new Vector3(0.88f, 0.031f, -1.86f), new Vector3(0.84f, 0.017f, 0.12f), Quaternion.Euler(0f, 17f, 0f), floor, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.scuff_band_center");
+                CreateLandmarkCube("Current_Library_FloorDecay_PageBundleWest", root, c + new Vector3(-3.90f, 0.041f, 0.78f), new Vector3(0.24f, 0.020f, 0.14f), Quaternion.Euler(0f, -8f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.page_bundle_west");
+                CreateLandmarkCube("Current_Library_FloorDecay_PageBundleBack", root, c + new Vector3(0.72f, 0.041f, 5.70f), new Vector3(0.22f, 0.018f, 0.12f), Quaternion.Euler(0f, 9f, 0f), materials.Book, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.page_bundle_back");
+                CreateLandmarkCube("Current_Library_FloorDecay_PageBundleEast", root, c + new Vector3(3.58f, 0.041f, -2.08f), new Vector3(0.20f, 0.018f, 0.12f), Quaternion.Euler(0f, 14f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.page_bundle_east");
+                CreateLandmarkCube("Current_Library_FloorDecay_WoodShardWest", root, c + new Vector3(-3.52f, 0.055f, -0.56f), new Vector3(0.42f, 0.040f, 0.08f), Quaternion.Euler(0f, -16f, 6f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_west");
+                CreateLandmarkCube("Current_Library_FloorDecay_WoodShardBack", root, c + new Vector3(1.68f, 0.052f, 6.00f), new Vector3(0.34f, 0.036f, 0.08f), Quaternion.Euler(0f, 21f, -4f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_back");
+                CreateLandmarkCube("Current_Library_FloorDecay_WoodShardEast", root, c + new Vector3(4.12f, 0.050f, 0.90f), new Vector3(0.36f, 0.035f, 0.08f), Quaternion.Euler(0f, -23f, 8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.library.floor_decay.wood_shard_east");
             }
         }
 
@@ -5737,6 +5855,44 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_CentralPlaza_LibraryWindowLeftPaneUpperLeft", "Past_CentralPlazaMap_SeparateSpace");
         }
 
+        private static void ValidateFastVsHd2dThirtyThirdCycleLibraryFloorDecayDetails()
+        {
+            ValidateLibraryFloorDecayDetailObject("Current_Library_FloorDecay_ScuffBandEntry", "Current_LibraryMap_SeparateSpace", 0.08f);
+            ValidateLibraryFloorDecayDetailObject("Current_Library_FloorDecay_PageBundleWest", "Current_LibraryMap_SeparateSpace", 0.08f);
+            ValidateLibraryFloorDecayDetailObject("Current_Library_FloorDecay_WoodShardBack", "Current_LibraryMap_SeparateSpace", 0.08f);
+            ValidateLibraryFloorDecayDetailObject("Past_Library_OrderedFloorDetail_BookBundleA", "Past_LibraryMap_SeparateSpace", 0.08f);
+            ValidateLibraryFloorDecayDetailObject("Past_Library_OrderedFloorDetail_PaperBundleD", "Past_LibraryMap_SeparateSpace", 0.08f);
+
+            ValidateLandmarkExists("Current_Library_PixelFloor", "Current_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_PixelFloor", "Past_LibraryMap_SeparateSpace");
+
+            foreach (var objectName in new[]
+                     {
+                         "FastVS_Reto_WritingAtDesk",
+                         "Past_Library_AriaIdleAtTable",
+                         "Current_Library_ToCentralPlaza_MapMoveGlowPad",
+                         "Past_Library_ToCentralPlaza_MapMoveGlowPad",
+                         "Current_Library_ReturnedBookOnDesk",
+                         "Past_Library_TargetBookPickup"
+                     })
+            {
+                if (FindSceneObjectIncludingInactive(objectName) == null)
+                {
+                    if (objectName == "Past_Library_TargetBookPickup" && FindSceneObjectIncludingInactive("Past_Library_TargetBook_ForPickup") != null)
+                    {
+                        continue;
+                    }
+
+                    throw new InvalidOperationException($"House slice validation failed: library floor decay pass must keep {objectName} present.");
+                }
+            }
+
+            if (FindSceneObjectIncludingInactive("Past_Library_TargetBook_ForPickup") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: library floor decay pass must keep Past_Library_TargetBook_ForPickup present.");
+            }
+        }
+
         private static void ValidateCentralPlazaLibraryWindowPaneMaterials(string prefix, string expectedMaterialToken)
         {
             var paneObjects = new[]
@@ -8190,6 +8346,51 @@ namespace Anemora.EditorTools
             if (sceneObject.transform.localScale.y > 0.16f)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay small on the Y axis.");
+            }
+        }
+
+        private static void ValidateLibraryFloorDecayDetailObject(string objectName, string expectedParentName, float maxScaleY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library floor decay object {objectName}.");
+            }
+
+            var meshRenderer = sceneObject.GetComponent<MeshRenderer>();
+            if (meshRenderer == null || meshRenderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a MeshRenderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding floor decoration.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            if (sceneObject.transform.localScale.y > maxScaleY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay very thin on the Y axis.");
             }
         }
 
