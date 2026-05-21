@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.44 fast VS HD2D library entry table contrast cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.45 fast VS HD2D plaza library volume readability cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 320 files including INDEX.md and README.md.
-- Dated devlog records: 318 files.
-- Linked evidence files present under docs/devlog/screenshots/: 546 files.
+- Root-level Markdown coverage: 321 files including INDEX.md and README.md.
+- Dated devlog records: 319 files.
+- Linked evidence files present under docs/devlog/screenshots/: 550 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 27 |
+| 2026-05-21 | 28 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -48,6 +48,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-21_fast_vs_hd2d_outdoor_sky_wash_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_wash_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Wash Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Exterior Depth Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Facade Surface Breakup Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_volume_readability_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_volume_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Volume Readability Cycle |
 | [2026-05-21_fast_vs_hd2d_current_library_gallery_floor_seam_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_current_library_gallery_floor_seam_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Gallery Floor Seam Cleanup Cycle |
 | [2026-05-21_fast_vs_hd2d_current_library_wall_recess_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_current_library_wall_recess_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Wall Recess Cleanup Cycle |
 | [2026-05-21_fast_vs_hd2d_library_upper_gallery_support_polish_cycle.md](2026-05-21_fast_vs_hd2d_library_upper_gallery_support_polish_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Upper Gallery Support Polish Cycle |
@@ -453,6 +454,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.45 | 2026-05-21 | Added Fast VS HD2D plaza library volume readability cycle record with current/past eave, roof seam, rear contact details, validation, build, smoke, and screenshot evidence. |
 | v6.44 | 2026-05-21 | Added Fast VS HD2D library entry table contrast cycle record with current/past entry and table-foot contrast details, validation, build, smoke, and screenshot evidence. |
 | v6.38 | 2026-05-21 | Added Fast VS HD2D library table silhouette cycle record with current/past table bevels, leg shading, validation, and screenshot evidence. |
 | v6.37 | 2026-05-21 | Added Fast VS HD2D outdoor far-edge transition cycle record with low-profile berm, grass, paving, stone, and dust shapes at the map edge plus validation and screenshot evidence. |
