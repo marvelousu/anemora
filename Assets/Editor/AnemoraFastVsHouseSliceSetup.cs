@@ -238,6 +238,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventyFirstCyclePlazaLibraryExteriorDepth();
             ValidateFastVsHd2dSeventySecondCycleOutdoorSkyWash();
             ValidateFastVsHd2dSeventyThirdCycleOutdoorFarEdgeTransition();
+            ValidateFastVsHd2dSeventyFourthCycleLibraryTableSilhouette();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -559,6 +560,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSeventyThirdCycleScreenshotsBatch()
         {
             CaptureHd2dSeventyThirdCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_far_edge_transition_20260521");
+        }
+
+        public static void CaptureHd2dSeventyFourthCycleScreenshotsBatch()
+        {
+            CaptureHd2dSeventyFourthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_table_silhouette_20260521");
         }
 
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
@@ -6473,6 +6479,7 @@ namespace Anemora.EditorTools
 
             CreateLibraryReadableMicropropPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryReadingTableGroundingPolish(root, prefix, past, materials, c, wood, trim);
+            CreateLibraryTableSilhouettePolish(root, prefix, past, materials, c, wood, trim);
             if (!past)
             {
                 CreateCurrentLibraryRuinGroundingPolish(root, c, materials, wood, trim);
@@ -7007,6 +7014,98 @@ namespace Anemora.EditorTools
             }
 
             _ = prefix;
+        }
+
+        private static void CreateLibraryTableSilhouettePolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
+        {
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_TableSilhouette_LeftFrontFrontBevelA",
+                    root,
+                    c + new Vector3(-2.88f, 0.402f, -1.08f),
+                    new Vector3(1.00f, 0.026f, 0.05f),
+                    Quaternion.Euler(0f, -2f, 0f),
+                    wood,
+                    "Past.library.table_silhouette.left_front_front_bevel_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_TableSilhouette_LeftFrontLegShadeA",
+                    root,
+                    c + new Vector3(-3.40f, 0.18f, -0.90f),
+                    new Vector3(0.16f, 0.26f, 0.12f),
+                    Quaternion.Euler(0f, 4f, 0f),
+                    materials.Shadow,
+                    "Past.library.table_silhouette.left_front_leg_shade_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_TableSilhouette_RightFrontFrontBevelA",
+                    root,
+                    c + new Vector3(2.88f, 0.402f, -1.08f),
+                    new Vector3(1.00f, 0.026f, 0.05f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    wood,
+                    "Past.library.table_silhouette.right_front_front_bevel_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_TableSilhouette_RightFrontLegShadeA",
+                    root,
+                    c + new Vector3(3.40f, 0.18f, -0.90f),
+                    new Vector3(0.16f, 0.26f, 0.12f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    materials.Shadow,
+                    "Past.library.table_silhouette.right_front_leg_shade_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_TableSilhouette_CenterRearLongBevelA",
+                    root,
+                    c + new Vector3(0.00f, 0.402f, 1.80f),
+                    new Vector3(1.58f, 0.026f, 0.05f),
+                    Quaternion.Euler(0f, 1f, 0f),
+                    wood,
+                    "Past.library.table_silhouette.center_rear_long_bevel_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_TableSilhouette_CenterRearUnderShadowA",
+                    root,
+                    c + new Vector3(0.00f, 0.18f, 1.94f),
+                    new Vector3(1.36f, 0.028f, 0.20f),
+                    Quaternion.identity,
+                    materials.Shadow,
+                    "Past.library.table_silhouette.center_rear_under_shadow_a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_TableSilhouette_RetoDeskFrontBevelA",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.404f, -0.28f),
+                    new Vector3(0.92f, 0.028f, 0.05f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    wood,
+                    "Current.library.table_silhouette.reto_desk_front_bevel_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_TableSilhouette_RetoDeskLeftLegShadeA",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(-0.46f, 0.18f, 0.02f),
+                    new Vector3(0.14f, 0.28f, 0.12f),
+                    Quaternion.Euler(0f, 3f, 0f),
+                    materials.Shadow,
+                    "Current.library.table_silhouette.reto_desk_left_leg_shade_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_TableSilhouette_RetoDeskRightLegShadeA",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.46f, 0.18f, 0.02f),
+                    new Vector3(0.14f, 0.28f, 0.12f),
+                    Quaternion.Euler(0f, -3f, 0f),
+                    materials.Shadow,
+                    "Current.library.table_silhouette.reto_desk_right_leg_shade_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_TableSilhouette_SideTableBrokenBevelA",
+                    root,
+                    c + new Vector3(3.60f, 0.404f, -1.82f),
+                    new Vector3(0.82f, 0.028f, 0.05f),
+                    Quaternion.Euler(0f, 6f, 0f),
+                    wood,
+                    "Current.library.table_silhouette.side_table_broken_bevel_a");
+            }
+
+            _ = trim;
         }
 
         private static void SetLandmarksCountForArrival(Transform root, bool countsForArrival)
@@ -7660,6 +7759,84 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS seventy-third-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dSeventyFourthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS seventy-fourth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var currentOverviewPlayerLocal = RetoLibraryDeskLocalPosition + new Vector3(-1.15f, 0.02f, -1.35f);
+            var currentClosePlayerLocal = RetoLibraryDeskLocalPosition + new Vector3(-0.92f, 0.02f, -1.08f);
+            var currentCloseAnchorLocal = RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.38f, -0.14f);
+            var pastOverviewPlayerLocal = LibraryVsCenter + new Vector3(0.00f, 0.02f, -1.42f);
+            var pastClosePlayerLocal = LibraryVsCenter + new Vector3(0.18f, 0.02f, 1.00f);
+            var pastCloseAnchorLocal = LibraryVsCenter + new Vector3(0.00f, 0.40f, 1.80f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentOverviewPlayerLocal,
+                RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.40f, -0.14f),
+                new Vector3(1.22f, 1.22f, -2.62f),
+                new Vector3(0.02f, 0.22f, 0.22f),
+                outputDirectory,
+                "01_current_library_reto_table_silhouette.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_library_reto_table_silhouette.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                pastOverviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_library_table_silhouette_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_library_table_silhouette_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentClosePlayerLocal,
+                currentCloseAnchorLocal,
+                new Vector3(1.06f, 1.02f, -2.22f),
+                new Vector3(0.02f, 0.18f, 0.18f),
+                outputDirectory,
+                "03_current_library_table_silhouette_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_table_silhouette_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                pastClosePlayerLocal,
+                pastCloseAnchorLocal,
+                new Vector3(1.08f, 1.06f, -2.30f),
+                new Vector3(0.00f, 0.20f, 0.18f),
+                outputDirectory,
+                "04_past_library_table_silhouette_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_library_table_silhouette_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS seventy-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -11329,6 +11506,29 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_CentralPlaza_ToLibrary_MapMoveGlowPad", "Past_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Current_CentralPlaza_LibraryNorthFacade", "Current_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryNorthFacade", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
+        private static void ValidateFastVsHd2dSeventyFourthCycleLibraryTableSilhouette()
+        {
+            ValidateLandmarkExists("Current_Library_ReadingTableLong", "Current_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Current_Library_TableOpenBook", "Current_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Current_Library_RetoDeskBook_Initial", "Current_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_ReadingTableClean_LeftFront", "Past_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_ReadingTableClean_CenterRear", "Past_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_ReadingTableClean_RightFront", "Past_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_AriaIdleAtTable", "Past_LibraryMap_SeparateSpace");
+
+            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskFrontBevelA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
+            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskLeftLegShadeA", "Current_LibraryMap_SeparateSpace", "shadow", "Current.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
+            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskRightLegShadeA", "Current_LibraryMap_SeparateSpace", "shadow", "Current.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
+            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_SideTableBrokenBevelA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
+
+            ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_LeftFrontFrontBevelA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
+            ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_LeftFrontLegShadeA", "Past_LibraryMap_SeparateSpace", "shadow", "Past.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
+            ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_RightFrontFrontBevelA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
+            ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_RightFrontLegShadeA", "Past_LibraryMap_SeparateSpace", "shadow", "Past.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
+            ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_CenterRearLongBevelA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
+            ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_CenterRearUnderShadowA", "Past_LibraryMap_SeparateSpace", "shadow", "Past.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
         }
 
         private static void ValidateFastVsHd2dFortyFourthCyclePlazaLibraryApproach()
@@ -16391,6 +16591,70 @@ namespace Anemora.EditorTools
             if (sceneObject.transform.localScale.y > maxScaleY)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay very low to the ground.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateLibraryTableSilhouetteObject(string objectName, string expectedParentName, string expectedMaterialToken, string expectedLandmarkPrefix, float minLocalY, float maxLocalY, float maxScaleY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library table silhouette object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue ||
+                landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival PropOrFeature landmark with the expected id prefix.");
+            }
+
+            if (sceneObject.transform.localPosition.y < minLocalY || sceneObject.transform.localPosition.y > maxLocalY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay in the intended table silhouette height band.");
+            }
+
+            if (sceneObject.transform.localScale.y > maxScaleY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay thin enough for a silhouette polish strip.");
             }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
