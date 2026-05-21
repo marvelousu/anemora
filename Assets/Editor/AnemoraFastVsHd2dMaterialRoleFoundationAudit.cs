@@ -88,11 +88,10 @@ namespace Anemora.EditorTools
         {
             foreach (var materialId in new[]
             {
-                "current_interior_floor",
-                "current_interior_wall",
                 "current_exterior_wall",
+                "current_ground",
+                "current_path",
                 "current_roof",
-                "current_furniture",
                 "past_wood_floor",
                 "past_interior_wall",
                 "past_exterior_wall",

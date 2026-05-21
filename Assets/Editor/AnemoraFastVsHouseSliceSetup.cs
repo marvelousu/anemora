@@ -26983,11 +26983,10 @@ namespace Anemora.EditorTools
         {
             foreach (var materialPath in new[]
             {
-                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_floor.mat",
-                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_wall.mat",
                 "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_exterior_wall.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_ground.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_path.mat",
                 "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_roof.mat",
-                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_furniture.mat",
                 "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat",
                 "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_interior_wall.mat",
                 "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_exterior_wall.mat",
@@ -31200,6 +31199,13 @@ namespace Anemora.EditorTools
         private static bool ShouldUseSurfaceRampShader(string id, FastVsHd2dMaterialRole role, bool unlit)
         {
             if (role != FastVsHd2dMaterialRole.SurfaceLit)
+            {
+                return false;
+            }
+
+            if (id == "current_interior_floor" ||
+                id == "current_interior_wall" ||
+                id == "current_furniture")
             {
                 return false;
             }
