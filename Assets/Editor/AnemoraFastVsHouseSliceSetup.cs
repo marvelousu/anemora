@@ -239,6 +239,7 @@ namespace Anemora.EditorTools
             AnemoraFastVsHd2dAreaLightingProfileFoundationAudit.VerifyAreaLightingProfilesV1();
             AnemoraFastVsHd2dOverlayProfileFoundationAudit.VerifyOverlayProfilesV1();
             AnemoraFastVsHd2dSurfaceProfileFoundationAudit.VerifySurfaceProfilesV1();
+            AnemoraFastVsHd2dSurfaceTextureMetricAudit.VerifySurfaceTextureMetricsV1();
             AnemoraFastVsHd2dLightingTransitionAudit.VerifyLightingTransitionV1();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
