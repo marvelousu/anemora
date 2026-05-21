@@ -249,6 +249,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightySecondCycleLibraryGalleryAtmosphere();
             ValidateFastVsHd2dEightyThirdCycleHouseExteriorEaveContact();
             ValidateFastVsHd2dEightyFourthCyclePlazaLibraryEntryDepth();
+            ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -6862,6 +6863,7 @@ namespace Anemora.EditorTools
             CreateLibraryReadingTableGroundingPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryEntryTableContrastPolish(root, prefix, past, materials, c, floor, wood, trim);
             CreateLibraryTableSilhouettePolish(root, prefix, past, materials, c, wood, trim);
+            CreateLibraryReadingSurfaceDensityPolish(root, prefix, past, materials, c);
             if (!past)
             {
                 CreateCurrentLibraryRuinGroundingPolish(root, c, materials, wood, trim);
@@ -7707,6 +7709,114 @@ namespace Anemora.EditorTools
             }
 
             _ = trim;
+        }
+
+        private static void CreateLibraryReadingSurfaceDensityPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c)
+        {
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingSurfaceDensity_LongTableOrderBookA",
+                    root,
+                    c + new Vector3(0.36f, 0.436f, -0.28f),
+                    new Vector3(0.34f, 0.034f, 0.16f),
+                    Quaternion.Euler(0f, 4f, 0f),
+                    materials.Book,
+                    "Past.library.reading_surface_density.long_table_order_book_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingSurfaceDensity_LongTableOrderBookB",
+                    root,
+                    c + new Vector3(1.48f, 0.436f, 0.42f),
+                    new Vector3(0.30f, 0.032f, 0.15f),
+                    Quaternion.Euler(0f, -6f, 0f),
+                    materials.Book,
+                    "Past.library.reading_surface_density.long_table_order_book_b");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingSurfaceDensity_SideTableOrderStackA",
+                    root,
+                    c + new Vector3(-2.12f, 0.432f, 1.30f),
+                    new Vector3(0.28f, 0.050f, 0.18f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    materials.Book,
+                    "Past.library.reading_surface_density.side_table_order_stack_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingSurfaceDensity_SideTableOrderStackB",
+                    root,
+                    c + new Vector3(2.62f, 0.432f, -1.54f),
+                    new Vector3(0.28f, 0.048f, 0.18f),
+                    Quaternion.Euler(0f, 5f, 0f),
+                    materials.Book,
+                    "Past.library.reading_surface_density.side_table_order_stack_b");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingSurfaceDensity_RetoDeskOpenBookWarmA",
+                    root,
+                    c + new Vector3(1.34f, 0.432f, 0.52f),
+                    new Vector3(0.42f, 0.026f, 0.22f),
+                    Quaternion.Euler(0f, -7f, 0f),
+                    materials.CardFace,
+                    "Past.library.reading_surface_density.reto_desk_open_book_warm_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_ReadingSurfaceDensity_EntryFloorCleanEdgeA",
+                    root,
+                    c + new Vector3(-0.42f, 0.058f, -5.72f),
+                    new Vector3(0.56f, 0.010f, 0.06f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    EnsureHd2dWarmLightPoolMaterial(),
+                    "Past.library.reading_surface_density.entry_floor_clean_edge_a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingSurfaceDensity_LongTableDustBookA",
+                    root,
+                    c + new Vector3(0.42f, 0.432f, -0.32f),
+                    new Vector3(0.36f, 0.032f, 0.17f),
+                    Quaternion.Euler(0f, -9f, 0f),
+                    materials.Book,
+                    "Current.library.reading_surface_density.long_table_dust_book_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingSurfaceDensity_LongTablePaperSlipA",
+                    root,
+                    c + new Vector3(1.50f, 0.430f, 0.18f),
+                    new Vector3(0.32f, 0.014f, 0.12f),
+                    Quaternion.Euler(0f, 12f, 0f),
+                    materials.Dust,
+                    "Current.library.reading_surface_density.long_table_paper_slip_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingSurfaceDensity_SideTableFallenBookA",
+                    root,
+                    c + new Vector3(2.92f, 0.428f, -1.68f),
+                    new Vector3(0.30f, 0.034f, 0.17f),
+                    Quaternion.Euler(0f, 18f, 0f),
+                    materials.Book,
+                    "Current.library.reading_surface_density.side_table_fallen_book_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingSurfaceDensity_SideTableDustLineA",
+                    root,
+                    c + new Vector3(3.28f, 0.426f, -1.86f),
+                    new Vector3(0.62f, 0.012f, 0.08f),
+                    Quaternion.Euler(0f, -8f, 0f),
+                    materials.Dust,
+                    "Current.library.reading_surface_density.side_table_dust_line_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingSurfaceDensity_RetoDeskOpenBookShadowA",
+                    root,
+                    CurrentLibraryRetoDeskBookInitialLocalPosition + new Vector3(-0.03f, 0.021f, 0.05f),
+                    new Vector3(0.46f, 0.018f, 0.20f),
+                    Quaternion.Euler(0f, -6f, 0f),
+                    materials.Dust,
+                    "Current.library.reading_surface_density.reto_desk_open_book_shadow_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_ReadingSurfaceDensity_EntryFloorLoosePageA",
+                    root,
+                    c + new Vector3(-0.64f, 0.054f, -5.76f),
+                    new Vector3(0.24f, 0.012f, 0.10f),
+                    Quaternion.Euler(0f, 14f, 0f),
+                    materials.Dust,
+                    "Current.library.reading_surface_density.entry_floor_loose_page_a");
+            }
+
+            _ = prefix;
         }
 
         private static void SetLandmarksCountForArrival(Transform root, bool countsForArrival)
@@ -8633,6 +8743,11 @@ namespace Anemora.EditorTools
             CaptureHd2dEightyFourthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_entry_depth_20260521");
         }
 
+        public static void CaptureHd2dEightyFifthCycleScreenshotsBatch()
+        {
+            CaptureHd2dEightyFifthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_reading_surface_density_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -9164,6 +9279,77 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighty-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dEightyFifthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS eighty-fifth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = LibraryVsCenter + new Vector3(0.10f, 0.02f, -2.80f);
+            var closePlayerLocal = LibraryVsCenter + new Vector3(0.90f, 0.02f, -1.15f);
+            var closeAnchorLocal = LibraryVsCenter + new Vector3(0.80f, 0.58f, 0.15f);
+            var closeCameraOffset = new Vector3(0.0f, 1.05f, -3.35f);
+            var closeLookOffset = new Vector3(0.0f, -0.06f, 0.10f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_library_reading_surface_density_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_library_reading_surface_density_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_library_reading_surface_density_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_library_reading_surface_density_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "03_current_library_reading_surface_density_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "04_past_library_reading_surface_density_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS eighty-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -14179,6 +14365,109 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Current_CentralPlaza_LibraryDoorPanelsRight", "Current_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsLeft", "Past_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsRight", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
+        private static void ValidateLibraryReadingSurfaceDensityObject(string objectName, string expectedParentName, string expectedLandmarkIdPrefix, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library reading surface density object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not count for arrival.");
+            }
+
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkIdPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a landmark id starting with {expectedLandmarkIdPrefix}.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - LibraryVsCenter;
+            if (localOffset.x < minLocalPosition.x || localOffset.x > maxLocalPosition.x ||
+                localOffset.y < minLocalPosition.y || localOffset.y > maxLocalPosition.y ||
+                localOffset.z < minLocalPosition.z || localOffset.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended library reading surface placement range.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxLocalScale.x ||
+                sceneObject.transform.localScale.y > maxLocalScale.y ||
+                sceneObject.transform.localScale.z > maxLocalScale.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay compact.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity()
+        {
+            var min = new Vector3(-4.40f, 0.045f, -6.35f);
+            var max = new Vector3(4.40f, 0.86f, 2.05f);
+            var maxScale = new Vector3(0.90f, 0.08f, 0.38f);
+
+            ValidateLibraryReadingSurfaceDensityObject("Current_Library_ReadingSurfaceDensity_LongTableDustBookA", "Current_LibraryMap_SeparateSpace", "Current.library.reading_surface_density.", "book", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Current_Library_ReadingSurfaceDensity_LongTablePaperSlipA", "Current_LibraryMap_SeparateSpace", "Current.library.reading_surface_density.", "dust", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Current_Library_ReadingSurfaceDensity_SideTableFallenBookA", "Current_LibraryMap_SeparateSpace", "Current.library.reading_surface_density.", "book", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Current_Library_ReadingSurfaceDensity_SideTableDustLineA", "Current_LibraryMap_SeparateSpace", "Current.library.reading_surface_density.", "dust", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Current_Library_ReadingSurfaceDensity_RetoDeskOpenBookShadowA", "Current_LibraryMap_SeparateSpace", "Current.library.reading_surface_density.", "dust", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Current_Library_ReadingSurfaceDensity_EntryFloorLoosePageA", "Current_LibraryMap_SeparateSpace", "Current.library.reading_surface_density.", "dust", min, max, maxScale);
+
+            ValidateLibraryReadingSurfaceDensityObject("Past_Library_ReadingSurfaceDensity_LongTableOrderBookA", "Past_LibraryMap_SeparateSpace", "Past.library.reading_surface_density.", "book", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Past_Library_ReadingSurfaceDensity_LongTableOrderBookB", "Past_LibraryMap_SeparateSpace", "Past.library.reading_surface_density.", "book", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Past_Library_ReadingSurfaceDensity_SideTableOrderStackA", "Past_LibraryMap_SeparateSpace", "Past.library.reading_surface_density.", "book", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Past_Library_ReadingSurfaceDensity_SideTableOrderStackB", "Past_LibraryMap_SeparateSpace", "Past.library.reading_surface_density.", "book", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Past_Library_ReadingSurfaceDensity_RetoDeskOpenBookWarmA", "Past_LibraryMap_SeparateSpace", "Past.library.reading_surface_density.", "card_face", min, max, maxScale);
+            ValidateLibraryReadingSurfaceDensityObject("Past_Library_ReadingSurfaceDensity_EntryFloorCleanEdgeA", "Past_LibraryMap_SeparateSpace", "Past.library.reading_surface_density.", "warm_light_pool", min, max, maxScale);
+
+            ValidateLandmarkExists("Current_Library_ReadingTableLong", "Current_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_ReadingTableClean_CenterRear", "Past_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Current_Library_RetoDeskBook_Initial", "Current_LibraryMap_SeparateSpace");
+            ValidateLandmarkExists("Past_Library_AriaIdleAtTable", "Past_LibraryMap_SeparateSpace");
         }
 
         private static void ValidateCentralPlazaLibraryRearVolumeObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
