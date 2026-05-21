@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.42 fast VS HD2D house interior prop readability cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.43 fast VS HD2D central plaza focal prop readability cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 318 files including INDEX.md and README.md.
-- Dated devlog records: 316 files.
-- Linked evidence files present under docs/devlog/screenshots/: 538 files.
+- Root-level Markdown coverage: 319 files including INDEX.md and README.md.
+- Dated devlog records: 317 files.
+- Linked evidence files present under docs/devlog/screenshots/: 542 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 25 |
+| 2026-05-21 | 26 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -52,6 +52,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-21_fast_vs_hd2d_library_upper_gallery_support_polish_cycle.md](2026-05-21_fast_vs_hd2d_library_upper_gallery_support_polish_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Upper Gallery Support Polish Cycle |
 | [2026-05-21_fast_vs_hd2d_library_reading_table_grounding_cycle.md](2026-05-21_fast_vs_hd2d_library_reading_table_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Reading Table Grounding Cycle |
 | [2026-05-21_fast_vs_hd2d_central_plaza_paving_readability_cycle.md](2026-05-21_fast_vs_hd2d_central_plaza_paving_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Central Plaza Paving Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_central_plaza_focal_prop_readability_cycle.md](2026-05-21_fast_vs_hd2d_central_plaza_focal_prop_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Central Plaza Focal Prop Readability Cycle |
 | [2026-05-21_fast_vs_hd2d_current_library_ruin_grounding_cycle.md](2026-05-21_fast_vs_hd2d_current_library_ruin_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Ruin Grounding Cycle |
 | [2026-05-21_fast_vs_hd2d_house_interior_furniture_grounding_cycle.md](2026-05-21_fast_vs_hd2d_house_interior_furniture_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Interior Furniture Grounding Cycle |
 | [2026-05-21_fast_vs_hd2d_house_interior_prop_readability_cycle.md](2026-05-21_fast_vs_hd2d_house_interior_prop_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Interior Prop Readability Cycle |
