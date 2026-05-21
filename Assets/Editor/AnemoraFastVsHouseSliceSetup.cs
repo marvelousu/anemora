@@ -270,6 +270,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredThirdCyclePlazaLibraryWindowRevealDepth();
             ValidateFastVsHd2dOneHundredFourthCyclePlazaLibraryDoorRelief();
             ValidateFastVsHd2dOneHundredFifthCycleLibraryBackShelfBookSpineDepth();
+            ValidateFastVsHd2dOneHundredSixthCycleLibrarySideShelfEdgeDepth();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -6869,6 +6870,7 @@ namespace Anemora.EditorTools
             CreateLibrarySideBookshelfDepthPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryBackBookshelfFramePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryBackShelfBookSpineDepthPolish(root, prefix, past, materials, c, wood, trim);
+            CreateLibrarySideShelfEdgeDepthPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryGalleryAtmospherePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryWindowLightAccents(root, prefix, past, materials);
             CreateLandmarkCube($"{prefix}_Library_ServiceDesk", root, c + new Vector3(-2.45f, 0.34f, -3.20f), new Vector3(1.55f, 0.38f, 0.54f), Quaternion.Euler(0f, -4f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.service_desk");
@@ -9054,6 +9056,11 @@ namespace Anemora.EditorTools
             CaptureHd2dOneHundredFifthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_back_shelf_book_spine_depth_20260521");
         }
 
+        public static void CaptureHd2dOneHundredSixthCycleScreenshotsBatch()
+        {
+            CaptureHd2dOneHundredSixthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_side_shelf_edge_depth_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -11091,6 +11098,82 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS one-hundred-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dOneHundredSixthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS one-hundred-sixth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = LibraryVsCenter + new Vector3(0f, 0.02f, 0.60f);
+            var currentLeftPlayerLocal = LibraryVsCenter + new Vector3(-3.05f, 0.02f, -1.95f);
+            var currentLeftAnchorLocal = LibraryVsCenter + new Vector3(-4.76f, 1.02f, 0.74f);
+            var rightPlayerLocal = LibraryVsCenter + new Vector3(3.05f, 0.02f, -1.95f);
+            var rightAnchorLocal = LibraryVsCenter + new Vector3(4.76f, 1.02f, 0.74f);
+            var leftCameraOffset = new Vector3(2.15f, 2.05f, -1.80f);
+            var rightCameraOffset = new Vector3(-2.15f, 2.05f, -1.80f);
+            var closeLookOffset = new Vector3(0f, 0.18f, 0.02f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_library_side_shelf_edge_depth_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_library_side_shelf_edge_depth_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_library_side_shelf_edge_depth_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_library_side_shelf_edge_depth_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                currentLeftPlayerLocal,
+                currentLeftAnchorLocal,
+                leftCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "03_current_library_side_shelf_edge_depth_left_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_library_side_shelf_edge_depth_left_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                rightPlayerLocal,
+                rightAnchorLocal,
+                rightCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "04_past_library_side_shelf_edge_depth_right_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_library_side_shelf_edge_depth_right_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS one-hundred-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void CaptureSkyTextureReadabilityScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -12185,6 +12268,200 @@ namespace Anemora.EditorTools
                     Quaternion.identity,
                     lowerContactMaterial,
                     $"{prefix}.library.back_shelf_book_spine_depth.lower_contact_band.a");
+            }
+        }
+
+        private static void CreateLibrarySideShelfEdgeDepthPolish(Transform root, string prefix, bool past, Materials materials, Vector3 center, Material wood, Material trim)
+        {
+            var objectPrefix = $"{prefix}_Library_SideShelfEdgeDepth";
+            var bookMaterial = materials.Book;
+            var edgeMaterial = past ? wood : trim;
+            var dustMaterial = materials.Dust;
+            var chipMaterial = past ? materials.Dust : materials.Shadow;
+
+            if (past)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftFrontEdgeStripA",
+                    root,
+                    center + new Vector3(-4.86f, 1.00f, 0.74f),
+                    new Vector3(0.06f, 1.44f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_front_edge_strip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftTopEdgeA",
+                    root,
+                    center + new Vector3(-4.70f, 1.56f, 0.74f),
+                    new Vector3(0.22f, 0.03f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_top_edge.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftMidEdgeA",
+                    root,
+                    center + new Vector3(-4.70f, 1.16f, 0.74f),
+                    new Vector3(0.18f, 0.03f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_mid_edge.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftLowerEdgeA",
+                    root,
+                    center + new Vector3(-4.70f, 0.78f, 0.74f),
+                    new Vector3(0.18f, 0.03f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_lower_edge.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftBookHintA",
+                    root,
+                    center + new Vector3(-4.58f, 1.22f, 0.73f),
+                    new Vector3(0.08f, 0.26f, 0.05f),
+                    Quaternion.Euler(0f, -3f, 0f),
+                    bookMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_book_hint.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftBookHintB",
+                    root,
+                    center + new Vector3(-4.58f, 0.84f, 0.73f),
+                    new Vector3(0.07f, 0.22f, 0.05f),
+                    Quaternion.Euler(0f, 4f, 0f),
+                    bookMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_book_hint.b");
+
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightFrontEdgeStripA",
+                    root,
+                    center + new Vector3(4.86f, 1.00f, 0.74f),
+                    new Vector3(0.06f, 1.44f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_front_edge_strip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightTopEdgeA",
+                    root,
+                    center + new Vector3(4.70f, 1.56f, 0.74f),
+                    new Vector3(0.22f, 0.03f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_top_edge.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightMidEdgeA",
+                    root,
+                    center + new Vector3(4.70f, 1.16f, 0.74f),
+                    new Vector3(0.18f, 0.03f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_mid_edge.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightLowerEdgeA",
+                    root,
+                    center + new Vector3(4.70f, 0.78f, 0.74f),
+                    new Vector3(0.18f, 0.03f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_lower_edge.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightBookHintA",
+                    root,
+                    center + new Vector3(4.58f, 1.22f, 0.73f),
+                    new Vector3(0.08f, 0.26f, 0.05f),
+                    Quaternion.Euler(0f, 3f, 0f),
+                    bookMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_book_hint.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightBookHintB",
+                    root,
+                    center + new Vector3(4.58f, 0.84f, 0.73f),
+                    new Vector3(0.07f, 0.22f, 0.05f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    bookMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_book_hint.b");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftFrontEdgeStripA",
+                    root,
+                    center + new Vector3(-4.86f, 1.00f, 0.74f),
+                    new Vector3(0.06f, 1.44f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_front_edge_strip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftDustLineA",
+                    root,
+                    center + new Vector3(-4.72f, 1.48f, 0.74f),
+                    new Vector3(0.18f, 0.02f, 0.03f),
+                    Quaternion.identity,
+                    dustMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_dust_line.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftDustLineB",
+                    root,
+                    center + new Vector3(-4.72f, 1.08f, 0.74f),
+                    new Vector3(0.16f, 0.02f, 0.03f),
+                    Quaternion.identity,
+                    dustMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_dust_line.b");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftBrokenChipA",
+                    root,
+                    center + new Vector3(-4.56f, 0.78f, 0.73f),
+                    new Vector3(0.10f, 0.02f, 0.03f),
+                    Quaternion.Euler(0f, 0f, -5f),
+                    chipMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_broken_chip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftLooseSpineA",
+                    root,
+                    center + new Vector3(-4.58f, 1.16f, 0.73f),
+                    new Vector3(0.07f, 0.22f, 0.05f),
+                    Quaternion.Euler(0f, -3f, 0f),
+                    bookMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.left_loose_spine.a");
+
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightFrontEdgeStripA",
+                    root,
+                    center + new Vector3(4.86f, 1.00f, 0.74f),
+                    new Vector3(0.06f, 1.44f, 0.04f),
+                    Quaternion.identity,
+                    edgeMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_front_edge_strip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightDustLineA",
+                    root,
+                    center + new Vector3(4.72f, 1.48f, 0.74f),
+                    new Vector3(0.18f, 0.02f, 0.03f),
+                    Quaternion.identity,
+                    dustMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_dust_line.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightDustLineB",
+                    root,
+                    center + new Vector3(4.72f, 1.08f, 0.74f),
+                    new Vector3(0.16f, 0.02f, 0.03f),
+                    Quaternion.identity,
+                    dustMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_dust_line.b");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightBrokenChipA",
+                    root,
+                    center + new Vector3(4.56f, 0.78f, 0.73f),
+                    new Vector3(0.10f, 0.02f, 0.03f),
+                    Quaternion.Euler(0f, 0f, 5f),
+                    chipMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_broken_chip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightLooseSpineA",
+                    root,
+                    center + new Vector3(4.58f, 1.16f, 0.73f),
+                    new Vector3(0.07f, 0.22f, 0.05f),
+                    Quaternion.Euler(0f, 3f, 0f),
+                    bookMaterial,
+                    $"{prefix}.library.side_shelf_edge_depth.right_loose_spine.a");
             }
         }
 
@@ -17109,6 +17386,88 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateLibrarySideShelfEdgeDepthObject(string objectName, string expectedParentName, string expectedMaterialToken, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library side shelf edge depth object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not cast or receive shadows.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue ||
+                landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkIdPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival PropOrFeature landmark with the expected id prefix.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - LibraryVsCenter;
+            if (localOffset.x < minLocalPosition.x || localOffset.x > maxLocalPosition.x ||
+                localOffset.y < minLocalPosition.y || localOffset.y > maxLocalPosition.y ||
+                localOffset.z < minLocalPosition.z || localOffset.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended library side shelf placement range.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX ||
+                sceneObject.transform.localScale.y > maxScaleY ||
+                sceneObject.transform.localScale.z > maxScaleZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended library side shelf scale range.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+
+            if (materialName.IndexOf("window_light", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("warm_light", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("lamp", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("red_light", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not use bright window/light materials.");
+            }
+        }
+
         private static void ValidateLibraryReadingTableGroundingObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, string expectedMaterialToken)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -18086,6 +18445,33 @@ namespace Anemora.EditorTools
             ValidateLibraryBackShelfBookSpineDepthObject("Current_Library_BackShelfBookSpineDepth_RightBrokenBandA", "Current_LibraryMap_SeparateSpace", "dust", "Current.library.back_shelf_book_spine_depth.", new Vector3(3.20f, 1.30f, 7.03f), new Vector3(3.60f, 1.48f, 7.07f), 0.24f, 0.05f, 0.05f);
             ValidateLibraryBackShelfBookSpineDepthObject("Current_Library_BackShelfBookSpineDepth_TopShelfLipA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.back_shelf_book_spine_depth.", new Vector3(-0.20f, 1.83f, 7.03f), new Vector3(0.20f, 1.89f, 7.07f), 8.90f, 0.05f, 0.05f);
             ValidateLibraryBackShelfBookSpineDepthObject("Current_Library_BackShelfBookSpineDepth_LowerContactBandA", "Current_LibraryMap_SeparateSpace", "current_fence", "Current.library.back_shelf_book_spine_depth.", new Vector3(-0.20f, 0.68f, 7.03f), new Vector3(0.20f, 0.76f, 7.07f), 8.90f, 0.03f, 0.05f);
+        }
+
+        private static void ValidateFastVsHd2dOneHundredSixthCycleLibrarySideShelfEdgeDepth()
+        {
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_LeftFrontEdgeStripA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(-4.95f, 0.70f, 0.70f), new Vector3(-4.45f, 1.70f, 0.78f), 0.16f, 1.56f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_LeftTopEdgeA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(-4.95f, 1.46f, 0.70f), new Vector3(-4.45f, 1.62f, 0.78f), 0.26f, 0.08f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_LeftMidEdgeA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(-4.95f, 1.08f, 0.70f), new Vector3(-4.45f, 1.22f, 0.78f), 0.22f, 0.08f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_LeftLowerEdgeA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(-4.95f, 0.70f, 0.70f), new Vector3(-4.45f, 0.84f, 0.78f), 0.22f, 0.08f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_LeftBookHintA", "Past_LibraryMap_SeparateSpace", "book", "Past.library.side_shelf_edge_depth.", new Vector3(-4.75f, 1.12f, 0.70f), new Vector3(-4.42f, 1.28f, 0.77f), 0.10f, 0.30f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_LeftBookHintB", "Past_LibraryMap_SeparateSpace", "book", "Past.library.side_shelf_edge_depth.", new Vector3(-4.75f, 0.76f, 0.70f), new Vector3(-4.42f, 0.92f, 0.77f), 0.10f, 0.26f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_RightFrontEdgeStripA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(4.45f, 0.70f, 0.70f), new Vector3(4.95f, 1.70f, 0.78f), 0.16f, 1.56f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_RightTopEdgeA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(4.45f, 1.46f, 0.70f), new Vector3(4.95f, 1.62f, 0.78f), 0.26f, 0.08f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_RightMidEdgeA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(4.45f, 1.08f, 0.70f), new Vector3(4.95f, 1.22f, 0.78f), 0.22f, 0.08f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_RightLowerEdgeA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.side_shelf_edge_depth.", new Vector3(4.45f, 0.70f, 0.70f), new Vector3(4.95f, 0.84f, 0.78f), 0.22f, 0.08f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_RightBookHintA", "Past_LibraryMap_SeparateSpace", "book", "Past.library.side_shelf_edge_depth.", new Vector3(4.42f, 1.12f, 0.70f), new Vector3(4.75f, 1.28f, 0.77f), 0.10f, 0.30f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Past_Library_SideShelfEdgeDepth_RightBookHintB", "Past_LibraryMap_SeparateSpace", "book", "Past.library.side_shelf_edge_depth.", new Vector3(4.42f, 0.76f, 0.70f), new Vector3(4.75f, 0.92f, 0.77f), 0.10f, 0.26f, 0.06f);
+
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_LeftFrontEdgeStripA", "Current_LibraryMap_SeparateSpace", "current_fence", "Current.library.side_shelf_edge_depth.", new Vector3(-4.95f, 0.70f, 0.70f), new Vector3(-4.45f, 1.70f, 0.78f), 0.16f, 1.56f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_LeftDustLineA", "Current_LibraryMap_SeparateSpace", "dust", "Current.library.side_shelf_edge_depth.", new Vector3(-4.90f, 1.42f, 0.70f), new Vector3(-4.50f, 1.54f, 0.78f), 0.22f, 0.06f, 0.05f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_LeftDustLineB", "Current_LibraryMap_SeparateSpace", "dust", "Current.library.side_shelf_edge_depth.", new Vector3(-4.90f, 1.04f, 0.70f), new Vector3(-4.50f, 1.16f, 0.78f), 0.20f, 0.06f, 0.05f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_LeftBrokenChipA", "Current_LibraryMap_SeparateSpace", "shadow", "Current.library.side_shelf_edge_depth.", new Vector3(-4.70f, 0.70f, 0.70f), new Vector3(-4.45f, 0.84f, 0.77f), 0.14f, 0.06f, 0.05f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_LeftLooseSpineA", "Current_LibraryMap_SeparateSpace", "book", "Current.library.side_shelf_edge_depth.", new Vector3(-4.75f, 1.08f, 0.70f), new Vector3(-4.45f, 1.24f, 0.77f), 0.10f, 0.26f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_RightFrontEdgeStripA", "Current_LibraryMap_SeparateSpace", "current_fence", "Current.library.side_shelf_edge_depth.", new Vector3(4.45f, 0.70f, 0.70f), new Vector3(4.95f, 1.70f, 0.78f), 0.16f, 1.56f, 0.06f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_RightDustLineA", "Current_LibraryMap_SeparateSpace", "dust", "Current.library.side_shelf_edge_depth.", new Vector3(4.50f, 1.42f, 0.70f), new Vector3(4.90f, 1.54f, 0.78f), 0.22f, 0.06f, 0.05f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_RightDustLineB", "Current_LibraryMap_SeparateSpace", "dust", "Current.library.side_shelf_edge_depth.", new Vector3(4.50f, 1.04f, 0.70f), new Vector3(4.90f, 1.16f, 0.78f), 0.20f, 0.06f, 0.05f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_RightBrokenChipA", "Current_LibraryMap_SeparateSpace", "shadow", "Current.library.side_shelf_edge_depth.", new Vector3(4.45f, 0.70f, 0.70f), new Vector3(4.70f, 0.84f, 0.77f), 0.14f, 0.06f, 0.05f);
+            ValidateLibrarySideShelfEdgeDepthObject("Current_Library_SideShelfEdgeDepth_RightLooseSpineA", "Current_LibraryMap_SeparateSpace", "book", "Current.library.side_shelf_edge_depth.", new Vector3(4.45f, 1.08f, 0.70f), new Vector3(4.75f, 1.24f, 0.77f), 0.10f, 0.26f, 0.06f);
         }
 
         private static void ValidateOutdoorSkyClearColorForReview()
