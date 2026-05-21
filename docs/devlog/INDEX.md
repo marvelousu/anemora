@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.46 fast VS HD2D library gallery atmosphere cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.47 fast VS HD2D house exterior eave contact cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 322 files including INDEX.md and README.md.
-- Dated devlog records: 320 files.
-- Linked evidence files present under docs/devlog/screenshots/: 554 files.
+- Root-level Markdown coverage: 323 files including INDEX.md and README.md.
+- Dated devlog records: 321 files.
+- Linked evidence files present under docs/devlog/screenshots/: 558 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 29 |
+| 2026-05-21 | 30 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_house_exterior_eave_contact_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_eave_contact_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Eave Contact Cycle |
 | [2026-05-21_fast_vs_hd2d_library_gallery_atmosphere_cycle.md](2026-05-21_fast_vs_hd2d_library_gallery_atmosphere_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Gallery Atmosphere Cycle |
 | [2026-05-21_fast_vs_hd2d_library_back_bookshelf_frame_cycle.md](2026-05-21_fast_vs_hd2d_library_back_bookshelf_frame_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Back Bookshelf Frame Cycle |
 | [2026-05-21_fast_vs_hd2d_library_entry_table_contrast_cycle.md](2026-05-21_fast_vs_hd2d_library_entry_table_contrast_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Entry Table Contrast Cycle |

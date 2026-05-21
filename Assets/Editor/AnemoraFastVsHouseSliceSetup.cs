@@ -247,6 +247,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightiethCycleLibraryEntryTableContrast();
             ValidateFastVsHd2dEightyFirstCyclePlazaLibraryVolumeReadability();
             ValidateFastVsHd2dEightySecondCycleLibraryGalleryAtmosphere();
+            ValidateFastVsHd2dEightyThirdCycleHouseExteriorEaveContact();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5618,6 +5619,7 @@ namespace Anemora.EditorTools
             CreateExteriorDetails(root, prefix, past, materials);
             CreateHouseExteriorPathPorchDressing(root, prefix, past, materials);
             CreateHouseExteriorFacadeMicrodepthPolish(root, prefix, past, materials);
+            CreateHouseExteriorEaveContactPolish(root, prefix, past, materials);
 
             if (!past)
             {
@@ -5750,6 +5752,29 @@ namespace Anemora.EditorTools
                 CreateNonArrivalLandmarkCube("Current_HouseExterior_FacadeMicrodepth_RightWindowLowerDustA", root, c + new Vector3(0.22f, 1.01f, -1.35f), new Vector3(0.62f, 0.032f, 0.018f), Quaternion.identity, windowMaterial, "Current.house_exterior.facade_microdepth.right_window_lower_dust_a");
                 CreateNonArrivalLandmarkCube("Current_HouseExterior_FacadeMicrodepth_BaseStoneChipA", root, c + new Vector3(-1.56f, 0.12f, -1.33f), new Vector3(0.34f, 0.030f, 0.020f), Quaternion.Euler(0f, 7f, 0f), baseMaterial, "Current.house_exterior.facade_microdepth.base_stone_chip_a");
             }
+        }
+
+        private static void CreateHouseExteriorEaveContactPolish(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube("Past_HouseExterior_EaveContact_FrontUnderEaveWarmShadowA", root, c + new Vector3(-1.05f, 1.86f, -1.72f), new Vector3(4.46f, 0.030f, 0.065f), Quaternion.identity, EnsureHd2dWarmLightPoolMaterial(), "Past.house_exterior.eave_contact.front_under_eave_warm_shadow_a");
+                CreateNonArrivalLandmarkCube("Past_HouseExterior_EaveContact_RoofSideCleanHighlightA", root, c + new Vector3(1.12f, 2.33f, -1.08f), new Vector3(0.46f, 0.030f, 0.24f), Quaternion.Euler(8f, 0f, 8f), materials.PastRoof, "Past.house_exterior.eave_contact.roof_side_clean_highlight_a");
+                CreateNonArrivalLandmarkCube("Past_HouseExterior_EaveContact_DoorThresholdWarmA", root, c + new Vector3(-1.05f, 0.160f, -2.05f), new Vector3(1.02f, 0.018f, 0.16f), Quaternion.identity, EnsureHd2dWarmLightPoolMaterial(), "Past.house_exterior.eave_contact.door_threshold_warm_a");
+                CreateNonArrivalLandmarkCube("Past_HouseExterior_EaveContact_PorchPostFootWarmLeftA", root, c + new Vector3(-1.85f, 0.120f, -1.78f), new Vector3(0.28f, 0.018f, 0.20f), Quaternion.identity, EnsureHd2dWarmLightPoolMaterial(), "Past.house_exterior.eave_contact.porch_post_foot_warm_left_a");
+                CreateNonArrivalLandmarkCube("Past_HouseExterior_EaveContact_PorchPostFootWarmRightA", root, c + new Vector3(-0.25f, 0.120f, -1.78f), new Vector3(0.28f, 0.018f, 0.20f), Quaternion.identity, EnsureHd2dWarmLightPoolMaterial(), "Past.house_exterior.eave_contact.porch_post_foot_warm_right_a");
+                CreateNonArrivalLandmarkCube("Past_HouseExterior_EaveContact_FoundationCleanLineA", root, c + new Vector3(-1.72f, 0.370f, -1.28f), new Vector3(2.20f, 0.024f, 0.046f), Quaternion.Euler(0f, 2f, 0f), materials.PastStone, "Past.house_exterior.eave_contact.foundation_clean_line_a");
+                return;
+            }
+
+            CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_FrontUnderEaveDustShadowA", root, c + new Vector3(-1.05f, 1.84f, -1.72f), new Vector3(4.62f, 0.035f, 0.070f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.front_under_eave_dust_shadow_a");
+            CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_RoofSideBreakShadowA", root, c + new Vector3(1.16f, 2.31f, -1.08f), new Vector3(0.48f, 0.035f, 0.26f), Quaternion.Euler(8f, 0f, 8f), materials.Shadow, "Current.house_exterior.eave_contact.roof_side_break_shadow_a");
+            CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_DoorThresholdDustA", root, c + new Vector3(-1.05f, 0.155f, -2.05f), new Vector3(1.12f, 0.018f, 0.18f), Quaternion.identity, materials.Dust, "Current.house_exterior.eave_contact.door_threshold_dust_a");
+            CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowLeftA", root, c + new Vector3(-1.85f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_left_a");
+            CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowRightA", root, c + new Vector3(-0.25f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_right_a");
+            CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_FoundationScuffLineA", root, c + new Vector3(-1.72f, 0.365f, -1.28f), new Vector3(2.30f, 0.026f, 0.050f), Quaternion.Euler(0f, 3f, 0f), materials.CurrentStone, "Current.house_exterior.eave_contact.foundation_scuff_line_a");
         }
 
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
@@ -8596,6 +8621,11 @@ namespace Anemora.EditorTools
             CaptureHd2dEightySecondCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_gallery_atmosphere_20260521");
         }
 
+        public static void CaptureHd2dEightyThirdCycleScreenshotsBatch()
+        {
+            CaptureHd2dEightyThirdCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_house_exterior_eave_contact_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -8985,6 +9015,77 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighty-second-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dEightyThirdCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS eighty-third-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = HouseExteriorCenter + new Vector3(-1.76f, 0.02f, -1.54f);
+            var closePlayerLocal = HouseExteriorCenter + new Vector3(-1.18f, 0.02f, -1.18f);
+            var closeAnchorLocal = HouseExteriorCenter + new Vector3(-1.05f, 1.05f, -1.55f);
+            var closeCameraOffset = new Vector3(0.0f, 1.15f, -3.90f);
+            var closeLookOffset = new Vector3(0.0f, -0.05f, 0.10f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_exterior_eave_contact_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_eave_contact_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_exterior_eave_contact_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_eave_contact_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "03_current_house_exterior_eave_contact_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "04_past_house_exterior_eave_contact_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS eighty-third-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -18395,6 +18496,111 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
+        }
+
+        private static void ValidateHouseExteriorEaveContactObject(string objectName, string expectedParentName, string expectedLandmarkIdPrefix, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house exterior eave contact object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding exterior decoration.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.transform.localPosition.x < minLocalPosition.x || sceneObject.transform.localPosition.x > maxLocalPosition.x ||
+                sceneObject.transform.localPosition.y < minLocalPosition.y || sceneObject.transform.localPosition.y > maxLocalPosition.y ||
+                sceneObject.transform.localPosition.z < minLocalPosition.z || sceneObject.transform.localPosition.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the eave contact placement bounds.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX || sceneObject.transform.localScale.y > maxScaleY || sceneObject.transform.localScale.z > maxScaleZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay compact.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null || countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean || countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep countsForArrival disabled.");
+            }
+
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (landmarkIdProperty == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a landmark id.");
+            }
+
+            var landmarkId = landmarkIdProperty.stringValue ?? string.Empty;
+            if (!landmarkId.StartsWith(expectedLandmarkIdPrefix, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a landmark id starting with {expectedLandmarkIdPrefix}.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dEightyThirdCycleHouseExteriorEaveContact()
+        {
+            var min = HouseExteriorCenter + new Vector3(-2.20f, 0.08f, -2.18f);
+            var max = HouseExteriorCenter + new Vector3(1.45f, 2.40f, -1.00f);
+
+            ValidateHouseExteriorEaveContactObject("Current_HouseExterior_EaveContact_FrontUnderEaveDustShadowA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.eave_contact.", "shadow", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Current_HouseExterior_EaveContact_RoofSideBreakShadowA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.eave_contact.", "shadow", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Current_HouseExterior_EaveContact_DoorThresholdDustA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.eave_contact.", "dust", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Current_HouseExterior_EaveContact_PorchPostFootShadowLeftA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.eave_contact.", "shadow", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Current_HouseExterior_EaveContact_PorchPostFootShadowRightA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.eave_contact.", "shadow", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Current_HouseExterior_EaveContact_FoundationScuffLineA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.eave_contact.", "current_stone", min, max, 4.70f, 0.06f, 0.30f);
+
+            ValidateHouseExteriorEaveContactObject("Past_HouseExterior_EaveContact_FrontUnderEaveWarmShadowA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.eave_contact.", "warm_light_pool", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Past_HouseExterior_EaveContact_RoofSideCleanHighlightA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.eave_contact.", "past_roof", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Past_HouseExterior_EaveContact_DoorThresholdWarmA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.eave_contact.", "warm_light_pool", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Past_HouseExterior_EaveContact_PorchPostFootWarmLeftA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.eave_contact.", "warm_light_pool", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Past_HouseExterior_EaveContact_PorchPostFootWarmRightA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.eave_contact.", "warm_light_pool", min, max, 4.70f, 0.06f, 0.30f);
+            ValidateHouseExteriorEaveContactObject("Past_HouseExterior_EaveContact_FoundationCleanLineA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.eave_contact.", "past_stone", min, max, 4.70f, 0.06f, 0.30f);
+
+            ValidateLandmarkExists("Current_HouseExterior_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_DoorEntrySmallGlow", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_DoorEntrySmallGlow", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_DoorClosedPanel", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_DoorClosedPanel", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_ToPlaza_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ToPlaza_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
         }
 
         private static void ValidateCentralPlazaDetailObject(string objectName, string expectedParentName, float maxScaleY)
