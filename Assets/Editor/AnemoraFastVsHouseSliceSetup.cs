@@ -200,6 +200,7 @@ namespace Anemora.EditorTools
             ValidateDirectionalSpriteAnimator();
             ValidatePlayerSpritePresentation();
             AnemoraFastVsHd2dMaterialRoleFoundationAudit.VerifyMaterialRolesV1();
+            AnemoraFastVsHd2dSpriteCardLightingAudit.VerifySpriteCardLightingV1();
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
@@ -29670,33 +29671,7 @@ namespace Anemora.EditorTools
                 material.SetColor("_Color", tint);
             }
 
-            if (material.HasProperty("_Surface"))
-            {
-                material.SetFloat("_Surface", 1f);
-            }
-
-            if (material.HasProperty("_AlphaClip"))
-            {
-                material.SetFloat("_AlphaClip", 0f);
-            }
-
-            if (material.HasProperty("_SrcBlend"))
-            {
-                material.SetFloat("_SrcBlend", 5f);
-            }
-
-            if (material.HasProperty("_DstBlend"))
-            {
-                material.SetFloat("_DstBlend", 10f);
-            }
-
-            if (material.HasProperty("_ZWrite"))
-            {
-                material.SetFloat("_ZWrite", 0f);
-            }
-
-            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-            material.renderQueue = 3000;
+            ConfigureTransparentUnlitMaterial(material, 3000);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -29767,18 +29742,62 @@ namespace Anemora.EditorTools
                 return new Color(0f, 0f, 0f, 0f);
             }
 
-            var frameX = x % NiroExpectedTextureWidth;
-            var u = frameX / (float)(NiroExpectedTextureWidth - 1);
-            var v = y / Mathf.Max(1f, height - 1f);
-            var rightSide = Mathf.Clamp01((u - 0.54f) / 0.46f);
-            var lowerBody = Mathf.Clamp01((0.34f - v) / 0.34f);
-            var softShade = 1f - rightSide * 0.16f - lowerBody * 0.10f;
-            var softWarmth = 1f + Mathf.Clamp01((0.34f - u) / 0.34f) * Mathf.Clamp01((v - 0.55f) / 0.45f) * 0.035f;
-            return new Color(
-                Mathf.Clamp01(source.r * softShade * softWarmth),
-                Mathf.Clamp01(source.g * softShade * softWarmth),
-                Mathf.Clamp01(source.b * softShade * softWarmth),
+            var frameWidth = GetSpriteFrameWidth(width, height);
+            var frameX = x % frameWidth;
+            var u = frameWidth <= 1 ? 0f : frameX / (float)(frameWidth - 1);
+            var v = height <= 1 ? 0f : y / (float)(height - 1);
+
+            var left = 1f - u;
+            var right = u;
+            var top = v;
+            var bottom = 1f - v;
+
+            var warmKey = Mathf.Clamp01(left * top);
+            var coolShadow = Mathf.Clamp01(right * bottom);
+            var contactDark = Mathf.Clamp01(bottom * bottom * Mathf.Clamp01(1f - Mathf.Abs(u - 0.5f) * 1.7f));
+            var rimLight = Mathf.Clamp01(Mathf.Max(0f, left * 0.74f + top * 0.42f - 0.72f)) * Mathf.Clamp01((source.a - 0.12f) / 0.88f);
+
+            var luminance = GetSpriteLuminance(source);
+            var luminanceScale = 1f + (warmKey * 0.14f) + (rimLight * 0.05f) - (coolShadow * 0.17f) - (contactDark * 0.14f);
+            luminanceScale = Mathf.Clamp(luminanceScale, 0.64f, 1.22f);
+
+            var tinted = new Color(
+                source.r * luminanceScale * (1f + warmKey * 0.03f - coolShadow * 0.015f + rimLight * 0.02f),
+                source.g * luminanceScale * (1f + warmKey * 0.02f - coolShadow * 0.010f + rimLight * 0.016f),
+                source.b * luminanceScale * (1f - warmKey * 0.018f + coolShadow * 0.045f + rimLight * 0.010f),
                 source.a);
+
+            var shadedLuminance = GetSpriteLuminance(tinted);
+            if (shadedLuminance > 0.0001f)
+            {
+                var minimum = luminance > 0.16f ? 0.09f : 0.035f;
+                var maximum = Mathf.Clamp(luminance * 1.3f, 0.24f, 0.94f);
+                if (shadedLuminance < minimum || shadedLuminance > maximum)
+                {
+                    var targetLuminance = Mathf.Clamp(shadedLuminance, minimum, maximum);
+                    var clampScale = targetLuminance / shadedLuminance;
+                    tinted.r = Mathf.Clamp01(tinted.r * clampScale);
+                    tinted.g = Mathf.Clamp01(tinted.g * clampScale);
+                    tinted.b = Mathf.Clamp01(tinted.b * clampScale);
+                }
+            }
+
+            return tinted;
+        }
+
+        private static int GetSpriteFrameWidth(int width, int height)
+        {
+            if (height == NiroExpectedTextureHeight && width > NiroExpectedTextureWidth && width % NiroExpectedTextureWidth == 0)
+            {
+                return NiroExpectedTextureWidth;
+            }
+
+            return Mathf.Max(1, width);
+        }
+
+        private static float GetSpriteLuminance(Color color)
+        {
+            return (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f);
         }
 
         private static Material BookshelfFrontMaterial(string panelId, Vector2 textureScale)

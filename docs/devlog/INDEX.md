@@ -1,13 +1,13 @@
 # Devlog Index
 
-> Status: v6.73 fast VS HD2D material role foundation cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.74 fast VS HD2D sprite card lighting cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 349 files including INDEX.md and README.md.
-- Dated devlog records: 347 files.
+- Root-level Markdown coverage: 350 files including INDEX.md and README.md.
+- Dated devlog records: 348 files.
 - Linked evidence files present under docs/devlog/screenshots/: 658 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 2 |
+| 2026-05-22 | 3 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_sprite_card_lighting_cycle03.md](2026-05-22_fast_vs_hd2d_sprite_card_lighting_cycle03.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Lighting Cycle 03 |
 | [2026-05-22_fast_vs_hd2d_material_role_foundation_cycle02.md](2026-05-22_fast_vs_hd2d_material_role_foundation_cycle02.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Material Role Foundation Cycle 02 |
 | [2026-05-22_fast_vs_hd2d_shading_foundation_cycle01.md](2026-05-22_fast_vs_hd2d_shading_foundation_cycle01.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Shading Foundation Cycle 01 |
 

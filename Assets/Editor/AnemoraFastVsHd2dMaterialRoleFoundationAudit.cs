@@ -274,6 +274,25 @@ namespace Anemora.EditorTools
                 issues.Add($"Material {path} must use a transparent overlay renderQueue for role {roleToken}, but was {material.renderQueue}.");
             }
 
+            if (requireTransparent && !allowOpaqueOrTransparent)
+            {
+                var renderType = material.GetTag("RenderType", false, string.Empty);
+                if (!string.Equals(renderType, "Transparent", StringComparison.Ordinal))
+                {
+                    issues.Add($"Material {path} must keep RenderType Transparent for role {roleToken}, but was '{renderType}'.");
+                }
+
+                if (material.GetShaderPassEnabled("DepthOnly"))
+                {
+                    issues.Add($"Material {path} must keep DepthOnly disabled for transparent role {roleToken}.");
+                }
+
+                if (material.GetShaderPassEnabled("SHADOWCASTER"))
+                {
+                    issues.Add($"Material {path} must keep SHADOWCASTER disabled for transparent role {roleToken}.");
+                }
+            }
+
             if (requireOpaque && material.renderQueue >= 2990)
             {
                 issues.Add($"Material {path} must stay in the opaque queue family for role {roleToken}, but was {material.renderQueue}.");
