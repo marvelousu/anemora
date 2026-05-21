@@ -238,6 +238,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadingFoundationLightingDirector();
             AnemoraFastVsHd2dAreaLightingProfileFoundationAudit.VerifyAreaLightingProfilesV1();
             AnemoraFastVsHd2dOverlayProfileFoundationAudit.VerifyOverlayProfilesV1();
+            AnemoraFastVsHd2dSurfaceProfileFoundationAudit.VerifySurfaceProfilesV1();
             AnemoraFastVsHd2dLightingTransitionAudit.VerifyLightingTransitionV1();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
@@ -4897,6 +4898,50 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseInterior_BackWall", root, c + new Vector3(0f, 1.05f, 2.82f), new Vector3(7.35f, 2.10f, 0.18f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_interior.back_wall");
             CreateLandmarkCube($"{prefix}_HouseInterior_LeftWall", root, c + new Vector3(-3.60f, 0.95f, 0.05f), new Vector3(0.18f, 1.90f, 5.70f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_interior.left_wall");
             CreateLandmarkCube($"{prefix}_HouseInterior_RightWall", root, c + new Vector3(3.60f, 0.95f, 0.05f), new Vector3(0.18f, 1.90f, 5.70f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_interior.right_wall");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseInterior_PixelFloor"),
+                $"{(past ? "Past" : "Current")}.HouseInterior.Floor.Main",
+                FastVsHouseArea.Interior,
+                FastVsHd2dSurfaceKind.Floor,
+                !past,
+                new Vector2(past ? 0.19f : 0.16f, past ? 0.31f : 0.27f),
+                new Vector2(0.06f, 0.18f),
+                past ? new Vector2(4f, 3f) : CurrentInteriorSurfaceReadabilityFloorTextureScale,
+                true,
+                past ? "past_wood_floor" : "current_interior_floor");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseInterior_BackWall"),
+                $"{(past ? "Past" : "Current")}.HouseInterior.Wall.Back",
+                FastVsHouseArea.Interior,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.20f : 0.18f, past ? 0.32f : 0.30f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(6f, 4f),
+                true,
+                past ? "past_interior_wall" : "current_interior_wall");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseInterior_LeftWall"),
+                $"{(past ? "Past" : "Current")}.HouseInterior.Wall.Left",
+                FastVsHouseArea.Interior,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.20f : 0.18f, past ? 0.32f : 0.30f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(6f, 4f),
+                true,
+                past ? "past_interior_wall" : "current_interior_wall");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseInterior_RightWall"),
+                $"{(past ? "Past" : "Current")}.HouseInterior.Wall.Right",
+                FastVsHouseArea.Interior,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.20f : 0.18f, past ? 0.32f : 0.30f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(6f, 4f),
+                true,
+                past ? "past_interior_wall" : "current_interior_wall");
             CreateLandmarkCube($"{prefix}_HouseInterior_BackWallTopTrim", root, c + new Vector3(0f, 1.92f, 2.74f), new Vector3(6.95f, 0.06f, 0.06f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.back_wall_top_trim");
             CreateLandmarkCube($"{prefix}_HouseInterior_BackWall_WoodWainscotLower", root, c + new Vector3(0f, 0.62f, 2.70f), new Vector3(6.88f, 0.34f, 0.05f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.back_wall.wood_wainscot_lower");
             CreateLandmarkCube($"{prefix}_HouseInterior_BackWall_WoodWainscotTopRail", root, c + new Vector3(0f, 0.84f, 2.70f), new Vector3(6.88f, 0.06f, 0.05f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.back_wall.wood_wainscot_top_rail");
@@ -4929,6 +4974,28 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_SmallTable_LegBR", root, c + new Vector3(1.42f, 0.24f, -0.56f), new Vector3(0.10f, 0.42f, 0.10f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.table.leg_br");
             CreateLandmarkCube($"{prefix}_ShelfOrBrokenStack", root, c + new Vector3(2.35f, past ? 0.85f : 0.54f, 1.42f), new Vector3(0.58f, past ? 1.70f : 1.08f, 1.35f), Quaternion.Euler(0f, 0f, past ? 0f : 6f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.shelf");
             CreateLandmarkCube($"{prefix}_HearthPixelBlock", root, c + new Vector3(-2.48f, 0.42f, -1.25f), new Vector3(0.90f, 0.84f, 0.32f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_interior.hearth");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_NiroBed_PaperPixelBed"),
+                $"{(past ? "Past" : "Current")}.HouseInterior.Bed.Main",
+                FastVsHouseArea.Interior,
+                FastVsHd2dSurfaceKind.Furniture,
+                !past,
+                new Vector2(past ? 0.18f : 0.20f, past ? 0.31f : 0.33f),
+                new Vector2(0.08f, 0.25f),
+                new Vector2(1f, 1f),
+                true,
+                past ? "past_bed" : "current_bed");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_SmallTable_PixelTop"),
+                $"{(past ? "Past" : "Current")}.HouseInterior.Table.Main",
+                FastVsHouseArea.Interior,
+                FastVsHd2dSurfaceKind.Furniture,
+                !past,
+                new Vector2(past ? 0.19f : 0.20f, past ? 0.30f : 0.32f),
+                new Vector2(0.07f, 0.24f),
+                new Vector2(4f, 4f),
+                true,
+                past ? "past_furniture" : "current_furniture");
             CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandA", root, c + new Vector3(0.42f, 0.018f, -1.56f), new Vector3(1.18f, 0.020f, 0.24f), Quaternion.Euler(0f, past ? -1f : -4f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_a");
             CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandB", root, c + new Vector3(-0.06f, 0.018f, -0.92f), new Vector3(0.96f, 0.020f, 0.22f), Quaternion.Euler(0f, past ? 0f : -3f, 0f), bedMaterial, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_b");
             CreateLandmarkCube($"{prefix}_HouseInterior_FloorBoardWarmBandFront", root, c + new Vector3(1.02f, 0.019f, -2.08f), new Vector3(3.62f, 0.020f, 0.34f), Quaternion.Euler(0f, past ? 0f : -2f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_interior.floor.warm_band_front");
@@ -5745,6 +5812,50 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_FacadeWallRightPanel", root, c + new Vector3(0.55f, 1.05f, -1.62f), new Vector3(1.25f, 2.10f, 0.34f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.facade.right");
             CreateLandmarkCube($"{prefix}_HouseExterior_FacadeWallLintel", root, c + new Vector3(-1.05f, 1.92f, -1.62f), new Vector3(4.45f, 0.38f, 0.34f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.facade.lintel");
             CreateLandmarkCube($"{prefix}_HouseExterior_RoofWidePixelPlane", root, c + new Vector3(-1.05f, 2.25f, -1.50f), new Vector3(5.15f, 0.35f, 1.90f), Quaternion.Euler(8f, 0f, 0f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseExterior_YardPixelGround"),
+                $"{(past ? "Past" : "Current")}.HouseExterior.Ground.Yard",
+                FastVsHouseArea.Exterior,
+                FastVsHd2dSurfaceKind.Ground,
+                !past,
+                new Vector2(past ? 0.18f : 0.16f, past ? 0.28f : 0.27f),
+                new Vector2(0.05f, 0.16f),
+                new Vector2(6f, 6f),
+                true,
+                past ? "past_grass" : "current_ground");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseExterior_PathToInterior"),
+                $"{(past ? "Past" : "Current")}.HouseExterior.Path.ToInterior",
+                FastVsHouseArea.Exterior,
+                FastVsHd2dSurfaceKind.Road,
+                !past,
+                new Vector2(past ? 0.17f : 0.18f, past ? 0.29f : 0.28f),
+                new Vector2(0.06f, 0.18f),
+                new Vector2(4f, 4f),
+                true,
+                past ? "past_path" : "current_path");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseExterior_FacadeWallLeftPanel"),
+                $"{(past ? "Past" : "Current")}.HouseExterior.Wall.Facade",
+                FastVsHouseArea.Exterior,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.19f : 0.18f, past ? 0.30f : 0.29f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(4f, 3f),
+                true,
+                past ? "past_exterior_wall" : "current_exterior_wall");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_HouseExterior_RoofWidePixelPlane"),
+                $"{(past ? "Past" : "Current")}.HouseExterior.Roof.Main",
+                FastVsHouseArea.Exterior,
+                FastVsHd2dSurfaceKind.Roof,
+                !past,
+                new Vector2(past ? 0.18f : 0.17f, past ? 0.29f : 0.28f),
+                new Vector2(0.06f, 0.18f),
+                new Vector2(4f, 3f),
+                true,
+                past ? "past_roof" : "current_roof");
             CreateLandmarkCube($"{prefix}_HouseExterior_DoorInteriorDarkGap", root, c + new Vector3(-1.05f, 0.80f, -1.37f), new Vector3(0.86f, 1.46f, 0.05f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.door_gap");
             CreateLandmarkCube($"{prefix}_HouseExterior_WindowLeft", root, c + new Vector3(-2.38f, 1.12f, -1.38f), new Vector3(0.62f, 0.54f, 0.08f), Quaternion.identity, past ? materials.WindowLight : materials.EmptyWindow, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.window.left");
             CreateLandmarkCube($"{prefix}_HouseExterior_WindowRight", root, c + new Vector3(0.22f, 1.12f, -1.38f), new Vector3(0.62f, 0.54f, 0.08f), Quaternion.identity, past ? materials.WindowLight : materials.EmptyWindow, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.window.right");
@@ -6241,12 +6352,34 @@ namespace Anemora.EditorTools
 
             CreateLandmarkCube($"{prefix}_CentralPlaza_PixelGround", root, c + new Vector3(0f, 0f, 2.35f), new Vector3(17.8f, 0.08f, 21.8f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.ground");
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquare", root, c + new Vector3(0f, 0.035f, 2.25f), new Vector3(12.8f, 0.06f, 12.2f), Quaternion.identity, path, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_CentralPlaza_StoneSquare"),
+                $"{(past ? "Past" : "Current")}.CentralPlaza.Ground.Paving",
+                FastVsHouseArea.CentralPlaza,
+                FastVsHd2dSurfaceKind.Road,
+                !past,
+                new Vector2(past ? 0.17f : 0.18f, past ? 0.28f : 0.29f),
+                new Vector2(0.06f, 0.18f),
+                new Vector2(3f, 2f),
+                true,
+                past ? "past_path" : "current_path");
             CreatePathBetween(root, c + new Vector3(-1.15f, 0.06f, -1.18f), c + new Vector3(-5.25f, 0.06f, -3.65f), 1.50f, path, $"{prefix}_CentralPlaza_RoadToHouseExterior", true);
             CreatePathBetween(root, c + new Vector3(1.15f, 0.06f, -1.18f), c + new Vector3(5.20f, 0.06f, -3.55f), 1.44f, path, $"{prefix}_CentralPlaza_RoadToSouthEastQuarter", true);
             CreatePathBetween(root, c + new Vector3(0f, 0.06f, 0.60f), c + new Vector3(0f, 0.06f, 7.22f), 1.34f, path, $"{prefix}_CentralPlaza_PathToLibraryEntrance", true);
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryNorthFacade", root, c + new Vector3(0f, 1.55f, 8.10f), new Vector3(9.65f, 3.10f, 0.38f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.library_facade");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryWestWing", root, c + new Vector3(-4.58f, 1.30f, 6.95f), new Vector3(0.36f, 2.60f, 2.35f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.library_west_wing");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryEastWing", root, c + new Vector3(4.58f, 1.30f, 6.95f), new Vector3(0.36f, 2.60f, 2.35f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.library_east_wing");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_CentralPlaza_LibraryNorthFacade"),
+                $"{(past ? "Past" : "Current")}.CentralPlaza.Wall.LibraryFacade",
+                FastVsHouseArea.CentralPlaza,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.19f : 0.18f, past ? 0.30f : 0.29f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(4f, 3f),
+                true,
+                past ? "past_exterior_wall" : "current_exterior_wall");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryRoofBlock", root, c + new Vector3(0f, 3.08f, 7.94f), new Vector3(10.05f, 0.48f, 1.36f), Quaternion.identity, past ? materials.PastRoof : materials.CurrentRoof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.library_roof");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeBaseCourse", root, c + new Vector3(0f, 0.20f, 8.02f), new Vector3(9.95f, 0.10f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade.base_course");
             CreateLandmarkCube($"{prefix}_CentralPlaza_LibraryFacadeHeaderTrim", root, c + new Vector3(0f, 2.84f, 8.00f), new Vector3(9.95f, 0.08f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.library_facade.header_trim");
@@ -7111,6 +7244,39 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_Library_PixelFloor", root, c, new Vector3(11.6f, 0.10f, 15.4f), Quaternion.identity, floor, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.library.floor");
             CreateLandmarkCube($"{prefix}_Library_BackWall", root, c + new Vector3(0f, 1.40f, 7.55f), new Vector3(11.8f, 2.80f, 0.24f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.library.back_wall");
             CreateLandmarkCube($"{prefix}_Library_BackWallShelfWide", root, c + new Vector3(0f, 1.24f, 7.28f), new Vector3(9.95f, 1.92f, 0.18f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.back_wall_shelf");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_Library_PixelFloor"),
+                $"{(past ? "Past" : "Current")}.Library.Floor.Main",
+                FastVsHouseArea.Library,
+                FastVsHd2dSurfaceKind.Floor,
+                !past,
+                new Vector2(past ? 0.17f : 0.16f, past ? 0.28f : 0.27f),
+                new Vector2(0.06f, 0.18f),
+                past ? new Vector2(4f, 3f) : CurrentInteriorSurfaceReadabilityFloorTextureScale,
+                true,
+                past ? "past_wood_floor" : "current_interior_floor");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_Library_BackWall"),
+                $"{(past ? "Past" : "Current")}.Library.Wall.Back",
+                FastVsHouseArea.Library,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.20f : 0.18f, past ? 0.31f : 0.29f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(6f, 4f),
+                true,
+                past ? "past_interior_wall" : "current_interior_wall");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_Library_BackWallShelfWide"),
+                $"{(past ? "Past" : "Current")}.Library.Bookshelf.Back",
+                FastVsHouseArea.Library,
+                FastVsHd2dSurfaceKind.Bookshelf,
+                !past,
+                new Vector2(past ? 0.18f : 0.17f, past ? 0.28f : 0.27f),
+                new Vector2(0.08f, 0.26f),
+                new Vector2(4f, 3f),
+                true,
+                past ? "past_furniture" : "current_furniture");
             if (past)
             {
                 CreateLandmarkCube("Past_Library_BackWallShelfBoardUpper", root, c + new Vector3(0f, 1.72f, 7.06f), new Vector3(9.45f, 0.08f, 0.22f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.library.back_wall_shelf.board.upper");
@@ -7158,6 +7324,17 @@ namespace Anemora.EditorTools
             CreateLibraryGalleryAtmospherePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryWindowLightAccents(root, prefix, past, materials);
             CreateLandmarkCube($"{prefix}_Library_ServiceDesk", root, c + new Vector3(-2.45f, 0.34f, -3.20f), new Vector3(1.55f, 0.38f, 0.54f), Quaternion.Euler(0f, -4f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.service_desk");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_Library_ServiceDesk"),
+                $"{(past ? "Past" : "Current")}.Library.Desk.Main",
+                FastVsHouseArea.Library,
+                FastVsHd2dSurfaceKind.Furniture,
+                !past,
+                new Vector2(past ? 0.18f : 0.19f, past ? 0.30f : 0.31f),
+                new Vector2(0.07f, 0.24f),
+                new Vector2(4f, 4f),
+                true,
+                past ? "past_furniture" : "current_furniture");
             if (!past)
             {
                 CreateLibraryReadingTableAssembly($"{prefix}_Library_ReadingTableLong", root, c + new Vector3(1.08f, 0.32f, 0.12f), Quaternion.Euler(0f, 4f, 0f), new Vector3(2.28f, 0.18f, 0.72f), wood, trim, materials.Shadow, $"{prefix}.library.reading_table");
@@ -28062,6 +28239,41 @@ namespace Anemora.EditorTools
             SerializedSet(profile, "opacityBand", opacityBand);
             SerializedSet(profile, "footprintWorldSize", footprintWorldSize);
             SerializedSet(profile, "intendedTint", intendedTint);
+            return profile;
+        }
+
+        private static FastVsHd2dSurfaceProfile AddHd2dSurfaceProfile(
+            GameObject target,
+            string surfaceId,
+            FastVsHouseArea areaId,
+            FastVsHd2dSurfaceKind kind,
+            bool currentWorld,
+            Vector2 luminanceBand,
+            Vector2 contrastBand,
+            Vector2 textureDensityHint,
+            bool acceptsOverlayShading,
+            string intendedMaterialToken)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+
+            var profile = target.GetComponent<FastVsHd2dSurfaceProfile>();
+            if (profile == null)
+            {
+                profile = target.AddComponent<FastVsHd2dSurfaceProfile>();
+            }
+
+            SerializedSet(profile, "surfaceId", surfaceId);
+            SerializedSet(profile, "areaId", areaId);
+            SerializedSet(profile, "surfaceKind", kind);
+            SerializedSet(profile, "currentWorld", currentWorld);
+            SerializedSet(profile, "targetLuminanceBand", luminanceBand);
+            SerializedSet(profile, "targetContrastBand", contrastBand);
+            SerializedSet(profile, "textureDensityHint", textureDensityHint);
+            SerializedSet(profile, "acceptsOverlayShading", acceptsOverlayShading);
+            SerializedSet(profile, "intendedMaterialToken", intendedMaterialToken);
             return profile;
         }
 
