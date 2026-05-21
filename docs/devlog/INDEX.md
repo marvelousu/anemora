@@ -1,13 +1,13 @@
 # Devlog Index
 
-> Status: v6.81 fast VS HD2D visual snapshot audit cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.82 fast VS HD2D area lighting profile cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 357 files including INDEX.md and README.md.
-- Dated devlog records: 355 files.
+- Root-level Markdown coverage: 358 files including INDEX.md and README.md.
+- Dated devlog records: 356 files.
 - Linked evidence files present under docs/devlog/screenshots/: 663 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 10 |
+| 2026-05-22 | 11 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_area_lighting_profile_cycle11.md](2026-05-22_fast_vs_hd2d_area_lighting_profile_cycle11.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Area Lighting Profile Cycle 11 |
 | [2026-05-22_fast_vs_hd2d_visual_snapshot_audit_cycle10.md](2026-05-22_fast_vs_hd2d_visual_snapshot_audit_cycle10.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Visual Snapshot Audit Cycle 10 |
 | [2026-05-22_fast_vs_hd2d_surface_ramp_shader_cycle09.md](2026-05-22_fast_vs_hd2d_surface_ramp_shader_cycle09.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Ramp Shader Cycle 09 |
 | [2026-05-22_fast_vs_hd2d_sprite_card_ramp_shader_cycle08.md](2026-05-22_fast_vs_hd2d_sprite_card_ramp_shader_cycle08.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Ramp Shader Cycle 08 |
@@ -496,6 +497,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.82 | 2026-05-22 | Added Fast VS HD2D area lighting profile cycle record with current-world area profile markers, validation, and cleanup notes. |
 | v6.81 | 2026-05-22 | Added Fast VS HD2D visual snapshot audit cycle record with current-world batch captures, PNG evidence, luminance and local contrast gates, validation, and cleanup notes. |
 | v6.80 | 2026-05-22 | Added Fast VS HD2D surface ramp shader cycle record with a custom opaque surface ramp shader, surface material generation and audits, validation, and cleanup notes. |
 | v6.79 | 2026-05-22 | Added Fast VS HD2D sprite card ramp shader cycle record with a custom transparent sprite-card ramp shader, sprite-card material generation and audits, validation, and cleanup notes. |

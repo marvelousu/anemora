@@ -183,6 +183,7 @@ namespace Anemora.EditorTools
 
             var camera = CreateCamera(currentRoot);
             CreateLighting(camera, areaVisibility);
+            CreateAreaLightingProfiles(currentAreas);
             CreateHd2dGlobalVolume();
             CreateHd2dAtmosphere(currentRoot, pastRoot);
             CreateAudio(currentRoot, areaVisibility);
@@ -232,6 +233,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
+            AnemoraFastVsHd2dAreaLightingProfileFoundationAudit.VerifyAreaLightingProfilesV1();
             AnemoraFastVsHd2dLightingTransitionAudit.VerifyLightingTransitionV1();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
@@ -15702,6 +15704,110 @@ namespace Anemora.EditorTools
             RenderSettings.fogColor = new Color(0.080f, 0.074f, 0.070f);
             RenderSettings.fogStartDistance = 10f;
             RenderSettings.fogEndDistance = 42f;
+        }
+
+        private static void CreateAreaLightingProfiles(HouseMapAreas currentAreas)
+        {
+            CreateAreaLightingProfile(
+                currentAreas.Interior.transform,
+                "FastVS_HD2D_HouseInteriorLightingProfile",
+                FastVsHouseArea.Interior,
+                "house interior",
+                true,
+                HouseInteriorCenter,
+                new Vector2(0.16f, 0.24f),
+                new Vector3(46f, -42f, 0f),
+                0.86f,
+                new Color(1.00f, 0.88f, 0.72f, 1f),
+                0.30f,
+                new Color(1.00f, 0.72f, 0.46f, 1f),
+                0.197f,
+                new Color(0.205f, 0.195f, 0.190f, 1f));
+
+            CreateAreaLightingProfile(
+                currentAreas.Exterior.transform,
+                "FastVS_HD2D_HouseExteriorLightingProfile",
+                FastVsHouseArea.Exterior,
+                "house exterior",
+                false,
+                HouseExteriorCenter,
+                new Vector2(0.21f, 0.29f),
+                new Vector3(50f, -36f, 0f),
+                1.04f,
+                new Color(1.00f, 0.94f, 0.82f, 1f),
+                0.18f,
+                new Color(1.00f, 0.76f, 0.48f, 1f),
+                0.254f,
+                new Color(0.245f, 0.255f, 0.265f, 1f));
+
+            CreateAreaLightingProfile(
+                currentAreas.CentralPlaza.transform,
+                "FastVS_HD2D_CentralPlazaLightingProfile",
+                FastVsHouseArea.CentralPlaza,
+                "central plaza",
+                false,
+                CentralPlazaVsCenter,
+                new Vector2(0.20f, 0.28f),
+                new Vector3(49f, -31f, 0f),
+                1.08f,
+                new Color(1.00f, 0.92f, 0.78f, 1f),
+                0.14f,
+                new Color(1.00f, 0.72f, 0.42f, 1f),
+                0.244f,
+                new Color(0.235f, 0.245f, 0.260f, 1f));
+
+            CreateAreaLightingProfile(
+                currentAreas.Library.transform,
+                "FastVS_HD2D_LibraryLightingProfile",
+                FastVsHouseArea.Library,
+                "library",
+                true,
+                LibraryVsCenter,
+                new Vector2(0.13f, 0.20f),
+                new Vector3(54f, -28f, 0f),
+                0.74f,
+                new Color(1.00f, 0.86f, 0.64f, 1f),
+                0.24f,
+                new Color(1.00f, 0.70f, 0.42f, 1f),
+                0.146f,
+                new Color(0.155f, 0.145f, 0.135f, 1f));
+        }
+
+        private static GameObject CreateAreaLightingProfile(
+            Transform parent,
+            string objectName,
+            FastVsHouseArea areaId,
+            string areaName,
+            bool interior,
+            Vector3 localPosition,
+            Vector2 luminanceBand,
+            Vector3 keyLightEulerDegrees,
+            float keyLightIntensity,
+            Color keyLightTint,
+            float fillIntensity,
+            Color fillTint,
+            float ambientIntensity,
+            Color ambientTint)
+        {
+            var profileObject = new GameObject(objectName);
+            profileObject.transform.SetParent(parent, false);
+            profileObject.transform.localPosition = localPosition;
+            profileObject.transform.localRotation = Quaternion.identity;
+            profileObject.transform.localScale = Vector3.one;
+
+            var profile = profileObject.AddComponent<FastVsHd2dAreaLightingProfile>();
+            SerializedSet(profile, "areaId", areaId);
+            SerializedSet(profile, "areaName", areaName);
+            SerializedSet(profile, "interior", interior);
+            SerializedSet(profile, "targetAverageLuminanceBand", luminanceBand);
+            SerializedSet(profile, "keyLightEulerDegrees", keyLightEulerDegrees);
+            SerializedSet(profile, "keyLightIntensity", keyLightIntensity);
+            SerializedSet(profile, "keyLightTint", keyLightTint);
+            SerializedSet(profile, "fillIntensity", fillIntensity);
+            SerializedSet(profile, "fillTint", fillTint);
+            SerializedSet(profile, "ambientIntensity", ambientIntensity);
+            SerializedSet(profile, "ambientTint", ambientTint);
+            return profileObject;
         }
 
         private static void CreateHd2dGlobalVolume()
@@ -31404,6 +31510,9 @@ namespace Anemora.EditorTools
                     break;
                 case SerializedPropertyType.String:
                     property.stringValue = value as string;
+                    break;
+                case SerializedPropertyType.Color:
+                    property.colorValue = (Color)value;
                     break;
                 case SerializedPropertyType.Enum:
                     property.enumValueIndex = Convert.ToInt32(value);
