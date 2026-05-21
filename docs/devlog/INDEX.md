@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.71 fast VS HD2D house exterior porch door grounding cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.72 fast VS HD2D shading foundation cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 347 files including INDEX.md and README.md.
-- Dated devlog records: 345 files.
-- Linked evidence files present under docs/devlog/screenshots/: 654 files.
+- Root-level Markdown coverage: 348 files including INDEX.md and README.md.
+- Dated devlog records: 346 files.
+- Linked evidence files present under docs/devlog/screenshots/: 658 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,8 +32,15 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
+| 2026-05-22 | 1 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-05-22
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-22_fast_vs_hd2d_shading_foundation_cycle01.md](2026-05-22_fast_vs_hd2d_shading_foundation_cycle01.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Shading Foundation Cycle 01 |
 
 ### 2026-05-21
 

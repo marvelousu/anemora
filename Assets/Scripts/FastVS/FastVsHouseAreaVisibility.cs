@@ -61,6 +61,7 @@ namespace Anemora.FastVS
             SetActive(currentLibraryMap, activeArea == FastVsHouseArea.Library);
             SetActive(pastLibraryMap, activeArea == FastVsHouseArea.Library);
             ApplyCameraClearColor();
+            ApplyLightingProfile();
         }
 
         private void ApplyCameraClearColor()
@@ -74,6 +75,15 @@ namespace Anemora.FastVS
             mainCamera.backgroundColor = activeArea == FastVsHouseArea.Exterior || activeArea == FastVsHouseArea.CentralPlaza
                 ? outdoorSkyClearColor
                 : indoorClearColor;
+        }
+
+        private void ApplyLightingProfile()
+        {
+            var director = FindFirstObjectByType<FastVsHouseLightingDirector>();
+            if (director != null)
+            {
+                director.ApplyAreaForReview(activeArea);
+            }
         }
 
         private static void SetActive(GameObject target, bool active)

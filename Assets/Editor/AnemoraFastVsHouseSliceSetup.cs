@@ -143,7 +143,7 @@ namespace Anemora.EditorTools
             var areaVisibility = CreateHouseAreaVisibility(currentAreas, pastAreas);
 
             var camera = CreateCamera(currentRoot);
-            CreateLighting();
+            CreateLighting(camera, areaVisibility);
             CreateHd2dGlobalVolume();
             CreateHd2dAtmosphere(currentRoot, pastRoot);
             CreateAudio(currentRoot, areaVisibility);
@@ -190,6 +190,7 @@ namespace Anemora.EditorTools
             ValidatePlayerSpritePresentation();
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
+            ValidateFastVsHd2dShadingFoundationLightingDirector();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
@@ -518,6 +519,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dThirtySeventhCycleScreenshotsBatch()
         {
             CaptureHd2dThirtySeventhCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_lighting_balance_20260520");
+        }
+
+        public static void CaptureHd2dShadingFoundationCycle01ScreenshotsBatch()
+        {
+            CaptureHd2dThirtySeventhCycleScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_shading_foundation_cycle01_20260522");
         }
 
         public static void CaptureHd2dThirtyEighthCycleScreenshotsBatch()
@@ -15473,23 +15479,61 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static void CreateLighting()
+        private static void CreateLighting(Camera camera, FastVsHouseAreaVisibility areaVisibility)
         {
             var lightObject = new GameObject("Directional Light", typeof(Light));
             var light = lightObject.GetComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 1.10f;
+            light.intensity = 0.86f;
             light.shadows = LightShadows.Soft;
-            light.shadowStrength = 0.52f;
-            light.color = new Color(1.00f, 0.96f, 0.88f, 1f);
-            lightObject.transform.rotation = Quaternion.Euler(52f, -35f, 0f);
+            light.shadowStrength = 0.48f;
+            light.color = new Color(1.00f, 0.88f, 0.72f, 1f);
+            lightObject.transform.rotation = Quaternion.Euler(46f, -42f, 0f);
+            var warmFillObject = new GameObject("FastVS_HD2D_WarmFillLight", typeof(Light));
+            var warmFill = warmFillObject.GetComponent<Light>();
+            warmFill.type = LightType.Point;
+            warmFill.intensity = 0.30f;
+            warmFill.range = 6.0f;
+            warmFill.color = new Color(1.00f, 0.72f, 0.46f, 1f);
+            warmFill.shadows = LightShadows.None;
+            warmFillObject.transform.position = new Vector3(-7.25f, 1.65f, -9.10f);
+
+            var coolRimObject = new GameObject("FastVS_HD2D_CoolRimLight", typeof(Light));
+            var coolRim = coolRimObject.GetComponent<Light>();
+            coolRim.type = LightType.Directional;
+            coolRim.intensity = 0.045f;
+            coolRim.color = new Color(0.58f, 0.70f, 1.00f, 1f);
+            coolRim.shadows = LightShadows.None;
+            coolRimObject.transform.rotation = Quaternion.Euler(25f, 132f, 0f);
+
+            var libraryWindowObject = new GameObject("FastVS_HD2D_LibraryWindowLight", typeof(Light));
+            var libraryWindow = libraryWindowObject.GetComponent<Light>();
+            libraryWindow.type = LightType.Spot;
+            libraryWindow.enabled = false;
+            libraryWindow.intensity = 0f;
+            libraryWindow.range = 8.5f;
+            libraryWindow.spotAngle = 48f;
+            libraryWindow.color = new Color(1.00f, 0.76f, 0.48f, 1f);
+            libraryWindow.shadows = LightShadows.None;
+            libraryWindowObject.transform.SetPositionAndRotation(new Vector3(28.55f, 3.05f, 23.15f), Quaternion.Euler(58f, 36f, 0f));
+
+            var directorObject = new GameObject("FastVS_HD2D_LightingDirector");
+            var director = directorObject.AddComponent<FastVsHouseLightingDirector>();
+            SerializedSet(director, "areaVisibility", areaVisibility);
+            SerializedSet(director, "sceneCamera", camera);
+            SerializedSet(director, "mainLight", light);
+            SerializedSet(director, "warmFillLight", warmFill);
+            SerializedSet(director, "coolRimLight", coolRim);
+            SerializedSet(director, "libraryWindowLight", libraryWindow);
+            director.ApplyAreaForReview(FastVsHouseArea.Interior);
+
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.29f, 0.30f, 0.31f);
-            RenderSettings.fog = true;
+            RenderSettings.ambientLight = new Color(0.205f, 0.195f, 0.190f);
+            RenderSettings.fog = false;
             RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = new Color(0.13f, 0.15f, 0.18f);
-            RenderSettings.fogStartDistance = 18f;
-            RenderSettings.fogEndDistance = 75f;
+            RenderSettings.fogColor = new Color(0.080f, 0.074f, 0.070f);
+            RenderSettings.fogStartDistance = 10f;
+            RenderSettings.fogEndDistance = 42f;
         }
 
         private static void CreateHd2dGlobalVolume()
@@ -18688,12 +18732,13 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: outdoor sky clear-color review components are missing.");
             }
 
-            var outdoorSky = new Color(0.125f, 0.148f, 0.170f, 1f);
-            var indoorDark = new Color(0.075f, 0.078f, 0.084f, 1f);
+            var houseExteriorSky = new Color(0.118f, 0.142f, 0.166f, 1f);
+            var centralPlazaSky = new Color(0.112f, 0.138f, 0.164f, 1f);
+            var indoorDark = new Color(0.064f, 0.060f, 0.060f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
-            ValidateColorApproximately(camera.backgroundColor, outdoorSky, "house exterior outdoor sky clear color");
+            ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
             visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
-            ValidateColorApproximately(camera.backgroundColor, outdoorSky, "central plaza outdoor sky clear color");
+            ValidateColorApproximately(camera.backgroundColor, centralPlazaSky, "central plaza outdoor sky clear color");
             visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
             ValidateColorApproximately(camera.backgroundColor, indoorDark, "interior clear color");
         }
@@ -21039,18 +21084,12 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_GlobalVolume must be global, weighted at 1, and backed by Assets/Settings/DefaultVolumeProfile.asset.");
             }
 
-            if (!RenderSettings.fog)
-            {
-                throw new InvalidOperationException("House slice validation failed: render fog must be enabled.");
-            }
-
             var ambient = RenderSettings.ambientLight;
-            var targetAmbient = new Color(0.29f, 0.30f, 0.31f);
-            if (Mathf.Abs(ambient.r - targetAmbient.r) > 0.02f ||
-                Mathf.Abs(ambient.g - targetAmbient.g) > 0.02f ||
-                Mathf.Abs(ambient.b - targetAmbient.b) > 0.02f)
+            if (ambient.r < 0.13f || ambient.r > 0.30f ||
+                ambient.g < 0.13f || ambient.g > 0.30f ||
+                ambient.b < 0.12f || ambient.b > 0.30f)
             {
-                throw new InvalidOperationException("House slice validation failed: ambient light must remain near the HD-2D target tint.");
+                throw new InvalidOperationException($"House slice validation failed: ambient light must remain inside the HD-2D shading foundation profile range, found ({ambient.r:0.000}, {ambient.g:0.000}, {ambient.b:0.000}).");
             }
 
             if (Mathf.Abs(ambient.r - 0.30f) < 0.001f &&
@@ -21063,6 +21102,7 @@ namespace Anemora.EditorTools
             var activeScene = SceneManager.GetActiveScene();
             Light directionalLight = null;
             var directionalCount = 0;
+            var shadowingDirectionalCount = 0;
             foreach (var light in Resources.FindObjectsOfTypeAll<Light>())
             {
                 if (light == null ||
@@ -21074,12 +21114,25 @@ namespace Anemora.EditorTools
                 }
 
                 directionalCount++;
-                directionalLight = light;
+                if (light.name == "Directional Light")
+                {
+                    directionalLight = light;
+                }
+
+                if (light.shadows != LightShadows.None)
+                {
+                    shadowingDirectionalCount++;
+                }
             }
 
-            if (directionalCount != 1 || directionalLight == null)
+            if (directionalCount < 1 || directionalLight == null)
             {
-                throw new InvalidOperationException($"House slice validation failed: expected exactly one directional light in the house slice scene, found {directionalCount}.");
+                throw new InvalidOperationException($"House slice validation failed: expected the main Directional Light in the house slice scene, found {directionalCount} directional lights.");
+            }
+
+            if (shadowingDirectionalCount != 1)
+            {
+                throw new InvalidOperationException($"House slice validation failed: expected exactly one shadowing directional light in the house slice scene, found {shadowingDirectionalCount}.");
             }
 
             if (directionalLight.shadows != LightShadows.Soft)
@@ -21138,7 +21191,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Directional Light shadow strength must stay in the HD-2D balance range.");
             }
 
-            if (directionalLight.intensity < 0.95f || directionalLight.intensity > 1.25f)
+            if (directionalLight.intensity < 0.70f || directionalLight.intensity > 1.25f)
             {
                 throw new InvalidOperationException("House slice validation failed: Directional Light intensity must stay in the HD-2D balance range.");
             }
@@ -21149,9 +21202,9 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            if (ambient.r < 0.24f || ambient.r > 0.38f ||
-                ambient.g < 0.24f || ambient.g > 0.38f ||
-                ambient.b < 0.24f || ambient.b > 0.38f)
+            if (ambient.r < 0.14f || ambient.r > 0.32f ||
+                ambient.g < 0.14f || ambient.g > 0.32f ||
+                ambient.b < 0.13f || ambient.b > 0.32f)
             {
                 throw new InvalidOperationException("House slice validation failed: ambient light must stay within the HD-2D readability range.");
             }
@@ -21162,6 +21215,58 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("FastVS_Reto_WritingAtDesk") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle37 lighting balance must keep the core route objects present.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dShadingFoundationLightingDirector()
+        {
+            var directorObject = FindSceneObjectIncludingInactive("FastVS_HD2D_LightingDirector");
+            if (directorObject == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing FastVS_HD2D_LightingDirector.");
+            }
+
+            var director = directorObject.GetComponent<FastVsHouseLightingDirector>();
+            if (director == null || !director.HasRequiredLightsForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_LightingDirector must reference the main, fill, rim, and library window lights.");
+            }
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var warmFill = FindSceneObjectIncludingInactive("FastVS_HD2D_WarmFillLight")?.GetComponent<Light>();
+            var coolRim = FindSceneObjectIncludingInactive("FastVS_HD2D_CoolRimLight")?.GetComponent<Light>();
+            var libraryWindow = FindSceneObjectIncludingInactive("FastVS_HD2D_LibraryWindowLight")?.GetComponent<Light>();
+            if (mainLight == null || warmFill == null || coolRim == null || libraryWindow == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing one or more HD-2D shading foundation lights.");
+            }
+
+            if (warmFill.type != LightType.Point || warmFill.shadows != LightShadows.None)
+            {
+                throw new InvalidOperationException("House slice validation failed: warm fill must be a non-shadowing point light.");
+            }
+
+            if (coolRim.type != LightType.Directional || coolRim.shadows != LightShadows.None)
+            {
+                throw new InvalidOperationException("House slice validation failed: cool rim must be a non-shadowing directional light.");
+            }
+
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+            if (mainLight.intensity < 1.00f || mainLight.shadowStrength < 0.50f || !RenderSettings.fog)
+            {
+                throw new InvalidOperationException("House slice validation failed: central plaza lighting profile must keep sun contrast and outdoor fog active.");
+            }
+
+            director.ApplyAreaForReview(FastVsHouseArea.Library);
+            if (!libraryWindow.enabled || libraryWindow.type != LightType.Spot || mainLight.intensity > 0.90f || RenderSettings.ambientLight.r > 0.20f)
+            {
+                throw new InvalidOperationException("House slice validation failed: library lighting profile must switch to a darker interior profile with window light enabled.");
+            }
+
+            director.ApplyAreaForReview(FastVsHouseArea.Interior);
+            if (libraryWindow.enabled || RenderSettings.fog || mainLight.intensity > 0.95f)
+            {
+                throw new InvalidOperationException("House slice validation failed: house interior lighting profile must restore non-fog warm interior lighting.");
             }
         }
 
