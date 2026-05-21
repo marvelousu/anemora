@@ -7319,6 +7319,56 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryWallShelfDepthPolish(root, c, materials, wood, trim);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
+            if (past)
+            {
+                AddHd2dSurfaceProfile(
+                    FindSceneObjectIncludingInactive("Past_Library_LeftSideBookshelf_BookshelfFrontTexturePanel"),
+                    "Past.Library.Bookshelf.Side.Left",
+                    FastVsHouseArea.Library,
+                    FastVsHd2dSurfaceKind.Bookshelf,
+                    false,
+                    new Vector2(0.18f, 0.28f),
+                    new Vector2(0.08f, 0.26f),
+                    new Vector2(4f, 3f),
+                    true,
+                    "bookshelf_front_painted_hd2d");
+                AddHd2dSurfaceProfile(
+                    FindSceneObjectIncludingInactive("Past_Library_RightSideBookshelf_BookshelfFrontTexturePanel"),
+                    "Past.Library.Bookshelf.Side.Right",
+                    FastVsHouseArea.Library,
+                    FastVsHd2dSurfaceKind.Bookshelf,
+                    false,
+                    new Vector2(0.18f, 0.28f),
+                    new Vector2(0.08f, 0.26f),
+                    new Vector2(4f, 3f),
+                    true,
+                    "bookshelf_front_painted_hd2d");
+            }
+            else
+            {
+                AddHd2dSurfaceProfile(
+                    FindSceneObjectIncludingInactive("Current_Library_LeftSideBookshelf_EmptyShelfFrontTexturePanel"),
+                    "Current.Library.Bookshelf.Side.Left",
+                    FastVsHouseArea.Library,
+                    FastVsHd2dSurfaceKind.Bookshelf,
+                    true,
+                    new Vector2(0.17f, 0.27f),
+                    new Vector2(0.08f, 0.26f),
+                    new Vector2(4f, 3f),
+                    true,
+                    "current_empty_bookshelf_front_hd2d");
+                AddHd2dSurfaceProfile(
+                    FindSceneObjectIncludingInactive("Current_Library_RightSideBookshelf_EmptyShelfFrontTexturePanel"),
+                    "Current.Library.Bookshelf.Side.Right",
+                    FastVsHouseArea.Library,
+                    FastVsHd2dSurfaceKind.Bookshelf,
+                    true,
+                    new Vector2(0.17f, 0.27f),
+                    new Vector2(0.08f, 0.26f),
+                    new Vector2(4f, 3f),
+                    true,
+                    "current_empty_bookshelf_front_hd2d");
+            }
             CreateLibrarySideBookshelfDepthPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryBackBookshelfFramePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryBackShelfBookSpineDepthPolish(root, prefix, past, materials, c, wood, trim);
@@ -17931,6 +17981,10 @@ namespace Anemora.EditorTools
 
             ValidateSceneObjectMaterialTexture("Current_Library_BackWallShelfWide", "current_empty_bookshelf_front_hd2d");
             ValidateSceneObjectMaterialTexture("Past_Library_BackWallShelfWide", "bookshelf_front_painted_hd2d");
+            ValidateSceneObjectMaterialTexture("Current_Library_LeftSideBookshelf_EmptyShelfFrontTexturePanel", "current_empty_bookshelf_front_hd2d");
+            ValidateSceneObjectMaterialTexture("Current_Library_RightSideBookshelf_EmptyShelfFrontTexturePanel", "current_empty_bookshelf_front_hd2d");
+            ValidateSceneObjectMaterialTexture("Past_Library_LeftSideBookshelf_BookshelfFrontTexturePanel", "bookshelf_front_painted_hd2d");
+            ValidateSceneObjectMaterialTexture("Past_Library_RightSideBookshelf_BookshelfFrontTexturePanel", "bookshelf_front_painted_hd2d");
             ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_TopLipA", "Current_LibraryMap_SeparateSpace", "current_furniture", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
             ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_BottomContactShadowA", "Current_LibraryMap_SeparateSpace", "shadow", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
             ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_LeftEndcapA", "Current_LibraryMap_SeparateSpace", "current_fence", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 0.16f, 1.75f, 0.08f);

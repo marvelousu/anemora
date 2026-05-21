@@ -47,9 +47,18 @@ namespace Anemora.EditorTools
             "screenshots",
             "fast_vs_hd2d_library_bookshelf_surface_cycle18_20260522"));
         private const string Cycle18MetricsFileName = "surface_texture_metrics_cycle18_20260522.md";
+        private static readonly string Cycle19OutputDirectory = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "..",
+            "docs",
+            "devlog",
+            "screenshots",
+            "fast_vs_hd2d_library_side_bookshelf_surface_cycle19_20260522"));
+        private const string Cycle19MetricsFileName = "surface_texture_metrics_cycle19_20260522.md";
         private const string Cycle16ReportTitle = "Fast VS HD2D Surface Texture Metric Audit Cycle 16";
         private const string Cycle17ReportTitle = "Fast VS HD2D House Exterior Ground Microcontrast Cycle 17";
         private const string Cycle18ReportTitle = "Fast VS HD2D Library Bookshelf Surface Cycle 18";
+        private const string Cycle19ReportTitle = "Fast VS HD2D Library Side Bookshelf Surface Cycle 19";
 
         [MenuItem("Tools/Anemora/Verify HD2D Surface Texture Metrics V1")]
         public static void VerifySurfaceTextureMetricsV1()
@@ -100,6 +109,19 @@ namespace Anemora.EditorTools
             }
 
             Debug.Log($"HD2D surface texture metric report written: {Path.Combine(Cycle18OutputDirectory, Cycle18MetricsFileName)}");
+        }
+
+        [MenuItem("Tools/Anemora/Write HD2D Library Side Bookshelf Surface Cycle 19 Metrics")]
+        public static void WriteLibrarySideBookshelfSurfaceCycle19MetricsBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+            var batch = RunSurfaceTextureMetricAudit(writeReport: true, Cycle19OutputDirectory, Cycle19MetricsFileName, Cycle19ReportTitle);
+            if (batch.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D surface texture metric audit failed:\n- " + string.Join("\n- ", batch.Issues));
+            }
+
+            Debug.Log($"HD2D surface texture metric report written: {Path.Combine(Cycle19OutputDirectory, Cycle19MetricsFileName)}");
         }
 
         private static SurfaceTextureMetricBatch RunSurfaceTextureMetricAudit(bool writeReport, string outputDirectory, string metricsFileName, string reportTitle)
@@ -520,10 +542,10 @@ namespace Anemora.EditorTools
             List<string> issues)
         {
             var surfaceId = profile.SurfaceIdForReview ?? string.Empty;
-            var isLibraryBackBookshelf =
-                surfaceId.IndexOf(".Library.Bookshelf.Back", StringComparison.Ordinal) >= 0;
+            var isLibraryBookshelfSurface =
+                surfaceId.IndexOf(".Library.Bookshelf.", StringComparison.Ordinal) >= 0;
 
-            if (!isLibraryBackBookshelf)
+            if (!isLibraryBookshelfSurface)
             {
                 return;
             }
