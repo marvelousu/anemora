@@ -237,6 +237,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
             AnemoraFastVsHd2dAreaLightingProfileFoundationAudit.VerifyAreaLightingProfilesV1();
+            AnemoraFastVsHd2dOverlayProfileFoundationAudit.VerifyOverlayProfilesV1();
             AnemoraFastVsHd2dLightingTransitionAudit.VerifyLightingTransitionV1();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
@@ -5995,12 +5996,13 @@ namespace Anemora.EditorTools
                 ? "Past_HouseExterior_StaticDirectionalCastShadow_HouseFacade"
                 : "Current_HouseExterior_StaticDirectionalCastShadow_HouseFacade";
 
-            CreateStaticDirectionalCastShadow(
+            var shadow = CreateStaticDirectionalCastShadow(
                 objectName,
                 root,
                 c + new Vector3(-1.10f, 0.046f, -1.90f),
                 HouseStaticDirectionalCastShadowScale,
                 EnsureStaticDirectionalCastShadowMaterial());
+            AddHd2dOverlayProfile(shadow, objectName, FastVsHouseArea.Exterior, FastVsHd2dOverlayKind.StaticDirectionalCastShadow, !past, false, new Vector2(0.10f, 0.34f), new Vector2(HouseStaticDirectionalCastShadowScale.x, HouseStaticDirectionalCastShadowScale.y), new Color(0.20f, 0.19f, 0.18f, 0.90f));
         }
 
         private static void CreateHouseExteriorSurfaceDirectionalShadeOverlay(Transform root, string prefix, bool past, Materials materials)
@@ -6011,13 +6013,14 @@ namespace Anemora.EditorTools
                 : "Current_HouseExterior_SurfaceDirectionalShade_FacadeLeft";
             var scale = past ? HouseSurfaceDirectionalShadeOverlayPastScale : HouseSurfaceDirectionalShadeOverlayCurrentScale;
 
-            CreateSurfaceDirectionalShadeOverlay(
+            var overlay = CreateSurfaceDirectionalShadeOverlay(
                 objectName,
                 root,
                 c + new Vector3(-2.60f, 1.10f, -1.44f),
                 scale,
                 Quaternion.identity,
                 EnsureSurfaceDirectionalShadeOverlayMaterial());
+            AddHd2dOverlayProfile(overlay, objectName, FastVsHouseArea.Exterior, FastVsHd2dOverlayKind.SurfaceDirectionalShade, !past, false, new Vector2(0.04f, 0.11f), new Vector2(scale.x, scale.y), new Color(0.20f, 0.19f, 0.18f, 0.84f));
         }
 
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
@@ -7153,25 +7156,28 @@ namespace Anemora.EditorTools
                 SerializedSet(ariaAnimator, "spriteRenderer", ariaRenderer);
                 SerializedSet(ariaAnimator, "frameCount", 4);
                 SerializedSet(ariaAnimator, "framesPerSecond", 2.2f);
-                CreateCharacterContactShadow(
+                var ariaContactShadow = CreateCharacterContactShadow(
                     "Past_Library_Aria_ContactShadow",
                     root,
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.035f, 0.02f),
                     new Vector3(0.70f, 0.24f, 1f),
                     EnsureAriaContactShadowMaterial());
-                CreateCharacterFootContactShadow(
+                AddHd2dOverlayProfile(ariaContactShadow, "Past_Library_Aria_ContactShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterContactShadow, false, false, new Vector2(0.18f, 0.42f), new Vector2(0.70f, 0.24f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                var ariaFootContact = CreateCharacterFootContactShadow(
                     "Past_Library_Aria_FootContact",
                     root,
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.041f, -0.040f),
                     new Vector3(0.31f, 0.070f, 1f),
                     EnsureAriaContactShadowMaterial());
-                CreateCharacterDirectionalCastShadow(
+                AddHd2dOverlayProfile(ariaFootContact, "Past_Library_Aria_FootContact", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterFootContact, false, false, new Vector2(0.20f, 0.48f), new Vector2(0.31f, 0.070f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                var ariaDirectionalShadow = CreateCharacterDirectionalCastShadow(
                     "Past_Library_Aria_DirectionalCastShadow",
                     root,
                     PastLibraryPersonCueLocalPosition + new Vector3(0.07f, 0.033f, -0.070f),
                     AriaDirectionalCastShadowScale,
                     CharacterDirectionalCastShadowYawDegrees,
                     EnsureCharacterDirectionalCastShadowMaterial());
+                AddHd2dOverlayProfile(ariaDirectionalShadow, "Past_Library_Aria_DirectionalCastShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterDirectionalCastShadow, false, false, new Vector2(0.10f, 0.34f), new Vector2(AriaDirectionalCastShadowScale.x, AriaDirectionalCastShadowScale.y), new Color(0.20f, 0.19f, 0.18f, 0.90f));
                 CreateCharacterGroundBounce(
                     "Past_Library_Aria_GroundBounce",
                     root,
@@ -7203,25 +7209,28 @@ namespace Anemora.EditorTools
                 var returnedBook = CreateReadableBookProp(root, "Current_Library_ReturnedBookOnDesk", CurrentLibraryReturnedBookLocalPosition, FaceTargetOnPlane(CurrentLibraryReturnedBookLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.48f, 0.05f, 0.28f), materials.Book, materials.SignPaint, materials.RedLight, true, "Current.library.returned_book_on_desk");
                 returnedBook.SetActive(false);
                 CreateRetoAtLibraryDesk(root, materials);
-                CreateCharacterContactShadow(
+                var retoContactShadow = CreateCharacterContactShadow(
                     "Current_Library_Reto_ContactShadow",
                     root,
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.035f, 0.03f),
                     new Vector3(0.66f, 0.24f, 1f),
                     EnsureRetoContactShadowMaterial());
-                CreateCharacterFootContactShadow(
+                AddHd2dOverlayProfile(retoContactShadow, "Current_Library_Reto_ContactShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterContactShadow, true, false, new Vector2(0.18f, 0.42f), new Vector2(0.66f, 0.24f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                var retoFootContact = CreateCharacterFootContactShadow(
                     "Current_Library_Reto_FootContact",
                     root,
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.041f, -0.045f),
                     new Vector3(0.30f, 0.070f, 1f),
                     EnsureRetoContactShadowMaterial());
-                CreateCharacterDirectionalCastShadow(
+                AddHd2dOverlayProfile(retoFootContact, "Current_Library_Reto_FootContact", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterFootContact, true, false, new Vector2(0.20f, 0.48f), new Vector2(0.30f, 0.070f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                var retoDirectionalShadow = CreateCharacterDirectionalCastShadow(
                     "Current_Library_Reto_DirectionalCastShadow",
                     root,
                     RetoLibraryDeskLocalPosition + new Vector3(0.08f, 0.033f, -0.075f),
                     RetoDirectionalCastShadowScale,
                     CharacterDirectionalCastShadowYawDegrees,
                     EnsureCharacterDirectionalCastShadowMaterial());
+                AddHd2dOverlayProfile(retoDirectionalShadow, "Current_Library_Reto_DirectionalCastShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterDirectionalCastShadow, true, false, new Vector2(0.10f, 0.34f), new Vector2(RetoDirectionalCastShadowScale.x, RetoDirectionalCastShadowScale.y), new Color(0.20f, 0.19f, 0.18f, 0.90f));
                 CreateCharacterGroundBounce(
                     "Current_Library_Reto_GroundBounce",
                     root,
@@ -12591,12 +12600,13 @@ namespace Anemora.EditorTools
                 ? "Past_Library_StaticDirectionalCastShadow_BackShelf"
                 : "Current_Library_StaticDirectionalCastShadow_BackShelf";
 
-            CreateStaticDirectionalCastShadow(
+            var shadow = CreateStaticDirectionalCastShadow(
                 objectName,
                 root,
                 c + new Vector3(0f, 0.040f, 6.98f),
                 LibraryStaticDirectionalCastShadowScale,
                 EnsureStaticDirectionalCastShadowMaterial());
+            AddHd2dOverlayProfile(shadow, objectName, FastVsHouseArea.Library, FastVsHd2dOverlayKind.StaticDirectionalCastShadow, !past, false, new Vector2(0.10f, 0.34f), new Vector2(LibraryStaticDirectionalCastShadowScale.x, LibraryStaticDirectionalCastShadowScale.y), new Color(0.20f, 0.19f, 0.18f, 0.90f));
         }
 
         private static void CreateLibrarySurfaceDirectionalShadeOverlay(Transform root, string prefix, bool past, Materials materials)
@@ -12607,13 +12617,14 @@ namespace Anemora.EditorTools
                 : "Current_Library_SurfaceDirectionalShade_BackShelf";
             var scale = past ? LibrarySurfaceDirectionalShadeOverlayPastScale : LibrarySurfaceDirectionalShadeOverlayCurrentScale;
 
-            CreateSurfaceDirectionalShadeOverlay(
+            var overlay = CreateSurfaceDirectionalShadeOverlay(
                 objectName,
                 root,
                 c + new Vector3(0f, 1.44f, 6.97f),
                 scale,
                 Quaternion.identity,
                 EnsureSurfaceDirectionalShadeOverlayMaterial());
+            AddHd2dOverlayProfile(overlay, objectName, FastVsHouseArea.Library, FastVsHd2dOverlayKind.SurfaceDirectionalShade, !past, false, new Vector2(0.04f, 0.11f), new Vector2(scale.x, scale.y), new Color(0.20f, 0.19f, 0.18f, 0.84f));
         }
 
         private static void CreateLibrarySideShelfEdgeDepthPolish(Transform root, string prefix, bool past, Materials materials, Vector3 center, Material wood, Material trim)
@@ -13484,12 +13495,13 @@ namespace Anemora.EditorTools
                 ? "Past_CentralPlaza_StaticDirectionalCastShadow_LibraryFacade"
                 : "Current_CentralPlaza_StaticDirectionalCastShadow_LibraryFacade";
 
-            CreateStaticDirectionalCastShadow(
+            var shadow = CreateStaticDirectionalCastShadow(
                 objectName,
                 root,
                 c + new Vector3(-0.06f, 0.040f, 7.54f),
                 CentralPlazaStaticDirectionalCastShadowScale,
                 EnsureStaticDirectionalCastShadowMaterial());
+            AddHd2dOverlayProfile(shadow, objectName, FastVsHouseArea.CentralPlaza, FastVsHd2dOverlayKind.StaticDirectionalCastShadow, !past, false, new Vector2(0.10f, 0.34f), new Vector2(CentralPlazaStaticDirectionalCastShadowScale.x, CentralPlazaStaticDirectionalCastShadowScale.y), new Color(0.20f, 0.19f, 0.18f, 0.90f));
         }
 
         private static void CreateCentralPlazaLibrarySurfaceDirectionalShadeOverlay(Transform root, string prefix, bool past, Materials materials)
@@ -13500,13 +13512,14 @@ namespace Anemora.EditorTools
                 : "Current_CentralPlaza_SurfaceDirectionalShade_LibraryFacade";
             var scale = past ? CentralPlazaSurfaceDirectionalShadeOverlayPastScale : CentralPlazaSurfaceDirectionalShadeOverlayCurrentScale;
 
-            CreateSurfaceDirectionalShadeOverlay(
+            var overlay = CreateSurfaceDirectionalShadeOverlay(
                 objectName,
                 root,
                 c + new Vector3(0f, 1.46f, 7.89f),
                 scale,
                 Quaternion.identity,
                 EnsureSurfaceDirectionalShadeOverlayMaterial());
+            AddHd2dOverlayProfile(overlay, objectName, FastVsHouseArea.CentralPlaza, FastVsHd2dOverlayKind.SurfaceDirectionalShade, !past, false, new Vector2(0.04f, 0.11f), new Vector2(scale.x, scale.y), new Color(0.20f, 0.19f, 0.18f, 0.84f));
         }
 
         private static void CreatePlazaLibraryEntryDepthPolish(Transform root, string prefix, bool past, Materials materials)
@@ -15320,25 +15333,28 @@ namespace Anemora.EditorTools
                 EnsureTimewriterPocketGlowMaterial());
             pocketGlow.AddComponent<FastVsMapMoveGlowPulse>();
             pocketGlow.SetActive(false);
-            CreateCharacterContactShadow(
+            var niroContactShadow = CreateCharacterContactShadow(
                 "FastVS_PlayerContactShadow_Niro",
                 player.transform,
                 new Vector3(0f, 0.022f, -0.02f),
                 new Vector3(0.66f, 0.24f, 1f),
                 EnsureNiroContactShadowMaterial());
-            CreateCharacterFootContactShadow(
+            AddHd2dOverlayProfile(niroContactShadow, "FastVS_PlayerContactShadow_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterContactShadow, true, true, new Vector2(0.18f, 0.42f), new Vector2(0.66f, 0.24f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+            var niroFootContact = CreateCharacterFootContactShadow(
                 "FastVS_PlayerFootContact_Niro",
                 player.transform,
                 new Vector3(0f, 0.027f, -0.055f),
                 new Vector3(0.34f, 0.075f, 1f),
                 EnsureNiroContactShadowMaterial());
-            CreateCharacterDirectionalCastShadow(
+            AddHd2dOverlayProfile(niroFootContact, "FastVS_PlayerFootContact_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterFootContact, true, true, new Vector2(0.20f, 0.48f), new Vector2(0.34f, 0.075f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+            var niroDirectionalShadow = CreateCharacterDirectionalCastShadow(
                 "FastVS_PlayerDirectionalCastShadow_Niro",
                 player.transform,
                 new Vector3(0.08f, 0.024f, -0.08f),
                 NiroDirectionalCastShadowScale,
                 CharacterDirectionalCastShadowYawDegrees,
                 EnsureCharacterDirectionalCastShadowMaterial());
+            AddHd2dOverlayProfile(niroDirectionalShadow, "FastVS_PlayerDirectionalCastShadow_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterDirectionalCastShadow, true, true, new Vector2(0.10f, 0.34f), new Vector2(NiroDirectionalCastShadowScale.x, NiroDirectionalCastShadowScale.y), new Color(0.20f, 0.19f, 0.18f, 0.90f));
             CreateCharacterGroundBounce(
                 "FastVS_PlayerGroundBounce_Niro",
                 player.transform,
@@ -27844,6 +27860,13 @@ namespace Anemora.EditorTools
         {
             var shadow = CreateQuad(name, parent, localPosition, localScale, material);
             shadow.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            var renderer = shadow.GetComponent<MeshRenderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
             return shadow;
         }
 
@@ -27937,6 +27960,39 @@ namespace Anemora.EditorTools
             }
 
             return quad;
+        }
+
+        private static FastVsHd2dOverlayProfile AddHd2dOverlayProfile(
+            GameObject target,
+            string overlayId,
+            FastVsHouseArea area,
+            FastVsHd2dOverlayKind kind,
+            bool currentWorld,
+            bool dynamicSubject,
+            Vector2 opacityBand,
+            Vector2 footprintWorldSize,
+            Color intendedTint)
+        {
+            if (target == null)
+            {
+                throw new InvalidOperationException($"Cannot add HD2D overlay profile '{overlayId}' because the target object is null.");
+            }
+
+            var profile = target.GetComponent<FastVsHd2dOverlayProfile>();
+            if (profile == null)
+            {
+                profile = target.AddComponent<FastVsHd2dOverlayProfile>();
+            }
+
+            SerializedSet(profile, "overlayId", overlayId);
+            SerializedSet(profile, "areaId", area);
+            SerializedSet(profile, "overlayKind", kind);
+            SerializedSet(profile, "currentWorld", currentWorld);
+            SerializedSet(profile, "dynamicSubject", dynamicSubject);
+            SerializedSet(profile, "opacityBand", opacityBand);
+            SerializedSet(profile, "footprintWorldSize", footprintWorldSize);
+            SerializedSet(profile, "intendedTint", intendedTint);
+            return profile;
         }
 
         private static void ValidateTimewriterBrushIconTexture()
