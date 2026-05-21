@@ -164,6 +164,7 @@ namespace Anemora.EditorTools
                 "niro_contact_shadow",
                 "reto_contact_shadow",
                 "aria_contact_shadow",
+                "character_directional_cast_shadow",
                 "hd2d_depth_shadow"
             })
             {

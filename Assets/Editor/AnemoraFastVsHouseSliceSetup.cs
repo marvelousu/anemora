@@ -56,6 +56,10 @@ namespace Anemora.EditorTools
         private const int NiroAnimatedFrameCount = 4;
         private const int NiroExpectedStripWidth = NiroExpectedTextureWidth * NiroAnimatedFrameCount;
         private const float NiroTransparentFootPixels = 2f;
+        private const float CharacterDirectionalCastShadowYawDegrees = 138f;
+        private static readonly Vector3 NiroDirectionalCastShadowScale = new Vector3(0.72f, 0.18f, 1f);
+        private static readonly Vector3 RetoDirectionalCastShadowScale = new Vector3(0.60f, 0.16f, 1f);
+        private static readonly Vector3 AriaDirectionalCastShadowScale = new Vector3(0.60f, 0.16f, 1f);
         private const int CurrentSpaceRenderLayer = 27;
         private const int OtherTimeSpaceRenderLayer = 28;
         private const int PortalFrameRenderLayer = 26;
@@ -234,6 +238,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFiftySixthCycleHouseExteriorPathPorchDressing();
             ValidateFastVsHd2dSixtyThirdCycleHouseExteriorFacadeMicrodepth();
             ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
+            ValidateFastVsHd2dCharacterDirectionalCastShadows();
             ValidateFastVsHd2dFortyFifthCycleCharacterFootContact();
             ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateFastVsHd2dTwentySixthCycleHouseBedTextilePolish();
@@ -7091,6 +7096,13 @@ namespace Anemora.EditorTools
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.041f, -0.040f),
                     new Vector3(0.31f, 0.070f, 1f),
                     EnsureAriaContactShadowMaterial());
+                CreateCharacterDirectionalCastShadow(
+                    "Past_Library_Aria_DirectionalCastShadow",
+                    root,
+                    PastLibraryPersonCueLocalPosition + new Vector3(0.07f, 0.033f, -0.070f),
+                    AriaDirectionalCastShadowScale,
+                    CharacterDirectionalCastShadowYawDegrees,
+                    EnsureCharacterDirectionalCastShadowMaterial());
                 CreateCharacterGroundBounce(
                     "Past_Library_Aria_GroundBounce",
                     root,
@@ -7134,6 +7146,13 @@ namespace Anemora.EditorTools
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.041f, -0.045f),
                     new Vector3(0.30f, 0.070f, 1f),
                     EnsureRetoContactShadowMaterial());
+                CreateCharacterDirectionalCastShadow(
+                    "Current_Library_Reto_DirectionalCastShadow",
+                    root,
+                    RetoLibraryDeskLocalPosition + new Vector3(0.08f, 0.033f, -0.075f),
+                    RetoDirectionalCastShadowScale,
+                    CharacterDirectionalCastShadowYawDegrees,
+                    EnsureCharacterDirectionalCastShadowMaterial());
                 CreateCharacterGroundBounce(
                     "Current_Library_Reto_GroundBounce",
                     root,
@@ -15180,6 +15199,13 @@ namespace Anemora.EditorTools
                 new Vector3(0f, 0.027f, -0.055f),
                 new Vector3(0.34f, 0.075f, 1f),
                 EnsureNiroContactShadowMaterial());
+            CreateCharacterDirectionalCastShadow(
+                "FastVS_PlayerDirectionalCastShadow_Niro",
+                player.transform,
+                new Vector3(0.08f, 0.024f, -0.08f),
+                NiroDirectionalCastShadowScale,
+                CharacterDirectionalCastShadowYawDegrees,
+                EnsureCharacterDirectionalCastShadowMaterial());
             CreateCharacterGroundBounce(
                 "FastVS_PlayerGroundBounce_Niro",
                 player.transform,
@@ -22343,6 +22369,36 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dCharacterDirectionalCastShadows()
+        {
+            ValidateCharacterDirectionalCastShadowTexture();
+
+            ValidateCharacterDirectionalCastShadowObject(
+                "FastVS_PlayerDirectionalCastShadow_Niro",
+                "FastVS_Player_NiroHouseSlice",
+                new Vector3(0.08f, 0.024f, -0.08f),
+                NiroDirectionalCastShadowScale);
+
+            ValidateCharacterDirectionalCastShadowObject(
+                "Current_Library_Reto_DirectionalCastShadow",
+                "Current_LibraryMap_SeparateSpace",
+                RetoLibraryDeskLocalPosition + new Vector3(0.08f, 0.033f, -0.075f),
+                RetoDirectionalCastShadowScale);
+
+            ValidateCharacterDirectionalCastShadowObject(
+                "Past_Library_Aria_DirectionalCastShadow",
+                "Past_LibraryMap_SeparateSpace",
+                PastLibraryPersonCueLocalPosition + new Vector3(0.07f, 0.033f, -0.070f),
+                AriaDirectionalCastShadowScale);
+
+            if (FindSceneObjectIncludingInactive("FastVS_PlayerDirectionalCastShadow_Niro") == null ||
+                FindSceneObjectIncludingInactive("Current_Library_Reto_DirectionalCastShadow") == null ||
+                FindSceneObjectIncludingInactive("Past_Library_Aria_DirectionalCastShadow") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: the new directional cast shadows must stay present.");
+            }
+        }
+
         private static void ValidateFastVsHd2dFortyFifthCycleCharacterFootContact()
         {
             ValidateCharacterFootContactShadowObject(
@@ -22530,6 +22586,82 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft max alpha must stay in the 0.20-0.30 range, but was {maxAlpha:0.000}.");
             }
+        }
+
+        private static void ValidateCharacterDirectionalCastShadowTexture()
+        {
+            var texture = LoadDirectionalCastShadowTextureForValidation();
+            if (texture == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing directional cast shadow texture asset.");
+            }
+
+            if (texture.width != 96 || texture.height != 64)
+            {
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft must be 96x64, but was {texture.width}x{texture.height}.");
+            }
+
+            var importer = AssetImporter.GetAtPath($"{TextureDirectory}/FastVS_House_character_directional_cast_shadow_soft.png") as TextureImporter;
+            if (importer == null ||
+                !importer.alphaIsTransparency ||
+                importer.mipmapEnabled ||
+                importer.filterMode != FilterMode.Bilinear ||
+                importer.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException("House slice validation failed: character_directional_cast_shadow_soft must use bilinear clamp sampling.");
+            }
+
+            if (TextureAlphaChannelIsEmpty(texture))
+            {
+                throw new InvalidOperationException("House slice validation failed: character_directional_cast_shadow_soft alpha must not be empty.");
+            }
+
+            var center = texture.GetPixel(texture.width / 2, texture.height / 2).a;
+            var edge = texture.GetPixel(0, texture.height / 2).a;
+            var tail = texture.GetPixel(texture.width - 1, texture.height / 2).a;
+            var corner = texture.GetPixel(0, 0).a;
+            var maxAlpha = 0f;
+            foreach (var pixel in texture.GetPixels32())
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
+            }
+
+            if (center < 0.12f || center > 0.24f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft center alpha must stay in the 0.12-0.24 range, but was {center:0.000}.");
+            }
+
+            if (edge > center * 0.65f || tail > center * 0.70f || corner > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft alpha falloff looks broken. edge={edge:0.000}, tail={tail:0.000}, corner={corner:0.000}.");
+            }
+
+            if (maxAlpha < 0.14f || maxAlpha > 0.24f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft max alpha must stay in the 0.14-0.24 range, but was {maxAlpha:0.000}.");
+            }
+
+            UnityEngine.Object.DestroyImmediate(texture);
+        }
+
+        private static Texture2D LoadDirectionalCastShadowTextureForValidation()
+        {
+            var path = $"{TextureDirectory}/FastVS_House_character_directional_cast_shadow_soft.png";
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            var bytes = File.ReadAllBytes(path);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            if (!texture.LoadImage(bytes, false))
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+                throw new InvalidOperationException($"House slice validation failed: directional cast shadow PNG could not be read at {path}.");
+            }
+
+            texture.name = "FastVS_House_character_directional_cast_shadow_soft";
+            return texture;
         }
 
         private static void ValidateSceneObjectMaterialTexture(string objectName, string textureId)
@@ -22751,6 +22883,98 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a non-debug contact_shadow material.");
             }
+        }
+
+        private static void ValidateCharacterDirectionalCastShadowObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing directional-cast-shadow object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<MeshRenderer>();
+            if (renderer == null || renderer.sharedMaterial == null || !renderer.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have an enabled MeshRenderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (Quaternion.Angle(sceneObject.transform.localRotation, Quaternion.Euler(90f, 0f, CharacterDirectionalCastShadowYawDegrees)) > 1.5f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay horizontal with a local yaw near {CharacterDirectionalCastShadowYawDegrees:0.#} degrees.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+
+            if (sceneObject.transform.localScale.x <= sceneObject.transform.localScale.y * 2f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay stretched sideways rather than square.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep real shadow casting disabled.");
+            }
+
+            var material = renderer.sharedMaterial;
+            var materialName = material.name ?? string.Empty;
+            if (materialName.IndexOf("character_directional_cast_shadow", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the generated directional cast shadow material.");
+            }
+
+            if (!string.Equals(material.GetTag(MaterialRoleTagName, false, string.Empty), FastVsHd2dMaterialRole.ContactShadow.ToString(), StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the contact-shadow material role.");
+            }
+
+            if (material.renderQueue < 2988 || material.renderQueue > 3010)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a transparent overlay renderQueue in the 2988-3010 range.");
+            }
+
+            var texture = ResolveMaterialTexture(material) as Texture2D;
+            if (texture == null || !string.Equals(texture.name, "FastVS_House_character_directional_cast_shadow_soft", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must reference the generated directional cast shadow texture.");
+            }
+
+            var validationTexture = LoadDirectionalCastShadowTextureForValidation();
+            if (validationTexture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} directional cast shadow PNG asset is missing.");
+            }
+
+            if (TextureAlphaChannelIsEmpty(validationTexture))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} directional shadow texture alpha must not be empty.");
+            }
+
+            var centerAlpha = validationTexture.GetPixel(validationTexture.width / 2, validationTexture.height / 2).a;
+            var edgeAlpha = validationTexture.GetPixel(0, validationTexture.height / 2).a;
+            var cornerAlpha = validationTexture.GetPixel(0, 0).a;
+            if (centerAlpha < 0.12f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} directional shadow center alpha is too weak.");
+            }
+
+            if (edgeAlpha > centerAlpha * 0.55f || cornerAlpha > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} directional shadow alpha falloff looks broken. edge={edgeAlpha:0.000}, corner={cornerAlpha:0.000}.");
+            }
+
+            UnityEngine.Object.DestroyImmediate(validationTexture);
         }
 
         private static void ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce()
@@ -26864,6 +27088,20 @@ namespace Anemora.EditorTools
             return CreateCharacterContactShadow(name, parent, localPosition, localScale, material);
         }
 
+        private static GameObject CreateCharacterDirectionalCastShadow(string name, Transform parent, Vector3 localPosition, Vector3 localScale, float yawDegrees, Material material)
+        {
+            var shadow = CreateQuad(name, parent, localPosition, localScale, material);
+            shadow.transform.localRotation = Quaternion.Euler(90f, 0f, yawDegrees);
+            var renderer = shadow.GetComponent<MeshRenderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            return shadow;
+        }
+
         private static GameObject CreateCharacterGroundBounce(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
         {
             var bounce = CreateQuad(name, parent, localPosition, localScale, material);
@@ -26940,6 +27178,26 @@ namespace Anemora.EditorTools
         private static Material EnsureAriaContactShadowMaterial()
         {
             return EnsureCharacterContactShadowMaterial("aria_contact_shadow");
+        }
+
+        private static Material EnsureCharacterDirectionalCastShadowMaterial()
+        {
+            var material = FlatMaterial("character_directional_cast_shadow", Color.white, true, FastVsHd2dMaterialRole.ContactShadow);
+            ConfigureTransparentUnlitMaterial(material, 2996);
+            var texture = EnsureCharacterDirectionalCastShadowTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.90f));
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.90f));
+            }
+
+            return material;
         }
 
         private static Material EnsureCharacterContactShadowMaterial(string materialId)
@@ -27469,6 +27727,65 @@ namespace Anemora.EditorTools
 
                     return new Color(0.02f, 0.03f, 0.05f, alpha);
                 });
+        }
+
+        private static Texture2D EnsureCharacterDirectionalCastShadowTexture()
+        {
+            EnsureFolder(TextureDirectory);
+
+            var path = $"{TextureDirectory}/FastVS_House_character_directional_cast_shadow_soft.png";
+            var texture = new Texture2D(96, 64, TextureFormat.RGBA32, false)
+            {
+                name = "FastVS_House_character_directional_cast_shadow_soft",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var u = x / 95f;
+                    var v = y / 63f;
+                    var coreDx = (u - 0.50f) / 0.34f;
+                    var coreDy = (v - 0.53f) / 0.16f;
+                    var core = Mathf.Clamp01(1f - Mathf.Sqrt((coreDx * coreDx) + (coreDy * coreDy)));
+                    var tailDx = (u - 0.76f) / 0.20f;
+                    var tailDy = (v - 0.53f) / 0.12f;
+                    var tail = Mathf.Clamp01(1f - Mathf.Sqrt((tailDx * tailDx) + (tailDy * tailDy * 1.55f)));
+                    var alpha = (core * 0.20f) + (tail * 0.07f);
+                    alpha *= Mathf.Lerp(0.88f, 1f, Mathf.Clamp01(1f - Mathf.Abs(v - 0.53f) / 0.28f));
+                    alpha = Mathf.Clamp(alpha, 0f, 0.24f);
+                    texture.SetPixel(x, y, new Color(0.03f, 0.035f, 0.05f, alpha));
+                }
+            }
+
+            texture.Apply(false, false);
+            File.WriteAllBytes(path, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer != null)
+            {
+                importer.textureType = TextureImporterType.Default;
+                importer.alphaIsTransparency = true;
+                importer.isReadable = true;
+                importer.mipmapEnabled = false;
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.filterMode = FilterMode.Bilinear;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.SaveAndReimport();
+            }
+
+            var imported = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (imported == null)
+            {
+                throw new InvalidOperationException($"Fast VS directional cast shadow texture generation failed: {path}");
+            }
+
+            return imported;
         }
 
         private static Texture2D EnsureHd2dCharacterGroundBounceTexture()

@@ -1,13 +1,13 @@
 # Devlog Index
 
-> Status: v6.75 fast VS HD2D lighting transition cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.76 fast VS HD2D character directional shadow cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 351 files including INDEX.md and README.md.
-- Dated devlog records: 349 files.
+- Root-level Markdown coverage: 352 files including INDEX.md and README.md.
+- Dated devlog records: 350 files.
 - Linked evidence files present under docs/devlog/screenshots/: 658 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 4 |
+| 2026-05-22 | 5 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_character_directional_shadow_cycle05.md](2026-05-22_fast_vs_hd2d_character_directional_shadow_cycle05.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Character Directional Shadow Cycle 05 |
 | [2026-05-22_fast_vs_hd2d_lighting_transition_cycle04.md](2026-05-22_fast_vs_hd2d_lighting_transition_cycle04.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Lighting Transition Cycle 04 |
 | [2026-05-22_fast_vs_hd2d_sprite_card_lighting_cycle03.md](2026-05-22_fast_vs_hd2d_sprite_card_lighting_cycle03.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Lighting Cycle 03 |
 | [2026-05-22_fast_vs_hd2d_material_role_foundation_cycle02.md](2026-05-22_fast_vs_hd2d_material_role_foundation_cycle02.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Material Role Foundation Cycle 02 |
@@ -490,6 +491,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.76 | 2026-05-22 | Added Fast VS HD2D character directional shadow cycle record with a shared soft shadow material/texture, Niro/Reto/Aria placement updates, validation, and cleanup notes. |
 | v6.71 | 2026-05-21 | Added Fast VS HD2D house exterior porch door grounding cycle record with current/past threshold, frame, step shadow, validation, build, smoke, and screenshot evidence. |
 | v6.70 | 2026-05-21 | Added Fast VS HD2D library side shelf edge depth cycle record with current/past side-shelf edge/book/dust cues, validation, build, smoke, and screenshot evidence. |
 | v6.69 | 2026-05-21 | Added Fast VS HD2D library back shelf book-spine depth cycle record with current/past back-shelf spine/depth cues, validation, build, smoke, and screenshot evidence. |
