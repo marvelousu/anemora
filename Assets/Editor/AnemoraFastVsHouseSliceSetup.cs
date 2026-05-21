@@ -252,6 +252,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
+            ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -8818,6 +8819,11 @@ namespace Anemora.EditorTools
             CaptureHd2dEightySeventhCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_backward_volume_20260521");
         }
 
+        public static void CaptureHd2dEightyEighthCycleScreenshotsBatch()
+        {
+            CaptureHd2dEightyEighthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_sky_backdrop_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -9553,6 +9559,79 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighty-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dEightyEighthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS eighty-eighth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var housePlayerLocal = HouseExteriorCenter + new Vector3(4.92f, 0.02f, 0.84f);
+            var plazaPlayerLocal = CentralPlazaVsCenter + new Vector3(0.00f, 0.02f, 4.58f);
+            var plazaUpperAnchorLocal = CentralPlazaVsCenter + new Vector3(0.00f, 2.54f, 8.18f);
+            var plazaUpperCameraOffset = new Vector3(0.00f, 1.34f, -5.80f);
+            var plazaUpperLookOffset = new Vector3(0.00f, 0.10f, 2.04f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_exterior_sky_backdrop.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_sky_backdrop.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_exterior_sky_backdrop.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_sky_backdrop.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                plazaUpperAnchorLocal,
+                plazaUpperCameraOffset,
+                plazaUpperLookOffset,
+                outputDirectory,
+                "03_current_central_plaza_sky_backdrop.png");
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_central_plaza_sky_backdrop.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                plazaUpperAnchorLocal,
+                plazaUpperCameraOffset,
+                plazaUpperLookOffset,
+                outputDirectory,
+                "04_past_central_plaza_sky_backdrop.png");
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_central_plaza_sky_backdrop.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS eighty-eighth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -14752,6 +14831,46 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Current_CentralPlaza_LibraryDoorPanelsRight", "Current_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsLeft", "Past_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsRight", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
+        private static void ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop()
+        {
+            ValidateLandmarkExists("Current_HouseExterior_OutdoorSkyWash_BackPanel", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_OutdoorSkyWash_BackPanel", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_OutdoorSkyWash_BackPanel", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_OutdoorSkyWash_BackPanel", "Past_CentralPlazaMap_SeparateSpace");
+            ValidateOutdoorSkyClearColorForReview();
+        }
+
+        private static void ValidateOutdoorSkyClearColorForReview()
+        {
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var camera = Camera.main;
+            if (visibility == null || camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: outdoor sky clear-color review components are missing.");
+            }
+
+            var outdoorSky = new Color(0.125f, 0.148f, 0.170f, 1f);
+            var indoorDark = new Color(0.075f, 0.078f, 0.084f, 1f);
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
+            ValidateColorApproximately(camera.backgroundColor, outdoorSky, "house exterior outdoor sky clear color");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            ValidateColorApproximately(camera.backgroundColor, outdoorSky, "central plaza outdoor sky clear color");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
+            ValidateColorApproximately(camera.backgroundColor, indoorDark, "interior clear color");
+        }
+
+        private static void ValidateColorApproximately(Color actual, Color expected, string label)
+        {
+            const float epsilon = 0.002f;
+            if (Mathf.Abs(actual.r - expected.r) > epsilon ||
+                Mathf.Abs(actual.g - expected.g) > epsilon ||
+                Mathf.Abs(actual.b - expected.b) > epsilon ||
+                Mathf.Abs(actual.a - expected.a) > epsilon)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} expected {expected} but was {actual}.");
+            }
         }
 
         private static void ValidateLibraryReadingSurfaceDensityObject(string objectName, string expectedParentName, string expectedLandmarkIdPrefix, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 maxLocalScale)

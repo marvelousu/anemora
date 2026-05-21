@@ -21,6 +21,8 @@ namespace Anemora.FastVS
         [SerializeField] private GameObject currentLibraryMap;
         [SerializeField] private GameObject pastLibraryMap;
         [SerializeField] private FastVsHouseArea activeArea;
+        [SerializeField] private Color indoorClearColor = new Color(0.075f, 0.078f, 0.084f, 1f);
+        [SerializeField] private Color outdoorSkyClearColor = new Color(0.125f, 0.148f, 0.170f, 1f);
 
         public FastVsHouseArea ActiveAreaForReview => activeArea;
         public bool InteriorActiveForReview => IsActive(currentInteriorMap) && IsActive(pastInteriorMap);
@@ -58,6 +60,20 @@ namespace Anemora.FastVS
             SetActive(pastCentralPlazaMap, activeArea == FastVsHouseArea.CentralPlaza);
             SetActive(currentLibraryMap, activeArea == FastVsHouseArea.Library);
             SetActive(pastLibraryMap, activeArea == FastVsHouseArea.Library);
+            ApplyCameraClearColor();
+        }
+
+        private void ApplyCameraClearColor()
+        {
+            var mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                return;
+            }
+
+            mainCamera.backgroundColor = activeArea == FastVsHouseArea.Exterior || activeArea == FastVsHouseArea.CentralPlaza
+                ? outdoorSkyClearColor
+                : indoorClearColor;
         }
 
         private static void SetActive(GameObject target, bool active)
