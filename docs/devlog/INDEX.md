@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.67 fast VS HD2D plaza library window reveal depth cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.68 fast VS HD2D plaza library door relief cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 343 files including INDEX.md and README.md.
-- Dated devlog records: 341 files.
-- Linked evidence files present under docs/devlog/screenshots/: 638 files.
+- Root-level Markdown coverage: 344 files including INDEX.md and README.md.
+- Dated devlog records: 342 files.
+- Linked evidence files present under docs/devlog/screenshots/: 642 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 50 |
+| 2026-05-21 | 51 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_plaza_library_door_relief_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_door_relief_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Door Relief Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_window_reveal_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_window_reveal_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Window Reveal Depth Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_lower_facade_grounding_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_lower_facade_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Lower Facade Grounding Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_entry_plinth_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_entry_plinth_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Entry Plinth Depth Cycle |
@@ -476,6 +477,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.68 | 2026-05-21 | Added Fast VS HD2D plaza library door relief cycle record with current/past door seams, bands, hinge plates, reveal strips, validation, build, smoke, and screenshot evidence. |
 | v6.67 | 2026-05-21 | Added Fast VS HD2D plaza library window reveal depth cycle record with current/past window reveal strips, lips, supports, validation, build, smoke, and screenshot evidence. |
 | v6.66 | 2026-05-21 | Added Fast VS HD2D plaza library lower facade grounding cycle record with current/past entrance base, pilaster base, and window support cues plus validation, build, smoke, and screenshot evidence. |
 | v6.65 | 2026-05-21 | Added Fast VS HD2D plaza library entry plinth depth cycle record with current/past entrance step/plinth cues, validation, build, smoke, and screenshot evidence. |

@@ -268,6 +268,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredFirstCyclePlazaLibraryEntryPlinthDepth();
             ValidateFastVsHd2dOneHundredSecondCyclePlazaLibraryLowerFacadeGrounding();
             ValidateFastVsHd2dOneHundredThirdCyclePlazaLibraryWindowRevealDepth();
+            ValidateFastVsHd2dOneHundredFourthCyclePlazaLibraryDoorRelief();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5993,6 +5994,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryEntryPlinthDepthPolish(root, prefix, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryLowerFacadeGroundingPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryWindowRevealDepthPolish(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaLibraryDoorReliefPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryApproachHd2dPolish(root, prefix, past, materials, c, stone, trim, path);
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareNorthBorder", root, c + new Vector3(0f, 0.066f, 8.14f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_north");
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareSouthBorder", root, c + new Vector3(0f, 0.066f, -3.64f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_south");
@@ -9040,6 +9042,11 @@ namespace Anemora.EditorTools
             CaptureHd2dOneHundredThirdCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_window_reveal_depth_20260521");
         }
 
+        public static void CaptureHd2dOneHundredFourthCycleScreenshotsBatch()
+        {
+            CaptureHd2dOneHundredFourthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_door_relief_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -10929,6 +10936,79 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS one-hundred-third-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dOneHundredFourthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS one-hundred-fourth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = CentralPlazaVsCenter + new Vector3(0f, 0.02f, 4.86f);
+            var closePlayerLocal = CentralPlazaVsCenter + new Vector3(0f, 0.02f, 5.98f);
+            var closeAnchorLocal = CentralPlazaVsCenter + new Vector3(0f, 1.10f, 7.76f);
+            var closeCameraOffset = new Vector3(0.0f, 1.14f, -3.64f);
+            var closeLookOffset = new Vector3(0.0f, 0.02f, 0.12f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_plaza_library_door_relief_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_plaza_library_door_relief_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_plaza_library_door_relief_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_plaza_library_door_relief_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "03_current_plaza_library_door_relief_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_plaza_library_door_relief_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "04_past_plaza_library_door_relief_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_plaza_library_door_relief_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS one-hundred-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureSkyTextureReadabilityScreenshot(
@@ -12961,6 +13041,125 @@ namespace Anemora.EditorTools
                 Quaternion.Euler(0f, 7f, 0f),
                 chipMaterial,
                 $"{prefix}.central_plaza.library_window_reveal_depth.right_bottom_chip_a");
+        }
+
+        private static void CreateCentralPlazaLibraryDoorReliefPolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
+        {
+            var objectPrefix = $"{prefix}_CentralPlaza_LibraryDoorRelief";
+            var frameMaterial = trim;
+            var doorMaterial = past ? materials.PastLibraryDoorDetail : materials.CurrentLibraryDoorDetail;
+            var thresholdMaterial = stone;
+            var chipMaterial = past ? materials.Dust : materials.Shadow;
+            var bracketMaterial = past ? materials.PastFence : materials.CurrentFence;
+            var seamMaterial = past ? materials.PastLibraryDoorDetail : materials.CurrentLibraryDoorDetail;
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_CenterSeamA",
+                root,
+                center + new Vector3(0f, 0.50f, 7.80f),
+                new Vector3(0.06f, 1.02f, 0.025f),
+                Quaternion.identity,
+                seamMaterial,
+                $"{prefix}.central_plaza.library_door_relief.center_seam_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_UpperBandA",
+                root,
+                center + new Vector3(0f, 1.28f, 7.80f),
+                new Vector3(1.04f, 0.04f, 0.025f),
+                Quaternion.identity,
+                doorMaterial,
+                $"{prefix}.central_plaza.library_door_relief.upper_band_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_MidBandA",
+                root,
+                center + new Vector3(0f, 0.98f, 7.80f),
+                new Vector3(1.04f, 0.035f, 0.025f),
+                Quaternion.identity,
+                frameMaterial,
+                $"{prefix}.central_plaza.library_door_relief.mid_band_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LowerBandA",
+                root,
+                center + new Vector3(0f, 0.66f, 7.80f),
+                new Vector3(1.04f, 0.035f, 0.025f),
+                Quaternion.identity,
+                doorMaterial,
+                $"{prefix}.central_plaza.library_door_relief.lower_band_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftHingePlateA",
+                root,
+                center + new Vector3(-0.54f, 0.72f, 7.80f),
+                new Vector3(0.07f, 0.44f, 0.025f),
+                Quaternion.identity,
+                bracketMaterial,
+                $"{prefix}.central_plaza.library_door_relief.left_hinge_plate_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightHingePlateA",
+                root,
+                center + new Vector3(0.54f, 0.72f, 7.80f),
+                new Vector3(0.07f, 0.44f, 0.025f),
+                Quaternion.identity,
+                bracketMaterial,
+                $"{prefix}.central_plaza.library_door_relief.right_hinge_plate_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftRevealStripA",
+                root,
+                center + new Vector3(-0.64f, 0.72f, 7.80f),
+                new Vector3(0.06f, 1.20f, 0.022f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.central_plaza.library_door_relief.left_reveal_strip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightRevealStripA",
+                root,
+                center + new Vector3(0.64f, 0.72f, 7.80f),
+                new Vector3(0.06f, 1.20f, 0.022f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.central_plaza.library_door_relief.right_reveal_strip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftThresholdStripA",
+                root,
+                center + new Vector3(-0.30f, 0.12f, 7.79f),
+                new Vector3(0.54f, 0.03f, 0.04f),
+                Quaternion.identity,
+                thresholdMaterial,
+                $"{prefix}.central_plaza.library_door_relief.left_threshold_strip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightThresholdStripA",
+                root,
+                center + new Vector3(0.30f, 0.12f, 7.79f),
+                new Vector3(0.54f, 0.03f, 0.04f),
+                Quaternion.identity,
+                thresholdMaterial,
+                $"{prefix}.central_plaza.library_door_relief.right_threshold_strip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftBottomChipA",
+                root,
+                center + new Vector3(-0.48f, 0.22f, 7.81f),
+                new Vector3(0.16f, 0.02f, 0.025f),
+                Quaternion.Euler(0f, -6f, 0f),
+                chipMaterial,
+                $"{prefix}.central_plaza.library_door_relief.left_bottom_chip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightBottomChipA",
+                root,
+                center + new Vector3(0.48f, 0.22f, 7.81f),
+                new Vector3(0.16f, 0.02f, 0.025f),
+                Quaternion.Euler(0f, 6f, 0f),
+                chipMaterial,
+                $"{prefix}.central_plaza.library_door_relief.right_bottom_chip_a");
         }
 
         private static void CreateCentralPlazaLibraryRearVolumePolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
@@ -17495,6 +17694,38 @@ namespace Anemora.EditorTools
             ValidateCentralPlazaLibraryWindowRevealDepthObject("Past_CentralPlaza_LibraryWindowRevealDepth_RightTopLipA", "past_fence", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_window_reveal_depth.", min, max, 0.96f, 0.08f, 0.08f);
             ValidateCentralPlazaLibraryWindowRevealDepthObject("Past_CentralPlaza_LibraryWindowRevealDepth_RightBottomSupportA", "past_stone", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_window_reveal_depth.", min, max, 1.00f, 0.10f, 0.10f);
             ValidateCentralPlazaLibraryWindowRevealDepthObject("Past_CentralPlaza_LibraryWindowRevealDepth_RightBottomChipA", "dust", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_window_reveal_depth.", min, max, 0.36f, 0.04f, 0.08f);
+        }
+
+        private static void ValidateFastVsHd2dOneHundredFourthCyclePlazaLibraryDoorRelief()
+        {
+            var min = new Vector3(-0.70f, 0.10f, 7.78f);
+            var max = new Vector3(0.70f, 1.40f, 7.82f);
+
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_CenterSeamA", "current_library_door_detail", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.08f, 1.08f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_UpperBandA", "current_library_door_detail", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 1.10f, 0.06f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_MidBandA", "current_fence", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 1.10f, 0.06f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_LowerBandA", "current_library_door_detail", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 1.10f, 0.06f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_LeftHingePlateA", "current_fence", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.08f, 0.50f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_RightHingePlateA", "current_fence", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.08f, 0.50f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_LeftRevealStripA", "current_exterior_wall", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.10f, 1.28f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_RightRevealStripA", "current_exterior_wall", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.10f, 1.28f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_LeftThresholdStripA", "current_stone", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.58f, 0.05f, 0.06f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_RightThresholdStripA", "current_stone", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.58f, 0.05f, 0.06f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_LeftBottomChipA", "shadow", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.22f, 0.04f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Current_CentralPlaza_LibraryDoorRelief_RightBottomChipA", "shadow", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.library_door_relief.", min, max, 0.22f, 0.04f, 0.04f);
+
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_CenterSeamA", "past_library_door_detail", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.08f, 1.08f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_UpperBandA", "past_library_door_detail", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 1.10f, 0.06f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_MidBandA", "past_fence", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 1.10f, 0.06f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_LowerBandA", "past_library_door_detail", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 1.10f, 0.06f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_LeftHingePlateA", "past_fence", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.08f, 0.50f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_RightHingePlateA", "past_fence", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.08f, 0.50f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_LeftRevealStripA", "past_exterior_wall", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.10f, 1.28f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_RightRevealStripA", "past_exterior_wall", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.10f, 1.28f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_LeftThresholdStripA", "past_stone", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.58f, 0.05f, 0.06f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_RightThresholdStripA", "past_stone", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.58f, 0.05f, 0.06f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_LeftBottomChipA", "dust", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.22f, 0.04f, 0.04f);
+            ValidateCentralPlazaLibraryDoorReliefObject("Past_CentralPlaza_LibraryDoorRelief_RightBottomChipA", "dust", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_door_relief.", min, max, 0.22f, 0.04f, 0.04f);
         }
 
         private static void ValidateOutdoorSkyClearColorForReview()
@@ -24212,6 +24443,94 @@ namespace Anemora.EditorTools
                 sceneObject.transform.localScale.z > maxScaleZ)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended window reveal scale range.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+
+            if (materialName.IndexOf("window_light", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("warm_light", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not use bright window/light materials.");
+            }
+        }
+
+        private static void ValidateCentralPlazaLibraryDoorReliefObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing central plaza library door relief object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not cast or receive shadows.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not count for arrival.");
+            }
+
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkIdPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a landmark id starting with {expectedLandmarkIdPrefix}.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - CentralPlazaVsCenter;
+            if (localOffset.x < minLocalPosition.x || localOffset.x > maxLocalPosition.x ||
+                localOffset.y < minLocalPosition.y || localOffset.y > maxLocalPosition.y ||
+                localOffset.z < minLocalPosition.z || localOffset.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended door relief placement range.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX ||
+                sceneObject.transform.localScale.y > maxScaleY ||
+                sceneObject.transform.localScale.z > maxScaleZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended door relief scale range.");
             }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
