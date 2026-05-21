@@ -34,6 +34,9 @@ namespace Anemora.EditorTools
         private static readonly Color SurfaceRampTopLight = new Color(1.05f, 1.03f, 0.97f, 1f);
         private static readonly Color SurfaceRampSideShade = new Color(0.95f, 0.98f, 1.03f, 1f);
         private static readonly Color SurfaceRampFloorShade = new Color(0.92f, 0.94f, 0.97f, 1f);
+        private static readonly Vector2 CurrentInteriorSurfaceReadabilityFloorTextureScale = new Vector2(8f, 6f);
+        private static readonly Vector2 CurrentInteriorSurfaceReadabilityWallTextureScale = new Vector2(6f, 4f);
+        private static readonly Vector2 CurrentInteriorSurfaceReadabilityFurnitureTextureScale = new Vector2(4f, 4f);
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
@@ -29079,11 +29082,11 @@ namespace Anemora.EditorTools
                 y,
                 128,
                 128,
-                new Color(0.25f, 0.18f, 0.13f, 1f),
-                new Color(0.32f, 0.23f, 0.16f, 1f),
-                new Color(0.13f, 0.10f, 0.08f, 1f),
-                new Color(0.46f, 0.37f, 0.26f, 1f),
-                new Color(0.20f, 0.15f, 0.11f, 1f),
+                new Color(0.34f, 0.26f, 0.18f, 1f),
+                new Color(0.46f, 0.35f, 0.25f, 1f),
+                new Color(0.18f, 0.13f, 0.09f, 1f),
+                new Color(0.58f, 0.44f, 0.30f, 1f),
+                new Color(0.24f, 0.18f, 0.13f, 1f),
                 31,
                 true);
         }
@@ -29111,11 +29114,11 @@ namespace Anemora.EditorTools
                 y,
                 128,
                 128,
-                new Color(0.40f, 0.36f, 0.31f, 1f),
-                new Color(0.50f, 0.44f, 0.38f, 1f),
-                new Color(0.22f, 0.20f, 0.18f, 1f),
-                new Color(0.56f, 0.49f, 0.43f, 1f),
-                new Color(0.28f, 0.25f, 0.23f, 1f),
+                new Color(0.50f, 0.46f, 0.40f, 1f),
+                new Color(0.60f, 0.55f, 0.48f, 1f),
+                new Color(0.30f, 0.27f, 0.24f, 1f),
+                new Color(0.72f, 0.65f, 0.58f, 1f),
+                new Color(0.36f, 0.32f, 0.29f, 1f),
                 61,
                 true);
         }
@@ -29143,10 +29146,10 @@ namespace Anemora.EditorTools
                 y,
                 128,
                 128,
-                new Color(0.28f, 0.17f, 0.10f, 1f),
-                new Color(0.36f, 0.22f, 0.13f, 1f),
-                new Color(0.13f, 0.09f, 0.06f, 1f),
-                new Color(0.48f, 0.30f, 0.18f, 1f),
+                new Color(0.38f, 0.24f, 0.15f, 1f),
+                new Color(0.50f, 0.32f, 0.20f, 1f),
+                new Color(0.18f, 0.12f, 0.08f, 1f),
+                new Color(0.64f, 0.45f, 0.28f, 1f),
                 83,
                 true);
         }
@@ -30839,11 +30842,11 @@ namespace Anemora.EditorTools
                 PixelMaterial("current_ground", new Color32(42, 41, 38, 255), new Color32(63, 58, 51, 255), new Color32(31, 31, 30, 255), PixelPattern.Noise, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("current_grass", "current_grass_hd2d_plate", 128, 128, SampleCurrentGrassHd2dPixel, false, new Vector2(6f, 6f)),
                 PaintedSurfaceMaterial("current_path", "current_path_hd2d_plate", 128, 128, SampleCurrentPathHd2dPixel, false, new Vector2(4f, 4f)),
-                PaintedSurfaceMaterial("current_interior_floor", "current_interior_floor_hd2d_plate", 128, 128, SampleCurrentInteriorFloorHd2dPixel, false, new Vector2(4f, 3f)),
-                PaintedSurfaceMaterial("current_interior_wall", "current_interior_wall_hd2d_plate", 128, 128, SampleCurrentInteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
+                PaintedSurfaceMaterial("current_interior_floor", "current_interior_floor_hd2d_plate", 128, 128, SampleCurrentInteriorFloorHd2dPixel, false, CurrentInteriorSurfaceReadabilityFloorTextureScale),
+                PaintedSurfaceMaterial("current_interior_wall", "current_interior_wall_hd2d_plate", 128, 128, SampleCurrentInteriorWallHd2dPixel, false, CurrentInteriorSurfaceReadabilityWallTextureScale),
                 PaintedSurfaceMaterial("current_exterior_wall", "current_exterior_wall_hd2d_plate", 128, 128, SampleCurrentExteriorWallHd2dPixel, false, new Vector2(4f, 3f)),
                 PaintedSurfaceMaterial("current_roof", "current_roof_hd2d_plate", 128, 128, SampleCurrentRoofHd2dPixel, false, new Vector2(4f, 3f)),
-                PaintedSurfaceMaterial("current_furniture", "current_furniture_hd2d_plate", 128, 128, SampleCurrentFurnitureHd2dPixel, false, new Vector2(2f, 2f)),
+                PaintedSurfaceMaterial("current_furniture", "current_furniture_hd2d_plate", 128, 128, SampleCurrentFurnitureHd2dPixel, false, CurrentInteriorSurfaceReadabilityFurnitureTextureScale),
                 PaintedSurfaceMaterial("current_fence", "current_plank_debris_hd2d_plate", 128, 64, SampleCurrentPlankDebrisHd2dPixel, false, new Vector2(6f, 2f)),
                 PaintedSurfaceMaterial("current_house_door_detail", "current_house_door_detail_hd2d_plate", 96, 160, SampleCurrentHouseDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PaintedSurfaceMaterial("current_library_door_detail", "current_library_door_detail_hd2d_plate", 96, 160, SampleCurrentLibraryDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
@@ -31235,50 +31238,7 @@ namespace Anemora.EditorTools
 
             if (useSurfaceRampShader && string.Equals(shader.name, SurfaceRampLitShaderName, StringComparison.Ordinal))
             {
-                if (material.HasProperty("_SurfaceRampStrength"))
-                {
-                    material.SetFloat("_SurfaceRampStrength", SurfaceRampStrength);
-                }
-
-                if (material.HasProperty("_TopLight"))
-                {
-                    material.SetColor("_TopLight", SurfaceRampTopLight);
-                }
-
-                if (material.HasProperty("_SideShade"))
-                {
-                    material.SetColor("_SideShade", SurfaceRampSideShade);
-                }
-
-                if (material.HasProperty("_FloorShade"))
-                {
-                    material.SetColor("_FloorShade", SurfaceRampFloorShade);
-                }
-
-                if (material.HasProperty("_Metallic"))
-                {
-                    material.SetFloat("_Metallic", 0f);
-                }
-
-                if (material.HasProperty("_Smoothness"))
-                {
-                    material.SetFloat("_Smoothness", 0.16f);
-                }
-
-                if (material.HasProperty("_SpecularHighlights"))
-                {
-                    material.SetFloat("_SpecularHighlights", 0f);
-                }
-
-                if (material.HasProperty("_DirectionalLightStrength"))
-                {
-                    material.SetFloat("_DirectionalLightStrength", SurfaceRampDirectionalLightStrength);
-                }
-
-                if (material.HasProperty("_ShadowReceiveStrength"))
-                {
-                    material.SetFloat("_ShadowReceiveStrength", SurfaceRampShadowReceiveStrength);
-                }
+                ApplySurfaceRampProfile(material, id);
             }
             else if (!unlit && ShouldApplyHd2dMatteMaterial(id))
             {
@@ -31309,9 +31269,7 @@ namespace Anemora.EditorTools
                 return false;
             }
 
-            if (id == "current_interior_floor" ||
-                id == "current_interior_wall" ||
-                id == "current_furniture")
+            if (IsCurrentInteriorSurfaceReadabilityMaterial(id))
             {
                 return false;
             }
@@ -31323,6 +31281,61 @@ namespace Anemora.EditorTools
 
             return id.StartsWith("bookshelf_front_painted_hd2d_", StringComparison.Ordinal) ||
                    id.StartsWith("current_empty_bookshelf_front_hd2d_", StringComparison.Ordinal);
+        }
+
+        private static void ApplySurfaceRampProfile(Material material, string id)
+        {
+            if (material.HasProperty("_SurfaceRampStrength"))
+            {
+                material.SetFloat("_SurfaceRampStrength", SurfaceRampStrength);
+            }
+
+            if (material.HasProperty("_TopLight"))
+            {
+                material.SetColor("_TopLight", SurfaceRampTopLight);
+            }
+
+            if (material.HasProperty("_SideShade"))
+            {
+                material.SetColor("_SideShade", SurfaceRampSideShade);
+            }
+
+            if (material.HasProperty("_FloorShade"))
+            {
+                material.SetColor("_FloorShade", SurfaceRampFloorShade);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.16f);
+            }
+
+            if (material.HasProperty("_SpecularHighlights"))
+            {
+                material.SetFloat("_SpecularHighlights", 0f);
+            }
+
+            if (material.HasProperty("_DirectionalLightStrength"))
+            {
+                material.SetFloat("_DirectionalLightStrength", SurfaceRampDirectionalLightStrength);
+            }
+
+            if (material.HasProperty("_ShadowReceiveStrength"))
+            {
+                material.SetFloat("_ShadowReceiveStrength", SurfaceRampShadowReceiveStrength);
+            }
+        }
+
+        private static bool IsCurrentInteriorSurfaceReadabilityMaterial(string id)
+        {
+            return id == "current_interior_floor" ||
+                   id == "current_interior_wall" ||
+                   id == "current_furniture";
         }
 
         private static Material CreateSpriteCardMaterial(string id, Color tint, int renderQueue)
