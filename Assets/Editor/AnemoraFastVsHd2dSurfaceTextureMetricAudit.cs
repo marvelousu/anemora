@@ -39,8 +39,17 @@ namespace Anemora.EditorTools
             "screenshots",
             "fast_vs_hd2d_house_exterior_ground_microcontrast_cycle17_20260522"));
         private const string Cycle17MetricsFileName = "surface_texture_metrics_cycle17_20260522.md";
+        private static readonly string Cycle18OutputDirectory = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "..",
+            "docs",
+            "devlog",
+            "screenshots",
+            "fast_vs_hd2d_library_bookshelf_surface_cycle18_20260522"));
+        private const string Cycle18MetricsFileName = "surface_texture_metrics_cycle18_20260522.md";
         private const string Cycle16ReportTitle = "Fast VS HD2D Surface Texture Metric Audit Cycle 16";
         private const string Cycle17ReportTitle = "Fast VS HD2D House Exterior Ground Microcontrast Cycle 17";
+        private const string Cycle18ReportTitle = "Fast VS HD2D Library Bookshelf Surface Cycle 18";
 
         [MenuItem("Tools/Anemora/Verify HD2D Surface Texture Metrics V1")]
         public static void VerifySurfaceTextureMetricsV1()
@@ -78,6 +87,19 @@ namespace Anemora.EditorTools
             }
 
             Debug.Log($"HD2D surface texture metric report written: {Path.Combine(Cycle17OutputDirectory, Cycle17MetricsFileName)}");
+        }
+
+        [MenuItem("Tools/Anemora/Write HD2D Library Bookshelf Surface Cycle 18 Metrics")]
+        public static void WriteLibraryBookshelfSurfaceCycle18MetricsBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+            var batch = RunSurfaceTextureMetricAudit(writeReport: true, Cycle18OutputDirectory, Cycle18MetricsFileName, Cycle18ReportTitle);
+            if (batch.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D surface texture metric audit failed:\n- " + string.Join("\n- ", batch.Issues));
+            }
+
+            Debug.Log($"HD2D surface texture metric report written: {Path.Combine(Cycle18OutputDirectory, Cycle18MetricsFileName)}");
         }
 
         private static SurfaceTextureMetricBatch RunSurfaceTextureMetricAudit(bool writeReport, string outputDirectory, string metricsFileName, string reportTitle)
@@ -164,6 +186,8 @@ namespace Anemora.EditorTools
                 issues.Add($"Surface {row.SurfaceId} on {row.GameObjectName} is missing a MeshRenderer shared material.");
                 row.Material = "(missing material)";
                 row.Texture = "(missing material)";
+                row.IntendedMaterialToken = profile.IntendedMaterialTokenForReview ?? string.Empty;
+                row.ActualMaterialToken = string.Empty;
                 row.Result = "FAIL: missing MeshRenderer shared material";
                 return row;
             }
@@ -171,6 +195,8 @@ namespace Anemora.EditorTools
             var material = renderer.sharedMaterial;
             var measurement = GetOrCreateMeasurement(material, cache);
             row.Material = material.name ?? string.Empty;
+            row.IntendedMaterialToken = profile.IntendedMaterialTokenForReview ?? string.Empty;
+            row.ActualMaterialToken = ResolveMaterialToken(measurement.MaterialLabel);
             row.Texture = measurement.TextureLabel;
             row.AverageLuminance = measurement.AverageLuminance;
             row.LuminanceRange = measurement.LuminanceRange;
@@ -178,6 +204,10 @@ namespace Anemora.EditorTools
             row.DistinctBuckets = measurement.DistinctBuckets;
 
             var rowIssues = ValidateMeasurement(profile, measurement);
+            if (!string.Equals(row.Material, "(missing material)", StringComparison.Ordinal))
+            {
+                ValidateLibraryBookshelfSurfaceTokens(profile, measurement, rowIssues);
+            }
             if (rowIssues.Count == 0)
             {
                 row.Result = measurement.UsedColorFallback
@@ -454,6 +484,74 @@ namespace Anemora.EditorTools
             return texture.name ?? string.Empty;
         }
 
+        private static string ResolveMaterialToken(string materialName)
+        {
+            if (string.IsNullOrWhiteSpace(materialName))
+            {
+                return string.Empty;
+            }
+
+            if (materialName.StartsWith("FastVS_House_", StringComparison.Ordinal))
+            {
+                materialName = materialName.Substring("FastVS_House_".Length);
+            }
+
+            foreach (var token in new[]
+            {
+                "current_empty_bookshelf_front_hd2d",
+                "bookshelf_front_painted_hd2d",
+                "current_furniture",
+                "past_furniture"
+            })
+            {
+                if (materialName.Equals(token, StringComparison.Ordinal) ||
+                    materialName.StartsWith(token + "_", StringComparison.Ordinal))
+                {
+                    return token;
+                }
+            }
+
+            return materialName;
+        }
+
+        private static void ValidateLibraryBookshelfSurfaceTokens(
+            FastVsHd2dSurfaceProfile profile,
+            SurfaceTextureMetricMeasurement measurement,
+            List<string> issues)
+        {
+            var surfaceId = profile.SurfaceIdForReview ?? string.Empty;
+            var isLibraryBackBookshelf =
+                surfaceId.IndexOf(".Library.Bookshelf.Back", StringComparison.Ordinal) >= 0;
+
+            if (!isLibraryBackBookshelf)
+            {
+                return;
+            }
+
+            var expectedToken = profile.IsCurrentWorldForReview
+                ? "current_empty_bookshelf_front_hd2d"
+                : "bookshelf_front_painted_hd2d";
+            var intendedToken = profile.IntendedMaterialTokenForReview ?? string.Empty;
+            var actualToken = ResolveMaterialToken(measurement.MaterialLabel);
+            var gameObjectName = profile.gameObject != null ? profile.gameObject.name : "(missing gameObject)";
+
+            if (!string.Equals(intendedToken, expectedToken, StringComparison.Ordinal))
+            {
+                issues.Add($"{surfaceId} on {gameObjectName} intended material token '{intendedToken}' must resolve to '{expectedToken}'.");
+            }
+
+            if (string.Equals(actualToken, "current_furniture", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(actualToken, "past_furniture", StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add($"{surfaceId} on {gameObjectName} actual material token '{actualToken}' must not fall back to generic furniture.");
+            }
+
+            if (!string.Equals(actualToken, expectedToken, StringComparison.Ordinal))
+            {
+                issues.Add($"{surfaceId} on {gameObjectName} actual material token '{actualToken}' must resolve to '{expectedToken}'.");
+            }
+        }
+
         private static bool TryResolveMaterialColor(Material material, out Color color, out string colorSource)
         {
             if (material.HasProperty("_BaseColor"))
@@ -549,8 +647,8 @@ namespace Anemora.EditorTools
             builder.AppendLine($"- Output directory: `{outputDirectory}`");
             builder.AppendLine($"- Result: {(batch.Issues.Count == 0 ? "Pass" : "Fail")}");
             builder.AppendLine();
-            builder.AppendLine("| SurfaceId | GameObject | Area | Kind | Current | Material | Texture | AvgLum | Range | LocalContrast | DistinctBuckets | Result |");
-            builder.AppendLine("|---|---|---|---|---|---|---|---:|---:|---:|---:|---|");
+            builder.AppendLine("| SurfaceId | GameObject | Area | Kind | Current | Material | Texture | IntendedToken | ActualToken | AvgLum | Range | LocalContrast | DistinctBuckets | Result |");
+            builder.AppendLine("|---|---|---|---|---|---|---|---|---|---:|---:|---:|---:|---|");
 
             foreach (var row in batch.Rows)
             {
@@ -568,6 +666,10 @@ namespace Anemora.EditorTools
                 builder.Append(EscapeTableCell(row.Material));
                 builder.Append(" | ");
                 builder.Append(EscapeTableCell(row.Texture));
+                builder.Append(" | ");
+                builder.Append(EscapeTableCell(row.IntendedMaterialToken));
+                builder.Append(" | ");
+                builder.Append(EscapeTableCell(row.ActualMaterialToken));
                 builder.Append(" | ");
                 builder.Append(row.AverageLuminance.ToString("0.000", CultureInfo.InvariantCulture));
                 builder.Append(" | ");
@@ -620,6 +722,8 @@ namespace Anemora.EditorTools
             public bool Current;
             public string Material;
             public string Texture;
+            public string IntendedMaterialToken;
+            public string ActualMaterialToken;
             public float AverageLuminance;
             public float LuminanceRange;
             public float LocalContrast;

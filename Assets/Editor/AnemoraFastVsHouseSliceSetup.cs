@@ -7241,10 +7241,13 @@ namespace Anemora.EditorTools
             var wall = past ? materials.PastInteriorWall : materials.CurrentInteriorWall;
             var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
             var trim = past ? materials.PastFence : materials.CurrentFence;
+            var backWallShelfMaterial = past
+                ? BookshelfFrontMaterial($"{prefix}_Library_BackWallShelfWide", new Vector2(8.73f, 2.18f))
+                : CurrentEmptyBookshelfFrontMaterial($"{prefix}_Library_BackWallShelfWide", new Vector2(8.73f, 2.18f));
 
             CreateLandmarkCube($"{prefix}_Library_PixelFloor", root, c, new Vector3(11.6f, 0.10f, 15.4f), Quaternion.identity, floor, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.library.floor");
             CreateLandmarkCube($"{prefix}_Library_BackWall", root, c + new Vector3(0f, 1.40f, 7.55f), new Vector3(11.8f, 2.80f, 0.24f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.library.back_wall");
-            CreateLandmarkCube($"{prefix}_Library_BackWallShelfWide", root, c + new Vector3(0f, 1.24f, 7.28f), new Vector3(9.95f, 1.92f, 0.18f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.back_wall_shelf");
+            CreateLandmarkCube($"{prefix}_Library_BackWallShelfWide", root, c + new Vector3(0f, 1.24f, 7.28f), new Vector3(9.95f, 1.92f, 0.18f), Quaternion.identity, backWallShelfMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.back_wall_shelf");
             AddHd2dSurfaceProfile(
                 FindSceneObjectIncludingInactive($"{prefix}_Library_PixelFloor"),
                 $"{(past ? "Past" : "Current")}.Library.Floor.Main",
@@ -7277,7 +7280,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.08f, 0.26f),
                 new Vector2(4f, 3f),
                 true,
-                past ? "past_furniture" : "current_furniture");
+                past ? "bookshelf_front_painted_hd2d" : "current_empty_bookshelf_front_hd2d");
             if (past)
             {
                 CreateLandmarkCube("Past_Library_BackWallShelfBoardUpper", root, c + new Vector3(0f, 1.72f, 7.06f), new Vector3(9.45f, 0.08f, 0.22f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.library.back_wall_shelf.board.upper");
@@ -17903,6 +17906,7 @@ namespace Anemora.EditorTools
             foreach (var requiredObjectName in new[]
             {
                 "Current_Library_BackWallShelfWide",
+                "Past_Library_BackWallShelfWide",
                 "Current_Library_WallPlane_BackShelfContactShadowA",
                 "Past_Library_BackWallBookshelfFrontTexturePanel",
                 "Current_Library_LeftSideBookshelf",
@@ -17925,6 +17929,8 @@ namespace Anemora.EditorTools
                 }
             }
 
+            ValidateSceneObjectMaterialTexture("Current_Library_BackWallShelfWide", "current_empty_bookshelf_front_hd2d");
+            ValidateSceneObjectMaterialTexture("Past_Library_BackWallShelfWide", "bookshelf_front_painted_hd2d");
             ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_TopLipA", "Current_LibraryMap_SeparateSpace", "current_furniture", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
             ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_BottomContactShadowA", "Current_LibraryMap_SeparateSpace", "shadow", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
             ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_LeftEndcapA", "Current_LibraryMap_SeparateSpace", "current_fence", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 0.16f, 1.75f, 0.08f);
