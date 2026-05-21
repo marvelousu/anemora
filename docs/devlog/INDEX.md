@@ -1,13 +1,13 @@
 # Devlog Index
 
-> Status: v6.78 fast VS HD2D surface directional shade cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.79 fast VS HD2D sprite card ramp shader cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 354 files including INDEX.md and README.md.
-- Dated devlog records: 352 files.
+- Root-level Markdown coverage: 355 files including INDEX.md and README.md.
+- Dated devlog records: 353 files.
 - Linked evidence files present under docs/devlog/screenshots/: 658 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 7 |
+| 2026-05-22 | 8 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_sprite_card_ramp_shader_cycle08.md](2026-05-22_fast_vs_hd2d_sprite_card_ramp_shader_cycle08.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Ramp Shader Cycle 08 |
 | [2026-05-22_fast_vs_hd2d_surface_directional_shade_cycle07.md](2026-05-22_fast_vs_hd2d_surface_directional_shade_cycle07.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Directional Shade Cycle 07 |
 | [2026-05-22_fast_vs_hd2d_static_directional_shadow_cycle06.md](2026-05-22_fast_vs_hd2d_static_directional_shadow_cycle06.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Static Directional Shadow Cycle 06 |
 | [2026-05-22_fast_vs_hd2d_character_directional_shadow_cycle05.md](2026-05-22_fast_vs_hd2d_character_directional_shadow_cycle05.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Character Directional Shadow Cycle 05 |
@@ -493,6 +494,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.79 | 2026-05-22 | Added Fast VS HD2D sprite card ramp shader cycle record with a custom transparent sprite-card ramp shader, sprite-card material generation and audits, validation, and cleanup notes. |
 | v6.78 | 2026-05-22 | Added Fast VS HD2D surface directional shade cycle record with a shared vertical surface shade overlay material/texture, house facade, plaza facade, and library back shelf placements, validation, and cleanup notes. |
 | v6.77 | 2026-05-22 | Added Fast VS HD2D static directional shadow cycle record with shared thin soft shadow material/texture, house facade, plaza facade, and library back shelf placements, validation, and cleanup notes. |
 | v6.76 | 2026-05-22 | Added Fast VS HD2D character directional shadow cycle record with a shared soft shadow material/texture, Niro/Reto/Aria placement updates, validation, and cleanup notes. |

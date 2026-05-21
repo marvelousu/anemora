@@ -9,6 +9,7 @@ namespace Anemora.EditorTools
     {
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string RoleTagName = "AnemoraFastVsHd2dRole";
+        private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
 
         [MenuItem("Tools/Anemora/Verify HD2D Material Roles V1")]
         public static void VerifyMaterialRolesV1()
@@ -252,7 +253,7 @@ namespace Anemora.EditorTools
                 issues.Add($"Material {path} must carry role tag '{roleToken}', but had '{tag}'.");
             }
 
-            if (requireUnlitShader && (material.shader == null || material.shader.name.IndexOf("Unlit", StringComparison.OrdinalIgnoreCase) < 0))
+            if (requireUnlitShader && !IsSupportedUnlitShader(material.shader))
             {
                 issues.Add($"Material {path} must use an unlit shader for role {roleToken}.");
             }
@@ -340,6 +341,21 @@ namespace Anemora.EditorTools
 
             alpha = 1f;
             return false;
+        }
+
+        private static bool IsSupportedUnlitShader(Shader shader)
+        {
+            if (shader == null)
+            {
+                return false;
+            }
+
+            if (string.Equals(shader.name, SpriteCardRampShaderName, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return shader.name.IndexOf("Unlit", StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }

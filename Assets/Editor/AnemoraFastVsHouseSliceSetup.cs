@@ -20,6 +20,12 @@ namespace Anemora.EditorTools
         public const string BuildDirectory = "Builds/FastVS_HouseSlice";
         public const string BuildExePath = BuildDirectory + "/Anemora_FastVS_HouseSlice.exe";
         private const string MaterialRoleTagName = "AnemoraFastVsHd2dRole";
+        private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
+        private const string URPUnlitShaderName = "Universal Render Pipeline/Unlit";
+        private const float SpriteCardRampStrength = 0.18f;
+        private static readonly Color SpriteCardTopLight = new Color(1.08f, 1.03f, 0.96f, 1f);
+        private static readonly Color SpriteCardSideShade = new Color(0.94f, 0.97f, 1.03f, 1f);
+        private static readonly Color SpriteCardFloorShade = new Color(0.89f, 0.92f, 0.96f, 1f);
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
@@ -21200,11 +21206,22 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Time Window player material lookup would no longer target the Niro sprite renderer.");
             }
 
-            var spriteTexture = ResolveMaterialTexture(firstRenderer.sharedMaterial);
-            if (spriteTexture == null ||
-                spriteTexture.name.IndexOf("shaded", StringComparison.OrdinalIgnoreCase) < 0)
+            var spriteMaterial = firstRenderer.sharedMaterial;
+            var spriteTexture = ResolveMaterialTexture(spriteMaterial);
+            if (spriteMaterial == null || spriteMaterial.shader == null || spriteTexture == null)
             {
-                throw new InvalidOperationException("House slice validation failed: Niro body shading must be baked into the sprite texture, not a full-card overlay.");
+                throw new InvalidOperationException("House slice validation failed: Niro sprite material and texture are missing.");
+            }
+
+            if (!string.Equals(spriteMaterial.shader.name, SpriteCardRampShaderName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Niro body shading must use the sprite-card ramp shader foundation.");
+            }
+
+            var spriteTexturePath = AssetDatabase.GetAssetPath(spriteTexture);
+            if (spriteTexturePath.IndexOf("shaded", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException("House slice validation failed: Niro body shading must keep the generated shaded sprite texture as the ramp shader base.");
             }
         }
 
@@ -30703,37 +30720,13 @@ namespace Anemora.EditorTools
         {
             EnsureTextureImporter(texturePath);
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var material = FlatMaterial(id, tint, true, FastVsHd2dMaterialRole.SpriteCard);
+            var material = CreateSpriteCardMaterial(id, tint, 3011);
             if (texture == null)
             {
                 throw new InvalidOperationException($"Fast VS external sprite texture missing: {texturePath}");
             }
 
-            if (material.HasProperty("_BaseMap"))
-            {
-                material.SetTexture("_BaseMap", texture);
-                material.SetTextureScale("_BaseMap", Vector2.one);
-                material.SetTextureOffset("_BaseMap", Vector2.zero);
-            }
-
-            if (material.HasProperty("_MainTex"))
-            {
-                material.SetTexture("_MainTex", texture);
-                material.SetTextureScale("_MainTex", Vector2.one);
-                material.SetTextureOffset("_MainTex", Vector2.zero);
-            }
-
-            ConfigureTransparentUnlitMaterial(material, 3011);
-
-            if (material.HasProperty("_BaseColor"))
-            {
-                material.SetColor("_BaseColor", tint);
-            }
-
-            if (material.HasProperty("_Color"))
-            {
-                material.SetColor("_Color", tint);
-            }
+            AssignMaterialTexture(material, texture, Vector2.one);
 
             EditorUtility.SetDirty(material);
             return material;
@@ -30742,39 +30735,15 @@ namespace Anemora.EditorTools
         private static Material SpriteStripMaterial(string id, string texturePath, Color tint, int frameCount)
         {
             EnsureTextureImporter(texturePath);
+            var material = CreateSpriteCardMaterial(id, tint, 3000);
             var texture = EnsureShadedSpriteTexture(id, texturePath);
-            var material = FlatMaterial(id, tint, true, FastVsHd2dMaterialRole.SpriteCard);
             if (texture == null)
             {
                 Debug.LogWarning($"Fast VS character texture missing: {texturePath}");
                 return material;
             }
 
-            if (material.HasProperty("_BaseMap"))
-            {
-                material.SetTexture("_BaseMap", texture);
-                material.SetTextureScale("_BaseMap", frameCount > 1 ? new Vector2(1f / frameCount, 1f) : Vector2.one);
-                material.SetTextureOffset("_BaseMap", Vector2.zero);
-            }
-
-            if (material.HasProperty("_MainTex"))
-            {
-                material.SetTexture("_MainTex", texture);
-                material.SetTextureScale("_MainTex", frameCount > 1 ? new Vector2(1f / frameCount, 1f) : Vector2.one);
-                material.SetTextureOffset("_MainTex", Vector2.zero);
-            }
-
-            if (material.HasProperty("_BaseColor"))
-            {
-                material.SetColor("_BaseColor", tint);
-            }
-
-            if (material.HasProperty("_Color"))
-            {
-                material.SetColor("_Color", tint);
-            }
-
-            ConfigureTransparentUnlitMaterial(material, 3000);
+            AssignMaterialTexture(material, texture, frameCount > 1 ? new Vector2(1f / frameCount, 1f) : Vector2.one);
             EditorUtility.SetDirty(material);
             return material;
         }
@@ -31022,7 +30991,7 @@ namespace Anemora.EditorTools
         {
             var path = $"{MaterialDirectory}/FastVS_House_{id}.mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
-            var shader = Shader.Find(unlit ? "Universal Render Pipeline/Unlit" : "Universal Render Pipeline/Lit");
+            var shader = Shader.Find(unlit ? URPUnlitShaderName : "Universal Render Pipeline/Lit");
             if (shader == null)
             {
                 throw new InvalidOperationException($"Required shader not found: {id}");
@@ -31082,6 +31051,59 @@ namespace Anemora.EditorTools
             }
 
             ApplyMaterialRole(material, id, role);
+            return material;
+        }
+
+        private static Material CreateSpriteCardMaterial(string id, Color tint, int renderQueue)
+        {
+            var path = $"{MaterialDirectory}/FastVS_House_{id}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            var shader = Shader.Find(SpriteCardRampShaderName) ?? Shader.Find(URPUnlitShaderName);
+            if (shader == null)
+            {
+                throw new InvalidOperationException($"Required sprite card shader not found: {id}");
+            }
+
+            if (material == null)
+            {
+                material = new Material(shader);
+                AssetDatabase.CreateAsset(material, path);
+            }
+
+            ConfigureTransparentMaterial(material, renderQueue, SpriteCardRampShaderName, URPUnlitShaderName);
+            material.doubleSidedGI = true;
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            if (material.HasProperty("_RampStrength"))
+            {
+                material.SetFloat("_RampStrength", SpriteCardRampStrength);
+            }
+
+            if (material.HasProperty("_TopLight"))
+            {
+                material.SetColor("_TopLight", SpriteCardTopLight);
+            }
+
+            if (material.HasProperty("_SideShade"))
+            {
+                material.SetColor("_SideShade", SpriteCardSideShade);
+            }
+
+            if (material.HasProperty("_FloorShade"))
+            {
+                material.SetColor("_FloorShade", SpriteCardFloorShade);
+            }
+
+            ApplyMaterialRole(material, id, FastVsHd2dMaterialRole.SpriteCard);
             return material;
         }
 

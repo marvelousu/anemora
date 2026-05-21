@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FastVS_House_current_central_plaza_north_tree_line_sprite_b_cc0
-  m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+  m_Shader: {fileID: 4800000, guid: e0c8f8d9b8f94d479c0b7f6b7e77a6a3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -49,6 +49,7 @@ Material:
     - _DstBlend: 10
     - _DstBlendAlpha: 10
     - _QueueOffset: 11
+    - _RampStrength: 0.18
     - _SampleGI: 0
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1
@@ -58,6 +59,9 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.58, g: 0.67, b: 0.53, a: 1}
     - _Color: {r: 0.58, g: 0.67, b: 0.53, a: 1}
+    - _FloorShade: {r: 0.89, g: 0.92, b: 0.96, a: 1}
+    - _SideShade: {r: 0.94, g: 0.97, b: 1.03, a: 1}
+    - _TopLight: {r: 1.08, g: 1.03, b: 0.96, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6190167909395095111

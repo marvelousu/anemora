@@ -7,9 +7,15 @@ namespace Anemora.EditorTools
 {
     public static class AnemoraFastVsHd2dSpriteCardLightingAudit
     {
+        private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
         private const float TransparentThreshold = 0.01f;
         private const float OpaqueThreshold = 0.12f;
+        private const float SpriteCardRampStrengthMin = 0.14f;
+        private const float SpriteCardRampStrengthMax = 0.22f;
+        private const int SpriteCardRenderQueueMin = 3000;
+        private const int SpriteCardRenderQueueMax = 3015;
 
         [MenuItem("Tools/Anemora/Verify HD2D Sprite Card Lighting V1")]
         public static void VerifySpriteCardLightingV1()
@@ -32,6 +38,37 @@ namespace Anemora.EditorTools
                 issues,
                 "aria_v46_normal_loop_breath_sprite",
                 "Assets/Art/Characters/FastVS/Aria/resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png");
+            ValidateSpriteCardMaterial(issues, "niro_front_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_back_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_left_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_right_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_walk_front_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_walk_back_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_walk_left_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_walk_right_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_front_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_back_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_left_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_right_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_walk_front_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_walk_back_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_walk_left_sprite");
+            ValidateSpriteCardMaterial(issues, "niro_past_walk_right_sprite");
+            ValidateSpriteCardMaterial(issues, "reto_v02_writing_loop_sprite");
+            ValidateSpriteCardMaterial(issues, "reto_v02_lower_arms_sprite");
+            ValidateSpriteCardMaterial(issues, "reto_v02_talk_loop_sprite");
+            ValidateSpriteCardMaterial(issues, "reto_v02_raise_arms_sprite");
+            ValidateSpriteCardMaterial(issues, "aria_v46_normal_loop_breath_sprite");
+            ValidateSpriteCardMaterial(issues, "current_house_exterior_tree3_sprite_cc0");
+            ValidateSpriteCardMaterial(issues, "past_house_exterior_tree3_sprite_cc0");
+            ValidateSpriteCardMaterial(issues, "current_house_exterior_north_hedge_sprite_a_cc0");
+            ValidateSpriteCardMaterial(issues, "current_house_exterior_north_hedge_sprite_b_cc0");
+            ValidateSpriteCardMaterial(issues, "past_house_exterior_north_hedge_sprite_a_cc0");
+            ValidateSpriteCardMaterial(issues, "past_house_exterior_north_hedge_sprite_b_cc0");
+            ValidateSpriteCardMaterial(issues, "current_central_plaza_north_tree_line_sprite_a_cc0");
+            ValidateSpriteCardMaterial(issues, "current_central_plaza_north_tree_line_sprite_b_cc0");
+            ValidateSpriteCardMaterial(issues, "past_central_plaza_north_tree_line_sprite_a_cc0");
+            ValidateSpriteCardMaterial(issues, "past_central_plaza_north_tree_line_sprite_b_cc0");
 
             if (issues.Count > 0)
             {
@@ -161,6 +198,77 @@ namespace Anemora.EditorTools
             if (lowerRightLum - topLeftLum > 0.10f)
             {
                 issues.Add($"Directional shading is inverted or too weak in {shadedPath}: lower-right sample ({lowerRightLum:0.000}) is much brighter than upper-left ({topLeftLum:0.000}).");
+            }
+        }
+
+        private static void ValidateSpriteCardMaterial(List<string> issues, string materialId)
+        {
+            var path = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                issues.Add($"Missing sprite card material: {path}");
+                return;
+            }
+
+            if (material.shader == null || !string.Equals(material.shader.name, SpriteCardRampShaderName, StringComparison.Ordinal))
+            {
+                issues.Add($"Sprite card material must use {SpriteCardRampShaderName}: {path}");
+            }
+
+            if (material.renderQueue < SpriteCardRenderQueueMin || material.renderQueue > SpriteCardRenderQueueMax)
+            {
+                issues.Add($"Sprite card material renderQueue is out of range: {path} ({material.renderQueue}).");
+            }
+
+            var texture = material.GetTexture("_BaseMap") as Texture2D ?? material.GetTexture("_MainTex") as Texture2D;
+            if (texture == null)
+            {
+                issues.Add($"Sprite card material is missing a texture assignment: {path}");
+            }
+
+            if (!material.HasProperty("_RampStrength"))
+            {
+                issues.Add($"Sprite card material is missing _RampStrength: {path}");
+            }
+            else
+            {
+                var rampStrength = material.GetFloat("_RampStrength");
+                if (rampStrength < SpriteCardRampStrengthMin || rampStrength > SpriteCardRampStrengthMax)
+                {
+                    issues.Add($"Sprite card material ramp strength is out of band: {path} ({rampStrength:0.000}).");
+                }
+            }
+
+            ValidateSpriteCardColorBand(issues, material, path, "_TopLight", 0.98f, 1.12f, 0.96f, 1.08f, 0.90f, 1.05f);
+            ValidateSpriteCardColorBand(issues, material, path, "_SideShade", 0.90f, 1.00f, 0.94f, 1.03f, 0.98f, 1.08f);
+            ValidateSpriteCardColorBand(issues, material, path, "_FloorShade", 0.84f, 0.94f, 0.88f, 0.97f, 0.92f, 1.00f);
+        }
+
+        private static void ValidateSpriteCardColorBand(
+            List<string> issues,
+            Material material,
+            string path,
+            string propertyName,
+            float minR,
+            float maxR,
+            float minG,
+            float maxG,
+            float minB,
+            float maxB)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                issues.Add($"Sprite card material is missing {propertyName}: {path}");
+                return;
+            }
+
+            var color = material.GetColor(propertyName);
+            if (color.r < minR || color.r > maxR ||
+                color.g < minG || color.g > maxG ||
+                color.b < minB || color.b > maxB)
+            {
+                issues.Add($"Sprite card material {propertyName} is out of range: {path} ({color.r:0.000}, {color.g:0.000}, {color.b:0.000}).");
             }
         }
 
