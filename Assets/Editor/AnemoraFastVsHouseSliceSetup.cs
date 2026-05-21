@@ -64,6 +64,12 @@ namespace Anemora.EditorTools
         private static readonly Vector3 HouseStaticDirectionalCastShadowScale = new Vector3(2.04f, 0.18f, 1f);
         private static readonly Vector3 CentralPlazaStaticDirectionalCastShadowScale = new Vector3(3.12f, 0.18f, 1f);
         private static readonly Vector3 LibraryStaticDirectionalCastShadowScale = new Vector3(4.98f, 0.16f, 1f);
+        private static readonly Vector3 HouseSurfaceDirectionalShadeOverlayCurrentScale = new Vector3(1.30f, 2.10f, 1f);
+        private static readonly Vector3 HouseSurfaceDirectionalShadeOverlayPastScale = new Vector3(1.24f, 2.04f, 1f);
+        private static readonly Vector3 CentralPlazaSurfaceDirectionalShadeOverlayCurrentScale = new Vector3(8.96f, 2.62f, 1f);
+        private static readonly Vector3 CentralPlazaSurfaceDirectionalShadeOverlayPastScale = new Vector3(8.72f, 2.56f, 1f);
+        private static readonly Vector3 LibrarySurfaceDirectionalShadeOverlayCurrentScale = new Vector3(8.82f, 2.02f, 1f);
+        private static readonly Vector3 LibrarySurfaceDirectionalShadeOverlayPastScale = new Vector3(8.66f, 1.96f, 1f);
         private const int CurrentSpaceRenderLayer = 27;
         private const int OtherTimeSpaceRenderLayer = 28;
         private const int PortalFrameRenderLayer = 26;
@@ -259,6 +265,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSixtyEighthCycleCurrentLibraryWallRecessCleanup();
             ValidateFastVsHd2dSixtyNinthCycleCurrentLibraryGalleryFloorSeamCleanup();
             ValidateFastVsHd2dStaticDirectionalCastShadows();
+            ValidateFastVsHd2dSurfaceDirectionalShadeOverlays();
             ValidateFastVsHd2dSeventiethCyclePlazaLibraryFacadeSurfaceBreakup();
             ValidateFastVsHd2dSeventyFirstCyclePlazaLibraryExteriorDepth();
             ValidateFastVsHd2dSeventySecondCycleOutdoorSkyWash();
@@ -5678,6 +5685,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorEaveContactPolish(root, prefix, past, materials);
             CreateHouseExteriorPorchDoorGroundingPolish(root, prefix, past, materials, c, stone, trim, wall);
             CreateHouseExteriorStaticDirectionalCastShadow(root, prefix, past, materials);
+            CreateHouseExteriorSurfaceDirectionalShadeOverlay(root, prefix, past, materials);
 
             if (!past)
             {
@@ -5976,6 +5984,23 @@ namespace Anemora.EditorTools
                 EnsureStaticDirectionalCastShadowMaterial());
         }
 
+        private static void CreateHouseExteriorSurfaceDirectionalShadeOverlay(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var objectName = past
+                ? "Past_HouseExterior_SurfaceDirectionalShade_FacadeLeft"
+                : "Current_HouseExterior_SurfaceDirectionalShade_FacadeLeft";
+            var scale = past ? HouseSurfaceDirectionalShadeOverlayPastScale : HouseSurfaceDirectionalShadeOverlayCurrentScale;
+
+            CreateSurfaceDirectionalShadeOverlay(
+                objectName,
+                root,
+                c + new Vector3(-2.60f, 1.10f, -1.44f),
+                scale,
+                Quaternion.identity,
+                EnsureSurfaceDirectionalShadeOverlayMaterial());
+        }
+
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
         {
             CreateExternalTreeSpriteLandmark(
@@ -6155,6 +6180,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryFacadeSurfaceBreakupPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryExteriorDepthPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryStaticDirectionalCastShadow(root, prefix, past, materials);
+            CreateCentralPlazaLibrarySurfaceDirectionalShadeOverlay(root, prefix, past, materials);
             CreateCentralPlazaLibraryRearVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryVolumeReadabilityPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryBackwardVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
@@ -7045,6 +7071,7 @@ namespace Anemora.EditorTools
             CreateLibraryBackBookshelfFramePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryBackShelfBookSpineDepthPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryStaticDirectionalCastShadow(root, prefix, past, materials);
+            CreateLibrarySurfaceDirectionalShadeOverlay(root, prefix, past, materials);
             CreateLibrarySideShelfEdgeDepthPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryGalleryAtmospherePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryWindowLightAccents(root, prefix, past, materials);
@@ -12553,6 +12580,23 @@ namespace Anemora.EditorTools
                 EnsureStaticDirectionalCastShadowMaterial());
         }
 
+        private static void CreateLibrarySurfaceDirectionalShadeOverlay(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = LibraryVsCenter;
+            var objectName = past
+                ? "Past_Library_SurfaceDirectionalShade_BackShelf"
+                : "Current_Library_SurfaceDirectionalShade_BackShelf";
+            var scale = past ? LibrarySurfaceDirectionalShadeOverlayPastScale : LibrarySurfaceDirectionalShadeOverlayCurrentScale;
+
+            CreateSurfaceDirectionalShadeOverlay(
+                objectName,
+                root,
+                c + new Vector3(0f, 1.44f, 6.97f),
+                scale,
+                Quaternion.identity,
+                EnsureSurfaceDirectionalShadeOverlayMaterial());
+        }
+
         private static void CreateLibrarySideShelfEdgeDepthPolish(Transform root, string prefix, bool past, Materials materials, Vector3 center, Material wood, Material trim)
         {
             var objectPrefix = $"{prefix}_Library_SideShelfEdgeDepth";
@@ -13427,6 +13471,23 @@ namespace Anemora.EditorTools
                 c + new Vector3(-0.06f, 0.040f, 7.54f),
                 CentralPlazaStaticDirectionalCastShadowScale,
                 EnsureStaticDirectionalCastShadowMaterial());
+        }
+
+        private static void CreateCentralPlazaLibrarySurfaceDirectionalShadeOverlay(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var objectName = past
+                ? "Past_CentralPlaza_SurfaceDirectionalShade_LibraryFacade"
+                : "Current_CentralPlaza_SurfaceDirectionalShade_LibraryFacade";
+            var scale = past ? CentralPlazaSurfaceDirectionalShadeOverlayPastScale : CentralPlazaSurfaceDirectionalShadeOverlayCurrentScale;
+
+            CreateSurfaceDirectionalShadeOverlay(
+                objectName,
+                root,
+                c + new Vector3(0f, 1.46f, 7.89f),
+                scale,
+                Quaternion.identity,
+                EnsureSurfaceDirectionalShadeOverlayMaterial());
         }
 
         private static void CreatePlazaLibraryEntryDepthPolish(Transform root, string prefix, bool past, Materials materials)
@@ -22956,6 +23017,210 @@ namespace Anemora.EditorTools
             UnityEngine.Object.DestroyImmediate(validationTexture);
         }
 
+        private static Texture2D LoadSurfaceDirectionalShadeOverlayTextureForValidation()
+        {
+            var path = $"{TextureDirectory}/FastVS_House_surface_directional_shade_overlay_soft.png";
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            var bytes = File.ReadAllBytes(path);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            if (!texture.LoadImage(bytes, false))
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+                throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG could not be read at {path}.");
+            }
+
+            texture.name = "FastVS_House_surface_directional_shade_overlay_soft";
+            return texture;
+        }
+
+        private static void ValidateSurfaceDirectionalShadeOverlayTexture()
+        {
+            var path = $"{TextureDirectory}/FastVS_House_surface_directional_shade_overlay_soft.png";
+            var validationTexture = LoadSurfaceDirectionalShadeOverlayTextureForValidation();
+            if (validationTexture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG asset is missing at {path}.");
+            }
+
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null ||
+                !importer.alphaIsTransparency ||
+                importer.mipmapEnabled ||
+                importer.filterMode != FilterMode.Bilinear ||
+                importer.wrapMode != TextureWrapMode.Clamp ||
+                !importer.isReadable ||
+                importer.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG importer settings are incorrect at {path}.");
+            }
+
+            if ((validationTexture.width != 96 || validationTexture.height != 128) &&
+                (validationTexture.width != 128 || validationTexture.height != 128))
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG must stay at 96x128 or 128x128: {path}");
+            }
+
+            if (TextureAlphaChannelIsEmpty(validationTexture))
+            {
+                throw new InvalidOperationException("House slice validation failed: surface directional shade overlay texture alpha must not be empty.");
+            }
+
+            var centerAlpha = validationTexture.GetPixel(validationTexture.width / 2, validationTexture.height / 2).a;
+            var leftEdgeAlpha = validationTexture.GetPixel(0, validationTexture.height / 2).a;
+            var rightEdgeAlpha = validationTexture.GetPixel(validationTexture.width - 1, validationTexture.height / 2).a;
+            var cornerAlpha = validationTexture.GetPixel(0, 0).a;
+            var maxAlpha = 0f;
+            foreach (var pixel in validationTexture.GetPixels32())
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
+            }
+
+            if (centerAlpha < 0.04f || centerAlpha > 0.11f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft center alpha must stay in the 0.04-0.11 range, but was {centerAlpha:0.000}.");
+            }
+
+            if (leftEdgeAlpha > centerAlpha * 0.60f || rightEdgeAlpha > centerAlpha * 0.60f || cornerAlpha > 0.012f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft alpha falloff looks broken. left={leftEdgeAlpha:0.000}, right={rightEdgeAlpha:0.000}, corner={cornerAlpha:0.000}.");
+            }
+
+            if (maxAlpha < 0.08f || maxAlpha > 0.16f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft max alpha must stay in the 0.08-0.16 range, but was {maxAlpha:0.000}.");
+            }
+
+            UnityEngine.Object.DestroyImmediate(validationTexture);
+        }
+
+        private static void ValidateSurfaceDirectionalShadeOverlayObject(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing surface directional shade overlay object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<MeshRenderer>();
+            if (renderer == null || renderer.sharedMaterial == null || !renderer.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have an enabled MeshRenderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (Mathf.Abs(Mathf.DeltaAngle(sceneObject.transform.localEulerAngles.x, 90f)) < 1.5f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay vertical and not rotate onto the ground plane.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+
+            if (sceneObject.transform.localScale.y < 1.5f || sceneObject.transform.localScale.x < 0.9f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay large enough to read as a vertical surface overlay.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep real shadow casting disabled.");
+            }
+
+            var material = renderer.sharedMaterial;
+            var materialName = material.name ?? string.Empty;
+            if (materialName.IndexOf("surface_directional_shade_overlay", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the generated surface directional shade overlay material.");
+            }
+
+            if (!string.Equals(material.GetTag(MaterialRoleTagName, false, string.Empty), FastVsHd2dMaterialRole.ContactShadow.ToString(), StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the contact-shadow material role.");
+            }
+
+            if (material.renderQueue < 2997 || material.renderQueue > 3002)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a transparent overlay renderQueue in the 2997-3002 range.");
+            }
+
+            var tint = Color.white;
+            if (material.HasProperty("_BaseColor"))
+            {
+                tint = material.GetColor("_BaseColor");
+            }
+            else if (material.HasProperty("_Color"))
+            {
+                tint = material.GetColor("_Color");
+            }
+
+            if (tint.a < 0.75f || tint.a > 0.90f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} material tint alpha must stay in the 0.75-0.90 range, but was {tint.a:0.000}.");
+            }
+
+            var texture = ResolveMaterialTexture(material) as Texture2D;
+            if (texture == null || !string.Equals(texture.name, "FastVS_House_surface_directional_shade_overlay_soft", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must reference the generated surface directional shade overlay texture.");
+            }
+
+            ValidateSurfaceDirectionalShadeOverlayTexture();
+        }
+
+        private static void ValidateFastVsHd2dSurfaceDirectionalShadeOverlays()
+        {
+            ValidateSurfaceDirectionalShadeOverlayTexture();
+
+            ValidateSurfaceDirectionalShadeOverlayObject(
+                "Current_HouseExterior_SurfaceDirectionalShade_FacadeLeft",
+                "Current_HouseExteriorMap_SeparateSpace",
+                HouseExteriorCenter + new Vector3(-2.60f, 1.10f, -1.44f),
+                HouseSurfaceDirectionalShadeOverlayCurrentScale);
+
+            ValidateSurfaceDirectionalShadeOverlayObject(
+                "Past_HouseExterior_SurfaceDirectionalShade_FacadeLeft",
+                "Past_HouseExteriorMap_SeparateSpace",
+                HouseExteriorCenter + new Vector3(-2.60f, 1.10f, -1.44f),
+                HouseSurfaceDirectionalShadeOverlayPastScale);
+
+            ValidateSurfaceDirectionalShadeOverlayObject(
+                "Current_CentralPlaza_SurfaceDirectionalShade_LibraryFacade",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(0f, 1.46f, 7.89f),
+                CentralPlazaSurfaceDirectionalShadeOverlayCurrentScale);
+
+            ValidateSurfaceDirectionalShadeOverlayObject(
+                "Past_CentralPlaza_SurfaceDirectionalShade_LibraryFacade",
+                "Past_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(0f, 1.46f, 7.89f),
+                CentralPlazaSurfaceDirectionalShadeOverlayPastScale);
+
+            ValidateSurfaceDirectionalShadeOverlayObject(
+                "Current_Library_SurfaceDirectionalShade_BackShelf",
+                "Current_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(0f, 1.44f, 6.97f),
+                LibrarySurfaceDirectionalShadeOverlayCurrentScale);
+
+            ValidateSurfaceDirectionalShadeOverlayObject(
+                "Past_Library_SurfaceDirectionalShade_BackShelf",
+                "Past_LibraryMap_SeparateSpace",
+                LibraryVsCenter + new Vector3(0f, 1.44f, 6.97f),
+                LibrarySurfaceDirectionalShadeOverlayPastScale);
+        }
+
         private static void ValidateSceneObjectMaterialTexture(string objectName, string textureId)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -27408,6 +27673,20 @@ namespace Anemora.EditorTools
             return shadow;
         }
 
+        private static GameObject CreateSurfaceDirectionalShadeOverlay(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material)
+        {
+            var overlay = CreateQuad(name, parent, localPosition, localScale, material);
+            overlay.transform.localRotation = localRotation;
+            var renderer = overlay.GetComponent<MeshRenderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            return overlay;
+        }
+
         private static GameObject CreateCharacterGroundBounce(string name, Transform parent, Vector3 localPosition, Vector3 localScale, Material material)
         {
             var bounce = CreateQuad(name, parent, localPosition, localScale, material);
@@ -27514,6 +27793,28 @@ namespace Anemora.EditorTools
             AssignMaterialTexture(material, texture, Vector2.one);
 
             var tint = new Color(1f, 1f, 1f, 0.90f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureSurfaceDirectionalShadeOverlayMaterial()
+        {
+            var material = FlatMaterial("surface_directional_shade_overlay", Color.white, true, FastVsHd2dMaterialRole.ContactShadow);
+            ConfigureTransparentUnlitMaterial(material, 2998);
+            var texture = EnsureSurfaceDirectionalShadeOverlayTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(0.95f, 0.94f, 0.98f, 0.84f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -28171,6 +28472,102 @@ namespace Anemora.EditorTools
             if (imported == null)
             {
                 throw new InvalidOperationException($"Fast VS static directional cast shadow texture generation failed: {path}");
+            }
+
+            return imported;
+        }
+
+        private static Texture2D EnsureSurfaceDirectionalShadeOverlayTexture()
+        {
+            EnsureFolder(TextureDirectory);
+
+            var path = $"{TextureDirectory}/FastVS_House_surface_directional_shade_overlay_soft.png";
+            if (File.Exists(path))
+            {
+                var existingValidationTexture = LoadSurfaceDirectionalShadeOverlayTextureForValidation();
+                if (existingValidationTexture != null && !TextureAlphaChannelIsEmpty(existingValidationTexture))
+                {
+                    UnityEngine.Object.DestroyImmediate(existingValidationTexture);
+                    AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+
+                    var existingImporter = AssetImporter.GetAtPath(path) as TextureImporter;
+                    if (existingImporter != null)
+                    {
+                        existingImporter.textureType = TextureImporterType.Default;
+                        existingImporter.alphaIsTransparency = true;
+                        existingImporter.isReadable = true;
+                        existingImporter.mipmapEnabled = false;
+                        existingImporter.npotScale = TextureImporterNPOTScale.None;
+                        existingImporter.filterMode = FilterMode.Bilinear;
+                        existingImporter.wrapMode = TextureWrapMode.Clamp;
+                        existingImporter.textureCompression = TextureImporterCompression.Uncompressed;
+                        existingImporter.SaveAndReimport();
+                    }
+
+                    var importedExisting = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                    if (importedExisting != null)
+                    {
+                        return importedExisting;
+                    }
+                }
+
+                if (existingValidationTexture != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(existingValidationTexture);
+                }
+            }
+
+            var texture = new Texture2D(96, 128, TextureFormat.RGBA32, false)
+            {
+                name = "FastVS_House_surface_directional_shade_overlay_soft",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+
+            var pixels = new Color32[texture.width * texture.height];
+            for (var y = 0; y < texture.height; y++)
+            {
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var u = x / 95f;
+                    var v = y / 127f;
+                    var edgeX = Mathf.SmoothStep(0f, 0.20f, u) * Mathf.SmoothStep(0f, 0.20f, 1f - u);
+                    var edgeY = Mathf.SmoothStep(0f, 0.16f, v) * Mathf.SmoothStep(0f, 0.18f, 1f - v);
+                    var edgeFalloff = edgeX * edgeY;
+                    var topBias = Mathf.Clamp01(1f - (v * 0.72f));
+                    var sideBias = Mathf.Clamp01(1f - Mathf.Abs(u - 0.20f) / 0.46f);
+                    var centerBias = Mathf.Clamp01(1f - Mathf.Abs(u - 0.50f) / 0.42f);
+                    var alpha = edgeFalloff * ((0.055f * topBias) + (0.038f * sideBias) + (0.024f * centerBias) + 0.022f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.15f);
+                    var rgb = new Color32(11, 11, 17, (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
+                    pixels[(y * texture.width) + x] = rgb;
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, false);
+            File.WriteAllBytes(path, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer != null)
+            {
+                importer.textureType = TextureImporterType.Default;
+                importer.alphaIsTransparency = true;
+                importer.isReadable = true;
+                importer.mipmapEnabled = false;
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.filterMode = FilterMode.Bilinear;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.SaveAndReimport();
+            }
+
+            var imported = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (imported == null)
+            {
+                throw new InvalidOperationException($"Fast VS surface directional shade overlay texture generation failed: {path}");
             }
 
             return imported;

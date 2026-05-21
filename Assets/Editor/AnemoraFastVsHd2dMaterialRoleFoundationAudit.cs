@@ -166,6 +166,7 @@ namespace Anemora.EditorTools
                 "aria_contact_shadow",
                 "character_directional_cast_shadow",
                 "static_directional_cast_shadow",
+                "surface_directional_shade_overlay",
                 "hd2d_depth_shadow"
             })
             {
