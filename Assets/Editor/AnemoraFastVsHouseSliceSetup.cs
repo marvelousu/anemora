@@ -21,11 +21,19 @@ namespace Anemora.EditorTools
         public const string BuildExePath = BuildDirectory + "/Anemora_FastVS_HouseSlice.exe";
         private const string MaterialRoleTagName = "AnemoraFastVsHd2dRole";
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
+        private const string SurfaceRampLitShaderName = "Anemora/FastVS/SurfaceRampLit";
         private const string URPUnlitShaderName = "Universal Render Pipeline/Unlit";
+        private const string URPLitShaderName = "Universal Render Pipeline/Lit";
         private const float SpriteCardRampStrength = 0.18f;
+        private const float SurfaceRampStrength = 0.20f;
+        private const float SurfaceRampDirectionalLightStrength = 0.12f;
+        private const float SurfaceRampShadowReceiveStrength = 0.18f;
         private static readonly Color SpriteCardTopLight = new Color(1.08f, 1.03f, 0.96f, 1f);
         private static readonly Color SpriteCardSideShade = new Color(0.94f, 0.97f, 1.03f, 1f);
         private static readonly Color SpriteCardFloorShade = new Color(0.89f, 0.92f, 0.96f, 1f);
+        private static readonly Color SurfaceRampTopLight = new Color(1.05f, 1.03f, 0.97f, 1f);
+        private static readonly Color SurfaceRampSideShade = new Color(0.95f, 0.98f, 1.03f, 1f);
+        private static readonly Color SurfaceRampFloorShade = new Color(0.92f, 0.94f, 0.97f, 1f);
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
@@ -21331,6 +21339,7 @@ namespace Anemora.EditorTools
 
             ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_floor.mat");
             ValidateMaterialSmoothness("Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat");
+            ValidateSurfaceRampMaterials();
         }
 
         private static void ValidateFastVsHd2dThirtySeventhCycleLightingBalance()
@@ -26970,6 +26979,79 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateSurfaceRampMaterials()
+        {
+            foreach (var materialPath in new[]
+            {
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_floor.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_interior_wall.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_exterior_wall.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_roof.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_furniture.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_interior_wall.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_exterior_wall.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_furniture.mat",
+                "Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_book.mat"
+            })
+            {
+                ValidateSurfaceRampMaterial(materialPath);
+            }
+        }
+
+        private static void ValidateSurfaceRampMaterial(string materialPath)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing material asset {materialPath}.");
+            }
+
+            if (material.shader == null || !string.Equals(material.shader.name, SurfaceRampLitShaderName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must use shader {SurfaceRampLitShaderName}.");
+            }
+
+            if (material.renderQueue >= 2990)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep an opaque renderQueue, but was {material.renderQueue}.");
+            }
+
+            var renderType = material.GetTag("RenderType", false, string.Empty);
+            if (!string.Equals(renderType, "Opaque", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep RenderType Opaque, but was '{renderType}'.");
+            }
+
+            if (!material.HasProperty("_SurfaceRampStrength"))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep _SurfaceRampStrength.");
+            }
+
+            var surfaceRampStrength = material.GetFloat("_SurfaceRampStrength");
+            if (surfaceRampStrength < 0.10f || surfaceRampStrength > 0.30f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep _SurfaceRampStrength in the 0.10-0.30 range, but was {surfaceRampStrength:0.000}.");
+            }
+
+            ValidateSurfaceRampFloatBand(material, materialPath, "_DirectionalLightStrength", 0.04f, 0.24f);
+            ValidateSurfaceRampFloatBand(material, materialPath, "_ShadowReceiveStrength", 0.05f, 0.30f);
+        }
+
+        private static void ValidateSurfaceRampFloatBand(Material material, string materialPath, string propertyName, float min, float max)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep {propertyName}.");
+            }
+
+            var value = material.GetFloat(propertyName);
+            if (value < min || value > max)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep {propertyName} in the {min:0.00}-{max:0.00} range, but was {value:0.000}.");
+            }
+        }
+
         private static void ValidateFastVsStoryFlow()
         {
             var story = UnityEngine.Object.FindFirstObjectByType<FastVsStoryFlowController>(FindObjectsInactive.Include);
@@ -30991,7 +31073,21 @@ namespace Anemora.EditorTools
         {
             var path = $"{MaterialDirectory}/FastVS_House_{id}.mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
-            var shader = Shader.Find(unlit ? URPUnlitShaderName : "Universal Render Pipeline/Lit");
+            Shader shader;
+            var useSurfaceRampShader = ShouldUseSurfaceRampShader(id, role, unlit);
+            if (useSurfaceRampShader)
+            {
+                shader = Shader.Find(SurfaceRampLitShaderName);
+                if (shader == null)
+                {
+                    shader = Shader.Find(unlit ? URPUnlitShaderName : URPLitShaderName);
+                }
+            }
+            else
+            {
+                shader = Shader.Find(unlit ? URPUnlitShaderName : URPLitShaderName);
+            }
+
             if (shader == null)
             {
                 throw new InvalidOperationException($"Required shader not found: {id}");
@@ -31032,7 +31128,54 @@ namespace Anemora.EditorTools
 
             ConfigureOpaqueMaterial(material);
 
-            if (!unlit && ShouldApplyHd2dMatteMaterial(id))
+            if (useSurfaceRampShader && string.Equals(shader.name, SurfaceRampLitShaderName, StringComparison.Ordinal))
+            {
+                if (material.HasProperty("_SurfaceRampStrength"))
+                {
+                    material.SetFloat("_SurfaceRampStrength", SurfaceRampStrength);
+                }
+
+                if (material.HasProperty("_TopLight"))
+                {
+                    material.SetColor("_TopLight", SurfaceRampTopLight);
+                }
+
+                if (material.HasProperty("_SideShade"))
+                {
+                    material.SetColor("_SideShade", SurfaceRampSideShade);
+                }
+
+                if (material.HasProperty("_FloorShade"))
+                {
+                    material.SetColor("_FloorShade", SurfaceRampFloorShade);
+                }
+
+                if (material.HasProperty("_Metallic"))
+                {
+                    material.SetFloat("_Metallic", 0f);
+                }
+
+                if (material.HasProperty("_Smoothness"))
+                {
+                    material.SetFloat("_Smoothness", 0.16f);
+                }
+
+                if (material.HasProperty("_SpecularHighlights"))
+                {
+                    material.SetFloat("_SpecularHighlights", 0f);
+                }
+
+                if (material.HasProperty("_DirectionalLightStrength"))
+                {
+                    material.SetFloat("_DirectionalLightStrength", SurfaceRampDirectionalLightStrength);
+                }
+
+                if (material.HasProperty("_ShadowReceiveStrength"))
+                {
+                    material.SetFloat("_ShadowReceiveStrength", SurfaceRampShadowReceiveStrength);
+                }
+            }
+            else if (!unlit && ShouldApplyHd2dMatteMaterial(id))
             {
                 if (material.HasProperty("_Metallic"))
                 {
@@ -31052,6 +31195,22 @@ namespace Anemora.EditorTools
 
             ApplyMaterialRole(material, id, role);
             return material;
+        }
+
+        private static bool ShouldUseSurfaceRampShader(string id, FastVsHd2dMaterialRole role, bool unlit)
+        {
+            if (role != FastVsHd2dMaterialRole.SurfaceLit)
+            {
+                return false;
+            }
+
+            if (!unlit)
+            {
+                return true;
+            }
+
+            return id.StartsWith("bookshelf_front_painted_hd2d_", StringComparison.Ordinal) ||
+                   id.StartsWith("current_empty_bookshelf_front_hd2d_", StringComparison.Ordinal);
         }
 
         private static Material CreateSpriteCardMaterial(string id, Color tint, int renderQueue)

@@ -10,6 +10,7 @@ namespace Anemora.EditorTools
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string RoleTagName = "AnemoraFastVsHd2dRole";
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
+        private const string SurfaceRampLitShaderName = "Anemora/FastVS/SurfaceRampLit";
 
         [MenuItem("Tools/Anemora/Verify HD2D Material Roles V1")]
         public static void VerifyMaterialRolesV1()
@@ -17,6 +18,7 @@ namespace Anemora.EditorTools
             var issues = new List<string>();
 
             ValidateSurfaceMaterials(issues);
+            ValidateSurfaceRampMaterials(issues);
             ValidatePaperCardMaterials(issues);
             ValidateSpriteCardMaterials(issues);
             ValidateOverlayGlowMaterials(issues);
@@ -79,6 +81,79 @@ namespace Anemora.EditorTools
             })
             {
                 ValidateMaterialAsset(issues, materialId, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SurfaceLit, requireOpaque: true);
+            }
+        }
+
+        private static void ValidateSurfaceRampMaterials(List<string> issues)
+        {
+            foreach (var materialId in new[]
+            {
+                "current_interior_floor",
+                "current_interior_wall",
+                "current_exterior_wall",
+                "current_roof",
+                "current_furniture",
+                "past_wood_floor",
+                "past_interior_wall",
+                "past_exterior_wall",
+                "past_furniture",
+                "book"
+            })
+            {
+                var path = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+                ValidateMaterialAsset(issues, materialId, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SurfaceLit, requireOpaque: true);
+
+                var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (material == null)
+                {
+                    continue;
+                }
+
+                if (material.shader == null || !string.Equals(material.shader.name, SurfaceRampLitShaderName, StringComparison.Ordinal))
+                {
+                    issues.Add($"Material {path} must use shader {SurfaceRampLitShaderName}.");
+                }
+
+                if (material.renderQueue >= 2990)
+                {
+                    issues.Add($"Material {path} must keep an opaque renderQueue, but was {material.renderQueue}.");
+                }
+
+                var renderType = material.GetTag("RenderType", false, string.Empty);
+                if (!string.Equals(renderType, "Opaque", StringComparison.Ordinal))
+                {
+                    issues.Add($"Material {path} must keep RenderType Opaque, but was '{renderType}'.");
+                }
+
+                if (!material.HasProperty("_SurfaceRampStrength"))
+                {
+                    issues.Add($"Material {path} must keep _SurfaceRampStrength.");
+                    continue;
+                }
+
+                var surfaceRampStrength = material.GetFloat("_SurfaceRampStrength");
+                if (surfaceRampStrength < 0.10f || surfaceRampStrength > 0.30f)
+                {
+                    issues.Add($"Material {path} must keep _SurfaceRampStrength in the 0.10-0.30 range, but was {surfaceRampStrength:0.000}.");
+                }
+
+                ValidateOptionalFloatBand(issues, material, path, "_DirectionalLightStrength", 0.04f, 0.24f);
+                ValidateOptionalFloatBand(issues, material, path, "_ShadowReceiveStrength", 0.05f, 0.30f);
+            }
+        }
+
+        private static void ValidateOptionalFloatBand(List<string> issues, Material material, string path, string propertyName, float min, float max)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                issues.Add($"Material {path} must keep {propertyName}.");
+                return;
+            }
+
+            var value = material.GetFloat(propertyName);
+            if (value < min || value > max)
+            {
+                issues.Add($"Material {path} must keep {propertyName} in the {min:0.00}-{max:0.00} range, but was {value:0.000}.");
             }
         }
 
