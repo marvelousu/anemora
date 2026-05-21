@@ -253,6 +253,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
             ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop();
+            ValidateFastVsHd2dEightyNinthCycleOutdoorSkyTextureReadability();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -8824,6 +8825,11 @@ namespace Anemora.EditorTools
             CaptureHd2dEightyEighthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_sky_backdrop_20260521");
         }
 
+        public static void CaptureHd2dEightyNinthCycleScreenshotsBatch()
+        {
+            CaptureHd2dEightyNinthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_sky_texture_readability_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -9632,6 +9638,133 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighty-eighth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dEightyNinthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS eighty-ninth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var housePlayerLocal = HouseExteriorCenter + new Vector3(4.92f, 0.02f, 0.84f);
+            var houseBackdropAnchorLocal = HouseExteriorCenter + new Vector3(0.20f, 5.14f, 5.98f);
+            var houseBackdropCameraOffset = new Vector3(0.00f, 1.86f, -5.08f);
+            var houseBackdropLookOffset = new Vector3(0.00f, 0.56f, 0.10f);
+
+            var plazaPlayerLocal = CentralPlazaVsCenter + new Vector3(0.00f, 0.02f, 4.58f);
+            var plazaBackdropAnchorLocal = CentralPlazaVsCenter + new Vector3(0.08f, 5.30f, 12.02f);
+            var plazaBackdropCameraOffset = new Vector3(0.00f, 1.98f, -5.22f);
+            var plazaBackdropLookOffset = new Vector3(0.00f, 0.58f, 0.12f);
+
+            CaptureSkyTextureReadabilityScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                houseBackdropAnchorLocal,
+                houseBackdropCameraOffset,
+                houseBackdropLookOffset,
+                Path.Combine(outputDirectory, "01_current_house_exterior_sky_texture_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_sky_texture_readability.png");
+
+            CaptureOtherTimeSkyTextureReadabilityScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                houseBackdropAnchorLocal,
+                houseBackdropCameraOffset,
+                houseBackdropLookOffset,
+                Path.Combine(outputDirectory, "02_past_house_exterior_sky_texture_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_sky_texture_readability.png");
+
+            CaptureSkyTextureReadabilityScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                plazaBackdropAnchorLocal,
+                plazaBackdropCameraOffset,
+                plazaBackdropLookOffset,
+                Path.Combine(outputDirectory, "03_current_central_plaza_sky_texture_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_central_plaza_sky_texture_readability.png");
+
+            CaptureOtherTimeSkyTextureReadabilityScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                plazaBackdropAnchorLocal,
+                plazaBackdropCameraOffset,
+                plazaBackdropLookOffset,
+                Path.Combine(outputDirectory, "04_past_central_plaza_sky_texture_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_central_plaza_sky_texture_readability.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS eighty-ninth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureSkyTextureReadabilityScreenshot(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            Vector3 cameraAnchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputPath)
+        {
+            visibility.SetActiveAreaForReview(area);
+            controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(cameraAnchorLocalPosition), cameraOffset, lookOffset);
+            SaveCameraPng(camera, outputPath);
+        }
+
+        private static void CaptureOtherTimeSkyTextureReadabilityScreenshot(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            Vector3 cameraAnchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputPath)
+        {
+            visibility.SetActiveAreaForReview(area);
+            controller.ForcePlayerOtherTimeLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            var previousMask = camera.cullingMask;
+            var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+            var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = (previousMask & ~currentBit) | otherBit | playerBit;
+            PositionCloseReviewCamera(camera, controller.OtherTimeSpaceRootForReview.TransformPoint(cameraAnchorLocalPosition), cameraOffset, lookOffset);
+            SaveCameraPng(camera, outputPath);
+            camera.cullingMask = previousMask;
+            controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -14840,6 +14973,15 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Current_CentralPlaza_OutdoorSkyWash_BackPanel", "Current_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_OutdoorSkyWash_BackPanel", "Past_CentralPlazaMap_SeparateSpace");
             ValidateOutdoorSkyClearColorForReview();
+        }
+
+        private static void ValidateFastVsHd2dEightyNinthCycleOutdoorSkyTextureReadability()
+        {
+            ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop();
+            ValidateHd2dOutdoorSkyWashTextureReadability("hd2d_outdoor_sky_wash_current_house_exterior", 0.24f, 6);
+            ValidateHd2dOutdoorSkyWashTextureReadability("hd2d_outdoor_sky_wash_past_house_exterior", 0.22f, 6);
+            ValidateHd2dOutdoorSkyWashTextureReadability("hd2d_outdoor_sky_wash_current_central_plaza", 0.24f, 6);
+            ValidateHd2dOutdoorSkyWashTextureReadability("hd2d_outdoor_sky_wash_past_central_plaza", 0.22f, 6);
         }
 
         private static void ValidateOutdoorSkyClearColorForReview()
@@ -20479,6 +20621,56 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dOutdoorSkyWashTextureReadability(string textureId, float maxAlpha, int minDistinctColorBuckets)
+        {
+            ValidateHd2dOutdoorSkyWashTextureAsset(textureId);
+
+            var path = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor sky wash texture asset {path}.");
+            }
+
+            var pixels = texture.GetPixels32();
+            var maxObservedAlpha = 0f;
+            var nonTransparentPixels = 0;
+            var distinctBuckets = new HashSet<int>();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var pixel = pixels[i];
+                var alpha = pixel.a / 255f;
+                if (alpha > maxObservedAlpha)
+                {
+                    maxObservedAlpha = alpha;
+                }
+
+                if (alpha <= 0.015f)
+                {
+                    continue;
+                }
+
+                nonTransparentPixels++;
+                var bucket = ((pixel.r >> 4) << 8) | ((pixel.g >> 4) << 4) | (pixel.b >> 4);
+                distinctBuckets.Add(bucket);
+            }
+
+            if (maxObservedAlpha > maxAlpha + 0.001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} is too opaque for sky readability (max alpha {maxObservedAlpha:0.000}, limit {maxAlpha:0.000}).");
+            }
+
+            if (nonTransparentPixels < 2000)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} does not have enough readable sky coverage (coverage {nonTransparentPixels}, max alpha {maxObservedAlpha:0.000}, color buckets {distinctBuckets.Count}).");
+            }
+
+            if (distinctBuckets.Count < minDistinctColorBuckets)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {textureId} does not have enough color variety for a readable sky wash (coverage {nonTransparentPixels}, max alpha {maxObservedAlpha:0.000}, color buckets {distinctBuckets.Count}, required {minDistinctColorBuckets}).");
+            }
+        }
+
         private static void ValidateHd2dOutdoorSkyWashObject(string objectName, string expectedParentName, string expectedLandmarkIdPrefix, string expectedTextureId, float minLocalZ, float maxLocalZ, float minLocalY, float maxLocalY, float maxScaleX, float maxScaleY)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -22132,7 +22324,7 @@ namespace Anemora.EditorTools
         {
             var path = $"{TextureDirectory}/FastVS_House_{id}.asset";
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-            if (texture != null && (texture.width != 128 || texture.height != 256))
+            if (texture != null && (texture.width != 128 || texture.height != 256 || texture.format != TextureFormat.RGBA32 || TextureAlphaChannelIsEmpty(texture)))
             {
                 AssetDatabase.DeleteAsset(path);
                 texture = null;
@@ -22147,6 +22339,8 @@ namespace Anemora.EditorTools
             texture.name = $"FastVS_House_{id}";
             texture.filterMode = FilterMode.Bilinear;
             texture.wrapMode = TextureWrapMode.Clamp;
+            var seed = (past ? 97 : 23) + (area == FastVsHouseArea.Exterior ? 11 : 47);
+            var pixels = new Color32[texture.width * texture.height];
 
             for (var y = 0; y < texture.height; y++)
             {
@@ -22154,37 +22348,90 @@ namespace Anemora.EditorTools
                 for (var x = 0; x < texture.width; x++)
                 {
                     var u = x / 127f;
-                    var horizontalFade = Mathf.SmoothStep(0f, 0.18f, u) * Mathf.SmoothStep(0f, 0.18f, 1f - u);
-                    var verticalFade = Mathf.SmoothStep(0f, 0.10f, v) * Mathf.SmoothStep(0f, 0.18f, 1f - v);
+                    var horizontalFade = SmoothFade01(0f, 0.18f, u) * SmoothFade01(0f, 0.18f, 1f - u);
+                    var verticalFade = SmoothFade01(0f, 0.10f, v) * SmoothFade01(0f, 0.18f, 1f - v);
                     var lowerBand = Mathf.Exp(-Mathf.Pow((v - 0.28f) / 0.16f, 2f));
                     var upperMist = Mathf.Exp(-Mathf.Pow((v - 0.64f) / 0.30f, 2f));
-                    var baseAlpha = ((lowerBand * 0.11f) + (upperMist * 0.08f)) * horizontalFade * verticalFade;
+                    var broadSkyWash = SmoothFade01(0.08f, 0.28f, v) * SmoothFade01(0.98f, 0.72f, v);
+                    var horizonWobble = (Mathf.Sin((u * 5.85f) + (seed * 0.29f)) * 0.015f) +
+                                        (Mathf.Sin((u * 11.4f) + (seed * 0.11f)) * 0.006f);
+                    var horizonHaze = Mathf.Exp(-Mathf.Pow((v - (0.28f + horizonWobble)) / 0.045f, 2f));
+                    horizonHaze *= Mathf.Clamp01(0.85f - Mathf.Abs(u - 0.5f) * 1.30f);
+
+                    var cloudDriftA = (Mathf.Sin((u * 6.6f) + (seed * 0.17f)) * 0.012f) + (Mathf.Sin((u * 12.8f) + (seed * 0.09f)) * 0.005f);
+                    var cloudCenterA = 0.64f + cloudDriftA;
+                    var cloudBandA = Mathf.Exp(-Mathf.Pow((v - cloudCenterA) / 0.026f, 2f));
+                    cloudBandA *= Mathf.Clamp01(0.72f - Mathf.Abs(u - 0.5f) * 1.10f);
+
+                    var cloudDriftB = (Mathf.Sin((u * 8.1f) + (seed * 0.21f)) * 0.010f) + (Mathf.Sin((u * 15.8f) + (seed * 0.07f)) * 0.004f);
+                    var cloudCenterB = 0.74f + cloudDriftB;
+                    var cloudBandB = Mathf.Exp(-Mathf.Pow((v - cloudCenterB) / 0.020f, 2f));
+                    cloudBandB *= Mathf.Clamp01(0.60f - Mathf.Abs(u - 0.5f) * 0.88f);
+
+                    var baseAlpha = ((broadSkyWash * 0.020f) + (lowerBand * 0.11f) + (upperMist * 0.085f) + (horizonHaze * 0.070f) + (cloudBandA * 0.055f) + (cloudBandB * 0.040f)) * horizontalFade * verticalFade;
                     var dither = ((((x * 13) ^ (y * 29) ^ (x * y * 7)) & 15) / 15f);
-                    var alpha = Mathf.Clamp(baseAlpha * Mathf.Lerp(0.90f, 1.0f, dither), 0f, past ? 0.16f : 0.18f);
+                    var alpha = Mathf.Clamp(baseAlpha * Mathf.Lerp(0.90f, 1.0f, dither), 0f, past ? 0.22f : 0.24f);
 
                     Color lowerColor;
                     Color upperColor;
+                    Color hazeColor;
+                    Color cloudColor;
                     if (area == FastVsHouseArea.Exterior)
                     {
-                        lowerColor = past ? new Color(0.36f, 0.33f, 0.31f, 1f) : new Color(0.38f, 0.42f, 0.45f, 1f);
-                        upperColor = past ? new Color(0.53f, 0.49f, 0.45f, 1f) : new Color(0.48f, 0.53f, 0.58f, 1f);
+                        lowerColor = past ? new Color(0.39f, 0.34f, 0.30f, 1f) : new Color(0.29f, 0.35f, 0.40f, 1f);
+                        upperColor = past ? new Color(0.57f, 0.50f, 0.44f, 1f) : new Color(0.42f, 0.49f, 0.56f, 1f);
+                        hazeColor = past ? new Color(0.61f, 0.55f, 0.49f, 1f) : new Color(0.50f, 0.56f, 0.60f, 1f);
+                        cloudColor = past ? new Color(0.50f, 0.45f, 0.40f, 1f) : new Color(0.39f, 0.46f, 0.52f, 1f);
                     }
                     else
                     {
-                        lowerColor = past ? new Color(0.34f, 0.31f, 0.29f, 1f) : new Color(0.33f, 0.37f, 0.40f, 1f);
-                        upperColor = past ? new Color(0.49f, 0.45f, 0.41f, 1f) : new Color(0.44f, 0.49f, 0.54f, 1f);
+                        lowerColor = past ? new Color(0.37f, 0.32f, 0.28f, 1f) : new Color(0.28f, 0.33f, 0.37f, 1f);
+                        upperColor = past ? new Color(0.55f, 0.48f, 0.41f, 1f) : new Color(0.40f, 0.46f, 0.53f, 1f);
+                        hazeColor = past ? new Color(0.58f, 0.52f, 0.45f, 1f) : new Color(0.49f, 0.54f, 0.58f, 1f);
+                        cloudColor = past ? new Color(0.48f, 0.42f, 0.37f, 1f) : new Color(0.37f, 0.44f, 0.49f, 1f);
                     }
 
                     var tint = Color.Lerp(lowerColor, upperColor, Mathf.SmoothStep(0f, 1f, v));
-                    tint.a = alpha;
-                    texture.SetPixel(x, y, tint);
+                    tint = Color.Lerp(tint, hazeColor, Mathf.Clamp01(horizonHaze * 0.30f));
+                    tint = Color.Lerp(tint, cloudColor, Mathf.Clamp01((cloudBandA + cloudBandB) * 0.18f));
+                    pixels[(y * texture.width) + x] = new Color32(
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(tint.r * 255f), 0, 255),
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(tint.g * 255f), 0, 255),
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(tint.b * 255f), 0, 255),
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
                 }
             }
 
+            texture.SetPixels32(pixels);
             texture.Apply(false, false);
             EditorUtility.SetDirty(texture);
             AssetDatabase.SaveAssets();
             return texture;
+        }
+
+        private static bool TextureAlphaChannelIsEmpty(Texture2D texture)
+        {
+            var pixels = texture.GetPixels32();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                if (pixels[i].a > 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static float SmoothFade01(float start, float end, float value)
+        {
+            if (Mathf.Approximately(start, end))
+            {
+                return value >= end ? 1f : 0f;
+            }
+
+            var t = Mathf.Clamp01((value - start) / (end - start));
+            return t * t * (3f - 2f * t);
         }
 
         private static Texture2D EnsureHd2dLibraryWindowLightTexture()
