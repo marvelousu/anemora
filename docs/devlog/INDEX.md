@@ -1,13 +1,13 @@
 # Devlog Index
 
-> Status: v6.84 fast VS HD2D overlay profile foundation cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.85 fast VS HD2D warm light pool foundation cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 360 files including INDEX.md and README.md.
-- Dated devlog records: 358 files.
+- Root-level Markdown coverage: 361 files including INDEX.md and README.md.
+- Dated devlog records: 359 files.
 - Linked evidence files present under docs/devlog/screenshots/: 663 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 13 |
+| 2026-05-22 | 14 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_warm_light_pool_foundation_cycle14.md](2026-05-22_fast_vs_hd2d_warm_light_pool_foundation_cycle14.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Warm Light Pool Foundation Cycle 14 |
 | [2026-05-22_fast_vs_hd2d_overlay_profile_foundation_cycle13.md](2026-05-22_fast_vs_hd2d_overlay_profile_foundation_cycle13.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Overlay Profile Foundation Cycle 13 |
 | [2026-05-22_fast_vs_hd2d_current_interior_surface_readability_cycle12.md](2026-05-22_fast_vs_hd2d_current_interior_surface_readability_cycle12.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Current Interior Surface Readability Cycle 12 |
 | [2026-05-22_fast_vs_hd2d_area_lighting_profile_cycle11.md](2026-05-22_fast_vs_hd2d_area_lighting_profile_cycle11.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Area Lighting Profile Cycle 11 |

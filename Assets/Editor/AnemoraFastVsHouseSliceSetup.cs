@@ -5438,7 +5438,7 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Past.house_interior.back_wall_depth_band");
 
-            CreateLandmarkCube(
+            var currentHouseInteriorWarmLightPool = CreateLandmarkCube(
                 "Current_HouseInterior_Table_WarmLightPool",
                 currentInteriorRoot,
                 HouseInteriorCenter + new Vector3(1.02f, 0.021f, -0.78f),
@@ -5448,8 +5448,18 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.house_interior.table_warm_pool");
+            AddHd2dOverlayProfile(
+                currentHouseInteriorWarmLightPool,
+                "Current_HouseInterior_Table_WarmLightPool",
+                FastVsHouseArea.Interior,
+                FastVsHd2dOverlayKind.LightPool,
+                true,
+                false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.24f, 0.88f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f));
 
-            CreateLandmarkCube(
+            var pastHouseInteriorWarmLightPool = CreateLandmarkCube(
                 "Past_HouseInterior_Table_WarmLightPool",
                 pastInteriorRoot,
                 HouseInteriorCenter + new Vector3(1.02f, 0.021f, -0.78f),
@@ -5459,6 +5469,16 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Past.house_interior.table_warm_pool");
+            AddHd2dOverlayProfile(
+                pastHouseInteriorWarmLightPool,
+                "Past_HouseInterior_Table_WarmLightPool",
+                FastVsHouseArea.Interior,
+                FastVsHd2dOverlayKind.LightPool,
+                false,
+                false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.24f, 0.88f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f));
 
             CreateLandmarkCube(
                 "Current_HouseExterior_Door_DepthPool",
@@ -5471,7 +5491,7 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.house_exterior.door_depth_pool");
 
-            CreateLandmarkCube(
+            var pastHouseExteriorWarmPool = CreateLandmarkCube(
                 "Past_HouseExterior_Door_WarmPool",
                 pastExteriorRoot,
                 HouseExteriorCenter + new Vector3(-1.02f, 0.135f, -1.76f),
@@ -5481,6 +5501,16 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Past.house_exterior.door_warm_pool");
+            AddHd2dOverlayProfile(
+                pastHouseExteriorWarmPool,
+                "Past_HouseExterior_Door_WarmPool",
+                FastVsHouseArea.Exterior,
+                FastVsHd2dOverlayKind.LightPool,
+                false,
+                false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.54f, 0.82f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f));
 
             CreateLandmarkCube(
                 "Current_CentralPlaza_LibraryFacade_DepthUnderEave",
@@ -5493,7 +5523,7 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.central_plaza.library_facade.depth_under_eave");
 
-            CreateLandmarkCube(
+            var pastCentralPlazaWindowWarmPool = CreateLandmarkCube(
                 "Past_CentralPlaza_LibraryFacade_WindowWarmPool",
                 pastPlazaRoot,
                 CentralPlazaVsCenter + new Vector3(0f, 0.025f, 7.44f),
@@ -5503,6 +5533,16 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Past.central_plaza.library_facade.window_warm_pool");
+            AddHd2dOverlayProfile(
+                pastCentralPlazaWindowWarmPool,
+                "Past_CentralPlaza_LibraryFacade_WindowWarmPool",
+                FastVsHouseArea.CentralPlaza,
+                FastVsHd2dOverlayKind.LightPool,
+                false,
+                false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(6.60f, 0.56f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f));
 
             CreateLandmarkCube(
                 "Current_Library_BackShelf_DepthBand",
@@ -5526,7 +5566,7 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Past.library.back_shelf_depth_band");
 
-            CreateLandmarkCube(
+            var currentLibraryRetoDeskWarmPool = CreateLandmarkCube(
                 "Current_Library_RetoDesk_WarmPool",
                 currentLibraryRoot,
                 LibraryVsCenter + new Vector3(1.34f, 0.022f, 0.22f),
@@ -5536,6 +5576,16 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.library.reto_desk_warm_pool");
+            AddHd2dOverlayProfile(
+                currentLibraryRetoDeskWarmPool,
+                "Current_Library_RetoDesk_WarmPool",
+                FastVsHouseArea.Library,
+                FastVsHd2dOverlayKind.LightPool,
+                true,
+                false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.72f, 0.72f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f));
 
             CreateLandmarkCube(
                 "Current_Library_LeftSideShelf_SoftDustLift",
@@ -5559,7 +5609,7 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.library.right_side_shelf.soft_dust_lift");
 
-            CreateLandmarkCube(
+            var currentLibraryEntryFloorSoftDustPool = CreateLandmarkCube(
                 "Current_Library_EntryFloor_SoftDustPool",
                 currentLibraryRoot,
                 LibraryVsCenter + new Vector3(0f, 0.026f, -5.22f),
@@ -5569,6 +5619,16 @@ namespace Anemora.EditorTools
                 false,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 "Current.library.entry_floor.soft_dust_pool");
+            AddHd2dOverlayProfile(
+                currentLibraryEntryFloorSoftDustPool,
+                "Current_Library_EntryFloor_SoftDustPool",
+                FastVsHouseArea.Library,
+                FastVsHd2dOverlayKind.LightPool,
+                true,
+                false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(3.80f, 1.25f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f));
 
             CreateLandmarkCube(
                 "Current_Library_RetoDesk_SideFalloffShadow",
@@ -27984,6 +28044,16 @@ namespace Anemora.EditorTools
                 profile = target.AddComponent<FastVsHd2dOverlayProfile>();
             }
 
+            var renderer = target.GetComponent<MeshRenderer>();
+            if (renderer == null)
+            {
+                throw new InvalidOperationException($"Cannot add HD2D overlay profile '{overlayId}' because the target object is missing a MeshRenderer.");
+            }
+
+            renderer.enabled = true;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+
             SerializedSet(profile, "overlayId", overlayId);
             SerializedSet(profile, "areaId", area);
             SerializedSet(profile, "overlayKind", kind);
@@ -28141,8 +28211,23 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dWarmLightPoolMaterial()
         {
-            var material = FlatMaterial("hd2d_warm_light_pool", new Color(1.0f, 0.72f, 0.30f, 0.18f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial("hd2d_warm_light_pool", new Color(1.0f, 0.72f, 0.30f, 0.20f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3009);
+            var texture = EnsureHd2dWarmLightPoolTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(1.0f, 0.72f, 0.30f, 0.20f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
             return material;
         }
 
@@ -28186,6 +28271,29 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(material);
             AssetDatabase.SaveAssets();
             return material;
+        }
+
+        private static Texture2D EnsureHd2dWarmLightPoolTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_warm_light_pool_soft",
+                128,
+                96,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var u = (x / 127f) * 2f - 1f;
+                    var v = (y / 95f) * 2f - 1f;
+                    var dx = u / 0.80f;
+                    var dy = v / 0.52f;
+                    var ellipse = Mathf.Sqrt((dx * dx) + (dy * dy));
+                    var core = Mathf.Clamp01(1f - ellipse);
+                    var softEdge = Mathf.SmoothStep(0f, 1f, core);
+                    var halo = Mathf.Clamp01(1f - Mathf.Max(Mathf.Abs(u) * 0.86f, Mathf.Abs(v) * 1.12f));
+                    var alpha = (softEdge * softEdge * 0.20f) + (halo * 0.04f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.24f);
+                    return new Color(1.0f, 0.72f, 0.30f, alpha);
+                });
         }
 
         private static Material EnsureHd2dOutdoorSkyHorizonLayerMaterial(string id, string sourceTextureId, bool past, FastVsHouseArea area)

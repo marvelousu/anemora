@@ -28,7 +28,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.18f, 0.42f),
                 new Vector2(0.66f, 0.24f),
                 new Color(0.20f, 0.19f, 0.18f, 0.96f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -40,7 +40,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.20f, 0.48f),
                 new Vector2(0.34f, 0.075f),
                 new Color(0.20f, 0.19f, 0.18f, 0.96f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -52,7 +52,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(0.72f, 0.18f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -64,7 +64,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.18f, 0.42f),
                 new Vector2(0.66f, 0.24f),
                 new Color(0.20f, 0.19f, 0.18f, 0.96f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -76,7 +76,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.20f, 0.48f),
                 new Vector2(0.30f, 0.070f),
                 new Color(0.20f, 0.19f, 0.18f, 0.96f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -88,7 +88,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(0.60f, 0.16f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -100,7 +100,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.18f, 0.42f),
                 new Vector2(0.70f, 0.24f),
                 new Color(0.20f, 0.19f, 0.18f, 0.96f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -112,7 +112,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.20f, 0.48f),
                 new Vector2(0.31f, 0.070f),
                 new Color(0.20f, 0.19f, 0.18f, 0.96f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -124,7 +124,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(0.60f, 0.16f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -136,7 +136,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(2.04f, 0.18f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -148,7 +148,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(2.04f, 0.18f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -160,7 +160,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(3.12f, 0.18f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -172,7 +172,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(3.12f, 0.18f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -184,7 +184,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(4.98f, 0.16f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -196,7 +196,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.10f, 0.34f),
                 new Vector2(4.98f, 0.16f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -208,7 +208,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.04f, 0.11f),
                 new Vector2(1.30f, 2.10f),
                 new Color(0.20f, 0.19f, 0.18f, 0.84f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -220,7 +220,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.04f, 0.11f),
                 new Vector2(1.24f, 2.04f),
                 new Color(0.20f, 0.19f, 0.18f, 0.84f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -232,7 +232,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.04f, 0.11f),
                 new Vector2(8.96f, 2.62f),
                 new Color(0.20f, 0.19f, 0.18f, 0.84f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -244,7 +244,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.04f, 0.11f),
                 new Vector2(8.72f, 2.56f),
                 new Color(0.20f, 0.19f, 0.18f, 0.84f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -256,7 +256,7 @@ namespace Anemora.EditorTools
                 new Vector2(0.04f, 0.11f),
                 new Vector2(8.82f, 2.02f),
                 new Color(0.20f, 0.19f, 0.18f, 0.84f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
             ValidateProfile(
                 issues,
@@ -268,7 +268,79 @@ namespace Anemora.EditorTools
                 new Vector2(0.04f, 0.11f),
                 new Vector2(8.66f, 1.96f),
                 new Color(0.20f, 0.19f, 0.18f, 0.84f),
-                requireContactShadowMaterialRole: true);
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
+
+            ValidateProfile(
+                issues,
+                "Current_HouseInterior_Table_WarmLightPool",
+                FastVsHouseArea.Interior,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld: true,
+                dynamicSubject: false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.24f, 0.88f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f),
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.OverlayGlow);
+
+            ValidateProfile(
+                issues,
+                "Past_HouseInterior_Table_WarmLightPool",
+                FastVsHouseArea.Interior,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld: false,
+                dynamicSubject: false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.24f, 0.88f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f),
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.OverlayGlow);
+
+            ValidateProfile(
+                issues,
+                "Past_HouseExterior_Door_WarmPool",
+                FastVsHouseArea.Exterior,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld: false,
+                dynamicSubject: false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.54f, 0.82f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f),
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.OverlayGlow);
+
+            ValidateProfile(
+                issues,
+                "Past_CentralPlaza_LibraryFacade_WindowWarmPool",
+                FastVsHouseArea.CentralPlaza,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld: false,
+                dynamicSubject: false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(6.60f, 0.56f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f),
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.OverlayGlow);
+
+            ValidateProfile(
+                issues,
+                "Current_Library_RetoDesk_WarmPool",
+                FastVsHouseArea.Library,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld: true,
+                dynamicSubject: false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(1.72f, 0.72f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f),
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.OverlayGlow);
+
+            ValidateProfile(
+                issues,
+                "Current_Library_EntryFloor_SoftDustPool",
+                FastVsHouseArea.Library,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld: true,
+                dynamicSubject: false,
+                new Vector2(0.04f, 0.24f),
+                new Vector2(3.80f, 1.25f),
+                new Color(1.0f, 0.72f, 0.30f, 0.90f),
+                AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.OverlayGlow);
 
             if (issues.Count > 0)
             {
@@ -288,7 +360,7 @@ namespace Anemora.EditorTools
             Vector2 expectedOpacityBand,
             Vector2 expectedFootprintWorldSize,
             Color expectedTint,
-            bool requireContactShadowMaterialRole)
+            AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole expectedMaterialRole)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
             if (sceneObject == null)
@@ -355,13 +427,15 @@ namespace Anemora.EditorTools
                 issues.Add($"HD2D overlay profile {objectName} must keep shadow casting disabled.");
             }
 
-            if (requireContactShadowMaterialRole)
+            if (renderer.sharedMaterial.GetTag(MaterialRoleTagName, false, string.Empty) != expectedMaterialRole.ToString())
             {
                 var materialRole = renderer.sharedMaterial.GetTag(MaterialRoleTagName, false, string.Empty);
-                if (!string.Equals(materialRole, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow.ToString(), StringComparison.Ordinal))
-                {
-                    issues.Add($"HD2D overlay profile {objectName} must keep material tag {MaterialRoleTagName}=ContactShadow, but was '{materialRole}'.");
-                }
+                issues.Add($"HD2D overlay profile {objectName} must keep material tag {MaterialRoleTagName}={expectedMaterialRole}, but was '{materialRole}'.");
+            }
+
+            if (expectedKind == FastVsHd2dOverlayKind.LightPool)
+            {
+                ValidateLightPoolMaterial(issues, objectName, renderer.sharedMaterial);
             }
         }
 
@@ -382,6 +456,49 @@ namespace Anemora.EditorTools
             {
                 issues.Add($"HD2D overlay profile {objectName} must keep {fieldName} near {expected}, but was {actual}.");
             }
+        }
+
+        private static void ValidateLightPoolMaterial(List<string> issues, string objectName, Material material)
+        {
+            var materialName = material.name ?? string.Empty;
+            if (materialName.IndexOf("hd2d_warm_light_pool", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                issues.Add($"HD2D overlay profile {objectName} must keep a warm light pool material name.");
+            }
+
+            var texture = ResolvePrimaryMaterialTexture(material);
+            if (texture == null || !string.Equals(texture.name, "FastVS_House_hd2d_warm_light_pool_soft", StringComparison.Ordinal))
+            {
+                issues.Add($"HD2D overlay profile {objectName} must keep the FastVS_House_hd2d_warm_light_pool_soft texture.");
+            }
+        }
+
+        private static Texture ResolvePrimaryMaterialTexture(Material material)
+        {
+            if (material == null)
+            {
+                return null;
+            }
+
+            if (material.HasProperty("_BaseMap"))
+            {
+                var baseMap = material.GetTexture("_BaseMap");
+                if (baseMap != null)
+                {
+                    return baseMap;
+                }
+            }
+
+            if (material.HasProperty("_MainTex"))
+            {
+                var mainTex = material.GetTexture("_MainTex");
+                if (mainTex != null)
+                {
+                    return mainTex;
+                }
+            }
+
+            return material.mainTexture;
         }
 
         private static GameObject FindSceneObjectIncludingInactive(string objectName)
