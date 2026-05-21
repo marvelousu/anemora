@@ -240,6 +240,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventyThirdCycleOutdoorFarEdgeTransition();
             ValidateFastVsHd2dSeventyFourthCycleLibraryTableSilhouette();
             ValidateFastVsHd2dSeventyFifthCycleLibrarySideBookshelfDepth();
+            ValidateFastVsHd2dSeventySixthCycleLibraryBackBookshelfFrame();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -571,6 +572,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSeventyFifthCycleScreenshotsBatch()
         {
             CaptureHd2dSeventyFifthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_side_bookshelf_depth_20260521");
+        }
+
+        public static void CaptureHd2dSeventySixthCycleScreenshotsBatch()
+        {
+            CaptureHd2dSeventySixthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_back_bookshelf_frame_20260521");
         }
 
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
@@ -6289,6 +6295,7 @@ namespace Anemora.EditorTools
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             CreateLibrarySideBookshelfDepthPolish(root, prefix, past, materials, c, wood, trim);
+            CreateLibraryBackBookshelfFramePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryWindowLightAccents(root, prefix, past, materials);
             CreateLandmarkCube($"{prefix}_Library_ServiceDesk", root, c + new Vector3(-2.45f, 0.34f, -3.20f), new Vector3(1.55f, 0.38f, 0.54f), Quaternion.Euler(0f, -4f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.library.service_desk");
             if (!past)
@@ -7930,6 +7937,75 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS seventy-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dSeventySixthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS seventy-sixth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = LibraryVsCenter + new Vector3(0f, 0.02f, 0.60f);
+            var closePlayerLocal = LibraryVsCenter + new Vector3(0f, 0.02f, 0.60f);
+            var closeAnchorLocal = LibraryVsCenter + new Vector3(0f, 1.34f, 6.99f);
+            var closeCameraOffset = new Vector3(0f, 1.32f, -6.39f);
+            var closeLookOffset = new Vector3(0f, 1.32f, 0f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_library_back_bookshelf_frame_overview.png"));
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_library_back_bookshelf_frame_overview.png"));
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "03_current_library_back_bookshelf_frame_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "04_past_library_back_bookshelf_frame_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS seventy-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
         {
             var slabScale = new Vector3(localScale.x * 2.20f, Mathf.Max(0.018f, localScale.y * 0.24f), localScale.z * 1.34f);
@@ -8713,6 +8789,98 @@ namespace Anemora.EditorTools
                 Quaternion.identity,
                 shadowMaterial,
                 $"{prefix}.library.side_bookshelf_depth.right_floor_shadow.a");
+        }
+
+        private static void CreateLibraryBackBookshelfFramePolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
+        {
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_BackBookshelfFrame_TopLipA",
+                    root,
+                    c + new Vector3(0f, 2.21f, 7.02f),
+                    new Vector3(9.26f, 0.06f, 0.06f),
+                    Quaternion.identity,
+                    wood,
+                    "Past.library.back_bookshelf_frame.top_lip.a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_BackBookshelfFrame_BottomContactShadowA",
+                    root,
+                    c + new Vector3(0f, 0.53f, 7.01f),
+                    new Vector3(9.20f, 0.035f, 0.055f),
+                    Quaternion.identity,
+                    materials.Shadow,
+                    "Past.library.back_bookshelf_frame.bottom_contact_shadow.a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_BackBookshelfFrame_LeftEndcapA",
+                    root,
+                    c + new Vector3(-4.58f, 1.34f, 7.02f),
+                    new Vector3(0.14f, 1.66f, 0.06f),
+                    Quaternion.identity,
+                    materials.PastFence,
+                    "Past.library.back_bookshelf_frame.left_endcap.a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_BackBookshelfFrame_RightEndcapA",
+                    root,
+                    c + new Vector3(4.58f, 1.34f, 7.02f),
+                    new Vector3(0.14f, 1.66f, 0.06f),
+                    Quaternion.identity,
+                    materials.PastFence,
+                    "Past.library.back_bookshelf_frame.right_endcap.a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_Library_BackBookshelfFrame_WarmHighlightA",
+                    root,
+                    c + new Vector3(0f, 1.88f, 7.03f),
+                    new Vector3(8.70f, 0.04f, 0.05f),
+                    Quaternion.identity,
+                    materials.PastFurniture,
+                    "Past.library.back_bookshelf_frame.warm_highlight.a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_BackBookshelfFrame_TopLipA",
+                    root,
+                    c + new Vector3(0f, 2.20f, 7.02f),
+                    new Vector3(9.30f, 0.06f, 0.06f),
+                    Quaternion.identity,
+                    materials.CurrentFurniture,
+                    "Current.library.back_bookshelf_frame.top_lip.a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_BackBookshelfFrame_BottomContactShadowA",
+                    root,
+                    c + new Vector3(0f, 0.52f, 7.01f),
+                    new Vector3(9.22f, 0.034f, 0.055f),
+                    Quaternion.identity,
+                    materials.Shadow,
+                    "Current.library.back_bookshelf_frame.bottom_contact_shadow.a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_BackBookshelfFrame_LeftEndcapA",
+                    root,
+                    c + new Vector3(-4.58f, 1.34f, 7.02f),
+                    new Vector3(0.15f, 1.68f, 0.06f),
+                    Quaternion.identity,
+                    materials.CurrentFence,
+                    "Current.library.back_bookshelf_frame.left_endcap.a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_BackBookshelfFrame_RightEndcapA",
+                    root,
+                    c + new Vector3(4.58f, 1.34f, 7.02f),
+                    new Vector3(0.15f, 1.68f, 0.06f),
+                    Quaternion.identity,
+                    materials.CurrentFence,
+                    "Current.library.back_bookshelf_frame.right_endcap.a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_Library_BackBookshelfFrame_DustBreakA",
+                    root,
+                    c + new Vector3(0.22f, 1.58f, 7.04f),
+                    new Vector3(2.18f, 0.04f, 0.04f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    materials.Dust,
+                    "Current.library.back_bookshelf_frame.dust_break.a");
+            }
+
+            _ = trim;
         }
 
         private static void CreateCentralPlazaLibraryFacadeDoor(Transform root, string prefix, Vector3 center, Material frame, Material doorPanelDetail, Material handle)
@@ -11730,6 +11898,46 @@ namespace Anemora.EditorTools
             ValidateLibrarySideBookshelfDepthPolishObject("Past_Library_SideBookshelfDepth_RightFrontEndcapA", "Past_LibraryMap_SeparateSpace", "past_furniture", new Vector3(4.72f, 0.03f, -3.00f), new Vector3(5.05f, 1.90f, 4.20f), 0.24f, 1.90f, 0.24f);
             ValidateLibrarySideBookshelfDepthPolishObject("Past_Library_SideBookshelfDepth_RightTopLipA", "Past_LibraryMap_SeparateSpace", "past_furniture", new Vector3(4.72f, 1.84f, -3.00f), new Vector3(5.05f, 1.92f, 4.20f), 0.24f, 0.08f, 7.80f);
             ValidateLibrarySideBookshelfDepthPolishObject("Past_Library_SideBookshelfDepth_RightFloorShadowA", "Past_LibraryMap_SeparateSpace", "dust", new Vector3(4.72f, 0.03f, -3.00f), new Vector3(5.05f, 0.08f, 4.20f), 0.24f, 0.08f, 7.80f);
+        }
+
+        private static void ValidateFastVsHd2dSeventySixthCycleLibraryBackBookshelfFrame()
+        {
+            foreach (var requiredObjectName in new[]
+            {
+                "Current_Library_BackWallShelfWide",
+                "Current_Library_WallPlane_BackShelfContactShadowA",
+                "Past_Library_BackWallBookshelfFrontTexturePanel",
+                "Current_Library_LeftSideBookshelf",
+                "Past_Library_LeftSideBookshelf",
+                "Current_Library_BackBookshelfFrame_TopLipA",
+                "Current_Library_BackBookshelfFrame_BottomContactShadowA",
+                "Current_Library_BackBookshelfFrame_LeftEndcapA",
+                "Current_Library_BackBookshelfFrame_RightEndcapA",
+                "Current_Library_BackBookshelfFrame_DustBreakA",
+                "Past_Library_BackBookshelfFrame_TopLipA",
+                "Past_Library_BackBookshelfFrame_BottomContactShadowA",
+                "Past_Library_BackBookshelfFrame_LeftEndcapA",
+                "Past_Library_BackBookshelfFrame_RightEndcapA",
+                "Past_Library_BackBookshelfFrame_WarmHighlightA"
+            })
+            {
+                if (FindSceneObjectIncludingInactive(requiredObjectName) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing required library back bookshelf frame or anchor object {requiredObjectName}.");
+                }
+            }
+
+            ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_TopLipA", "Current_LibraryMap_SeparateSpace", "current_furniture", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_BottomContactShadowA", "Current_LibraryMap_SeparateSpace", "shadow", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_LeftEndcapA", "Current_LibraryMap_SeparateSpace", "current_fence", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 0.16f, 1.75f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_RightEndcapA", "Current_LibraryMap_SeparateSpace", "current_fence", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 0.16f, 1.75f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Current_Library_BackBookshelfFrame_DustBreakA", "Current_LibraryMap_SeparateSpace", "dust", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
+
+            ValidateLibraryBackBookshelfFramePolishObject("Past_Library_BackBookshelfFrame_TopLipA", "Past_LibraryMap_SeparateSpace", "past_furniture", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Past_Library_BackBookshelfFrame_BottomContactShadowA", "Past_LibraryMap_SeparateSpace", "shadow", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Past_Library_BackBookshelfFrame_LeftEndcapA", "Past_LibraryMap_SeparateSpace", "past_fence", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 0.16f, 1.75f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Past_Library_BackBookshelfFrame_RightEndcapA", "Past_LibraryMap_SeparateSpace", "past_fence", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 0.16f, 1.75f, 0.08f);
+            ValidateLibraryBackBookshelfFramePolishObject("Past_Library_BackBookshelfFrame_WarmHighlightA", "Past_LibraryMap_SeparateSpace", "past_furniture", new Vector3(-4.8f, 0.45f, 6.85f), new Vector3(4.8f, 2.30f, 7.08f), 9.40f, 0.08f, 0.08f);
         }
 
         private static void ValidateFastVsHd2dFortyFourthCyclePlazaLibraryApproach()
@@ -17147,6 +17355,76 @@ namespace Anemora.EditorTools
                 sceneObject.transform.localScale.z > maxScaleZ)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended side bookshelf depth scale range.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateLibraryBackBookshelfFramePolishObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library back bookshelf frame object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a Renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            var expectedLandmarkPrefix = objectName.StartsWith("Past_", StringComparison.Ordinal) ? "Past.library.back_bookshelf_frame." : "Current.library.back_bookshelf_frame.";
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue ||
+                landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival PropOrFeature landmark with the expected id prefix.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - LibraryVsCenter;
+            if (localOffset.x < minLocalPosition.x || localOffset.x > maxLocalPosition.x ||
+                localOffset.y < minLocalPosition.y || localOffset.y > maxLocalPosition.y ||
+                localOffset.z < minLocalPosition.z || localOffset.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended library back bookshelf frame range.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX ||
+                sceneObject.transform.localScale.y > maxScaleY ||
+                sceneObject.transform.localScale.z > maxScaleZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the intended library back bookshelf frame scale range.");
             }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
