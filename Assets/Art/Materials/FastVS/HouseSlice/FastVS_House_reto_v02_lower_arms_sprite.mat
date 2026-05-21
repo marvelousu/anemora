@@ -32,6 +32,7 @@ Material:
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: 3000
   stringTagMap:
+    AnemoraFastVsHd2dRole: SpriteCard
     RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS

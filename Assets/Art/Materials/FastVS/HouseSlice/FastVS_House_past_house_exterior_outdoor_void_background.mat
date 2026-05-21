@@ -30,8 +30,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2991
   stringTagMap:
+    AnemoraFastVsHd2dRole: OverlayGlow
     RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -60,7 +61,7 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 10
     - _DstBlendAlpha: 10
-    - _QueueOffset: 0
+    - _QueueOffset: -9
     - _SampleGI: 0
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1

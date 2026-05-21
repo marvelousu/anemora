@@ -19,6 +19,7 @@ namespace Anemora.EditorTools
         public const string ScenePath = "Assets/Scenes/Anemora_FastVS_HouseSlice.unity";
         public const string BuildDirectory = "Builds/FastVS_HouseSlice";
         public const string BuildExePath = BuildDirectory + "/Anemora_FastVS_HouseSlice.exe";
+        private const string MaterialRoleTagName = "AnemoraFastVsHd2dRole";
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
@@ -123,6 +124,16 @@ namespace Anemora.EditorTools
             "BroadInteriorExteriorRoute"
         };
 
+        public enum FastVsHd2dMaterialRole
+        {
+            SurfaceLit,
+            SpriteCard,
+            PaperCard,
+            OverlayGlow,
+            ContactShadow,
+            PortalWindow
+        }
+
         [MenuItem("Anemora/Fast VS/Create House Slice")]
         public static void CreateHouseSliceScene()
         {
@@ -188,6 +199,7 @@ namespace Anemora.EditorTools
             ValidateHouseMapSeparationAndDoorTransitions(controller);
             ValidateDirectionalSpriteAnimator();
             ValidatePlayerSpritePresentation();
+            AnemoraFastVsHd2dMaterialRoleFoundationAudit.VerifyMaterialRolesV1();
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
@@ -26930,7 +26942,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureCharacterContactShadowMaterial(string materialId)
         {
-            var material = FlatMaterial(materialId, Color.white, true);
+            var material = FlatMaterial(materialId, Color.white, true, FastVsHd2dMaterialRole.ContactShadow);
             ConfigureTransparentUnlitMaterial(material, 2995);
             var texture = EnsureCharacterContactShadowTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -26949,7 +26961,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dCharacterGroundBounceMaterial()
         {
-            var material = FlatMaterial("hd2d_character_ground_bounce", Color.white, true);
+            var material = FlatMaterial("hd2d_character_ground_bounce", Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3014);
             var texture = EnsureHd2dCharacterGroundBounceTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -26970,21 +26982,21 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dDepthShadowMaterial()
         {
-            var material = FlatMaterial("hd2d_depth_shadow", new Color(0.04f, 0.035f, 0.035f, 0.12f), true);
+            var material = FlatMaterial("hd2d_depth_shadow", new Color(0.04f, 0.035f, 0.035f, 0.12f), true, FastVsHd2dMaterialRole.ContactShadow);
             ConfigureTransparentUnlitMaterial(material, 2990);
             return material;
         }
 
         private static Material EnsureHd2dWarmLightPoolMaterial()
         {
-            var material = FlatMaterial("hd2d_warm_light_pool", new Color(1.0f, 0.72f, 0.30f, 0.18f), true);
+            var material = FlatMaterial("hd2d_warm_light_pool", new Color(1.0f, 0.72f, 0.30f, 0.18f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3009);
             return material;
         }
 
         private static Material EnsureOutdoorVoidBackgroundMaterial(string id, Color color)
         {
-            var material = FlatMaterial(id, color, true);
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 2991);
 
             if (material.HasProperty("_BaseColor"))
@@ -27003,7 +27015,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dOutdoorSkyWashMaterial(string id, bool past, FastVsHouseArea area)
         {
-            var material = FlatMaterial(id, Color.white, true);
+            var material = FlatMaterial(id, Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 2992);
             var texture = EnsureHd2dOutdoorSkyWashTexture(id, past, area);
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -27026,7 +27038,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dOutdoorSkyHorizonLayerMaterial(string id, string sourceTextureId, bool past, FastVsHouseArea area)
         {
-            var material = FlatMaterial(id, Color.white, true);
+            var material = FlatMaterial(id, Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 2993);
             var texture = EnsureHd2dOutdoorSkyWashTexture(sourceTextureId, past, area);
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -27051,7 +27063,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dOutdoorSkyAtmosphereDepthMaterial(string id, string sourceTextureId, bool past)
         {
-            var material = FlatMaterial(id, Color.white, true);
+            var material = FlatMaterial(id, Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 2993);
             var area = id.IndexOf("house_exterior", StringComparison.OrdinalIgnoreCase) >= 0
                 ? FastVsHouseArea.Exterior
@@ -27079,7 +27091,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dLibraryWindowLightMaterial()
         {
-            var material = FlatMaterial("hd2d_library_window_light", Color.white, true);
+            var material = FlatMaterial("hd2d_library_window_light", Color.white, true, FastVsHd2dMaterialRole.PortalWindow);
             ConfigureTransparentUnlitMaterial(material, 3012);
             var texture = EnsureHd2dLibraryWindowLightTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -27121,6 +27133,7 @@ namespace Anemora.EditorTools
 
             material.shader = shader;
             material.doubleSidedGI = true;
+            ApplyMaterialRole(material, "hd2d_atmosphere_particle", FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentParticleMaterial(material, 3000);
             AssignMaterialTexture(material, EnsureHd2dAtmosphereParticleTexture(), Vector2.one);
 
@@ -27140,7 +27153,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureTimewriterPocketGlowMaterial()
         {
-            var material = FlatMaterial("timewriter_pocket_yellow_glow", Color.white, true);
+            var material = FlatMaterial("timewriter_pocket_yellow_glow", Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3035);
             var texture = EnsureTimewriterPocketGlowTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -27149,7 +27162,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureNiroShadingOverlayMaterial()
         {
-            var material = FlatMaterial("niro_shading_overlay", Color.white, true);
+            var material = FlatMaterial("niro_shading_overlay", Color.white, true, FastVsHd2dMaterialRole.ContactShadow);
             ConfigureTransparentUnlitMaterial(material, 3010);
             var texture = EnsureNiroShadingOverlayTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
@@ -27223,9 +27236,27 @@ namespace Anemora.EditorTools
 
             if (material.HasProperty("_QueueControl"))
             {
-                material.SetFloat("_QueueControl", 0f);
+                material.SetFloat("_QueueControl", 1f);
             }
 
+            if (material.HasProperty("_QueueOffset"))
+            {
+                material.SetFloat("_QueueOffset", renderQueue - 3000f);
+            }
+
+            if (material.HasProperty("_SrcBlendAlpha"))
+            {
+                material.SetFloat("_SrcBlendAlpha", 1f);
+            }
+
+            if (material.HasProperty("_DstBlendAlpha"))
+            {
+                material.SetFloat("_DstBlendAlpha", 10f);
+            }
+
+            material.SetOverrideTag("RenderType", "Transparent");
+            material.SetShaderPassEnabled("DepthOnly", false);
+            material.SetShaderPassEnabled("SHADOWCASTER", false);
             material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             material.renderQueue = renderQueue;
             EditorUtility.SetDirty(material);
@@ -27725,9 +27756,9 @@ namespace Anemora.EditorTools
             return texture;
         }
 
-        private static Material PaintedSurfaceMaterial(string materialId, string textureId, int width, int height, Func<int, int, Color> sample, bool unlit, Vector2 tiling)
+        private static Material PaintedSurfaceMaterial(string materialId, string textureId, int width, int height, Func<int, int, Color> sample, bool unlit, Vector2 tiling, FastVsHd2dMaterialRole role = FastVsHd2dMaterialRole.SurfaceLit)
         {
-            var material = FlatMaterial(materialId, Color.white, unlit);
+            var material = FlatMaterial(materialId, Color.white, unlit, role);
             var texture = EnsureGeneratedRepeatTexture(textureId, width, height, sample);
             AssignMaterialTexture(material, texture, tiling);
             return material;
@@ -29528,11 +29559,11 @@ namespace Anemora.EditorTools
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("current_rubble_detail", "current_rubble_detail_hd2d_plate", 128, 64, SampleCurrentRubbleDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PaintedSurfaceMaterial("book", "book_spines_hd2d_plate", 128, 64, SampleBookSpinesHd2dPixel, false, new Vector2(1f, 1f)),
-                PixelMaterial("lamp", new Color32(255, 204, 88, 255), new Color32(255, 236, 150, 255), new Color32(197, 126, 38, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
-                FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true),
-                FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true),
-                PaintedSurfaceMaterial("window_light", "window_light_hd2d_plate", 96, 96, SampleWindowLightHd2dPixel, true, new Vector2(1f, 1f)),
-                PaintedSurfaceMaterial("empty_window", "empty_window_hd2d_plate", 96, 96, SampleEmptyWindowHd2dPixel, true, new Vector2(1f, 1f)),
+                PixelMaterial("lamp", new Color32(255, 204, 88, 255), new Color32(255, 236, 150, 255), new Color32(197, 126, 38, 255), PixelPattern.Checker, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.OverlayGlow),
+                FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
+                FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
+                PaintedSurfaceMaterial("window_light", "window_light_hd2d_plate", 96, 96, SampleWindowLightHd2dPixel, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.PortalWindow),
+                PaintedSurfaceMaterial("empty_window", "empty_window_hd2d_plate", 96, 96, SampleEmptyWindowHd2dPixel, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.PortalWindow),
                 PixelMaterial("water", new Color32(56, 119, 151, 255), new Color32(91, 171, 195, 255), new Color32(33, 72, 112, 255), PixelPattern.Water, true, new Vector2(1f, 1f)),
                 PixelMaterial("rope", new Color32(142, 112, 70, 255), new Color32(181, 146, 89, 255), new Color32(89, 70, 47, 255), PixelPattern.Planks, false, new Vector2(1f, 1f)),
                 PixelMaterial("flower_red", new Color32(190, 46, 54, 255), new Color32(239, 87, 79, 255), new Color32(117, 35, 53, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
@@ -29541,19 +29572,19 @@ namespace Anemora.EditorTools
                 PixelMaterial("laundry_bright", new Color32(218, 219, 196, 255), new Color32(242, 238, 210, 255), new Color32(151, 165, 161, 255), PixelPattern.Cloth, true, new Vector2(1f, 1f)),
                 PixelMaterial("laundry_accent", new Color32(109, 145, 192, 255), new Color32(151, 185, 222, 255), new Color32(65, 90, 141, 255), PixelPattern.Cloth, true, new Vector2(1f, 1f)),
                 PixelMaterial("sign_paint", new Color32(178, 127, 61, 255), new Color32(211, 161, 82, 255), new Color32(92, 65, 43, 255), PixelPattern.Planks, false, new Vector2(1f, 1f)),
-                FlatMaterial("shadow", new Color(0.10f, 0.10f, 0.11f, 1f), true),
-                FlatMaterial("doorway_dark", new Color(0.035f, 0.032f, 0.038f, 1f), true),
-                FlatMaterial("current_frame", new Color(1.00f, 0.42f, 0.17f, 1f), false),
-                FlatMaterial("past_frame", new Color(0.28f, 0.95f, 1.00f, 1f), false),
-                FlatMaterial("preview_frame", new Color(0.76f, 0.76f, 0.78f, 1f), false),
-                FlatMaterial("threshold", new Color(0.20f, 0.95f, 0.82f, 1f), false),
-                FlatMaterial("niro_body", new Color(0.26f, 0.42f, 0.78f, 1f), true),
-                FlatMaterial("niro_past_body", new Color(0.46f, 0.72f, 0.96f, 1f), true),
-                FlatMaterial("niro_accent", new Color(0.92f, 0.74f, 0.38f, 1f), true),
-                FlatMaterial("memory_body", new Color(0.54f, 0.62f, 0.76f, 1f), true),
-                FlatMaterial("memory_accent", new Color(0.22f, 0.26f, 0.34f, 1f), true),
-                FlatMaterial("card_face", new Color(0.94f, 0.80f, 0.62f, 1f), true),
-                FlatMaterial("label", Color.white, true),
+                FlatMaterial("shadow", new Color(0.10f, 0.10f, 0.11f, 1f), true, FastVsHd2dMaterialRole.ContactShadow),
+                FlatMaterial("doorway_dark", new Color(0.035f, 0.032f, 0.038f, 1f), true, FastVsHd2dMaterialRole.SurfaceLit),
+                FlatMaterial("current_frame", new Color(1.00f, 0.42f, 0.17f, 1f), false, FastVsHd2dMaterialRole.PortalWindow),
+                FlatMaterial("past_frame", new Color(0.28f, 0.95f, 1.00f, 1f), false, FastVsHd2dMaterialRole.PortalWindow),
+                FlatMaterial("preview_frame", new Color(0.76f, 0.76f, 0.78f, 1f), false, FastVsHd2dMaterialRole.PortalWindow),
+                FlatMaterial("threshold", new Color(0.20f, 0.95f, 0.82f, 1f), false, FastVsHd2dMaterialRole.PortalWindow),
+                FlatMaterial("niro_body", new Color(0.26f, 0.42f, 0.78f, 1f), true, FastVsHd2dMaterialRole.PaperCard),
+                FlatMaterial("niro_past_body", new Color(0.46f, 0.72f, 0.96f, 1f), true, FastVsHd2dMaterialRole.PaperCard),
+                FlatMaterial("niro_accent", new Color(0.92f, 0.74f, 0.38f, 1f), true, FastVsHd2dMaterialRole.PaperCard),
+                FlatMaterial("memory_body", new Color(0.54f, 0.62f, 0.76f, 1f), true, FastVsHd2dMaterialRole.PaperCard),
+                FlatMaterial("memory_accent", new Color(0.22f, 0.26f, 0.34f, 1f), true, FastVsHd2dMaterialRole.PaperCard),
+                FlatMaterial("card_face", new Color(0.94f, 0.80f, 0.62f, 1f), true, FastVsHd2dMaterialRole.PaperCard),
+                FlatMaterial("label", Color.white, true, FastVsHd2dMaterialRole.PaperCard),
                 SpriteMaterial("niro_front_sprite", NiroFrontStripPath, Color.white, true),
                 SpriteMaterial("niro_past_front_sprite", NiroFrontStripPath, new Color(0.72f, 0.88f, 1.0f, 0.92f), true),
                 ApertureMaterial("house_aperture"));
@@ -29568,7 +29599,7 @@ namespace Anemora.EditorTools
         {
             EnsureTextureImporter(texturePath);
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
-            var material = FlatMaterial(id, tint, true);
+            var material = FlatMaterial(id, tint, true, FastVsHd2dMaterialRole.SpriteCard);
             if (texture == null)
             {
                 throw new InvalidOperationException($"Fast VS external sprite texture missing: {texturePath}");
@@ -29608,7 +29639,7 @@ namespace Anemora.EditorTools
         {
             EnsureTextureImporter(texturePath);
             var texture = EnsureShadedSpriteTexture(id, texturePath);
-            var material = FlatMaterial(id, tint, true);
+            var material = FlatMaterial(id, tint, true, FastVsHd2dMaterialRole.SpriteCard);
             if (texture == null)
             {
                 Debug.LogWarning($"Fast VS character texture missing: {texturePath}");
@@ -29753,7 +29784,6 @@ namespace Anemora.EditorTools
         private static Material BookshelfFrontMaterial(string panelId, Vector2 textureScale)
         {
             var material = FlatMaterial($"bookshelf_front_painted_hd2d_{panelId}", new Color(0.97f, 0.95f, 0.92f, 1f), true);
-            material.name = $"FastVS_House_bookshelf_front_painted_hd2d_{panelId}";
             var texture = EnsureOpenGameArtBookshelfFrontTexture();
             AssignMaterialTexture(material, texture, textureScale);
             return material;
@@ -29762,16 +29792,15 @@ namespace Anemora.EditorTools
         private static Material CurrentEmptyBookshelfFrontMaterial(string panelId, Vector2 textureScale)
         {
             var material = FlatMaterial($"current_empty_bookshelf_front_hd2d_{panelId}", new Color(0.92f, 0.89f, 0.83f, 1f), true);
-            material.name = $"FastVS_House_current_empty_bookshelf_front_hd2d_{panelId}";
             var texture = EnsureGeneratedRepeatTexture("current_empty_bookshelf_front_hd2d", 256, 128, SampleCurrentEmptyBookshelfFrontHd2dPixel);
             AssignMaterialTexture(material, texture, textureScale);
             return material;
         }
 
-        private static Material PixelMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, bool unlit, Vector2 tiling)
+        private static Material PixelMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, bool unlit, Vector2 tiling, FastVsHd2dMaterialRole role = FastVsHd2dMaterialRole.SurfaceLit)
         {
             var texture = EnsurePixelTexture(id, a, b, c, pattern);
-            var material = FlatMaterial(id, Color.white, unlit);
+            var material = FlatMaterial(id, Color.white, unlit, role);
             if (material.HasProperty("_BaseMap"))
             {
                 material.SetTexture("_BaseMap", texture);
@@ -29867,7 +29896,7 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static Material FlatMaterial(string id, Color color, bool unlit)
+        private static Material FlatMaterial(string id, Color color, bool unlit, FastVsHd2dMaterialRole role = FastVsHd2dMaterialRole.SurfaceLit)
         {
             var path = $"{MaterialDirectory}/FastVS_House_{id}.mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -29910,6 +29939,8 @@ namespace Anemora.EditorTools
                 material.SetFloat("_Cull", 0f);
             }
 
+            ConfigureOpaqueMaterial(material);
+
             if (!unlit && ShouldApplyHd2dMatteMaterial(id))
             {
                 if (material.HasProperty("_Metallic"))
@@ -29928,7 +29959,62 @@ namespace Anemora.EditorTools
                 }
             }
 
+            ApplyMaterialRole(material, id, role);
             return material;
+        }
+
+        private static void ConfigureOpaqueMaterial(Material material)
+        {
+            if (material.HasProperty("_Surface"))
+            {
+                material.SetFloat("_Surface", 0f);
+            }
+
+            if (material.HasProperty("_AlphaClip"))
+            {
+                material.SetFloat("_AlphaClip", 0f);
+            }
+
+            if (material.HasProperty("_Blend"))
+            {
+                material.SetFloat("_Blend", 0f);
+            }
+
+            if (material.HasProperty("_SrcBlend"))
+            {
+                material.SetFloat("_SrcBlend", 1f);
+            }
+
+            if (material.HasProperty("_DstBlend"))
+            {
+                material.SetFloat("_DstBlend", 0f);
+            }
+
+            if (material.HasProperty("_ZWrite"))
+            {
+                material.SetFloat("_ZWrite", 1f);
+            }
+
+            if (material.HasProperty("_SrcBlendAlpha"))
+            {
+                material.SetFloat("_SrcBlendAlpha", 1f);
+            }
+
+            if (material.HasProperty("_DstBlendAlpha"))
+            {
+                material.SetFloat("_DstBlendAlpha", 0f);
+            }
+
+            if (material.HasProperty("_QueueOffset"))
+            {
+                material.SetFloat("_QueueOffset", 0f);
+            }
+
+            material.SetOverrideTag("RenderType", "Opaque");
+            material.SetShaderPassEnabled("DepthOnly", true);
+            material.SetShaderPassEnabled("SHADOWCASTER", true);
+            material.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            material.renderQueue = -1;
         }
 
         private static bool ShouldApplyHd2dMatteMaterial(string id)
@@ -29966,7 +30052,16 @@ namespace Anemora.EditorTools
                 material.SetColor("_Color", Color.white);
             }
 
+            ApplyMaterialRole(material, id, FastVsHd2dMaterialRole.PortalWindow);
             return material;
+        }
+
+        private static void ApplyMaterialRole(Material material, string materialId, FastVsHd2dMaterialRole role)
+        {
+            var roleToken = role.ToString();
+            material.name = $"FastVS_House_{materialId}";
+            material.SetOverrideTag(MaterialRoleTagName, roleToken);
+            EditorUtility.SetDirty(material);
         }
 
         private static void SerializedSet(UnityEngine.Object target, string fieldName, object value)

@@ -18,6 +18,7 @@ Material:
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap:
+    AnemoraFastVsHd2dRole: SurfaceLit
     RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
