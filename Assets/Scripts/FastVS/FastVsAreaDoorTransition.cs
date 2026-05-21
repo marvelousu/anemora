@@ -135,7 +135,14 @@ namespace Anemora.FastVS
 
             if (areaVisibility != null)
             {
-                areaVisibility.SetActiveAreaForReview(targetArea);
+                if (Application.isPlaying)
+                {
+                    areaVisibility.SetActiveAreaWithLightingTransitionForReview(targetArea);
+                }
+                else
+                {
+                    areaVisibility.SetActiveAreaForReview(targetArea);
+                }
             }
 
             if (portalController != null)

@@ -21,8 +21,9 @@ namespace Anemora.FastVS
         [SerializeField] private GameObject currentLibraryMap;
         [SerializeField] private GameObject pastLibraryMap;
         [SerializeField] private FastVsHouseArea activeArea;
-        [SerializeField] private Color indoorClearColor = new Color(0.075f, 0.078f, 0.084f, 1f);
-        [SerializeField] private Color outdoorSkyClearColor = new Color(0.125f, 0.148f, 0.170f, 1f);
+        [SerializeField] private Color indoorClearColor = new Color(0.064f, 0.060f, 0.060f, 1f);
+        [SerializeField] private Color exteriorSkyClearColor = new Color(0.118f, 0.142f, 0.166f, 1f);
+        [SerializeField] private Color centralPlazaSkyClearColor = new Color(0.112f, 0.138f, 0.164f, 1f);
 
         public FastVsHouseArea ActiveAreaForReview => activeArea;
         public bool InteriorActiveForReview => IsActive(currentInteriorMap) && IsActive(pastInteriorMap);
@@ -41,16 +42,22 @@ namespace Anemora.FastVS
 
         private void Awake()
         {
-            ApplyVisibility();
+            ApplyVisibility(false);
         }
 
         public void SetActiveAreaForReview(FastVsHouseArea area)
         {
             activeArea = area;
-            ApplyVisibility();
+            ApplyVisibility(false);
         }
 
-        private void ApplyVisibility()
+        public void SetActiveAreaWithLightingTransitionForReview(FastVsHouseArea area)
+        {
+            activeArea = area;
+            ApplyVisibility(true);
+        }
+
+        private void ApplyVisibility(bool transitionLighting)
         {
             SetActive(currentInteriorMap, activeArea == FastVsHouseArea.Interior);
             SetActive(pastInteriorMap, activeArea == FastVsHouseArea.Interior);
@@ -60,8 +67,10 @@ namespace Anemora.FastVS
             SetActive(pastCentralPlazaMap, activeArea == FastVsHouseArea.CentralPlaza);
             SetActive(currentLibraryMap, activeArea == FastVsHouseArea.Library);
             SetActive(pastLibraryMap, activeArea == FastVsHouseArea.Library);
-            ApplyCameraClearColor();
-            ApplyLightingProfile();
+            if (!ApplyLightingProfile(transitionLighting))
+            {
+                ApplyCameraClearColor();
+            }
         }
 
         private void ApplyCameraClearColor()
@@ -73,17 +82,28 @@ namespace Anemora.FastVS
             }
 
             mainCamera.backgroundColor = activeArea == FastVsHouseArea.Exterior || activeArea == FastVsHouseArea.CentralPlaza
-                ? outdoorSkyClearColor
+                ? (activeArea == FastVsHouseArea.Exterior ? exteriorSkyClearColor : centralPlazaSkyClearColor)
                 : indoorClearColor;
         }
 
-        private void ApplyLightingProfile()
+        private bool ApplyLightingProfile(bool transitionLighting)
         {
             var director = FindFirstObjectByType<FastVsHouseLightingDirector>();
             if (director != null)
             {
-                director.ApplyAreaForReview(activeArea);
+                if (transitionLighting)
+                {
+                    director.BeginAreaTransitionForReview(activeArea);
+                }
+                else
+                {
+                    director.ApplyAreaForReview(activeArea);
+                }
+
+                return true;
             }
+
+            return false;
         }
 
         private static void SetActive(GameObject target, bool active)

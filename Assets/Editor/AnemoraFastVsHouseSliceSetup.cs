@@ -204,6 +204,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
+            AnemoraFastVsHd2dLightingTransitionAudit.VerifyLightingTransitionV1();
             ValidateFastVsHd2dSecondCycleAtmosphere();
             ValidateFastVsHd2dThirdCycleSurfaceTextures();
             ValidateFastVsHd2dFourthCycleHeroPropTextures();
@@ -15455,7 +15456,7 @@ namespace Anemora.EditorTools
             additionalData.requiresDepthTexture = true;
             var camera = cameraObject.GetComponent<Camera>();
             camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = new Color(0.075f, 0.078f, 0.084f, 1f);
+            camera.backgroundColor = new Color(0.064f, 0.060f, 0.060f, 1f);
             camera.fieldOfView = 38f;
             camera.nearClipPlane = 0.03f;
             camera.farClipPlane = 140f;
