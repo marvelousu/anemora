@@ -242,6 +242,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventyFifthCycleLibrarySideBookshelfDepth();
             ValidateFastVsHd2dSeventySixthCycleLibraryBackBookshelfFrame();
             ValidateFastVsHd2dSeventySeventhCycleOutdoorSkyAndLibraryVolume();
+            ValidateFastVsHd2dSeventyEighthCycleHouseInteriorPropReadability();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -4874,6 +4875,7 @@ namespace Anemora.EditorTools
                 CreateHouseInteriorPropDetailSlab(root, "Current_HouseInterior_LifeProp_PillowCreaseB", c + new Vector3(-1.92f, 0.68f, 0.76f), Quaternion.Euler(0f, -5f, 0f), new Vector3(0.24f, 0.018f, 0.045f), materials.Dust, "Current.house_interior.life_prop.pillow_crease_b");
             }
 
+            CreateHouseInteriorPropReadabilityPolish(root, prefix, past, materials, c, wood, bedMaterial, trim);
             CreateHouseInteriorFurnitureGroundingPolish(root, prefix, past, materials, c, wood, bedMaterial);
 
             CreateInvisibleColliderBox(
@@ -4993,6 +4995,134 @@ namespace Anemora.EditorTools
 
             _ = wood;
             _ = prefix;
+        }
+
+        private static void CreateHouseInteriorPropReadabilityPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material bedMaterial, Material trim)
+        {
+            _ = prefix;
+            var pageEdgeMaterial = materials.SignPaint;
+            var shelfWarmLineMaterial = past ? EnsureHd2dWarmLightPoolMaterial() : materials.Dust;
+            var shelfSideMaterial = wood;
+            var pillowShadowMaterial = past ? materials.Pillow : materials.Dust;
+
+            if (past)
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_BedBlanketEdgeHighlightA",
+                    root,
+                    c + new Vector3(-1.48f, 0.712f, 0.80f),
+                    new Vector3(0.76f, 0.016f, 0.05f),
+                    Quaternion.Euler(0f, -4f, 8f),
+                    bedMaterial,
+                    "Past.house_interior.prop_readability.bed_blanket_edge_highlight_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_BedPillowShadowA",
+                    root,
+                    c + new Vector3(-1.88f, 0.635f, 1.00f),
+                    new Vector3(0.26f, 0.014f, 0.10f),
+                    Quaternion.Euler(0f, 8f, -6f),
+                    pillowShadowMaterial,
+                    "Past.house_interior.prop_readability.bed_pillow_shadow_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_TableBookPageEdgeA",
+                    root,
+                    c + new Vector3(1.16f, 0.665f, -0.76f),
+                    new Vector3(0.16f, 0.016f, 0.11f),
+                    Quaternion.Euler(0f, -12f, 0f),
+                    pageEdgeMaterial,
+                    "Past.house_interior.prop_readability.table_book_page_edge_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_TableBookSpineA",
+                    root,
+                    c + new Vector3(0.96f, 0.668f, -0.90f),
+                    new Vector3(0.08f, 0.030f, 0.18f),
+                    Quaternion.Euler(0f, 14f, 0f),
+                    trim,
+                    "Past.house_interior.prop_readability.table_book_spine_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_TablePaperCornerA",
+                    root,
+                    c + new Vector3(1.30f, 0.632f, -0.66f),
+                    new Vector3(0.12f, 0.012f, 0.08f),
+                    Quaternion.Euler(0f, -16f, 4f),
+                    pageEdgeMaterial,
+                    "Past.house_interior.prop_readability.table_paper_corner_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_ShelfSideEdgeA",
+                    root,
+                    c + new Vector3(2.50f, 1.02f, 1.26f),
+                    new Vector3(0.42f, 0.022f, 0.08f),
+                    Quaternion.Euler(0f, 10f, 10f),
+                    shelfSideMaterial,
+                    "Past.house_interior.prop_readability.shelf_side_edge_a");
+                CreateNonArrivalLandmarkCube(
+                    "Past_HouseInterior_PropReadability_ShelfWarmLineA",
+                    root,
+                    c + new Vector3(2.34f, 1.34f, 1.80f),
+                    new Vector3(0.54f, 0.012f, 0.03f),
+                    Quaternion.Euler(0f, 0f, 7f),
+                    shelfWarmLineMaterial,
+                    "Past.house_interior.prop_readability.shelf_warm_line_a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_BedBlanketEdgeHighlightA",
+                    root,
+                    c + new Vector3(-1.48f, 0.716f, 0.80f),
+                    new Vector3(0.76f, 0.016f, 0.05f),
+                    Quaternion.Euler(0f, -5f, 8f),
+                    bedMaterial,
+                    "Current.house_interior.prop_readability.bed_blanket_edge_highlight_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_BedPillowShadowA",
+                    root,
+                    c + new Vector3(-1.88f, 0.634f, 1.00f),
+                    new Vector3(0.26f, 0.014f, 0.10f),
+                    Quaternion.Euler(0f, 8f, -6f),
+                    materials.Dust,
+                    "Current.house_interior.prop_readability.bed_pillow_shadow_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_TableBookPageEdgeA",
+                    root,
+                    c + new Vector3(1.16f, 0.666f, -0.76f),
+                    new Vector3(0.16f, 0.016f, 0.11f),
+                    Quaternion.Euler(0f, -12f, 0f),
+                    pageEdgeMaterial,
+                    "Current.house_interior.prop_readability.table_book_page_edge_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_TableBookSpineA",
+                    root,
+                    c + new Vector3(0.96f, 0.668f, -0.90f),
+                    new Vector3(0.08f, 0.030f, 0.18f),
+                    Quaternion.Euler(0f, 14f, 0f),
+                    trim,
+                    "Current.house_interior.prop_readability.table_book_spine_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_TablePaperCornerA",
+                    root,
+                    c + new Vector3(1.30f, 0.632f, -0.66f),
+                    new Vector3(0.12f, 0.012f, 0.08f),
+                    Quaternion.Euler(0f, -16f, 4f),
+                    pageEdgeMaterial,
+                    "Current.house_interior.prop_readability.table_paper_corner_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_ShelfBrokenSideEdgeA",
+                    root,
+                    c + new Vector3(2.50f, 1.02f, 1.26f),
+                    new Vector3(0.42f, 0.022f, 0.08f),
+                    Quaternion.Euler(0f, 10f, 10f),
+                    shelfSideMaterial,
+                    "Current.house_interior.prop_readability.shelf_broken_side_edge_a");
+                CreateNonArrivalLandmarkCube(
+                    "Current_HouseInterior_PropReadability_ShelfDustLineA",
+                    root,
+                    c + new Vector3(2.34f, 1.34f, 1.80f),
+                    new Vector3(0.54f, 0.012f, 0.03f),
+                    Quaternion.Euler(0f, 0f, 7f),
+                    materials.Dust,
+                    "Current.house_interior.prop_readability.shelf_dust_line_a");
+            }
         }
 
         private static void CreateHouseBedSoftTextilePolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material bedMaterial)
@@ -8078,6 +8208,11 @@ namespace Anemora.EditorTools
             CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_sky_and_plaza_library_volume_20260521");
         }
 
+        public static void CaptureHd2dSeventyEighthCycleScreenshotsBatch()
+        {
+            CaptureHd2dSeventyEighthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_house_interior_prop_readability_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -8138,6 +8273,68 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS seventy-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dSeventyEighthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS seventy-eighth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var bedTablePlayerLocal = HouseInteriorCenter + new Vector3(-0.08f, 0.02f, -0.98f);
+            var shelfPlayerLocal = HouseInteriorCenter + new Vector3(1.52f, 0.02f, 0.18f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                bedTablePlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_interior_bed_table_prop_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_interior_bed_table_prop_readability.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                bedTablePlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_interior_bed_table_prop_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_interior_bed_table_prop_readability.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                shelfPlayerLocal,
+                Path.Combine(outputDirectory, "03_current_house_interior_shelf_prop_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_house_interior_shelf_prop_readability.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                shelfPlayerLocal,
+                Path.Combine(outputDirectory, "04_past_house_interior_shelf_prop_readability.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_house_interior_shelf_prop_readability.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS seventy-eighth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -12058,6 +12255,25 @@ namespace Anemora.EditorTools
             ValidateCentralPlazaLibraryRearVolumeObject("Past_CentralPlaza_LibraryRearVolume_EastDepthFaceA", "past_exterior_wall", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_rear_volume.", new Vector3(4.00f, 1.52f, 10.90f), new Vector3(4.70f, 2.00f, 11.20f), 0.28f, 2.84f, 1.10f);
             ValidateCentralPlazaLibraryRearVolumeObject("Past_CentralPlaza_LibraryRearVolume_RearGroundShadowA", "shadow", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_rear_volume.", new Vector3(-0.60f, 0.05f, 11.10f), new Vector3(0.60f, 0.22f, 11.42f), 9.20f, 0.08f, 1.24f);
             ValidateCentralPlazaLibraryRearVolumeObject("Past_CentralPlaza_LibraryRearVolume_WarmBackWindowHintA", "window_light", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_rear_volume.", new Vector3(-1.50f, 2.12f, 11.50f), new Vector3(-0.60f, 2.62f, 11.72f), 1.20f, 0.08f, 0.14f);
+        }
+
+        private static void ValidateFastVsHd2dSeventyEighthCycleHouseInteriorPropReadability()
+        {
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_BedBlanketEdgeHighlightA", "current_bed", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_BedPillowShadowA", "dust", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_TableBookPageEdgeA", "sign_paint", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_TableBookSpineA", "current_fence", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_TablePaperCornerA", "sign_paint", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_ShelfBrokenSideEdgeA", "current_furniture", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Current_HouseInterior_PropReadability_ShelfDustLineA", "dust", "Current_HouseInteriorMap_SeparateSpace", "Current.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_BedBlanketEdgeHighlightA", "past_bed", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_BedPillowShadowA", "pillow", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_TableBookPageEdgeA", "sign_paint", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_TableBookSpineA", "past_fence", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_TablePaperCornerA", "sign_paint", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_ShelfSideEdgeA", "past_furniture", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
+            ValidateHouseInteriorPropReadabilityObject("Past_HouseInterior_PropReadability_ShelfWarmLineA", "hd2d_warm_light_pool", "Past_HouseInteriorMap_SeparateSpace", "Past.house_interior.prop_readability.", new Vector3(-2.30f, 0.45f, -1.25f), new Vector3(2.80f, 1.60f, 1.95f));
         }
 
         private static void ValidateFastVsHd2dSeventyThirdCycleOutdoorFarEdgeTransition()
@@ -16889,6 +17105,74 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHouseInteriorPropReadabilityObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalOffset, Vector3 maxLocalOffset)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house interior prop readability object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding interior prop readability geometry.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null || countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean || countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival.");
+            }
+
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            var landmarkId = landmarkIdProperty == null ? string.Empty : landmarkIdProperty.stringValue ?? string.Empty;
+            if (landmarkId.IndexOf(expectedLandmarkIdPrefix, StringComparison.Ordinal) != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a landmark id starting with {expectedLandmarkIdPrefix}.");
+            }
+
+            var offsetFromHouseCenter = sceneObject.transform.localPosition - HouseInteriorCenter;
+            ValidateVectorWithinRange($"{objectName} local offset from HouseInteriorCenter", offsetFromHouseCenter, minLocalOffset, maxLocalOffset);
+
+            var localScale = sceneObject.transform.localScale;
+            if (localScale.x > 0.80f || localScale.y > 0.12f || localScale.z > 0.40f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay small on all axes.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
         private static void ValidateFastVsHd2dSixtySecondCycleHouseInteriorFurnitureGrounding()
         {
             ValidateHouseInteriorFurnitureGroundingObject("Current_HouseInterior_FurnitureGrounding_BedFootContactA", "Current_HouseInteriorMap_SeparateSpace", "dust", 0.06f);
@@ -18938,6 +19222,16 @@ namespace Anemora.EditorTools
             if (Vector3.Distance(actual, expected) > 0.035f)
             {
                 throw new InvalidOperationException($"House slice validation failed: {label} expected {expected}, but got {actual}.");
+            }
+        }
+
+        private static void ValidateVectorWithinRange(string label, Vector3 actual, Vector3 minInclusive, Vector3 maxInclusive)
+        {
+            if (actual.x < minInclusive.x || actual.x > maxInclusive.x ||
+                actual.y < minInclusive.y || actual.y > maxInclusive.y ||
+                actual.z < minInclusive.z || actual.z > maxInclusive.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} expected within {minInclusive} and {maxInclusive}, but got {actual}.");
             }
         }
 
