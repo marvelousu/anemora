@@ -271,6 +271,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredFourthCyclePlazaLibraryDoorRelief();
             ValidateFastVsHd2dOneHundredFifthCycleLibraryBackShelfBookSpineDepth();
             ValidateFastVsHd2dOneHundredSixthCycleLibrarySideShelfEdgeDepth();
+            ValidateFastVsHd2dOneHundredSeventhCycleHouseExteriorPorchDoorGrounding();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5617,6 +5618,8 @@ namespace Anemora.EditorTools
             var yard = past ? materials.PastGrass : materials.CurrentGrass;
             var path = past ? materials.PastPath : materials.CurrentPath;
             var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
 
             CreateLandmarkCube($"{prefix}_HouseExterior_YardPixelGround", root, c + new Vector3(0f, 0.005f, 0f), new Vector3(13.6f, 0.08f, 10.4f), Quaternion.identity, yard, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_exterior.yard");
             CreateNorthEastRoad(root, prefix, past, materials);
@@ -5643,6 +5646,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorPathPorchDressing(root, prefix, past, materials);
             CreateHouseExteriorFacadeMicrodepthPolish(root, prefix, past, materials);
             CreateHouseExteriorEaveContactPolish(root, prefix, past, materials);
+            CreateHouseExteriorPorchDoorGroundingPolish(root, prefix, past, materials, c, stone, trim, wall);
 
             if (!past)
             {
@@ -5801,6 +5805,129 @@ namespace Anemora.EditorTools
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowLeftA", root, c + new Vector3(-1.85f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_left_a");
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowRightA", root, c + new Vector3(-0.25f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_right_a");
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_FoundationScuffLineA", root, c + new Vector3(-1.72f, 0.365f, -1.28f), new Vector3(2.30f, 0.026f, 0.050f), Quaternion.Euler(0f, 3f, 0f), materials.CurrentStone, "Current.house_exterior.eave_contact.foundation_scuff_line_a");
+        }
+
+        private static void CreateHouseExteriorPorchDoorGroundingPolish(Transform root, string prefix, bool past, Materials materials, Vector3 center, Material stone, Material trim, Material wall)
+        {
+            var objectPrefix = $"{prefix}_HouseExterior_PorchDoorGrounding";
+            var doorDetail = past ? materials.PastHouseDoorDetail : materials.CurrentHouseDoorDetail;
+            var chipMaterial = past ? materials.PastStone : materials.Dust;
+            var shadowMaterial = materials.Shadow;
+            var frameMaterial = trim;
+            var thresholdMaterial = stone;
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_CenterDoorSeamA",
+                root,
+                center + new Vector3(-1.05f, 0.78f, -1.48f),
+                new Vector3(0.06f, 1.02f, 0.025f),
+                Quaternion.identity,
+                doorDetail,
+                $"{prefix}.house_exterior.porch_door_grounding.center_door_seam.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_TopFrameContactA",
+                root,
+                center + new Vector3(-1.05f, 1.11f, -1.74f),
+                new Vector3(0.86f, 0.03f, 0.025f),
+                Quaternion.identity,
+                frameMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.top_frame_contact.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftFrameBaseA",
+                root,
+                center + new Vector3(-1.60f, 0.54f, -1.74f),
+                new Vector3(0.10f, 0.24f, 0.04f),
+                Quaternion.identity,
+                frameMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.left_frame_base.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightFrameBaseA",
+                root,
+                center + new Vector3(-0.50f, 0.54f, -1.74f),
+                new Vector3(0.10f, 0.24f, 0.04f),
+                Quaternion.identity,
+                frameMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.right_frame_base.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftThresholdStripA",
+                root,
+                center + new Vector3(-1.37f, 0.11f, -1.98f),
+                new Vector3(0.36f, 0.028f, 0.04f),
+                Quaternion.identity,
+                thresholdMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.left_threshold_strip.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightThresholdStripA",
+                root,
+                center + new Vector3(-0.73f, 0.11f, -1.98f),
+                new Vector3(0.36f, 0.028f, 0.04f),
+                Quaternion.identity,
+                thresholdMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.right_threshold_strip.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LeftStepShadowA",
+                root,
+                center + new Vector3(-1.57f, 0.08f, -2.03f),
+                new Vector3(0.22f, 0.014f, 0.04f),
+                Quaternion.identity,
+                shadowMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.left_step_shadow.a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RightStepShadowA",
+                root,
+                center + new Vector3(-0.53f, 0.08f, -2.03f),
+                new Vector3(0.22f, 0.014f, 0.04f),
+                Quaternion.identity,
+                shadowMaterial,
+                $"{prefix}.house_exterior.porch_door_grounding.right_step_shadow.a");
+
+            if (past)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftDoorChipA",
+                    root,
+                    center + new Vector3(-1.67f, 0.22f, -1.90f),
+                    new Vector3(0.12f, 0.028f, 0.03f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    chipMaterial,
+                    $"{prefix}.house_exterior.porch_door_grounding.left_door_chip.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightDoorChipA",
+                    root,
+                    center + new Vector3(-0.43f, 0.22f, -1.90f),
+                    new Vector3(0.12f, 0.028f, 0.03f),
+                    Quaternion.Euler(0f, 4f, 0f),
+                    chipMaterial,
+                    $"{prefix}.house_exterior.porch_door_grounding.right_door_chip.a");
+            }
+            else
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_LeftDoorWearA",
+                    root,
+                    center + new Vector3(-1.67f, 0.22f, -1.90f),
+                    new Vector3(0.12f, 0.026f, 0.03f),
+                    Quaternion.Euler(0f, -4f, 0f),
+                    chipMaterial,
+                    $"{prefix}.house_exterior.porch_door_grounding.left_door_wear.a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_RightDoorWearA",
+                    root,
+                    center + new Vector3(-0.43f, 0.22f, -1.90f),
+                    new Vector3(0.12f, 0.026f, 0.03f),
+                    Quaternion.Euler(0f, 4f, 0f),
+                    chipMaterial,
+                    $"{prefix}.house_exterior.porch_door_grounding.right_door_wear.a");
+            }
+
+            _ = wall;
         }
 
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
@@ -9061,6 +9188,11 @@ namespace Anemora.EditorTools
             CaptureHd2dOneHundredSixthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_side_shelf_edge_depth_20260521");
         }
 
+        public static void CaptureHd2dOneHundredSeventhCycleScreenshotsBatch()
+        {
+            CaptureHd2dOneHundredSeventhCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_house_exterior_porch_door_grounding_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -9592,6 +9724,79 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighty-fourth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dOneHundredSeventhCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS one-hundred-seventh-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var overviewPlayerLocal = HouseExteriorCenter + new Vector3(-1.92f, 0.02f, -1.48f);
+            var closePlayerLocal = HouseExteriorCenter + new Vector3(-1.34f, 0.02f, -1.74f);
+            var closeAnchorLocal = HouseExteriorCenter + new Vector3(-1.05f, 0.66f, -1.86f);
+            var closeCameraOffset = new Vector3(1.18f, 1.06f, -3.04f);
+            var closeLookOffset = new Vector3(0.08f, 0.12f, 0.10f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_exterior_porch_door_grounding_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_porch_door_grounding_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_exterior_porch_door_grounding_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_porch_door_grounding_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "03_current_house_exterior_porch_door_grounding_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_house_exterior_porch_door_grounding_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                closeCameraOffset,
+                closeLookOffset,
+                outputDirectory,
+                "04_past_house_exterior_porch_door_grounding_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_house_exterior_porch_door_grounding_close.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS one-hundred-seventh-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureHd2dEightyFifthCycleScreenshotsToDirectory(string outputDirectory)
@@ -23505,6 +23710,38 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_HouseExterior_DoorClosedPanel", "Past_HouseExteriorMap_SeparateSpace");
         }
 
+        private static void ValidateFastVsHd2dOneHundredSeventhCycleHouseExteriorPorchDoorGrounding()
+        {
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_CenterDoorSeamA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_house_door_detail", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.14f, 1.12f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_TopFrameContactA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_fence", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.92f, 0.08f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_LeftFrameBaseA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_fence", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.30f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_RightFrameBaseA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_fence", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.30f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_LeftThresholdStripA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_stone", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.42f, 0.06f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_RightThresholdStripA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_stone", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.42f, 0.06f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_LeftStepShadowA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "shadow", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.28f, 0.05f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_RightStepShadowA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "shadow", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.28f, 0.05f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_LeftDoorWearA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "dust", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.06f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_RightDoorWearA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "dust", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.06f, 0.05f);
+
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_CenterDoorSeamA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_house_door_detail", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.14f, 1.12f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_TopFrameContactA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_fence", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.92f, 0.08f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_LeftFrameBaseA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_fence", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.30f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_RightFrameBaseA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_fence", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.30f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_LeftThresholdStripA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_stone", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.42f, 0.06f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_RightThresholdStripA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_stone", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.42f, 0.06f, 0.06f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_LeftStepShadowA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "shadow", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.28f, 0.05f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_RightStepShadowA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "shadow", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.28f, 0.05f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_LeftDoorChipA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_stone", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.06f, 0.05f);
+            ValidateHouseExteriorPorchDoorGroundingObject("Past_HouseExterior_PorchDoorGrounding_RightDoorChipA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.porch_door_grounding.", "past_stone", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.16f, 0.06f, 0.05f);
+
+            ValidateLandmarkExists("Current_HouseExterior_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_DoorEntrySmallGlow", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_DoorEntrySmallGlow", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_ToPlaza_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ToPlaza_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
+        }
+
         private static void ValidateHouseExteriorPathPorchDressingObject(string objectName, string expectedMaterialToken, string expectedParentName, float maxScaleY)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -23714,6 +23951,88 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_HouseExterior_DoorClosedPanel", "Past_HouseExteriorMap_SeparateSpace");
             ValidateLandmarkExists("Current_HouseExterior_ToPlaza_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
             ValidateLandmarkExists("Past_HouseExterior_ToPlaza_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
+        }
+
+        private static void ValidateHouseExteriorPorchDoorGroundingObject(string objectName, string expectedParentName, string expectedLandmarkIdPrefix, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house exterior porch/door grounding object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (renderer.shadowCastingMode != UnityEngine.Rendering.ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain shadowless.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding exterior decoration.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - HouseExteriorCenter;
+            if (localOffset.x < minLocalPosition.x || localOffset.x > maxLocalPosition.x ||
+                localOffset.y < minLocalPosition.y || localOffset.y > maxLocalPosition.y ||
+                localOffset.z < minLocalPosition.z || localOffset.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the porch/door grounding placement bounds.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX || sceneObject.transform.localScale.y > maxScaleY || sceneObject.transform.localScale.z > maxScaleZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay compact.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue ||
+                landmarkIdProperty == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindowPairedSpaceLandmarkKind.PropOrFeature landmark.");
+            }
+
+            var landmarkId = landmarkIdProperty.stringValue ?? string.Empty;
+            if (!landmarkId.StartsWith(expectedLandmarkIdPrefix, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a landmark id starting with {expectedLandmarkIdPrefix}.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+
+            if (materialName.IndexOf("window_light", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("warm_light", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must avoid window_light and warm_light materials.");
+            }
         }
 
         private static void ValidateCentralPlazaDetailObject(string objectName, string expectedParentName, float maxScaleY)
