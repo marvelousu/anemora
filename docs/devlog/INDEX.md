@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.87 fast VS HD2D surface texture metric audit cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.88 fast VS HD2D surface texture metric audit cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 363 files including INDEX.md and README.md.
-- Dated devlog records: 361 files.
-- Linked evidence files present under docs/devlog/screenshots/: 663 files.
+- Root-level Markdown coverage: 364 files including INDEX.md and README.md.
+- Dated devlog records: 362 files.
+- Linked evidence files present under docs/devlog/screenshots/: 664 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 16 |
+| 2026-05-22 | 17 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_house_exterior_ground_microcontrast_cycle17.md](2026-05-22_fast_vs_hd2d_house_exterior_ground_microcontrast_cycle17.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Ground Microcontrast Cycle 17 |
 | [2026-05-22_fast_vs_hd2d_surface_texture_metric_audit_cycle16.md](2026-05-22_fast_vs_hd2d_surface_texture_metric_audit_cycle16.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Texture Metric Audit Cycle 16 |
 | [2026-05-22_fast_vs_hd2d_surface_profile_foundation_cycle15.md](2026-05-22_fast_vs_hd2d_surface_profile_foundation_cycle15.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Profile Foundation Cycle 15 |
 | [2026-05-22_fast_vs_hd2d_warm_light_pool_foundation_cycle14.md](2026-05-22_fast_vs_hd2d_warm_light_pool_foundation_cycle14.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Warm Light Pool Foundation Cycle 14 |

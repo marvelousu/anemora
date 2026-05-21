@@ -19,6 +19,8 @@ namespace Anemora.EditorTools
         private const float AverageLuminanceMax = 0.92f;
         private const float LuminanceRangeMin = 0.015f;
         private const float WallColorFallbackLuminanceRangeMin = 0.005f;
+        private const float TextureLocalContrastMin = 0.015f;
+        private const float GroundTextureLocalContrastMin = 0.014f;
         private const float BandLowerPadding = 0.12f;
         private const float BandUpperPadding = 0.18f;
         private static readonly string OutputDirectory = Path.GetFullPath(Path.Combine(
@@ -29,11 +31,21 @@ namespace Anemora.EditorTools
             "screenshots",
             "fast_vs_hd2d_surface_texture_metrics_cycle16_20260522"));
         private const string MetricsFileName = "surface_texture_metrics_cycle16_20260522.md";
+        private static readonly string Cycle17OutputDirectory = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "..",
+            "docs",
+            "devlog",
+            "screenshots",
+            "fast_vs_hd2d_house_exterior_ground_microcontrast_cycle17_20260522"));
+        private const string Cycle17MetricsFileName = "surface_texture_metrics_cycle17_20260522.md";
+        private const string Cycle16ReportTitle = "Fast VS HD2D Surface Texture Metric Audit Cycle 16";
+        private const string Cycle17ReportTitle = "Fast VS HD2D House Exterior Ground Microcontrast Cycle 17";
 
         [MenuItem("Tools/Anemora/Verify HD2D Surface Texture Metrics V1")]
         public static void VerifySurfaceTextureMetricsV1()
         {
-            var batch = RunSurfaceTextureMetricAudit(writeReport: false);
+            var batch = RunSurfaceTextureMetricAudit(writeReport: false, OutputDirectory, MetricsFileName, Cycle16ReportTitle);
             if (batch.Issues.Count > 0)
             {
                 throw new InvalidOperationException("HD2D surface texture metric audit failed:\n- " + string.Join("\n- ", batch.Issues));
@@ -46,7 +58,7 @@ namespace Anemora.EditorTools
         public static void WriteSurfaceTextureMetricsV1Batch()
         {
             AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
-            var batch = RunSurfaceTextureMetricAudit(writeReport: true);
+            var batch = RunSurfaceTextureMetricAudit(writeReport: true, OutputDirectory, MetricsFileName, Cycle16ReportTitle);
             if (batch.Issues.Count > 0)
             {
                 throw new InvalidOperationException("HD2D surface texture metric audit failed:\n- " + string.Join("\n- ", batch.Issues));
@@ -55,20 +67,38 @@ namespace Anemora.EditorTools
             Debug.Log($"HD2D surface texture metric report written: {Path.Combine(OutputDirectory, MetricsFileName)}");
         }
 
-        private static SurfaceTextureMetricBatch RunSurfaceTextureMetricAudit(bool writeReport)
+        [MenuItem("Tools/Anemora/Write HD2D House Exterior Ground Microcontrast Cycle 17 Metrics")]
+        public static void WriteHouseExteriorGroundMicrocontrastCycle17MetricsBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+            var batch = RunSurfaceTextureMetricAudit(writeReport: true, Cycle17OutputDirectory, Cycle17MetricsFileName, Cycle17ReportTitle);
+            if (batch.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D surface texture metric audit failed:\n- " + string.Join("\n- ", batch.Issues));
+            }
+
+            Debug.Log($"HD2D surface texture metric report written: {Path.Combine(Cycle17OutputDirectory, Cycle17MetricsFileName)}");
+        }
+
+        private static SurfaceTextureMetricBatch RunSurfaceTextureMetricAudit(bool writeReport, string outputDirectory, string metricsFileName, string reportTitle)
         {
             EnsureHouseSliceSceneLoadedForReview();
 
             var batch = BuildSurfaceTextureMetricBatch();
             if (writeReport)
             {
-                Directory.CreateDirectory(OutputDirectory);
-                var metricsPath = Path.Combine(OutputDirectory, MetricsFileName);
-                File.WriteAllText(metricsPath, BuildMetricsMarkdown(batch, metricsPath), Encoding.UTF8);
-                AssetDatabase.Refresh();
+                WriteMetricsReport(batch, outputDirectory, metricsFileName, reportTitle);
             }
 
             return batch;
+        }
+
+        private static void WriteMetricsReport(SurfaceTextureMetricBatch batch, string outputDirectory, string metricsFileName, string reportTitle)
+        {
+            Directory.CreateDirectory(outputDirectory);
+            var metricsPath = Path.Combine(outputDirectory, metricsFileName);
+            File.WriteAllText(metricsPath, BuildMetricsMarkdown(batch, metricsPath, outputDirectory, reportTitle), Encoding.UTF8);
+            AssetDatabase.Refresh();
         }
 
         private static void EnsureHouseSliceSceneLoadedForReview()
@@ -203,6 +233,17 @@ namespace Anemora.EditorTools
             if (measurement.DistinctBuckets < 3 && !measurement.UsedColorFallback)
             {
                 issues.Add($"{surfaceId} on {gameObjectName} distinct luminance buckets {measurement.DistinctBuckets} is below 3.");
+            }
+
+            if (measurement.UsedTexture && !measurement.UsedColorFallback)
+            {
+                var localContrastMin = profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Ground
+                    ? GroundTextureLocalContrastMin
+                    : TextureLocalContrastMin;
+                if (measurement.LocalContrast < localContrastMin)
+                {
+                    issues.Add($"{surfaceId} on {gameObjectName} local contrast {measurement.LocalContrast:0.0000} is below {localContrastMin:0.0000}.");
+                }
             }
 
             var expandedBand = GetExpandedBand(profile.TargetLuminanceBandForReview);
@@ -497,15 +538,15 @@ namespace Anemora.EditorTools
             return result;
         }
 
-        private static string BuildMetricsMarkdown(SurfaceTextureMetricBatch batch, string metricsPath)
+        private static string BuildMetricsMarkdown(SurfaceTextureMetricBatch batch, string metricsPath, string outputDirectory, string reportTitle)
         {
             var builder = new StringBuilder();
-            builder.AppendLine("# Fast VS HD2D Surface Texture Metric Audit Cycle 16");
+            builder.AppendLine($"# {reportTitle}");
             builder.AppendLine();
             builder.AppendLine("This is an audit and reporting foundation for major HD-2D surface texture readability. It does not change shading or lighting.");
             builder.AppendLine();
             builder.AppendLine($"- Metrics file: `{metricsPath}`");
-            builder.AppendLine($"- Output directory: `{OutputDirectory}`");
+            builder.AppendLine($"- Output directory: `{outputDirectory}`");
             builder.AppendLine($"- Result: {(batch.Issues.Count == 0 ? "Pass" : "Fail")}");
             builder.AppendLine();
             builder.AppendLine("| SurfaceId | GameObject | Area | Kind | Current | Material | Texture | AvgLum | Range | LocalContrast | DistinctBuckets | Result |");

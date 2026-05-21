@@ -30148,16 +30148,16 @@ namespace Anemora.EditorTools
                 128,
                 503,
                 false,
-                new Color(0.16f, 0.19f, 0.12f, 1f),
-                new Color(0.20f, 0.24f, 0.14f, 1f),
-                new Color(0.26f, 0.29f, 0.18f, 1f),
-                new Color(0.31f, 0.33f, 0.22f, 1f),
-                new Color(0.17f, 0.14f, 0.09f, 1f),
-                new Color(0.24f, 0.19f, 0.13f, 1f),
-                new Color(0.12f, 0.12f, 0.09f, 1f),
-                new Color(0.31f, 0.29f, 0.18f, 1f),
-                new Color(0.14f, 0.15f, 0.10f, 1f),
-                new Color(0.23f, 0.25f, 0.16f, 1f));
+                new Color(0.15f, 0.18f, 0.10f, 1f),
+                new Color(0.21f, 0.25f, 0.13f, 1f),
+                new Color(0.29f, 0.32f, 0.19f, 1f),
+                new Color(0.35f, 0.38f, 0.23f, 1f),
+                new Color(0.15f, 0.11f, 0.07f, 1f),
+                new Color(0.22f, 0.17f, 0.11f, 1f),
+                new Color(0.11f, 0.11f, 0.07f, 1f),
+                new Color(0.35f, 0.33f, 0.21f, 1f),
+                new Color(0.12f, 0.13f, 0.08f, 1f),
+                new Color(0.27f, 0.30f, 0.18f, 1f));
         }
 
         private static Color SamplePastGrassHd2dPixel(int x, int y)
@@ -30199,46 +30199,46 @@ namespace Anemora.EditorTools
             var soilNoise = SampleSmoothValueNoise2D((x * 0.08f) + 41.6f, (y * 0.08f) + 27.2f, seed + 17);
 
             var tone = LerpColor(grassA, grassD, broadNoise * 0.28f);
-            tone = LerpColor(tone, grassB, Mathf.Clamp01(mediumNoise * 0.75f));
-            tone = LerpColor(tone, grassC, Mathf.Clamp01((1f - broadNoise) * 0.32f));
+            tone = LerpColor(tone, grassB, Mathf.Clamp01(mediumNoise * (pastTone ? 0.75f : 0.84f)));
+            tone = LerpColor(tone, grassC, Mathf.Clamp01((1f - broadNoise) * (pastTone ? 0.32f : 0.37f)));
 
             var soilTone = LerpColor(soilA, soilB, Mathf.Clamp01(soilNoise));
             var soilMask = Mathf.Clamp01((soilNoise - (pastTone ? 0.44f : 0.50f)) * (pastTone ? 1.55f : 1.75f));
-            soilMask = Mathf.Clamp01(soilMask + Mathf.Abs(mediumNoise - 0.5f) * (pastTone ? 0.12f : 0.18f));
+            soilMask = Mathf.Clamp01(soilMask + Mathf.Abs(mediumNoise - 0.5f) * (pastTone ? 0.12f : 0.22f));
             if (soilMask > 0f)
             {
-                tone = LerpColor(tone, soilTone, soilMask * (pastTone ? 0.44f : 0.58f));
+                tone = LerpColor(tone, soilTone, soilMask * (pastTone ? 0.44f : 0.63f));
             }
 
             var clumpNoise = SampleSmoothValueNoise2D((x * 0.10f) + 8.8f, (y * 0.10f) + 2.4f, seed + 19);
             var clumpMask = Mathf.Clamp01((clumpNoise - (pastTone ? 0.58f : 0.62f)) * 2.1f);
             if (clumpMask > 0f)
             {
-                tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, clumpMask * (pastTone ? 0.16f : 0.20f));
+                tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, clumpMask * (pastTone ? 0.16f : 0.23f));
             }
 
             var tuftNoise = SampleSmoothValueNoise2D((x * 0.17f) + 14.7f, (y * 0.17f) + 9.1f, seed + 23);
             if (tuftNoise > (pastTone ? 0.63f : 0.68f))
             {
                 var tuftMask = Mathf.Clamp01((tuftNoise - (pastTone ? 0.63f : 0.68f)) * (pastTone ? 2.6f : 2.9f));
-                tone = LerpColor(tone, bladeColor, tuftMask * (pastTone ? 0.08f : 0.06f));
+                tone = LerpColor(tone, bladeColor, tuftMask * (pastTone ? 0.08f : 0.07f));
             }
 
             var diagonalA = Mathf.Abs(Mathf.Sin((x * 0.22f) + (y * 0.11f) + seed * 0.013f + broadNoise * 2.4f));
             var diagonalB = Mathf.Abs(Mathf.Sin((x * -0.18f) + (y * 0.31f) + seed * 0.017f + mediumNoise * 1.8f));
             if (diagonalA > 0.965f && y > 1 && y < height - 2)
             {
-                tone = LerpColor(tone, bladeColor, pastTone ? 0.11f : 0.09f);
+                tone = LerpColor(tone, bladeColor, pastTone ? 0.11f : 0.11f);
             }
 
             if (diagonalB > 0.976f && x > 1 && x < width - 2)
             {
-                tone = LerpColor(tone, shadowColor, pastTone ? 0.08f : 0.10f);
+                tone = LerpColor(tone, shadowColor, pastTone ? 0.08f : 0.11f);
             }
 
-            if (fineNoise > 0.70f)
+            if (fineNoise > (pastTone ? 0.70f : 0.66f))
             {
-                tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, pastTone ? 0.05f : 0.07f);
+                tone = LerpColor(tone, pastTone ? highlightColor : shadowColor, pastTone ? 0.05f : 0.08f);
             }
 
             if (Hash01(x, y, seed + 29) > (pastTone ? 0.994f : 0.991f))
