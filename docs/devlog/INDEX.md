@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.36 fast VS HD2D outdoor sky wash cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.37 fast VS HD2D outdoor far-edge transition cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 312 files including INDEX.md and README.md.
-- Dated devlog records: 310 files.
-- Linked evidence files present under docs/devlog/screenshots/: 514 files.
+- Root-level Markdown coverage: 313 files including INDEX.md and README.md.
+- Dated devlog records: 311 files.
+- Linked evidence files present under docs/devlog/screenshots/: 518 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 19 |
+| 2026-05-21 | 20 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_outdoor_far_edge_transition_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_far_edge_transition_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Far-Edge Transition Cycle |
 | [2026-05-21_fast_vs_hd2d_outdoor_sky_wash_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_wash_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Wash Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Exterior Depth Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Facade Surface Breakup Cycle |

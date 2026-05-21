@@ -237,6 +237,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dSeventiethCyclePlazaLibraryFacadeSurfaceBreakup();
             ValidateFastVsHd2dSeventyFirstCyclePlazaLibraryExteriorDepth();
             ValidateFastVsHd2dSeventySecondCycleOutdoorSkyWash();
+            ValidateFastVsHd2dSeventyThirdCycleOutdoorFarEdgeTransition();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -553,6 +554,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dSeventySecondCycleScreenshotsBatch()
         {
             CaptureHd2dSeventySecondCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_sky_wash_20260521");
+        }
+
+        public static void CaptureHd2dSeventyThirdCycleScreenshotsBatch()
+        {
+            CaptureHd2dSeventyThirdCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_far_edge_transition_20260521");
         }
 
         public static void CaptureHd2dThirtyNinthCycleScreenshotsBatch()
@@ -5476,6 +5482,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorBoundaryNatureDetails(root, prefix, past, materials);
             CreateOutdoorVoidBackgroundTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyWashTreatment(root, prefix, past, FastVsHouseArea.Exterior);
+            CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
 
@@ -5837,6 +5844,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaBoundaryNatureDetails(root, prefix, past, materials);
             CreateOutdoorVoidBackgroundTreatment(root, prefix, past, FastVsHouseArea.CentralPlaza);
             CreateOutdoorSkyWashTreatment(root, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
 
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleBackBoundary", root, c + new Vector3(0f, 0.75f, 13.35f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.back_boundary");
@@ -6016,6 +6024,78 @@ namespace Anemora.EditorTools
                     Quaternion.Euler(0f, past ? 1.5f : -1.5f, 0f),
                     material,
                     $"{prefix}.central_plaza.outdoor_sky_wash.horizon_band");
+            }
+        }
+
+        private static void CreateOutdoorFarEdgeTransitionPolish(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
+
+            if (area == FastVsHouseArea.Exterior)
+            {
+                var grass = past ? materials.PastGrass : materials.CurrentGrass;
+                var stone = past ? materials.PastStone : materials.CurrentStone;
+                var shadow = materials.Shadow;
+
+                CreateNonArrivalLandmarkCube(
+                    $"{prefix}_HouseExterior_FarEdgeTransition_BermShadowA",
+                    root,
+                    c + new Vector3(0.00f, 0.075f, 5.44f),
+                    new Vector3(11.20f, 0.060f, 0.22f),
+                    Quaternion.identity,
+                    shadow,
+                    $"{prefix}.house_exterior.far_edge_transition.berm_shadow.a");
+
+                CreateNonArrivalLandmarkCube(
+                    $"{prefix}_HouseExterior_FarEdgeTransition_GrassLipA",
+                    root,
+                    c + new Vector3(-3.24f, 0.102f, 5.68f),
+                    new Vector3(4.10f, 0.070f, 0.16f),
+                    Quaternion.Euler(0f, past ? -4f : 4f, 0f),
+                    grass,
+                    $"{prefix}.house_exterior.far_edge_transition.grass_lip.a");
+
+                CreateNonArrivalLandmarkCube(
+                    $"{prefix}_HouseExterior_FarEdgeTransition_StoneChipA",
+                    root,
+                    c + new Vector3(3.42f, 0.118f, 5.82f),
+                    new Vector3(1.78f, 0.052f, 0.12f),
+                    Quaternion.Euler(0f, past ? 9f : -9f, 0f),
+                    stone,
+                    $"{prefix}.house_exterior.far_edge_transition.stone_chip.a");
+            }
+            else
+            {
+                var path = past ? materials.PastPath : materials.CurrentPath;
+                var stone = past ? materials.PastStone : materials.CurrentStone;
+                var shadow = materials.Shadow;
+
+                CreateNonArrivalLandmarkCube(
+                    $"{prefix}_CentralPlaza_FarEdgeTransition_BermShadowA",
+                    root,
+                    c + new Vector3(0.00f, 0.082f, 10.06f),
+                    new Vector3(13.30f, 0.060f, 0.22f),
+                    Quaternion.identity,
+                    shadow,
+                    $"{prefix}.central_plaza.far_edge_transition.berm_shadow.a");
+
+                CreateNonArrivalLandmarkCube(
+                    $"{prefix}_CentralPlaza_FarEdgeTransition_PavingLipA",
+                    root,
+                    c + new Vector3(-4.08f, 0.106f, 10.34f),
+                    new Vector3(5.10f, 0.072f, 0.16f),
+                    Quaternion.Euler(0f, past ? 3f : -3f, 0f),
+                    path,
+                    $"{prefix}.central_plaza.far_edge_transition.paving_lip.a");
+
+                CreateNonArrivalLandmarkCube(
+                    $"{prefix}_CentralPlaza_FarEdgeTransition_SideChipA",
+                    root,
+                    c + new Vector3(4.18f, 0.122f, 10.58f),
+                    new Vector3(2.12f, 0.052f, 0.12f),
+                    Quaternion.Euler(0f, past ? -8f : 8f, 0f),
+                    stone,
+                    $"{prefix}.central_plaza.far_edge_transition.side_chip.a");
             }
         }
 
@@ -7518,6 +7598,68 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS seventy-second-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dSeventyThirdCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS seventy-third-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var houseTransitionPlayerLocal = HouseExteriorCenter + new Vector3(0.10f, 0.02f, 4.58f);
+            var plazaTransitionPlayerLocal = CentralPlazaVsCenter + new Vector3(0f, 0.02f, 8.96f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                houseTransitionPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_exterior_far_edge_transition.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_far_edge_transition.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                houseTransitionPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_exterior_far_edge_transition.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_far_edge_transition.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaTransitionPlayerLocal,
+                Path.Combine(outputDirectory, "03_current_central_plaza_far_edge_transition.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_central_plaza_far_edge_transition.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaTransitionPlayerLocal,
+                Path.Combine(outputDirectory, "04_past_central_plaza_far_edge_transition.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_central_plaza_far_edge_transition.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS seventy-third-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -11163,6 +11305,32 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_CentralPlaza_ToLibrary_MapMoveGlowPad", "Past_CentralPlazaMap_SeparateSpace");
         }
 
+        private static void ValidateFastVsHd2dSeventyThirdCycleOutdoorFarEdgeTransition()
+        {
+            ValidateOutdoorFarEdgeTransitionObject("Current_HouseExterior_FarEdgeTransition_BermShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", "Current.house_exterior.far_edge_transition.", 4.95f, 5.95f);
+            ValidateOutdoorFarEdgeTransitionObject("Current_HouseExterior_FarEdgeTransition_GrassLipA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_grass", "Current.house_exterior.far_edge_transition.", 4.95f, 5.95f);
+            ValidateOutdoorFarEdgeTransitionObject("Current_HouseExterior_FarEdgeTransition_StoneChipA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_stone", "Current.house_exterior.far_edge_transition.", 4.95f, 5.95f);
+
+            ValidateOutdoorFarEdgeTransitionObject("Past_HouseExterior_FarEdgeTransition_BermShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", "Past.house_exterior.far_edge_transition.", 4.95f, 5.95f);
+            ValidateOutdoorFarEdgeTransitionObject("Past_HouseExterior_FarEdgeTransition_GrassLipA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_grass", "Past.house_exterior.far_edge_transition.", 4.95f, 5.95f);
+            ValidateOutdoorFarEdgeTransitionObject("Past_HouseExterior_FarEdgeTransition_StoneChipA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_stone", "Past.house_exterior.far_edge_transition.", 4.95f, 5.95f);
+
+            ValidateOutdoorFarEdgeTransitionObject("Current_CentralPlaza_FarEdgeTransition_BermShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", "Current.central_plaza.far_edge_transition.", 8.7f, 10.9f);
+            ValidateOutdoorFarEdgeTransitionObject("Current_CentralPlaza_FarEdgeTransition_PavingLipA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_path", "Current.central_plaza.far_edge_transition.", 8.7f, 10.9f);
+            ValidateOutdoorFarEdgeTransitionObject("Current_CentralPlaza_FarEdgeTransition_SideChipA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_stone", "Current.central_plaza.far_edge_transition.", 8.7f, 10.9f);
+
+            ValidateOutdoorFarEdgeTransitionObject("Past_CentralPlaza_FarEdgeTransition_BermShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", "Past.central_plaza.far_edge_transition.", 8.7f, 10.9f);
+            ValidateOutdoorFarEdgeTransitionObject("Past_CentralPlaza_FarEdgeTransition_PavingLipA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_path", "Past.central_plaza.far_edge_transition.", 8.7f, 10.9f);
+            ValidateOutdoorFarEdgeTransitionObject("Past_CentralPlaza_FarEdgeTransition_SideChipA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_stone", "Past.central_plaza.far_edge_transition.", 8.7f, 10.9f);
+
+            ValidateLandmarkExists("Current_HouseExterior_ToPlaza_MapMoveGlowPad", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ToPlaza_MapMoveGlowPad", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_ToLibrary_MapMoveGlowPad", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_ToLibrary_MapMoveGlowPad", "Past_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_LibraryNorthFacade", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_LibraryNorthFacade", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
         private static void ValidateFastVsHd2dFortyFourthCyclePlazaLibraryApproach()
         {
             ValidateCentralPlazaLibraryApproachObject("Current_CentralPlaza_LibraryApproach_StepLowerVisual", "Current_CentralPlazaMap_SeparateSpace", "stone", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, 0.13f);
@@ -14156,6 +14324,80 @@ namespace Anemora.EditorTools
             if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+        }
+
+        private static void ValidateOutdoorFarEdgeTransitionObject(string objectName, string expectedParentName, Vector3 expectedCenter, string expectedMaterialToken, string expectedLandmarkPrefix, float minZ, float maxZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor far-edge transition object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.transform.localPosition.y > 0.35f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay low near the ground.");
+            }
+
+            if (sceneObject.transform.localScale.y > 0.18f ||
+                sceneObject.transform.localScale.x <= 0f ||
+                sceneObject.transform.localScale.z <= 0f ||
+                sceneObject.transform.localScale.x > 14f ||
+                sceneObject.transform.localScale.z > 0.30f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay conservative in scale.");
+            }
+
+            var localZFromCenter = sceneObject.transform.localPosition.z - expectedCenter.z;
+            if (localZFromCenter < minZ || localZFromCenter > maxZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the far-edge transition z range.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var arrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                arrivalProperty == null ||
+                arrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                arrivalProperty.boolValue ||
+                landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkPrefix, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival PropOrFeature landmark with the expected id prefix.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
         }
 
