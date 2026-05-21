@@ -250,6 +250,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightyThirdCycleHouseExteriorEaveContact();
             ValidateFastVsHd2dEightyFourthCyclePlazaLibraryEntryDepth();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
+            ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5640,6 +5641,7 @@ namespace Anemora.EditorTools
             CreateOutdoorVoidBackgroundTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyWashTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyDetailPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateOutdoorHorizonDepthCleanupPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
@@ -6030,6 +6032,7 @@ namespace Anemora.EditorTools
             CreateOutdoorVoidBackgroundTreatment(root, prefix, past, FastVsHouseArea.CentralPlaza);
             CreateOutdoorSkyWashTreatment(root, prefix, past, FastVsHouseArea.CentralPlaza);
             CreateOutdoorSkyDetailPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateOutdoorHorizonDepthCleanupPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
 
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
@@ -6272,6 +6275,61 @@ namespace Anemora.EditorTools
                     material,
                     $"{prefix}.central_plaza.outdoor_sky_detail.distant_roofline_a");
             }
+
+            _ = materials;
+        }
+
+        private static void CreateOutdoorHorizonDepthCleanupPolish(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
+            var horizonMaterial = EnsureOutdoorVoidBackgroundMaterial(
+                $"{(past ? "past" : "current")}_{(area == FastVsHouseArea.Exterior ? "house_exterior" : "central_plaza")}_horizon_depth_cleanup",
+                area == FastVsHouseArea.Exterior
+                    ? (past ? new Color(0.26f, 0.23f, 0.18f, 0.13f) : new Color(0.15f, 0.17f, 0.14f, 0.14f))
+                    : (past ? new Color(0.27f, 0.23f, 0.17f, 0.12f) : new Color(0.15f, 0.15f, 0.13f, 0.13f)));
+            var roofMaterial = EnsureOutdoorVoidBackgroundMaterial(
+                $"{(past ? "past" : "current")}_{(area == FastVsHouseArea.Exterior ? "house_exterior" : "central_plaza")}_horizon_depth_cleanup_roof",
+                area == FastVsHouseArea.Exterior
+                    ? (past ? new Color(0.34f, 0.24f, 0.17f, 0.12f) : new Color(0.19f, 0.16f, 0.13f, 0.13f))
+                    : (past ? new Color(0.34f, 0.24f, 0.16f, 0.11f) : new Color(0.18f, 0.15f, 0.13f, 0.12f)));
+
+            if (area == FastVsHouseArea.Exterior)
+            {
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_HorizonDepthCleanup_LowTreeLineA",
+                    root,
+                    c + new Vector3(-0.88f, past ? 3.26f : 3.14f, 6.62f),
+                    past ? new Vector3(3.64f, 0.22f, 1f) : new Vector3(3.42f, 0.20f, 1f),
+                    Quaternion.Euler(0f, past ? -3f : 3f, 0f),
+                    horizonMaterial,
+                    $"{prefix}.house_exterior.horizon_depth_cleanup.low_tree_line_a");
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_HorizonDepthCleanup_FarRoofStepA",
+                    root,
+                    c + new Vector3(1.42f, past ? 3.44f : 3.30f, 6.92f),
+                    past ? new Vector3(1.86f, 0.16f, 1f) : new Vector3(1.72f, 0.14f, 1f),
+                    Quaternion.Euler(0f, past ? 4f : -4f, 0f),
+                    roofMaterial,
+                    $"{prefix}.house_exterior.horizon_depth_cleanup.far_roof_step_a");
+                return;
+            }
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_CentralPlaza_HorizonDepthCleanup_LowTreeLineA",
+                root,
+                c + new Vector3(-1.24f, past ? 3.66f : 3.52f, 12.42f),
+                past ? new Vector3(4.96f, 0.24f, 1f) : new Vector3(4.72f, 0.22f, 1f),
+                Quaternion.Euler(0f, past ? -2f : 2f, 0f),
+                horizonMaterial,
+                $"{prefix}.central_plaza.horizon_depth_cleanup.low_tree_line_a");
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_CentralPlaza_HorizonDepthCleanup_FarRoofBreakA",
+                root,
+                c + new Vector3(1.84f, past ? 3.88f : 3.74f, 12.92f),
+                past ? new Vector3(2.84f, 0.18f, 1f) : new Vector3(2.62f, 0.16f, 1f),
+                Quaternion.Euler(0f, past ? 3f : -3f, 0f),
+                roofMaterial,
+                $"{prefix}.central_plaza.horizon_depth_cleanup.far_roof_break_a");
 
             _ = materials;
         }
@@ -8748,6 +8806,11 @@ namespace Anemora.EditorTools
             CaptureHd2dEightyFifthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_library_reading_surface_density_20260521");
         }
 
+        public static void CaptureHd2dEightySixthCycleScreenshotsBatch()
+        {
+            CaptureHd2dEightySixthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_outdoor_horizon_depth_cleanup_20260521");
+        }
+
         private static void CaptureHd2dSeventySeventhCycleScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -9350,6 +9413,68 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS eighty-fifth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dEightySixthCycleScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS eighty-sixth-cycle screenshot capture failed: scene review components are missing.");
+            }
+
+            var housePlayerLocal = HouseExteriorCenter + new Vector3(4.92f, 0.02f, 0.84f);
+            var plazaPlayerLocal = CentralPlazaVsCenter + new Vector3(0.00f, 0.02f, 4.58f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_exterior_horizon_depth_cleanup.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_horizon_depth_cleanup.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                housePlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_exterior_horizon_depth_cleanup.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_horizon_depth_cleanup.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                Path.Combine(outputDirectory, "03_current_central_plaza_horizon_depth_cleanup.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "03_current_central_plaza_horizon_depth_cleanup.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaPlayerLocal,
+                Path.Combine(outputDirectory, "04_past_central_plaza_horizon_depth_cleanup.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "04_past_central_plaza_horizon_depth_cleanup.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS eighty-sixth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static GameObject CreateLibraryPropDetailCluster(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material mainMaterial, Material accentMaterial, Material detailMaterial, string landmarkIdBase)
@@ -13505,6 +13630,96 @@ namespace Anemora.EditorTools
             ValidateCentralPlazaLibraryRearVolumeObject("Past_CentralPlaza_LibraryRearVolume_EastDepthFaceA", "past_exterior_wall", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_rear_volume.", new Vector3(4.00f, 1.52f, 10.90f), new Vector3(4.70f, 2.00f, 11.20f), 0.28f, 2.84f, 1.10f);
             ValidateCentralPlazaLibraryRearVolumeObject("Past_CentralPlaza_LibraryRearVolume_RearGroundShadowA", "shadow", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_rear_volume.", new Vector3(-0.60f, 0.05f, 11.10f), new Vector3(0.60f, 0.22f, 11.42f), 9.20f, 0.08f, 1.24f);
             ValidateCentralPlazaLibraryRearVolumeObject("Past_CentralPlaza_LibraryRearVolume_WarmBackWindowHintA", "window_light", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.library_rear_volume.", new Vector3(-1.50f, 2.12f, 11.50f), new Vector3(-0.60f, 2.62f, 11.72f), 1.20f, 0.08f, 0.14f);
+        }
+
+        private static void ValidateOutdoorHorizonDepthCleanupObject(string objectName, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor horizon depth cleanup object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not cast or receive shadows.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var arrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                arrivalProperty == null ||
+                arrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                arrivalProperty.boolValue ||
+                landmarkIdProperty == null ||
+                landmarkIdProperty.propertyType != SerializedPropertyType.String ||
+                !landmarkIdProperty.stringValue.StartsWith(expectedLandmarkIdPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival PropOrFeature landmark id starting with {expectedLandmarkIdPrefix}.");
+            }
+
+            var localPosition = sceneObject.transform.localPosition;
+            if (localPosition.x < minLocalPosition.x || localPosition.x > maxLocalPosition.x ||
+                localPosition.y < minLocalPosition.y || localPosition.y > maxLocalPosition.y ||
+                localPosition.z < minLocalPosition.z || localPosition.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay in the intended distant horizon band.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX || sceneObject.transform.localScale.y > maxScaleY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay a restrained thin horizon detail.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("horizon_depth_cleanup", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a horizon depth cleanup material.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup()
+        {
+            ValidateOutdoorHorizonDepthCleanupObject("Current_HouseExterior_HorizonDepthCleanup_LowTreeLineA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.horizon_depth_cleanup.", HouseExteriorCenter + new Vector3(-3.20f, 2.82f, 6.35f), HouseExteriorCenter + new Vector3(3.20f, 3.68f, 7.15f), 4.20f, 0.28f);
+            ValidateOutdoorHorizonDepthCleanupObject("Current_HouseExterior_HorizonDepthCleanup_FarRoofStepA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.horizon_depth_cleanup.", HouseExteriorCenter + new Vector3(-3.20f, 2.82f, 6.35f), HouseExteriorCenter + new Vector3(3.20f, 3.68f, 7.15f), 4.20f, 0.28f);
+            ValidateOutdoorHorizonDepthCleanupObject("Past_HouseExterior_HorizonDepthCleanup_LowTreeLineA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.horizon_depth_cleanup.", HouseExteriorCenter + new Vector3(-3.20f, 2.82f, 6.35f), HouseExteriorCenter + new Vector3(3.20f, 3.68f, 7.15f), 4.20f, 0.28f);
+            ValidateOutdoorHorizonDepthCleanupObject("Past_HouseExterior_HorizonDepthCleanup_FarRoofStepA", "Past_HouseExteriorMap_SeparateSpace", "Past.house_exterior.horizon_depth_cleanup.", HouseExteriorCenter + new Vector3(-3.20f, 2.82f, 6.35f), HouseExteriorCenter + new Vector3(3.20f, 3.68f, 7.15f), 4.20f, 0.28f);
+
+            ValidateOutdoorHorizonDepthCleanupObject("Current_CentralPlaza_HorizonDepthCleanup_LowTreeLineA", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.horizon_depth_cleanup.", CentralPlazaVsCenter + new Vector3(-4.00f, 3.18f, 12.05f), CentralPlazaVsCenter + new Vector3(4.00f, 4.25f, 13.20f), 5.60f, 0.34f);
+            ValidateOutdoorHorizonDepthCleanupObject("Current_CentralPlaza_HorizonDepthCleanup_FarRoofBreakA", "Current_CentralPlazaMap_SeparateSpace", "Current.central_plaza.horizon_depth_cleanup.", CentralPlazaVsCenter + new Vector3(-4.00f, 3.18f, 12.05f), CentralPlazaVsCenter + new Vector3(4.00f, 4.25f, 13.20f), 5.60f, 0.34f);
+            ValidateOutdoorHorizonDepthCleanupObject("Past_CentralPlaza_HorizonDepthCleanup_LowTreeLineA", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.horizon_depth_cleanup.", CentralPlazaVsCenter + new Vector3(-4.00f, 3.18f, 12.05f), CentralPlazaVsCenter + new Vector3(4.00f, 4.25f, 13.20f), 5.60f, 0.34f);
+            ValidateOutdoorHorizonDepthCleanupObject("Past_CentralPlaza_HorizonDepthCleanup_FarRoofBreakA", "Past_CentralPlazaMap_SeparateSpace", "Past.central_plaza.horizon_depth_cleanup.", CentralPlazaVsCenter + new Vector3(-4.00f, 3.18f, 12.05f), CentralPlazaVsCenter + new Vector3(4.00f, 4.25f, 13.20f), 5.60f, 0.34f);
+
+            ValidateLandmarkExists("Current_HouseExterior_OutdoorSkyWash_BackPanel", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_OutdoorSkyWash_BackPanel", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_OutdoorSkyWash_BackPanel", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_OutdoorSkyWash_BackPanel", "Past_CentralPlazaMap_SeparateSpace");
         }
 
         private static void ValidateFastVsHd2dSeventyEighthCycleHouseInteriorPropReadability()
