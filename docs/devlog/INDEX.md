@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.62 fast VS HD2D plaza library bright accent cleanup cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.63 fast VS HD2D outdoor sky atmosphere depth cycle index update (2026-05-21). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 338 files including INDEX.md and README.md.
-- Dated devlog records: 336 files.
-- Linked evidence files present under docs/devlog/screenshots/: 618 files.
+- Root-level Markdown coverage: 339 files including INDEX.md and README.md.
+- Dated devlog records: 337 files.
+- Linked evidence files present under docs/devlog/screenshots/: 622 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -31,7 +31,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-18 | 48 |
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
-| 2026-05-21 | 45 |
+| 2026-05-21 | 46 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -39,6 +39,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_atmosphere_depth_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_atmosphere_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Atmosphere Depth Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_bright_accent_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_bright_accent_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Bright Accent Cleanup Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_rear_roof_connection_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_rear_roof_connection_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Rear Roof Connection Cycle |
 | [2026-05-21_fast_vs_hd2d_plaza_library_side_recess_framing_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_side_recess_framing_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Side Recess Framing Cycle |
@@ -471,6 +472,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.63 | 2026-05-21 | Added Fast VS HD2D outdoor sky atmosphere depth cycle record with subtle house/plaza sky wash objects, outdoor void background tone fix, validation, build, smoke, and screenshot evidence. |
 | v6.62 | 2026-05-21 | Added Fast VS HD2D plaza library bright accent cleanup cycle record with past-side facade accent material cleanup, validation, build, smoke, and screenshot evidence. |
 | v6.61 | 2026-05-21 | Added Fast VS HD2D plaza library rear roof connection cycle record with rear roof/wall/corner cues, material review fixes, validation, build, smoke, and screenshot evidence. |
 | v6.60 | 2026-05-21 | Added Fast VS HD2D plaza library side recess framing cycle record with current/past side recess caps/lips, validation, build, smoke, and screenshot evidence. |
