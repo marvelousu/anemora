@@ -88,12 +88,12 @@ namespace Anemora.EditorTools
         private const float NiroTransparentFootPixels = 2f;
         private const float CharacterDirectionalCastShadowYawDegrees = 138f;
         private const float StaticDirectionalCastShadowYawDegrees = 138f;
-        private static readonly Vector3 NiroDirectionalCastShadowScale = new Vector3(0.72f, 0.18f, 1f);
-        private static readonly Vector3 RetoDirectionalCastShadowScale = new Vector3(0.60f, 0.16f, 1f);
-        private static readonly Vector3 AriaDirectionalCastShadowScale = new Vector3(0.60f, 0.16f, 1f);
-        private static readonly Vector3 HouseStaticDirectionalCastShadowScale = new Vector3(2.04f, 0.18f, 1f);
+        private static readonly Vector3 NiroDirectionalCastShadowScale = new Vector3(0.78f, 0.20f, 1f);
+        private static readonly Vector3 RetoDirectionalCastShadowScale = new Vector3(0.66f, 0.18f, 1f);
+        private static readonly Vector3 AriaDirectionalCastShadowScale = new Vector3(0.66f, 0.18f, 1f);
+        private static readonly Vector3 HouseStaticDirectionalCastShadowScale = new Vector3(2.16f, 0.20f, 1f);
         private static readonly Vector3 CentralPlazaStaticDirectionalCastShadowScale = new Vector3(3.12f, 0.18f, 1f);
-        private static readonly Vector3 LibraryStaticDirectionalCastShadowScale = new Vector3(4.98f, 0.16f, 1f);
+        private static readonly Vector3 LibraryStaticDirectionalCastShadowScale = new Vector3(5.18f, 0.18f, 1f);
         private static readonly Vector3 HouseSurfaceDirectionalShadeOverlayCurrentScale = new Vector3(1.30f, 2.10f, 1f);
         private static readonly Vector3 HouseSurfaceDirectionalShadeOverlayPastScale = new Vector3(1.24f, 2.04f, 1f);
         private static readonly Vector3 CentralPlazaSurfaceDirectionalShadeOverlayCurrentScale = new Vector3(8.96f, 2.62f, 1f);
@@ -327,6 +327,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightySecondCycleLibraryGalleryAtmosphere();
             ValidateFastVsHd2dEightyThirdCycleHouseExteriorEaveContact();
             ValidateFastVsHd2dEightyFourthCyclePlazaLibraryEntryDepth();
+            ValidateFastVsHd2dCycle48ShadowOcclusionReadability();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
@@ -5916,6 +5917,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorPorchDoorGroundingPolish(root, prefix, past, materials, c, stone, trim, wall);
             CreateHouseExteriorStaticDirectionalCastShadow(root, prefix, past, materials);
             CreateHouseExteriorSurfaceDirectionalShadeOverlay(root, prefix, past, materials);
+            CreateHouseExteriorOcclusionReadabilityCycle48(root, prefix, past, materials);
 
             if (!past)
             {
@@ -6965,6 +6967,41 @@ namespace Anemora.EditorTools
             AddHd2dOverlayProfile(overlay, objectName, FastVsHouseArea.Exterior, FastVsHd2dOverlayKind.SurfaceDirectionalShade, !past, false, new Vector2(0.04f, 0.11f), new Vector2(scale.x, scale.y), new Color(0.20f, 0.19f, 0.18f, 0.84f));
         }
 
+        private static void CreateHouseExteriorOcclusionReadabilityCycle48(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var shadow = materials.Shadow;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_HouseExterior_OcclusionReadability_FrontEaveBandA", new Vector3(-1.02f, 1.96f, -1.69f), new Vector3(4.56f, 0.050f, 0.10f), Quaternion.identity, occlusion, "Past.house_exterior.occlusion_readability.front_eave_band_a");
+                Add("Past_HouseExterior_OcclusionReadability_DoorRecessShadowA", new Vector3(-1.05f, 1.04f, -1.58f), new Vector3(0.92f, 1.12f, 0.05f), Quaternion.identity, occlusion, "Past.house_exterior.occlusion_readability.door_recess_shadow_a");
+                Add("Past_HouseExterior_OcclusionReadability_DoorLeftLeakClosureA", new Vector3(-1.88f, 1.04f, -1.50f), new Vector3(0.40f, 1.42f, 0.09f), Quaternion.identity, wall, "Past.house_exterior.occlusion_readability.door_left_leak_closure_a");
+                Add("Past_HouseExterior_OcclusionReadability_DoorRightLeakClosureA", new Vector3(-0.24f, 1.04f, -1.50f), new Vector3(0.30f, 1.42f, 0.09f), Quaternion.identity, wall, "Past.house_exterior.occlusion_readability.door_right_leak_closure_a");
+                Add("Past_HouseExterior_OcclusionReadability_DoorThresholdCoreShadowA", new Vector3(-1.05f, 0.12f, -2.03f), new Vector3(0.96f, 0.040f, 0.12f), Quaternion.identity, shadow, "Past.house_exterior.occlusion_readability.door_threshold_core_shadow_a");
+                Add("Past_HouseExterior_OcclusionReadability_PorchPostFootShadowLeftA", new Vector3(-1.84f, 0.108f, -1.78f), new Vector3(0.28f, 0.018f, 0.16f), Quaternion.identity, shadow, "Past.house_exterior.occlusion_readability.porch_post_foot_shadow_left_a");
+                Add("Past_HouseExterior_OcclusionReadability_PorchPostFootShadowRightA", new Vector3(-0.26f, 0.108f, -1.78f), new Vector3(0.28f, 0.018f, 0.16f), Quaternion.identity, shadow, "Past.house_exterior.occlusion_readability.porch_post_foot_shadow_right_a");
+                Add("Past_HouseExterior_OcclusionReadability_FacadeBaseShadowA", new Vector3(-1.70f, 0.360f, -1.28f), new Vector3(2.28f, 0.028f, 0.050f), Quaternion.Euler(0f, 2f, 0f), shadow, "Past.house_exterior.occlusion_readability.facade_base_shadow_a");
+                return;
+            }
+
+            Add("Current_HouseExterior_OcclusionReadability_FrontEaveBandA", new Vector3(-1.02f, 1.96f, -1.69f), new Vector3(4.56f, 0.050f, 0.10f), Quaternion.identity, occlusion, "Current.house_exterior.occlusion_readability.front_eave_band_a");
+            Add("Current_HouseExterior_OcclusionReadability_DoorRecessShadowA", new Vector3(-1.05f, 1.04f, -1.58f), new Vector3(0.92f, 1.12f, 0.05f), Quaternion.identity, occlusion, "Current.house_exterior.occlusion_readability.door_recess_shadow_a");
+            Add("Current_HouseExterior_OcclusionReadability_DoorLeftLeakClosureA", new Vector3(-1.88f, 1.04f, -1.50f), new Vector3(0.40f, 1.42f, 0.09f), Quaternion.identity, wall, "Current.house_exterior.occlusion_readability.door_left_leak_closure_a");
+            Add("Current_HouseExterior_OcclusionReadability_DoorRightLeakClosureA", new Vector3(-0.24f, 1.04f, -1.50f), new Vector3(0.30f, 1.42f, 0.09f), Quaternion.identity, wall, "Current.house_exterior.occlusion_readability.door_right_leak_closure_a");
+            Add("Current_HouseExterior_OcclusionReadability_DoorThresholdCoreShadowA", new Vector3(-1.05f, 0.12f, -2.03f), new Vector3(0.96f, 0.040f, 0.12f), Quaternion.identity, shadow, "Current.house_exterior.occlusion_readability.door_threshold_core_shadow_a");
+            Add("Current_HouseExterior_OcclusionReadability_PorchPostFootShadowLeftA", new Vector3(-1.84f, 0.108f, -1.78f), new Vector3(0.28f, 0.018f, 0.16f), Quaternion.identity, shadow, "Current.house_exterior.occlusion_readability.porch_post_foot_shadow_left_a");
+            Add("Current_HouseExterior_OcclusionReadability_PorchPostFootShadowRightA", new Vector3(-0.26f, 0.108f, -1.78f), new Vector3(0.28f, 0.018f, 0.16f), Quaternion.identity, shadow, "Current.house_exterior.occlusion_readability.porch_post_foot_shadow_right_a");
+            Add("Current_HouseExterior_OcclusionReadability_FacadeBaseShadowA", new Vector3(-1.70f, 0.360f, -1.28f), new Vector3(2.28f, 0.028f, 0.050f), Quaternion.Euler(0f, 2f, 0f), shadow, "Current.house_exterior.occlusion_readability.facade_base_shadow_a");
+        }
+
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
         {
             CreateExternalTreeSpriteLandmark(
@@ -7169,6 +7206,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryArchitectureSurfaceDepthCycle45(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryStaticDirectionalCastShadow(root, prefix, past, materials);
             CreateCentralPlazaLibrarySurfaceDirectionalShadeOverlay(root, prefix, past, materials);
+            CreateCentralPlazaLibraryOcclusionReadabilityCycle48(root, prefix, past, materials);
             CreateCentralPlazaLibraryRearVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryVolumeReadabilityPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryBackwardVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
@@ -10565,16 +10603,16 @@ namespace Anemora.EditorTools
                     "Past_Library_Aria_ContactShadow",
                     root,
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.035f, 0.02f),
-                    new Vector3(0.70f, 0.24f, 1f),
+                    new Vector3(0.74f, 0.26f, 1f),
                     EnsureAriaContactShadowMaterial());
-                AddHd2dOverlayProfile(ariaContactShadow, "Past_Library_Aria_ContactShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterContactShadow, false, false, new Vector2(0.18f, 0.42f), new Vector2(0.70f, 0.24f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                AddHd2dOverlayProfile(ariaContactShadow, "Past_Library_Aria_ContactShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterContactShadow, false, false, new Vector2(0.18f, 0.42f), new Vector2(0.74f, 0.26f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
                 var ariaFootContact = CreateCharacterFootContactShadow(
                     "Past_Library_Aria_FootContact",
                     root,
                     PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.041f, -0.040f),
-                    new Vector3(0.31f, 0.070f, 1f),
+                    new Vector3(0.34f, 0.078f, 1f),
                     EnsureAriaContactShadowMaterial());
-                AddHd2dOverlayProfile(ariaFootContact, "Past_Library_Aria_FootContact", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterFootContact, false, false, new Vector2(0.20f, 0.48f), new Vector2(0.31f, 0.070f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                AddHd2dOverlayProfile(ariaFootContact, "Past_Library_Aria_FootContact", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterFootContact, false, false, new Vector2(0.20f, 0.48f), new Vector2(0.34f, 0.078f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
                 var ariaDirectionalShadow = CreateCharacterDirectionalCastShadow(
                     "Past_Library_Aria_DirectionalCastShadow",
                     root,
@@ -10618,16 +10656,16 @@ namespace Anemora.EditorTools
                     "Current_Library_Reto_ContactShadow",
                     root,
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.035f, 0.03f),
-                    new Vector3(0.66f, 0.24f, 1f),
+                    new Vector3(0.72f, 0.26f, 1f),
                     EnsureRetoContactShadowMaterial());
-                AddHd2dOverlayProfile(retoContactShadow, "Current_Library_Reto_ContactShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterContactShadow, true, false, new Vector2(0.18f, 0.42f), new Vector2(0.66f, 0.24f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                AddHd2dOverlayProfile(retoContactShadow, "Current_Library_Reto_ContactShadow", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterContactShadow, true, false, new Vector2(0.18f, 0.42f), new Vector2(0.72f, 0.26f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
                 var retoFootContact = CreateCharacterFootContactShadow(
                     "Current_Library_Reto_FootContact",
                     root,
                     RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.041f, -0.045f),
-                    new Vector3(0.30f, 0.070f, 1f),
+                    new Vector3(0.34f, 0.078f, 1f),
                     EnsureRetoContactShadowMaterial());
-                AddHd2dOverlayProfile(retoFootContact, "Current_Library_Reto_FootContact", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterFootContact, true, false, new Vector2(0.20f, 0.48f), new Vector2(0.30f, 0.070f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+                AddHd2dOverlayProfile(retoFootContact, "Current_Library_Reto_FootContact", FastVsHouseArea.Library, FastVsHd2dOverlayKind.CharacterFootContact, true, false, new Vector2(0.20f, 0.48f), new Vector2(0.34f, 0.078f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
                 var retoDirectionalShadow = CreateCharacterDirectionalCastShadow(
                     "Current_Library_Reto_DirectionalCastShadow",
                     root,
@@ -10718,6 +10756,7 @@ namespace Anemora.EditorTools
 
             CreateLibraryReadableMicropropPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryReadingTableGroundingPolish(root, prefix, past, materials, c, wood, trim);
+            CreateLibraryInteriorOcclusionReadabilityCycle48(root, prefix, past, materials);
             CreateLibraryEntryTableContrastPolish(root, prefix, past, materials, c, floor, wood, trim);
             CreateLibraryTableSilhouettePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryReadingSurfaceDensityPolish(root, prefix, past, materials, c);
@@ -11481,6 +11520,36 @@ namespace Anemora.EditorTools
             }
 
             _ = prefix;
+        }
+
+        private static void CreateLibraryInteriorOcclusionReadabilityCycle48(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = LibraryVsCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var shadow = materials.Shadow;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, Quaternion.identity, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_Library_OcclusionReadability_LeftGalleryUndersideBandA", new Vector3(-4.18f, 1.87f, 0.10f), new Vector3(1.56f, 0.045f, 9.56f), occlusion, "Past.library.occlusion_readability.left_gallery_underside_band_a");
+                Add("Past_Library_OcclusionReadability_RightGalleryUndersideBandA", new Vector3(4.18f, 1.87f, 0.10f), new Vector3(1.56f, 0.045f, 9.56f), occlusion, "Past.library.occlusion_readability.right_gallery_underside_band_a");
+                Add("Past_Library_OcclusionReadability_BackGalleryUndersideBandA", new Vector3(0.00f, 1.87f, 6.45f), new Vector3(8.96f, 0.045f, 0.92f), occlusion, "Past.library.occlusion_readability.back_gallery_underside_band_a");
+                Add("Past_Library_OcclusionReadability_ClerestoryShadowBandA", new Vector3(0.00f, 3.78f, 6.96f), new Vector3(8.72f, 0.038f, 0.12f), occlusion, "Past.library.occlusion_readability.clerestory_shadow_band_a");
+                Add("Past_Library_OcclusionReadability_LeftLongTableBaseShadowA", new Vector3(-2.88f, 0.040f, -0.92f), new Vector3(1.22f, 0.016f, 0.28f), shadow, "Past.library.occlusion_readability.left_long_table_base_shadow_a");
+                Add("Past_Library_OcclusionReadability_RightLongTableBaseShadowA", new Vector3(2.88f, 0.040f, -0.92f), new Vector3(1.22f, 0.016f, 0.28f), shadow, "Past.library.occlusion_readability.right_long_table_base_shadow_a");
+                return;
+            }
+
+            Add("Current_Library_OcclusionReadability_LeftGalleryUndersideBandA", new Vector3(-4.18f, 1.87f, 0.10f), new Vector3(1.56f, 0.045f, 9.56f), occlusion, "Current.library.occlusion_readability.left_gallery_underside_band_a");
+            Add("Current_Library_OcclusionReadability_RightGalleryUndersideBandA", new Vector3(4.18f, 1.87f, 0.10f), new Vector3(1.56f, 0.045f, 9.56f), occlusion, "Current.library.occlusion_readability.right_gallery_underside_band_a");
+            Add("Current_Library_OcclusionReadability_BackGalleryUndersideBandA", new Vector3(0.00f, 1.87f, 6.45f), new Vector3(8.96f, 0.045f, 0.92f), occlusion, "Current.library.occlusion_readability.back_gallery_underside_band_a");
+            Add("Current_Library_OcclusionReadability_ClerestoryShadowBandA", new Vector3(0.00f, 3.78f, 6.96f), new Vector3(8.72f, 0.038f, 0.12f), occlusion, "Current.library.occlusion_readability.clerestory_shadow_band_a");
+            Add("Current_Library_OcclusionReadability_RetoDeskBaseShadowA", new Vector3(1.08f, 0.040f, 0.12f), new Vector3(1.00f, 0.016f, 0.30f), shadow, "Current.library.occlusion_readability.reto_desk_base_shadow_a");
+            Add("Current_Library_OcclusionReadability_SideTableBaseShadowA", new Vector3(3.60f, 0.040f, -1.82f), new Vector3(0.86f, 0.016f, 0.22f), shadow, "Current.library.occlusion_readability.side_table_base_shadow_a");
         }
 
         private static void CreateLibraryEntryTableContrastPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material floor, Material wood, Material trim)
@@ -17416,6 +17485,34 @@ namespace Anemora.EditorTools
             AddHd2dOverlayProfile(overlay, objectName, FastVsHouseArea.CentralPlaza, FastVsHd2dOverlayKind.SurfaceDirectionalShade, !past, false, new Vector2(0.04f, 0.11f), new Vector2(scale.x, scale.y), new Color(0.20f, 0.19f, 0.18f, 0.84f));
         }
 
+        private static void CreateCentralPlazaLibraryOcclusionReadabilityCycle48(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var shadow = materials.Shadow;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_CentralPlaza_LibraryOcclusionReadability_RoofEaveBandA", new Vector3(0f, 2.96f, 8.33f), new Vector3(9.02f, 0.055f, 0.10f), Quaternion.identity, occlusion, "Past.central_plaza.library_occlusion_readability.roof_eave_band_a");
+                Add("Past_CentralPlaza_LibraryOcclusionReadability_LibraryFacadeBaseShadowA", new Vector3(0f, 0.19f, 8.03f), new Vector3(9.04f, 0.030f, 0.06f), Quaternion.identity, shadow, "Past.central_plaza.library_occlusion_readability.library_facade_base_shadow_a");
+                Add("Past_CentralPlaza_LibraryOcclusionReadability_DoorRecessShadowA", new Vector3(0f, 1.46f, 7.76f), new Vector3(1.00f, 0.14f, 0.05f), Quaternion.identity, occlusion, "Past.central_plaza.library_occlusion_readability.door_recess_shadow_a");
+                Add("Past_CentralPlaza_LibraryOcclusionReadability_WestReturnOcclusionA", new Vector3(-4.62f, 1.92f, 8.95f), new Vector3(0.38f, 2.14f, 0.10f), Quaternion.identity, occlusion, "Past.central_plaza.library_occlusion_readability.west_return_occlusion_a");
+                Add("Past_CentralPlaza_LibraryOcclusionReadability_EastReturnOcclusionA", new Vector3(4.62f, 1.92f, 8.95f), new Vector3(0.38f, 2.14f, 0.10f), Quaternion.identity, occlusion, "Past.central_plaza.library_occlusion_readability.east_return_occlusion_a");
+                return;
+            }
+
+            Add("Current_CentralPlaza_LibraryOcclusionReadability_RoofEaveBandA", new Vector3(0f, 2.96f, 8.33f), new Vector3(9.02f, 0.055f, 0.10f), Quaternion.identity, occlusion, "Current.central_plaza.library_occlusion_readability.roof_eave_band_a");
+            Add("Current_CentralPlaza_LibraryOcclusionReadability_LibraryFacadeBaseShadowA", new Vector3(0f, 0.19f, 8.03f), new Vector3(9.04f, 0.030f, 0.06f), Quaternion.identity, shadow, "Current.central_plaza.library_occlusion_readability.library_facade_base_shadow_a");
+            Add("Current_CentralPlaza_LibraryOcclusionReadability_DoorRecessShadowA", new Vector3(0f, 1.46f, 7.76f), new Vector3(1.00f, 0.14f, 0.05f), Quaternion.identity, occlusion, "Current.central_plaza.library_occlusion_readability.door_recess_shadow_a");
+            Add("Current_CentralPlaza_LibraryOcclusionReadability_WestReturnOcclusionA", new Vector3(-4.62f, 1.92f, 8.95f), new Vector3(0.38f, 2.14f, 0.10f), Quaternion.identity, occlusion, "Current.central_plaza.library_occlusion_readability.west_return_occlusion_a");
+            Add("Current_CentralPlaza_LibraryOcclusionReadability_EastReturnOcclusionA", new Vector3(4.62f, 1.92f, 8.95f), new Vector3(0.38f, 2.14f, 0.10f), Quaternion.identity, occlusion, "Current.central_plaza.library_occlusion_readability.east_return_occlusion_a");
+        }
+
         private static void CreatePlazaLibraryEntryDepthPolish(Transform root, string prefix, bool past, Materials materials)
         {
             var c = CentralPlazaVsCenter;
@@ -19248,16 +19345,16 @@ namespace Anemora.EditorTools
                 "FastVS_PlayerContactShadow_Niro",
                 player.transform,
                 new Vector3(0f, 0.022f, -0.02f),
-                new Vector3(0.66f, 0.24f, 1f),
+                new Vector3(0.72f, 0.26f, 1f),
                 EnsureNiroContactShadowMaterial());
-            AddHd2dOverlayProfile(niroContactShadow, "FastVS_PlayerContactShadow_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterContactShadow, true, true, new Vector2(0.18f, 0.42f), new Vector2(0.66f, 0.24f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+            AddHd2dOverlayProfile(niroContactShadow, "FastVS_PlayerContactShadow_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterContactShadow, true, true, new Vector2(0.18f, 0.42f), new Vector2(0.72f, 0.26f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
             var niroFootContact = CreateCharacterFootContactShadow(
                 "FastVS_PlayerFootContact_Niro",
                 player.transform,
                 new Vector3(0f, 0.027f, -0.055f),
-                new Vector3(0.34f, 0.075f, 1f),
+                new Vector3(0.36f, 0.080f, 1f),
                 EnsureNiroContactShadowMaterial());
-            AddHd2dOverlayProfile(niroFootContact, "FastVS_PlayerFootContact_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterFootContact, true, true, new Vector2(0.20f, 0.48f), new Vector2(0.34f, 0.075f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
+            AddHd2dOverlayProfile(niroFootContact, "FastVS_PlayerFootContact_Niro", FastVsHouseArea.Interior, FastVsHd2dOverlayKind.CharacterFootContact, true, true, new Vector2(0.20f, 0.48f), new Vector2(0.36f, 0.080f), new Color(0.20f, 0.19f, 0.18f, 0.96f));
             var niroDirectionalShadow = CreateCharacterDirectionalCastShadow(
                 "FastVS_PlayerDirectionalCastShadow_Niro",
                 player.transform,
@@ -22486,6 +22583,59 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Current_CentralPlaza_LibraryDoorPanelsRight", "Current_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsLeft", "Past_CentralPlazaMap_SeparateSpace");
             ValidateLandmarkExists("Past_CentralPlaza_LibraryDoorPanelsRight", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
+        private static void ValidateFastVsHd2dCycle48ShadowOcclusionReadability()
+        {
+            ValidateCharacterContactShadowTextureMetrics("cycle 48 shadow/occlusion readability");
+            ValidateCharacterDirectionalCastShadowTexture();
+            ValidateStaticDirectionalCastShadowTexture();
+            ValidateSurfaceDirectionalShadeOverlayTexture();
+            ValidateHd2dOutdoorOcclusionGradientTexture();
+
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_FrontEaveBandA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 1.92f, -1.78f), new Vector3(-0.88f, 2.02f, -1.60f), new Vector3(4.30f, 0.040f, 0.08f), new Vector3(4.80f, 0.080f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_DoorRecessShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 0.98f, -1.66f), new Vector3(-0.94f, 1.10f, -1.50f), new Vector3(0.84f, 1.00f, 0.04f), new Vector3(1.00f, 1.20f, 0.06f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_DoorLeftLeakClosureA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.98f, 0.98f, -1.58f), new Vector3(-1.78f, 1.10f, -1.42f), new Vector3(0.34f, 1.30f, 0.07f), new Vector3(0.48f, 1.54f, 0.11f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_DoorRightLeakClosureA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 0.98f, -1.58f), new Vector3(-0.14f, 1.10f, -1.42f), new Vector3(0.24f, 1.30f, 0.07f), new Vector3(0.38f, 1.54f, 0.11f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_DoorThresholdCoreShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 0.10f, -2.10f), new Vector3(-0.94f, 0.16f, -1.96f), new Vector3(0.90f, 0.030f, 0.10f), new Vector3(1.02f, 0.050f, 0.14f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_PorchPostFootShadowLeftA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.92f, 0.10f, -1.86f), new Vector3(-1.76f, 0.12f, -1.70f), new Vector3(0.22f, 0.012f, 0.12f), new Vector3(0.34f, 0.022f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_PorchPostFootShadowRightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 0.10f, -1.86f), new Vector3(-0.18f, 0.12f, -1.70f), new Vector3(0.22f, 0.012f, 0.12f), new Vector3(0.34f, 0.022f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OcclusionReadability_FacadeBaseShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.80f, 0.34f, -1.38f), new Vector3(-1.60f, 0.38f, -1.18f), new Vector3(2.10f, 0.020f, 0.04f), new Vector3(2.45f, 0.036f, 0.07f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_FrontEaveBandA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 1.92f, -1.78f), new Vector3(-0.88f, 2.02f, -1.60f), new Vector3(4.30f, 0.040f, 0.08f), new Vector3(4.80f, 0.080f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_DoorRecessShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 0.98f, -1.66f), new Vector3(-0.94f, 1.10f, -1.50f), new Vector3(0.84f, 1.00f, 0.04f), new Vector3(1.00f, 1.20f, 0.06f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_DoorLeftLeakClosureA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.98f, 0.98f, -1.58f), new Vector3(-1.78f, 1.10f, -1.42f), new Vector3(0.34f, 1.30f, 0.07f), new Vector3(0.48f, 1.54f, 0.11f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_DoorRightLeakClosureA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 0.98f, -1.58f), new Vector3(-0.14f, 1.10f, -1.42f), new Vector3(0.24f, 1.30f, 0.07f), new Vector3(0.38f, 1.54f, 0.11f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_DoorThresholdCoreShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 0.10f, -2.10f), new Vector3(-0.94f, 0.16f, -1.96f), new Vector3(0.90f, 0.030f, 0.10f), new Vector3(1.02f, 0.050f, 0.14f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_PorchPostFootShadowLeftA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.92f, 0.10f, -1.86f), new Vector3(-1.76f, 0.12f, -1.70f), new Vector3(0.22f, 0.012f, 0.12f), new Vector3(0.34f, 0.022f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_PorchPostFootShadowRightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 0.10f, -1.86f), new Vector3(-0.18f, 0.12f, -1.70f), new Vector3(0.22f, 0.012f, 0.12f), new Vector3(0.34f, 0.022f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OcclusionReadability_FacadeBaseShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.80f, 0.34f, -1.38f), new Vector3(-1.60f, 0.38f, -1.18f), new Vector3(2.10f, 0.020f, 0.04f), new Vector3(2.45f, 0.036f, 0.07f));
+
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LibraryOcclusionReadability_RoofEaveBandA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 2.92f, 8.25f), new Vector3(0.12f, 3.00f, 8.41f), new Vector3(8.80f, 0.040f, 0.08f), new Vector3(9.20f, 0.070f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LibraryOcclusionReadability_LibraryFacadeBaseShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 0.16f, 7.98f), new Vector3(0.12f, 0.22f, 8.08f), new Vector3(8.80f, 0.020f, 0.04f), new Vector3(9.20f, 0.040f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LibraryOcclusionReadability_DoorRecessShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 1.40f, 7.72f), new Vector3(0.12f, 1.52f, 7.80f), new Vector3(0.90f, 0.10f, 0.04f), new Vector3(1.10f, 0.18f, 0.06f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LibraryOcclusionReadability_WestReturnOcclusionA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.70f, 1.86f, 8.88f), new Vector3(-4.54f, 1.98f, 9.02f), new Vector3(0.30f, 2.00f, 0.08f), new Vector3(0.46f, 2.24f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LibraryOcclusionReadability_EastReturnOcclusionA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.54f, 1.86f, 8.88f), new Vector3(4.70f, 1.98f, 9.02f), new Vector3(0.30f, 2.00f, 0.08f), new Vector3(0.46f, 2.24f, 0.12f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LibraryOcclusionReadability_RoofEaveBandA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 2.92f, 8.25f), new Vector3(0.12f, 3.00f, 8.41f), new Vector3(8.80f, 0.040f, 0.08f), new Vector3(9.20f, 0.070f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LibraryOcclusionReadability_LibraryFacadeBaseShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 0.16f, 7.98f), new Vector3(0.12f, 0.22f, 8.08f), new Vector3(8.80f, 0.020f, 0.04f), new Vector3(9.20f, 0.040f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LibraryOcclusionReadability_DoorRecessShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 1.40f, 7.72f), new Vector3(0.12f, 1.52f, 7.80f), new Vector3(0.90f, 0.10f, 0.04f), new Vector3(1.10f, 0.18f, 0.06f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LibraryOcclusionReadability_WestReturnOcclusionA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.70f, 1.86f, 8.88f), new Vector3(-4.54f, 1.98f, 9.02f), new Vector3(0.30f, 2.00f, 0.08f), new Vector3(0.46f, 2.24f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LibraryOcclusionReadability_EastReturnOcclusionA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.54f, 1.86f, 8.88f), new Vector3(4.70f, 1.98f, 9.02f), new Vector3(0.30f, 2.00f, 0.08f), new Vector3(0.46f, 2.24f, 0.12f));
+
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_OcclusionReadability_LeftGalleryUndersideBandA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.34f, 1.82f, -0.06f), new Vector3(-4.02f, 1.92f, 0.26f), new Vector3(1.36f, 0.030f, 9.30f), new Vector3(1.68f, 0.060f, 9.82f));
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_OcclusionReadability_RightGalleryUndersideBandA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.02f, 1.82f, -0.06f), new Vector3(4.34f, 1.92f, 0.26f), new Vector3(1.36f, 0.030f, 9.30f), new Vector3(1.68f, 0.060f, 9.82f));
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_OcclusionReadability_BackGalleryUndersideBandA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 1.82f, 6.28f), new Vector3(0.12f, 1.92f, 6.62f), new Vector3(8.72f, 0.030f, 0.80f), new Vector3(9.12f, 0.060f, 1.02f));
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_OcclusionReadability_ClerestoryShadowBandA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 3.72f, 6.86f), new Vector3(0.12f, 3.84f, 7.06f), new Vector3(8.54f, 0.024f, 0.08f), new Vector3(8.98f, 0.050f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_OcclusionReadability_RetoDeskBaseShadowA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.00f, 0.02f, 0.02f), new Vector3(1.16f, 0.08f, 0.22f), new Vector3(0.90f, 0.012f, 0.24f), new Vector3(1.10f, 0.024f, 0.36f));
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_OcclusionReadability_SideTableBaseShadowA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(3.52f, 0.02f, -1.92f), new Vector3(3.68f, 0.08f, -1.72f), new Vector3(0.78f, 0.012f, 0.18f), new Vector3(0.94f, 0.024f, 0.28f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_OcclusionReadability_LeftGalleryUndersideBandA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.34f, 1.82f, -0.06f), new Vector3(-4.02f, 1.92f, 0.26f), new Vector3(1.36f, 0.030f, 9.30f), new Vector3(1.68f, 0.060f, 9.82f));
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_OcclusionReadability_RightGalleryUndersideBandA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.02f, 1.82f, -0.06f), new Vector3(4.34f, 1.92f, 0.26f), new Vector3(1.36f, 0.030f, 9.30f), new Vector3(1.68f, 0.060f, 9.82f));
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_OcclusionReadability_BackGalleryUndersideBandA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 1.82f, 6.28f), new Vector3(0.12f, 1.92f, 6.62f), new Vector3(8.72f, 0.030f, 0.80f), new Vector3(9.12f, 0.060f, 1.02f));
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_OcclusionReadability_ClerestoryShadowBandA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 3.72f, 6.86f), new Vector3(0.12f, 3.84f, 7.06f), new Vector3(8.54f, 0.024f, 0.08f), new Vector3(8.98f, 0.050f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_OcclusionReadability_LeftLongTableBaseShadowA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.00f, 0.02f, -1.00f), new Vector3(-2.76f, 0.08f, -0.84f), new Vector3(1.12f, 0.012f, 0.24f), new Vector3(1.32f, 0.024f, 0.32f));
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_OcclusionReadability_RightLongTableBaseShadowA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(2.76f, 0.02f, -1.00f), new Vector3(3.00f, 0.08f, -0.84f), new Vector3(1.12f, 0.012f, 0.24f), new Vector3(1.32f, 0.024f, 0.32f));
         }
 
         private static void ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume()
@@ -27206,19 +27356,19 @@ namespace Anemora.EditorTools
                 "FastVS_PlayerFootContact_Niro",
                 "FastVS_Player_NiroHouseSlice",
                 new Vector3(0f, 0.027f, -0.055f),
-                new Vector3(0.34f, 0.075f, 1f));
+                new Vector3(0.36f, 0.080f, 1f));
 
             ValidateCharacterFootContactShadowObject(
                 "Current_Library_Reto_FootContact",
                 "Current_LibraryMap_SeparateSpace",
                 RetoLibraryDeskLocalPosition + new Vector3(0.02f, 0.041f, -0.045f),
-                new Vector3(0.30f, 0.070f, 1f));
+                new Vector3(0.34f, 0.078f, 1f));
 
             ValidateCharacterFootContactShadowObject(
                 "Past_Library_Aria_FootContact",
                 "Past_LibraryMap_SeparateSpace",
                 PastLibraryPersonCueLocalPosition + new Vector3(-0.02f, 0.041f, -0.040f),
-                new Vector3(0.31f, 0.070f, 1f));
+                new Vector3(0.34f, 0.078f, 1f));
 
             if (FindSceneObjectIncludingInactive("FastVS_PlayerVisual_NiroShadingOverlay") != null ||
                 FindSceneObjectIncludingInactive("FastVS_PlayerSpriteShadingOverlay_Niro") != null)
@@ -27398,9 +27548,9 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (centerAlpha < 0.15f || centerAlpha > 0.25f)
+            if (centerAlpha < 0.18f || centerAlpha > 0.30f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} center alpha {centerAlpha:0.000} is outside the 0.15-0.25 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} center alpha {centerAlpha:0.000} is outside the 0.18-0.30 range.");
             }
 
             if (leftEdgeAlpha > 0.02f || rightEdgeAlpha > 0.02f)
@@ -27413,19 +27563,19 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {context} top/bottom edge alpha must stay soft. top={topEdgeAlpha:0.000}, bottom={bottomEdgeAlpha:0.000}.");
             }
 
-            if (leftFootAlpha < 0.19f || leftFootAlpha > 0.32f)
+            if (leftFootAlpha < 0.24f || leftFootAlpha > 0.40f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} left foot alpha {leftFootAlpha:0.000} is outside the 0.19-0.32 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} left foot alpha {leftFootAlpha:0.000} is outside the 0.24-0.40 range.");
             }
 
-            if (rightFootAlpha < 0.19f || rightFootAlpha > 0.32f)
+            if (rightFootAlpha < 0.24f || rightFootAlpha > 0.40f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} right foot alpha {rightFootAlpha:0.000} is outside the 0.19-0.32 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} right foot alpha {rightFootAlpha:0.000} is outside the 0.24-0.40 range.");
             }
 
-            if (maxAlpha < 0.22f || maxAlpha > 0.34f)
+            if (maxAlpha < 0.30f || maxAlpha > 0.42f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} max alpha {maxAlpha:0.000} is outside the 0.22-0.34 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} max alpha {maxAlpha:0.000} is outside the 0.30-0.42 range.");
             }
 
             if (topLeftCornerAlpha > 0.01f || topRightCornerAlpha > 0.01f || bottomLeftCornerAlpha > 0.01f || bottomRightCornerAlpha > 0.01f)
@@ -27516,9 +27666,9 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (center < 0.12f || center > 0.24f)
+            if (center < 0.16f || center > 0.26f)
             {
-                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft center alpha must stay in the 0.12-0.24 range, but was {center:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft center alpha must stay in the 0.16-0.26 range, but was {center:0.000}.");
             }
 
             if (edge > center * 0.65f || tail > center * 0.70f || corner > 0.02f)
@@ -27526,9 +27676,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft alpha falloff looks broken. edge={edge:0.000}, tail={tail:0.000}, corner={corner:0.000}.");
             }
 
-            if (maxAlpha < 0.14f || maxAlpha > 0.24f)
+            if (maxAlpha < 0.24f || maxAlpha > 0.32f)
             {
-                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft max alpha must stay in the 0.14-0.24 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft max alpha must stay in the 0.24-0.32 range, but was {maxAlpha:0.000}.");
             }
 
             UnityEngine.Object.DestroyImmediate(texture);
@@ -27773,14 +27923,14 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (centerAlpha < 0.12f || centerAlpha > 0.20f)
+            if (centerAlpha < 0.15f || centerAlpha > 0.24f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} center alpha must stay in the 0.12-0.20 range, but was {centerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} center alpha must stay in the 0.15-0.24 range, but was {centerAlpha:0.000}.");
             }
 
-            if (coreAlpha < 0.12f || coreAlpha > 0.20f)
+            if (coreAlpha < 0.15f || coreAlpha > 0.24f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} core alpha at ({coreX},{coreY}) must stay in the 0.12-0.20 range, but was {coreAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} core alpha at ({coreX},{coreY}) must stay in the 0.15-0.24 range, but was {coreAlpha:0.000}.");
             }
 
             if (tailAlpha < leftEdgeAlpha + 0.025f)
@@ -27803,9 +27953,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {context} corner alpha must stay near transparent. tl={cornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
 
-            if (maxAlpha < 0.12f || maxAlpha > 0.20f)
+            if (maxAlpha < 0.24f || maxAlpha > 0.30f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} max alpha must stay in the 0.12-0.20 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} max alpha must stay in the 0.24-0.30 range, but was {maxAlpha:0.000}.");
             }
         }
 
@@ -27875,9 +28025,9 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (centerAlpha < 0.04f || centerAlpha > 0.11f)
+            if (centerAlpha < 0.06f || centerAlpha > 0.14f)
             {
-                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft center alpha must stay in the 0.04-0.11 range, but was {centerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft center alpha must stay in the 0.06-0.14 range, but was {centerAlpha:0.000}.");
             }
 
             if (topLeftInteriorAlpha <= lowerRightInteriorAlpha + 0.015f)
@@ -27895,9 +28045,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft corner alpha must stay near transparent. tl={topLeftCornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
 
-            if (maxAlpha < 0.08f || maxAlpha > 0.16f)
+            if (maxAlpha < 0.18f || maxAlpha > 0.24f)
             {
-                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft max alpha must stay in the 0.08-0.16 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft max alpha must stay in the 0.18-0.24 range, but was {maxAlpha:0.000}.");
             }
 
             UnityEngine.Object.DestroyImmediate(validationTexture);
@@ -28025,6 +28175,55 @@ namespace Anemora.EditorTools
                 "Past_LibraryMap_SeparateSpace",
                 LibraryVsCenter + new Vector3(0f, 1.44f, 6.97f),
                 LibrarySurfaceDirectionalShadeOverlayPastScale);
+        }
+
+        private static void ValidateHd2dOutdoorOcclusionGradientTexture()
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(OutdoorOcclusionGradientTexturePath);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor occlusion gradient texture asset at {OutdoorOcclusionGradientTexturePath}.");
+            }
+
+            if (texture.width != 192 || texture.height != 128)
+            {
+                throw new InvalidOperationException($"House slice validation failed: outdoor occlusion gradient texture must stay at 192x128, but was {texture.width}x{texture.height}.");
+            }
+
+            if (texture.filterMode != FilterMode.Bilinear || texture.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException("House slice validation failed: outdoor occlusion gradient texture must use bilinear clamp sampling.");
+            }
+
+            var centerAlpha = texture.GetPixel(texture.width / 2, texture.height / 2).a;
+            var topCenterAlpha = texture.GetPixel(texture.width / 2, texture.height - 1).a;
+            var bottomCenterAlpha = texture.GetPixel(texture.width / 2, 0).a;
+            var maxAlpha = 0f;
+
+            foreach (var pixel in texture.GetPixels32())
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
+            }
+
+            if (centerAlpha < 0.16f || centerAlpha > 0.24f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: outdoor occlusion gradient center alpha must stay in the 0.16-0.24 range, but was {centerAlpha:0.000}.");
+            }
+
+            if (topCenterAlpha < 0.30f || topCenterAlpha > 0.36f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: outdoor occlusion gradient top alpha must stay in the 0.30-0.36 range, but was {topCenterAlpha:0.000}.");
+            }
+
+            if (bottomCenterAlpha > 0.03f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: outdoor occlusion gradient bottom alpha must stay near transparent, but was {bottomCenterAlpha:0.000}.");
+            }
+
+            if (maxAlpha < 0.30f || maxAlpha > 0.36f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: outdoor occlusion gradient max alpha must stay in the 0.30-0.36 range, but was {maxAlpha:0.000}.");
+            }
         }
 
         private static void ValidateSceneObjectMaterialTexture(string objectName, string textureId)
@@ -34094,12 +34293,12 @@ namespace Anemora.EditorTools
 
             if (material.HasProperty("_BaseColor"))
             {
-                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.90f));
+                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.95f));
             }
 
             if (material.HasProperty("_Color"))
             {
-                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.90f));
+                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.95f));
             }
 
             return material;
@@ -34112,7 +34311,7 @@ namespace Anemora.EditorTools
             var texture = EnsureStaticDirectionalCastShadowTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(1f, 1f, 1f, 0.90f);
+            var tint = new Color(1f, 1f, 1f, 0.95f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -34134,7 +34333,7 @@ namespace Anemora.EditorTools
             var texture = EnsureSurfaceDirectionalShadeOverlayTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(0.95f, 0.94f, 0.98f, 0.84f);
+            var tint = new Color(0.95f, 0.94f, 0.98f, 0.90f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -34242,12 +34441,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dOutdoorOcclusionGradientMaterial()
         {
-            var material = FlatMaterial("hd2d_outdoor_occlusion_gradient", new Color(0.13f, 0.14f, 0.17f, 0.18f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial("hd2d_outdoor_occlusion_gradient", new Color(0.13f, 0.14f, 0.17f, 0.24f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3007);
             var texture = EnsureHd2dOutdoorOcclusionGradientTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(0.13f, 0.14f, 0.17f, 0.18f);
+            var tint = new Color(0.13f, 0.14f, 0.17f, 0.24f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -34300,8 +34499,8 @@ namespace Anemora.EditorTools
                     var centerFeather = SmoothFade01(0f, 0.12f, u) * SmoothFade01(0f, 0.12f, 1f - u);
                     var upperBand = Mathf.Pow(v, 1.45f);
                     var midBand = Mathf.Clamp01((v - 0.18f) / 0.62f);
-                    var alpha = (upperBand * 0.24f) + (midBand * 0.08f) + (centerFeather * upperBand * 0.06f);
-                    alpha = Mathf.Clamp(alpha, 0f, 0.30f);
+                    var alpha = (upperBand * 0.30f) + (midBand * 0.10f) + (centerFeather * upperBand * 0.08f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.357f);
                     return new Color(0.13f, 0.14f, 0.17f, alpha);
                 });
         }
@@ -35111,9 +35310,9 @@ namespace Anemora.EditorTools
                     var rightFoot = ContactShadowEllipseFalloff(skewU, skewV, 0.63f, 0.60f, 0.12f, 0.11f, 1.90f);
                     var tailBias = ContactShadowEllipseFalloff(skewU, skewV, 0.57f, 0.40f, 0.28f, 0.16f, 1.75f);
 
-                    var alpha = (body * 0.16f) + (leftFoot * 0.22f) + (rightFoot * 0.22f) + (tailBias * 0.035f);
+                    var alpha = (body * 0.22f) + (leftFoot * 0.30f) + (rightFoot * 0.30f) + (tailBias * 0.050f);
                     alpha *= frame;
-                    alpha = Mathf.Clamp(alpha, 0f, 0.34f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.42f);
 
                     return new Color(0.025f, 0.026f, 0.033f, alpha);
                 });
@@ -35157,9 +35356,9 @@ namespace Anemora.EditorTools
                     var tailDx = (u - 0.76f) / 0.20f;
                     var tailDy = (v - 0.53f) / 0.12f;
                     var tail = Mathf.Clamp01(1f - Mathf.Sqrt((tailDx * tailDx) + (tailDy * tailDy * 1.55f)));
-                    var alpha = (core * 0.20f) + (tail * 0.07f);
+                    var alpha = (core * 0.29f) + (tail * 0.12f);
                     alpha *= Mathf.Lerp(0.88f, 1f, Mathf.Clamp01(1f - Mathf.Abs(v - 0.53f) / 0.28f));
-                    alpha = Mathf.Clamp(alpha, 0f, 0.24f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.33f);
                     texture.SetPixel(x, y, new Color(0.03f, 0.035f, 0.05f, alpha));
                 }
             }
@@ -35241,11 +35440,11 @@ namespace Anemora.EditorTools
                     var bridgeDy = (v - 0.505f) / 0.080f;
                     var bridge = Mathf.Clamp01(1f - Mathf.Sqrt((bridgeDx * bridgeDx * 0.92f) + (bridgeDy * bridgeDy * 1.85f)));
 
-                    var alpha = (tail * 0.075f) + (core * 0.140f) + (tailCap * 0.014f) + (bridge * 0.088f);
+                    var alpha = (tail * 0.112f) + (core * 0.205f) + (tailCap * 0.026f) + (bridge * 0.128f);
                     alpha *= Mathf.Lerp(0.95f, 1f, edgeMask);
                     var noiseSeed = (((x * 17) ^ (y * 29) ^ (x * y * 5)) & 31) / 31f;
                     alpha += (noiseSeed - 0.5f) * 0.0045f;
-                    alpha = Mathf.Clamp(alpha * edgeMask, 0f, 0.19f);
+                    alpha = Mathf.Clamp(alpha * edgeMask, 0f, 0.30f);
                     texture.SetPixel(x, y, new Color(0.03f, 0.035f, 0.045f, alpha));
                 }
             }
@@ -35303,10 +35502,10 @@ namespace Anemora.EditorTools
                     var diagonal = Mathf.Clamp01(1f - ((u * 0.92f) + (v * 0.68f)));
                     var upperLeftFocus = Mathf.Clamp01(1f - Mathf.Sqrt(((u / 0.62f) * (u / 0.62f)) + ((v / 0.78f) * (v / 0.78f))));
                     var centerBulge = Mathf.Clamp01(1f - Mathf.Sqrt((((u - 0.44f) / 0.46f) * ((u - 0.44f) / 0.46f)) + (((v - 0.38f) / 0.52f) * ((v - 0.38f) / 0.52f))));
-                    var alpha = 0.030f + (diagonal * 0.050f) + (upperLeftFocus * 0.024f) + (centerBulge * 0.032f);
+                    var alpha = 0.060f + (diagonal * 0.100f) + (upperLeftFocus * 0.045f) + (centerBulge * 0.060f);
                     var noiseSeed = (((x * 17) ^ (y * 29) ^ (x * y * 3)) & 31) / 31f;
                     alpha += (noiseSeed - 0.5f) * 0.008f;
-                    alpha = Mathf.Clamp(edgeMask * alpha, 0f, 0.15f);
+                    alpha = Mathf.Clamp(edgeMask * alpha, 0f, 0.24f);
                     var rgb = new Color32(11, 12, 19, (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
                     pixels[(y * texture.width) + x] = rgb;
                 }
