@@ -519,6 +519,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | v6.82 | 2026-05-22 | Added Fast VS HD2D area lighting profile cycle record with current-world area profile markers, validation, and cleanup notes. |
 | v6.81 | 2026-05-22 | Added Fast VS HD2D visual snapshot audit cycle record with current-world batch captures, PNG evidence, luminance and local contrast gates, validation, and cleanup notes. |
 | v6.80 | 2026-05-22 | Added Fast VS HD2D surface ramp shader cycle record with a custom opaque surface ramp shader, surface material generation and audits, validation, and cleanup notes. |
+| v6.83 | 2026-05-22 | Added Fast VS HD2D house exterior facade composition cycle record with current/past doorway returns, right wall trim, roof depth, background edge masks, validation, parent screenshot correction, and report evidence. |
 | v6.79 | 2026-05-22 | Added Fast VS HD2D sprite card ramp shader cycle record with a custom transparent sprite-card ramp shader, sprite-card material generation and audits, validation, and cleanup notes. |
 | v6.78 | 2026-05-22 | Added Fast VS HD2D surface directional shade cycle record with a shared vertical surface shade overlay material/texture, house facade, plaza facade, and library back shelf placements, validation, and cleanup notes. |
 | v6.77 | 2026-05-22 | Added Fast VS HD2D static directional shadow cycle record with shared thin soft shadow material/texture, house facade, plaza facade, and library back shelf placements, validation, and cleanup notes. |

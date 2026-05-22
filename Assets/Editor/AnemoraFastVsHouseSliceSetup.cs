@@ -270,6 +270,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtySixthCycleOutdoorBoundaryNatureDetails();
             ValidateFastVsHd2dFiftyEighthCycleOutdoorVoidBackgroundTreatment();
             ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation();
+            ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish();
             ValidateFastVsHd2dSixtyFifthCycleCentralPlazaPavingReadability();
             ValidateFastVsHd2dFortySixthCycleHouseExteriorTreeFencePolish();
@@ -5913,6 +5914,7 @@ namespace Anemora.EditorTools
             CreateOutdoorHorizonDepthCleanupPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateHouseExteriorOcclusionShell(root, prefix, past, materials);
+            CreateHouseExteriorFacadeCompositionPolish(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
@@ -7065,6 +7067,115 @@ namespace Anemora.EditorTools
                 Quaternion.identity,
                 wall,
                 $"{prefix}.house_exterior.occlusion_shell.door_jamb_fill_right");
+        }
+
+        private static void CreateHouseExteriorFacadeCompositionPolish(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var dust = materials.Dust;
+            var shadow = materials.Shadow;
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_DoorLeftReturnWallA",
+                root,
+                c + new Vector3(-1.74f, 1.02f, -1.18f),
+                new Vector3(0.24f, 1.42f, 0.06f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.facade_composition.door_left_return_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_DoorRightReturnWallA",
+                root,
+                c + new Vector3(-0.34f, 1.02f, -1.18f),
+                new Vector3(0.22f, 1.42f, 0.06f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.facade_composition.door_right_return_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_RightWallVerticalTrimA",
+                root,
+                c + new Vector3(1.02f, 1.12f, -1.18f),
+                new Vector3(0.12f, 1.58f, 0.06f),
+                Quaternion.identity,
+                trim,
+                $"{prefix}.house_exterior.facade_composition.right_wall_vertical_trim_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_RightWallBaseTrimA",
+                root,
+                c + new Vector3(0.92f, 0.34f, -1.16f),
+                new Vector3(1.08f, 0.08f, 0.06f),
+                Quaternion.identity,
+                stone,
+                $"{prefix}.house_exterior.facade_composition.right_wall_base_trim_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_PorchPostBackTrimA",
+                root,
+                c + new Vector3(-0.58f, 1.10f, -1.54f),
+                new Vector3(0.14f, 0.76f, 0.06f),
+                Quaternion.identity,
+                trim,
+                $"{prefix}.house_exterior.facade_composition.porch_post_back_trim_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_RightWallMiddleBreakLineA",
+                root,
+                c + new Vector3(0.78f, 1.03f, -1.17f),
+                new Vector3(0.98f, 0.035f, 0.05f),
+                Quaternion.identity,
+                dust,
+                $"{prefix}.house_exterior.facade_composition.right_wall_middle_break_line_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_RightWallUpperBreakLineA",
+                root,
+                c + new Vector3(0.80f, 1.58f, -1.17f),
+                new Vector3(0.92f, 0.035f, 0.05f),
+                Quaternion.identity,
+                dust,
+                $"{prefix}.house_exterior.facade_composition.right_wall_upper_break_line_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_UnderRoofDepthShadowA",
+                root,
+                c + new Vector3(-0.88f, 1.98f, -1.46f),
+                new Vector3(4.82f, 0.05f, 0.06f),
+                Quaternion.identity,
+                shadow,
+                $"{prefix}.house_exterior.facade_composition.under_roof_depth_shadow_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_RoofSideRakeLineA",
+                root,
+                c + new Vector3(0.88f, 2.10f, -1.10f),
+                new Vector3(1.34f, 0.06f, 0.08f),
+                Quaternion.Euler(0f, 0f, 7f),
+                trim,
+                $"{prefix}.house_exterior.facade_composition.roof_side_rake_line_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_BackdropSideMaskLeftA",
+                root,
+                c + new Vector3(-4.86f, 0.94f, 9.10f),
+                new Vector3(1.98f, 1.34f, 0.06f),
+                Quaternion.identity,
+                shadow,
+                $"{prefix}.house_exterior.facade_composition.backdrop_side_mask_left_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeComposition_BackdropSideMaskRightA",
+                root,
+                c + new Vector3(4.92f, 0.94f, 9.10f),
+                new Vector3(1.98f, 1.34f, 0.06f),
+                Quaternion.identity,
+                shadow,
+                $"{prefix}.house_exterior.facade_composition.backdrop_side_mask_right_a");
         }
 
         private static void CreateCentralPlazaLibraryOcclusionShell(Transform root, string prefix, bool past, Materials materials)
@@ -25821,6 +25932,51 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_HouseExterior_DoorClosedPanel", "Past_HouseExteriorMap_SeparateSpace");
         }
 
+        private static void ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition()
+        {
+            var minDoorLeft = new Vector3(-1.90f, 0.20f, -1.26f);
+            var maxDoorLeft = new Vector3(-1.45f, 1.95f, -1.08f);
+            var minDoorRight = new Vector3(-0.52f, 0.20f, -1.26f);
+            var maxDoorRight = new Vector3(-0.10f, 1.95f, -1.08f);
+            var minRightWall = new Vector3(0.40f, 0.30f, -1.20f);
+            var maxRightWall = new Vector3(1.25f, 2.15f, 0.20f);
+            var minRoof = new Vector3(-1.90f, 1.85f, -1.60f);
+            var maxRoof = new Vector3(1.25f, 2.15f, -1.10f);
+            var minBackdropLeft = new Vector3(-5.90f, 0.36f, 8.70f);
+            var maxBackdropLeft = new Vector3(-3.70f, 1.70f, 9.40f);
+            var minBackdropRight = new Vector3(3.60f, 0.36f, 8.70f);
+            var maxBackdropRight = new Vector3(5.90f, 1.70f, 9.40f);
+
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_DoorLeftReturnWallA", "current_exterior_wall", "Current_HouseExteriorMap_SeparateSpace", minDoorLeft, maxDoorLeft, 0.30f, 1.60f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_DoorRightReturnWallA", "current_exterior_wall", "Current_HouseExteriorMap_SeparateSpace", minDoorRight, maxDoorRight, 0.30f, 1.60f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_RightWallVerticalTrimA", "current_fence", "Current_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 0.18f, 1.80f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_RightWallBaseTrimA", "current_stone", "Current_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 1.20f, 0.14f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_PorchPostBackTrimA", "current_fence", "Current_HouseExteriorMap_SeparateSpace", new Vector3(-0.72f, 0.70f, -1.60f), new Vector3(-0.42f, 1.52f, -1.24f), 0.20f, 0.90f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_RightWallMiddleBreakLineA", "dust", "Current_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 1.10f, 0.08f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_RightWallUpperBreakLineA", "dust", "Current_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 1.10f, 0.08f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_UnderRoofDepthShadowA", "shadow", "Current_HouseExteriorMap_SeparateSpace", minRoof, maxRoof, 5.10f, 0.08f, 0.12f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_RoofSideRakeLineA", "current_fence", "Current_HouseExteriorMap_SeparateSpace", new Vector3(0.45f, 1.95f, -1.22f), new Vector3(1.25f, 2.15f, -0.92f), 1.60f, 0.10f, 0.12f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_BackdropSideMaskLeftA", "shadow", "Current_HouseExteriorMap_SeparateSpace", minBackdropLeft, maxBackdropLeft, 2.20f, 1.50f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Current_HouseExterior_FacadeComposition_BackdropSideMaskRightA", "shadow", "Current_HouseExteriorMap_SeparateSpace", minBackdropRight, maxBackdropRight, 2.20f, 1.50f, 0.10f);
+
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_DoorLeftReturnWallA", "past_exterior_wall", "Past_HouseExteriorMap_SeparateSpace", minDoorLeft, maxDoorLeft, 0.30f, 1.60f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_DoorRightReturnWallA", "past_exterior_wall", "Past_HouseExteriorMap_SeparateSpace", minDoorRight, maxDoorRight, 0.30f, 1.60f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_RightWallVerticalTrimA", "past_fence", "Past_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 0.18f, 1.80f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_RightWallBaseTrimA", "past_stone", "Past_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 1.20f, 0.14f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_PorchPostBackTrimA", "past_fence", "Past_HouseExteriorMap_SeparateSpace", new Vector3(-0.72f, 0.70f, -1.60f), new Vector3(-0.42f, 1.52f, -1.24f), 0.20f, 0.90f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_RightWallMiddleBreakLineA", "dust", "Past_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 1.10f, 0.08f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_RightWallUpperBreakLineA", "dust", "Past_HouseExteriorMap_SeparateSpace", minRightWall, maxRightWall, 1.10f, 0.08f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_UnderRoofDepthShadowA", "shadow", "Past_HouseExteriorMap_SeparateSpace", minRoof, maxRoof, 5.10f, 0.08f, 0.12f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_RoofSideRakeLineA", "past_fence", "Past_HouseExteriorMap_SeparateSpace", new Vector3(0.45f, 1.95f, -1.22f), new Vector3(1.25f, 2.15f, -0.92f), 1.60f, 0.10f, 0.12f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_BackdropSideMaskLeftA", "shadow", "Past_HouseExteriorMap_SeparateSpace", minBackdropLeft, maxBackdropLeft, 2.20f, 1.50f, 0.10f);
+            ValidateHouseExteriorFacadeCompositionObject("Past_HouseExterior_FacadeComposition_BackdropSideMaskRightA", "shadow", "Past_HouseExteriorMap_SeparateSpace", minBackdropRight, maxBackdropRight, 2.20f, 1.50f, 0.10f);
+
+            ValidateLandmarkExists("Current_HouseExterior_DoorEntrySmallGlow", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_DoorEntrySmallGlow", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_DoorClosedPanel", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_DoorClosedPanel", "Past_HouseExteriorMap_SeparateSpace");
+        }
+
         private static void ValidateFastVsHd2dOneHundredSeventhCycleHouseExteriorPorchDoorGrounding()
         {
             ValidateHouseExteriorPorchDoorGroundingObject("Current_HouseExterior_PorchDoorGrounding_CenterDoorSeamA", "Current_HouseExteriorMap_SeparateSpace", "Current.house_exterior.porch_door_grounding.", "current_house_door_detail", new Vector3(-1.72f, 0.08f, -2.10f), new Vector3(-0.38f, 1.22f, -1.20f), 0.14f, 1.12f, 0.05f);
@@ -26792,6 +26948,80 @@ namespace Anemora.EditorTools
                 : CentralPlazaVsCenter;
             ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - referenceCenter, minLocalPosition, maxLocalPosition);
             ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, minLocalScale, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateHouseExteriorFacadeCompositionObject(string objectName, string expectedMaterialToken, string expectedParentName, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house exterior facade composition object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be shadow-safe.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not count for arrival.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - HouseExteriorCenter;
+            if (localOffset.x < minLocalPosition.x || localOffset.x > maxLocalPosition.x ||
+                localOffset.y < minLocalPosition.y || localOffset.y > maxLocalPosition.y ||
+                localOffset.z < minLocalPosition.z || localOffset.z > maxLocalPosition.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay within the facade composition placement bounds.");
+            }
+
+            if (sceneObject.transform.localScale.x > maxScaleX ||
+                sceneObject.transform.localScale.y > maxScaleY ||
+                sceneObject.transform.localScale.z > maxScaleZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay compact.");
+            }
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
             if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
