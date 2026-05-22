@@ -38,8 +38,16 @@ namespace Anemora.EditorTools
         private static readonly Vector3 LibraryVsCenter = new Vector3(31.00f, 0f, 20.00f);
         private static readonly Vector3 CameraOffset = new Vector3(0f, 2.75f, -4.55f);
         private static readonly Vector3 LookOffset = new Vector3(0f, 0.72f, 0.45f);
+        private static readonly Vector3 HouseExteriorSnapshotCameraOffset = new Vector3(0f, 3.35f, -6.35f);
+        private static readonly Vector3 HouseExteriorSnapshotLookOffset = new Vector3(0f, 0.88f, 0.95f);
+        private static readonly Vector3 CentralPlazaSnapshotCameraOffset = new Vector3(0f, 3.95f, -7.40f);
+        private static readonly Vector3 CentralPlazaSnapshotLookOffset = new Vector3(0f, 0.95f, 2.20f);
         private static readonly Vector3 HouseInteriorOverviewCameraOffset = new Vector3(0f, 4.25f, -7.20f);
         private static readonly Vector3 HouseInteriorOverviewLookOffset = new Vector3(0f, 1.10f, 0.90f);
+        private const float HouseInteriorSnapshotTargetFov = 14f;
+        private const float HouseExteriorSnapshotTargetFov = 36f;
+        private const float CentralPlazaSnapshotTargetFov = 36f;
+        private const float LibrarySnapshotTargetFov = 38f;
 
         [MenuItem("Tools/Anemora/Capture Fast VS HD2D Visual Snapshot Audit")]
         public static void CaptureAndVerifyFastVsHd2dVisualSnapshotAuditBatch()
@@ -69,10 +77,10 @@ namespace Anemora.EditorTools
 
             var shots = new[]
             {
-                new VisualSnapshotShot("house_interior", FastVsHouseArea.Interior, HouseInteriorOverviewLocal, HouseInteriorOverviewLocal, HouseInteriorOverviewCameraOffset, HouseInteriorOverviewLookOffset, "01_current_house_interior_visual_snapshot.png"),
-                new VisualSnapshotShot("house_exterior", FastVsHouseArea.Exterior, HouseExteriorCenter, HouseExteriorCenter, "02_current_house_exterior_visual_snapshot.png"),
-                new VisualSnapshotShot("central_plaza", FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter, CentralPlazaVsCenter, "03_current_central_plaza_visual_snapshot.png"),
-                new VisualSnapshotShot("library", FastVsHouseArea.Library, LibraryVsCenter, LibraryVsCenter, "04_current_library_visual_snapshot.png")
+                new VisualSnapshotShot("house_interior", FastVsHouseArea.Interior, HouseInteriorOverviewLocal, HouseInteriorOverviewLocal, HouseInteriorOverviewCameraOffset, HouseInteriorOverviewLookOffset, HouseInteriorSnapshotTargetFov, "01_current_house_interior_visual_snapshot.png"),
+                new VisualSnapshotShot("house_exterior", FastVsHouseArea.Exterior, HouseExteriorCenter, HouseExteriorCenter, HouseExteriorSnapshotCameraOffset, HouseExteriorSnapshotLookOffset, HouseExteriorSnapshotTargetFov, "02_current_house_exterior_visual_snapshot.png"),
+                new VisualSnapshotShot("central_plaza", FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter, CentralPlazaVsCenter, CentralPlazaSnapshotCameraOffset, CentralPlazaSnapshotLookOffset, CentralPlazaSnapshotTargetFov, "03_current_central_plaza_visual_snapshot.png"),
+                new VisualSnapshotShot("library", FastVsHouseArea.Library, LibraryVsCenter, LibraryVsCenter, CameraOffset, LookOffset, LibrarySnapshotTargetFov, "04_current_library_visual_snapshot.png")
             };
 
             var results = new List<VisualSnapshotResult>(shots.Length);
@@ -120,10 +128,7 @@ namespace Anemora.EditorTools
             var position = anchor + shot.CameraOffset;
             var lookAt = anchor + shot.LookOffset;
             var previousFieldOfView = camera.fieldOfView;
-            if (shot.Area == FastVsHouseArea.Interior)
-            {
-                camera.fieldOfView = 14f;
-            }
+            camera.fieldOfView = shot.TargetFov;
 
             camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
 
@@ -376,12 +381,8 @@ namespace Anemora.EditorTools
             public readonly Vector3 CameraAnchorLocal;
             public readonly Vector3 CameraOffset;
             public readonly Vector3 LookOffset;
+            public readonly float TargetFov;
             public readonly string FileName;
-
-            public VisualSnapshotShot(string label, FastVsHouseArea area, Vector3 playerLocal, Vector3 cameraAnchorLocal, string fileName)
-                : this(label, area, playerLocal, cameraAnchorLocal, AnemoraFastVsHd2dVisualSnapshotAudit.CameraOffset, AnemoraFastVsHd2dVisualSnapshotAudit.LookOffset, fileName)
-            {
-            }
 
             public VisualSnapshotShot(
                 string label,
@@ -390,6 +391,7 @@ namespace Anemora.EditorTools
                 Vector3 cameraAnchorLocal,
                 Vector3 cameraOffset,
                 Vector3 lookOffset,
+                float targetFov,
                 string fileName)
             {
                 Label = label;
@@ -398,6 +400,7 @@ namespace Anemora.EditorTools
                 CameraAnchorLocal = cameraAnchorLocal;
                 CameraOffset = cameraOffset;
                 LookOffset = lookOffset;
+                TargetFov = targetFov;
                 FileName = fileName;
             }
         }

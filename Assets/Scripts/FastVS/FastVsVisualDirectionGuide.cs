@@ -5,6 +5,7 @@ namespace Anemora.FastVS
 {
     public sealed class FastVsVisualDirectionGuide : MonoBehaviour
     {
+        private const float CameraModeFov = 38f;
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;
@@ -116,36 +117,43 @@ namespace Anemora.FastVS
 
             Vector3 targetPosition;
             Vector3 lookAt;
+            var targetFieldOfView = reviewCamera.fieldOfView;
 
             if (cameraMode == 1 && portalController != null && ResolveActivePortalRoot() != null)
             {
                 var portal = ResolveActivePortalRoot().transform;
                 targetPosition = portal.TransformPoint(new Vector3(0f, 1.15f, -3.25f));
                 lookAt = portal.TransformPoint(new Vector3(0f, 0.45f, 0.65f));
+                targetFieldOfView = CameraModeFov;
             }
             else if (cameraMode == 2)
             {
                 var root = ResolveActiveSpaceRoot();
                 targetPosition = root != null ? root.TransformPoint(new Vector3(0f, 7.2f, -8.2f)) : new Vector3(0f, 7.2f, -8.2f);
                 lookAt = root != null ? root.TransformPoint(new Vector3(0f, 0.15f, 0.15f)) : new Vector3(0f, 0.15f, 0.15f);
+                targetFieldOfView = CameraModeFov;
             }
             else
             {
                 var anchor = ResolveActiveSideCameraAnchor();
-                targetPosition = anchor + new Vector3(0f, 2.75f, -4.55f);
-                lookAt = anchor + new Vector3(0f, 0.72f, 0.45f);
+                var followProfile = GetFollowCameraProfile(areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior);
+                targetPosition = anchor + followProfile.PositionOffset;
+                lookAt = anchor + followProfile.LookOffset;
+                targetFieldOfView = followProfile.FieldOfView;
             }
 
             var targetRotation = Quaternion.LookRotation(lookAt - targetPosition, Vector3.up);
             if (ShouldSnapCamera())
             {
                 reviewCamera.transform.SetPositionAndRotation(targetPosition, targetRotation);
+                reviewCamera.fieldOfView = targetFieldOfView;
                 CaptureCameraState();
                 return;
             }
 
             reviewCamera.transform.position = Vector3.Lerp(reviewCamera.transform.position, targetPosition, Time.deltaTime * cameraFollowSharpness);
             reviewCamera.transform.rotation = Quaternion.Slerp(reviewCamera.transform.rotation, targetRotation, Time.deltaTime * cameraFollowSharpness);
+            reviewCamera.fieldOfView = Mathf.Lerp(reviewCamera.fieldOfView, targetFieldOfView, Time.deltaTime * cameraFollowSharpness);
             CaptureCameraState();
         }
 
@@ -193,6 +201,23 @@ namespace Anemora.FastVS
             return portalController.PlayerInOtherTime
                 ? portalController.OtherTimeSpaceRootForReview
                 : portalController.CurrentSpaceRootForReview;
+        }
+
+        private static FollowCameraProfile GetFollowCameraProfile(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Interior:
+                    return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
+                case FastVsHouseArea.Exterior:
+                    return new FollowCameraProfile(new Vector3(0f, 3.35f, -6.35f), new Vector3(0f, 0.88f, 0.95f), 36f);
+                case FastVsHouseArea.CentralPlaza:
+                    return new FollowCameraProfile(new Vector3(0f, 3.95f, -7.40f), new Vector3(0f, 0.95f, 2.20f), 36f);
+                case FastVsHouseArea.Library:
+                    return new FollowCameraProfile(new Vector3(0f, 2.70f, -4.45f), new Vector3(0f, 0.70f, 0.42f), 38f);
+                default:
+                    return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
+            }
         }
 
         private GameObject ResolveActivePortalRoot()
@@ -317,6 +342,20 @@ namespace Anemora.FastVS
             hasCameraState = true;
             lastOtherTime = portalController != null && portalController.PlayerInOtherTime;
             lastArea = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
+        }
+
+        private readonly struct FollowCameraProfile
+        {
+            public readonly Vector3 PositionOffset;
+            public readonly Vector3 LookOffset;
+            public readonly float FieldOfView;
+
+            public FollowCameraProfile(Vector3 positionOffset, Vector3 lookOffset, float fieldOfView)
+            {
+                PositionOffset = positionOffset;
+                LookOffset = lookOffset;
+                FieldOfView = fieldOfView;
+            }
         }
     }
 }

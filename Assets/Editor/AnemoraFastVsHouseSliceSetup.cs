@@ -271,6 +271,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFiftyEighthCycleOutdoorVoidBackgroundTreatment();
             ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation();
             ValidateFastVsHd2dTwentyNinthCycleOutdoorScenicBackdropFoundation();
+            ValidateFastVsHd2dThirtySecondCycleOutdoorCompositionSkyBackdropFoundation();
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorArchitecturalClosure();
             ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
@@ -5923,6 +5924,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorFacadeBackdropReadabilityPolish(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateOutdoorCompositionSkyBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
 
@@ -6513,6 +6515,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryOcclusionShell(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateOutdoorCompositionSkyBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
 
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleBackBoundary", root, c + new Vector3(0f, 0.75f, 13.35f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.back_boundary");
@@ -7734,6 +7737,111 @@ namespace Anemora.EditorTools
                     Quaternion.Euler(0f, -12f, 0f),
                     rightWrapMaterial,
                     $"{prefix}.central_plaza.scenic_backdrop.right_sky_wrap_a");
+            }
+
+            _ = materials;
+        }
+
+        private static void CreateOutdoorCompositionSkyBackdropFoundation(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
+            var skyPanelMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_composition_sky_backdrop_sky_panel" : "current_house_exterior_composition_sky_backdrop_sky_panel")
+                    : (past ? "past_central_plaza_composition_sky_backdrop_sky_panel" : "current_central_plaza_composition_sky_backdrop_sky_panel"),
+                past,
+                area,
+                "composition_sky");
+            var horizonMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_composition_horizon_backdrop_horizon_band" : "current_house_exterior_composition_horizon_backdrop_horizon_band")
+                    : (past ? "past_central_plaza_composition_horizon_backdrop_horizon_band" : "current_central_plaza_composition_horizon_backdrop_horizon_band"),
+                past,
+                area,
+                "composition_horizon");
+            var edgeWrapMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_composition_sky_backdrop_edge_wrap" : "current_house_exterior_composition_sky_backdrop_edge_wrap")
+                    : (past ? "past_central_plaza_composition_sky_backdrop_edge_wrap" : "current_central_plaza_composition_sky_backdrop_edge_wrap"),
+                past,
+                area,
+                "composition_edge_wrap");
+
+            if (area == FastVsHouseArea.Exterior)
+            {
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_CompositionSkyBackdrop_SkyPanelA",
+                    root,
+                    c + new Vector3(0.12f, 6.18f, 9.42f),
+                    new Vector3(18.40f, 6.10f, 1f),
+                    Quaternion.identity,
+                    skyPanelMaterial,
+                    $"{prefix}.house_exterior.composition_sky_backdrop.sky_panel_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_CompositionSkyBackdrop_HorizonBandA",
+                    root,
+                    c + new Vector3(-0.10f, 3.18f, 8.98f),
+                    new Vector3(15.80f, 1.26f, 0.08f),
+                    Quaternion.identity,
+                    horizonMaterial,
+                    $"{prefix}.house_exterior.composition_sky_backdrop.horizon_band_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_CompositionSkyBackdrop_LeftWrapA",
+                    root,
+                    c + new Vector3(-9.20f, 3.82f, 7.52f),
+                    new Vector3(2.25f, 3.92f, 1f),
+                    Quaternion.Euler(0f, 17f, 0f),
+                    edgeWrapMaterial,
+                    $"{prefix}.house_exterior.composition_sky_backdrop.left_wrap_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_CompositionSkyBackdrop_RightWrapA",
+                    root,
+                    c + new Vector3(9.20f, 3.82f, 7.52f),
+                    new Vector3(2.25f, 3.92f, 1f),
+                    Quaternion.Euler(0f, -17f, 0f),
+                    edgeWrapMaterial,
+                    $"{prefix}.house_exterior.composition_sky_backdrop.right_wrap_a");
+            }
+            else
+            {
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_CompositionSkyBackdrop_SkyPanelA",
+                    root,
+                    c + new Vector3(0.00f, 6.55f, 16.32f),
+                    new Vector3(24.80f, 6.72f, 1f),
+                    Quaternion.identity,
+                    skyPanelMaterial,
+                    $"{prefix}.central_plaza.composition_sky_backdrop.sky_panel_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_CentralPlaza_CompositionSkyBackdrop_HorizonBandA",
+                    root,
+                    c + new Vector3(0.00f, 3.48f, 15.52f),
+                    new Vector3(21.60f, 1.38f, 0.08f),
+                    Quaternion.identity,
+                    horizonMaterial,
+                    $"{prefix}.central_plaza.composition_sky_backdrop.horizon_band_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_CompositionSkyBackdrop_LeftWrapA",
+                    root,
+                    c + new Vector3(-11.48f, 4.08f, 13.42f),
+                    new Vector3(2.70f, 4.10f, 1f),
+                    Quaternion.Euler(0f, 15f, 0f),
+                    edgeWrapMaterial,
+                    $"{prefix}.central_plaza.composition_sky_backdrop.left_wrap_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_CompositionSkyBackdrop_RightWrapA",
+                    root,
+                    c + new Vector3(11.48f, 4.08f, 13.42f),
+                    new Vector3(2.70f, 4.10f, 1f),
+                    Quaternion.Euler(0f, -15f, 0f),
+                    edgeWrapMaterial,
+                    $"{prefix}.central_plaza.composition_sky_backdrop.right_wrap_a");
             }
 
             _ = materials;
@@ -23783,6 +23891,141 @@ namespace Anemora.EditorTools
             ValidateOutdoorScenicBackdropObject("Past_CentralPlaza_ScenicBackdrop_RightSkyWrapA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(9.55f, 3.05f, 12.05f), new Vector3(10.80f, 3.85f, 13.20f), new Vector3(2.10f, 3.05f, 0.90f), new Vector3(2.90f, 3.55f, 1.10f));
         }
 
+        private static void ValidateFastVsHd2dThirtySecondCycleOutdoorCompositionSkyBackdropFoundation()
+        {
+            ValidateOutdoorScenicBackdropObject(
+                "Current_HouseExterior_CompositionSkyBackdrop_SkyPanelA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "composition_sky",
+                new Vector3(-0.05f, 5.88f, 9.22f),
+                new Vector3(0.32f, 6.48f, 9.62f),
+                new Vector3(18.10f, 5.90f, 0.90f),
+                new Vector3(18.70f, 6.30f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Current_HouseExterior_CompositionSkyBackdrop_HorizonBandA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "composition_horizon",
+                new Vector3(-0.30f, 2.98f, 8.90f),
+                new Vector3(0.10f, 3.38f, 9.08f),
+                new Vector3(15.50f, 1.18f, 0.06f),
+                new Vector3(16.10f, 1.34f, 0.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Current_HouseExterior_CompositionSkyBackdrop_LeftWrapA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(-9.45f, 3.48f, 7.32f),
+                new Vector3(-8.95f, 4.12f, 7.72f),
+                new Vector3(2.05f, 3.80f, 0.90f),
+                new Vector3(2.40f, 4.00f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Current_HouseExterior_CompositionSkyBackdrop_RightWrapA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(8.95f, 3.48f, 7.32f),
+                new Vector3(9.45f, 4.12f, 7.72f),
+                new Vector3(2.05f, 3.80f, 0.90f),
+                new Vector3(2.40f, 4.00f, 1.10f));
+
+            ValidateOutdoorScenicBackdropObject(
+                "Past_HouseExterior_CompositionSkyBackdrop_SkyPanelA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "composition_sky",
+                new Vector3(-0.05f, 5.88f, 9.22f),
+                new Vector3(0.32f, 6.48f, 9.62f),
+                new Vector3(18.10f, 5.90f, 0.90f),
+                new Vector3(18.70f, 6.30f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Past_HouseExterior_CompositionSkyBackdrop_HorizonBandA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "composition_horizon",
+                new Vector3(-0.30f, 2.98f, 8.90f),
+                new Vector3(0.10f, 3.38f, 9.08f),
+                new Vector3(15.50f, 1.18f, 0.06f),
+                new Vector3(16.10f, 1.34f, 0.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Past_HouseExterior_CompositionSkyBackdrop_LeftWrapA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(-9.45f, 3.48f, 7.32f),
+                new Vector3(-8.95f, 4.12f, 7.72f),
+                new Vector3(2.05f, 3.80f, 0.90f),
+                new Vector3(2.40f, 4.00f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Past_HouseExterior_CompositionSkyBackdrop_RightWrapA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(8.95f, 3.48f, 7.32f),
+                new Vector3(9.45f, 4.12f, 7.72f),
+                new Vector3(2.05f, 3.80f, 0.90f),
+                new Vector3(2.40f, 4.00f, 1.10f));
+
+            ValidateOutdoorScenicBackdropObject(
+                "Current_CentralPlaza_CompositionSkyBackdrop_SkyPanelA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "composition_sky",
+                new Vector3(-0.20f, 6.05f, 15.92f),
+                new Vector3(0.20f, 6.85f, 16.72f),
+                new Vector3(24.40f, 6.40f, 0.90f),
+                new Vector3(25.20f, 6.90f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Current_CentralPlaza_CompositionSkyBackdrop_HorizonBandA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "composition_horizon",
+                new Vector3(-0.20f, 3.18f, 15.14f),
+                new Vector3(0.20f, 3.78f, 15.74f),
+                new Vector3(21.10f, 1.26f, 0.06f),
+                new Vector3(22.10f, 1.44f, 0.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Current_CentralPlaza_CompositionSkyBackdrop_LeftWrapA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(-11.98f, 3.78f, 13.12f),
+                new Vector3(-11.00f, 4.38f, 13.72f),
+                new Vector3(2.55f, 3.90f, 0.90f),
+                new Vector3(2.85f, 4.20f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Current_CentralPlaza_CompositionSkyBackdrop_RightWrapA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(11.00f, 3.78f, 13.12f),
+                new Vector3(11.98f, 4.38f, 13.72f),
+                new Vector3(2.55f, 3.90f, 0.90f),
+                new Vector3(2.85f, 4.20f, 1.10f));
+
+            ValidateOutdoorScenicBackdropObject(
+                "Past_CentralPlaza_CompositionSkyBackdrop_SkyPanelA",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "composition_sky",
+                new Vector3(-0.20f, 6.05f, 15.92f),
+                new Vector3(0.20f, 6.85f, 16.72f),
+                new Vector3(24.40f, 6.40f, 0.90f),
+                new Vector3(25.20f, 6.90f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Past_CentralPlaza_CompositionSkyBackdrop_HorizonBandA",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "composition_horizon",
+                new Vector3(-0.20f, 3.18f, 15.14f),
+                new Vector3(0.20f, 3.78f, 15.74f),
+                new Vector3(21.10f, 1.26f, 0.06f),
+                new Vector3(22.10f, 1.44f, 0.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Past_CentralPlaza_CompositionSkyBackdrop_LeftWrapA",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(-11.98f, 3.78f, 13.12f),
+                new Vector3(-11.00f, 4.38f, 13.72f),
+                new Vector3(2.55f, 3.90f, 0.90f),
+                new Vector3(2.85f, 4.20f, 1.10f));
+            ValidateOutdoorScenicBackdropObject(
+                "Past_CentralPlaza_CompositionSkyBackdrop_RightWrapA",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "edge_wrap",
+                new Vector3(11.00f, 3.78f, 13.12f),
+                new Vector3(11.98f, 4.38f, 13.72f),
+                new Vector3(2.55f, 3.90f, 0.90f),
+                new Vector3(2.85f, 4.20f, 1.10f));
+        }
+
         private static void ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish()
         {
             ValidateCentralPlazaRuinLandmarkPolishObject("Current_CentralPlaza_RuinLandmarkPolish_FountainRimChipA", "Current_CentralPlazaMap_SeparateSpace", "current_stone", 0.08f);
@@ -30438,9 +30681,27 @@ namespace Anemora.EditorTools
             var texture = EnsureHd2dOutdoorScenicBackdropTexture(id, past, area, layer);
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = layer == "sky_curtain" || layer == "sky_wrap"
-                ? new Color(1f, 1f, 1f, past ? 0.30f : 0.28f)
-                : new Color(1f, 1f, 1f, past ? 0.42f : 0.38f);
+            Color tint;
+            if (layer == "composition_sky")
+            {
+                tint = new Color(1f, 1f, 1f, past ? 0.44f : 0.40f);
+            }
+            else if (layer == "composition_horizon")
+            {
+                tint = new Color(1f, 1f, 1f, past ? 0.54f : 0.48f);
+            }
+            else if (layer == "composition_edge_wrap")
+            {
+                tint = new Color(1f, 1f, 1f, past ? 0.32f : 0.28f);
+            }
+            else if (layer == "sky_curtain" || layer == "sky_wrap")
+            {
+                tint = new Color(1f, 1f, 1f, past ? 0.30f : 0.28f);
+            }
+            else
+            {
+                tint = new Color(1f, 1f, 1f, past ? 0.42f : 0.38f);
+            }
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -30800,7 +31061,77 @@ namespace Anemora.EditorTools
                     Color tint;
                     float alpha;
 
-                    if (layer == "sky_curtain" || layer == "sky_wrap")
+                    if (layer == "composition_sky")
+                    {
+                        var skyBlend = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((v - 0.06f) / 0.88f));
+                        var cloudDriftA = (Mathf.Sin((u * 4.4f) + (seed * 0.21f)) * 0.014f) + (Mathf.Sin((u * 9.6f) + (seed * 0.09f)) * 0.006f);
+                        var cloudCenterA = 0.56f + cloudDriftA;
+                        var cloudBandA = Mathf.Exp(-Mathf.Pow((v - cloudCenterA) / 0.032f, 2f));
+                        cloudBandA *= Mathf.Clamp01(0.84f - Mathf.Abs(u - 0.5f) * 1.55f);
+
+                        var cloudDriftB = (Mathf.Sin((u * 7.8f) + (seed * 0.17f)) * 0.010f) + (Mathf.Sin((u * 14.1f) + (seed * 0.11f)) * 0.004f);
+                        var cloudCenterB = 0.77f + cloudDriftB;
+                        var cloudBandB = Mathf.Exp(-Mathf.Pow((v - cloudCenterB) / 0.024f, 2f));
+                        cloudBandB *= Mathf.Clamp01(0.74f - Mathf.Abs(u - 0.5f) * 1.18f);
+
+                        Color lowerColor;
+                        Color upperColor;
+                        Color hazeColor;
+                        Color cloudColor;
+                        if (area == FastVsHouseArea.Exterior)
+                        {
+                            lowerColor = past ? new Color(0.56f, 0.49f, 0.42f, 1f) : new Color(0.30f, 0.39f, 0.49f, 1f);
+                            upperColor = past ? new Color(0.80f, 0.70f, 0.58f, 1f) : new Color(0.58f, 0.69f, 0.82f, 1f);
+                            hazeColor = past ? new Color(0.70f, 0.60f, 0.50f, 1f) : new Color(0.52f, 0.60f, 0.67f, 1f);
+                            cloudColor = past ? new Color(0.88f, 0.79f, 0.70f, 1f) : new Color(0.74f, 0.82f, 0.90f, 1f);
+                        }
+                        else
+                        {
+                            lowerColor = past ? new Color(0.52f, 0.46f, 0.39f, 1f) : new Color(0.28f, 0.36f, 0.46f, 1f);
+                            upperColor = past ? new Color(0.77f, 0.67f, 0.56f, 1f) : new Color(0.55f, 0.66f, 0.79f, 1f);
+                            hazeColor = past ? new Color(0.66f, 0.57f, 0.47f, 1f) : new Color(0.48f, 0.56f, 0.64f, 1f);
+                            cloudColor = past ? new Color(0.84f, 0.76f, 0.66f, 1f) : new Color(0.70f, 0.79f, 0.86f, 1f);
+                        }
+
+                        tint = Color.Lerp(lowerColor, upperColor, skyBlend);
+                        tint = Color.Lerp(tint, hazeColor, Mathf.Clamp01((1f - Mathf.Abs(v - 0.42f) * 2.2f) * 0.24f));
+                        tint = Color.Lerp(tint, cloudColor, Mathf.Clamp01((cloudBandA + cloudBandB) * 0.25f));
+                        alpha = ((0.20f + skyBlend * 0.34f) + (cloudBandA * 0.16f) + (cloudBandB * 0.10f)) * edgeFade;
+                        alpha = Mathf.Clamp(alpha, 0f, past ? 0.58f : 0.52f);
+                    }
+                    else if (layer == "composition_horizon")
+                    {
+                        var horizonCore = area == FastVsHouseArea.Exterior
+                            ? Mathf.Exp(-Mathf.Pow((v - (0.48f + wobble * 0.38f)) / 0.11f, 2f))
+                            : Mathf.Exp(-Mathf.Pow((v - (0.50f + wobble * 0.34f)) / 0.10f, 2f));
+                        var skylineSteps = area == FastVsHouseArea.Exterior
+                            ? Mathf.Clamp01(1f - Mathf.Abs(Mathf.Sin((u * 7.8f) + (seed * 0.17f))) * 0.52f)
+                            : Mathf.Clamp01(1f - Mathf.Abs(Mathf.Sin((u * 10.5f) + (seed * 0.15f))) * 0.46f);
+                        var silhouette = Mathf.Clamp01((horizonCore * 0.82f) + (skylineSteps * 0.18f));
+
+                        if (area == FastVsHouseArea.Exterior)
+                        {
+                            tint = past ? new Color(0.43f, 0.37f, 0.31f, 1f) : new Color(0.23f, 0.30f, 0.24f, 1f);
+                        }
+                        else
+                        {
+                            tint = past ? new Color(0.40f, 0.33f, 0.28f, 1f) : new Color(0.25f, 0.27f, 0.29f, 1f);
+                        }
+
+                        tint = Color.Lerp(tint, past ? new Color(0.68f, 0.59f, 0.48f, 1f) : new Color(0.50f, 0.56f, 0.60f, 1f), Mathf.Clamp01(1f - silhouette));
+                        alpha = ((0.26f + silhouette * 0.44f) + horizonCore * 0.08f) * edgeFade;
+                        alpha = Mathf.Clamp(alpha, 0f, past ? 0.62f : 0.56f);
+                    }
+                    else if (layer == "composition_edge_wrap")
+                    {
+                        var verticalBand = SmoothFade01(0.0f, 0.16f, v) * SmoothFade01(1f, 0.72f, v);
+                        var edgeBand = Mathf.Clamp01(1f - Mathf.Min(Mathf.Abs(u - 0.24f), Mathf.Abs(u - 0.76f)) * 4.5f);
+                        var wrapCore = Mathf.Clamp01(verticalBand * (0.42f + (edgeBand * 0.58f)));
+                        tint = past ? new Color(0.49f, 0.43f, 0.37f, 1f) : new Color(0.31f, 0.39f, 0.46f, 1f);
+                        tint = Color.Lerp(tint, past ? new Color(0.70f, 0.62f, 0.54f, 1f) : new Color(0.55f, 0.64f, 0.72f, 1f), wrapCore * 0.46f);
+                        alpha = Mathf.Clamp(((0.12f + wrapCore * 0.26f) + (edgeBand * 0.06f)) * edgeFade, 0f, past ? 0.34f : 0.30f);
+                    }
+                    else if (layer == "sky_curtain" || layer == "sky_wrap")
                     {
                         var lower = past ? new Color(0.50f, 0.43f, 0.35f, 1f) : new Color(0.35f, 0.43f, 0.52f, 1f);
                         var upper = past ? new Color(0.64f, 0.55f, 0.45f, 1f) : new Color(0.48f, 0.57f, 0.68f, 1f);
