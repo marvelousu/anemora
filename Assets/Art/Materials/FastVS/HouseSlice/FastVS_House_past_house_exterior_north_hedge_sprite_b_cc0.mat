@@ -70,8 +70,8 @@ Material:
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1
     - _Surface: 1
-    - _WorldLightStrength: 0.08
-    - _WorldShadowReceiveStrength: 0.05
+    - _WorldLightStrength: 0.1
+    - _WorldShadowReceiveStrength: 0.07
     - _XRMotionVectorsPass: 1
     - _ZWrite: 0
     m_Colors:

@@ -43,13 +43,13 @@ Material:
     - _BlendOp: 0
     - _Cull: 0
     - _Cutoff: 0.5
-    - _DirectionalLightStrength: 0.12
+    - _DirectionalLightStrength: 0.18
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _Metallic: 0
     - _QueueOffset: 0
     - _SampleGI: 0
-    - _ShadowReceiveStrength: 0.18
+    - _ShadowReceiveStrength: 0.26
     - _Smoothness: 0.16
     - _SpecularHighlights: 0
     - _SrcBlend: 1

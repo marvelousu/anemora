@@ -28,15 +28,15 @@ namespace Anemora.EditorTools
         private const float SpriteCardPaperEdgeStrength = 0.10f;
         private const float SpriteCardPaperRimStrength = 0.07f;
         private const float SpriteCardPaperLowerShadeStrength = 0.08f;
-        private const float SpriteCardWorldLightStrength = 0.08f;
-        private const float SpriteCardWorldShadowReceiveStrength = 0.05f;
+        private const float SpriteCardWorldLightStrength = 0.10f;
+        private const float SpriteCardWorldShadowReceiveStrength = 0.07f;
         private const string LibraryWindowLightCookieTextureId = "hd2d_library_window_light_cookie_soft";
         private const int LibraryWindowLightCookieSize = 128;
         private const float LibraryWindowLightCookieAverageMin = 0.58f;
         private const float LibraryWindowLightCookieAverageMax = 0.86f;
         private const float SurfaceRampStrength = 0.20f;
-        private const float SurfaceRampDirectionalLightStrength = 0.12f;
-        private const float SurfaceRampShadowReceiveStrength = 0.18f;
+        private const float SurfaceRampDirectionalLightStrength = 0.18f;
+        private const float SurfaceRampShadowReceiveStrength = 0.26f;
         private static readonly Color SpriteCardTopLight = new Color(1.08f, 1.03f, 0.96f, 1f);
         private static readonly Color SpriteCardSideShade = new Color(0.94f, 0.97f, 1.03f, 1f);
         private static readonly Color SpriteCardFloorShade = new Color(0.89f, 0.92f, 0.96f, 1f);
@@ -330,6 +330,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle48ShadowOcclusionReadability();
             ValidateFastVsHd2dCycle49DecisiveLightShadowContrast();
             ValidateFastVsHd2dCycle50HouseFacadeClosureShadow();
+            ValidateFastVsHd2dCycle51MaterialLightShadowResponse();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
@@ -9191,6 +9192,42 @@ namespace Anemora.EditorTools
                 Quaternion.identity,
                 trim,
                 $"{prefix}.house_exterior.cycle47.door_side_closure.right_return_lip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_Cycle51_DoorSideShell_LeftReturnWallA",
+                root,
+                c + new Vector3(-2.05f, 1.02f, -0.98f),
+                new Vector3(0.26f, 1.42f, 1.08f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.cycle51.door_side_shell.left_return_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_Cycle51_DoorSideShell_RightReturnWallA",
+                root,
+                c + new Vector3(0.02f, 1.02f, -0.98f),
+                new Vector3(0.26f, 1.42f, 1.08f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.cycle51.door_side_shell.right_return_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_Cycle51_DoorSideShell_LeftOuterReturnWallA",
+                root,
+                c + new Vector3(-3.28f, 1.06f, -0.88f),
+                new Vector3(0.34f, 1.98f, 1.46f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.cycle51.door_side_shell.left_outer_return_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_Cycle51_DoorSideShell_RightOuterReturnWallA",
+                root,
+                c + new Vector3(1.20f, 1.06f, -0.88f),
+                new Vector3(0.34f, 1.98f, 1.46f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.cycle51.door_side_shell.right_outer_return_wall_a");
         }
 
         private static void CreateHouseExteriorFacadeBackdropReadabilityPolish(Transform root, string prefix, bool past, Materials materials)
@@ -30248,6 +30285,39 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle49_DoorRightReturnShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 0.92f, -1.60f), new Vector3(-0.26f, 1.08f, -1.52f), new Vector3(0.16f, 1.02f, 0.04f), new Vector3(0.20f, 1.14f, 0.06f));
         }
 
+        private static void ValidateFastVsHd2dCycle51MaterialLightShadowResponse()
+        {
+            ValidateMaterialFloatBand("current_exterior_wall", "_DirectionalLightStrength", 0.17f, 0.19f);
+            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("current_ground", "_DirectionalLightStrength", 0.17f, 0.19f);
+            ValidateMaterialFloatBand("current_ground", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("current_roof", "_DirectionalLightStrength", 0.17f, 0.19f);
+            ValidateMaterialFloatBand("current_roof", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_DirectionalLightStrength", 0.17f, 0.19f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("past_wood_floor", "_DirectionalLightStrength", 0.17f, 0.19f);
+            ValidateMaterialFloatBand("past_wood_floor", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("book", "_DirectionalLightStrength", 0.17f, 0.19f);
+            ValidateMaterialFloatBand("book", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("niro_front_sprite", "_WorldLightStrength", 0.09f, 0.11f);
+            ValidateMaterialFloatBand("niro_front_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("niro_walk_front_sprite", "_WorldLightStrength", 0.09f, 0.11f);
+            ValidateMaterialFloatBand("niro_walk_front_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("reto_v02_writing_loop_sprite", "_WorldLightStrength", 0.09f, 0.11f);
+            ValidateMaterialFloatBand("reto_v02_writing_loop_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("aria_v46_normal_loop_breath_sprite", "_WorldLightStrength", 0.09f, 0.11f);
+            ValidateMaterialFloatBand("aria_v46_normal_loop_breath_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle51_DoorSideShell_LeftReturnWallA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.11f, 0.94f, -1.08f), new Vector3(-1.99f, 1.10f, -0.88f), new Vector3(0.22f, 1.34f, 1.00f), new Vector3(0.32f, 1.50f, 1.16f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle51_DoorSideShell_RightReturnWallA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.04f, 0.94f, -1.08f), new Vector3(0.08f, 1.10f, -0.88f), new Vector3(0.22f, 1.34f, 1.00f), new Vector3(0.32f, 1.50f, 1.16f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle51_DoorSideShell_LeftReturnWallA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.11f, 0.94f, -1.08f), new Vector3(-1.99f, 1.10f, -0.88f), new Vector3(0.22f, 1.34f, 1.00f), new Vector3(0.32f, 1.50f, 1.16f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle51_DoorSideShell_RightReturnWallA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.04f, 0.94f, -1.08f), new Vector3(0.08f, 1.10f, -0.88f), new Vector3(0.22f, 1.34f, 1.00f), new Vector3(0.32f, 1.50f, 1.16f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle51_DoorSideShell_LeftOuterReturnWallA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.36f, 0.96f, -1.00f), new Vector3(-3.20f, 1.16f, -0.76f), new Vector3(0.28f, 1.86f, 1.34f), new Vector3(0.40f, 2.10f, 1.58f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle51_DoorSideShell_RightOuterReturnWallA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.12f, 0.96f, -1.00f), new Vector3(1.28f, 1.16f, -0.76f), new Vector3(0.28f, 1.86f, 1.34f), new Vector3(0.40f, 2.10f, 1.58f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle51_DoorSideShell_LeftOuterReturnWallA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.36f, 0.96f, -1.00f), new Vector3(-3.20f, 1.16f, -0.76f), new Vector3(0.28f, 1.86f, 1.34f), new Vector3(0.40f, 2.10f, 1.58f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle51_DoorSideShell_RightOuterReturnWallA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.12f, 0.96f, -1.00f), new Vector3(1.28f, 1.16f, -0.76f), new Vector3(0.28f, 1.86f, 1.34f), new Vector3(0.40f, 2.10f, 1.58f));
+        }
+
         private static void ValidateCycle49LightingProfileRange(
             FastVsHouseLightingDirector director,
             FastVsHouseArea area,
@@ -33744,6 +33814,27 @@ namespace Anemora.EditorTools
 
         private static void ValidateSurfaceRampFloatBand(Material material, string materialPath, string propertyName, float min, float max)
         {
+            if (!material.HasProperty(propertyName))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep {propertyName}.");
+            }
+
+            var value = material.GetFloat(propertyName);
+            if (value < min || value > max)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep {propertyName} in the {min:0.00}-{max:0.00} range, but was {value:0.000}.");
+            }
+        }
+
+        private static void ValidateMaterialFloatBand(string materialId, string propertyName, float min, float max)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing material asset {materialPath}.");
+            }
+
             if (!material.HasProperty(propertyName))
             {
                 throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep {propertyName}.");

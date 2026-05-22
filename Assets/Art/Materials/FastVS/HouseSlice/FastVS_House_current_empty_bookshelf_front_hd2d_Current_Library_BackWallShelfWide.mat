@@ -35,9 +35,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DirectionalLightStrength: 0.12
+    - _DirectionalLightStrength: 0.18
     - _Metallic: 0
-    - _ShadowReceiveStrength: 0.18
+    - _ShadowReceiveStrength: 0.26
     - _Smoothness: 0.16
     - _SpecularHighlights: 0
     - _SurfaceRampStrength: 0.2
