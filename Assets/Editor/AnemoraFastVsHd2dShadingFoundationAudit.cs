@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using Anemora.TimeManagement.Portal;
 using UnityEditor;
 using UnityEngine;
@@ -14,6 +17,9 @@ namespace Anemora.EditorTools
         private const string PipelineAssetPath = SettingsDirectory + "/UniversalRenderPipeline.asset";
         private const string RendererDataPath = SettingsDirectory + "/UniversalRenderPipeline_Renderer.asset";
         private const string VolumeProfilePath = SettingsDirectory + "/DefaultVolumeProfile.asset";
+        private const string Cycle25OutputDirectory = "docs/devlog/screenshots/fast_vs_hd2d_postprocess_grade_cycle25_20260522";
+        private const string Cycle25ReportFileName = "postprocess_grade_cycle25_20260522.md";
+        private const string Cycle25ReportRelativePath = Cycle25OutputDirectory + "/" + Cycle25ReportFileName;
 
         [MenuItem("Tools/Anemora/Verify Shading Foundation V1")]
         public static void VerifyShadingFoundationV1()
@@ -30,6 +36,19 @@ namespace Anemora.EditorTools
             }
 
             Debug.Log("Shading Foundation v1 audit passed.");
+        }
+
+        [MenuItem("Tools/Anemora/Write HD2D Postprocess Grade Cycle 25 Report")]
+        public static void WritePostprocessGradeCycle25ReportBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+            VerifyShadingFoundationV1();
+
+            Directory.CreateDirectory(GetAbsoluteProjectPath(Cycle25OutputDirectory));
+            File.WriteAllText(GetAbsoluteProjectPath(Cycle25ReportRelativePath), BuildPostprocessGradeCycle25Markdown(), Encoding.UTF8);
+            AssetDatabase.Refresh();
+
+            Debug.Log($"HD2D postprocess grade cycle 25 report written: {GetAbsoluteProjectPath(Cycle25ReportRelativePath)}");
         }
 
         private static void ValidatePipeline(UniversalRenderPipelineAsset pipelineAsset, List<string> issues)
@@ -237,6 +256,348 @@ namespace Anemora.EditorTools
             RequireFloat(component.gain.value.y, 1.005f, 0.03f, issues, "LiftGammaGain gain tint is off target.");
             RequireFloat(component.gain.value.z, 0.995f, 0.03f, issues, "LiftGammaGain gain tint is off target.");
         }
+
+        private static string BuildPostprocessGradeCycle25Markdown()
+        {
+            var pipeline = new SerializedObject(LoadRequiredAsset<UniversalRenderPipelineAsset>(PipelineAssetPath));
+            var rendererData = LoadRequiredAsset<UniversalRendererData>(RendererDataPath);
+            var volumeProfile = LoadRequiredAsset<VolumeProfile>(VolumeProfilePath);
+
+            var builder = new StringBuilder();
+            builder.AppendLine("# Fast VS HD2D Postprocess Grade Cycle 25 Report");
+            builder.AppendLine();
+            builder.AppendLine("Foundation discovery report for the already-applied URP, renderer, and volume HD-2D shading setup. This cycle does not introduce new grade target values; it records the current contract and confirms DepthOfField and FilmGrain are disabled for the Fast VS baseline.");
+            builder.AppendLine();
+            builder.AppendLine($"- Branch: `work/fast-vs-hd2d-shading-foundation-20260522`");
+            builder.AppendLine($"- Worktree: `{GetAbsoluteProjectPath("")}`");
+            builder.AppendLine($"- Report file: `{GetAbsoluteProjectPath(Cycle25ReportRelativePath)}`");
+            builder.AppendLine($"- Pipeline asset: `{GetAbsoluteProjectPath(PipelineAssetPath)}`");
+            builder.AppendLine($"- Renderer asset: `{GetAbsoluteProjectPath(RendererDataPath)}`");
+            builder.AppendLine($"- Volume profile: `{GetAbsoluteProjectPath(VolumeProfilePath)}`");
+            builder.AppendLine();
+            builder.AppendLine("## Pipeline");
+            builder.AppendLine();
+            builder.AppendLine("| Field | Value |");
+            builder.AppendLine("|---|---|");
+            builder.AppendLine($"| Shadow distance | {FormatFloat(FindFloat(pipeline, "m_ShadowDistance", "shadowDistance"))} |");
+            builder.AppendLine($"| Main light shadows supported | {FormatBool(FindBool(pipeline, "m_MainLightShadowsSupported", "mainLightShadowsSupported"))} |");
+            builder.AppendLine($"| Main shadowmap resolution | {FormatInt(FindInt(pipeline, "m_MainLightShadowmapResolution", "mainLightShadowmapResolution"))} |");
+            builder.AppendLine($"| Additional lights mode | {FormatInt(FindInt(pipeline, "m_AdditionalLightsRenderingMode", "additionalLightsRenderingMode"))} |");
+            builder.AppendLine($"| Additional lights per object | {FormatInt(FindInt(pipeline, "m_AdditionalLightsPerObjectLimit", "additionalLightsPerObjectLimit"))} |");
+            builder.AppendLine($"| Additional light shadows | {FormatBool(FindBool(pipeline, "m_AdditionalLightShadowsSupported", "additionalLightShadowsSupported"))} |");
+            builder.AppendLine($"| Depth texture | {FormatBool(FindBool(pipeline, "m_RequireDepthTexture", "requireDepthTexture"))} |");
+            builder.AppendLine($"| Opaque texture | {FormatBool(FindBool(pipeline, "m_RequireOpaqueTexture", "requireOpaqueTexture"))} |");
+            builder.AppendLine($"| Soft shadows | {FormatBool(FindBool(pipeline, "m_SoftShadowsSupported", "softShadowsSupported"))} |");
+            builder.AppendLine($"| Soft shadow quality | {FormatInt(FindInt(pipeline, "m_SoftShadowQuality", "softShadowQuality"))} |");
+            builder.AppendLine($"| Cascade count | {FormatInt(FindInt(pipeline, "m_ShadowCascadeCount", "shadowCascadeCount"))} |");
+            builder.AppendLine($"| Cascade split | {FormatFloat(FindFloat(pipeline, "m_Cascade2Split", "cascade2Split"))} |");
+            builder.AppendLine($"| HDR | {FormatBool(FindBool(pipeline, "m_SupportsHDR", "supportsHDR"))} |");
+            builder.AppendLine();
+            builder.AppendLine("## Renderer");
+            builder.AppendLine();
+            builder.AppendLine("| Feature | Order | Active | Asset Name |");
+            builder.AppendLine("|---|---:|---|---|");
+            AppendRendererFeatureRow(builder, rendererData, typeof(PortalStencilFeature), "PortalStencilFeature");
+            AppendRendererFeatureRow(builder, rendererData, typeof(ScreenSpaceAmbientOcclusion), "ScreenSpaceAmbientOcclusion");
+            builder.AppendLine();
+            builder.AppendLine("### ScreenSpaceAmbientOcclusion Settings");
+            builder.AppendLine();
+            builder.AppendLine("| Field | Value |");
+            builder.AppendLine("|---|---|");
+            AppendSsaoSettingRows(builder, rendererData);
+            builder.AppendLine();
+            builder.AppendLine("## Volume");
+            builder.AppendLine();
+            builder.AppendLine("| Field | Value |");
+            builder.AppendLine("|---|---|");
+            AppendVolumeRows(builder, volumeProfile);
+
+            return builder.ToString();
+        }
+
+        private static void AppendRendererFeatureRow(StringBuilder builder, UniversalRendererData rendererData, Type featureType, string displayName)
+        {
+            var feature = FindRendererFeature(rendererData, featureType, out var index);
+            var assetName = feature != null ? feature.name : null;
+            var orderText = feature == null ? "n/a" : FormatInt(index);
+            var activeText = feature == null ? "n/a" : FormatBool(feature is PortalStencilFeature portalFeature ? (bool?)portalFeature.isActive : feature is ScreenSpaceAmbientOcclusion ssaoFeature ? (bool?)ssaoFeature.isActive : null);
+            builder.AppendLine($"| {displayName} | {orderText} | {activeText} | {FormatText(assetName)} |");
+        }
+
+        private static void AppendSsaoSettingRows(StringBuilder builder, UniversalRendererData rendererData)
+        {
+            var feature = FindRendererFeature(rendererData, typeof(ScreenSpaceAmbientOcclusion), out _ ) as ScreenSpaceAmbientOcclusion;
+            if (feature == null)
+            {
+                builder.AppendLine("| AOMethod | n/a |");
+                builder.AppendLine("| Source | n/a |");
+                builder.AppendLine("| Samples | n/a |");
+                builder.AppendLine("| BlurQuality | n/a |");
+                builder.AppendLine("| Intensity | n/a |");
+                builder.AppendLine("| Radius | n/a |");
+                builder.AppendLine("| DirectLightingStrength | n/a |");
+                builder.AppendLine("| Falloff | n/a |");
+                return;
+            }
+
+            var serialized = new SerializedObject(feature);
+            if (!TryFindProperty(serialized, "m_Settings", out var settings, "settings"))
+            {
+                builder.AppendLine("| AOMethod | n/a |");
+                builder.AppendLine("| Source | n/a |");
+                builder.AppendLine("| Samples | n/a |");
+                builder.AppendLine("| BlurQuality | n/a |");
+                builder.AppendLine("| Intensity | n/a |");
+                builder.AppendLine("| Radius | n/a |");
+                builder.AppendLine("| DirectLightingStrength | n/a |");
+                builder.AppendLine("| Falloff | n/a |");
+                return;
+            }
+
+            builder.AppendLine($"| AOMethod | {FormatEnumName(settings, "AOMethod")} |");
+            builder.AppendLine($"| Source | {FormatEnumName(settings, "Source")} |");
+            builder.AppendLine($"| Samples | {FormatEnumName(settings, "Samples")} |");
+            builder.AppendLine($"| BlurQuality | {FormatEnumName(settings, "BlurQuality")} |");
+            builder.AppendLine($"| Intensity | {FormatFloat(FindFloat(settings, "Intensity"))} |");
+            builder.AppendLine($"| Radius | {FormatFloat(FindFloat(settings, "Radius"))} |");
+            builder.AppendLine($"| DirectLightingStrength | {FormatFloat(FindFloat(settings, "DirectLightingStrength"))} |");
+            builder.AppendLine($"| Falloff | {FormatFloat(FindFloat(settings, "Falloff"))} |");
+        }
+
+        private static void AppendVolumeRows(StringBuilder builder, VolumeProfile volumeProfile)
+        {
+            if (volumeProfile.TryGet<Bloom>(out var bloom))
+            {
+                builder.AppendLine($"| Bloom active | {FormatBool(bloom.active)} |");
+                builder.AppendLine($"| Bloom threshold | {FormatVolumeFloat(bloom.threshold)} |");
+                builder.AppendLine($"| Bloom intensity | {FormatVolumeFloat(bloom.intensity)} |");
+                builder.AppendLine($"| Bloom scatter | {FormatVolumeFloat(bloom.scatter)} |");
+            }
+            else
+            {
+                builder.AppendLine("| Bloom active | n/a |");
+                builder.AppendLine("| Bloom threshold | n/a |");
+                builder.AppendLine("| Bloom intensity | n/a |");
+                builder.AppendLine("| Bloom scatter | n/a |");
+            }
+
+            if (volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
+            {
+                builder.AppendLine($"| ColorAdjustments active | {FormatBool(colorAdjustments.active)} |");
+                builder.AppendLine($"| ColorAdjustments postExposure | {FormatVolumeFloat(colorAdjustments.postExposure)} |");
+                builder.AppendLine($"| ColorAdjustments contrast | {FormatVolumeFloat(colorAdjustments.contrast)} |");
+                builder.AppendLine($"| ColorAdjustments saturation | {FormatVolumeFloat(colorAdjustments.saturation)} |");
+            }
+            else
+            {
+                builder.AppendLine("| ColorAdjustments active | n/a |");
+                builder.AppendLine("| ColorAdjustments postExposure | n/a |");
+                builder.AppendLine("| ColorAdjustments contrast | n/a |");
+                builder.AppendLine("| ColorAdjustments saturation | n/a |");
+            }
+
+            if (volumeProfile.TryGet<Vignette>(out var vignette))
+            {
+                builder.AppendLine($"| Vignette active | {FormatBool(vignette.active)} |");
+                builder.AppendLine($"| Vignette intensity | {FormatVolumeFloat(vignette.intensity)} |");
+            }
+            else
+            {
+                builder.AppendLine("| Vignette active | n/a |");
+                builder.AppendLine("| Vignette intensity | n/a |");
+            }
+
+            if (volumeProfile.TryGet<Tonemapping>(out var tonemapping))
+            {
+                builder.AppendLine($"| Tonemapping active | {FormatBool(tonemapping.active)} |");
+                builder.AppendLine($"| Tonemapping mode | {FormatEnumValue(tonemapping.mode.value)} |");
+            }
+            else
+            {
+                builder.AppendLine("| Tonemapping active | n/a |");
+                builder.AppendLine("| Tonemapping mode | n/a |");
+            }
+
+            if (volumeProfile.TryGet<ShadowsMidtonesHighlights>(out var shadowsMidtonesHighlights))
+            {
+                builder.AppendLine($"| ShadowsMidtonesHighlights active | {FormatBool(shadowsMidtonesHighlights.active)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights shadows | {FormatVector4(shadowsMidtonesHighlights.shadows.value)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights midtones | {FormatVector4(shadowsMidtonesHighlights.midtones.value)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights highlights | {FormatVector4(shadowsMidtonesHighlights.highlights.value)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights shadowsStart | {FormatVolumeFloat(shadowsMidtonesHighlights.shadowsStart)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights shadowsEnd | {FormatVolumeFloat(shadowsMidtonesHighlights.shadowsEnd)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights highlightsStart | {FormatVolumeFloat(shadowsMidtonesHighlights.highlightsStart)} |");
+                builder.AppendLine($"| ShadowsMidtonesHighlights highlightsEnd | {FormatVolumeFloat(shadowsMidtonesHighlights.highlightsEnd)} |");
+            }
+            else
+            {
+                builder.AppendLine("| ShadowsMidtonesHighlights active | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights shadows | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights midtones | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights highlights | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights shadowsStart | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights shadowsEnd | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights highlightsStart | n/a |");
+                builder.AppendLine("| ShadowsMidtonesHighlights highlightsEnd | n/a |");
+            }
+
+            if (volumeProfile.TryGet<LiftGammaGain>(out var liftGammaGain))
+            {
+                builder.AppendLine($"| LiftGammaGain active | {FormatBool(liftGammaGain.active)} |");
+                builder.AppendLine($"| LiftGammaGain lift | {FormatVector4(liftGammaGain.lift.value)} |");
+                builder.AppendLine($"| LiftGammaGain gamma | {FormatVector4(liftGammaGain.gamma.value)} |");
+                builder.AppendLine($"| LiftGammaGain gain | {FormatVector4(liftGammaGain.gain.value)} |");
+            }
+            else
+            {
+                builder.AppendLine("| LiftGammaGain active | n/a |");
+                builder.AppendLine("| LiftGammaGain lift | n/a |");
+                builder.AppendLine("| LiftGammaGain gamma | n/a |");
+                builder.AppendLine("| LiftGammaGain gain | n/a |");
+            }
+
+            if (volumeProfile.TryGet<DepthOfField>(out var depthOfField))
+            {
+                builder.AppendLine($"| DepthOfField active | {FormatBool(depthOfField.active)} |");
+            }
+            else
+            {
+                builder.AppendLine("| DepthOfField active | n/a |");
+            }
+
+            if (volumeProfile.TryGet<FilmGrain>(out var filmGrain))
+            {
+                builder.AppendLine($"| FilmGrain active | {FormatBool(filmGrain.active)} |");
+            }
+            else
+            {
+                builder.AppendLine("| FilmGrain active | n/a |");
+            }
+        }
+
+        private static ScriptableRendererFeature FindRendererFeature(UniversalRendererData rendererData, Type featureType, out int index)
+        {
+            index = -1;
+            if (rendererData == null || rendererData.rendererFeatures == null)
+            {
+                return null;
+            }
+
+            for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
+            {
+                var feature = rendererData.rendererFeatures[i];
+                if (feature != null && featureType.IsInstanceOfType(feature))
+                {
+                    index = i;
+                    return feature;
+                }
+            }
+
+            return null;
+        }
+
+        private static string FormatEnumName(SerializedProperty parent, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetEnumName(parent, fieldName, out var value, fallbackNames))
+            {
+                return "n/a";
+            }
+
+            return FormatText(value);
+        }
+
+        private static string FormatEnumValue<T>(T value) where T : Enum
+        {
+            return value.ToString();
+        }
+
+        private static string FormatVolumeFloat(VolumeParameter<float> parameter)
+        {
+            if (parameter == null || !parameter.overrideState)
+            {
+                return "n/a";
+            }
+
+            return FormatFloat(parameter.value);
+        }
+
+        private static string FormatVector4(Vector4 value)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "({0:0.###}, {1:0.###}, {2:0.###}, {3:0.###})",
+                value.x,
+                value.y,
+                value.z,
+                value.w);
+        }
+
+        private static string FormatFloat(float? value)
+        {
+            return value.HasValue ? value.Value.ToString("0.###", CultureInfo.InvariantCulture) : "n/a";
+        }
+
+        private static string FormatInt(int? value)
+        {
+            return value.HasValue ? value.Value.ToString(CultureInfo.InvariantCulture) : "n/a";
+        }
+
+        private static string FormatBool(bool? value)
+        {
+            return value.HasValue ? (value.Value ? "true" : "false") : "n/a";
+        }
+
+        private static string FormatText(string value)
+        {
+            return string.IsNullOrEmpty(value) ? "n/a" : value;
+        }
+
+        private static float? FindFloat(SerializedObject serialized, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetFloat(serialized, fieldName, out var value, fallbackNames))
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        private static float? FindFloat(SerializedProperty parent, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetFloat(parent, fieldName, out var value, fallbackNames))
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        private static int? FindInt(SerializedObject serialized, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetInt(serialized, fieldName, out var value, fallbackNames))
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        private static bool? FindBool(SerializedObject serialized, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetBool(serialized, fieldName, out var value, fallbackNames))
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        private static string GetAbsoluteProjectPath(string relativePath)
+        {
+            return Path.GetFullPath(Path.Combine(ProjectRoot, relativePath));
+        }
+
+        private static string ProjectRoot => Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
 
         private static void RequireBool(SerializedObject serialized, string fieldName, bool expected, List<string> issues, string message, params string[] fallbackNames)
         {

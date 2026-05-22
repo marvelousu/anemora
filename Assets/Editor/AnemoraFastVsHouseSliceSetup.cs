@@ -238,6 +238,7 @@ namespace Anemora.EditorTools
             ValidatePlayerSpritePresentation();
             AnemoraFastVsHd2dMaterialRoleFoundationAudit.VerifyMaterialRolesV1();
             AnemoraFastVsHd2dSpriteCardLightingAudit.VerifySpriteCardLightingV1();
+            AnemoraFastVsHd2dShadingFoundationAudit.VerifyShadingFoundationV1();
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
