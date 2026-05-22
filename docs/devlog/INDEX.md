@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v7.00 fast VS HD2D house exterior proportion cleanup cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.01 fast VS HD2D house exterior hero readability cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 377 files including INDEX.md and README.md.
-- Dated devlog records: 375 files.
-- Linked evidence files present under docs/devlog/screenshots/: 674 files.
+- Root-level Markdown coverage: 378 files including INDEX.md and README.md.
+- Dated devlog records: 376 files.
+- Linked evidence files present under docs/devlog/screenshots/: 684 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 30 |
+| 2026-05-22 | 31 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_house_exterior_hero_readability_cycle34.md](2026-05-22_fast_vs_hd2d_house_exterior_hero_readability_cycle34.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Hero Readability Cycle 34 |
 | [2026-05-22_fast_vs_hd2d_house_exterior_proportion_cleanup_cycle33.md](2026-05-22_fast_vs_hd2d_house_exterior_proportion_cleanup_cycle33.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Proportion Cleanup Cycle 33 |
 | [2026-05-22_fast_vs_hd2d_outdoor_composition_sky_backdrop_cycle32.md](2026-05-22_fast_vs_hd2d_outdoor_composition_sky_backdrop_cycle32.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Composition Sky Backdrop Foundation Cycle 32 |
 | [2026-05-22_fast_vs_hd2d_house_exterior_facade_backdrop_readability_cycle31.md](2026-05-22_fast_vs_hd2d_house_exterior_facade_backdrop_readability_cycle31.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Facade/Backdrop Readability Cycle 31 |
@@ -547,6 +548,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | v6.58 | 2026-05-21 | Added Fast VS HD2D plaza library deep exterior volume cycle record with current/past rear hall wall, long side wall, roof run, validation, build, smoke, and screenshot evidence. |
 | v6.57 | 2026-05-21 | Added Fast VS HD2D outdoor sky horizon layering cycle record with low-alpha horizon ridge objects, sky wash alpha tuning, validation, build, smoke, and screenshot evidence. |
 | v6.56 | 2026-05-21 | Added Fast VS HD2D plaza library front depth readability cycle record with current/past facade return, eave, roof lip, entrance recess, validation, build, smoke, and screenshot evidence. |
+| v6.56 | 2026-05-22 | Added Fast VS HD2D house exterior hero readability cycle record with stronger roof, facade, camera, texture, validation, and snapshot evidence. |
 | v6.55 | 2026-05-21 | Added Fast VS HD2D plaza library side surface breakup cycle record with current/past side wall detail cues, validation, build, smoke, and screenshot evidence. |
 | v6.54 | 2026-05-21 | Added Fast VS HD2D plaza library roof side depth cycle record with current/past side roof depth cues, validation, build, smoke, and screenshot evidence. |
 | v6.53 | 2026-05-21 | Added Fast VS HD2D outdoor sky texture readability cycle record with improved generated sky wash alpha, validation, build, smoke, and screenshot evidence. |

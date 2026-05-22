@@ -210,7 +210,7 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Interior:
                     return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
                 case FastVsHouseArea.Exterior:
-                    return new FollowCameraProfile(new Vector3(0f, 3.35f, -6.35f), new Vector3(0f, 0.88f, 0.95f), 36f);
+                    return new FollowCameraProfile(new Vector3(0.90f, 3.85f, -7.10f), new Vector3(0.42f, 0.70f, 1.12f), 38f);
                 case FastVsHouseArea.CentralPlaza:
                     return new FollowCameraProfile(new Vector3(0f, 3.95f, -7.40f), new Vector3(0f, 0.95f, 2.20f), 36f);
                 case FastVsHouseArea.Library:
@@ -218,6 +218,12 @@ namespace Anemora.FastVS
                 default:
                     return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
             }
+        }
+
+        public static (Vector3 PositionOffset, Vector3 LookOffset, float FieldOfView) GetFollowCameraProfileForReview(FastVsHouseArea area)
+        {
+            var profile = GetFollowCameraProfile(area);
+            return (profile.PositionOffset, profile.LookOffset, profile.FieldOfView);
         }
 
         private GameObject ResolveActivePortalRoot()

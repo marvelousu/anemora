@@ -38,14 +38,14 @@ namespace Anemora.EditorTools
         private static readonly Vector3 LibraryVsCenter = new Vector3(31.00f, 0f, 20.00f);
         private static readonly Vector3 CameraOffset = new Vector3(0f, 2.75f, -4.55f);
         private static readonly Vector3 LookOffset = new Vector3(0f, 0.72f, 0.45f);
-        private static readonly Vector3 HouseExteriorSnapshotCameraOffset = new Vector3(0f, 3.35f, -6.35f);
-        private static readonly Vector3 HouseExteriorSnapshotLookOffset = new Vector3(0f, 0.88f, 0.95f);
+        private static readonly Vector3 HouseExteriorSnapshotCameraOffset = new Vector3(0.90f, 3.85f, -7.10f);
+        private static readonly Vector3 HouseExteriorSnapshotLookOffset = new Vector3(0.42f, 0.70f, 1.12f);
         private static readonly Vector3 CentralPlazaSnapshotCameraOffset = new Vector3(0f, 3.95f, -7.40f);
         private static readonly Vector3 CentralPlazaSnapshotLookOffset = new Vector3(0f, 0.95f, 2.20f);
         private static readonly Vector3 HouseInteriorOverviewCameraOffset = new Vector3(0f, 4.25f, -7.20f);
         private static readonly Vector3 HouseInteriorOverviewLookOffset = new Vector3(0f, 1.10f, 0.90f);
         private const float HouseInteriorSnapshotTargetFov = 14f;
-        private const float HouseExteriorSnapshotTargetFov = 36f;
+        private const float HouseExteriorSnapshotTargetFov = 38f;
         private const float CentralPlazaSnapshotTargetFov = 36f;
         private const float LibrarySnapshotTargetFov = 38f;
 
@@ -53,6 +53,11 @@ namespace Anemora.EditorTools
         public static void CaptureAndVerifyFastVsHd2dVisualSnapshotAuditBatch()
         {
             RunCaptureAndVerifyBatch();
+        }
+
+        public static (Vector3 CameraOffset, Vector3 LookOffset, float TargetFov) GetHouseExteriorSnapshotCameraProfileForReview()
+        {
+            return (HouseExteriorSnapshotCameraOffset, HouseExteriorSnapshotLookOffset, HouseExteriorSnapshotTargetFov);
         }
 
         private static void RunCaptureAndVerifyBatch()
