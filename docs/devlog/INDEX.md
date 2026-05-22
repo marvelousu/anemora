@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v7.11 fast VS HD2D architectural closure grounding index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.12 fast VS HD2D facade edge softening index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 388 files including INDEX.md and README.md.
-- Dated devlog records: 386 files.
-- Linked evidence files present under docs/devlog/screenshots/: 727 files.
+- Root-level Markdown coverage: 389 files including INDEX.md and README.md.
+- Dated devlog records: 387 files.
+- Linked evidence files present under docs/devlog/screenshots/: 732 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 41 |
+| 2026-05-22 | 42 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_facade_edge_softening_cycle42.md](2026-05-22_fast_vs_hd2d_facade_edge_softening_cycle42.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Facade Edge Softening Cycle 42 |
 | [2026-05-22_fast_vs_hd2d_facade_surface_depth_cycle41.md](2026-05-22_fast_vs_hd2d_facade_surface_depth_cycle41.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Facade Surface Depth Cycle 41 |
 | [2026-05-22_fast_vs_hd2d_architectural_closure_grounding_cycle40.md](2026-05-22_fast_vs_hd2d_architectural_closure_grounding_cycle40.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architectural Closure / Grounding Cycle 40 |
 | [2026-05-22_fast_vs_hd2d_outdoor_framed_light_planes_cycle39.md](2026-05-22_fast_vs_hd2d_outdoor_framed_light_planes_cycle39.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Framed Light Planes Cycle 39 |
