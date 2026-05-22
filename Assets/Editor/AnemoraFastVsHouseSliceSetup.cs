@@ -270,6 +270,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtySixthCycleOutdoorBoundaryNatureDetails();
             ValidateFastVsHd2dFiftyEighthCycleOutdoorVoidBackgroundTreatment();
             ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation();
+            ValidateFastVsHd2dTwentyNinthCycleOutdoorScenicBackdropFoundation();
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish();
             ValidateFastVsHd2dSixtyFifthCycleCentralPlazaPavingReadability();
@@ -5916,6 +5917,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorOcclusionShell(root, prefix, past, materials);
             CreateHouseExteriorFacadeCompositionPolish(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
 
@@ -6505,6 +6507,7 @@ namespace Anemora.EditorTools
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateCentralPlazaLibraryOcclusionShell(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
 
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleBackBoundary", root, c + new Vector3(0f, 0.75f, 13.35f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.back_boundary");
@@ -7310,6 +7313,160 @@ namespace Anemora.EditorTools
                     Quaternion.identity,
                     horizonMaterial,
                     $"{prefix}.central_plaza.backdrop_foundation.horizon_roofline");
+            }
+
+            _ = materials;
+        }
+
+        private static void CreateOutdoorScenicBackdropFoundation(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
+
+            if (area == FastVsHouseArea.Exterior)
+            {
+                var skyCurtainMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_house_exterior_scenic_backdrop_sky_curtain" : "current_house_exterior_scenic_backdrop_sky_curtain",
+                    past,
+                    area,
+                    "sky_curtain");
+                var hazeBandMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_house_exterior_scenic_backdrop_low_haze_band" : "current_house_exterior_scenic_backdrop_low_haze_band",
+                    past,
+                    area,
+                    "low_haze_band");
+                var treeLineMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_house_exterior_scenic_backdrop_distant_tree_line" : "current_house_exterior_scenic_backdrop_distant_tree_line",
+                    past,
+                    area,
+                    "distant_tree_line");
+                var leftWrapMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_house_exterior_scenic_backdrop_left_sky_wrap" : "current_house_exterior_scenic_backdrop_left_sky_wrap",
+                    past,
+                    area,
+                    "sky_wrap");
+                var rightWrapMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_house_exterior_scenic_backdrop_right_sky_wrap" : "current_house_exterior_scenic_backdrop_right_sky_wrap",
+                    past,
+                    area,
+                    "sky_wrap");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_ScenicBackdrop_SkyCurtainA",
+                    root,
+                    c + new Vector3(0.0f, 4.72f, 8.95f),
+                    new Vector3(16.80f, 5.20f, 1f),
+                    Quaternion.identity,
+                    skyCurtainMaterial,
+                    $"{prefix}.house_exterior.scenic_backdrop.sky_curtain_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_ScenicBackdrop_LowHazeBandA",
+                    root,
+                    c + new Vector3(0.0f, 2.86f, 8.72f),
+                    new Vector3(14.60f, 1.05f, 1f),
+                    Quaternion.identity,
+                    hazeBandMaterial,
+                    $"{prefix}.house_exterior.scenic_backdrop.low_haze_band_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_ScenicBackdrop_DistantTreeLineA",
+                    root,
+                    c + new Vector3(0.8f, 2.22f, 8.42f),
+                    new Vector3(12.80f, 1.12f, 1f),
+                    Quaternion.identity,
+                    treeLineMaterial,
+                    $"{prefix}.house_exterior.scenic_backdrop.distant_tree_line_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_ScenicBackdrop_LeftSkyWrapA",
+                    root,
+                    c + new Vector3(-8.10f, 3.18f, 6.78f),
+                    new Vector3(2.20f, 3.05f, 1f),
+                    Quaternion.Euler(0f, 14f, 0f),
+                    leftWrapMaterial,
+                    $"{prefix}.house_exterior.scenic_backdrop.left_sky_wrap_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_ScenicBackdrop_RightSkyWrapA",
+                    root,
+                    c + new Vector3(8.10f, 3.18f, 6.78f),
+                    new Vector3(2.20f, 3.05f, 1f),
+                    Quaternion.Euler(0f, -14f, 0f),
+                    rightWrapMaterial,
+                    $"{prefix}.house_exterior.scenic_backdrop.right_sky_wrap_a");
+            }
+            else
+            {
+                var skyCurtainMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_central_plaza_scenic_backdrop_sky_curtain" : "current_central_plaza_scenic_backdrop_sky_curtain",
+                    past,
+                    area,
+                    "sky_curtain");
+                var hazeBandMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_central_plaza_scenic_backdrop_low_haze_band" : "current_central_plaza_scenic_backdrop_low_haze_band",
+                    past,
+                    area,
+                    "low_haze_band");
+                var roofLineMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_central_plaza_scenic_backdrop_distant_roofline" : "current_central_plaza_scenic_backdrop_distant_roofline",
+                    past,
+                    area,
+                    "distant_roofline");
+                var leftWrapMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_central_plaza_scenic_backdrop_left_sky_wrap" : "current_central_plaza_scenic_backdrop_left_sky_wrap",
+                    past,
+                    area,
+                    "sky_wrap");
+                var rightWrapMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                    past ? "past_central_plaza_scenic_backdrop_right_sky_wrap" : "current_central_plaza_scenic_backdrop_right_sky_wrap",
+                    past,
+                    area,
+                    "sky_wrap");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_ScenicBackdrop_SkyCurtainA",
+                    root,
+                    c + new Vector3(0.0f, 5.02f, 15.08f),
+                    new Vector3(22.60f, 5.80f, 1f),
+                    Quaternion.identity,
+                    skyCurtainMaterial,
+                    $"{prefix}.central_plaza.scenic_backdrop.sky_curtain_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_CentralPlaza_ScenicBackdrop_LowHazeBandA",
+                    root,
+                    c + new Vector3(0.0f, 3.12f, 14.72f),
+                    new Vector3(19.40f, 1.08f, 1f),
+                    Quaternion.identity,
+                    hazeBandMaterial,
+                    $"{prefix}.central_plaza.scenic_backdrop.low_haze_band_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_CentralPlaza_ScenicBackdrop_DistantRooflineA",
+                    root,
+                    c + new Vector3(0.0f, 2.58f, 14.28f),
+                    new Vector3(17.20f, 1.16f, 1f),
+                    Quaternion.identity,
+                    roofLineMaterial,
+                    $"{prefix}.central_plaza.scenic_backdrop.distant_roofline_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_ScenicBackdrop_LeftSkyWrapA",
+                    root,
+                    c + new Vector3(-10.20f, 3.42f, 12.68f),
+                    new Vector3(2.50f, 3.40f, 1f),
+                    Quaternion.Euler(0f, 12f, 0f),
+                    leftWrapMaterial,
+                    $"{prefix}.central_plaza.scenic_backdrop.left_sky_wrap_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_ScenicBackdrop_RightSkyWrapA",
+                    root,
+                    c + new Vector3(10.20f, 3.42f, 12.68f),
+                    new Vector3(2.50f, 3.40f, 1f),
+                    Quaternion.Euler(0f, -12f, 0f),
+                    rightWrapMaterial,
+                    $"{prefix}.central_plaza.scenic_backdrop.right_sky_wrap_a");
             }
 
             _ = materials;
@@ -19669,8 +19826,8 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: outdoor sky clear-color review components are missing.");
             }
 
-            var houseExteriorSky = new Color(0.118f, 0.142f, 0.166f, 1f);
-            var centralPlazaSky = new Color(0.112f, 0.138f, 0.164f, 1f);
+            var houseExteriorSky = new Color(0.245f, 0.315f, 0.385f, 1f);
+            var centralPlazaSky = new Color(0.235f, 0.305f, 0.375f, 1f);
             var indoorDark = new Color(0.064f, 0.060f, 0.060f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
@@ -23017,6 +23174,33 @@ namespace Anemora.EditorTools
             ValidateOutdoorVoidBackgroundTreatmentObject("Past_CentralPlaza_OutdoorVoidBackground_NorthSilhouetteRight", "Past_CentralPlazaMap_SeparateSpace", "outdoor_void_background", 5.0f, 2.1f, 0.12f);
             ValidateOutdoorVoidBackgroundTreatmentObject("Past_CentralPlaza_OutdoorVoidBackground_WestEdgeWash", "Past_CentralPlazaMap_SeparateSpace", "outdoor_void_background", 5.0f, 2.1f, 0.12f);
             ValidateOutdoorVoidBackgroundTreatmentObject("Past_CentralPlaza_OutdoorVoidBackground_EastEdgeWash", "Past_CentralPlazaMap_SeparateSpace", "outdoor_void_background", 5.0f, 2.1f, 0.12f);
+        }
+
+        private static void ValidateFastVsHd2dTwentyNinthCycleOutdoorScenicBackdropFoundation()
+        {
+            ValidateOutdoorScenicBackdropObject("Current_HouseExterior_ScenicBackdrop_SkyCurtainA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 4.05f, 8.45f), new Vector3(0.35f, 5.35f, 9.45f), new Vector3(15.80f, 4.90f, 0.90f), new Vector3(17.80f, 5.50f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_HouseExterior_ScenicBackdrop_LowHazeBandA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.55f, 8.30f), new Vector3(0.35f, 3.15f, 9.10f), new Vector3(13.80f, 0.88f, 0.90f), new Vector3(15.40f, 1.24f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_HouseExterior_ScenicBackdrop_DistantTreeLineA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(0.30f, 1.95f, 8.05f), new Vector3(1.30f, 2.55f, 8.80f), new Vector3(11.70f, 0.95f, 0.90f), new Vector3(13.90f, 1.28f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_HouseExterior_ScenicBackdrop_LeftSkyWrapA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-8.70f, 2.72f, 6.25f), new Vector3(-7.45f, 3.65f, 7.25f), new Vector3(1.80f, 2.70f, 0.90f), new Vector3(2.60f, 3.40f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_HouseExterior_ScenicBackdrop_RightSkyWrapA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(7.45f, 2.72f, 6.25f), new Vector3(8.70f, 3.65f, 7.25f), new Vector3(1.80f, 2.70f, 0.90f), new Vector3(2.60f, 3.40f, 1.10f));
+
+            ValidateOutdoorScenicBackdropObject("Past_HouseExterior_ScenicBackdrop_SkyCurtainA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 4.05f, 8.45f), new Vector3(0.35f, 5.35f, 9.45f), new Vector3(15.80f, 4.90f, 0.90f), new Vector3(17.80f, 5.50f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_HouseExterior_ScenicBackdrop_LowHazeBandA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.55f, 8.30f), new Vector3(0.35f, 3.15f, 9.10f), new Vector3(13.80f, 0.88f, 0.90f), new Vector3(15.40f, 1.24f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_HouseExterior_ScenicBackdrop_DistantTreeLineA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(0.30f, 1.95f, 8.05f), new Vector3(1.30f, 2.55f, 8.80f), new Vector3(11.70f, 0.95f, 0.90f), new Vector3(13.90f, 1.28f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_HouseExterior_ScenicBackdrop_LeftSkyWrapA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-8.70f, 2.72f, 6.25f), new Vector3(-7.45f, 3.65f, 7.25f), new Vector3(1.80f, 2.70f, 0.90f), new Vector3(2.60f, 3.40f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_HouseExterior_ScenicBackdrop_RightSkyWrapA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(7.45f, 2.72f, 6.25f), new Vector3(8.70f, 3.65f, 7.25f), new Vector3(1.80f, 2.70f, 0.90f), new Vector3(2.60f, 3.40f, 1.10f));
+
+            ValidateOutdoorScenicBackdropObject("Current_CentralPlaza_ScenicBackdrop_SkyCurtainA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 4.55f, 14.40f), new Vector3(0.35f, 5.55f, 15.80f), new Vector3(21.40f, 5.40f, 0.90f), new Vector3(23.80f, 6.10f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_CentralPlaza_ScenicBackdrop_LowHazeBandA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.85f, 14.20f), new Vector3(0.35f, 3.35f, 15.30f), new Vector3(18.60f, 0.90f, 0.90f), new Vector3(20.40f, 1.30f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_CentralPlaza_ScenicBackdrop_DistantRooflineA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.25f, 13.70f), new Vector3(0.35f, 2.95f, 14.85f), new Vector3(16.40f, 1.00f, 0.90f), new Vector3(18.20f, 1.32f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_CentralPlaza_ScenicBackdrop_LeftSkyWrapA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-10.80f, 3.05f, 12.05f), new Vector3(-9.55f, 3.85f, 13.20f), new Vector3(2.10f, 3.05f, 0.90f), new Vector3(2.90f, 3.55f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Current_CentralPlaza_ScenicBackdrop_RightSkyWrapA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(9.55f, 3.05f, 12.05f), new Vector3(10.80f, 3.85f, 13.20f), new Vector3(2.10f, 3.05f, 0.90f), new Vector3(2.90f, 3.55f, 1.10f));
+
+            ValidateOutdoorScenicBackdropObject("Past_CentralPlaza_ScenicBackdrop_SkyCurtainA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 4.55f, 14.40f), new Vector3(0.35f, 5.55f, 15.80f), new Vector3(21.40f, 5.40f, 0.90f), new Vector3(23.80f, 6.10f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_CentralPlaza_ScenicBackdrop_LowHazeBandA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.85f, 14.20f), new Vector3(0.35f, 3.35f, 15.30f), new Vector3(18.60f, 0.90f, 0.90f), new Vector3(20.40f, 1.30f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_CentralPlaza_ScenicBackdrop_DistantRooflineA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.25f, 13.70f), new Vector3(0.35f, 2.95f, 14.85f), new Vector3(16.40f, 1.00f, 0.90f), new Vector3(18.20f, 1.32f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_CentralPlaza_ScenicBackdrop_LeftSkyWrapA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-10.80f, 3.05f, 12.05f), new Vector3(-9.55f, 3.85f, 13.20f), new Vector3(2.10f, 3.05f, 0.90f), new Vector3(2.90f, 3.55f, 1.10f));
+            ValidateOutdoorScenicBackdropObject("Past_CentralPlaza_ScenicBackdrop_RightSkyWrapA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(9.55f, 3.05f, 12.05f), new Vector3(10.80f, 3.85f, 13.20f), new Vector3(2.10f, 3.05f, 0.90f), new Vector3(2.90f, 3.55f, 1.10f));
         }
 
         private static void ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation()
@@ -26893,6 +27077,37 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateOutdoorScenicBackdropObject(
+            string objectName,
+            string expectedParentName,
+            string expectedMaterialToken,
+            Vector3 minLocalPosition,
+            Vector3 maxLocalPosition,
+            Vector3 minLocalScale,
+            Vector3 maxLocalScale)
+        {
+            ValidateOcclusionBackdropObject(
+                objectName,
+                expectedParentName,
+                expectedMaterialToken,
+                minLocalPosition,
+                maxLocalPosition,
+                minLocalScale,
+                maxLocalScale);
+
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+            if (renderer == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must not cast or receive shadows.");
+            }
+        }
+
         private static void ValidateOcclusionBackdropObject(
             string objectName,
             string expectedParentName,
@@ -28684,7 +28899,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Time Window input and current-side cues must be locked before the Reto event unlocks them.");
             }
 
-            ValidateVisibleObjectiveAny("start route objective", "ベッドから起きる。", "外へ出る。", "ベッドから起きた。外へ出る。");
+            ValidateVisibleObjectiveAny("start route objective", "繝吶ャ繝峨°繧芽ｵｷ縺阪ｋ縲・, "螟悶∈蜃ｺ繧九・, "繝吶ャ繝峨°繧芽ｵｷ縺阪◆縲ょ､悶∈蜃ｺ繧九・);
 
             story.TriggerOpeningWakeForReview();
             story.RefreshPresentationForReview();
@@ -28693,24 +28908,24 @@ namespace Anemora.EditorTools
                 guide.MovementFrozenForReview ||
                 story.CurrentLineTextForReview != string.Empty ||
                 story.RuntimeHudActiveTextForReview != string.Empty ||
-                (story.RuntimeHudObjectiveTextForReview != "外へ出る。" &&
-                 story.RuntimeHudObjectiveTextForReview != "ベッドから起きた。外へ出る。") ||
+                (story.RuntimeHudObjectiveTextForReview != "螟悶∈蜃ｺ繧九・ &&
+                 story.RuntimeHudObjectiveTextForReview != "繝吶ャ繝峨°繧芽ｵｷ縺阪◆縲ょ､悶∈蜃ｺ繧九・) ||
                 !story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException(
                     $"House slice validation failed: VS branch must skip the opening wake dialogue and start playable in the house interior. opening={story.OpeningWakeCompleteForReview}, beat='{story.CurrentBeatIdForReview}', frozen={guide.MovementFrozenForReview}, line='{story.CurrentLineTextForReview}', hudActive='{story.RuntimeHudActiveTextForReview}', objective='{story.RuntimeHudObjectiveTextForReview}', objectiveActive={story.RuntimeHudObjectivePanelActiveForReview}");
             }
 
-            ValidateVisibleObjectiveAny("house interior route", "外へ出る。", "ベッドから起きた。外へ出る。");
+            ValidateVisibleObjectiveAny("house interior route", "螟悶∈蜃ｺ繧九・, "繝吶ャ繝峨°繧芽ｵｷ縺阪◆縲ょ､悶∈蜃ｺ繧九・);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter + new Vector3(0.10f, 0.02f, -0.90f));
-            ValidateVisibleObjective("北東の道を進む。", "house exterior route");
+            ValidateVisibleObjective("蛹玲擲縺ｮ驕薙ｒ騾ｲ繧縲・, "house exterior route");
             visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
             controller.ForcePlayerCurrentLocalForReview(CentralPlazaVsCenter + new Vector3(-1.80f, 0.02f, -1.20f));
-            ValidateVisibleObjective("図書館へ向かう。", "central plaza route");
+            ValidateVisibleObjective("蝗ｳ譖ｸ鬢ｨ縺ｸ蜷代°縺・・, "central plaza route");
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(-2.80f, 0.02f, -2.40f));
-            ValidateVisibleObjective("レトの机へ向かう。", "library approach route");
+            ValidateVisibleObjective("繝ｬ繝医・譛ｺ縺ｸ蜷代°縺・・, "library approach route");
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
             controller.ForcePlayerCurrentLocalForReview(InteriorDoorTriggerCenter);
@@ -28742,7 +28957,7 @@ namespace Anemora.EditorTools
             story.AdvanceStoryForReview();
             story.RefreshPresentationForReview();
             if (story.DoorBrushBeatPageForReview != 1 ||
-                story.RuntimeHudActiveTextForReview != "(ポケットに、何か...)" ||
+                story.RuntimeHudActiveTextForReview != "(繝昴こ繝・ヨ縺ｫ縲∽ｽ輔°...)" ||
                 story.RuntimeHudQuestionActiveForReview ||
                 !story.RuntimeHudBrushActiveForReview ||
                 story.RuntimeHudObjectivePanelActiveForReview ||
@@ -28755,7 +28970,7 @@ namespace Anemora.EditorTools
             story.AdvanceStoryForReview();
             story.RefreshPresentationForReview();
             if (story.DoorBrushBeatPageForReview != 2 ||
-                story.RuntimeHudActiveTextForReview != "(...筆?)" ||
+                story.RuntimeHudActiveTextForReview != "(...遲・)" ||
                 story.RuntimeHudQuestionActiveForReview ||
                 !story.RuntimeHudBrushActiveForReview ||
                 story.RuntimeHudObjectivePanelActiveForReview)
@@ -28773,7 +28988,7 @@ namespace Anemora.EditorTools
             controller.ForcePlayerCurrentLocalForReview(RetoLibraryDeskLocalPosition + new Vector3(-1.15f, 0.02f, -1.35f));
             story.RefreshPresentationForReview();
             if (!story.RetoInteractionReadyForReview ||
-                story.RuntimeHudObjectiveTextForReview != "E: レトと話す" ||
+                story.RuntimeHudObjectiveTextForReview != "E: 繝ｬ繝医→隧ｱ縺・ ||
                 !story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto must be talkable from the reachable front-of-desk player position with a lower-left interaction prompt.");
@@ -28785,9 +29000,9 @@ namespace Anemora.EditorTools
             if (!guide.MovementFrozenForReview ||
                 story.RetoBeatIndexForReview != 0 ||
                 story.CurrentBeatIdForReview != "scene1.reto.1b.initial" ||
-                story.CurrentLineSpeakerForReview != "レト" ||
-                story.CurrentLineTextForReview != "...見ない顔ですね。" ||
-                story.RuntimeHudVisibleTextForReview != "...見ない顔ですね。" ||
+                story.CurrentLineSpeakerForReview != "繝ｬ繝・ ||
+                story.CurrentLineTextForReview != "...隕九↑縺・｡斐〒縺吶・縲・ ||
+                story.RuntimeHudVisibleTextForReview != "...隕九↑縺・｡斐〒縺吶・縲・ ||
                 story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto event did not begin at the initial encounter beat.");
@@ -28799,8 +29014,8 @@ namespace Anemora.EditorTools
             var sawPocketGlowPause = false;
             while (!story.WaitingForPastObservationForReview && guard++ < 30)
             {
-                if (story.CurrentLineTextForReview.IndexOf("からっぽ", StringComparison.Ordinal) >= 0 ||
-                    story.CurrentLineTextForReview.IndexOf("なんとなく", StringComparison.Ordinal) >= 0)
+                if (story.CurrentLineTextForReview.IndexOf("縺九ｉ縺｣縺ｽ", StringComparison.Ordinal) >= 0 ||
+                    story.CurrentLineTextForReview.IndexOf("縺ｪ繧薙→縺ｪ縺・, StringComparison.Ordinal) >= 0)
                 {
                     throw new InvalidOperationException("House slice validation failed: removed opening/library thought is still present.");
                 }
@@ -28819,7 +29034,7 @@ namespace Anemora.EditorTools
                 {
                     sawResolveToRecord = true;
                     if (!sawResolvePause ||
-                        story.CurrentLineTextForReview != "いえ。今のは、ただの独り言です。")
+                        story.CurrentLineTextForReview != "縺・∴縲ゆｻ翫・縺ｯ縲√◆縺縺ｮ迢ｬ繧願ｨ縺ｧ縺吶・)
                     {
                         throw new InvalidOperationException("House slice validation failed: Reto resolve-to-record line changed unexpectedly.");
                     }
@@ -28834,12 +29049,12 @@ namespace Anemora.EditorTools
                     }
                 }
 
-                if (story.CurrentLineTextForReview == "(筆が...!)" && !story.TimewriterPocketGlowVisibleForReview)
+                if (story.CurrentLineTextForReview == "(遲・′...!)" && !story.TimewriterPocketGlowVisibleForReview)
                 {
                     throw new InvalidOperationException("House slice validation failed: Niro pocket glow must remain visible when Niro notices the brush.");
                 }
 
-                if (story.CurrentLineTextForReview == "...本物だ")
+                if (story.CurrentLineTextForReview == "...譛ｬ迚ｩ縺")
                 {
                     throw new InvalidOperationException("House slice validation failed: Reto says the book is real before Niro takes the past book.");
                 }
@@ -28863,11 +29078,11 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Reto [1.B]-[1.D] did not wait for player-controlled past observation or unlock both current-side Time Window cues.");
             }
 
-            ValidateVisibleObjective("黄色い光の近くに、左ドラッグで時の窓を開く。", "time window unlock");
+            ValidateVisibleObjective("鮟・牡縺・・縺ｮ霑代￥縺ｫ縲∝ｷｦ繝峨Λ繝・げ縺ｧ譎ゅ・遯薙ｒ髢九￥縲・, "time window unlock");
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerOtherTimeLocalForReview(new Vector3(PastLibraryPersonCueLocalPosition.x, 0.02f, PastLibraryPersonCueLocalPosition.z));
-            ValidateVisibleObjective("E: 過去の人影を見る", "past person cue");
+            ValidateVisibleObjective("E: 驕主悉縺ｮ莠ｺ蠖ｱ繧定ｦ九ｋ", "past person cue");
 
             if (!story.AriaInteractionReadyForReview)
             {
@@ -28878,8 +29093,8 @@ namespace Anemora.EditorTools
             story.RefreshPresentationForReview();
             story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
-                story.CurrentLineSpeakerForReview != "ニロ" ||
-                story.CurrentLineTextForReview != "(...人)" ||
+                story.CurrentLineSpeakerForReview != "繝九Ο" ||
+                story.CurrentLineTextForReview != "(...莠ｺ)" ||
                 story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Aria interaction must start with Niro noticing a person, not the book event.");
@@ -28888,8 +29103,8 @@ namespace Anemora.EditorTools
             story.AdvanceStoryForReview();
             story.AdvanceStoryForReview();
             if (!guide.MovementFrozenForReview ||
-                story.CurrentLineSpeakerForReview != "ニロ" ||
-                story.CurrentLineTextForReview != "(...本を読んでいる)")
+                story.CurrentLineSpeakerForReview != "繝九Ο" ||
+                story.CurrentLineTextForReview != "(...譛ｬ繧定ｪｭ繧薙〒縺・ｋ)")
             {
                 throw new InvalidOperationException("House slice validation failed: Aria interaction must skip the removed return-record line and continue with Niro's observation.");
             }
@@ -28908,7 +29123,7 @@ namespace Anemora.EditorTools
             }
 
             controller.ForcePlayerOtherTimeLocalForReview(new Vector3(PastLibraryBookCueLocalPosition.x, 0.02f, PastLibraryBookCueLocalPosition.z));
-            ValidateVisibleObjective("E: 光っている本を調べる", "past book cue");
+            ValidateVisibleObjective("E: 蜈峨▲縺ｦ縺・ｋ譛ｬ繧定ｪｿ縺ｹ繧・, "past book cue");
 
             if (!story.PastBookInteractionReadyForReview)
             {
@@ -28920,7 +29135,7 @@ namespace Anemora.EditorTools
             story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
                 story.CurrentBeatIdForReview != "scene1.reto.1e.past_library_observation.book_location" ||
-                story.CurrentLineTextForReview != "(...ここに、本が)" ||
+                story.CurrentLineTextForReview != "(...縺薙％縺ｫ縲∵悽縺・" ||
                 story.CurrentTimeWindowBookCueVisibleForReview ||
                 story.RuntimeHudObjectivePanelActiveForReview)
             {
@@ -28930,12 +29145,12 @@ namespace Anemora.EditorTools
             guard = 0;
             while (!story.WaitingForRetoBookShowForReview && guard++ < 12)
             {
-                if (story.CurrentLineTextForReview.IndexOf("あの子", StringComparison.Ordinal) >= 0)
+                if (story.CurrentLineTextForReview.IndexOf("縺ゅ・蟄・, StringComparison.Ordinal) >= 0)
                 {
-                    throw new InvalidOperationException("House slice validation failed: old Aria thought '(…あの子)' is still present.");
+                    throw new InvalidOperationException("House slice validation failed: old Aria thought '(窶ｦ縺ゅ・蟄・' is still present.");
                 }
 
-                if (story.CurrentLineTextForReview == "(...人)")
+                if (story.CurrentLineTextForReview == "(...莠ｺ)")
                 {
                     throw new InvalidOperationException("House slice validation failed: the person notice beat must belong to Aria, not the book interaction.");
                 }
@@ -28962,10 +29177,10 @@ namespace Anemora.EditorTools
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(-2.20f, 0.02f, -1.85f));
-            ValidateVisibleObjective("レトの机へ戻る。", "return to Reto desk after past observations");
+            ValidateVisibleObjective("繝ｬ繝医・譛ｺ縺ｸ謌ｻ繧九・, "return to Reto desk after past observations");
 
             controller.ForcePlayerCurrentLocalForReview(RetoLibraryDeskLocalPosition + new Vector3(-1.15f, 0.02f, -1.35f));
-            ValidateVisibleObjective("E: レトに本を見せる", "Reto book-show prompt");
+            ValidateVisibleObjective("E: 繝ｬ繝医↓譛ｬ繧定ｦ九○繧・, "Reto book-show prompt");
 
             if (!story.RetoBookShowReadyForReview)
             {
@@ -28977,7 +29192,7 @@ namespace Anemora.EditorTools
             story.CompleteRuntimeHudTypingForReview();
             if (!guide.MovementFrozenForReview ||
                 story.CurrentBeatIdForReview != "scene1.reto.1f.return_present.show_book" ||
-                story.CurrentLineTextForReview != "(...本を、レトに見せる)" ||
+                story.CurrentLineTextForReview != "(...譛ｬ繧偵√Ξ繝医↓隕九○繧・" ||
                 !story.BookShownToRetoForReview ||
                 story.RuntimeHudObjectivePanelActiveForReview)
             {
@@ -29020,7 +29235,7 @@ namespace Anemora.EditorTools
                     sawQuestion = true;
                 }
 
-                if (currentText == "...本物だ")
+                if (currentText == "...譛ｬ迚ｩ縺")
                 {
                     sawBookReal = true;
                     if (!sawQuestion)
@@ -29029,7 +29244,7 @@ namespace Anemora.EditorTools
                     }
                 }
 
-                if (currentText == "...そうですか。")
+                if (currentText == "...縺昴≧縺ｧ縺吶°縲・)
                 {
                     sawAcceptance = true;
                     if (!sawBookReal || !sawFaceDropMotion || !sawFaceLiftMotion)
@@ -29038,12 +29253,12 @@ namespace Anemora.EditorTools
                     }
                 }
 
-                if (currentText == "もし手があるなら、少し、助けてやってください。")
+                if (currentText == "繧ゅ＠謇九′縺ゅｋ縺ｪ繧峨∝ｰ代＠縲∝勧縺代※繧・▲縺ｦ縺上□縺輔＞縲・)
                 {
                     throw new InvalidOperationException("House slice validation failed: old v3 Mia hint line is still present.");
                 }
 
-                if (currentText == "あなたなら、力になれるかもしれません。")
+                if (currentText == "縺ゅ↑縺溘↑繧峨∝鴨縺ｫ縺ｪ繧後ｋ縺九ｂ縺励ｌ縺ｾ縺帙ｓ縲・)
                 {
                     sawV4MiaHint = true;
                 }
@@ -29068,7 +29283,7 @@ namespace Anemora.EditorTools
             }
 
             story.RefreshPresentationForReview();
-            if (story.RuntimeHudObjectiveTextForReview != "レトの話を聞いた。" ||
+            if (story.RuntimeHudObjectiveTextForReview != "繝ｬ繝医・隧ｱ繧定◇縺・◆縲・ ||
                 !story.RuntimeHudObjectivePanelActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: lower-left HUD must remain visible after VS clear with the completion objective.");
@@ -29694,6 +29909,28 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material EnsureHd2dOutdoorScenicBackdropMaterial(string id, bool past, FastVsHouseArea area, string layer)
+        {
+            var material = FlatMaterial(id, Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 2994);
+            var texture = EnsureHd2dOutdoorScenicBackdropTexture(id, past, area, layer);
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", Color.white);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", Color.white);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
         private static Material EnsureHd2dLibraryWindowLightMaterial()
         {
             var material = FlatMaterial("hd2d_library_window_light", Color.white, true, FastVsHd2dMaterialRole.PortalWindow);
@@ -29964,6 +30201,158 @@ namespace Anemora.EditorTools
                         (byte)Mathf.Clamp(Mathf.RoundToInt(tint.r * 255f), 0, 255),
                         (byte)Mathf.Clamp(Mathf.RoundToInt(tint.g * 255f), 0, 255),
                         (byte)Mathf.Clamp(Mathf.RoundToInt(tint.b * 255f), 0, 255),
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, false);
+            EditorUtility.SetDirty(texture);
+            AssetDatabase.SaveAssets();
+            return texture;
+        }
+
+        private static Texture2D EnsureHd2dOutdoorScenicBackdropTexture(string id, bool past, FastVsHouseArea area, string layer)
+        {
+            const int width = 512;
+            const int height = 256;
+            var path = $"{TextureDirectory}/FastVS_House_{id}.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture != null && (texture.width != width || texture.height != height || texture.format != TextureFormat.RGBA32))
+            {
+                AssetDatabase.DeleteAsset(path);
+                texture = null;
+            }
+
+            if (texture == null)
+            {
+                texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                AssetDatabase.CreateAsset(texture, path);
+            }
+
+            texture.name = $"FastVS_House_{id}";
+            texture.filterMode = FilterMode.Bilinear;
+            texture.wrapMode = TextureWrapMode.Clamp;
+
+            var layerKind = layer.IndexOf("roofline", StringComparison.OrdinalIgnoreCase) >= 0
+                ? 3
+                : layer.IndexOf("tree", StringComparison.OrdinalIgnoreCase) >= 0
+                    ? 2
+                    : layer.IndexOf("haze", StringComparison.OrdinalIgnoreCase) >= 0
+                        ? 1
+                        : 0;
+            var areaBias = area == FastVsHouseArea.Exterior ? 0.11f : 0.27f;
+            var timeBias = past ? 0.19f : 0.03f;
+            var seed = (layerKind * 37) + (past ? 13 : 7) + (area == FastVsHouseArea.Exterior ? 17 : 43);
+            var pixels = new Color32[width * height];
+
+            for (var y = 0; y < height; y++)
+            {
+                var v = y / 255f;
+                for (var x = 0; x < width; x++)
+                {
+                    var u = x / 511f;
+                    var edgeFade = SmoothFade01(0.00f, 0.10f, u) * SmoothFade01(0.00f, 0.10f, 1f - u);
+                    var topFade = SmoothFade01(0.00f, 0.06f, v) * SmoothFade01(0.00f, 0.08f, 1f - v);
+                    var centerBias = Mathf.Clamp01(1f - Mathf.Abs(u - 0.5f) * 1.65f);
+                    var horizWave = Mathf.Sin((u * 6.4f) + seed * 0.13f) * 0.018f +
+                                    Mathf.Sin((u * 12.7f) + seed * 0.07f) * 0.008f;
+                    var fineWave = Mathf.Sin((u * 28.4f) + (v * 8.8f) + seed * 0.11f) * 0.004f;
+
+                    var skyBlend = Mathf.Clamp01((v * 0.98f) + (past ? 0.06f : -0.01f));
+                    var skyTop = area == FastVsHouseArea.Exterior
+                        ? (past ? new Color(0.60f, 0.56f, 0.48f, 1f) : new Color(0.42f, 0.50f, 0.58f, 1f))
+                        : (past ? new Color(0.58f, 0.54f, 0.46f, 1f) : new Color(0.40f, 0.47f, 0.55f, 1f));
+                    var skyMid = area == FastVsHouseArea.Exterior
+                        ? (past ? new Color(0.46f, 0.44f, 0.38f, 1f) : new Color(0.28f, 0.36f, 0.42f, 1f))
+                        : (past ? new Color(0.44f, 0.41f, 0.35f, 1f) : new Color(0.26f, 0.32f, 0.38f, 1f));
+                    var hazeColor = area == FastVsHouseArea.Exterior
+                        ? (past ? new Color(0.71f, 0.62f, 0.52f, 1f) : new Color(0.54f, 0.60f, 0.63f, 1f))
+                        : (past ? new Color(0.68f, 0.60f, 0.50f, 1f) : new Color(0.50f, 0.56f, 0.60f, 1f));
+                    var baseColor = Color.Lerp(skyTop, skyMid, Mathf.SmoothStep(0f, 1f, skyBlend));
+
+                    float alpha;
+                    switch (layerKind)
+                    {
+                        case 1:
+                        {
+                            var hazeBand = Mathf.Exp(-Mathf.Pow((v - (0.38f + (past ? -0.01f : 0.01f))) / 0.12f, 2f));
+                            var underside = Mathf.Exp(-Mathf.Pow((v - 0.20f) / 0.11f, 2f));
+                            alpha = ((0.10f + (hazeBand * 0.18f) + (underside * 0.06f)) * edgeFade * topFade) + (centerBias * 0.02f);
+                            baseColor = Color.Lerp(baseColor, hazeColor, Mathf.Clamp01(hazeBand * 0.82f));
+                            break;
+                        }
+                        case 2:
+                        {
+                            var contour = 0.22f
+                                          + (Mathf.Sin((u * 3.2f) + seed * 0.08f) * 0.028f)
+                                          + (Mathf.Sin((u * 6.7f) + seed * 0.17f) * 0.018f)
+                                          + (Mathf.Sin((u * 13.5f) + seed * 0.23f) * 0.010f)
+                                          + Mathf.Abs(Mathf.Sin((u * 4.9f) + seed * 0.11f)) * 0.022f;
+                            contour += Mathf.Exp(-Mathf.Pow((u - 0.18f) / 0.12f, 2f)) * 0.018f;
+                            contour += Mathf.Exp(-Mathf.Pow((u - 0.56f) / 0.10f, 2f)) * 0.022f;
+                            contour += Mathf.Exp(-Mathf.Pow((u - 0.82f) / 0.14f, 2f)) * 0.016f;
+                            var canopy = 1f - SmoothFade01(contour - 0.03f, contour + 0.05f, v);
+                            var trunkMist = Mathf.Exp(-Mathf.Pow((v - 0.10f) / 0.12f, 2f)) * Mathf.Clamp01(0.84f - Mathf.Abs(u - 0.5f) * 1.25f);
+                            alpha = ((0.20f + (canopy * 0.27f) + (trunkMist * 0.10f)) * edgeFade * topFade) + (centerBias * 0.015f);
+                            var treeTop = area == FastVsHouseArea.Exterior
+                                ? (past ? new Color(0.43f, 0.46f, 0.36f, 1f) : new Color(0.30f, 0.42f, 0.32f, 1f))
+                                : (past ? new Color(0.40f, 0.43f, 0.33f, 1f) : new Color(0.28f, 0.39f, 0.31f, 1f));
+                            var treeBase = area == FastVsHouseArea.Exterior
+                                ? (past ? new Color(0.27f, 0.29f, 0.22f, 1f) : new Color(0.16f, 0.22f, 0.17f, 1f))
+                                : (past ? new Color(0.25f, 0.27f, 0.20f, 1f) : new Color(0.15f, 0.20f, 0.15f, 1f));
+                            baseColor = Color.Lerp(treeBase, treeTop, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(v / 0.40f)));
+                            baseColor = Color.Lerp(baseColor, hazeColor, Mathf.Clamp01((1f - canopy) * 0.18f));
+                            break;
+                        }
+                        case 3:
+                        {
+                            var ridgeA = 0.14f + (Mathf.Sin((u * 2.4f) + seed * 0.10f) * 0.018f);
+                            ridgeA += Mathf.Exp(-Mathf.Pow((u - 0.24f) / 0.08f, 2f)) * 0.060f;
+                            ridgeA += Mathf.Exp(-Mathf.Pow((u - 0.50f) / 0.11f, 2f)) * 0.032f;
+                            ridgeA += Mathf.Exp(-Mathf.Pow((u - 0.76f) / 0.09f, 2f)) * 0.055f;
+                            ridgeA += Mathf.Abs(Mathf.Sin((u * 8.0f) + seed * 0.21f)) * 0.014f;
+                            var roofMask = 1f - SmoothFade01(ridgeA - 0.03f, ridgeA + 0.05f, v);
+                            var facadeBand = Mathf.Clamp01(1f - Mathf.Abs(v - 0.12f) / 0.18f);
+                            alpha = ((0.26f + (roofMask * 0.30f) + (facadeBand * 0.08f)) * edgeFade * topFade) + (centerBias * 0.018f);
+                            var roofTop = area == FastVsHouseArea.Exterior
+                                ? (past ? new Color(0.52f, 0.46f, 0.38f, 1f) : new Color(0.34f, 0.39f, 0.42f, 1f))
+                                : (past ? new Color(0.50f, 0.43f, 0.35f, 1f) : new Color(0.31f, 0.36f, 0.40f, 1f));
+                            var roofBase = area == FastVsHouseArea.Exterior
+                                ? (past ? new Color(0.31f, 0.28f, 0.24f, 1f) : new Color(0.18f, 0.20f, 0.22f, 1f))
+                                : (past ? new Color(0.29f, 0.26f, 0.21f, 1f) : new Color(0.17f, 0.19f, 0.21f, 1f));
+                            baseColor = Color.Lerp(roofBase, roofTop, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(v / 0.34f)));
+                            baseColor = Color.Lerp(baseColor, hazeColor, Mathf.Clamp01((1f - roofMask) * 0.12f));
+                            break;
+                        }
+                        default:
+                        {
+                            var curtain = Mathf.Clamp01(1f - Mathf.Abs(v - 0.52f) * 1.65f);
+                            var lowerMist = Mathf.Exp(-Mathf.Pow((v - 0.30f) / 0.12f, 2f));
+                            var upperMist = Mathf.Exp(-Mathf.Pow((v - 0.72f) / 0.18f, 2f));
+                            var cloudWisp = Mathf.Exp(-Mathf.Pow((v - (0.62f + horizWave)) / 0.04f, 2f));
+                            var cloudRipple = Mathf.Clamp01(1f - Mathf.Abs(Mathf.Sin((u * 8.4f) + (v * 2.1f) + seed * 0.19f)) * 0.52f);
+                            alpha = ((0.16f + (curtain * 0.14f) + (lowerMist * 0.10f) + (upperMist * 0.06f) + (cloudWisp * 0.05f)) * edgeFade * topFade)
+                                    + (cloudRipple * 0.012f);
+                            baseColor = Color.Lerp(baseColor, hazeColor, Mathf.Clamp01((curtain + lowerMist) * 0.22f));
+                            break;
+                        }
+                    }
+
+                    alpha += (Mathf.Sin((u * 14.0f) + (v * 8.0f) + timeBias * 11.0f) * 0.006f);
+                    alpha += fineWave;
+                    alpha += areaBias * 0.01f;
+                    var minAlpha = layerKind == 2 || layerKind == 3 ? 0.28f : (layerKind == 1 ? 0.16f : 0.22f);
+                    var maxAlpha = layerKind == 2 || layerKind == 3 ? 0.55f : 0.42f;
+                    alpha = Mathf.Clamp(alpha, minAlpha, maxAlpha);
+
+                    var r = Mathf.Clamp01(baseColor.r + (Mathf.Sin((u * 10.0f) + seed * 0.13f) * 0.015f));
+                    var g = Mathf.Clamp01(baseColor.g + (Mathf.Sin((u * 7.0f) + seed * 0.17f) * 0.012f));
+                    var b = Mathf.Clamp01(baseColor.b + (Mathf.Cos((u * 9.5f) + seed * 0.11f) * 0.012f));
+                    pixels[(y * width) + x] = new Color32(
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(r * 255f), 0, 255),
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(g * 255f), 0, 255),
+                        (byte)Mathf.Clamp(Mathf.RoundToInt(b * 255f), 0, 255),
                         (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
                 }
             }

@@ -516,6 +516,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | v6.87 | 2026-05-22 | Added Fast VS HD2D surface texture metric audit cycle record with report generation, validation, and cleanup notes. |
 | v6.86 | 2026-05-22 | Added Fast VS HD2D surface profile foundation cycle record with current/past major surface review metadata, validation, and cleanup notes. |
 | v6.85 | 2026-05-22 | Added Fast VS HD2D current interior surface readability cycle record with current-world interior texture/plate tuning, validation, and cleanup notes. |
+| v6.84 | 2026-05-22 | Added Fast VS HD2D outdoor scenic backdrop foundation cycle record with current/past house exterior and plaza sky, haze, treeline, roofline backdrop layers, outdoor clear-color correction, validation, and report evidence. |
 | v6.82 | 2026-05-22 | Added Fast VS HD2D area lighting profile cycle record with current-world area profile markers, validation, and cleanup notes. |
 | v6.81 | 2026-05-22 | Added Fast VS HD2D visual snapshot audit cycle record with current-world batch captures, PNG evidence, luminance and local contrast gates, validation, and cleanup notes. |
 | v6.80 | 2026-05-22 | Added Fast VS HD2D surface ramp shader cycle record with a custom opaque surface ramp shader, surface material generation and audits, validation, and cleanup notes. |
