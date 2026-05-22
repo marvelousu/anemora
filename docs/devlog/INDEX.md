@@ -1,13 +1,13 @@
 # Devlog Index
 
-> Status: v6.97 fast VS HD2D exterior occlusion backdrop cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.98 fast VS HD2D house exterior facade/backdrop readability cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 374 files including INDEX.md and README.md.
-- Dated devlog records: 372 files.
+- Root-level Markdown coverage: 375 files including INDEX.md and README.md.
+- Dated devlog records: 373 files.
 - Linked evidence files present under docs/devlog/screenshots/: 674 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 27 |
+| 2026-05-22 | 28 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_house_exterior_facade_backdrop_readability_cycle31.md](2026-05-22_fast_vs_hd2d_house_exterior_facade_backdrop_readability_cycle31.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Facade/Backdrop Readability Cycle 31 |
 | [2026-05-22_fast_vs_hd2d_house_exterior_architectural_closure_cycle30.md](2026-05-22_fast_vs_hd2d_house_exterior_architectural_closure_cycle30.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Architectural Closure Cycle 30 |
 | [2026-05-22_fast_vs_hd2d_exterior_occlusion_backdrop_cycle27.md](2026-05-22_fast_vs_hd2d_exterior_occlusion_backdrop_cycle27.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Exterior Occlusion Backdrop Cycle 27 |
 | [2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md](2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Window Light Cookie Cycle 26 |
@@ -514,6 +515,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.98 | 2026-05-22 | Added Fast VS HD2D house exterior facade/backdrop readability cycle record with current/past roof trim, side solidity, door/window grounding, low-haze edge framing, validation, and report notes. |
 | v6.88 | 2026-05-22 | Added Fast VS HD2D house exterior architectural closure cycle record with current/past shell closure polish, validation, and report notes. |
 | v6.87 | 2026-05-22 | Added Fast VS HD2D surface texture metric audit cycle record with report generation, validation, and cleanup notes. |
 | v6.86 | 2026-05-22 | Added Fast VS HD2D surface profile foundation cycle record with current/past major surface review metadata, validation, and cleanup notes. |

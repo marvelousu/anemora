@@ -273,6 +273,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyNinthCycleOutdoorScenicBackdropFoundation();
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorArchitecturalClosure();
+            ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
             ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish();
             ValidateFastVsHd2dSixtyFifthCycleCentralPlazaPavingReadability();
             ValidateFastVsHd2dFortySixthCycleHouseExteriorTreeFencePolish();
@@ -5919,6 +5920,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorOcclusionShell(root, prefix, past, materials);
             CreateHouseExteriorFacadeCompositionPolish(root, prefix, past, materials);
             CreateHouseExteriorArchitecturalClosurePolish(root, prefix, past, materials);
+            CreateHouseExteriorFacadeBackdropReadabilityPolish(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
@@ -7310,6 +7312,140 @@ namespace Anemora.EditorTools
                 Quaternion.identity,
                 trim,
                 $"{prefix}.house_exterior.architectural_closure.back_leak_mask_right_a");
+        }
+
+        private static void CreateHouseExteriorFacadeBackdropReadabilityPolish(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var doorDetail = past ? materials.PastHouseDoorDetail : materials.CurrentHouseDoorDetail;
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_RoofFrontRidgeCapA",
+                root,
+                c + new Vector3(-1.00f, 2.30f, -1.10f),
+                new Vector3(4.90f, 0.08f, 0.06f),
+                Quaternion.Euler(8f, 0f, 0f),
+                roof,
+                $"{prefix}.house_exterior.facade_backdrop_readability.roof_front_ridge_cap_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_RoofFrontEaveTrimA",
+                root,
+                c + new Vector3(-1.00f, 2.15f, -1.13f),
+                new Vector3(5.04f, 0.05f, 0.05f),
+                Quaternion.Euler(8f, 0f, 0f),
+                trim,
+                $"{prefix}.house_exterior.facade_backdrop_readability.roof_front_eave_trim_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_RoofFrontUndershadowA",
+                root,
+                c + new Vector3(-1.00f, 2.03f, -1.16f),
+                new Vector3(5.10f, 0.04f, 0.07f),
+                Quaternion.Euler(8f, 0f, 0f),
+                materials.Shadow,
+                $"{prefix}.house_exterior.facade_backdrop_readability.roof_front_undershadow_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_LeftSideSolidWallA",
+                root,
+                c + new Vector3(-3.08f, 1.04f, -1.22f),
+                new Vector3(0.18f, 1.88f, 0.08f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.facade_backdrop_readability.left_side_solid_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_RightSideSolidWallA",
+                root,
+                c + new Vector3(1.24f, 1.04f, -1.22f),
+                new Vector3(0.18f, 1.88f, 0.08f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.facade_backdrop_readability.right_side_solid_wall_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_DoorThresholdStepA",
+                root,
+                c + new Vector3(-1.04f, 0.16f, -1.34f),
+                new Vector3(1.12f, 0.08f, 0.10f),
+                Quaternion.identity,
+                stone,
+                $"{prefix}.house_exterior.facade_backdrop_readability.door_threshold_step_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_DoorTopCapA",
+                root,
+                c + new Vector3(-1.04f, 1.66f, -1.30f),
+                new Vector3(1.00f, 0.08f, 0.05f),
+                Quaternion.identity,
+                doorDetail,
+                $"{prefix}.house_exterior.facade_backdrop_readability.door_top_cap_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_WindowLeftSillA",
+                root,
+                c + new Vector3(-2.38f, 0.90f, -1.30f),
+                new Vector3(0.68f, 0.06f, 0.05f),
+                Quaternion.identity,
+                stone,
+                $"{prefix}.house_exterior.facade_backdrop_readability.window_left_sill_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_WindowRightSillA",
+                root,
+                c + new Vector3(0.22f, 0.90f, -1.30f),
+                new Vector3(0.68f, 0.06f, 0.05f),
+                Quaternion.identity,
+                stone,
+                $"{prefix}.house_exterior.facade_backdrop_readability.window_right_sill_a");
+
+            var lowHazeMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                past ? "past_house_exterior_facade_backdrop_readability_low_haze_band" : "current_house_exterior_facade_backdrop_readability_low_haze_band",
+                past,
+                FastVsHouseArea.Exterior,
+                "low_haze_band");
+            var foliageMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                past ? "past_house_exterior_facade_backdrop_readability_distant_foliage" : "current_house_exterior_facade_backdrop_readability_distant_foliage",
+                past,
+                FastVsHouseArea.Exterior,
+                "distant_tree_line");
+            var edgeWashMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                past ? "past_house_exterior_facade_backdrop_readability_edge_wash" : "current_house_exterior_facade_backdrop_readability_edge_wash",
+                past,
+                FastVsHouseArea.Exterior,
+                "sky_wrap");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_LowHazeBandA",
+                root,
+                c + new Vector3(-0.08f, 2.70f, 8.62f),
+                new Vector3(12.80f, 0.82f, 0.06f),
+                Quaternion.identity,
+                lowHazeMaterial,
+                $"{prefix}.house_exterior.facade_backdrop_readability.low_haze_band_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_LeftDistantFoliageA",
+                root,
+                c + new Vector3(-7.16f, 2.08f, 8.38f),
+                new Vector3(1.96f, 1.16f, 0.06f),
+                Quaternion.Euler(0f, 7f, 0f),
+                foliageMaterial,
+                $"{prefix}.house_exterior.facade_backdrop_readability.left_distant_foliage_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_HouseExterior_FacadeBackdropReadability_RightEdgeWashA",
+                root,
+                c + new Vector3(7.12f, 2.22f, 8.18f),
+                new Vector3(2.08f, 1.24f, 0.06f),
+                Quaternion.Euler(0f, -10f, 0f),
+                edgeWashMaterial,
+                $"{prefix}.house_exterior.facade_backdrop_readability.right_edge_wash_a");
         }
 
         private static void CreateCentralPlazaLibraryOcclusionShell(Transform root, string prefix, bool past, Materials materials)
@@ -27491,6 +27627,262 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
+        }
+
+        private static void ValidateHouseExteriorFacadeBackdropReadabilityObject(string objectName, string expectedMaterialToken, string expectedParentName, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 minLocalScale, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house exterior facade backdrop readability object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be shadow-safe.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be a non-arrival TimeWindowPairedSpaceLandmarkKind.PropOrFeature prop.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - HouseExteriorCenter;
+            ValidateVectorWithinRange($"{objectName} local position", localOffset, minLocalPosition, maxLocalPosition);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, minLocalScale, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability()
+        {
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_RoofFrontRidgeCapA",
+                "current_roof",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.25f, 2.20f, -1.20f),
+                new Vector3(-0.75f, 2.42f, -1.04f),
+                new Vector3(4.80f, 0.04f, 0.04f),
+                new Vector3(5.00f, 0.12f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_RoofFrontEaveTrimA",
+                "current_fence",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.22f, 2.05f, -1.20f),
+                new Vector3(-0.78f, 2.25f, -1.04f),
+                new Vector3(4.95f, 0.03f, 0.03f),
+                new Vector3(5.15f, 0.08f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_RoofFrontUndershadowA",
+                "shadow",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.22f, 1.94f, -1.20f),
+                new Vector3(-0.78f, 2.12f, -1.04f),
+                new Vector3(4.98f, 0.03f, 0.04f),
+                new Vector3(5.18f, 0.08f, 0.10f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_LeftSideSolidWallA",
+                "current_exterior_wall",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-3.25f, 0.88f, -1.28f),
+                new Vector3(-2.90f, 1.22f, -1.14f),
+                new Vector3(0.16f, 1.72f, 0.06f),
+                new Vector3(0.24f, 2.02f, 0.10f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_RightSideSolidWallA",
+                "current_exterior_wall",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(1.14f, 0.88f, -1.28f),
+                new Vector3(1.34f, 1.22f, -1.14f),
+                new Vector3(0.16f, 1.72f, 0.06f),
+                new Vector3(0.24f, 2.02f, 0.10f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_DoorThresholdStepA",
+                "current_stone",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.22f, 0.08f, -1.38f),
+                new Vector3(-0.86f, 0.24f, -1.28f),
+                new Vector3(1.00f, 0.05f, 0.06f),
+                new Vector3(1.24f, 0.12f, 0.14f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_DoorTopCapA",
+                "current_house_door_detail",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.20f, 1.56f, -1.34f),
+                new Vector3(-0.88f, 1.76f, -1.26f),
+                new Vector3(0.96f, 0.05f, 0.03f),
+                new Vector3(1.08f, 0.12f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_WindowLeftSillA",
+                "current_stone",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-2.55f, 0.82f, -1.34f),
+                new Vector3(-2.20f, 1.00f, -1.26f),
+                new Vector3(0.62f, 0.04f, 0.03f),
+                new Vector3(0.80f, 0.08f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_WindowRightSillA",
+                "current_stone",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(0.05f, 0.82f, -1.34f),
+                new Vector3(0.34f, 1.00f, -1.26f),
+                new Vector3(0.62f, 0.04f, 0.03f),
+                new Vector3(0.80f, 0.08f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_LowHazeBandA",
+                "facade_backdrop_readability",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-0.30f, 2.55f, 8.52f),
+                new Vector3(0.10f, 2.85f, 8.70f),
+                new Vector3(12.60f, 0.72f, 0.04f),
+                new Vector3(13.00f, 0.92f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_LeftDistantFoliageA",
+                "facade_backdrop_readability",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(-7.30f, 1.90f, 8.30f),
+                new Vector3(-6.90f, 2.20f, 8.48f),
+                new Vector3(1.82f, 1.08f, 0.04f),
+                new Vector3(2.10f, 1.24f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Current_HouseExterior_FacadeBackdropReadability_RightEdgeWashA",
+                "facade_backdrop_readability",
+                "Current_HouseExteriorMap_SeparateSpace",
+                new Vector3(6.98f, 2.05f, 8.08f),
+                new Vector3(7.30f, 2.35f, 8.28f),
+                new Vector3(1.94f, 1.16f, 0.04f),
+                new Vector3(2.20f, 1.36f, 0.08f));
+
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_RoofFrontRidgeCapA",
+                "past_roof",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.25f, 2.20f, -1.20f),
+                new Vector3(-0.75f, 2.42f, -1.04f),
+                new Vector3(4.80f, 0.04f, 0.04f),
+                new Vector3(5.00f, 0.12f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_RoofFrontEaveTrimA",
+                "past_fence",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.22f, 2.05f, -1.20f),
+                new Vector3(-0.78f, 2.25f, -1.04f),
+                new Vector3(4.95f, 0.03f, 0.03f),
+                new Vector3(5.15f, 0.08f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_RoofFrontUndershadowA",
+                "shadow",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.22f, 1.94f, -1.20f),
+                new Vector3(-0.78f, 2.12f, -1.04f),
+                new Vector3(4.98f, 0.03f, 0.04f),
+                new Vector3(5.18f, 0.08f, 0.10f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_LeftSideSolidWallA",
+                "past_exterior_wall",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-3.25f, 0.88f, -1.28f),
+                new Vector3(-2.90f, 1.22f, -1.14f),
+                new Vector3(0.16f, 1.72f, 0.06f),
+                new Vector3(0.24f, 2.02f, 0.10f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_RightSideSolidWallA",
+                "past_exterior_wall",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(1.14f, 0.88f, -1.28f),
+                new Vector3(1.34f, 1.22f, -1.14f),
+                new Vector3(0.16f, 1.72f, 0.06f),
+                new Vector3(0.24f, 2.02f, 0.10f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_DoorThresholdStepA",
+                "past_stone",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.22f, 0.08f, -1.38f),
+                new Vector3(-0.86f, 0.24f, -1.28f),
+                new Vector3(1.00f, 0.05f, 0.06f),
+                new Vector3(1.24f, 0.12f, 0.14f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_DoorTopCapA",
+                "past_house_door_detail",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-1.20f, 1.56f, -1.34f),
+                new Vector3(-0.88f, 1.76f, -1.26f),
+                new Vector3(0.96f, 0.05f, 0.03f),
+                new Vector3(1.08f, 0.12f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_WindowLeftSillA",
+                "past_stone",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-2.55f, 0.82f, -1.34f),
+                new Vector3(-2.20f, 1.00f, -1.26f),
+                new Vector3(0.62f, 0.04f, 0.03f),
+                new Vector3(0.80f, 0.08f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_WindowRightSillA",
+                "past_stone",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(0.05f, 0.82f, -1.34f),
+                new Vector3(0.34f, 1.00f, -1.26f),
+                new Vector3(0.62f, 0.04f, 0.03f),
+                new Vector3(0.80f, 0.08f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_LowHazeBandA",
+                "facade_backdrop_readability",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-0.30f, 2.55f, 8.52f),
+                new Vector3(0.10f, 2.85f, 8.70f),
+                new Vector3(12.60f, 0.72f, 0.04f),
+                new Vector3(13.00f, 0.92f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_LeftDistantFoliageA",
+                "facade_backdrop_readability",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(-7.30f, 1.90f, 8.30f),
+                new Vector3(-6.90f, 2.20f, 8.48f),
+                new Vector3(1.82f, 1.08f, 0.04f),
+                new Vector3(2.10f, 1.24f, 0.08f));
+            ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                "Past_HouseExterior_FacadeBackdropReadability_RightEdgeWashA",
+                "facade_backdrop_readability",
+                "Past_HouseExteriorMap_SeparateSpace",
+                new Vector3(6.98f, 2.05f, 8.08f),
+                new Vector3(7.30f, 2.35f, 8.28f),
+                new Vector3(1.94f, 1.16f, 0.04f),
+                new Vector3(2.20f, 1.36f, 0.08f));
         }
 
         private static void ValidateLibrarySideBookshelfDepthPolishObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
