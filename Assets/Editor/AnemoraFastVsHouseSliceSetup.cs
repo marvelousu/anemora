@@ -359,6 +359,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredFifteenthCycleFacadeEdgeSoftening();
             ValidateFastVsHd2dOneHundredSixteenthCycleLibraryTallMassGroundContinuation();
             ValidateFastVsHd2dOneHundredSeventeenthCycleOutdoorBackgroundSkyDepth();
+            ValidateFastVsHd2dFortyFifthCycleArchitectureSurfaceDepth();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5909,6 +5910,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorPathPorchDressing(root, prefix, past, materials);
             CreateHouseExteriorFacadeMicrodepthPolish(root, prefix, past, materials);
             CreateHouseExteriorEaveContactPolish(root, prefix, past, materials);
+            CreateHouseExteriorArchitectureSurfaceDepthCycle45(root, prefix, past, materials);
             CreateHouseExteriorPorchDoorGroundingPolish(root, prefix, past, materials, c, stone, trim, wall);
             CreateHouseExteriorStaticDirectionalCastShadow(root, prefix, past, materials);
             CreateHouseExteriorSurfaceDirectionalShadeOverlay(root, prefix, past, materials);
@@ -6087,6 +6089,308 @@ namespace Anemora.EditorTools
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowLeftA", root, c + new Vector3(-1.85f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_left_a");
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowRightA", root, c + new Vector3(-0.25f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_right_a");
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_FoundationScuffLineA", root, c + new Vector3(-1.72f, 0.365f, -1.28f), new Vector3(2.30f, 0.026f, 0.050f), Quaternion.Euler(0f, 3f, 0f), materials.CurrentStone, "Current.house_exterior.eave_contact.foundation_scuff_line_a");
+        }
+
+        private static void CreateHouseExteriorArchitectureSurfaceDepthCycle45(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var lip = past ? materials.PastStone : materials.CurrentStone;
+            var shadow = materials.Shadow;
+            var warmLight = EnsureHd2dWarmLightPoolMaterial();
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeCapA",
+                    new Vector3(-1.02f, 2.48f, -1.26f),
+                    new Vector3(4.18f, 0.040f, 0.10f),
+                    Quaternion.Euler(8f, 0f, 0f),
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.roof_ridge_cap_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeTrimA",
+                    new Vector3(-1.02f, 2.55f, -1.24f),
+                    new Vector3(4.00f, 0.018f, 0.05f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.roof_ridge_trim_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_FrontEaveShadowA",
+                    new Vector3(-1.00f, 2.06f, -1.56f),
+                    new Vector3(4.30f, 0.030f, 0.06f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.house_exterior.architecture_surface_depth.front_eave_shadow_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_LeftRoofReturnFaceA",
+                    new Vector3(-2.74f, 1.92f, -0.86f),
+                    new Vector3(0.14f, 0.78f, 0.84f),
+                    Quaternion.Euler(0f, -6f, 0f),
+                    wall,
+                    "Past.house_exterior.architecture_surface_depth.left_roof_return_face_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RightRoofReturnFaceA",
+                    new Vector3(0.90f, 1.92f, -0.86f),
+                    new Vector3(0.14f, 0.78f, 0.84f),
+                    Quaternion.Euler(0f, 6f, 0f),
+                    wall,
+                    "Past.house_exterior.architecture_surface_depth.right_roof_return_face_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_LeftSlopeHighlightA",
+                    new Vector3(-1.80f, 2.30f, -1.04f),
+                    new Vector3(1.28f, 0.018f, 0.06f),
+                    Quaternion.Euler(8f, 0f, -10f),
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.left_slope_highlight_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RightSlopeHighlightA",
+                    new Vector3(-0.18f, 2.32f, -1.02f),
+                    new Vector3(1.28f, 0.018f, 0.06f),
+                    Quaternion.Euler(8f, 0f, 10f),
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.right_slope_highlight_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_FrontLowerLipA",
+                    new Vector3(-1.00f, 2.12f, -1.64f),
+                    new Vector3(3.84f, 0.022f, 0.05f),
+                    Quaternion.identity,
+                    lip,
+                    "Past.house_exterior.architecture_surface_depth.front_lower_lip_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_FrontEaveUndersideBandA",
+                    new Vector3(-1.00f, 2.15f, -1.62f),
+                    new Vector3(4.28f, 0.028f, 0.06f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.house_exterior.architecture_surface_depth.front_eave_underside_band_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_FrontFasciaFaceA",
+                    new Vector3(-1.00f, 2.22f, -1.54f),
+                    new Vector3(4.16f, 0.048f, 0.08f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.front_fascia_face_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_FrontEaveFrontLipA",
+                    new Vector3(-1.00f, 2.27f, -1.48f),
+                    new Vector3(4.02f, 0.022f, 0.05f),
+                    Quaternion.identity,
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.front_eave_front_lip_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionLeftA",
+                    new Vector3(-1.86f, 2.34f, -1.08f),
+                    new Vector3(1.18f, 0.014f, 0.05f),
+                    Quaternion.Euler(8f, 0f, -7f),
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.roof_surface_division_left_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterLeftA",
+                    new Vector3(-1.28f, 2.37f, -1.06f),
+                    new Vector3(1.08f, 0.014f, 0.05f),
+                    Quaternion.Euler(8f, 0f, -2f),
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.roof_surface_division_center_left_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterRightA",
+                    new Vector3(-0.72f, 2.35f, -1.04f),
+                    new Vector3(1.06f, 0.014f, 0.05f),
+                    Quaternion.Euler(8f, 0f, 2f),
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.roof_surface_division_center_right_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionRightA",
+                    new Vector3(-0.12f, 2.33f, -1.02f),
+                    new Vector3(1.00f, 0.014f, 0.05f),
+                    Quaternion.Euler(8f, 0f, 7f),
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.roof_surface_division_right_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RightWallRoofContactShadeA",
+                    new Vector3(1.10f, 1.82f, -1.04f),
+                    new Vector3(0.06f, 1.36f, 0.05f),
+                    Quaternion.Euler(0f, -5f, 0f),
+                    warmLight,
+                    "Past.house_exterior.architecture_surface_depth.right_wall_roof_contact_shade_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakFrontA",
+                    new Vector3(-1.00f, 2.54f, -1.02f),
+                    new Vector3(4.40f, 0.034f, 0.10f),
+                    Quaternion.Euler(8f, 0f, 0f),
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.roof_plane_break_front_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakMidA",
+                    new Vector3(-1.00f, 2.64f, -0.46f),
+                    new Vector3(4.24f, 0.030f, 0.09f),
+                    Quaternion.Euler(8f, 0f, 0f),
+                    roof,
+                    "Past.house_exterior.architecture_surface_depth.roof_plane_break_mid_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakBackA",
+                    new Vector3(-1.00f, 2.73f, 0.10f),
+                    new Vector3(4.04f, 0.028f, 0.08f),
+                    Quaternion.Euler(8f, 0f, 0f),
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.roof_plane_break_back_a");
+                Add(
+                    "Past_HouseExterior_ArchitectureSurfaceDepth_VisibleFasciaBroadFaceA",
+                    new Vector3(-1.00f, 2.03f, -1.75f),
+                    new Vector3(4.44f, 0.12f, 0.10f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.house_exterior.architecture_surface_depth.visible_fascia_broad_face_a");
+                return;
+            }
+
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeCapA",
+                new Vector3(-1.02f, 2.46f, -1.26f),
+                new Vector3(4.18f, 0.040f, 0.10f),
+                Quaternion.Euler(8f, 0f, 0f),
+                roof,
+                "Current.house_exterior.architecture_surface_depth.roof_ridge_cap_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeTrimA",
+                new Vector3(-1.02f, 2.53f, -1.24f),
+                new Vector3(4.00f, 0.018f, 0.05f),
+                Quaternion.identity,
+                trim,
+                "Current.house_exterior.architecture_surface_depth.roof_ridge_trim_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_FrontEaveShadowA",
+                new Vector3(-1.00f, 2.04f, -1.56f),
+                new Vector3(4.32f, 0.030f, 0.06f),
+                Quaternion.identity,
+                shadow,
+                "Current.house_exterior.architecture_surface_depth.front_eave_shadow_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_LeftRoofReturnFaceA",
+                new Vector3(-2.74f, 1.90f, -0.86f),
+                new Vector3(0.14f, 0.78f, 0.84f),
+                Quaternion.Euler(0f, -6f, 0f),
+                wall,
+                "Current.house_exterior.architecture_surface_depth.left_roof_return_face_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RightRoofReturnFaceA",
+                new Vector3(0.90f, 1.90f, -0.86f),
+                new Vector3(0.14f, 0.78f, 0.84f),
+                Quaternion.Euler(0f, 6f, 0f),
+                wall,
+                "Current.house_exterior.architecture_surface_depth.right_roof_return_face_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_LeftSlopeHighlightA",
+                new Vector3(-1.80f, 2.28f, -1.04f),
+                new Vector3(1.28f, 0.018f, 0.06f),
+                Quaternion.Euler(8f, 0f, -10f),
+                roof,
+                "Current.house_exterior.architecture_surface_depth.left_slope_highlight_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RightSlopeHighlightA",
+                new Vector3(-0.18f, 2.30f, -1.02f),
+                new Vector3(1.28f, 0.018f, 0.06f),
+                Quaternion.Euler(8f, 0f, 10f),
+                roof,
+                "Current.house_exterior.architecture_surface_depth.right_slope_highlight_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_FrontLowerLipA",
+                new Vector3(-1.00f, 2.10f, -1.64f),
+                new Vector3(3.84f, 0.022f, 0.05f),
+                Quaternion.identity,
+                lip,
+                "Current.house_exterior.architecture_surface_depth.front_lower_lip_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_FrontEaveUndersideBandA",
+                new Vector3(-1.00f, 2.13f, -1.62f),
+                new Vector3(4.32f, 0.028f, 0.06f),
+                Quaternion.identity,
+                shadow,
+                "Current.house_exterior.architecture_surface_depth.front_eave_underside_band_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_FrontFasciaFaceA",
+                new Vector3(-1.00f, 2.20f, -1.54f),
+                new Vector3(4.20f, 0.048f, 0.08f),
+                Quaternion.identity,
+                trim,
+                "Current.house_exterior.architecture_surface_depth.front_fascia_face_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_FrontEaveFrontLipA",
+                new Vector3(-1.00f, 2.25f, -1.48f),
+                new Vector3(4.04f, 0.022f, 0.05f),
+                Quaternion.identity,
+                roof,
+                "Current.house_exterior.architecture_surface_depth.front_eave_front_lip_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionLeftA",
+                new Vector3(-1.86f, 2.32f, -1.08f),
+                new Vector3(1.18f, 0.014f, 0.05f),
+                Quaternion.Euler(8f, 0f, -7f),
+                roof,
+                "Current.house_exterior.architecture_surface_depth.roof_surface_division_left_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterLeftA",
+                new Vector3(-1.28f, 2.35f, -1.06f),
+                new Vector3(1.08f, 0.014f, 0.05f),
+                Quaternion.Euler(8f, 0f, -2f),
+                trim,
+                "Current.house_exterior.architecture_surface_depth.roof_surface_division_center_left_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterRightA",
+                new Vector3(-0.72f, 2.33f, -1.04f),
+                new Vector3(1.06f, 0.014f, 0.05f),
+                Quaternion.Euler(8f, 0f, 2f),
+                roof,
+                "Current.house_exterior.architecture_surface_depth.roof_surface_division_center_right_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionRightA",
+                new Vector3(-0.12f, 2.31f, -1.02f),
+                new Vector3(1.00f, 0.014f, 0.05f),
+                Quaternion.Euler(8f, 0f, 7f),
+                trim,
+                "Current.house_exterior.architecture_surface_depth.roof_surface_division_right_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RightWallRoofContactShadeA",
+                new Vector3(1.10f, 1.80f, -1.04f),
+                new Vector3(0.06f, 1.36f, 0.05f),
+                Quaternion.Euler(0f, -5f, 0f),
+                shadow,
+                "Current.house_exterior.architecture_surface_depth.right_wall_roof_contact_shade_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakFrontA",
+                new Vector3(-1.00f, 2.52f, -1.02f),
+                new Vector3(4.42f, 0.034f, 0.10f),
+                Quaternion.Euler(8f, 0f, 0f),
+                trim,
+                "Current.house_exterior.architecture_surface_depth.roof_plane_break_front_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakMidA",
+                new Vector3(-1.00f, 2.62f, -0.46f),
+                new Vector3(4.26f, 0.030f, 0.09f),
+                Quaternion.Euler(8f, 0f, 0f),
+                roof,
+                "Current.house_exterior.architecture_surface_depth.roof_plane_break_mid_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakBackA",
+                new Vector3(-1.00f, 2.71f, 0.10f),
+                new Vector3(4.06f, 0.028f, 0.08f),
+                Quaternion.Euler(8f, 0f, 0f),
+                trim,
+                "Current.house_exterior.architecture_surface_depth.roof_plane_break_back_a");
+            Add(
+                "Current_HouseExterior_ArchitectureSurfaceDepth_VisibleFasciaBroadFaceA",
+                new Vector3(-1.00f, 2.01f, -1.75f),
+                new Vector3(4.48f, 0.12f, 0.10f),
+                Quaternion.identity,
+                trim,
+                "Current.house_exterior.architecture_surface_depth.visible_fascia_broad_face_a");
         }
 
         private static void CreateOutdoorLightCompositionContactGrounding(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
@@ -6858,6 +7162,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryFacadeSurfaceBreakupPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryFacadeSurfaceDepthPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryExteriorDepthPolish(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaLibraryArchitectureSurfaceDepthCycle45(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryStaticDirectionalCastShadow(root, prefix, past, materials);
             CreateCentralPlazaLibrarySurfaceDirectionalShadeOverlay(root, prefix, past, materials);
             CreateCentralPlazaLibraryRearVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
@@ -16494,6 +16799,262 @@ namespace Anemora.EditorTools
                     rearLowerBandMaterial,
                     $"{prefix}.central_plaza.library_exterior_depth.rear_lower_dust_band_a");
             }
+        }
+
+        private static void CreateCentralPlazaLibraryArchitectureSurfaceDepthCycle45(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
+        {
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            var shadow = materials.Shadow;
+            var warmLight = EnsureHd2dWarmLightPoolMaterial();
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, center + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetCapA",
+                    new Vector3(0f, 5.02f, 8.76f),
+                    new Vector3(9.28f, 0.050f, 0.10f),
+                    Quaternion.identity,
+                    roof,
+                    "Past.central_plaza.architecture_surface_depth.roof_parapet_cap_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetTrimA",
+                    new Vector3(0f, 5.10f, 8.70f),
+                    new Vector3(9.00f, 0.018f, 0.05f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.central_plaza.architecture_surface_depth.roof_parapet_trim_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetUndershadowA",
+                    new Vector3(0f, 4.86f, 8.34f),
+                    new Vector3(8.76f, 0.030f, 0.06f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.architecture_surface_depth.roof_parapet_undershadow_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_WestReturnFaceA",
+                    new Vector3(-4.76f, 2.18f, 8.88f),
+                    new Vector3(0.28f, 3.18f, 0.14f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    wall,
+                    "Past.central_plaza.architecture_surface_depth.west_return_face_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_EastReturnFaceA",
+                    new Vector3(4.76f, 2.18f, 8.88f),
+                    new Vector3(0.28f, 3.18f, 0.14f),
+                    Quaternion.Euler(0f, -2f, 0f),
+                    wall,
+                    "Past.central_plaza.architecture_surface_depth.east_return_face_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontShadowBandA",
+                    new Vector3(0f, 4.40f, 8.62f),
+                    new Vector3(8.68f, 0.10f, 0.06f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.architecture_surface_depth.upper_front_shadow_band_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetFrontFaceA",
+                    new Vector3(0f, 5.00f, 8.64f),
+                    new Vector3(9.16f, 0.18f, 0.06f),
+                    Quaternion.identity,
+                    wall,
+                    "Past.central_plaza.architecture_surface_depth.parapet_front_face_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetTopCapA",
+                    new Vector3(0f, 5.14f, 8.72f),
+                    new Vector3(8.98f, 0.06f, 0.08f),
+                    Quaternion.identity,
+                    roof,
+                    "Past.central_plaza.architecture_surface_depth.parapet_top_cap_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetBackLipA",
+                    new Vector3(0f, 5.22f, 8.84f),
+                    new Vector3(8.70f, 0.04f, 0.06f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.central_plaza.architecture_surface_depth.parapet_back_lip_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontHighlightBandA",
+                    new Vector3(0f, 4.56f, 8.58f),
+                    new Vector3(8.42f, 0.04f, 0.05f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.central_plaza.architecture_surface_depth.upper_front_highlight_band_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_UpperStoryBaseShadowA",
+                    new Vector3(0f, 3.92f, 8.50f),
+                    new Vector3(9.12f, 0.12f, 0.07f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.architecture_surface_depth.upper_story_base_shadow_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetReadableFrontStepA",
+                    new Vector3(0f, 5.08f, 8.50f),
+                    new Vector3(9.32f, 0.10f, 0.07f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.central_plaza.architecture_surface_depth.parapet_readable_front_step_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_LeftTowerSideShadeA",
+                    new Vector3(-4.52f, 3.12f, 8.48f),
+                    new Vector3(0.12f, 2.72f, 0.07f),
+                    Quaternion.identity,
+                    wall,
+                    "Past.central_plaza.architecture_surface_depth.left_tower_side_shade_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_RightTowerSideShadeA",
+                    new Vector3(4.52f, 3.12f, 8.48f),
+                    new Vector3(0.12f, 2.72f, 0.07f),
+                    Quaternion.identity,
+                    wall,
+                    "Past.central_plaza.architecture_surface_depth.right_tower_side_shade_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_LeftWindowRevealTrimA",
+                    new Vector3(-2.54f, 1.54f, 7.90f),
+                    new Vector3(0.12f, 1.70f, 0.04f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.central_plaza.architecture_surface_depth.left_window_reveal_trim_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_RightWindowRevealTrimA",
+                    new Vector3(2.54f, 1.54f, 7.90f),
+                    new Vector3(0.12f, 1.70f, 0.04f),
+                    Quaternion.identity,
+                    trim,
+                    "Past.central_plaza.architecture_surface_depth.right_window_reveal_trim_a");
+                Add(
+                    "Past_CentralPlaza_ArchitectureSurfaceDepth_EntranceUpperBrowA",
+                    new Vector3(0f, 2.12f, 7.90f),
+                    new Vector3(1.54f, 0.08f, 0.06f),
+                    Quaternion.identity,
+                    stone,
+                    "Past.central_plaza.architecture_surface_depth.entrance_upper_brow_a");
+                return;
+            }
+
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetCapA",
+                new Vector3(0f, 5.00f, 8.76f),
+                new Vector3(9.28f, 0.050f, 0.10f),
+                Quaternion.identity,
+                roof,
+                "Current.central_plaza.architecture_surface_depth.roof_parapet_cap_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetTrimA",
+                new Vector3(0f, 5.08f, 8.70f),
+                new Vector3(9.00f, 0.018f, 0.05f),
+                Quaternion.identity,
+                trim,
+                "Current.central_plaza.architecture_surface_depth.roof_parapet_trim_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetUndershadowA",
+                new Vector3(0f, 4.84f, 8.34f),
+                new Vector3(8.76f, 0.030f, 0.06f),
+                Quaternion.identity,
+                shadow,
+                "Current.central_plaza.architecture_surface_depth.roof_parapet_undershadow_a");
+                Add(
+                    "Current_CentralPlaza_ArchitectureSurfaceDepth_WestReturnFaceA",
+                    new Vector3(-4.76f, 2.16f, 8.88f),
+                    new Vector3(0.28f, 3.18f, 0.14f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    wall,
+                    "Current.central_plaza.architecture_surface_depth.west_return_face_a");
+                Add(
+                    "Current_CentralPlaza_ArchitectureSurfaceDepth_EastReturnFaceA",
+                    new Vector3(4.76f, 2.16f, 8.88f),
+                    new Vector3(0.28f, 3.18f, 0.14f),
+                    Quaternion.Euler(0f, -2f, 0f),
+                    wall,
+                    "Current.central_plaza.architecture_surface_depth.east_return_face_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontShadowBandA",
+                new Vector3(0f, 4.38f, 8.62f),
+                new Vector3(8.68f, 0.10f, 0.06f),
+                Quaternion.identity,
+                stone,
+                "Current.central_plaza.architecture_surface_depth.upper_front_shadow_band_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetFrontFaceA",
+                new Vector3(0f, 4.98f, 8.64f),
+                new Vector3(9.16f, 0.18f, 0.06f),
+                Quaternion.identity,
+                wall,
+                "Current.central_plaza.architecture_surface_depth.parapet_front_face_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetTopCapA",
+                new Vector3(0f, 5.12f, 8.72f),
+                new Vector3(8.98f, 0.06f, 0.08f),
+                Quaternion.identity,
+                roof,
+                "Current.central_plaza.architecture_surface_depth.parapet_top_cap_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetBackLipA",
+                new Vector3(0f, 5.20f, 8.84f),
+                new Vector3(8.70f, 0.04f, 0.06f),
+                Quaternion.identity,
+                trim,
+                "Current.central_plaza.architecture_surface_depth.parapet_back_lip_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontHighlightBandA",
+                new Vector3(0f, 4.54f, 8.58f),
+                new Vector3(8.42f, 0.04f, 0.05f),
+                Quaternion.identity,
+                trim,
+                "Current.central_plaza.architecture_surface_depth.upper_front_highlight_band_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_UpperStoryBaseShadowA",
+                new Vector3(0f, 3.90f, 8.50f),
+                new Vector3(9.14f, 0.12f, 0.07f),
+                Quaternion.identity,
+                stone,
+                "Current.central_plaza.architecture_surface_depth.upper_story_base_shadow_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetReadableFrontStepA",
+                new Vector3(0f, 5.06f, 8.50f),
+                new Vector3(9.34f, 0.10f, 0.07f),
+                Quaternion.identity,
+                trim,
+                "Current.central_plaza.architecture_surface_depth.parapet_readable_front_step_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_LeftTowerSideShadeA",
+                new Vector3(-4.52f, 3.10f, 8.48f),
+                new Vector3(0.12f, 2.72f, 0.07f),
+                Quaternion.identity,
+                wall,
+                "Current.central_plaza.architecture_surface_depth.left_tower_side_shade_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_RightTowerSideShadeA",
+                new Vector3(4.52f, 3.10f, 8.48f),
+                new Vector3(0.12f, 2.72f, 0.07f),
+                Quaternion.identity,
+                wall,
+                "Current.central_plaza.architecture_surface_depth.right_tower_side_shade_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_LeftWindowRevealTrimA",
+                new Vector3(-2.54f, 1.52f, 7.90f),
+                new Vector3(0.12f, 1.70f, 0.04f),
+                Quaternion.identity,
+                trim,
+                "Current.central_plaza.architecture_surface_depth.left_window_reveal_trim_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_RightWindowRevealTrimA",
+                new Vector3(2.54f, 1.52f, 7.90f),
+                new Vector3(0.12f, 1.70f, 0.04f),
+                Quaternion.identity,
+                trim,
+                "Current.central_plaza.architecture_surface_depth.right_window_reveal_trim_a");
+            Add(
+                "Current_CentralPlaza_ArchitectureSurfaceDepth_EntranceUpperBrowA",
+                new Vector3(0f, 2.10f, 7.90f),
+                new Vector3(1.54f, 0.08f, 0.06f),
+                Quaternion.identity,
+                stone,
+                "Current.central_plaza.architecture_surface_depth.entrance_upper_brow_a");
         }
 
         private static void CreateCentralPlazaLibraryStaticDirectionalCastShadow(Transform root, string prefix, bool past, Materials materials)
@@ -28748,6 +29309,88 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_SurfaceDepth_LibraryEntryStepContactShadowB", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.18f, 0.32f, 7.62f), new Vector3(0.18f, 0.40f, 7.78f), new Vector3(1.28f, 0.014f, 0.05f), new Vector3(1.56f, 0.030f, 0.09f));
         }
 
+        private static void ValidateFastVsHd2dFortyFifthCycleArchitectureSurfaceDepth()
+        {
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeCapA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 2.38f, -1.34f), new Vector3(-0.88f, 2.54f, -1.18f), new Vector3(4.08f, 0.030f, 0.08f), new Vector3(4.28f, 0.050f, 0.12f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeTrimA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 2.47f, -1.30f), new Vector3(-0.88f, 2.59f, -1.16f), new Vector3(3.92f, 0.012f, 0.04f), new Vector3(4.10f, 0.026f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_FrontEaveShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.14f, 1.98f, -1.62f), new Vector3(-0.86f, 2.10f, -1.50f), new Vector3(4.20f, 0.020f, 0.04f), new Vector3(4.40f, 0.050f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_LeftRoofReturnFaceA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.84f, 1.84f, -0.96f), new Vector3(-2.64f, 1.98f, -0.76f), new Vector3(0.10f, 0.70f, 0.76f), new Vector3(0.18f, 0.86f, 0.92f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RightRoofReturnFaceA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(0.82f, 1.84f, -0.96f), new Vector3(1.00f, 1.98f, -0.76f), new Vector3(0.10f, 0.70f, 0.76f), new Vector3(0.18f, 0.86f, 0.92f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_LeftSlopeHighlightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.92f, 2.22f, -1.10f), new Vector3(-1.70f, 2.34f, -0.98f), new Vector3(1.18f, 0.012f, 0.04f), new Vector3(1.36f, 0.026f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RightSlopeHighlightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.28f, 2.24f, -1.08f), new Vector3(-0.08f, 2.36f, -0.96f), new Vector3(1.18f, 0.012f, 0.04f), new Vector3(1.36f, 0.026f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_FrontLowerLipA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.12f, 2.06f, -1.72f), new Vector3(-0.88f, 2.16f, -1.56f), new Vector3(3.74f, 0.014f, 0.03f), new Vector3(3.92f, 0.030f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_FrontEaveUndersideBandA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.10f, 2.08f, -1.68f), new Vector3(-0.90f, 2.18f, -1.56f), new Vector3(4.20f, 0.020f, 0.04f), new Vector3(4.42f, 0.040f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_FrontFasciaFaceA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.10f, 2.15f, -1.58f), new Vector3(-0.90f, 2.26f, -1.50f), new Vector3(4.10f, 0.036f, 0.06f), new Vector3(4.30f, 0.060f, 0.10f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_FrontEaveFrontLipA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.10f, 2.20f, -1.52f), new Vector3(-0.90f, 2.30f, -1.44f), new Vector3(3.94f, 0.016f, 0.03f), new Vector3(4.12f, 0.030f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionLeftA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.96f, 2.28f, -1.12f), new Vector3(-1.76f, 2.38f, -1.00f), new Vector3(1.12f, 0.010f, 0.03f), new Vector3(1.24f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterLeftA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.38f, 2.31f, -1.10f), new Vector3(-1.18f, 2.41f, -0.98f), new Vector3(1.02f, 0.010f, 0.03f), new Vector3(1.14f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterRightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.82f, 2.29f, -1.08f), new Vector3(-0.62f, 2.39f, -0.96f), new Vector3(1.00f, 0.010f, 0.03f), new Vector3(1.12f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionRightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.22f, 2.27f, -1.06f), new Vector3(-0.02f, 2.37f, -0.94f), new Vector3(0.94f, 0.010f, 0.03f), new Vector3(1.06f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Current_HouseExterior_ArchitectureSurfaceDepth_RightWallRoofContactShadeA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.04f, 1.74f, -1.10f), new Vector3(1.16f, 1.90f, -0.98f), new Vector3(0.04f, 1.28f, 0.03f), new Vector3(0.10f, 1.44f, 0.08f));
+
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeCapA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 2.40f, -1.34f), new Vector3(-0.88f, 2.56f, -1.18f), new Vector3(4.08f, 0.030f, 0.08f), new Vector3(4.28f, 0.050f, 0.12f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RoofRidgeTrimA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.16f, 2.49f, -1.30f), new Vector3(-0.88f, 2.61f, -1.16f), new Vector3(3.92f, 0.012f, 0.04f), new Vector3(4.10f, 0.026f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_FrontEaveShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.14f, 2.00f, -1.62f), new Vector3(-0.86f, 2.12f, -1.50f), new Vector3(4.20f, 0.020f, 0.04f), new Vector3(4.40f, 0.050f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_LeftRoofReturnFaceA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.84f, 1.84f, -0.96f), new Vector3(-2.64f, 1.98f, -0.76f), new Vector3(0.10f, 0.70f, 0.76f), new Vector3(0.18f, 0.86f, 0.92f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RightRoofReturnFaceA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(0.82f, 1.84f, -0.96f), new Vector3(1.00f, 1.98f, -0.76f), new Vector3(0.10f, 0.70f, 0.76f), new Vector3(0.18f, 0.86f, 0.92f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_LeftSlopeHighlightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.92f, 2.24f, -1.10f), new Vector3(-1.70f, 2.36f, -0.98f), new Vector3(1.18f, 0.012f, 0.04f), new Vector3(1.36f, 0.026f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RightSlopeHighlightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.28f, 2.26f, -1.08f), new Vector3(-0.08f, 2.38f, -0.96f), new Vector3(1.18f, 0.012f, 0.04f), new Vector3(1.36f, 0.026f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_FrontLowerLipA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.12f, 2.08f, -1.72f), new Vector3(-0.88f, 2.18f, -1.56f), new Vector3(3.74f, 0.014f, 0.03f), new Vector3(3.92f, 0.030f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_FrontEaveUndersideBandA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.10f, 2.08f, -1.68f), new Vector3(-0.90f, 2.18f, -1.56f), new Vector3(4.20f, 0.020f, 0.04f), new Vector3(4.42f, 0.040f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_FrontFasciaFaceA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.10f, 2.15f, -1.58f), new Vector3(-0.90f, 2.26f, -1.50f), new Vector3(4.10f, 0.036f, 0.06f), new Vector3(4.30f, 0.060f, 0.10f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_FrontEaveFrontLipA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.10f, 2.20f, -1.52f), new Vector3(-0.90f, 2.30f, -1.44f), new Vector3(3.94f, 0.016f, 0.03f), new Vector3(4.12f, 0.030f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionLeftA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.96f, 2.30f, -1.12f), new Vector3(-1.76f, 2.40f, -1.00f), new Vector3(1.12f, 0.010f, 0.03f), new Vector3(1.24f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterLeftA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.38f, 2.33f, -1.10f), new Vector3(-1.18f, 2.43f, -0.98f), new Vector3(1.02f, 0.010f, 0.03f), new Vector3(1.14f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionCenterRightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.82f, 2.31f, -1.08f), new Vector3(-0.62f, 2.41f, -0.96f), new Vector3(1.00f, 0.010f, 0.03f), new Vector3(1.12f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RoofSurfaceDivisionRightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.22f, 2.29f, -1.06f), new Vector3(-0.02f, 2.39f, -0.94f), new Vector3(0.94f, 0.010f, 0.03f), new Vector3(1.06f, 0.020f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Past_HouseExterior_ArchitectureSurfaceDepth_RightWallRoofContactShadeA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.04f, 1.74f, -1.10f), new Vector3(1.16f, 1.90f, -0.98f), new Vector3(0.04f, 1.28f, 0.03f), new Vector3(0.10f, 1.44f, 0.08f));
+
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetCapA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.94f, 8.66f), new Vector3(0.16f, 5.08f, 8.86f), new Vector3(9.12f, 0.040f, 0.08f), new Vector3(9.42f, 0.060f, 0.12f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetTrimA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 5.02f, 8.60f), new Vector3(0.16f, 5.14f, 8.80f), new Vector3(8.84f, 0.012f, 0.04f), new Vector3(9.16f, 0.024f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetUndershadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.80f, 8.28f), new Vector3(0.16f, 4.92f, 8.40f), new Vector3(8.60f, 0.020f, 0.04f), new Vector3(8.92f, 0.040f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_WestReturnFaceA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.90f, 2.08f, 8.80f), new Vector3(-4.52f, 2.34f, 9.04f), new Vector3(0.22f, 3.02f, 0.10f), new Vector3(0.34f, 3.32f, 0.18f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_EastReturnFaceA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.52f, 2.08f, 8.80f), new Vector3(4.90f, 2.34f, 9.04f), new Vector3(0.22f, 3.02f, 0.10f), new Vector3(0.34f, 3.32f, 0.18f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontShadowBandA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.34f, 8.58f), new Vector3(0.16f, 4.46f, 8.68f), new Vector3(8.52f, 0.06f, 0.04f), new Vector3(8.84f, 0.14f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetFrontFaceA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.92f, 8.60f), new Vector3(0.16f, 5.08f, 8.72f), new Vector3(9.02f, 0.12f, 0.04f), new Vector3(9.28f, 0.24f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetTopCapA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 5.08f, 8.68f), new Vector3(0.16f, 5.18f, 8.78f), new Vector3(8.84f, 0.04f, 0.06f), new Vector3(9.10f, 0.08f, 0.12f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetBackLipA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 5.16f, 8.80f), new Vector3(0.16f, 5.26f, 8.90f), new Vector3(8.60f, 0.03f, 0.04f), new Vector3(8.84f, 0.06f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontHighlightBandA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.54f, 8.56f), new Vector3(0.16f, 4.60f, 8.64f), new Vector3(8.30f, 0.02f, 0.03f), new Vector3(8.54f, 0.08f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_LeftWindowRevealTrimA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.66f, 1.44f, 7.84f), new Vector3(-2.42f, 1.64f, 7.98f), new Vector3(0.08f, 1.56f, 0.02f), new Vector3(0.16f, 1.82f, 0.06f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_RightWindowRevealTrimA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(2.42f, 1.44f, 7.84f), new Vector3(2.66f, 1.64f, 7.98f), new Vector3(0.08f, 1.56f, 0.02f), new Vector3(0.16f, 1.82f, 0.06f));
+            ValidateArchitectureSurfaceDepthObject("Current_CentralPlaza_ArchitectureSurfaceDepth_EntranceUpperBrowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.18f, 2.04f, 7.84f), new Vector3(0.18f, 2.18f, 7.96f), new Vector3(1.44f, 0.06f, 0.03f), new Vector3(1.64f, 0.10f, 0.08f));
+
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetCapA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.96f, 8.66f), new Vector3(0.16f, 5.10f, 8.86f), new Vector3(9.12f, 0.040f, 0.08f), new Vector3(9.42f, 0.060f, 0.12f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetTrimA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 5.04f, 8.60f), new Vector3(0.16f, 5.16f, 8.80f), new Vector3(8.84f, 0.012f, 0.04f), new Vector3(9.16f, 0.024f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_RoofParapetUndershadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.80f, 8.28f), new Vector3(0.16f, 4.92f, 8.40f), new Vector3(8.60f, 0.020f, 0.04f), new Vector3(8.92f, 0.040f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_WestReturnFaceA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.90f, 2.08f, 8.80f), new Vector3(-4.52f, 2.34f, 9.04f), new Vector3(0.22f, 3.02f, 0.10f), new Vector3(0.34f, 3.32f, 0.18f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_EastReturnFaceA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.52f, 2.08f, 8.80f), new Vector3(4.90f, 2.34f, 9.04f), new Vector3(0.22f, 3.02f, 0.10f), new Vector3(0.34f, 3.32f, 0.18f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontShadowBandA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.34f, 8.58f), new Vector3(0.16f, 4.46f, 8.68f), new Vector3(8.52f, 0.06f, 0.04f), new Vector3(8.84f, 0.14f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetFrontFaceA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.92f, 8.60f), new Vector3(0.16f, 5.08f, 8.72f), new Vector3(9.02f, 0.12f, 0.04f), new Vector3(9.28f, 0.24f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetTopCapA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 5.08f, 8.68f), new Vector3(0.16f, 5.18f, 8.78f), new Vector3(8.84f, 0.04f, 0.06f), new Vector3(9.10f, 0.08f, 0.12f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetBackLipA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 5.16f, 8.80f), new Vector3(0.16f, 5.26f, 8.90f), new Vector3(8.60f, 0.03f, 0.04f), new Vector3(8.84f, 0.06f, 0.08f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_UpperFrontHighlightBandA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 4.54f, 8.56f), new Vector3(0.16f, 4.60f, 8.64f), new Vector3(8.30f, 0.02f, 0.03f), new Vector3(8.54f, 0.08f, 0.07f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_LeftWindowRevealTrimA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.66f, 1.44f, 7.84f), new Vector3(-2.42f, 1.64f, 7.98f), new Vector3(0.08f, 1.56f, 0.02f), new Vector3(0.16f, 1.82f, 0.06f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_RightWindowRevealTrimA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_fence", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(2.42f, 1.44f, 7.84f), new Vector3(2.66f, 1.64f, 7.98f), new Vector3(0.08f, 1.56f, 0.02f), new Vector3(0.16f, 1.82f, 0.06f));
+            ValidateArchitectureSurfaceDepthObject("Past_CentralPlaza_ArchitectureSurfaceDepth_EntranceUpperBrowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.18f, 2.04f, 7.84f), new Vector3(0.18f, 2.18f, 7.96f), new Vector3(1.44f, 0.06f, 0.03f), new Vector3(1.64f, 0.10f, 0.08f));
+
+            ValidateLandmarkExists("Current_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakFrontA", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakMidA", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakBackA", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_HouseExterior_ArchitectureSurfaceDepth_VisibleFasciaBroadFaceA", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakFrontA", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakMidA", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ArchitectureSurfaceDepth_RoofPlaneBreakBackA", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_HouseExterior_ArchitectureSurfaceDepth_VisibleFasciaBroadFaceA", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_ArchitectureSurfaceDepth_UpperStoryBaseShadowA", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_ArchitectureSurfaceDepth_ParapetReadableFrontStepA", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_ArchitectureSurfaceDepth_LeftTowerSideShadeA", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Current_CentralPlaza_ArchitectureSurfaceDepth_RightTowerSideShadeA", "Current_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_ArchitectureSurfaceDepth_UpperStoryBaseShadowA", "Past_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_ArchitectureSurfaceDepth_ParapetReadableFrontStepA", "Past_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_ArchitectureSurfaceDepth_LeftTowerSideShadeA", "Past_CentralPlazaMap_SeparateSpace");
+            ValidateLandmarkExists("Past_CentralPlaza_ArchitectureSurfaceDepth_RightTowerSideShadeA", "Past_CentralPlazaMap_SeparateSpace");
+        }
+
         private static void ValidateFastVsHd2dOneHundredFifteenthCycleFacadeEdgeSoftening()
         {
             ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_SurfaceDepth_EaveTrimHighlightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.84f, 1.88f, -1.50f), new Vector3(-0.50f, 2.00f, -1.30f), new Vector3(0.62f, 0.018f, 0.03f), new Vector3(0.74f, 0.035f, 0.06f));
@@ -29839,6 +30482,23 @@ namespace Anemora.EditorTools
             if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateArchitectureSurfaceDepthObject(string objectName, string expectedParentName, Vector3 referenceCenter, string expectedMaterialToken, TimeWindowPairedSpaceLandmarkKind expectedKind, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 minLocalScale, Vector3 maxLocalScale)
+        {
+            ValidateNonArrivalLandmarkCubeObject(objectName, expectedParentName, referenceCenter, expectedMaterialToken, expectedKind, minLocalPosition, maxLocalPosition, minLocalScale, maxLocalScale);
+
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+            if (renderer == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain shadow-safe.");
             }
         }
 
