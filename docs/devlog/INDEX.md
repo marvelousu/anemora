@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.30 fast VS HD2D central plaza outer ground skirt index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.31 fast VS HD2D central plaza scenic horizon grounding index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 409 files including INDEX.md and README.md.
-- Dated devlog records: 407 files.
-- Linked evidence files present under docs/devlog/screenshots/: 861 files.
+- Root-level Markdown coverage: 410 files including INDEX.md and README.md.
+- Dated devlog records: 408 files.
+- Linked evidence files present under docs/devlog/screenshots/: 866 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 11 |
+| 2026-05-23 | 12 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_central_plaza_scenic_horizon_grounding_cycle63.md](2026-05-23_fast_vs_hd2d_central_plaza_scenic_horizon_grounding_cycle63.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Central Plaza Scenic Horizon Grounding Cycle 63 |
 | [2026-05-23_fast_vs_hd2d_central_plaza_outer_ground_skirt_cycle62.md](2026-05-23_fast_vs_hd2d_central_plaza_outer_ground_skirt_cycle62.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Central Plaza Outer Ground Skirt Cycle 62 |
 | [2026-05-23_fast_vs_hd2d_plaza_library_side_window_ledges_cycle61.md](2026-05-23_fast_vs_hd2d_plaza_library_side_window_ledges_cycle61.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Window Ledges Cycle 61 |
 | [2026-05-23_fast_vs_hd2d_plaza_library_side_wall_material_breakup_cycle60.md](2026-05-23_fast_vs_hd2d_plaza_library_side_wall_material_breakup_cycle60.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Wall Material Breakup Cycle 60 |
@@ -553,6 +554,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.31 | 2026-05-23 | Added Fast VS HD2D central plaza scenic horizon grounding cycle record with low path, grass, stone, and retaining-edge continuation pieces, validation, visual snapshot audit, oblique screenshot evidence, and rejected-sky-card guardrail note. |
 | v7.30 | 2026-05-23 | Added Fast VS HD2D central plaza outer ground skirt cycle record with current/past outer street, grass, stone, and corner continuation pieces, validation, visual snapshot audit, oblique screenshot evidence, and shadow-reference note. |
 | v7.29 | 2026-05-23 | Added Fast VS HD2D plaza library side window ledges cycle record with current/past side windows, narrow frame bars, stone sills, validation, and oblique screenshot evidence. |
 | v7.28 | 2026-05-23 | Added Fast VS HD2D plaza library side wall material breakup cycle record with visible trim and stone side-wall courses, validation, parent visibility fix, and oblique screenshot evidence. |
