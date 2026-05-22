@@ -6,9 +6,9 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 387 files including INDEX.md and README.md.
-- Dated devlog records: 385 files.
-- Linked evidence files present under docs/devlog/screenshots/: 722 files.
+- Root-level Markdown coverage: 388 files including INDEX.md and README.md.
+- Dated devlog records: 386 files.
+- Linked evidence files present under docs/devlog/screenshots/: 727 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 40 |
+| 2026-05-22 | 41 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_facade_surface_depth_cycle41.md](2026-05-22_fast_vs_hd2d_facade_surface_depth_cycle41.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Facade Surface Depth Cycle 41 |
 | [2026-05-22_fast_vs_hd2d_architectural_closure_grounding_cycle40.md](2026-05-22_fast_vs_hd2d_architectural_closure_grounding_cycle40.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architectural Closure / Grounding Cycle 40 |
 | [2026-05-22_fast_vs_hd2d_outdoor_framed_light_planes_cycle39.md](2026-05-22_fast_vs_hd2d_outdoor_framed_light_planes_cycle39.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Framed Light Planes Cycle 39 |
 | [2026-05-22_fast_vs_hd2d_outdoor_light_composition_contact_grounding_cycle38.md](2026-05-22_fast_vs_hd2d_outdoor_light_composition_contact_grounding_cycle38.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Light Composition Contact Grounding Cycle 38 |
