@@ -6,8 +6,8 @@
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 391 files including INDEX.md and README.md.
-- Dated devlog records: 389 files.
+- Root-level Markdown coverage: 392 files including INDEX.md and README.md.
+- Dated devlog records: 390 files.
 - Linked evidence files present under docs/devlog/screenshots/: 732 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 44 |
+| 2026-05-22 | 45 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_architecture_material_texture_cycle46.md](2026-05-22_fast_vs_hd2d_architecture_material_texture_cycle46.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architecture Material Texture Cycle 46 |
 | [2026-05-22_fast_vs_hd2d_architecture_surface_depth_cycle45.md](2026-05-22_fast_vs_hd2d_architecture_surface_depth_cycle45.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architecture Surface Depth Cycle 45 |
 | [2026-05-22_fast_vs_hd2d_library_verticality_ground_continuation_cycle43.md](2026-05-22_fast_vs_hd2d_library_verticality_ground_continuation_cycle43.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Verticality / Ground Continuation Cycle 43 |
 | [2026-05-22_fast_vs_hd2d_facade_edge_softening_cycle42.md](2026-05-22_fast_vs_hd2d_facade_edge_softening_cycle42.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Facade Edge Softening Cycle 42 |

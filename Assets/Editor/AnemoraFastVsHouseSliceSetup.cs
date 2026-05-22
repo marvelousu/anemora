@@ -281,6 +281,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
             ValidateFastVsHd2dThirtyThirdCycleHouseExteriorProportionCleanup();
             ValidateFastVsHd2dThirtyFourthCycleHouseExteriorHeroReadability();
+            ValidateFastVsHd2dFortySixthCycleHouseExteriorMaterialTexturePolish();
             ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish();
             ValidateFastVsHd2dSixtyFifthCycleCentralPlazaPavingReadability();
             ValidateFastVsHd2dFortySixthCycleHouseExteriorTreeFencePolish();
@@ -23909,6 +23910,37 @@ namespace Anemora.EditorTools
             ValidateTextureLuminanceContrast("past_roof_hd2d_plate", new Vector2Int(6, 4), new Vector2Int(6, 9), 0.050f, "past roof row contrast");
         }
 
+        private static void ValidateFastVsHd2dFortySixthCycleHouseExteriorMaterialTexturePolish()
+        {
+            ValidateGeneratedRepeatTextureAsset("current_exterior_wall_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedRepeatTextureAsset("past_exterior_wall_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedRepeatTextureAsset("current_roof_hd2d_plate", 128, 128, 24);
+            ValidateGeneratedRepeatTextureAsset("past_roof_hd2d_plate", 128, 128, 24);
+
+            ValidateGeneratedTextureExactSize("current_exterior_wall_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("past_exterior_wall_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("current_roof_hd2d_plate", 128, 128);
+            ValidateGeneratedTextureExactSize("past_roof_hd2d_plate", 128, 128);
+
+            ValidateGeneratedSurfaceMaterialTexture("current_exterior_wall", "current_exterior_wall_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_exterior_wall", "past_exterior_wall_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("current_roof", "current_roof_hd2d_plate");
+            ValidateGeneratedSurfaceMaterialTexture("past_roof", "past_roof_hd2d_plate");
+
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_FacadeWallLeftPanel", "current_exterior_wall_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_FacadeWallLeftPanel", "past_exterior_wall_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_HouseExterior_RoofWidePixelPlane", "current_roof_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_HouseExterior_RoofWidePixelPlane", "past_roof_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_LibraryNorthFacade", "current_exterior_wall_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_LibraryNorthFacade", "past_exterior_wall_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Current_CentralPlaza_LibraryRoofBlock", "current_roof_hd2d_plate");
+            ValidateSceneObjectMaterialTexture("Past_CentralPlaza_LibraryRoofBlock", "past_roof_hd2d_plate");
+
+            ValidateTextureLuminanceContrast("current_exterior_wall_hd2d_plate", new Vector2Int(10, 20), new Vector2Int(10, 90), 0.003f, "current exterior wall broad weathering contrast");
+            ValidateTextureLuminanceContrast("past_exterior_wall_hd2d_plate", new Vector2Int(10, 20), new Vector2Int(10, 90), 0.003f, "past exterior wall broad weathering contrast");
+            ValidateTextureLuminanceContrast("current_roof_hd2d_plate", new Vector2Int(6, 5), new Vector2Int(6, 92), 0.044f, "current roof broad shingle contrast");
+        }
+
         private static void ValidateCurrentLibraryEmptySideShelf(string side)
         {
             var root = FindSceneObjectIncludingInactive($"Current_Library_{side}SideBookshelf");
@@ -36342,13 +36374,19 @@ namespace Anemora.EditorTools
             var courseHeight = worn ? 16 : 15;
             var courseIndex = y / courseHeight;
             var withinY = y % courseHeight;
-            var broadLight = Mathf.Clamp01(1f - (y / (float)(height - 1)));
+            var u = width <= 1 ? 0f : x / (float)(width - 1);
+            var v = height <= 1 ? 0f : y / (float)(height - 1);
+            var broadLight = Mathf.Clamp01(1f - v);
+            var edgeDistance = Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v));
+            var largePatch = Hash01(x / (worn ? 28 : 30), y / (worn ? 24 : 26), seed + 5);
             var courseWave = 0.5f + (Mathf.Sin((courseIndex * 0.72f) + seed * 0.017f) * 0.5f);
             var seamWave = 0.5f + (Mathf.Sin((courseIndex * 0.45f) + (boardIndex * 0.30f) + seed * 0.013f) * 0.5f);
+            var driftWave = 0.5f + (Mathf.Sin(((boardIndex * 0.58f) + (courseIndex * 0.24f)) + seed * 0.011f) * 0.5f);
             var baseMix = Hash01(boardIndex, courseIndex, seed);
             var bandTone = LerpColor(wallA, wallB, baseMix * (worn ? 0.34f : 0.28f) + courseWave * (worn ? 0.66f : 0.72f));
-            bandTone = LerpColor(bandTone, highlightColor, broadLight * (worn ? 0.18f : 0.24f));
-            bandTone = LerpColor(bandTone, shadowColor, Mathf.Clamp01((y / (float)(height - 1)) * (worn ? 0.20f : 0.16f)));
+            bandTone = LerpColor(bandTone, wallA, largePatch * (worn ? 0.11f : 0.07f));
+            bandTone = LerpColor(bandTone, highlightColor, broadLight * (worn ? 0.18f : 0.23f));
+            bandTone = LerpColor(bandTone, shadowColor, Mathf.Clamp01(v * (worn ? 0.24f : 0.18f)));
 
             if (withinY <= 1)
             {
@@ -36372,14 +36410,44 @@ namespace Anemora.EditorTools
                 bandTone = LerpColor(bandTone, highlightColor, worn ? 0.08f : 0.12f);
             }
 
-            if (courseWave > (worn ? 0.72f : 0.68f) && withinY >= 3 && withinY <= courseHeight - 3)
+            if (courseWave > (worn ? 0.70f : 0.66f) && withinY >= 3 && withinY <= courseHeight - 3)
             {
-                bandTone = LerpColor(bandTone, Darken(wallB, worn ? 0.01f : 0.00f), worn ? 0.08f : 0.05f);
+                bandTone = LerpColor(bandTone, Darken(wallB, worn ? 0.02f : 0.00f), worn ? 0.10f : 0.06f);
             }
 
             if (seamWave > (worn ? 0.84f : 0.88f) && withinX > 2 && withinX < boardWidth - 2)
             {
-                bandTone = LerpColor(bandTone, Lighten(wallA, worn ? 0.03f : 0.05f), worn ? 0.08f : 0.05f);
+                bandTone = LerpColor(bandTone, Lighten(wallA, worn ? 0.03f : 0.05f), worn ? 0.10f : 0.06f);
+            }
+
+            if (driftWave > (worn ? 0.72f : 0.82f) && withinY > 2 && withinY < courseHeight - 2)
+            {
+                bandTone = LerpColor(bandTone, shadowColor, worn ? 0.08f : 0.04f);
+            }
+
+            if (largePatch > (worn ? 0.64f : 0.70f))
+            {
+                bandTone = LerpColor(bandTone, highlightColor, worn ? 0.08f : 0.05f);
+            }
+            else if (largePatch < (worn ? 0.22f : 0.28f))
+            {
+                bandTone = LerpColor(bandTone, shadowColor, worn ? 0.14f : 0.08f);
+            }
+
+            if (Hash01(boardIndex, 0, seed + 19) > (worn ? 0.76f : 0.88f))
+            {
+                var dripStart = 2 + (int)(Hash01(boardIndex, courseIndex, seed + 23) * Mathf.Max(1, courseHeight - 5));
+                if (withinY >= dripStart)
+                {
+                    var dripFalloff = 1f - Mathf.Clamp01((withinY - dripStart) / Mathf.Max(1f, courseHeight - dripStart - 1f));
+                    bandTone = LerpColor(bandTone, shadowColor, dripFalloff * (worn ? 0.12f : 0.06f));
+                }
+            }
+
+            var edgeDarken = Mathf.Clamp01((0.18f - edgeDistance) / 0.18f);
+            if (edgeDarken > 0f)
+            {
+                bandTone = LerpColor(bandTone, shadowColor, edgeDarken * (worn ? 0.06f : 0.04f));
             }
 
             if (Hash01(x, y, seed + 11) > (worn ? 0.988f : 0.994f))
@@ -36400,18 +36468,26 @@ namespace Anemora.EditorTools
             var rowHeight = weathered ? 10 : 9;
             var rowIndex = y / rowHeight;
             var withinY = y % rowHeight;
+            var u = width <= 1 ? 0f : x / (float)(width - 1);
             var rowOffset = (rowIndex & 1) == 0 ? 0 : (weathered ? 8 : 7);
+            rowOffset += Hash01(rowIndex, seed, seed + 5) > (weathered ? 0.70f : 0.80f) ? 1 : 0;
             var shiftedX = (x + rowOffset) % width;
             var tileWidth = weathered ? 16 : 17;
             var tileIndex = shiftedX / tileWidth;
             var withinX = shiftedX % tileWidth;
-            var roofTone = LerpColor(tileA, tileB, Hash01(tileIndex, rowIndex, seed));
-            roofTone = LerpColor(roofTone, highlightColor, Mathf.Clamp01(0.30f - withinY * (weathered ? 0.025f : 0.030f)));
-            roofTone = LerpColor(roofTone, shadowColor, Mathf.Clamp01((withinY / (float)(rowHeight - 1)) * (weathered ? 0.30f : 0.24f)));
+            var rowTone = Hash01(0, rowIndex, seed + 11);
+            var tileTone = Hash01(tileIndex, rowIndex, seed + 13);
+            var blockTone = Hash01(tileIndex / 2, rowIndex / 2, seed + 17);
+            var roofTone = LerpColor(tileA, tileB, tileTone * (weathered ? 0.60f : 0.50f) + rowTone * (weathered ? 0.24f : 0.18f));
+            roofTone = LerpColor(roofTone, highlightColor, Mathf.Clamp01((0.34f - withinY * (weathered ? 0.023f : 0.026f)) + blockTone * 0.05f));
+            roofTone = LerpColor(roofTone, shadowColor, Mathf.Clamp01((withinY / (float)(rowHeight - 1)) * (weathered ? 0.32f : 0.24f) + (1f - blockTone) * 0.04f));
+            roofTone = LerpColor(roofTone, weathered ? Darken(tileA, 0.08f) : tileA, Mathf.Clamp01((1f - Mathf.Abs(u - 0.5f) * 1.8f) * (weathered ? 0.05f : 0.03f)));
+            roofTone = LerpColor(roofTone, highlightColor, Mathf.Clamp01((1f - y / (float)(height - 1)) * (weathered ? 0.06f : 0.08f)));
+            roofTone = LerpColor(roofTone, shadowColor, Mathf.Clamp01((y / (float)(height - 1)) * (weathered ? 0.18f : 0.12f)));
 
             if (withinX <= 1 || withinX >= tileWidth - 2 || withinY <= 0 || withinY >= rowHeight - 2 || x == 0 || x == width - 1 || y == 0 || y == height - 1)
             {
-                roofTone = LerpColor(roofTone, seamColor, weathered ? 0.86f : 0.80f);
+                roofTone = LerpColor(roofTone, seamColor, weathered ? 0.86f : 0.58f);
             }
             else if (withinX == 2 || withinX == tileWidth - 3)
             {
@@ -36429,7 +36505,16 @@ namespace Anemora.EditorTools
 
             if ((withinX == 4 || withinX == 8 || withinX == 11) && withinY >= 2 && withinY <= rowHeight - 4)
             {
-                roofTone = LerpColor(roofTone, Darken(highlightColor, 0.36f), 0.30f);
+                roofTone = LerpColor(roofTone, Darken(highlightColor, weathered ? 0.34f : 0.30f), weathered ? 0.20f : 0.28f);
+            }
+
+            if (blockTone > (weathered ? 0.60f : 0.68f))
+            {
+                roofTone = LerpColor(roofTone, Darken(shadowColor, weathered ? 0.05f : 0.02f), weathered ? 0.10f : 0.06f);
+            }
+            else if (blockTone < (weathered ? 0.20f : 0.26f))
+            {
+                roofTone = LerpColor(roofTone, highlightColor, weathered ? 0.08f : 0.04f);
             }
 
             if (Hash01(x, y, seed + 19) > (weathered ? 0.972f : 0.990f))
