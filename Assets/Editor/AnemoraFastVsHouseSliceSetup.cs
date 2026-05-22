@@ -13517,6 +13517,11 @@ namespace Anemora.EditorTools
             CaptureHd2dOneHundredthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_side_wall_masonry_relief_20260521");
         }
 
+        public static void CaptureHd2dCycle57PlazaLibraryObliqueReviewScreenshotsBatch()
+        {
+            CaptureHd2dCycle57PlazaLibraryObliqueReviewScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle57_plaza_library_oblique_review_20260523");
+        }
+
         public static void CaptureHd2dOneHundredFirstCycleScreenshotsBatch()
         {
             CaptureHd2dOneHundredFirstCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_entry_plinth_depth_20260521");
@@ -15295,6 +15300,103 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS one-hundredth-cycle screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dCycle57PlazaLibraryObliqueReviewScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle57 plaza library oblique screenshot capture failed: scene review components are missing.");
+            }
+
+            var leftObliquePlayerLocal = CentralPlazaVsCenter + new Vector3(-3.62f, 0.02f, 4.48f);
+            var leftObliqueAnchorLocal = CentralPlazaVsCenter + new Vector3(-3.06f, 1.54f, 10.72f);
+            var leftObliqueCameraOffset = new Vector3(-2.70f, 1.45f, -6.65f);
+            var leftObliqueLookOffset = new Vector3(0.66f, -0.08f, 0.10f);
+            var rightObliquePlayerLocal = CentralPlazaVsCenter + new Vector3(3.62f, 0.02f, 4.48f);
+            var rightObliqueAnchorLocal = CentralPlazaVsCenter + new Vector3(3.06f, 1.54f, 10.72f);
+            var rightObliqueCameraOffset = new Vector3(2.70f, 1.45f, -6.65f);
+            var rightObliqueLookOffset = new Vector3(-0.66f, -0.08f, 0.10f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                leftObliquePlayerLocal,
+                leftObliqueAnchorLocal,
+                leftObliqueCameraOffset,
+                leftObliqueLookOffset,
+                outputDirectory,
+                "01_current_plaza_library_mass_closure_left_oblique.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                leftObliquePlayerLocal,
+                leftObliqueAnchorLocal,
+                leftObliqueCameraOffset,
+                leftObliqueLookOffset,
+                outputDirectory,
+                "02_past_plaza_library_mass_closure_left_oblique.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "02_past_plaza_library_mass_closure_left_oblique.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                leftObliquePlayerLocal,
+                leftObliqueAnchorLocal,
+                leftObliqueCameraOffset,
+                leftObliqueLookOffset,
+                outputDirectory,
+                "01_current_plaza_library_mass_closure_left_oblique.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "01_current_plaza_library_mass_closure_left_oblique.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                rightObliquePlayerLocal,
+                rightObliqueAnchorLocal,
+                rightObliqueCameraOffset,
+                rightObliqueLookOffset,
+                outputDirectory,
+                "03_current_plaza_library_mass_closure_right_oblique.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_plaza_library_mass_closure_right_oblique.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                rightObliquePlayerLocal,
+                rightObliqueAnchorLocal,
+                rightObliqueCameraOffset,
+                rightObliqueLookOffset,
+                outputDirectory,
+                "04_past_plaza_library_mass_closure_right_oblique.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_plaza_library_mass_closure_right_oblique.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle57 plaza library oblique screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CaptureHd2dOneHundredFirstCycleScreenshotsToDirectory(string outputDirectory)
