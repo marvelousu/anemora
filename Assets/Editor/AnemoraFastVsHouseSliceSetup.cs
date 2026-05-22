@@ -360,6 +360,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle53OutdoorPerimeterWorldContinuation();
             ValidateFastVsHd2dCycle54OutdoorPerimeterEdgeBreakup();
             ValidateFastVsHd2dCycle55OutdoorHorizonSilhouetteBlend();
+            ValidateFastVsHd2dCycle56PlazaLibraryFacadeMassClosure();
             ValidateFastVsHd2dOneHundredNinthCycleOutdoorWorldEnvelopeFoundation();
             ValidateFastVsHd2dOneHundredTenthCycleOutdoorHorizonScenicDepth();
             ValidateFastVsHd2dOneHundredEleventhCycleOutdoorLightCompositionContactGrounding();
@@ -7268,6 +7269,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryLowerFacadeGroundingPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryWindowRevealDepthPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryDoorReliefPolish(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaLibraryFacadeMassClosureCycle56(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryApproachHd2dPolish(root, prefix, past, materials, c, stone, trim, path);
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareNorthBorder", root, c + new Vector3(0f, 0.066f, 8.14f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_north");
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareSouthBorder", root, c + new Vector3(0f, 0.066f, -3.64f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_south");
@@ -18747,6 +18749,46 @@ namespace Anemora.EditorTools
                 $"{prefix}.central_plaza.library_door_relief.right_bottom_chip_a");
         }
 
+        private static void CreateCentralPlazaLibraryFacadeMassClosureCycle56(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
+        {
+            var objectPrefix = $"{prefix}_CentralPlaza_Cycle56_LibraryMassClosure";
+            var wallMaterial = wall;
+            var roofMaterial = past ? materials.PastRoof : materials.CurrentRoof;
+            var shadowMaterial = materials.Shadow;
+            var trimMaterial = trim;
+            var baseMaterial = past ? materials.PastStone : materials.CurrentStone;
+
+            void Add(string nameSuffix, Vector3 localPosition, Vector3 localScale, Material material, string landmarkSuffix)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_{nameSuffix}",
+                    root,
+                    center + localPosition,
+                    localScale,
+                    Quaternion.identity,
+                    material,
+                    $"{prefix}.central_plaza.cycle56.library_mass_closure.{landmarkSuffix}");
+            }
+
+            Add("WestFrontSideFillA", new Vector3(-5.02f, past ? 2.10f : 2.04f, past ? 8.98f : 8.92f), new Vector3(0.32f, past ? 3.38f : 3.28f, past ? 1.84f : 1.78f), wallMaterial, "west_front_side_fill_a");
+            Add("EastFrontSideFillA", new Vector3(5.02f, past ? 2.10f : 2.04f, past ? 8.98f : 8.92f), new Vector3(0.32f, past ? 3.38f : 3.28f, past ? 1.84f : 1.78f), wallMaterial, "east_front_side_fill_a");
+            Add("WestRearSideFillA", new Vector3(-5.00f, past ? 2.14f : 2.08f, past ? 11.30f : 11.22f), new Vector3(0.32f, past ? 3.46f : 3.36f, past ? 2.72f : 2.64f), wallMaterial, "west_rear_side_fill_a");
+            Add("EastRearSideFillA", new Vector3(5.00f, past ? 2.14f : 2.08f, past ? 11.30f : 11.22f), new Vector3(0.32f, past ? 3.46f : 3.36f, past ? 2.72f : 2.64f), wallMaterial, "east_rear_side_fill_a");
+            Add("WestUpperCheekA", new Vector3(-5.04f, past ? 4.48f : 4.40f, past ? 9.88f : 9.78f), new Vector3(0.36f, past ? 1.72f : 1.62f, past ? 2.86f : 2.76f), wallMaterial, "west_upper_cheek_a");
+            Add("EastUpperCheekA", new Vector3(5.04f, past ? 4.48f : 4.40f, past ? 9.88f : 9.78f), new Vector3(0.36f, past ? 1.72f : 1.62f, past ? 2.86f : 2.76f), wallMaterial, "east_upper_cheek_a");
+            Add("WestRoofReturnA", new Vector3(-4.98f, past ? 5.50f : 5.44f, past ? 10.12f : 10.05f), new Vector3(0.48f, 0.26f, past ? 3.78f : 3.65f), roofMaterial, "west_roof_return_a");
+            Add("EastRoofReturnA", new Vector3(4.98f, past ? 5.50f : 5.44f, past ? 10.12f : 10.05f), new Vector3(0.48f, 0.26f, past ? 3.78f : 3.65f), roofMaterial, "east_roof_return_a");
+            Add("RearUpperWallBridgeA", new Vector3(0.00f, past ? 4.72f : 4.62f, past ? 11.92f : 11.82f), new Vector3(8.90f, past ? 1.16f : 1.08f, 0.24f), wallMaterial, "rear_upper_wall_bridge_a");
+            Add("RearRoofCapBridgeA", new Vector3(0.00f, past ? 5.50f : 5.42f, past ? 11.60f : 11.52f), new Vector3(9.30f, 0.28f, past ? 1.28f : 1.20f), roofMaterial, "rear_roof_cap_bridge_a");
+            Add("WestUnderEaveSideShadowA", new Vector3(-4.76f, past ? 3.28f : 3.22f, past ? 9.92f : 9.85f), new Vector3(0.10f, 0.08f, past ? 3.42f : 3.30f), shadowMaterial, "west_under_eave_side_shadow_a");
+            Add("EastUnderEaveSideShadowA", new Vector3(4.76f, past ? 3.28f : 3.22f, past ? 9.92f : 9.85f), new Vector3(0.10f, 0.08f, past ? 3.42f : 3.30f), shadowMaterial, "east_under_eave_side_shadow_a");
+            Add("WestSideBaseContactA", new Vector3(-4.80f, past ? 0.22f : 0.20f, past ? 9.94f : 9.85f), new Vector3(0.16f, 0.06f, past ? 3.64f : 3.50f), baseMaterial, "west_side_base_contact_a");
+            Add("EastSideBaseContactA", new Vector3(4.80f, past ? 0.22f : 0.20f, past ? 9.94f : 9.85f), new Vector3(0.16f, 0.06f, past ? 3.64f : 3.50f), baseMaterial, "east_side_base_contact_a");
+
+            _ = stone;
+            _ = trimMaterial;
+        }
+
         private static void CreateCentralPlazaLibraryRearVolumePolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
         {
             var objectPrefix = $"{prefix}_CentralPlaza_LibraryRearVolume";
@@ -23980,6 +24022,58 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must be shadow-safe.");
             }
+        }
+
+        private static void ValidateFastVsHd2dCycle56PlazaLibraryFacadeMassClosure()
+        {
+            var currentParent = "Current_CentralPlazaMap_SeparateSpace";
+            var pastParent = "Past_CentralPlazaMap_SeparateSpace";
+            string expectedLandmarkIdPrefix = "Current.central_plaza.cycle56.library_mass_closure.";
+
+            void Validate(string objectName, string parentName, string materialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+            {
+                ValidateCentralPlazaLibraryDeepExteriorVolumeObject(
+                    objectName,
+                    materialToken,
+                    parentName,
+                    expectedLandmarkIdPrefix,
+                    minLocalPosition,
+                    maxLocalPosition,
+                    maxScaleX,
+                    maxScaleY,
+                    maxScaleZ);
+            }
+
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_WestFrontSideFillA", currentParent, "current_exterior_wall", new Vector3(-5.47f, 1.59f, 8.47f), new Vector3(-4.57f, 2.49f, 9.37f), 0.44f, 3.58f, 1.98f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_EastFrontSideFillA", currentParent, "current_exterior_wall", new Vector3(4.57f, 1.59f, 8.47f), new Vector3(5.47f, 2.49f, 9.37f), 0.44f, 3.58f, 1.98f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_WestRearSideFillA", currentParent, "current_exterior_wall", new Vector3(-5.45f, 1.63f, 10.77f), new Vector3(-4.55f, 2.53f, 11.67f), 0.44f, 3.66f, 2.92f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_EastRearSideFillA", currentParent, "current_exterior_wall", new Vector3(4.55f, 1.63f, 10.77f), new Vector3(5.45f, 2.53f, 11.67f), 0.44f, 3.66f, 2.92f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_WestUpperCheekA", currentParent, "current_exterior_wall", new Vector3(-5.49f, 4.03f, 9.33f), new Vector3(-4.59f, 4.83f, 10.23f), 0.50f, 1.82f, 3.06f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_EastUpperCheekA", currentParent, "current_exterior_wall", new Vector3(4.59f, 4.03f, 9.33f), new Vector3(5.49f, 4.83f, 10.23f), 0.50f, 1.82f, 3.06f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_WestRoofReturnA", currentParent, "current_roof", new Vector3(-5.43f, 4.99f, 9.67f), new Vector3(-4.53f, 5.89f, 10.57f), 0.58f, 0.46f, 3.95f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_EastRoofReturnA", currentParent, "current_roof", new Vector3(4.53f, 4.99f, 9.67f), new Vector3(5.43f, 5.89f, 10.57f), 0.58f, 0.46f, 3.95f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_RearUpperWallBridgeA", currentParent, "current_exterior_wall", new Vector3(-0.45f, 4.17f, 11.47f), new Vector3(0.45f, 5.07f, 12.37f), 9.10f, 1.26f, 0.34f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_RearRoofCapBridgeA", currentParent, "current_roof", new Vector3(-0.45f, 5.05f, 11.07f), new Vector3(0.45f, 5.95f, 11.97f), 9.50f, 0.48f, 1.48f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_WestUnderEaveSideShadowA", currentParent, "shadow", new Vector3(-5.21f, 2.77f, 9.47f), new Vector3(-4.31f, 3.67f, 10.37f), 0.20f, 0.18f, 3.62f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_EastUnderEaveSideShadowA", currentParent, "shadow", new Vector3(4.31f, 2.77f, 9.47f), new Vector3(5.21f, 3.67f, 10.37f), 0.20f, 0.18f, 3.62f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_WestSideBaseContactA", currentParent, "current_stone", new Vector3(-5.25f, -0.25f, 9.40f), new Vector3(-4.35f, 0.65f, 10.30f), 0.26f, 0.16f, 3.84f);
+            Validate("Current_CentralPlaza_Cycle56_LibraryMassClosure_EastSideBaseContactA", currentParent, "current_stone", new Vector3(4.35f, -0.25f, 9.40f), new Vector3(5.25f, 0.65f, 10.30f), 0.26f, 0.16f, 3.84f);
+
+            expectedLandmarkIdPrefix = "Past.central_plaza.cycle56.library_mass_closure.";
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestFrontSideFillA", pastParent, "past_exterior_wall", new Vector3(-5.47f, 1.65f, 8.53f), new Vector3(-4.57f, 2.55f, 9.43f), 0.44f, 3.68f, 2.04f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastFrontSideFillA", pastParent, "past_exterior_wall", new Vector3(4.57f, 1.65f, 8.53f), new Vector3(5.47f, 2.55f, 9.43f), 0.44f, 3.68f, 2.04f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestRearSideFillA", pastParent, "past_exterior_wall", new Vector3(-5.45f, 1.69f, 10.85f), new Vector3(-4.55f, 2.59f, 11.75f), 0.44f, 3.76f, 3.02f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastRearSideFillA", pastParent, "past_exterior_wall", new Vector3(4.55f, 1.69f, 10.85f), new Vector3(5.45f, 2.59f, 11.75f), 0.44f, 3.76f, 3.02f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestUpperCheekA", pastParent, "past_exterior_wall", new Vector3(-5.49f, 4.03f, 9.43f), new Vector3(-4.59f, 4.93f, 10.33f), 0.50f, 1.92f, 3.16f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastUpperCheekA", pastParent, "past_exterior_wall", new Vector3(4.59f, 4.03f, 9.43f), new Vector3(5.49f, 4.93f, 10.33f), 0.50f, 1.92f, 3.16f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestRoofReturnA", pastParent, "past_roof", new Vector3(-5.43f, 5.05f, 9.72f), new Vector3(-4.53f, 5.95f, 10.62f), 0.58f, 0.46f, 4.08f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastRoofReturnA", pastParent, "past_roof", new Vector3(4.53f, 5.05f, 9.72f), new Vector3(5.43f, 5.95f, 10.62f), 0.58f, 0.46f, 4.08f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_RearUpperWallBridgeA", pastParent, "past_exterior_wall", new Vector3(-0.45f, 4.27f, 11.47f), new Vector3(0.45f, 5.17f, 12.37f), 9.10f, 1.36f, 0.34f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_RearRoofCapBridgeA", pastParent, "past_roof", new Vector3(-0.45f, 5.05f, 11.07f), new Vector3(0.45f, 5.95f, 11.97f), 9.50f, 0.48f, 1.48f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestUnderEaveSideShadowA", pastParent, "shadow", new Vector3(-5.21f, 2.83f, 9.47f), new Vector3(-4.31f, 3.73f, 10.37f), 0.20f, 0.18f, 3.62f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastUnderEaveSideShadowA", pastParent, "shadow", new Vector3(4.31f, 2.83f, 9.47f), new Vector3(5.21f, 3.73f, 10.37f), 0.20f, 0.18f, 3.62f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestSideBaseContactA", pastParent, "past_stone", new Vector3(-5.25f, -0.23f, 9.40f), new Vector3(-4.35f, 0.67f, 10.30f), 0.26f, 0.16f, 3.84f);
+            Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastSideBaseContactA", pastParent, "past_stone", new Vector3(4.35f, -0.23f, 9.40f), new Vector3(5.25f, 0.67f, 10.30f), 0.26f, 0.16f, 3.84f);
         }
 
         private static void ValidateCentralPlazaLibrarySideWallSurfaceTuningObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
