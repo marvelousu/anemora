@@ -49,6 +49,10 @@ namespace Anemora.EditorTools
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const string OutdoorOcclusionGradientMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient.mat";
+        private const string OutdoorOcclusionGradientTexturePath = TextureDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient_soft.asset";
+        private const string OutdoorWarmStageLightMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_outdoor_warm_stage_light.mat";
+        private const string OutdoorWarmStageLightTexturePath = TextureDirectory + "/FastVS_House_hd2d_outdoor_warm_stage_light_soft.asset";
         private const string TimewriterBrushIconTexturePath = TextureDirectory + "/FastVS_House_timewriter_brush_icon_v01.png";
         private const string MusicClipPath = "Assets/Audio/Music/Zone1_Ambient.ogg";
         private const string WindClipPath = "Assets/Audio/SFX/env/sfx_env_wind_loop_01.ogg";
@@ -349,6 +353,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredNinthCycleOutdoorWorldEnvelopeFoundation();
             ValidateFastVsHd2dOneHundredTenthCycleOutdoorHorizonScenicDepth();
             ValidateFastVsHd2dOneHundredEleventhCycleOutdoorLightCompositionContactGrounding();
+            ValidateFastVsHd2dOneHundredTwelfthCycleOutdoorFramedLightPlanes();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5921,6 +5926,7 @@ namespace Anemora.EditorTools
             CreateOutdoorWorldEnvelopeFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorHorizonScenicDepthFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorLightCompositionContactGrounding(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateOutdoorFramedLightPlanes(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorVoidBackgroundTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyWashTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyDetailPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
@@ -6363,6 +6369,127 @@ namespace Anemora.EditorTools
 
             _ = baseStone;
             _ = dust;
+        }
+
+        private static void CreateOutdoorFramedLightPlanes(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            if (area == FastVsHouseArea.Exterior)
+            {
+                CreateHouseExteriorFramedLightPlanes(root, prefix, past, materials);
+                return;
+            }
+
+            CreateCentralPlazaFramedLightPlanes(root, prefix, past, materials);
+        }
+
+        private static void CreateHouseExteriorFramedLightPlanes(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var warmStage = EnsureHd2dOutdoorWarmStageLightMaterial();
+            var coolLight = EnsureHd2dCoolLightPoolMaterial();
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateOutdoorSkyWashQuad(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            Add(
+                past ? "Past_HouseExterior_FramedLightPlanes_UnderEaveOcclusionGradientA" : "Current_HouseExterior_FramedLightPlanes_UnderEaveOcclusionGradientA",
+                new Vector3(-1.04f, past ? 1.98f : 1.96f, -1.36f),
+                past ? new Vector3(4.82f, 1.16f, 1f) : new Vector3(4.90f, 1.12f, 1f),
+                Quaternion.Euler(0f, past ? -1.5f : 1.5f, 0f),
+                occlusion,
+                past ? "Past.house_exterior.framed_light_planes.under_eave_occlusion_gradient_a" : "Current.house_exterior.framed_light_planes.under_eave_occlusion_gradient_a");
+
+            Add(
+                past ? "Past_HouseExterior_FramedLightPlanes_RightPorchWarmSideLightA" : "Current_HouseExterior_FramedLightPlanes_RightPorchCoolSideLightA",
+                new Vector3(1.72f, past ? 1.30f : 1.26f, -1.18f),
+                past ? new Vector3(1.48f, 1.92f, 1f) : new Vector3(1.42f, 1.88f, 1f),
+                Quaternion.Euler(0f, past ? 4f : -4f, 0f),
+                past ? warmStage : coolLight,
+                past ? "Past.house_exterior.framed_light_planes.right_porch_warm_side_light_a" : "Current.house_exterior.framed_light_planes.right_porch_cool_side_light_a");
+
+            Add(
+                past ? "Past_HouseExterior_FramedLightPlanes_PorchLeadingWarmLightA" : "Current_HouseExterior_FramedLightPlanes_PorchLeadingCoolLightA",
+                new Vector3(-1.06f, 0.12f, -1.84f),
+                past ? new Vector3(2.14f, 0.28f, 1f) : new Vector3(2.00f, 0.26f, 1f),
+                Quaternion.Euler(0f, past ? -5f : -7f, 0f),
+                past ? warmStage : coolLight,
+                past ? "Past.house_exterior.framed_light_planes.porch_leading_warm_light_a" : "Current.house_exterior.framed_light_planes.porch_leading_cool_light_a");
+
+            _ = materials;
+        }
+
+        private static void CreateCentralPlazaFramedLightPlanes(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var warmStage = EnsureHd2dOutdoorWarmStageLightMaterial();
+            var coolLight = EnsureHd2dCoolLightPoolMaterial();
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateOutdoorSkyWashQuad(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryFacadeOcclusionGradientA" : "Current_CentralPlaza_FramedLightPlanes_LibraryFacadeOcclusionGradientA",
+                new Vector3(0.00f, past ? 3.08f : 3.00f, 8.36f),
+                past ? new Vector3(8.96f, 1.56f, 1f) : new Vector3(9.06f, 1.52f, 1f),
+                Quaternion.identity,
+                occlusion,
+                past ? "Past.central_plaza.framed_light_planes.library_facade_occlusion_gradient_a" : "Current.central_plaza.framed_light_planes.library_facade_occlusion_gradient_a");
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryDoorWarmEntryLightA" : "Current_CentralPlaza_FramedLightPlanes_LibraryDoorCoolEntryLightA",
+                new Vector3(0.00f, 0.98f, 7.64f),
+                past ? new Vector3(1.08f, 0.30f, 1f) : new Vector3(1.02f, 0.28f, 1f),
+                Quaternion.identity,
+                past ? warmStage : coolLight,
+                past ? "Past.central_plaza.framed_light_planes.library_door_warm_entry_light_a" : "Current.central_plaza.framed_light_planes.library_door_cool_entry_light_a");
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryApproachWarmLightA" : "Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA",
+                new Vector3(0.00f, 0.14f, 6.86f),
+                past ? new Vector3(2.94f, 0.34f, 1f) : new Vector3(2.86f, 0.32f, 1f),
+                Quaternion.Euler(0f, past ? 0f : -1.5f, 0f),
+                past ? warmStage : coolLight,
+                past ? "Past.central_plaza.framed_light_planes.library_approach_warm_light_a" : "Current.central_plaza.framed_light_planes.library_approach_cool_light_a");
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryWestReturnOcclusionA" : "Current_CentralPlaza_FramedLightPlanes_LibraryWestReturnOcclusionA",
+                new Vector3(-4.62f, past ? 1.86f : 1.82f, 8.94f),
+                past ? new Vector3(0.68f, 2.50f, 1f) : new Vector3(0.66f, 2.46f, 1f),
+                Quaternion.Euler(0f, past ? 4.5f : 3.5f, 0f),
+                occlusion,
+                past ? "Past.central_plaza.framed_light_planes.library_west_return_occlusion_a" : "Current.central_plaza.framed_light_planes.library_west_return_occlusion_a");
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryEastReturnOcclusionA" : "Current_CentralPlaza_FramedLightPlanes_LibraryEastReturnOcclusionA",
+                new Vector3(4.62f, past ? 1.86f : 1.82f, 8.94f),
+                past ? new Vector3(0.68f, 2.50f, 1f) : new Vector3(0.66f, 2.46f, 1f),
+                Quaternion.Euler(0f, past ? -4.5f : -3.5f, 0f),
+                occlusion,
+                past ? "Past.central_plaza.framed_light_planes.library_east_return_occlusion_a" : "Current.central_plaza.framed_light_planes.library_east_return_occlusion_a");
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryWestPlinthWarmLightA" : "Current_CentralPlaza_FramedLightPlanes_LibraryWestPlinthCoolLightA",
+                new Vector3(-4.62f, 0.24f, 8.92f),
+                past ? new Vector3(0.82f, 0.16f, 1f) : new Vector3(0.78f, 0.15f, 1f),
+                Quaternion.Euler(0f, past ? 1.5f : 1f, 0f),
+                past ? warmStage : coolLight,
+                past ? "Past.central_plaza.framed_light_planes.library_west_plinth_warm_light_a" : "Current.central_plaza.framed_light_planes.library_west_plinth_cool_light_a");
+
+            Add(
+                past ? "Past_CentralPlaza_FramedLightPlanes_LibraryEastPlinthWarmLightA" : "Current_CentralPlaza_FramedLightPlanes_LibraryEastPlinthCoolLightA",
+                new Vector3(4.62f, 0.24f, 8.92f),
+                past ? new Vector3(0.82f, 0.16f, 1f) : new Vector3(0.78f, 0.15f, 1f),
+                Quaternion.Euler(0f, past ? -1.5f : -1f, 0f),
+                past ? warmStage : coolLight,
+                past ? "Past.central_plaza.framed_light_planes.library_east_plinth_warm_light_a" : "Current.central_plaza.framed_light_planes.library_east_plinth_cool_light_a");
+
+            _ = materials;
         }
 
         private static void CreateHouseExteriorPorchDoorGroundingPolish(Transform root, string prefix, bool past, Materials materials, Vector3 center, Material stone, Material trim, Material wall)
@@ -6820,6 +6947,7 @@ namespace Anemora.EditorTools
             CreatePlazaLibraryVerticalityFoundation(root, prefix, past, materials);
             CreateOutdoorHorizonScenicDepthFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorLightCompositionContactGrounding(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateOutdoorFramedLightPlanes(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorCompositionSkyBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
@@ -27954,6 +28082,67 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_FountainWarmContactA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.06f, 0.06f, 2.64f), new Vector3(0.18f, 0.10f, 2.80f), new Vector3(1.00f, 0.010f, 0.08f), new Vector3(1.30f, 0.020f, 0.16f));
         }
 
+        private static void ValidateFastVsHd2dOneHundredTwelfthCycleOutdoorFramedLightPlanes()
+        {
+            if (AssetDatabase.LoadAssetAtPath<Material>(OutdoorOcclusionGradientMaterialPath) == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor occlusion gradient material asset at {OutdoorOcclusionGradientMaterialPath}.");
+            }
+
+            var occlusionTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(OutdoorOcclusionGradientTexturePath);
+            if (occlusionTexture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor occlusion gradient texture asset at {OutdoorOcclusionGradientTexturePath}.");
+            }
+
+            var occlusionMaterial = AssetDatabase.LoadAssetAtPath<Material>(OutdoorOcclusionGradientMaterialPath);
+            if (occlusionMaterial == null || !MaterialUsesTexture(occlusionMaterial, occlusionTexture))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {OutdoorOcclusionGradientMaterialPath} must reference {OutdoorOcclusionGradientTexturePath}.");
+            }
+
+            if (AssetDatabase.LoadAssetAtPath<Material>(OutdoorWarmStageLightMaterialPath) == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor warm stage light material asset at {OutdoorWarmStageLightMaterialPath}.");
+            }
+
+            var warmStageTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(OutdoorWarmStageLightTexturePath);
+            if (warmStageTexture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing outdoor warm stage light texture asset at {OutdoorWarmStageLightTexturePath}.");
+            }
+
+            var warmStageMaterial = AssetDatabase.LoadAssetAtPath<Material>(OutdoorWarmStageLightMaterialPath);
+            if (warmStageMaterial == null || !MaterialUsesTexture(warmStageMaterial, warmStageTexture))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {OutdoorWarmStageLightMaterialPath} must reference {OutdoorWarmStageLightTexturePath}.");
+            }
+
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_FramedLightPlanes_UnderEaveOcclusionGradientA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.18f, 1.88f, -1.44f), new Vector3(-0.88f, 2.08f, -1.26f), new Vector3(4.70f, 1.00f, 0.90f), new Vector3(4.98f, 1.28f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_FramedLightPlanes_RightPorchCoolSideLightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.40f, 1.16f, -1.32f), new Vector3(1.92f, 1.42f, -1.02f), new Vector3(1.28f, 1.72f, 0.90f), new Vector3(1.60f, 2.10f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_FramedLightPlanes_PorchLeadingCoolLightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.26f, 0.07f, -1.96f), new Vector3(-0.86f, 0.18f, -1.62f), new Vector3(1.84f, 0.18f, 0.90f), new Vector3(2.20f, 0.36f, 1.05f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_FramedLightPlanes_UnderEaveOcclusionGradientA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.18f, 1.88f, -1.44f), new Vector3(-0.88f, 2.08f, -1.26f), new Vector3(4.70f, 1.00f, 0.90f), new Vector3(4.98f, 1.28f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_FramedLightPlanes_RightPorchWarmSideLightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_warm_stage_light", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.40f, 1.16f, -1.32f), new Vector3(1.92f, 1.42f, -1.02f), new Vector3(1.28f, 1.72f, 0.90f), new Vector3(1.60f, 2.10f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_FramedLightPlanes_PorchLeadingWarmLightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_warm_stage_light", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.26f, 0.07f, -1.96f), new Vector3(-0.86f, 0.18f, -1.62f), new Vector3(1.84f, 0.18f, 0.90f), new Vector3(2.20f, 0.36f, 1.05f));
+
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryFacadeOcclusionGradientA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.32f, 2.72f, 8.24f), new Vector3(0.32f, 3.28f, 8.56f), new Vector3(8.72f, 1.34f, 0.90f), new Vector3(9.24f, 1.70f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryDoorCoolEntryLightA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.22f, 0.82f, 7.48f), new Vector3(0.22f, 1.12f, 7.78f), new Vector3(0.82f, 0.20f, 0.90f), new Vector3(1.18f, 0.40f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.22f, 0.06f, 6.62f), new Vector3(0.22f, 0.22f, 7.06f), new Vector3(2.60f, 0.20f, 0.90f), new Vector3(3.08f, 0.42f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryWestReturnOcclusionA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.92f, 1.60f, 8.66f), new Vector3(-4.20f, 2.16f, 9.22f), new Vector3(0.56f, 2.18f, 0.90f), new Vector3(0.78f, 2.78f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryEastReturnOcclusionA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.20f, 1.60f, 8.66f), new Vector3(4.92f, 2.16f, 9.22f), new Vector3(0.56f, 2.18f, 0.90f), new Vector3(0.78f, 2.78f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryWestPlinthCoolLightA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.92f, 0.18f, 8.68f), new Vector3(-4.20f, 0.30f, 9.16f), new Vector3(0.66f, 0.12f, 0.90f), new Vector3(0.92f, 0.22f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_FramedLightPlanes_LibraryEastPlinthCoolLightA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.20f, 0.18f, 8.68f), new Vector3(4.92f, 0.30f, 9.16f), new Vector3(0.66f, 0.12f, 0.90f), new Vector3(0.92f, 0.22f, 1.05f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryFacadeOcclusionGradientA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.32f, 2.72f, 8.24f), new Vector3(0.32f, 3.28f, 8.56f), new Vector3(8.72f, 1.34f, 0.90f), new Vector3(9.24f, 1.70f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryDoorWarmEntryLightA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_warm_stage_light", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.22f, 0.82f, 7.48f), new Vector3(0.22f, 1.12f, 7.78f), new Vector3(0.82f, 0.20f, 0.90f), new Vector3(1.18f, 0.40f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryApproachWarmLightA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_warm_stage_light", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.22f, 0.06f, 6.62f), new Vector3(0.22f, 0.22f, 7.06f), new Vector3(2.60f, 0.20f, 0.90f), new Vector3(3.08f, 0.42f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryWestReturnOcclusionA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.92f, 1.60f, 8.66f), new Vector3(-4.20f, 2.16f, 9.22f), new Vector3(0.56f, 2.18f, 0.90f), new Vector3(0.78f, 2.78f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryEastReturnOcclusionA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.20f, 1.60f, 8.66f), new Vector3(4.92f, 2.16f, 9.22f), new Vector3(0.56f, 2.18f, 0.90f), new Vector3(0.78f, 2.78f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryWestPlinthWarmLightA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_warm_stage_light", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.92f, 0.18f, 8.68f), new Vector3(-4.20f, 0.30f, 9.16f), new Vector3(0.66f, 0.12f, 0.90f), new Vector3(0.92f, 0.22f, 1.05f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_FramedLightPlanes_LibraryEastPlinthWarmLightA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_outdoor_warm_stage_light", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.20f, 0.18f, 8.68f), new Vector3(4.92f, 0.30f, 9.16f), new Vector3(0.66f, 0.12f, 0.90f), new Vector3(0.92f, 0.22f, 1.05f));
+        }
+
         private static void ValidateHouseExteriorPathPorchDressingObject(string objectName, string expectedMaterialToken, string expectedParentName, float maxScaleY)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -32253,6 +32442,96 @@ namespace Anemora.EditorTools
 
             EditorUtility.SetDirty(material);
             return material;
+        }
+
+        private static Material EnsureHd2dOutdoorOcclusionGradientMaterial()
+        {
+            var material = FlatMaterial("hd2d_outdoor_occlusion_gradient", new Color(0.13f, 0.14f, 0.17f, 0.18f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3007);
+            var texture = EnsureHd2dOutdoorOcclusionGradientTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(0.13f, 0.14f, 0.17f, 0.18f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
+        private static Material EnsureHd2dOutdoorWarmStageLightMaterial()
+        {
+            var material = FlatMaterial("hd2d_outdoor_warm_stage_light", new Color(1.0f, 0.80f, 0.46f, 0.22f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3009);
+            var texture = EnsureHd2dOutdoorWarmStageLightTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(1.0f, 0.80f, 0.46f, 0.22f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
+        private static Texture2D EnsureHd2dOutdoorOcclusionGradientTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_outdoor_occlusion_gradient_soft",
+                192,
+                128,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var u = x / 191f;
+                    var v = y / 127f;
+                    var centerFeather = SmoothFade01(0f, 0.12f, u) * SmoothFade01(0f, 0.12f, 1f - u);
+                    var upperBand = Mathf.Pow(v, 1.45f);
+                    var midBand = Mathf.Clamp01((v - 0.18f) / 0.62f);
+                    var alpha = (upperBand * 0.24f) + (midBand * 0.08f) + (centerFeather * upperBand * 0.06f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.30f);
+                    return new Color(0.13f, 0.14f, 0.17f, alpha);
+                });
+        }
+
+        private static Texture2D EnsureHd2dOutdoorWarmStageLightTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_outdoor_warm_stage_light_soft",
+                192,
+                128,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var u = (x / 191f) * 2f - 1f;
+                    var v = (y / 127f) * 2f - 1f;
+                    var coreDx = u / 0.74f;
+                    var coreDy = (v + 0.14f) / 0.50f;
+                    var haloDx = u / 0.96f;
+                    var haloDy = (v + 0.18f) / 0.74f;
+                    var core = Mathf.Clamp01(1f - Mathf.Sqrt((coreDx * coreDx) + (coreDy * coreDy)));
+                    var halo = Mathf.Clamp01(1f - Mathf.Sqrt((haloDx * haloDx) + (haloDy * haloDy)));
+                    var lowerSkirt = Mathf.Clamp01(1f - Mathf.Sqrt((u * u * 1.10f) + (((v - 0.52f) / 0.36f) * ((v - 0.52f) / 0.36f))));
+                    var alpha = (core * 0.28f) + (halo * 0.14f) + (lowerSkirt * 0.04f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.38f);
+                    return new Color(1.0f, 0.82f, 0.48f, alpha);
+                });
         }
 
         private static Material EnsureHd2dOutdoorScenicBackdropMaterial(string id, bool past, FastVsHouseArea area, string layer)
