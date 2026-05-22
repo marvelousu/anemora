@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_house_exterior_architectural_closure_cycle30.md](2026-05-22_fast_vs_hd2d_house_exterior_architectural_closure_cycle30.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Architectural Closure Cycle 30 |
 | [2026-05-22_fast_vs_hd2d_exterior_occlusion_backdrop_cycle27.md](2026-05-22_fast_vs_hd2d_exterior_occlusion_backdrop_cycle27.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Exterior Occlusion Backdrop Cycle 27 |
 | [2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md](2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Window Light Cookie Cycle 26 |
 | [2026-05-22_fast_vs_hd2d_postprocess_grade_cycle25.md](2026-05-22_fast_vs_hd2d_postprocess_grade_cycle25.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Postprocess Grade Cycle 25 |
@@ -513,6 +514,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v6.88 | 2026-05-22 | Added Fast VS HD2D house exterior architectural closure cycle record with current/past shell closure polish, validation, and report notes. |
 | v6.87 | 2026-05-22 | Added Fast VS HD2D surface texture metric audit cycle record with report generation, validation, and cleanup notes. |
 | v6.86 | 2026-05-22 | Added Fast VS HD2D surface profile foundation cycle record with current/past major surface review metadata, validation, and cleanup notes. |
 | v6.85 | 2026-05-22 | Added Fast VS HD2D current interior surface readability cycle record with current-world interior texture/plate tuning, validation, and cleanup notes. |
