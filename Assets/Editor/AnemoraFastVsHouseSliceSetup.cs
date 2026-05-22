@@ -358,6 +358,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredFourteenthCycleFacadeSurfaceDepth();
             ValidateFastVsHd2dOneHundredFifteenthCycleFacadeEdgeSoftening();
             ValidateFastVsHd2dOneHundredSixteenthCycleLibraryTallMassGroundContinuation();
+            ValidateFastVsHd2dOneHundredSeventeenthCycleOutdoorBackgroundSkyDepth();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5938,6 +5939,7 @@ namespace Anemora.EditorTools
             CreateOutdoorSkyAtmosphereDepthPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorHorizonDepthCleanupPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateOutdoorBackgroundSkyDepthCycle44(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateHouseExteriorOcclusionShell(root, prefix, past, materials);
             CreateHouseExteriorFacadeCompositionPolish(root, prefix, past, materials);
             CreateHouseExteriorArchitecturalClosurePolish(root, prefix, past, materials);
@@ -6954,6 +6956,7 @@ namespace Anemora.EditorTools
             CreatePlazaLibraryVerticalityFoundation(root, prefix, past, materials);
             CreatePlazaLibraryTallMassCycle43(root, prefix, past, materials);
             CreateOutdoorWorldGroundContinuationCycle43(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateOutdoorBackgroundSkyDepthCycle44(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorHorizonScenicDepthFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorLightCompositionContactGrounding(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorFramedLightPlanes(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
@@ -9275,6 +9278,182 @@ namespace Anemora.EditorTools
                     rightWrapMaterial,
                     $"{prefix}.central_plaza.scenic_backdrop.right_sky_wrap_a");
             }
+
+            _ = materials;
+        }
+
+        private static void CreateOutdoorBackgroundSkyDepthCycle44(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            // Keep the backdrop broken into a few narrow pieces so it reads as distance rather than a flat wall.
+            var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
+            var skyCurtainMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_outdoor_background_sky_depth_sky_curtain" : "current_house_exterior_outdoor_background_sky_depth_sky_curtain")
+                    : (past ? "past_central_plaza_outdoor_background_sky_depth_sky_curtain" : "current_central_plaza_outdoor_background_sky_depth_sky_curtain"),
+                past,
+                area,
+                "sky_curtain");
+            var skyWrapMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_outdoor_background_sky_depth_sky_wrap" : "current_house_exterior_outdoor_background_sky_depth_sky_wrap")
+                    : (past ? "past_central_plaza_outdoor_background_sky_depth_sky_wrap" : "current_central_plaza_outdoor_background_sky_depth_sky_wrap"),
+                past,
+                area,
+                "sky_wrap");
+            var horizonMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_outdoor_background_sky_depth_horizon_line" : "current_house_exterior_outdoor_background_sky_depth_horizon_line")
+                    : (past ? "past_central_plaza_outdoor_background_sky_depth_roofline" : "current_central_plaza_outdoor_background_sky_depth_roofline"),
+                past,
+                area,
+                area == FastVsHouseArea.Exterior ? "distant_tree_line" : "distant_roofline");
+            var hazeMaterial = EnsureHd2dOutdoorScenicBackdropMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_outdoor_background_sky_depth_far_edge_haze" : "current_house_exterior_outdoor_background_sky_depth_far_edge_haze")
+                    : (past ? "past_central_plaza_outdoor_background_sky_depth_far_edge_haze" : "current_central_plaza_outdoor_background_sky_depth_far_edge_haze"),
+                past,
+                area,
+                "low_haze_band");
+
+            if (area == FastVsHouseArea.Exterior)
+            {
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_SkyCurtainA",
+                    root,
+                    c + new Vector3(0.08f, past ? 4.14f : 4.06f, 7.74f),
+                    past ? new Vector3(8.96f, 2.96f, 1f) : new Vector3(8.72f, 2.84f, 1f),
+                    Quaternion.identity,
+                    skyCurtainMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.sky_curtain_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_LeftSkyWrapA",
+                    root,
+                    c + new Vector3(-6.86f, past ? 3.18f : 3.08f, 7.22f),
+                    past ? new Vector3(1.92f, 2.86f, 1f) : new Vector3(1.84f, 2.74f, 1f),
+                    Quaternion.Euler(0f, past ? 14f : 13f, 0f),
+                    skyWrapMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.left_sky_wrap_a");
+
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_RightSkyWrapA",
+                    root,
+                    c + new Vector3(6.86f, past ? 3.18f : 3.08f, 7.22f),
+                    past ? new Vector3(1.92f, 2.86f, 1f) : new Vector3(1.84f, 2.74f, 1f),
+                    Quaternion.Euler(0f, past ? -14f : -13f, 0f),
+                    skyWrapMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.right_sky_wrap_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_HorizonTreeLineLeftA",
+                    root,
+                    c + new Vector3(-4.72f, past ? 1.10f : 1.02f, 8.18f),
+                    past ? new Vector3(2.28f, 0.40f, 0.08f) : new Vector3(2.18f, 0.38f, 0.08f),
+                    Quaternion.Euler(0f, past ? -6f : -4f, 0f),
+                    horizonMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.horizon_tree_line_left_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_HorizonTreeLineCenterA",
+                    root,
+                    c + new Vector3(-0.08f, past ? 1.16f : 1.08f, 8.40f),
+                    past ? new Vector3(3.34f, 0.46f, 0.08f) : new Vector3(3.18f, 0.42f, 0.08f),
+                    Quaternion.identity,
+                    horizonMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.horizon_tree_line_center_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_HorizonTreeLineRightA",
+                    root,
+                    c + new Vector3(4.82f, past ? 1.08f : 1.00f, 8.18f),
+                    past ? new Vector3(2.12f, 0.38f, 0.08f) : new Vector3(2.04f, 0.36f, 0.08f),
+                    Quaternion.Euler(0f, past ? 5f : 4f, 0f),
+                    horizonMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.horizon_tree_line_right_a");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_OutdoorBackgroundSkyDepth_FarRoadContinuationA",
+                    root,
+                    c + new Vector3(6.68f, past ? 0.92f : 0.86f, 7.96f),
+                    past ? new Vector3(1.58f, 0.30f, 0.08f) : new Vector3(1.46f, 0.28f, 0.08f),
+                    Quaternion.Euler(0f, past ? 11f : 9f, 0f),
+                    hazeMaterial,
+                    $"{prefix}.house_exterior.outdoor_background_sky_depth.far_road_continuation_a");
+                _ = materials;
+                return;
+            }
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_SkyCurtainA",
+                root,
+                c + new Vector3(0.12f, past ? 5.14f : 5.04f, 14.98f),
+                past ? new Vector3(11.68f, 3.54f, 1f) : new Vector3(11.42f, 3.40f, 1f),
+                Quaternion.identity,
+                skyCurtainMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.sky_curtain_a");
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_LeftSkyWrapA",
+                root,
+                c + new Vector3(-9.08f, past ? 4.20f : 4.10f, 14.50f),
+                past ? new Vector3(2.18f, 3.02f, 1f) : new Vector3(2.08f, 2.92f, 1f),
+                Quaternion.Euler(0f, past ? 12f : 11f, 0f),
+                skyWrapMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.left_sky_wrap_a");
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_RightSkyWrapA",
+                root,
+                c + new Vector3(9.08f, past ? 4.20f : 4.10f, 14.50f),
+                past ? new Vector3(2.18f, 3.02f, 1f) : new Vector3(2.08f, 2.92f, 1f),
+                Quaternion.Euler(0f, past ? -12f : -11f, 0f),
+                skyWrapMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.right_sky_wrap_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_RooflineLeftA",
+                root,
+                c + new Vector3(-5.22f, past ? 2.74f : 2.64f, 14.80f),
+                past ? new Vector3(2.48f, 0.44f, 0.08f) : new Vector3(2.38f, 0.42f, 0.08f),
+                Quaternion.Euler(0f, past ? -5f : -4f, 0f),
+                horizonMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.roofline_left_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_RooflineCenterA",
+                root,
+                c + new Vector3(-0.02f, past ? 2.62f : 2.54f, 15.00f),
+                past ? new Vector3(3.98f, 0.50f, 0.08f) : new Vector3(3.86f, 0.48f, 0.08f),
+                Quaternion.identity,
+                horizonMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.roofline_center_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_RooflineRightA",
+                root,
+                c + new Vector3(5.28f, past ? 2.74f : 2.64f, 14.80f),
+                past ? new Vector3(2.48f, 0.44f, 0.08f) : new Vector3(2.38f, 0.42f, 0.08f),
+                Quaternion.Euler(0f, past ? 5f : 4f, 0f),
+                horizonMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.roofline_right_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_GroundHazeLeftA",
+                root,
+                c + new Vector3(-4.72f, past ? 1.04f : 0.98f, 14.20f),
+                past ? new Vector3(4.24f, 0.26f, 0.08f) : new Vector3(4.10f, 0.24f, 0.08f),
+                Quaternion.identity,
+                hazeMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.ground_haze_left_a");
+
+            CreateOutdoorVoidBackgroundSlab(
+                $"{prefix}_CentralPlaza_OutdoorBackgroundSkyDepth_GroundHazeRightA",
+                root,
+                c + new Vector3(4.78f, past ? 1.04f : 0.98f, 14.20f),
+                past ? new Vector3(4.36f, 0.26f, 0.08f) : new Vector3(4.20f, 0.24f, 0.08f),
+                Quaternion.identity,
+                hazeMaterial,
+                $"{prefix}.central_plaza.outdoor_background_sky_depth.ground_haze_right_a");
 
             _ = materials;
         }
@@ -28592,6 +28771,21 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_Cycle43_OuterBackShelfA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_grass", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-0.30f, 0.02f, 10.70f), new Vector3(0.30f, 0.08f, 11.34f), new Vector3(12.70f, 0.04f, 0.98f), new Vector3(13.70f, 0.08f, 1.18f));
             ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle43_OuterBackShelfA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_grass", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-0.30f, 0.02f, 7.96f), new Vector3(0.30f, 0.08f, 8.36f), new Vector3(11.60f, 0.04f, 0.90f), new Vector3(12.10f, 0.08f, 1.06f));
             ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle43_OuterBackShelfA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_grass", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-0.30f, 0.02f, 7.96f), new Vector3(0.30f, 0.08f, 8.36f), new Vector3(11.60f, 0.04f, 0.90f), new Vector3(12.10f, 0.08f, 1.06f));
+        }
+
+        private static void ValidateFastVsHd2dOneHundredSeventeenthCycleOutdoorBackgroundSkyDepth()
+        {
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OutdoorBackgroundSkyDepth_SkyCurtainA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 3.78f, 7.52f), new Vector3(0.34f, 4.34f, 7.96f), new Vector3(8.40f, 2.62f, 0.96f), new Vector3(9.24f, 3.08f, 1.04f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OutdoorBackgroundSkyDepth_SkyCurtainA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.34f, 3.78f, 7.52f), new Vector3(0.34f, 4.34f, 7.96f), new Vector3(8.40f, 2.62f, 0.96f), new Vector3(9.24f, 3.08f, 1.04f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_OutdoorBackgroundSkyDepth_HorizonTreeLineCenterA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.42f, 0.92f, 8.24f), new Vector3(0.42f, 1.26f, 8.56f), new Vector3(2.96f, 0.34f, 0.06f), new Vector3(3.50f, 0.50f, 0.10f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_OutdoorBackgroundSkyDepth_HorizonTreeLineCenterA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.42f, 0.92f, 8.24f), new Vector3(0.42f, 1.26f, 8.56f), new Vector3(2.96f, 0.34f, 0.06f), new Vector3(3.50f, 0.50f, 0.10f));
+
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_OutdoorBackgroundSkyDepth_SkyCurtainA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.44f, 4.68f, 14.76f), new Vector3(0.44f, 5.42f, 15.18f), new Vector3(11.02f, 3.06f, 0.96f), new Vector3(11.98f, 3.86f, 1.04f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_OutdoorBackgroundSkyDepth_SkyCurtainA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.44f, 4.68f, 14.76f), new Vector3(0.44f, 5.42f, 15.18f), new Vector3(11.02f, 3.06f, 0.96f), new Vector3(11.98f, 3.86f, 1.04f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_OutdoorBackgroundSkyDepth_RooflineCenterA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.48f, 2.32f, 14.84f), new Vector3(0.48f, 2.82f, 15.16f), new Vector3(3.62f, 0.40f, 0.06f), new Vector3(4.18f, 0.58f, 0.10f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_OutdoorBackgroundSkyDepth_RooflineCenterA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.48f, 2.32f, 14.84f), new Vector3(0.48f, 2.82f, 15.16f), new Vector3(3.62f, 0.40f, 0.06f), new Vector3(4.18f, 0.58f, 0.10f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_OutdoorBackgroundSkyDepth_GroundHazeLeftA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.96f, 0.86f, 14.06f), new Vector3(-4.48f, 1.14f, 14.34f), new Vector3(3.86f, 0.20f, 0.06f), new Vector3(4.34f, 0.30f, 0.10f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_OutdoorBackgroundSkyDepth_GroundHazeLeftA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "outdoor_background_sky_depth", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.96f, 0.86f, 14.06f), new Vector3(-4.48f, 1.14f, 14.34f), new Vector3(3.86f, 0.20f, 0.06f), new Vector3(4.34f, 0.30f, 0.10f));
         }
 
         private static void ValidateFastVsHd2dOneHundredNinthCycleOutdoorWorldEnvelopeFoundation()
