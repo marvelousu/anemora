@@ -25,6 +25,9 @@ namespace Anemora.EditorTools
         private const string URPUnlitShaderName = "Universal Render Pipeline/Unlit";
         private const string URPLitShaderName = "Universal Render Pipeline/Lit";
         private const float SpriteCardRampStrength = 0.18f;
+        private const float SpriteCardPaperEdgeStrength = 0.10f;
+        private const float SpriteCardPaperRimStrength = 0.07f;
+        private const float SpriteCardPaperLowerShadeStrength = 0.08f;
         private const float SurfaceRampStrength = 0.20f;
         private const float SurfaceRampDirectionalLightStrength = 0.12f;
         private const float SurfaceRampShadowReceiveStrength = 0.18f;
@@ -31952,6 +31955,21 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_FloorShade"))
             {
                 material.SetColor("_FloorShade", SpriteCardFloorShade);
+            }
+
+            if (material.HasProperty("_PaperEdgeStrength"))
+            {
+                material.SetFloat("_PaperEdgeStrength", SpriteCardPaperEdgeStrength);
+            }
+
+            if (material.HasProperty("_PaperRimStrength"))
+            {
+                material.SetFloat("_PaperRimStrength", SpriteCardPaperRimStrength);
+            }
+
+            if (material.HasProperty("_PaperLowerShadeStrength"))
+            {
+                material.SetFloat("_PaperLowerShadeStrength", SpriteCardPaperLowerShadeStrength);
             }
 
             ApplyMaterialRole(material, id, FastVsHd2dMaterialRole.SpriteCard);

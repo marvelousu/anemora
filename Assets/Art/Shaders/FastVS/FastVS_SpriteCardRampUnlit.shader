@@ -9,6 +9,9 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
         _TopLight("Top Light", Color) = (1.08, 1.03, 0.96, 1)
         _SideShade("Side Shade", Color) = (0.94, 0.97, 1.03, 1)
         _FloorShade("Floor Shade", Color) = (0.89, 0.92, 0.96, 1)
+        _PaperEdgeStrength("Paper Edge Strength", Range(0, 0.35)) = 0.10
+        _PaperRimStrength("Paper Rim Strength", Range(0, 0.25)) = 0.07
+        _PaperLowerShadeStrength("Paper Lower Shade Strength", Range(0, 0.25)) = 0.08
     }
 
     SubShader
@@ -40,6 +43,7 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
             float4 _BaseMap_ST;
+            float4 _BaseMap_TexelSize;
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -50,6 +54,9 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             float4 _TopLight;
             float4 _SideShade;
             float4 _FloorShade;
+            half _PaperEdgeStrength;
+            half _PaperRimStrength;
+            half _PaperLowerShadeStrength;
 
             struct Attributes
             {
@@ -71,6 +78,13 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
                 return output;
             }
 
+            float SampleBaseMapAlphaWithinFrame(float2 sampleUv, float2 frameMin, float2 frameMax, float2 frameTexel)
+            {
+                float2 halfTexel = frameTexel * 0.5;
+                float2 clampedUv = clamp(sampleUv, frameMin + halfTexel, frameMax - halfTexel);
+                return SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, clampedUv).a;
+            }
+
             half4 Frag(Varyings input) : SV_Target
             {
                 float2 uv = input.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
@@ -81,20 +95,48 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
                     return half4(0.0h, 0.0h, 0.0h, 0.0h);
                 }
 
+                float2 frameMin = _BaseMap_ST.zw;
+                float2 frameMax = frameMin + _BaseMap_ST.xy;
+                float2 frameScale = max(_BaseMap_ST.xy, 1e-5);
+                float2 frameTexel = min(_BaseMap_TexelSize.xy * 1.25, frameScale * 0.49);
+
                 float2 frameUv = float2(
                     saturate((uv.x - _BaseMap_ST.z) / max(_BaseMap_ST.x, 1e-5)),
                     saturate((uv.y - _BaseMap_ST.w) / max(_BaseMap_ST.y, 1e-5)));
+
+                float alphaLeft = SampleBaseMapAlphaWithinFrame(uv - float2(frameTexel.x, 0.0), frameMin, frameMax, frameTexel);
+                float alphaRight = SampleBaseMapAlphaWithinFrame(uv + float2(frameTexel.x, 0.0), frameMin, frameMax, frameTexel);
+                float alphaTop = SampleBaseMapAlphaWithinFrame(uv + float2(0.0, frameTexel.y), frameMin, frameMax, frameTexel);
+                float alphaBottom = SampleBaseMapAlphaWithinFrame(uv - float2(0.0, frameTexel.y), frameMin, frameMax, frameTexel);
+                float alphaTopLeft = SampleBaseMapAlphaWithinFrame(uv + float2(-frameTexel.x, frameTexel.y), frameMin, frameMax, frameTexel);
+                float alphaBottomRight = SampleBaseMapAlphaWithinFrame(uv + float2(frameTexel.x, -frameTexel.y), frameMin, frameMax, frameTexel);
+
+                float edgeLeft = saturate((baseSample.a - alphaLeft) * 10.0);
+                float edgeRight = saturate((baseSample.a - alphaRight) * 10.0);
+                float edgeTop = saturate((baseSample.a - alphaTop) * 10.0);
+                float edgeBottom = saturate((baseSample.a - alphaBottom) * 10.0);
+                float edgeTopLeft = saturate((baseSample.a - alphaTopLeft) * 8.0);
+                float edgeBottomRight = saturate((baseSample.a - alphaBottomRight) * 8.0);
+                float cutoutEdge = saturate(max(max(edgeLeft, edgeRight), max(edgeTop, edgeBottom)));
+                cutoutEdge = saturate(max(cutoutEdge, max(edgeTopLeft, edgeBottomRight)));
+                float edgeAccent = saturate(cutoutEdge * 1.5);
 
                 float warmKey = saturate((1.0 - frameUv.x) * frameUv.y);
                 float coolSide = saturate(frameUv.x * (1.0 - frameUv.y * 0.18));
                 float floorShade = saturate((1.0 - frameUv.y) * (1.0 - frameUv.y));
                 float strength = saturate(_RampStrength);
+                float paperEdgeStrength = saturate(_PaperEdgeStrength);
+                float paperRimStrength = saturate(_PaperRimStrength);
+                float paperLowerShadeStrength = saturate(_PaperLowerShadeStrength);
 
                 half3 neutral = half3(1.0h, 1.0h, 1.0h);
                 half3 grade = neutral;
                 grade *= lerp(neutral, (half3)_TopLight.rgb, (half)(warmKey * strength));
                 grade *= lerp(neutral, (half3)_SideShade.rgb, (half)(coolSide * strength));
                 grade *= lerp(neutral, (half3)_FloorShade.rgb, (half)(floorShade * strength));
+                grade *= lerp(neutral, half3(1.035h, 1.015h, 0.990h), (half)(edgeAccent * warmKey * paperRimStrength));
+                grade *= lerp(neutral, half3(0.970h, 0.980h, 1.020h), (half)(edgeAccent * coolSide * paperEdgeStrength));
+                grade *= lerp(neutral, half3(0.965h, 0.975h, 1.015h), (half)(edgeAccent * saturate((1.0 - frameUv.y) * (0.55 + frameUv.x * 0.45)) * paperLowerShadeStrength));
 
                 half3 rgb = baseSample.rgb * grade;
                 return half4(rgb, baseSample.a);

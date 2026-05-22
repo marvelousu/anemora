@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.92 fast VS HD2D character contact shadow texture cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.93 fast VS HD2D sprite card edge rim cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 369 files including INDEX.md and README.md.
-- Dated devlog records: 367 files.
-- Linked evidence files present under docs/devlog/screenshots/: 670 files.
+- Root-level Markdown coverage: 370 files including INDEX.md and README.md.
+- Dated devlog records: 368 files.
+- Linked evidence files present under docs/devlog/screenshots/: 671 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 22 |
+| 2026-05-22 | 23 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_sprite_card_edge_rim_cycle23.md](2026-05-22_fast_vs_hd2d_sprite_card_edge_rim_cycle23.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Edge Rim Cycle 23 |
 | [2026-05-22_fast_vs_hd2d_character_contact_shadow_texture_cycle22.md](2026-05-22_fast_vs_hd2d_character_contact_shadow_texture_cycle22.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Character Contact Shadow Texture Cycle 22 |
 | [2026-05-22_fast_vs_hd2d_static_directional_shadow_texture_cycle21.md](2026-05-22_fast_vs_hd2d_static_directional_shadow_texture_cycle21.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Static Directional Shadow Texture Cycle 21 |
 | [2026-05-22_fast_vs_hd2d_surface_directional_shade_texture_cycle20.md](2026-05-22_fast_vs_hd2d_surface_directional_shade_texture_cycle20.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Directional Shade Texture Cycle 20 |

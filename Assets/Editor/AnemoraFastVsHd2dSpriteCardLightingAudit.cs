@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,8 +17,18 @@ namespace Anemora.EditorTools
         private const float OpaqueThreshold = 0.12f;
         private const float SpriteCardRampStrengthMin = 0.14f;
         private const float SpriteCardRampStrengthMax = 0.22f;
+        private const float SpriteCardPaperEdgeStrengthMin = 0.06f;
+        private const float SpriteCardPaperEdgeStrengthMax = 0.16f;
+        private const float SpriteCardPaperRimStrengthMin = 0.04f;
+        private const float SpriteCardPaperRimStrengthMax = 0.12f;
+        private const float SpriteCardPaperLowerShadeStrengthMin = 0.04f;
+        private const float SpriteCardPaperLowerShadeStrengthMax = 0.14f;
         private const int SpriteCardRenderQueueMin = 3000;
         private const int SpriteCardRenderQueueMax = 3015;
+        private const string Cycle23ReportFileName = "sprite_card_edge_rim_cycle23_20260522.md";
+        private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+        private static readonly string Cycle23OutputDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "docs/devlog/screenshots/fast_vs_hd2d_sprite_card_edge_rim_cycle23_20260522"));
+        private static readonly string Cycle23ReportPath = Path.Combine(Cycle23OutputDirectory, Cycle23ReportFileName);
 
         [MenuItem("Tools/Anemora/Verify HD2D Sprite Card Lighting V1")]
         public static void VerifySpriteCardLightingV1()
@@ -76,6 +89,24 @@ namespace Anemora.EditorTools
             }
 
             Debug.Log("HD2D sprite card lighting audit passed.");
+        }
+
+        [MenuItem("Tools/Anemora/Write HD2D Sprite Card Edge Rim Cycle 23 Report")]
+        public static void WriteSpriteCardEdgeRimCycle23ReportBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+
+            var report = BuildSpriteCardEdgeRimCycle23Report();
+            Directory.CreateDirectory(Cycle23OutputDirectory);
+            File.WriteAllText(Cycle23ReportPath, BuildSpriteCardEdgeRimCycle23Markdown(report), Encoding.UTF8);
+            AssetDatabase.Refresh();
+
+            if (report.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D sprite card edge rim cycle 23 report failed:\n- " + string.Join("\n- ", report.Issues));
+            }
+
+            Debug.Log($"HD2D sprite card edge rim report written: {Cycle23ReportPath}");
         }
 
         private static void ValidateSpriteTexture(List<string> issues, string spriteId, string sourcePath)
@@ -243,6 +274,9 @@ namespace Anemora.EditorTools
             ValidateSpriteCardColorBand(issues, material, path, "_TopLight", 0.98f, 1.12f, 0.96f, 1.08f, 0.90f, 1.05f);
             ValidateSpriteCardColorBand(issues, material, path, "_SideShade", 0.90f, 1.00f, 0.94f, 1.03f, 0.98f, 1.08f);
             ValidateSpriteCardColorBand(issues, material, path, "_FloorShade", 0.84f, 0.94f, 0.88f, 0.97f, 0.92f, 1.00f);
+            ValidateSpriteCardStrengthBand(issues, material, path, "_PaperEdgeStrength", SpriteCardPaperEdgeStrengthMin, SpriteCardPaperEdgeStrengthMax, required: true);
+            ValidateSpriteCardStrengthBand(issues, material, path, "_PaperRimStrength", SpriteCardPaperRimStrengthMin, SpriteCardPaperRimStrengthMax, required: true);
+            ValidateSpriteCardStrengthBand(issues, material, path, "_PaperLowerShadeStrength", SpriteCardPaperLowerShadeStrengthMin, SpriteCardPaperLowerShadeStrengthMax, required: false);
         }
 
         private static void ValidateSpriteCardColorBand(
@@ -270,6 +304,174 @@ namespace Anemora.EditorTools
             {
                 issues.Add($"Sprite card material {propertyName} is out of range: {path} ({color.r:0.000}, {color.g:0.000}, {color.b:0.000}).");
             }
+        }
+
+        private static void ValidateSpriteCardStrengthBand(List<string> issues, Material material, string path, string propertyName, float min, float max, bool required)
+        {
+            if (!material.HasProperty(propertyName))
+            {
+                if (required)
+                {
+                    issues.Add($"Sprite card material is missing {propertyName}: {path}");
+                }
+
+                return;
+            }
+
+            var value = material.GetFloat(propertyName);
+            if (value < min || value > max)
+            {
+                issues.Add($"Sprite card material {propertyName} is out of range: {path} ({value:0.000}).");
+            }
+        }
+
+        private static SpriteCardEdgeRimCycle23Report BuildSpriteCardEdgeRimCycle23Report()
+        {
+            var report = new SpriteCardEdgeRimCycle23Report();
+            AddSpriteCardEdgeRimMaterial(report, "niro_front_sprite");
+            AddSpriteCardEdgeRimMaterial(report, "niro_walk_front_sprite");
+            AddSpriteCardEdgeRimMaterial(report, "reto_v02_writing_loop_sprite");
+            AddSpriteCardEdgeRimMaterial(report, "aria_v46_normal_loop_breath_sprite");
+            return report;
+        }
+
+        private static void AddSpriteCardEdgeRimMaterial(SpriteCardEdgeRimCycle23Report report, string materialId)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            var entry = new SpriteCardEdgeRimMaterialReport
+            {
+                MaterialId = materialId,
+                MaterialPath = GetAbsoluteAssetPath(materialPath),
+                ShaderName = "<missing>",
+                TexturePath = "<missing>",
+                TextureName = "<missing>"
+            };
+
+            report.Materials.Add(entry);
+            ValidateSpriteCardMaterial(report.Issues, materialId);
+
+            if (material == null)
+            {
+                return;
+            }
+
+            entry.ShaderName = material.shader != null ? material.shader.name : "<missing>";
+            entry.RenderQueue = material.renderQueue;
+            entry.RampStrength = material.HasProperty("_RampStrength") ? material.GetFloat("_RampStrength") : float.NaN;
+            entry.PaperEdgeStrength = material.HasProperty("_PaperEdgeStrength") ? material.GetFloat("_PaperEdgeStrength") : float.NaN;
+            entry.PaperRimStrength = material.HasProperty("_PaperRimStrength") ? material.GetFloat("_PaperRimStrength") : float.NaN;
+            entry.PaperLowerShadeStrength = material.HasProperty("_PaperLowerShadeStrength") ? material.GetFloat("_PaperLowerShadeStrength") : float.NaN;
+            entry.TopLight = material.HasProperty("_TopLight") ? material.GetColor("_TopLight") : default;
+            entry.SideShade = material.HasProperty("_SideShade") ? material.GetColor("_SideShade") : default;
+            entry.FloorShade = material.HasProperty("_FloorShade") ? material.GetColor("_FloorShade") : default;
+
+            var texture = material.GetTexture("_BaseMap") as Texture2D ?? material.GetTexture("_MainTex") as Texture2D;
+            if (texture != null)
+            {
+                entry.TextureName = texture.name;
+                var textureAssetPath = AssetDatabase.GetAssetPath(texture);
+                if (!string.IsNullOrEmpty(textureAssetPath))
+                {
+                    entry.TexturePath = GetAbsoluteAssetPath(textureAssetPath);
+                }
+            }
+        }
+
+        private static string BuildSpriteCardEdgeRimCycle23Markdown(SpriteCardEdgeRimCycle23Report report)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("# Fast VS HD2D Sprite Card Edge Rim Cycle 23 Report");
+            builder.AppendLine();
+            builder.AppendLine("Deterministic paper-edge and rim shading foundation for the Fast VS sprite cards used by Niro, Reto, and Aria. The goal is to keep the existing ramp lighting intact while making the paper sprites read less like flat pasted cutouts.");
+            builder.AppendLine();
+            builder.AppendLine($"- Project root: `{ProjectRoot}`");
+            builder.AppendLine($"- Report file: `{Cycle23ReportPath}`");
+            builder.AppendLine($"- Shader: `{SpriteCardRampShaderName}`");
+            builder.AppendLine($"- Result: {report.Result}");
+            builder.AppendLine();
+            builder.AppendLine("## Representative Materials");
+            builder.AppendLine();
+            builder.AppendLine("| Material | Material Path | Texture Name | Texture Path | Shader | Render Queue | Result |");
+            builder.AppendLine("|---|---|---|---|---|---:|---|");
+            foreach (var material in report.Materials)
+            {
+                builder.AppendLine($"| `{material.MaterialId}` | `{material.MaterialPath}` | `{material.TextureName}` | `{material.TexturePath}` | `{material.ShaderName}` | {material.RenderQueue} | {report.Result} |");
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("## Property Values");
+            builder.AppendLine();
+            builder.AppendLine("| Material | Ramp Strength | Paper Edge | Paper Rim | Paper Lower Shade | Top Light | Side Shade | Floor Shade |");
+            builder.AppendLine("|---|---:|---:|---:|---:|---|---|---|");
+            foreach (var material in report.Materials)
+            {
+                builder.AppendLine(
+                    $"| `{material.MaterialId}` | {FormatOptionalFloat(material.RampStrength)} | {FormatOptionalFloat(material.PaperEdgeStrength)} | {FormatOptionalFloat(material.PaperRimStrength)} | {FormatOptionalFloat(material.PaperLowerShadeStrength)} | {FormatColor(material.TopLight)} | {FormatColor(material.SideShade)} | {FormatColor(material.FloorShade)} |");
+            }
+
+            if (report.Issues.Count > 0)
+            {
+                builder.AppendLine();
+                builder.AppendLine("## Issues");
+                foreach (var issue in report.Issues)
+                {
+                    builder.AppendLine($"- {issue}");
+                }
+            }
+
+            return builder.ToString();
+        }
+
+        private static string FormatOptionalFloat(float value)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value))
+            {
+                return "n/a";
+            }
+
+            return value.ToString("0.000", CultureInfo.InvariantCulture);
+        }
+
+        private static string FormatColor(Color color)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "({0:0.000}, {1:0.000}, {2:0.000}, {3:0.000})",
+                color.r,
+                color.g,
+                color.b,
+                color.a);
+        }
+
+        private static string GetAbsoluteAssetPath(string assetPath)
+        {
+            return Path.GetFullPath(Path.Combine(ProjectRoot, assetPath));
+        }
+
+        private sealed class SpriteCardEdgeRimCycle23Report
+        {
+            public readonly List<string> Issues = new List<string>();
+            public readonly List<SpriteCardEdgeRimMaterialReport> Materials = new List<SpriteCardEdgeRimMaterialReport>();
+
+            public string Result => Issues.Count > 0 ? "FAIL" : "PASS";
+        }
+
+        private sealed class SpriteCardEdgeRimMaterialReport
+        {
+            public string MaterialId;
+            public string MaterialPath;
+            public string TextureName;
+            public string TexturePath;
+            public string ShaderName;
+            public int RenderQueue;
+            public float RampStrength;
+            public float PaperEdgeStrength;
+            public float PaperRimStrength;
+            public float PaperLowerShadeStrength;
+            public Color TopLight;
+            public Color SideShade;
+            public Color FloorShade;
         }
 
         private static bool TryFindOpaqueSample(Texture2D texture, int frameWidth, bool topLeftSearch, out Color pixel)

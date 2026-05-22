@@ -48,6 +48,9 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 10
     - _DstBlendAlpha: 10
+    - _PaperEdgeStrength: 0.1
+    - _PaperLowerShadeStrength: 0.08
+    - _PaperRimStrength: 0.07
     - _QueueOffset: 11
     - _RampStrength: 0.18
     - _SampleGI: 0
