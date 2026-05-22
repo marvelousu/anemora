@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v7.03 fast VS HD2D outdoor ground continuation / library verticality parent review index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.05 fast VS HD2D outdoor world envelope / horizon grounding parent review index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 382 files including INDEX.md and README.md.
-- Dated devlog records: 380 files.
-- Linked evidence files present under docs/devlog/screenshots/: 697 files.
+- Root-level Markdown coverage: 383 files including INDEX.md and README.md.
+- Dated devlog records: 381 files.
+- Linked evidence files present under docs/devlog/screenshots/: 702 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 35 |
+| 2026-05-22 | 36 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_outdoor_world_envelope_foundation_cycle36.md](2026-05-22_fast_vs_hd2d_outdoor_world_envelope_foundation_cycle36.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor World Envelope / Horizon Grounding Cycle 36 |
 | [2026-05-22_fast_vs_hd2d_outdoor_ground_continuation_library_verticality_cycle35.md](2026-05-22_fast_vs_hd2d_outdoor_ground_continuation_library_verticality_cycle35.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Ground Continuation / Library Verticality Cycle 35 |
 | [2026-05-22_fast_vs_hd2d_house_exterior_hero_readability_cycle34.md](2026-05-22_fast_vs_hd2d_house_exterior_hero_readability_cycle34.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Hero Readability Cycle 34 |
 | [2026-05-22_fast_vs_hd2d_house_exterior_proportion_cleanup_cycle33.md](2026-05-22_fast_vs_hd2d_house_exterior_proportion_cleanup_cycle33.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Proportion Cleanup Cycle 33 |
