@@ -275,6 +275,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorArchitecturalClosure();
             ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
+            ValidateFastVsHd2dThirtyThirdCycleHouseExteriorProportionCleanup();
             ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish();
             ValidateFastVsHd2dSixtyFifthCycleCentralPlazaPavingReadability();
             ValidateFastVsHd2dFortySixthCycleHouseExteriorTreeFencePolish();
@@ -5830,7 +5831,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_FacadeWallLeftPanel", root, c + new Vector3(-2.65f, 1.05f, -1.62f), new Vector3(1.25f, 2.10f, 0.34f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.facade.left");
             CreateLandmarkCube($"{prefix}_HouseExterior_FacadeWallRightPanel", root, c + new Vector3(0.55f, 1.05f, -1.62f), new Vector3(1.25f, 2.10f, 0.34f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.facade.right");
             CreateLandmarkCube($"{prefix}_HouseExterior_FacadeWallLintel", root, c + new Vector3(-1.05f, 1.92f, -1.62f), new Vector3(4.45f, 0.38f, 0.34f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.facade.lintel");
-            CreateLandmarkCube($"{prefix}_HouseExterior_RoofWidePixelPlane", root, c + new Vector3(-1.05f, 2.25f, -1.50f), new Vector3(5.15f, 0.35f, 1.90f), Quaternion.Euler(8f, 0f, 0f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof");
+            CreateLandmarkCube($"{prefix}_HouseExterior_RoofWidePixelPlane", root, c + new Vector3(-1.00f, 2.22f, -1.42f), new Vector3(4.70f, 0.30f, 1.58f), Quaternion.Euler(8f, 0f, 0f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof");
             AddHd2dSurfaceProfile(
                 FindSceneObjectIncludingInactive($"{prefix}_HouseExterior_YardPixelGround"),
                 $"{(past ? "Past" : "Current")}.HouseExterior.Ground.Yard",
@@ -5922,6 +5923,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorFacadeCompositionPolish(root, prefix, past, materials);
             CreateHouseExteriorArchitecturalClosurePolish(root, prefix, past, materials);
             CreateHouseExteriorFacadeBackdropReadabilityPolish(root, prefix, past, materials);
+            CreateHouseExteriorProportionCleanupPolish(root, prefix, past, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorCompositionSkyBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
@@ -7449,6 +7451,79 @@ namespace Anemora.EditorTools
                 Quaternion.Euler(0f, -10f, 0f),
                 edgeWashMaterial,
                 $"{prefix}.house_exterior.facade_backdrop_readability.right_edge_wash_a");
+        }
+
+        private static void CreateHouseExteriorProportionCleanupPolish(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            var shadow = materials.Shadow;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_RoofFrontLipA",
+                root,
+                c + new Vector3(-1.00f, 2.13f, -1.14f),
+                new Vector3(4.38f, 0.04f, 0.05f),
+                Quaternion.identity,
+                trim,
+                $"{prefix}.house_exterior.proportion_cleanup.roof_front_lip_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_FrontFacadeMidBandA",
+                root,
+                c + new Vector3(-1.00f, 1.28f, -1.14f),
+                new Vector3(4.38f, 0.04f, 0.05f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.proportion_cleanup.front_facade_mid_band_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_FrontFacadeBaseLineA",
+                root,
+                c + new Vector3(-1.00f, 0.35f, -1.14f),
+                new Vector3(4.34f, 0.06f, 0.06f),
+                Quaternion.identity,
+                stone,
+                $"{prefix}.house_exterior.proportion_cleanup.front_facade_base_line_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_WindowLeftFrameBandA",
+                root,
+                c + new Vector3(-2.38f, 1.12f, -1.15f),
+                new Vector3(0.74f, 0.05f, 0.05f),
+                Quaternion.identity,
+                trim,
+                $"{prefix}.house_exterior.proportion_cleanup.window_left_frame_band_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_WindowRightFrameBandA",
+                root,
+                c + new Vector3(0.22f, 1.12f, -1.15f),
+                new Vector3(0.74f, 0.05f, 0.05f),
+                Quaternion.identity,
+                trim,
+                $"{prefix}.house_exterior.proportion_cleanup.window_right_frame_band_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_ChimneyFlashingA",
+                root,
+                c + new Vector3(0.66f, 2.89f, 0.08f),
+                new Vector3(0.56f, 0.04f, 0.56f),
+                Quaternion.identity,
+                roof,
+                $"{prefix}.house_exterior.proportion_cleanup.chimney_flashing_a");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_HouseExterior_ProportionCleanup_ChimneyContactShadowA",
+                root,
+                c + new Vector3(0.66f, 2.84f, 0.10f),
+                new Vector3(0.42f, 0.03f, 0.42f),
+                Quaternion.identity,
+                shadow,
+                $"{prefix}.house_exterior.proportion_cleanup.chimney_contact_shadow_a");
         }
 
         private static void CreateCentralPlazaLibraryOcclusionShell(Transform root, string prefix, bool past, Materials materials)
@@ -14049,12 +14124,12 @@ namespace Anemora.EditorTools
 
             CreateLandmarkCube($"{prefix}_HouseExterior_RoofLeftSlope", root, c + new Vector3(-2.20f, 2.43f, 0.45f), new Vector3(3.45f, 0.34f, 3.15f), Quaternion.Euler(0f, 0f, -11f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof.left_slope");
             CreateLandmarkCube($"{prefix}_HouseExterior_RoofRightSlope", root, c + new Vector3(0.10f, 2.43f, 0.45f), new Vector3(3.45f, 0.34f, 3.15f), Quaternion.Euler(0f, 0f, 11f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof.right_slope");
-            CreateLandmarkCube($"{prefix}_HouseExterior_RoofFrontEave", root, c + new Vector3(-1.05f, 2.15f, -1.90f), new Vector3(5.42f, 0.22f, 0.32f), Quaternion.identity, roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof.front_eave");
+            CreateLandmarkCube($"{prefix}_HouseExterior_RoofFrontEave", root, c + new Vector3(-1.00f, 2.12f, -1.82f), new Vector3(4.68f, 0.18f, 0.28f), Quaternion.identity, roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof.front_eave");
             CreateLandmarkCube($"{prefix}_HouseExterior_RoofBackEave", root, c + new Vector3(-1.05f, 2.09f, 1.20f), new Vector3(5.08f, 0.20f, 0.30f), Quaternion.identity, roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.house_exterior.roof.back_eave");
             CreateLandmarkCube($"{prefix}_HouseExterior_RoofRidgeHighlightBand", root, c + new Vector3(-1.05f, 2.58f, -1.34f), new Vector3(4.92f, 0.06f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.roof.ridge_highlight");
             CreateLandmarkCube($"{prefix}_HouseExterior_FacadeTopTrimBand", root, c + new Vector3(-1.05f, 1.94f, -1.42f), new Vector3(4.70f, 0.06f, 0.08f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.facade.top_trim");
-            CreateLandmarkCube($"{prefix}_HouseExterior_Chimney", root, c + new Vector3(0.62f, 3.03f, 0.10f), new Vector3(0.42f, 0.90f, 0.42f), Quaternion.identity, stone, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chimney");
-            CreateLandmarkCube($"{prefix}_HouseExterior_ChimneyCap", root, c + new Vector3(0.62f, 3.53f, 0.10f), new Vector3(0.62f, 0.16f, 0.56f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chimney_cap");
+            CreateLandmarkCube($"{prefix}_HouseExterior_Chimney", root, c + new Vector3(0.66f, 2.96f, 0.08f), new Vector3(0.34f, 0.72f, 0.34f), Quaternion.identity, stone, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chimney");
+            CreateLandmarkCube($"{prefix}_HouseExterior_ChimneyCap", root, c + new Vector3(0.66f, 3.34f, 0.08f), new Vector3(0.50f, 0.12f, 0.46f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chimney_cap");
 
             CreateLandmarkCube($"{prefix}_HouseExterior_DoorFrameTop", root, c + new Vector3(-1.05f, 1.56f, -1.31f), new Vector3(1.14f, 0.16f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.door_frame.top");
             CreateLandmarkCube($"{prefix}_HouseExterior_DoorFrameLeft", root, c + new Vector3(-1.55f, 0.86f, -1.30f), new Vector3(0.14f, 1.40f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.door_frame.left");
@@ -27931,6 +28006,65 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHouseExteriorProportionCleanupObject(string objectName, string expectedMaterialToken, string expectedParentName, TimeWindowPairedSpaceLandmarkKind expectedKind, bool expectedCountsForArrival, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 minLocalScale, Vector3 maxLocalScale, bool requireNoCollider, bool requireShadowSafe)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing house exterior proportion cleanup object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (requireShadowSafe && (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be shadow-safe.");
+            }
+
+            if (requireNoCollider && (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(expectedKind) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue != expectedCountsForArrival)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the expected landmark kind and arrival state.");
+            }
+
+            var localOffset = sceneObject.transform.localPosition - HouseExteriorCenter;
+            ValidateVectorWithinRange($"{objectName} local position", localOffset, minLocalPosition, maxLocalPosition);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, minLocalScale, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
         private static void ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability()
         {
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
@@ -28126,6 +28260,75 @@ namespace Anemora.EditorTools
                 new Vector3(7.30f, 2.35f, 8.28f),
                 new Vector3(1.94f, 1.16f, 0.04f),
                 new Vector3(2.20f, 1.36f, 0.08f));
+        }
+
+        private static void ValidateFastVsHd2dThirtyThirdCycleHouseExteriorProportionCleanup()
+        {
+            var roofWideMinPosition = new Vector3(-1.18f, 2.08f, -1.58f);
+            var roofWideMaxPosition = new Vector3(-0.82f, 2.36f, -1.24f);
+            var roofWideMinScale = new Vector3(4.56f, 0.26f, 1.46f);
+            var roofWideMaxScale = new Vector3(4.84f, 0.34f, 1.68f);
+            var roofFrontEaveMinPosition = new Vector3(-1.16f, 2.02f, -1.94f);
+            var roofFrontEaveMaxPosition = new Vector3(-0.84f, 2.20f, -1.70f);
+            var roofFrontEaveMinScale = new Vector3(4.56f, 0.14f, 0.22f);
+            var roofFrontEaveMaxScale = new Vector3(4.80f, 0.22f, 0.34f);
+            var chimneyMinPosition = new Vector3(0.48f, 2.78f, -0.02f);
+            var chimneyMaxPosition = new Vector3(0.84f, 3.10f, 0.18f);
+            var chimneyMinScale = new Vector3(0.28f, 0.64f, 0.28f);
+            var chimneyMaxScale = new Vector3(0.38f, 0.80f, 0.38f);
+            var chimneyCapMinPosition = new Vector3(0.48f, 3.22f, -0.02f);
+            var chimneyCapMaxPosition = new Vector3(0.84f, 3.44f, 0.18f);
+            var chimneyCapMinScale = new Vector3(0.44f, 0.10f, 0.40f);
+            var chimneyCapMaxScale = new Vector3(0.56f, 0.14f, 0.50f);
+            var cleanupRoofLipMinPosition = new Vector3(-1.16f, 2.08f, -1.20f);
+            var cleanupRoofLipMaxPosition = new Vector3(-0.84f, 2.18f, -1.08f);
+            var cleanupRoofLipMinScale = new Vector3(4.24f, 0.03f, 0.04f);
+            var cleanupRoofLipMaxScale = new Vector3(4.50f, 0.06f, 0.08f);
+            var cleanupMidBandMinPosition = new Vector3(-1.16f, 1.22f, -1.20f);
+            var cleanupMidBandMaxPosition = new Vector3(-0.84f, 1.34f, -1.08f);
+            var cleanupMidBandMinScale = new Vector3(4.24f, 0.03f, 0.04f);
+            var cleanupMidBandMaxScale = new Vector3(4.50f, 0.06f, 0.08f);
+            var cleanupBaseLineMinPosition = new Vector3(-1.16f, 0.28f, -1.20f);
+            var cleanupBaseLineMaxPosition = new Vector3(-0.84f, 0.42f, -1.08f);
+            var cleanupBaseLineMinScale = new Vector3(4.20f, 0.04f, 0.04f);
+            var cleanupBaseLineMaxScale = new Vector3(4.48f, 0.08f, 0.10f);
+            var cleanupWindowLeftMinPosition = new Vector3(-2.50f, 1.06f, -1.20f);
+            var cleanupWindowLeftMaxPosition = new Vector3(-2.24f, 1.18f, -1.08f);
+            var cleanupWindowMinScale = new Vector3(0.66f, 0.03f, 0.04f);
+            var cleanupWindowMaxScale = new Vector3(0.82f, 0.07f, 0.08f);
+            var cleanupWindowRightMinPosition = new Vector3(0.08f, 1.06f, -1.20f);
+            var cleanupWindowRightMaxPosition = new Vector3(0.34f, 1.18f, -1.08f);
+            var cleanupChimneyFlashingMinPosition = new Vector3(0.48f, 2.84f, -0.02f);
+            var cleanupChimneyFlashingMaxPosition = new Vector3(0.84f, 2.94f, 0.18f);
+            var cleanupChimneyFlashingMinScale = new Vector3(0.50f, 0.03f, 0.50f);
+            var cleanupChimneyFlashingMaxScale = new Vector3(0.62f, 0.06f, 0.62f);
+            var cleanupChimneyShadowMinPosition = new Vector3(0.48f, 2.79f, -0.02f);
+            var cleanupChimneyShadowMaxPosition = new Vector3(0.84f, 2.90f, 0.18f);
+            var cleanupChimneyShadowMinScale = new Vector3(0.36f, 0.02f, 0.36f);
+            var cleanupChimneyShadowMaxScale = new Vector3(0.48f, 0.05f, 0.48f);
+
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_RoofWidePixelPlane", "current_roof", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, true, roofWideMinPosition, roofWideMaxPosition, roofWideMinScale, roofWideMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_RoofWidePixelPlane", "past_roof", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, true, roofWideMinPosition, roofWideMaxPosition, roofWideMinScale, roofWideMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_RoofFrontEave", "current_roof", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, true, roofFrontEaveMinPosition, roofFrontEaveMaxPosition, roofFrontEaveMinScale, roofFrontEaveMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_RoofFrontEave", "past_roof", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, true, roofFrontEaveMinPosition, roofFrontEaveMaxPosition, roofFrontEaveMinScale, roofFrontEaveMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_Chimney", "current_stone", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, true, chimneyMinPosition, chimneyMaxPosition, chimneyMinScale, chimneyMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_Chimney", "past_stone", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, true, chimneyMinPosition, chimneyMaxPosition, chimneyMinScale, chimneyMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ChimneyCap", "current_stone", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, true, chimneyCapMinPosition, chimneyCapMaxPosition, chimneyCapMinScale, chimneyCapMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ChimneyCap", "past_stone", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, true, chimneyCapMinPosition, chimneyCapMaxPosition, chimneyCapMinScale, chimneyCapMaxScale, false, false);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_RoofFrontLipA", "current_fence", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupRoofLipMinPosition, cleanupRoofLipMaxPosition, cleanupRoofLipMinScale, cleanupRoofLipMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_RoofFrontLipA", "past_fence", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupRoofLipMinPosition, cleanupRoofLipMaxPosition, cleanupRoofLipMinScale, cleanupRoofLipMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_FrontFacadeMidBandA", "current_exterior_wall", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupMidBandMinPosition, cleanupMidBandMaxPosition, cleanupMidBandMinScale, cleanupMidBandMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_FrontFacadeMidBandA", "past_exterior_wall", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupMidBandMinPosition, cleanupMidBandMaxPosition, cleanupMidBandMinScale, cleanupMidBandMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_FrontFacadeBaseLineA", "current_stone", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupBaseLineMinPosition, cleanupBaseLineMaxPosition, cleanupBaseLineMinScale, cleanupBaseLineMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_FrontFacadeBaseLineA", "past_stone", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupBaseLineMinPosition, cleanupBaseLineMaxPosition, cleanupBaseLineMinScale, cleanupBaseLineMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_WindowLeftFrameBandA", "current_fence", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupWindowLeftMinPosition, cleanupWindowLeftMaxPosition, cleanupWindowMinScale, cleanupWindowMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_WindowLeftFrameBandA", "past_fence", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupWindowLeftMinPosition, cleanupWindowLeftMaxPosition, cleanupWindowMinScale, cleanupWindowMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_WindowRightFrameBandA", "current_fence", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupWindowRightMinPosition, cleanupWindowRightMaxPosition, cleanupWindowMinScale, cleanupWindowMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_WindowRightFrameBandA", "past_fence", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupWindowRightMinPosition, cleanupWindowRightMaxPosition, cleanupWindowMinScale, cleanupWindowMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_ChimneyFlashingA", "current_roof", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupChimneyFlashingMinPosition, cleanupChimneyFlashingMaxPosition, cleanupChimneyFlashingMinScale, cleanupChimneyFlashingMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_ChimneyFlashingA", "past_roof", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupChimneyFlashingMinPosition, cleanupChimneyFlashingMaxPosition, cleanupChimneyFlashingMinScale, cleanupChimneyFlashingMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Current_HouseExterior_ProportionCleanup_ChimneyContactShadowA", "shadow", "Current_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupChimneyShadowMinPosition, cleanupChimneyShadowMaxPosition, cleanupChimneyShadowMinScale, cleanupChimneyShadowMaxScale, true, true);
+            ValidateHouseExteriorProportionCleanupObject("Past_HouseExterior_ProportionCleanup_ChimneyContactShadowA", "shadow", "Past_HouseExteriorMap_SeparateSpace", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, false, cleanupChimneyShadowMinPosition, cleanupChimneyShadowMaxPosition, cleanupChimneyShadowMinScale, cleanupChimneyShadowMaxScale, true, true);
         }
 
         private static void ValidateLibrarySideBookshelfDepthPolishObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
