@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.19 fast VS HD2D material light/shadow response index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.20 fast VS HD2D house facade porch closure index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 397 files including INDEX.md and README.md.
-- Dated devlog records: 395 files.
-- Linked evidence files present under docs/devlog/screenshots/: 740 files.
+- Root-level Markdown coverage: 399 files including INDEX.md and README.md.
+- Dated devlog records: 397 files.
+- Linked evidence files present under docs/devlog/screenshots/: 820 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,9 +32,16 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 50 |
+| 2026-05-22 | 51 |
+| 2026-05-23 | 1 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-05-23
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-23_fast_vs_hd2d_house_facade_porch_closure_cycle52.md](2026-05-23_fast_vs_hd2d_house_facade_porch_closure_cycle52.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D House Facade Porch Closure Cycle 52 |
 
 ### 2026-05-22
 
@@ -536,6 +543,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.20 | 2026-05-23 | Added Fast VS HD2D house facade porch closure cycle record with forward porch posts, side/outer cheek wall fills, eave board support, validation, and screenshot evidence. |
 | v7.18 | 2026-05-22 | Added Fast VS HD2D house facade closure/shadow cycle record with current/past door-side closure geometry, validation, and close/overview screenshot evidence. |
 | v7.17 | 2026-05-22 | Added Fast VS HD2D decisive light/shadow contrast cycle record with stronger exterior, plaza, and library shadow contrast tuning, localized occlusion objects, validation, and screenshot evidence. |
 | v7.16 | 2026-05-22 | Added Fast VS HD2D shadow/occlusion readability cycle record with current/past contact-shadow tuning, house door leak closure correction, library/plaza occlusion validation, and screenshot evidence. |
