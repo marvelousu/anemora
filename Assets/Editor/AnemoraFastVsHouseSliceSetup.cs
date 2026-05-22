@@ -269,6 +269,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyThirdCycleOutdoorEdgeDressing();
             ValidateFastVsHd2dThirtySixthCycleOutdoorBoundaryNatureDetails();
             ValidateFastVsHd2dFiftyEighthCycleOutdoorVoidBackgroundTreatment();
+            ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation();
             ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish();
             ValidateFastVsHd2dSixtyFifthCycleCentralPlazaPavingReadability();
             ValidateFastVsHd2dFortySixthCycleHouseExteriorTreeFencePolish();
@@ -5911,6 +5912,8 @@ namespace Anemora.EditorTools
             CreateOutdoorSkyAtmosphereDepthPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorHorizonDepthCleanupPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateHouseExteriorOcclusionShell(root, prefix, past, materials);
+            CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
 
@@ -6498,6 +6501,8 @@ namespace Anemora.EditorTools
             CreateOutdoorSkyAtmosphereDepthPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorHorizonDepthCleanupPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorFarEdgeTransitionPolish(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateCentralPlazaLibraryOcclusionShell(root, prefix, past, materials);
+            CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
 
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleFrontDropGuard", root, c + new Vector3(0f, 0.75f, -7.45f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.front_drop_guard");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_InvisibleBackBoundary", root, c + new Vector3(0f, 0.75f, 13.35f), new Vector3(17.80f, 1.50f, 0.24f), $"{prefix}.central_plaza.back_boundary");
@@ -6979,6 +6984,224 @@ namespace Anemora.EditorTools
                     stone,
                     $"{prefix}.central_plaza.far_edge_transition.side_chip.a");
             }
+        }
+
+        private static void CreateHouseExteriorOcclusionShell(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            var shadow = materials.Shadow;
+            var doorwayDark = materials.DoorwayDark;
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_BackPlate",
+                root,
+                c + new Vector3(-1.05f, 1.76f, -1.18f),
+                new Vector3(4.86f, 0.42f, 0.10f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.occlusion_shell.back_plate");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_LeftReturnWall",
+                root,
+                c + new Vector3(-3.20f, 1.10f, -1.30f),
+                new Vector3(0.18f, 2.16f, 0.94f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.occlusion_shell.left_return_wall");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_RightReturnWall",
+                root,
+                c + new Vector3(1.30f, 1.10f, -1.30f),
+                new Vector3(0.18f, 2.16f, 0.94f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.occlusion_shell.right_return_wall");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_RoofDepthCap",
+                root,
+                c + new Vector3(-1.05f, 2.55f, -0.92f),
+                new Vector3(5.22f, 0.28f, 1.18f),
+                Quaternion.identity,
+                roof,
+                $"{prefix}.house_exterior.occlusion_shell.roof_depth_cap");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_UnderEaveMask",
+                root,
+                c + new Vector3(-1.05f, 1.92f, -1.16f),
+                new Vector3(5.06f, 0.06f, 0.20f),
+                Quaternion.identity,
+                shadow,
+                $"{prefix}.house_exterior.occlusion_shell.under_eave_mask");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_DoorwayDarkMask",
+                root,
+                c + new Vector3(-1.05f, 0.94f, -1.16f),
+                new Vector3(0.90f, 1.54f, 0.08f),
+                Quaternion.identity,
+                doorwayDark,
+                $"{prefix}.house_exterior.occlusion_shell.doorway_dark_mask");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_DoorJambFillLeft",
+                root,
+                c + new Vector3(-1.82f, 0.96f, -1.20f),
+                new Vector3(0.36f, 1.46f, 0.08f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.occlusion_shell.door_jamb_fill_left");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_HouseExterior_OcclusionShell_DoorJambFillRight",
+                root,
+                c + new Vector3(-0.30f, 0.96f, -1.20f),
+                new Vector3(0.36f, 1.46f, 0.08f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.house_exterior.occlusion_shell.door_jamb_fill_right");
+        }
+
+        private static void CreateCentralPlazaLibraryOcclusionShell(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var wall = past ? materials.PastExteriorWall : materials.CurrentExteriorWall;
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+            var shadow = materials.Shadow;
+            var doorwayDark = materials.DoorwayDark;
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_BackVolume",
+                root,
+                c + new Vector3(0f, 1.60f, 8.68f),
+                new Vector3(10.00f, 3.18f, 0.16f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.central_plaza.library_occlusion_shell.back_volume");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_WestSideReturn",
+                root,
+                c + new Vector3(-4.80f, 1.36f, 7.96f),
+                new Vector3(0.18f, 2.92f, 1.72f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.central_plaza.library_occlusion_shell.west_side_return");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_EastSideReturn",
+                root,
+                c + new Vector3(4.80f, 1.36f, 7.96f),
+                new Vector3(0.18f, 2.92f, 1.72f),
+                Quaternion.identity,
+                wall,
+                $"{prefix}.central_plaza.library_occlusion_shell.east_side_return");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_RoofBackCap",
+                root,
+                c + new Vector3(0f, 3.34f, 8.46f),
+                new Vector3(10.46f, 0.30f, 1.34f),
+                Quaternion.identity,
+                roof,
+                $"{prefix}.central_plaza.library_occlusion_shell.roof_back_cap");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_UnderEaveDepthMask",
+                root,
+                c + new Vector3(0f, 2.84f, 8.34f),
+                new Vector3(10.10f, 0.08f, 0.22f),
+                Quaternion.identity,
+                shadow,
+                $"{prefix}.central_plaza.library_occlusion_shell.under_eave_depth_mask");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_WindowBackingLeft",
+                root,
+                c + new Vector3(-2.35f, 1.44f, 8.44f),
+                new Vector3(0.90f, 0.70f, 0.10f),
+                Quaternion.identity,
+                doorwayDark,
+                $"{prefix}.central_plaza.library_occlusion_shell.window_backing_left");
+
+            CreateNonArrivalLandmarkCube(
+                $"{prefix}_CentralPlaza_LibraryOcclusionShell_WindowBackingRight",
+                root,
+                c + new Vector3(2.35f, 1.44f, 8.44f),
+                new Vector3(0.90f, 0.70f, 0.10f),
+                Quaternion.identity,
+                doorwayDark,
+                $"{prefix}.central_plaza.library_occlusion_shell.window_backing_right");
+        }
+
+        private static void CreateOutdoorBackdropOcclusionFoundation(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
+            var baseColor = area == FastVsHouseArea.Exterior
+                ? (past ? new Color(0.24f, 0.23f, 0.19f, 0.18f) : new Color(0.18f, 0.20f, 0.17f, 0.18f))
+                : (past ? new Color(0.25f, 0.23f, 0.18f, 0.18f) : new Color(0.19f, 0.21f, 0.18f, 0.18f));
+            var horizonColor = area == FastVsHouseArea.Exterior
+                ? (past ? new Color(0.18f, 0.18f, 0.15f, 0.22f) : new Color(0.12f, 0.14f, 0.12f, 0.22f))
+                : (past ? new Color(0.20f, 0.18f, 0.15f, 0.22f) : new Color(0.13f, 0.14f, 0.12f, 0.22f));
+
+            var skyMaterial = EnsureOutdoorVoidBackgroundMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_outdoor_void_background_backdrop_foundation_sky_back_plane" : "current_house_exterior_outdoor_void_background_backdrop_foundation_sky_back_plane")
+                    : (past ? "past_central_plaza_outdoor_void_background_backdrop_foundation_sky_back_plane" : "current_central_plaza_outdoor_void_background_backdrop_foundation_sky_back_plane"),
+                baseColor);
+            var horizonMaterial = EnsureOutdoorVoidBackgroundMaterial(
+                area == FastVsHouseArea.Exterior
+                    ? (past ? "past_house_exterior_outdoor_void_background_backdrop_foundation_horizon_tree_line" : "current_house_exterior_outdoor_void_background_backdrop_foundation_horizon_tree_line")
+                    : (past ? "past_central_plaza_outdoor_void_background_backdrop_foundation_horizon_roofline" : "current_central_plaza_outdoor_void_background_backdrop_foundation_horizon_roofline"),
+                horizonColor);
+
+            if (area == FastVsHouseArea.Exterior)
+            {
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_HouseExterior_BackdropFoundation_SkyBackPlane",
+                    root,
+                    c + new Vector3(0.10f, 4.28f, 7.96f),
+                    new Vector3(12.80f, 4.80f, 1f),
+                    Quaternion.identity,
+                    skyMaterial,
+                    $"{prefix}.house_exterior.backdrop_foundation.sky_back_plane");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_HouseExterior_BackdropFoundation_HorizonTreeLine",
+                    root,
+                    c + new Vector3(0.00f, 0.72f, 9.40f),
+                    new Vector3(11.40f, 0.42f, 0.08f),
+                    Quaternion.identity,
+                    horizonMaterial,
+                    $"{prefix}.house_exterior.backdrop_foundation.horizon_tree_line");
+            }
+            else
+            {
+                CreateOutdoorSkyWashQuad(
+                    $"{prefix}_CentralPlaza_BackdropFoundation_SkyBackPlane",
+                    root,
+                    c + new Vector3(0.14f, 4.46f, 13.18f),
+                    new Vector3(14.82f, 5.02f, 1f),
+                    Quaternion.identity,
+                    skyMaterial,
+                    $"{prefix}.central_plaza.backdrop_foundation.sky_back_plane");
+
+                CreateOutdoorVoidBackgroundSlab(
+                    $"{prefix}_CentralPlaza_BackdropFoundation_HorizonRoofline",
+                    root,
+                    c + new Vector3(0.00f, 0.82f, 14.20f),
+                    new Vector3(13.90f, 0.38f, 0.08f),
+                    Quaternion.identity,
+                    horizonMaterial,
+                    $"{prefix}.central_plaza.backdrop_foundation.horizon_roofline");
+            }
+
+            _ = materials;
         }
 
         private static GameObject CreateOutdoorSkyWashQuad(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
@@ -22685,6 +22908,319 @@ namespace Anemora.EditorTools
             ValidateOutdoorVoidBackgroundTreatmentObject("Past_CentralPlaza_OutdoorVoidBackground_EastEdgeWash", "Past_CentralPlazaMap_SeparateSpace", "outdoor_void_background", 5.0f, 2.1f, 0.12f);
         }
 
+        private static void ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation()
+        {
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_BackPlate",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(-2.30f, 1.45f, -1.35f),
+                new Vector3(-0.30f, 1.95f, -1.05f),
+                new Vector3(4.60f, 0.36f, 0.08f),
+                new Vector3(5.20f, 0.50f, 0.14f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_LeftReturnWall",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(-3.90f, 0.50f, -1.80f),
+                new Vector3(-2.50f, 1.80f, -0.80f),
+                new Vector3(0.14f, 2.00f, 0.76f),
+                new Vector3(0.24f, 2.30f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_RightReturnWall",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(0.70f, 0.50f, -1.80f),
+                new Vector3(1.80f, 1.80f, -0.80f),
+                new Vector3(0.14f, 2.00f, 0.76f),
+                new Vector3(0.24f, 2.30f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_RoofDepthCap",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "current_roof",
+                new Vector3(-2.30f, 2.00f, -1.55f),
+                new Vector3(0.20f, 3.20f, -0.25f),
+                new Vector3(5.00f, 0.22f, 1.00f),
+                new Vector3(5.50f, 0.40f, 1.30f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_UnderEaveMask",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "shadow",
+                new Vector3(-2.50f, 1.60f, -1.30f),
+                new Vector3(0.20f, 2.20f, -1.00f),
+                new Vector3(4.80f, 0.04f, 0.16f),
+                new Vector3(5.30f, 0.08f, 0.24f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_DoorwayDarkMask",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "doorway_dark",
+                new Vector3(-1.50f, 0.20f, -1.30f),
+                new Vector3(-0.50f, 1.90f, -1.00f),
+                new Vector3(0.78f, 1.38f, 0.06f),
+                new Vector3(1.02f, 1.70f, 0.12f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_DoorJambFillLeft",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(-2.05f, 0.20f, -1.32f),
+                new Vector3(-1.60f, 1.80f, -1.04f),
+                new Vector3(0.30f, 1.32f, 0.06f),
+                new Vector3(0.42f, 1.60f, 0.12f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_OcclusionShell_DoorJambFillRight",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(-0.55f, 0.20f, -1.32f),
+                new Vector3(-0.05f, 1.80f, -1.04f),
+                new Vector3(0.30f, 1.32f, 0.06f),
+                new Vector3(0.42f, 1.60f, 0.12f));
+
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_BackPlate",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(-2.30f, 1.45f, -1.35f),
+                new Vector3(-0.30f, 1.95f, -1.05f),
+                new Vector3(4.60f, 0.36f, 0.08f),
+                new Vector3(5.20f, 0.50f, 0.14f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_LeftReturnWall",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(-3.90f, 0.50f, -1.80f),
+                new Vector3(-2.50f, 1.80f, -0.80f),
+                new Vector3(0.14f, 2.00f, 0.76f),
+                new Vector3(0.24f, 2.30f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_RightReturnWall",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(0.70f, 0.50f, -1.80f),
+                new Vector3(1.80f, 1.80f, -0.80f),
+                new Vector3(0.14f, 2.00f, 0.76f),
+                new Vector3(0.24f, 2.30f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_RoofDepthCap",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "past_roof",
+                new Vector3(-2.30f, 2.00f, -1.55f),
+                new Vector3(0.20f, 3.20f, -0.25f),
+                new Vector3(5.00f, 0.22f, 1.00f),
+                new Vector3(5.50f, 0.40f, 1.30f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_UnderEaveMask",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "shadow",
+                new Vector3(-2.50f, 1.60f, -1.30f),
+                new Vector3(0.20f, 2.20f, -1.00f),
+                new Vector3(4.80f, 0.04f, 0.16f),
+                new Vector3(5.30f, 0.08f, 0.24f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_DoorwayDarkMask",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "doorway_dark",
+                new Vector3(-1.50f, 0.20f, -1.30f),
+                new Vector3(-0.50f, 1.90f, -1.00f),
+                new Vector3(0.78f, 1.38f, 0.06f),
+                new Vector3(1.02f, 1.70f, 0.12f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_DoorJambFillLeft",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(-2.05f, 0.20f, -1.32f),
+                new Vector3(-1.60f, 1.80f, -1.04f),
+                new Vector3(0.30f, 1.32f, 0.06f),
+                new Vector3(0.42f, 1.60f, 0.12f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_OcclusionShell_DoorJambFillRight",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(-0.55f, 0.20f, -1.32f),
+                new Vector3(-0.05f, 1.80f, -1.04f),
+                new Vector3(0.30f, 1.32f, 0.06f),
+                new Vector3(0.42f, 1.60f, 0.12f));
+
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_BackVolume",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(-0.80f, 1.00f, 8.20f),
+                new Vector3(0.80f, 2.30f, 9.20f),
+                new Vector3(9.60f, 3.00f, 0.12f),
+                new Vector3(10.40f, 3.40f, 0.22f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_WestSideReturn",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(-5.50f, 0.80f, 7.00f),
+                new Vector3(-4.00f, 2.30f, 8.80f),
+                new Vector3(0.14f, 2.70f, 1.50f),
+                new Vector3(0.24f, 3.10f, 1.90f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_EastSideReturn",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "current_exterior_wall",
+                new Vector3(4.00f, 0.80f, 7.00f),
+                new Vector3(5.50f, 2.30f, 8.80f),
+                new Vector3(0.14f, 2.70f, 1.50f),
+                new Vector3(0.24f, 3.10f, 1.90f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_RoofBackCap",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "current_roof",
+                new Vector3(-0.80f, 2.80f, 8.00f),
+                new Vector3(0.80f, 4.10f, 9.00f),
+                new Vector3(10.00f, 0.24f, 1.10f),
+                new Vector3(10.80f, 0.40f, 1.50f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_UnderEaveDepthMask",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "shadow",
+                new Vector3(-0.80f, 2.40f, 8.00f),
+                new Vector3(0.80f, 3.20f, 8.80f),
+                new Vector3(9.80f, 0.06f, 0.16f),
+                new Vector3(10.30f, 0.12f, 0.26f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_WindowBackingLeft",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "doorway_dark",
+                new Vector3(-2.90f, 1.00f, 8.00f),
+                new Vector3(-1.80f, 1.90f, 8.80f),
+                new Vector3(0.78f, 0.58f, 0.06f),
+                new Vector3(1.00f, 0.82f, 0.12f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_LibraryOcclusionShell_WindowBackingRight",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "doorway_dark",
+                new Vector3(1.80f, 1.00f, 8.00f),
+                new Vector3(2.90f, 1.90f, 8.80f),
+                new Vector3(0.78f, 0.58f, 0.06f),
+                new Vector3(1.00f, 0.82f, 0.12f));
+
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_BackVolume",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(-0.80f, 1.00f, 8.20f),
+                new Vector3(0.80f, 2.30f, 9.20f),
+                new Vector3(9.60f, 3.00f, 0.12f),
+                new Vector3(10.40f, 3.40f, 0.22f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_WestSideReturn",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(-5.50f, 0.80f, 7.00f),
+                new Vector3(-4.00f, 2.30f, 8.80f),
+                new Vector3(0.14f, 2.70f, 1.50f),
+                new Vector3(0.24f, 3.10f, 1.90f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_EastSideReturn",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "past_exterior_wall",
+                new Vector3(4.00f, 0.80f, 7.00f),
+                new Vector3(5.50f, 2.30f, 8.80f),
+                new Vector3(0.14f, 2.70f, 1.50f),
+                new Vector3(0.24f, 3.10f, 1.90f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_RoofBackCap",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "past_roof",
+                new Vector3(-0.80f, 2.80f, 8.00f),
+                new Vector3(0.80f, 4.10f, 9.00f),
+                new Vector3(10.00f, 0.24f, 1.10f),
+                new Vector3(10.80f, 0.40f, 1.50f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_UnderEaveDepthMask",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "shadow",
+                new Vector3(-0.80f, 2.40f, 8.00f),
+                new Vector3(0.80f, 3.20f, 8.80f),
+                new Vector3(9.80f, 0.06f, 0.16f),
+                new Vector3(10.30f, 0.12f, 0.26f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_WindowBackingLeft",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "doorway_dark",
+                new Vector3(-2.90f, 1.00f, 8.00f),
+                new Vector3(-1.80f, 1.90f, 8.80f),
+                new Vector3(0.78f, 0.58f, 0.06f),
+                new Vector3(1.00f, 0.82f, 0.12f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_LibraryOcclusionShell_WindowBackingRight",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "doorway_dark",
+                new Vector3(1.80f, 1.00f, 8.00f),
+                new Vector3(2.90f, 1.90f, 8.80f),
+                new Vector3(0.78f, 0.58f, 0.06f),
+                new Vector3(1.00f, 0.82f, 0.12f));
+
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_BackdropFoundation_SkyBackPlane",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.60f, 3.40f, 7.00f),
+                new Vector3(0.80f, 5.80f, 8.80f),
+                new Vector3(12.00f, 4.50f, 0.90f),
+                new Vector3(14.50f, 5.50f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Current_HouseExterior_BackdropFoundation_HorizonTreeLine",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.80f, 0.40f, 9.00f),
+                new Vector3(0.80f, 1.20f, 9.80f),
+                new Vector3(10.00f, 0.30f, 0.05f),
+                new Vector3(12.20f, 0.60f, 0.15f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_BackdropFoundation_SkyBackPlane",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.60f, 3.40f, 7.00f),
+                new Vector3(0.80f, 5.80f, 8.80f),
+                new Vector3(12.00f, 4.50f, 0.90f),
+                new Vector3(14.50f, 5.50f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Past_HouseExterior_BackdropFoundation_HorizonTreeLine",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.80f, 0.40f, 9.00f),
+                new Vector3(0.80f, 1.20f, 9.80f),
+                new Vector3(10.00f, 0.30f, 0.05f),
+                new Vector3(12.20f, 0.60f, 0.15f));
+
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_BackdropFoundation_SkyBackPlane",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.60f, 3.70f, 12.00f),
+                new Vector3(0.80f, 5.90f, 14.50f),
+                new Vector3(14.00f, 4.80f, 0.90f),
+                new Vector3(16.00f, 5.50f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Current_CentralPlaza_BackdropFoundation_HorizonRoofline",
+                "Current_CentralPlazaMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.80f, 0.50f, 13.50f),
+                new Vector3(0.80f, 1.20f, 14.80f),
+                new Vector3(13.00f, 0.28f, 0.05f),
+                new Vector3(14.50f, 0.50f, 0.15f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_BackdropFoundation_SkyBackPlane",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.60f, 3.70f, 12.00f),
+                new Vector3(0.80f, 5.90f, 14.50f),
+                new Vector3(14.00f, 4.80f, 0.90f),
+                new Vector3(16.00f, 5.50f, 1.10f));
+            ValidateOcclusionBackdropObject(
+                "Past_CentralPlaza_BackdropFoundation_HorizonRoofline",
+                "Past_CentralPlazaMap_SeparateSpace",
+                "outdoor_void_background",
+                new Vector3(-0.80f, 0.50f, 13.50f),
+                new Vector3(0.80f, 1.20f, 14.80f),
+                new Vector3(13.00f, 0.28f, 0.05f),
+                new Vector3(14.50f, 0.50f, 0.15f));
+        }
+
         private static void ValidateFastVsHd2dFiftyNinthCycleCentralPlazaCurrentRuinLandmarkPolish()
         {
             ValidateCentralPlazaRuinLandmarkPolishObject("Current_CentralPlaza_RuinLandmarkPolish_FountainRimChipA", "Current_CentralPlazaMap_SeparateSpace", "current_stone", 0.08f);
@@ -26193,6 +26729,69 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must stay thin and low-profile.");
             }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+        }
+
+        private static void ValidateOcclusionBackdropObject(
+            string objectName,
+            string expectedParentName,
+            string expectedMaterialToken,
+            Vector3 minLocalPosition,
+            Vector3 maxLocalPosition,
+            Vector3 minLocalScale,
+            Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing occlusion/backdrop object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var arrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                arrivalProperty == null ||
+                arrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                arrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be a non-arrival PropOrFeature backdrop object.");
+            }
+
+            var referenceCenter = expectedParentName.IndexOf("HouseExterior", StringComparison.OrdinalIgnoreCase) >= 0
+                ? HouseExteriorCenter
+                : CentralPlazaVsCenter;
+            ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - referenceCenter, minLocalPosition, maxLocalPosition);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, minLocalScale, maxLocalScale);
 
             var materialName = renderer.sharedMaterial.name ?? string.Empty;
             if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
