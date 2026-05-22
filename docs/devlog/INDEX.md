@@ -1,14 +1,14 @@
 # Devlog Index
 
-> Status: v6.95 fast VS HD2D postprocess grade cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v6.96 fast VS HD2D library window light cookie cycle index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 372 files including INDEX.md and README.md.
-- Dated devlog records: 370 files.
-- Linked evidence files present under docs/devlog/screenshots/: 673 files.
+- Root-level Markdown coverage: 373 files including INDEX.md and README.md.
+- Dated devlog records: 371 files.
+- Linked evidence files present under docs/devlog/screenshots/: 674 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 25 |
+| 2026-05-22 | 26 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md](2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Window Light Cookie Cycle 26 |
 | [2026-05-22_fast_vs_hd2d_postprocess_grade_cycle25.md](2026-05-22_fast_vs_hd2d_postprocess_grade_cycle25.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Postprocess Grade Cycle 25 |
 | [2026-05-22_fast_vs_hd2d_sprite_card_world_light_bridge_cycle24.md](2026-05-22_fast_vs_hd2d_sprite_card_world_light_bridge_cycle24.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card World Light Bridge Cycle 24 |
 | [2026-05-22_fast_vs_hd2d_sprite_card_edge_rim_cycle23.md](2026-05-22_fast_vs_hd2d_sprite_card_edge_rim_cycle23.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Edge Rim Cycle 23 |

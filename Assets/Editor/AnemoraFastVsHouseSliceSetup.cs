@@ -30,6 +30,10 @@ namespace Anemora.EditorTools
         private const float SpriteCardPaperLowerShadeStrength = 0.08f;
         private const float SpriteCardWorldLightStrength = 0.08f;
         private const float SpriteCardWorldShadowReceiveStrength = 0.05f;
+        private const string LibraryWindowLightCookieTextureId = "hd2d_library_window_light_cookie_soft";
+        private const int LibraryWindowLightCookieSize = 128;
+        private const float LibraryWindowLightCookieAverageMin = 0.58f;
+        private const float LibraryWindowLightCookieAverageMax = 0.86f;
         private const float SurfaceRampStrength = 0.20f;
         private const float SurfaceRampDirectionalLightStrength = 0.12f;
         private const float SurfaceRampShadowReceiveStrength = 0.18f;
@@ -242,6 +246,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFirstCycleVisuals();
             ValidateFastVsHd2dThirtySeventhCycleLightingBalance();
             ValidateFastVsHd2dShadingFoundationLightingDirector();
+            ValidateFastVsHd2dLibraryWindowLightCookie();
             AnemoraFastVsHd2dAreaLightingProfileFoundationAudit.VerifyAreaLightingProfilesV1();
             AnemoraFastVsHd2dOverlayProfileFoundationAudit.VerifyOverlayProfilesV1();
             AnemoraFastVsHd2dSurfaceProfileFoundationAudit.VerifySurfaceProfilesV1();
@@ -16001,6 +16006,7 @@ namespace Anemora.EditorTools
             libraryWindow.spotAngle = 48f;
             libraryWindow.color = new Color(1.00f, 0.76f, 0.48f, 1f);
             libraryWindow.shadows = LightShadows.None;
+            libraryWindow.cookie = EnsureHd2dLibraryWindowLightCookieTexture();
             libraryWindowObject.transform.SetPositionAndRotation(new Vector3(28.55f, 3.05f, 23.15f), Quaternion.Euler(58f, 36f, 0f));
 
             var directorObject = new GameObject("FastVS_HD2D_LightingDirector");
@@ -21879,6 +21885,99 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dLibraryWindowLightCookie()
+        {
+            var libraryWindowObject = FindSceneObjectIncludingInactive("FastVS_HD2D_LibraryWindowLight");
+            var libraryWindow = libraryWindowObject?.GetComponent<Light>();
+            if (libraryWindow == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing FastVS_HD2D_LibraryWindowLight.");
+            }
+
+            if (libraryWindow.type != LightType.Spot)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_LibraryWindowLight must stay a spot light.");
+            }
+
+            if (libraryWindow.cookie == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_LibraryWindowLight must have a cookie texture assigned.");
+            }
+
+            var expectedCookiePath = $"{TextureDirectory}/FastVS_House_{LibraryWindowLightCookieTextureId}.asset";
+            var cookiePath = AssetDatabase.GetAssetPath(libraryWindow.cookie);
+            if (!string.Equals(cookiePath, expectedCookiePath, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie must use {expectedCookiePath}, but was {cookiePath}.");
+            }
+
+            if (libraryWindow.cookie.width != LibraryWindowLightCookieSize || libraryWindow.cookie.height != LibraryWindowLightCookieSize)
+            {
+                throw new InvalidOperationException($"House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie must stay exactly {LibraryWindowLightCookieSize}x{LibraryWindowLightCookieSize}, but was {libraryWindow.cookie.width}x{libraryWindow.cookie.height}.");
+            }
+
+            if (libraryWindow.cookie.filterMode != FilterMode.Bilinear || libraryWindow.cookie.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie must remain bilinear and clamp-wrapped.");
+            }
+
+            var cookie = libraryWindow.cookie as Texture2D;
+            if (cookie == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie must be a Texture2D asset.");
+            }
+
+            var centerLuma = SampleTextureLuminance(cookie, cookie.width / 2, cookie.height / 2);
+            var verticalMullionLuma = SampleTextureLuminance(cookie, Mathf.Clamp(Mathf.RoundToInt(cookie.width * 0.34f), 0, cookie.width - 1), cookie.height / 2);
+            var horizontalMullionLuma = SampleTextureLuminance(cookie, cookie.width / 2, Mathf.Clamp(Mathf.RoundToInt(cookie.height * 0.34f), 0, cookie.height - 1));
+            var cornerLuma = SampleTextureLuminance(cookie, 0, 0);
+
+            if ((centerLuma - verticalMullionLuma) < 0.12f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie center must be at least 0.120 brighter than the vertical mullion, but delta was {(centerLuma - verticalMullionLuma):0.000}.");
+            }
+
+            if ((centerLuma - horizontalMullionLuma) < 0.12f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie center must be at least 0.120 brighter than the horizontal mullion, but delta was {(centerLuma - horizontalMullionLuma):0.000}.");
+            }
+
+            if (cornerLuma < 0.40f || cornerLuma > 0.95f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie corner luminance must stay between 0.40 and 0.95, but was {cornerLuma:0.000}.");
+            }
+
+            var minLuma = float.MaxValue;
+            var maxLuma = float.MinValue;
+            var totalLuma = 0f;
+            foreach (var pixel in cookie.GetPixels())
+            {
+                var luma = CalculateLuminance(pixel);
+                minLuma = Mathf.Min(minLuma, luma);
+                maxLuma = Mathf.Max(maxLuma, luma);
+                totalLuma += luma;
+            }
+
+            var averageLuma = totalLuma / (cookie.width * cookie.height);
+            if (averageLuma < LibraryWindowLightCookieAverageMin || averageLuma > LibraryWindowLightCookieAverageMax)
+            {
+                throw new InvalidOperationException($"House slice validation failed: FastVS_HD2D_LibraryWindowLight cookie average luminance must stay between {LibraryWindowLightCookieAverageMin:0.00} and {LibraryWindowLightCookieAverageMax:0.00}, but was {averageLuma:0.000}.");
+            }
+
+            var directorObject = FindSceneObjectIncludingInactive("FastVS_HD2D_LightingDirector");
+            var director = directorObject?.GetComponent<FastVsHouseLightingDirector>();
+            if (director == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing FastVS_HD2D_LightingDirector for cookie review.");
+            }
+
+            director.ApplyAreaForReview(FastVsHouseArea.Library);
+            if (!libraryWindow.enabled || libraryWindow.cookie == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: FastVS_HD2D_LibraryWindowLight must stay enabled with its cookie assigned after applying the library area profile.");
+            }
+        }
+
         private static void ValidateFastVsHd2dSecondCycleAtmosphere()
         {
             var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
@@ -27369,6 +27468,23 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static float SampleTextureLuminance(Texture2D texture, int x, int y)
+        {
+            var clampedX = Mathf.Clamp(x, 0, texture.width - 1);
+            var clampedY = Mathf.Clamp(y, 0, texture.height - 1);
+            return CalculateLuminance(texture.GetPixel(clampedX, clampedY));
+        }
+
+        private static float CalculateLuminance(Color color)
+        {
+            return (0.2126f * color.r) + (0.7152f * color.g) + (0.0722f * color.b);
+        }
+
+        private static float SoftBand01(float value, float center, float halfWidth)
+        {
+            return 1f - Mathf.Clamp01(Mathf.Abs(value - center) / halfWidth);
+        }
+
         private static void ValidateTextureLuminanceContrast(string textureId, Vector2Int a, Vector2Int b, float minDelta, string label)
         {
             var path = $"{TextureDirectory}/FastVS_House_{textureId}.asset";
@@ -29077,6 +29193,49 @@ namespace Anemora.EditorTools
                     alpha = Mathf.Clamp(alpha, 0f, 0.26f);
                     return new Color(1f, 0.78f, 0.34f, alpha);
                 });
+        }
+
+        private static Texture2D EnsureHd2dLibraryWindowLightCookieTexture()
+        {
+            return EnsureGeneratedTexture(
+                LibraryWindowLightCookieTextureId,
+                LibraryWindowLightCookieSize,
+                LibraryWindowLightCookieSize,
+                FilterMode.Bilinear,
+                SampleHd2dLibraryWindowLightCookiePixel);
+        }
+
+        private static Color SampleHd2dLibraryWindowLightCookiePixel(int x, int y)
+        {
+            var u = x / 127f;
+            var v = y / 127f;
+            var dx = u - 0.5f;
+            var dy = v - 0.5f;
+
+            var radialDistance = Mathf.Sqrt((dx * dx * 1.05f) + (dy * dy * 1.15f));
+            var radial = 1f - Mathf.Clamp01(radialDistance / 0.72f);
+            radial = radial * radial * (3f - (2f * radial));
+
+            var luma = Mathf.Lerp(0.60f, 0.86f, radial);
+
+            var verticalLeft = SoftBand01(u, 0.34f, 0.028f);
+            var verticalRight = SoftBand01(u, 0.66f, 0.028f);
+            var horizontalTop = SoftBand01(v, 0.34f, 0.028f);
+            var horizontalBottom = SoftBand01(v, 0.66f, 0.028f);
+            var frameEdge = 1f - Mathf.Clamp01(Mathf.Min(Mathf.Min(u, 1f - u), Mathf.Min(v, 1f - v)) / 0.075f);
+            frameEdge = frameEdge * frameEdge * (3f - (2f * frameEdge));
+
+            luma -= Mathf.Max(verticalLeft, verticalRight) * 0.22f;
+            luma -= Mathf.Max(horizontalTop, horizontalBottom) * 0.22f;
+            luma -= frameEdge * 0.10f;
+
+            var dust = (Mathf.Sin((u * 7.9f) + (v * 4.1f) + 0.31f) * 0.020f) +
+                       (Mathf.Cos((u * 2.7f) - (v * 8.6f) + 1.21f) * 0.015f) +
+                       (Mathf.Sin((u * 11.4f) + (v * 1.6f) + 0.74f) * 0.008f);
+            luma += dust;
+
+            luma = Mathf.Clamp(luma, 0.42f, 0.98f);
+            return new Color(luma, luma, luma, 1f);
         }
 
         private static void AssignMaterialTexture(Material material, Texture2D texture, Vector2 scale)
