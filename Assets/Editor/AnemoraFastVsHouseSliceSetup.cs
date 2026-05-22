@@ -22920,6 +22920,7 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows()
         {
+            ValidateCharacterContactShadowTextureMetrics("seventeenth-cycle contact-shadow pass");
             ValidateCharacterContactShadowObject("FastVS_PlayerContactShadow_Niro", "FastVS_Player_NiroHouseSlice");
             ValidateCharacterContactShadowObject("Current_Library_Reto_ContactShadow", "Current_LibraryMap_SeparateSpace");
             ValidateCharacterContactShadowObject("Past_Library_Aria_ContactShadow", "Past_LibraryMap_SeparateSpace");
@@ -22964,6 +22965,7 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dFortyFifthCycleCharacterFootContact()
         {
+            ValidateCharacterContactShadowTextureMetrics("forty-fifth-cycle foot-contact pass");
             ValidateCharacterFootContactShadowObject(
                 "FastVS_PlayerFootContact_Niro",
                 "FastVS_Player_NiroHouseSlice",
@@ -23104,6 +23106,95 @@ namespace Anemora.EditorTools
             if (!MaterialUsesTexture(material, texture))
             {
                 throw new InvalidOperationException($"House slice validation failed: {materialId} must reference {textureId}.");
+            }
+        }
+
+        private static void ValidateCharacterContactShadowTextureMetrics(string context)
+        {
+            var path = $"{TextureDirectory}/FastVS_House_character_contact_shadow.asset";
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing character contact shadow texture asset {path} for {context}.");
+            }
+
+            ValidateCharacterContactShadowTextureMetrics(texture, context);
+        }
+
+        private static void ValidateCharacterContactShadowTextureMetrics(Texture2D texture, string context)
+        {
+            if (texture.width != 96 || texture.height != 48)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} must keep the character contact shadow texture at exactly 96x48, but was {texture.width}x{texture.height}.");
+            }
+
+            if (texture.filterMode != FilterMode.Bilinear)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} must keep the character contact shadow texture bilinear.");
+            }
+
+            if (texture.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} must keep the character contact shadow texture clamp-wrapped.");
+            }
+
+            var centerX = texture.width / 2;
+            var centerY = texture.height / 2;
+            var leftFootX = Mathf.Clamp(Mathf.RoundToInt(texture.width * 0.37f), 0, texture.width - 1);
+            var rightFootX = Mathf.Clamp(Mathf.RoundToInt(texture.width * 0.63f), 0, texture.width - 1);
+            var footY = Mathf.Clamp(Mathf.RoundToInt(texture.height * 0.60f), 0, texture.height - 1);
+
+            var centerAlpha = texture.GetPixel(centerX, centerY).a;
+            var leftEdgeAlpha = texture.GetPixel(0, centerY).a;
+            var rightEdgeAlpha = texture.GetPixel(texture.width - 1, centerY).a;
+            var topEdgeAlpha = texture.GetPixel(centerX, texture.height - 1).a;
+            var bottomEdgeAlpha = texture.GetPixel(centerX, 0).a;
+            var leftFootAlpha = texture.GetPixel(leftFootX, footY).a;
+            var rightFootAlpha = texture.GetPixel(rightFootX, footY).a;
+            var topLeftCornerAlpha = texture.GetPixel(0, texture.height - 1).a;
+            var topRightCornerAlpha = texture.GetPixel(texture.width - 1, texture.height - 1).a;
+            var bottomLeftCornerAlpha = texture.GetPixel(0, 0).a;
+            var bottomRightCornerAlpha = texture.GetPixel(texture.width - 1, 0).a;
+
+            var maxAlpha = 0f;
+            foreach (var pixel in texture.GetPixels32())
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
+            }
+
+            if (centerAlpha < 0.15f || centerAlpha > 0.25f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} center alpha {centerAlpha:0.000} is outside the 0.15-0.25 range.");
+            }
+
+            if (leftEdgeAlpha > 0.02f || rightEdgeAlpha > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} edge alpha must stay at or below 0.020. left={leftEdgeAlpha:0.000}, right={rightEdgeAlpha:0.000}.");
+            }
+
+            if (topEdgeAlpha > 0.03f || bottomEdgeAlpha > 0.03f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} top/bottom edge alpha must stay soft. top={topEdgeAlpha:0.000}, bottom={bottomEdgeAlpha:0.000}.");
+            }
+
+            if (leftFootAlpha < 0.19f || leftFootAlpha > 0.32f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} left foot alpha {leftFootAlpha:0.000} is outside the 0.19-0.32 range.");
+            }
+
+            if (rightFootAlpha < 0.19f || rightFootAlpha > 0.32f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} right foot alpha {rightFootAlpha:0.000} is outside the 0.19-0.32 range.");
+            }
+
+            if (maxAlpha < 0.22f || maxAlpha > 0.34f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} max alpha {maxAlpha:0.000} is outside the 0.22-0.34 range.");
+            }
+
+            if (topLeftCornerAlpha > 0.01f || topRightCornerAlpha > 0.01f || bottomLeftCornerAlpha > 0.01f || bottomRightCornerAlpha > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} corner alpha must stay near transparent. tl={topLeftCornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
         }
 
@@ -29017,19 +29108,35 @@ namespace Anemora.EditorTools
                 {
                     var u = x / 95f;
                     var v = y / 47f;
-                    var dx = (u - 0.5f) / 0.5f;
-                    var dy = (v - 0.5f) / 0.5f;
-                    var ellipse = Mathf.Sqrt((dx * dx * 0.88f) + (dy * dy * 2.55f));
-                    var core = Mathf.Clamp01(1f - ellipse);
-                    var alpha = core * core * 0.34f;
-                    if (core < 0.45f)
-                    {
-                        var dither = (((x * 17) + (y * 31) + (x * y * 7)) & 7) / 7f;
-                        alpha *= Mathf.Lerp(0.72f, 1f, dither);
-                    }
+                    var skewU = u + ((0.5f - v) * 0.020f);
+                    var skewV = v + ((u - 0.5f) * 0.010f);
 
-                    return new Color(0.02f, 0.03f, 0.05f, alpha);
+                    var frame = ContactShadowEllipseFalloff(u, v, 0.5f, 0.48f, 0.49f, 0.38f, 1.35f);
+                    var body = ContactShadowEllipseFalloff(skewU, skewV, 0.5f, 0.48f, 0.39f, 0.28f, 1.65f);
+                    var leftFoot = ContactShadowEllipseFalloff(skewU, skewV, 0.37f, 0.60f, 0.12f, 0.11f, 1.90f);
+                    var rightFoot = ContactShadowEllipseFalloff(skewU, skewV, 0.63f, 0.60f, 0.12f, 0.11f, 1.90f);
+                    var tailBias = ContactShadowEllipseFalloff(skewU, skewV, 0.57f, 0.40f, 0.28f, 0.16f, 1.75f);
+
+                    var alpha = (body * 0.16f) + (leftFoot * 0.22f) + (rightFoot * 0.22f) + (tailBias * 0.035f);
+                    alpha *= frame;
+                    alpha = Mathf.Clamp(alpha, 0f, 0.34f);
+
+                    return new Color(0.025f, 0.026f, 0.033f, alpha);
                 });
+        }
+
+        private static float ContactShadowEllipseFalloff(float u, float v, float centerU, float centerV, float radiusU, float radiusV, float exponent)
+        {
+            var du = (u - centerU) / radiusU;
+            var dv = (v - centerV) / radiusV;
+            var normalizedDistance = (du * du) + (dv * dv);
+            if (normalizedDistance >= 1f)
+            {
+                return 0f;
+            }
+
+            var falloff = 1f - normalizedDistance;
+            return Mathf.Pow(falloff, exponent);
         }
 
         private static Texture2D EnsureCharacterDirectionalCastShadowTexture()

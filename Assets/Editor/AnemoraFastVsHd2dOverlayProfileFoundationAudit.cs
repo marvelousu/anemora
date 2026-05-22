@@ -47,6 +47,23 @@ namespace Anemora.EditorTools
             "FastVS",
             "HouseSlice",
             "FastVS_House_static_directional_cast_shadow_soft.png"));
+        private static readonly string Cycle22OutputDirectory = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "..",
+            "docs",
+            "devlog",
+            "screenshots",
+            "fast_vs_hd2d_character_contact_shadow_texture_cycle22_20260522"));
+        private const string Cycle22ReportFileName = "character_contact_shadow_texture_cycle22_20260522.md";
+        private static readonly string Cycle22ReportPath = Path.Combine(Cycle22OutputDirectory, Cycle22ReportFileName);
+        private const string Cycle22TextureAssetPath = "Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_character_contact_shadow.asset";
+        private static readonly string Cycle22TexturePath = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "Art",
+            "Textures",
+            "FastVS",
+            "HouseSlice",
+            "FastVS_House_character_contact_shadow.asset"));
 
         [MenuItem("Tools/Anemora/Verify HD2D Overlay Profiles V1")]
         public static void VerifyOverlayProfilesV1()
@@ -421,6 +438,96 @@ namespace Anemora.EditorTools
             Debug.Log($"HD2D static directional shadow texture report written: {Cycle21ReportPath}");
         }
 
+        [MenuItem("Tools/Anemora/Write HD2D Character Contact Shadow Texture Cycle 22 Report")]
+        public static void WriteCharacterContactShadowTextureCycle22ReportBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+
+            var report = BuildCharacterContactShadowTextureCycle22Report();
+            Directory.CreateDirectory(Cycle22OutputDirectory);
+            File.WriteAllText(Cycle22ReportPath, BuildCharacterContactShadowTextureCycle22Markdown(report), Encoding.UTF8);
+            AssetDatabase.Refresh();
+
+            if (report.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D character contact shadow texture cycle 22 report failed:\n- " + string.Join("\n- ", report.Issues));
+            }
+
+            Debug.Log($"HD2D character contact shadow texture report written: {Cycle22ReportPath}");
+        }
+
+        private static CharacterContactShadowTextureCycle22Report BuildCharacterContactShadowTextureCycle22Report()
+        {
+            var report = new CharacterContactShadowTextureCycle22Report();
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(Cycle22TextureAssetPath);
+            if (texture == null)
+            {
+                report.Issues.Add($"Character contact shadow texture asset is missing at {Cycle22TexturePath}.");
+                return report;
+            }
+
+            report.Width = texture.width;
+            report.Height = texture.height;
+            report.CenterAlpha = texture.GetPixel(texture.width / 2, texture.height / 2).a;
+            report.LeftEdgeAlpha = texture.GetPixel(0, texture.height / 2).a;
+            report.RightEdgeAlpha = texture.GetPixel(texture.width - 1, texture.height / 2).a;
+            report.LeftFootAlpha = texture.GetPixel(Mathf.Clamp(Mathf.RoundToInt(texture.width * 0.37f), 0, texture.width - 1), Mathf.Clamp(Mathf.RoundToInt(texture.height * 0.60f), 0, texture.height - 1)).a;
+            report.RightFootAlpha = texture.GetPixel(Mathf.Clamp(Mathf.RoundToInt(texture.width * 0.63f), 0, texture.width - 1), Mathf.Clamp(Mathf.RoundToInt(texture.height * 0.60f), 0, texture.height - 1)).a;
+            report.TopEdgeAlpha = texture.GetPixel(texture.width / 2, texture.height - 1).a;
+            report.BottomEdgeAlpha = texture.GetPixel(texture.width / 2, 0).a;
+            report.TopLeftCornerAlpha = texture.GetPixel(0, texture.height - 1).a;
+            report.TopRightCornerAlpha = texture.GetPixel(texture.width - 1, texture.height - 1).a;
+            report.BottomLeftCornerAlpha = texture.GetPixel(0, 0).a;
+            report.BottomRightCornerAlpha = texture.GetPixel(texture.width - 1, 0).a;
+
+            foreach (var pixel in texture.GetPixels32())
+            {
+                report.MaxAlpha = Mathf.Max(report.MaxAlpha, pixel.a / 255f);
+            }
+
+            if (report.Width != 96 || report.Height != 48)
+            {
+                report.Issues.Add($"Character contact shadow texture must stay exactly 96x48, but was {report.Width}x{report.Height}.");
+            }
+
+            if (report.CenterAlpha < 0.15f || report.CenterAlpha > 0.25f)
+            {
+                report.Issues.Add($"Center alpha {report.CenterAlpha:0.000} is outside the 0.15-0.25 range.");
+            }
+
+            if (report.LeftEdgeAlpha > 0.02f || report.RightEdgeAlpha > 0.02f)
+            {
+                report.Issues.Add($"Edge alpha must stay at or below 0.020. left={report.LeftEdgeAlpha:0.000}, right={report.RightEdgeAlpha:0.000}.");
+            }
+
+            if (report.TopEdgeAlpha > 0.03f || report.BottomEdgeAlpha > 0.03f)
+            {
+                report.Issues.Add($"Top/bottom edge alpha must stay soft. top={report.TopEdgeAlpha:0.000}, bottom={report.BottomEdgeAlpha:0.000}.");
+            }
+
+            if (report.LeftFootAlpha < 0.19f || report.LeftFootAlpha > 0.32f)
+            {
+                report.Issues.Add($"Left foot alpha {report.LeftFootAlpha:0.000} is outside the 0.19-0.32 range.");
+            }
+
+            if (report.RightFootAlpha < 0.19f || report.RightFootAlpha > 0.32f)
+            {
+                report.Issues.Add($"Right foot alpha {report.RightFootAlpha:0.000} is outside the 0.19-0.32 range.");
+            }
+
+            if (report.MaxAlpha < 0.22f || report.MaxAlpha > 0.34f)
+            {
+                report.Issues.Add($"Max alpha {report.MaxAlpha:0.000} is outside the 0.22-0.34 range.");
+            }
+
+            if (report.TopLeftCornerAlpha > 0.01f || report.TopRightCornerAlpha > 0.01f || report.BottomLeftCornerAlpha > 0.01f || report.BottomRightCornerAlpha > 0.01f)
+            {
+                report.Issues.Add($"Corner alpha must stay near transparent. tl={report.TopLeftCornerAlpha:0.000}, tr={report.TopRightCornerAlpha:0.000}, bl={report.BottomLeftCornerAlpha:0.000}, br={report.BottomRightCornerAlpha:0.000}.");
+            }
+
+            return report;
+        }
+
         private static StaticDirectionalShadowTextureCycle21Report BuildStaticDirectionalShadowTextureCycle21Report()
         {
             var report = new StaticDirectionalShadowTextureCycle21Report();
@@ -539,6 +646,48 @@ namespace Anemora.EditorTools
             builder.AppendLine($"| Top-right corner alpha | {report.TopRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
             builder.AppendLine($"| Bottom-left corner alpha | {report.BottomLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
             builder.AppendLine($"| Bottom-right corner alpha | {report.BottomRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+
+            if (report.Issues.Count > 0)
+            {
+                builder.AppendLine();
+                builder.AppendLine("## Issues");
+                foreach (var issue in report.Issues)
+                {
+                    builder.AppendLine($"- {issue}");
+                }
+            }
+
+            return builder.ToString();
+        }
+
+        private static string BuildCharacterContactShadowTextureCycle22Markdown(CharacterContactShadowTextureCycle22Report report)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("# Fast VS HD2D Character Contact Shadow Texture Cycle 22 Report");
+            builder.AppendLine();
+            builder.AppendLine("Deterministic v2 character contact shadow foundation for Niro, Reto, and Aria. The goal is a grounded HD-2D paper-character contact shadow with broad body weight, two foot-contact lobes, soft edge fade, and no flat rectangular silhouette.");
+            builder.AppendLine();
+            builder.AppendLine($"- Texture asset: `{Cycle22TexturePath}`");
+            builder.AppendLine($"- Report file: `{Cycle22ReportPath}`");
+            builder.AppendLine($"- Result: {report.Result}");
+            builder.AppendLine();
+            builder.AppendLine("| Metric | Value |");
+            builder.AppendLine("|---|---:|");
+            builder.AppendLine($"| Width | {report.Width} |");
+            builder.AppendLine($"| Height | {report.Height} |");
+            builder.AppendLine($"| Center alpha | {report.CenterAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Max alpha | {report.MaxAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Left edge alpha | {report.LeftEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Right edge alpha | {report.RightEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Left foot alpha | {report.LeftFootAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Right foot alpha | {report.RightFootAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top edge alpha | {report.TopEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom edge alpha | {report.BottomEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-left corner alpha | {report.TopLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-right corner alpha | {report.TopRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom-left corner alpha | {report.BottomLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom-right corner alpha | {report.BottomRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Result | {report.Result} |");
 
             if (report.Issues.Count > 0)
             {
@@ -883,6 +1032,26 @@ namespace Anemora.EditorTools
             public float RightEdgeAlpha;
             public float CoreAlpha;
             public float TailAlpha;
+            public float TopLeftCornerAlpha;
+            public float TopRightCornerAlpha;
+            public float BottomLeftCornerAlpha;
+            public float BottomRightCornerAlpha;
+            public List<string> Issues = new List<string>();
+            public string Result => Issues.Count == 0 ? "PASS" : "FAIL";
+        }
+
+        private sealed class CharacterContactShadowTextureCycle22Report
+        {
+            public int Width;
+            public int Height;
+            public float CenterAlpha;
+            public float MaxAlpha;
+            public float LeftEdgeAlpha;
+            public float RightEdgeAlpha;
+            public float LeftFootAlpha;
+            public float RightFootAlpha;
+            public float TopEdgeAlpha;
+            public float BottomEdgeAlpha;
             public float TopLeftCornerAlpha;
             public float TopRightCornerAlpha;
             public float BottomLeftCornerAlpha;
