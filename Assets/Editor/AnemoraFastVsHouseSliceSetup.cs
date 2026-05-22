@@ -365,6 +365,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle59PlazaLibraryRoofUndersideShadow();
             ValidateFastVsHd2dCycle60PlazaLibrarySideWallMaterialBreakup();
             ValidateFastVsHd2dCycle61PlazaLibrarySideWindowLedges();
+            ValidateFastVsHd2dCycle62CentralPlazaOuterGroundSkirt();
             ValidateFastVsHd2dOneHundredNinthCycleOutdoorWorldEnvelopeFoundation();
             ValidateFastVsHd2dOneHundredTenthCycleOutdoorHorizonScenicDepth();
             ValidateFastVsHd2dOneHundredEleventhCycleOutdoorLightCompositionContactGrounding();
@@ -7278,6 +7279,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryRoofUndersideShadowCycle59(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibrarySideWallMaterialBreakupCycle60(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibrarySideWindowLedgesCycle61(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaOuterGroundSkirtCycle62(root, prefix, c, past, materials, stone, trim, path);
             CreateCentralPlazaLibraryApproachHd2dPolish(root, prefix, past, materials, c, stone, trim, path);
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareNorthBorder", root, c + new Vector3(0f, 0.066f, 8.14f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_north");
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareSouthBorder", root, c + new Vector3(0f, 0.066f, -3.64f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_south");
@@ -19047,6 +19049,45 @@ namespace Anemora.EditorTools
             _ = wall;
         }
 
+        private static void CreateCentralPlazaOuterGroundSkirtCycle62(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material path)
+        {
+            var objectPrefix = $"{prefix}_CentralPlaza_Cycle62_OuterGroundSkirt";
+            var currentPathMaterial = materials.CurrentPath;
+            var pastPathMaterial = materials.PastPath;
+            var currentStoneMaterial = materials.CurrentStone;
+            var pastStoneMaterial = materials.PastStone;
+            var currentLeafMaterial = materials.CurrentLeaf;
+            var pastLeafMaterial = materials.Leaf;
+
+            void Add(string nameSuffix, Vector3 currentLocalPosition, Vector3 pastLocalPosition, Vector3 currentLocalScale, Vector3 pastLocalScale, Material currentMaterial, Material pastMaterial, string landmarkSuffix)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_{nameSuffix}",
+                    root,
+                    center + (past ? pastLocalPosition : currentLocalPosition),
+                    past ? pastLocalScale : currentLocalScale,
+                    Quaternion.identity,
+                    past ? pastMaterial : currentMaterial,
+                    $"{prefix}.central_plaza.cycle62.outer_ground_skirt.{landmarkSuffix}");
+            }
+
+            Add("NorthLowStreetContinuationA", new Vector3(0f, 0.040f, 12.60f), new Vector3(0f, 0.040f, 12.76f), new Vector3(13.80f, 0.035f, 2.10f), new Vector3(14.40f, 0.035f, 2.28f), currentPathMaterial, pastPathMaterial, "north_low_street_continuation_a");
+            Add("NorthFarGrassShoulderA", new Vector3(-4.60f, 0.035f, 14.05f), new Vector3(-4.60f, 0.035f, 14.22f), new Vector3(5.80f, 0.030f, 1.04f), new Vector3(6.20f, 0.030f, 1.12f), currentLeafMaterial, pastLeafMaterial, "north_far_grass_shoulder_a");
+            Add("NorthFarStoneBreakA", new Vector3(4.25f, 0.050f, 14.00f), new Vector3(4.25f, 0.050f, 14.16f), new Vector3(4.10f, 0.045f, 0.68f), new Vector3(4.36f, 0.045f, 0.76f), currentStoneMaterial, pastStoneMaterial, "north_far_stone_break_a");
+            Add("WestStreetContinuationA", new Vector3(-8.20f, 0.038f, 4.10f), new Vector3(-8.42f, 0.038f, 4.10f), new Vector3(1.72f, 0.032f, 8.20f), new Vector3(1.88f, 0.032f, 8.60f), currentPathMaterial, pastPathMaterial, "west_street_continuation_a");
+            Add("EastStreetContinuationA", new Vector3(8.20f, 0.038f, 4.10f), new Vector3(8.42f, 0.038f, 4.10f), new Vector3(1.72f, 0.032f, 8.20f), new Vector3(1.88f, 0.032f, 8.60f), currentPathMaterial, pastPathMaterial, "east_street_continuation_a");
+            Add("SouthEdgeGroundShoulderA", new Vector3(0f, 0.034f, -5.22f), new Vector3(0f, 0.034f, -5.40f), new Vector3(12.40f, 0.028f, 1.35f), new Vector3(13.00f, 0.028f, 1.48f), currentStoneMaterial, pastStoneMaterial, "south_edge_ground_shoulder_a");
+
+            Add("NorthWestCornerChipA", new Vector3(-7.52f, 0.046f, 13.52f), new Vector3(-7.70f, 0.046f, 13.68f), new Vector3(0.86f, 0.040f, 0.28f), new Vector3(0.94f, 0.040f, 0.32f), currentStoneMaterial, pastStoneMaterial, "north_west_corner_chip_a");
+            Add("NorthEastCornerChipA", new Vector3(7.30f, 0.045f, 13.58f), new Vector3(7.48f, 0.045f, 13.74f), new Vector3(0.90f, 0.038f, 0.26f), new Vector3(0.98f, 0.038f, 0.30f), currentPathMaterial, pastPathMaterial, "north_east_corner_chip_a");
+            Add("SouthWestCornerChipA", new Vector3(-7.62f, 0.040f, -4.76f), new Vector3(-7.80f, 0.040f, -4.92f), new Vector3(0.74f, 0.034f, 0.24f), new Vector3(0.82f, 0.034f, 0.28f), currentLeafMaterial, pastLeafMaterial, "south_west_corner_chip_a");
+            Add("SouthEastCornerChipA", new Vector3(7.68f, 0.040f, -4.72f), new Vector3(7.86f, 0.040f, -4.88f), new Vector3(0.76f, 0.034f, 0.24f), new Vector3(0.84f, 0.034f, 0.28f), currentStoneMaterial, pastStoneMaterial, "south_east_corner_chip_a");
+
+            _ = stone;
+            _ = trim;
+            _ = path;
+        }
+
         private static void CreateCentralPlazaLibraryRearVolumePolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
         {
             var objectPrefix = $"{prefix}_CentralPlaza_LibraryRearVolume";
@@ -24525,6 +24566,51 @@ namespace Anemora.EditorTools
             Validate("Past_CentralPlaza_Cycle61_LibrarySideWindowLedges_EastWindowSillA", pastParent, "past_stone", pastPrefix, new Vector3(5.05f, 2.55f, 8.97f), new Vector3(5.65f, 3.65f, 10.27f), 0.20f, 0.20f, 1.10f);
             Validate("Past_CentralPlaza_Cycle61_LibrarySideWindowLedges_EastWindowSillB", pastParent, "past_stone", pastPrefix, new Vector3(5.05f, 2.55f, 10.25f), new Vector3(5.65f, 3.65f, 11.55f), 0.20f, 0.20f, 1.10f);
         }
+
+        private static void ValidateFastVsHd2dCycle62CentralPlazaOuterGroundSkirt()
+        {
+            var currentParent = "Current_CentralPlazaMap_SeparateSpace";
+            var pastParent = "Past_CentralPlazaMap_SeparateSpace";
+            var currentPrefix = "Current.central_plaza.cycle62.outer_ground_skirt.";
+            var pastPrefix = "Past.central_plaza.cycle62.outer_ground_skirt.";
+
+            void Validate(string objectName, string parentName, string materialToken, string expectedPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+            {
+                ValidateCentralPlazaLibraryDeepExteriorVolumeObject(
+                    objectName,
+                    materialToken,
+                    parentName,
+                    expectedPrefix,
+                    minLocalPosition,
+                    maxLocalPosition,
+                    maxScaleX,
+                    maxScaleY,
+                    maxScaleZ);
+            }
+
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_NorthLowStreetContinuationA", currentParent, "current_path", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_NorthFarGrassShoulderA", currentParent, "current_leaf", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_NorthFarStoneBreakA", currentParent, "current_stone", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_WestStreetContinuationA", currentParent, "current_path", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_EastStreetContinuationA", currentParent, "current_path", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_SouthEdgeGroundShoulderA", currentParent, "current_stone", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_NorthWestCornerChipA", currentParent, "current_stone", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_NorthEastCornerChipA", currentParent, "current_path", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_SouthWestCornerChipA", currentParent, "current_leaf", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Current_CentralPlaza_Cycle62_OuterGroundSkirt_SouthEastCornerChipA", currentParent, "current_stone", currentPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_NorthLowStreetContinuationA", pastParent, "past_path", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_NorthFarGrassShoulderA", pastParent, "leaf", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_NorthFarStoneBreakA", pastParent, "past_stone", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_WestStreetContinuationA", pastParent, "past_path", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_EastStreetContinuationA", pastParent, "past_path", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_SouthEdgeGroundShoulderA", pastParent, "past_stone", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_NorthWestCornerChipA", pastParent, "past_stone", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_NorthEastCornerChipA", pastParent, "past_path", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_SouthWestCornerChipA", pastParent, "leaf", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+            Validate("Past_CentralPlaza_Cycle62_OuterGroundSkirt_SouthEastCornerChipA", pastParent, "past_stone", pastPrefix, new Vector3(-9.60f, 0.00f, -6.20f), new Vector3(9.60f, 0.16f, 15.00f), 15.0f, 0.12f, 9.0f);
+        }
+
         private static void ValidateCentralPlazaLibrarySideWallSurfaceTuningObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
         {
             ValidateCentralPlazaLibraryRearVolumeObject(objectName, expectedMaterialToken, expectedParentName, expectedLandmarkIdPrefix, minLocalPosition, maxLocalPosition, maxScaleX, maxScaleY, maxScaleZ);
