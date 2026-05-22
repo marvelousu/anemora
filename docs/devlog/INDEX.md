@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.17 fast VS HD2D decisive light/shadow index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.18 fast VS HD2D house facade closure/shadow index update (2026-05-22). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 395 files including INDEX.md and README.md.
-- Dated devlog records: 393 files.
-- Linked evidence files present under docs/devlog/screenshots/: 732 files.
+- Root-level Markdown coverage: 396 files including INDEX.md and README.md.
+- Dated devlog records: 394 files.
+- Linked evidence files present under docs/devlog/screenshots/: 735 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -32,7 +32,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-19 | 3 |
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
-| 2026-05-22 | 48 |
+| 2026-05-22 | 49 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -40,6 +40,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-22_fast_vs_hd2d_house_facade_closure_shadow_cycle50.md](2026-05-22_fast_vs_hd2d_house_facade_closure_shadow_cycle50.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Facade Closure / Shadow Cycle 50 |
 | [2026-05-22_fast_vs_hd2d_decisive_light_shadow_cycle49.md](2026-05-22_fast_vs_hd2d_decisive_light_shadow_cycle49.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Decisive Light / Shadow Contrast Cycle 49 |
 | [2026-05-22_fast_vs_hd2d_shadow_occlusion_readability_cycle48.md](2026-05-22_fast_vs_hd2d_shadow_occlusion_readability_cycle48.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Shadow/Occlusion Readability Cycle 48 |
 | [2026-05-22_fast_vs_hd2d_library_interior_verticality_ground_skirt_cycle47.md](2026-05-22_fast_vs_hd2d_library_interior_verticality_ground_skirt_cycle47.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Interior Verticality / Ground Skirt Continuation Cycle 47 |
@@ -534,6 +535,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.18 | 2026-05-22 | Added Fast VS HD2D house facade closure/shadow cycle record with current/past door-side closure geometry, validation, and close/overview screenshot evidence. |
 | v7.17 | 2026-05-22 | Added Fast VS HD2D decisive light/shadow contrast cycle record with stronger exterior, plaza, and library shadow contrast tuning, localized occlusion objects, validation, and screenshot evidence. |
 | v7.16 | 2026-05-22 | Added Fast VS HD2D shadow/occlusion readability cycle record with current/past contact-shadow tuning, house door leak closure correction, library/plaza occlusion validation, and screenshot evidence. |
 | v6.98 | 2026-05-22 | Added Fast VS HD2D house exterior facade/backdrop readability cycle record with current/past roof trim, side solidity, door/window grounding, low-haze edge framing, validation, and report notes. |
