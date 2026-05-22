@@ -23507,10 +23507,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG importer settings are incorrect at {path}.");
             }
 
-            if ((validationTexture.width != 96 || validationTexture.height != 128) &&
-                (validationTexture.width != 128 || validationTexture.height != 128))
+            if (validationTexture.width != 128 || validationTexture.height != 128)
             {
-                throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG must stay at 96x128 or 128x128: {path}");
+                throw new InvalidOperationException($"House slice validation failed: surface directional shade overlay PNG must stay at 128x128: {path}");
             }
 
             if (TextureAlphaChannelIsEmpty(validationTexture))
@@ -23521,7 +23520,12 @@ namespace Anemora.EditorTools
             var centerAlpha = validationTexture.GetPixel(validationTexture.width / 2, validationTexture.height / 2).a;
             var leftEdgeAlpha = validationTexture.GetPixel(0, validationTexture.height / 2).a;
             var rightEdgeAlpha = validationTexture.GetPixel(validationTexture.width - 1, validationTexture.height / 2).a;
-            var cornerAlpha = validationTexture.GetPixel(0, 0).a;
+            var topLeftInteriorAlpha = validationTexture.GetPixel(32, 32).a;
+            var lowerRightInteriorAlpha = validationTexture.GetPixel(96, 96).a;
+            var topLeftCornerAlpha = validationTexture.GetPixel(0, 0).a;
+            var topRightCornerAlpha = validationTexture.GetPixel(validationTexture.width - 1, 0).a;
+            var bottomLeftCornerAlpha = validationTexture.GetPixel(0, validationTexture.height - 1).a;
+            var bottomRightCornerAlpha = validationTexture.GetPixel(validationTexture.width - 1, validationTexture.height - 1).a;
             var maxAlpha = 0f;
             foreach (var pixel in validationTexture.GetPixels32())
             {
@@ -23533,9 +23537,19 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft center alpha must stay in the 0.04-0.11 range, but was {centerAlpha:0.000}.");
             }
 
-            if (leftEdgeAlpha > centerAlpha * 0.60f || rightEdgeAlpha > centerAlpha * 0.60f || cornerAlpha > 0.012f)
+            if (topLeftInteriorAlpha <= lowerRightInteriorAlpha + 0.015f)
             {
-                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft alpha falloff looks broken. left={leftEdgeAlpha:0.000}, right={rightEdgeAlpha:0.000}, corner={cornerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft must keep a stronger upper-left falloff than lower-right falloff. topLeftInterior={topLeftInteriorAlpha:0.000}, lowerRightInterior={lowerRightInteriorAlpha:0.000}.");
+            }
+
+            if (leftEdgeAlpha > centerAlpha * 0.60f || rightEdgeAlpha > centerAlpha * 0.60f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft alpha falloff looks broken. left={leftEdgeAlpha:0.000}, right={rightEdgeAlpha:0.000}, center={centerAlpha:0.000}.");
+            }
+
+            if (topLeftCornerAlpha > 0.012f || topRightCornerAlpha > 0.012f || bottomLeftCornerAlpha > 0.012f || bottomRightCornerAlpha > 0.012f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft corner alpha must stay near transparent. tl={topLeftCornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
 
             if (maxAlpha < 0.08f || maxAlpha > 0.16f)
@@ -29126,42 +29140,7 @@ namespace Anemora.EditorTools
             EnsureFolder(TextureDirectory);
 
             var path = $"{TextureDirectory}/FastVS_House_surface_directional_shade_overlay_soft.png";
-            if (File.Exists(path))
-            {
-                var existingValidationTexture = LoadSurfaceDirectionalShadeOverlayTextureForValidation();
-                if (existingValidationTexture != null && !TextureAlphaChannelIsEmpty(existingValidationTexture))
-                {
-                    UnityEngine.Object.DestroyImmediate(existingValidationTexture);
-                    AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
-
-                    var existingImporter = AssetImporter.GetAtPath(path) as TextureImporter;
-                    if (existingImporter != null)
-                    {
-                        existingImporter.textureType = TextureImporterType.Default;
-                        existingImporter.alphaIsTransparency = true;
-                        existingImporter.isReadable = true;
-                        existingImporter.mipmapEnabled = false;
-                        existingImporter.npotScale = TextureImporterNPOTScale.None;
-                        existingImporter.filterMode = FilterMode.Bilinear;
-                        existingImporter.wrapMode = TextureWrapMode.Clamp;
-                        existingImporter.textureCompression = TextureImporterCompression.Uncompressed;
-                        existingImporter.SaveAndReimport();
-                    }
-
-                    var importedExisting = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-                    if (importedExisting != null)
-                    {
-                        return importedExisting;
-                    }
-                }
-
-                if (existingValidationTexture != null)
-                {
-                    UnityEngine.Object.DestroyImmediate(existingValidationTexture);
-                }
-            }
-
-            var texture = new Texture2D(96, 128, TextureFormat.RGBA32, false)
+            var texture = new Texture2D(128, 128, TextureFormat.RGBA32, false)
             {
                 name = "FastVS_House_surface_directional_shade_overlay_soft",
                 filterMode = FilterMode.Bilinear,
@@ -29171,19 +29150,21 @@ namespace Anemora.EditorTools
             var pixels = new Color32[texture.width * texture.height];
             for (var y = 0; y < texture.height; y++)
             {
+                var v = y / 127f;
                 for (var x = 0; x < texture.width; x++)
                 {
-                    var u = x / 95f;
-                    var v = y / 127f;
-                    var edgeX = Mathf.SmoothStep(0f, 0.20f, u) * Mathf.SmoothStep(0f, 0.20f, 1f - u);
-                    var edgeY = Mathf.SmoothStep(0f, 0.16f, v) * Mathf.SmoothStep(0f, 0.18f, 1f - v);
-                    var edgeFalloff = edgeX * edgeY;
-                    var topBias = Mathf.Clamp01(1f - (v * 0.72f));
-                    var sideBias = Mathf.Clamp01(1f - Mathf.Abs(u - 0.20f) / 0.46f);
-                    var centerBias = Mathf.Clamp01(1f - Mathf.Abs(u - 0.50f) / 0.42f);
-                    var alpha = edgeFalloff * ((0.055f * topBias) + (0.038f * sideBias) + (0.024f * centerBias) + 0.022f);
-                    alpha = Mathf.Clamp(alpha, 0f, 0.15f);
-                    var rgb = new Color32(11, 11, 17, (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
+                    var u = x / 127f;
+                    var xEdge = SmoothFade01(0f, 0.12f, u) * SmoothFade01(0f, 0.18f, 1f - u);
+                    var yEdge = SmoothFade01(0f, 0.10f, v) * SmoothFade01(0f, 0.16f, 1f - v);
+                    var edgeMask = xEdge * yEdge;
+                    var diagonal = Mathf.Clamp01(1f - ((u * 0.92f) + (v * 0.68f)));
+                    var upperLeftFocus = Mathf.Clamp01(1f - Mathf.Sqrt(((u / 0.62f) * (u / 0.62f)) + ((v / 0.78f) * (v / 0.78f))));
+                    var centerBulge = Mathf.Clamp01(1f - Mathf.Sqrt((((u - 0.44f) / 0.46f) * ((u - 0.44f) / 0.46f)) + (((v - 0.38f) / 0.52f) * ((v - 0.38f) / 0.52f))));
+                    var alpha = 0.030f + (diagonal * 0.050f) + (upperLeftFocus * 0.024f) + (centerBulge * 0.032f);
+                    var noiseSeed = (((x * 17) ^ (y * 29) ^ (x * y * 3)) & 31) / 31f;
+                    alpha += (noiseSeed - 0.5f) * 0.008f;
+                    alpha = Mathf.Clamp(edgeMask * alpha, 0f, 0.15f);
+                    var rgb = new Color32(11, 12, 19, (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
                     pixels[(y * texture.width) + x] = rgb;
                 }
             }

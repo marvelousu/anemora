@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using Anemora.FastVS;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +15,22 @@ namespace Anemora.EditorTools
         private const string MaterialRoleTagName = "AnemoraFastVsHd2dRole";
         private const float VectorTolerance = 0.005f;
         private const float ColorTolerance = 0.02f;
+        private static readonly string Cycle20OutputDirectory = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "..",
+            "docs",
+            "devlog",
+            "screenshots",
+            "fast_vs_hd2d_surface_directional_shade_texture_cycle20_20260522"));
+        private const string Cycle20ReportFileName = "surface_directional_shade_texture_cycle20_20260522.md";
+        private static readonly string Cycle20ReportPath = Path.Combine(Cycle20OutputDirectory, Cycle20ReportFileName);
+        private static readonly string Cycle20TexturePath = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "Art",
+            "Textures",
+            "FastVS",
+            "HouseSlice",
+            "FastVS_House_surface_directional_shade_overlay_soft.png"));
 
         [MenuItem("Tools/Anemora/Verify HD2D Overlay Profiles V1")]
         public static void VerifyOverlayProfilesV1()
@@ -350,6 +369,151 @@ namespace Anemora.EditorTools
             Debug.Log("HD2D overlay profile audit passed.");
         }
 
+        [MenuItem("Tools/Anemora/Write HD2D Surface Directional Shade Texture Cycle 20 Report")]
+        public static void WriteSurfaceDirectionalShadeTextureCycle20ReportBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+
+            var report = BuildSurfaceDirectionalShadeTextureCycle20Report();
+            Directory.CreateDirectory(Cycle20OutputDirectory);
+            File.WriteAllText(Cycle20ReportPath, BuildSurfaceDirectionalShadeTextureCycle20Markdown(report), Encoding.UTF8);
+            AssetDatabase.Refresh();
+
+            if (report.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D surface directional shade texture cycle 20 report failed:\n- " + string.Join("\n- ", report.Issues));
+            }
+
+            Debug.Log($"HD2D surface directional shade texture report written: {Cycle20ReportPath}");
+        }
+
+        private static SurfaceDirectionalShadeTextureCycle20Report BuildSurfaceDirectionalShadeTextureCycle20Report()
+        {
+            var report = new SurfaceDirectionalShadeTextureCycle20Report();
+            if (!File.Exists(Cycle20TexturePath))
+            {
+                report.Issues.Add($"Surface directional shade texture PNG is missing at {Cycle20TexturePath}.");
+                return report;
+            }
+
+            var bytes = File.ReadAllBytes(Cycle20TexturePath);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                if (!texture.LoadImage(bytes, false))
+                {
+                    report.Issues.Add($"Surface directional shade texture PNG could not be read at {Cycle20TexturePath}.");
+                    return report;
+                }
+
+                texture.name = "FastVS_House_surface_directional_shade_overlay_soft";
+                report.Width = texture.width;
+                report.Height = texture.height;
+
+                var centerX = texture.width / 2;
+                var centerY = texture.height / 2;
+                var topLeftInteriorX = Mathf.Min(32, texture.width - 1);
+                var topLeftInteriorY = Mathf.Min(32, texture.height - 1);
+                var lowerRightInteriorX = Mathf.Min(96, texture.width - 1);
+                var lowerRightInteriorY = Mathf.Min(96, texture.height - 1);
+
+                report.CenterAlpha = texture.GetPixel(centerX, centerY).a;
+                report.LeftEdgeAlpha = texture.GetPixel(0, centerY).a;
+                report.RightEdgeAlpha = texture.GetPixel(texture.width - 1, centerY).a;
+                report.TopLeftInteriorAlpha = texture.GetPixel(topLeftInteriorX, topLeftInteriorY).a;
+                report.LowerRightInteriorAlpha = texture.GetPixel(lowerRightInteriorX, lowerRightInteriorY).a;
+                report.TopLeftCornerAlpha = texture.GetPixel(0, 0).a;
+                report.TopRightCornerAlpha = texture.GetPixel(texture.width - 1, 0).a;
+                report.BottomLeftCornerAlpha = texture.GetPixel(0, texture.height - 1).a;
+                report.BottomRightCornerAlpha = texture.GetPixel(texture.width - 1, texture.height - 1).a;
+
+                foreach (var pixel in texture.GetPixels32())
+                {
+                    report.MaxAlpha = Mathf.Max(report.MaxAlpha, pixel.a / 255f);
+                }
+
+                if (report.Width != 128 || report.Height != 128)
+                {
+                    report.Issues.Add($"Surface directional shade texture must stay exactly 128x128, but was {report.Width}x{report.Height}.");
+                }
+
+                if (report.MaxAlpha <= 0f)
+                {
+                    report.Issues.Add("Surface directional shade texture alpha must not be empty.");
+                }
+
+                if (report.CenterAlpha < 0.04f || report.CenterAlpha > 0.11f)
+                {
+                    report.Issues.Add($"Center alpha {report.CenterAlpha:0.000} is outside the 0.04-0.11 range.");
+                }
+
+                if (report.MaxAlpha < 0.08f || report.MaxAlpha > 0.16f)
+                {
+                    report.Issues.Add($"Max alpha {report.MaxAlpha:0.000} is outside the 0.08-0.16 range.");
+                }
+
+                if (report.TopLeftInteriorAlpha <= report.LowerRightInteriorAlpha + 0.015f)
+                {
+                    report.Issues.Add($"Upper-left interior alpha {report.TopLeftInteriorAlpha:0.000} must exceed lower-right interior alpha {report.LowerRightInteriorAlpha:0.000} by at least 0.015.");
+                }
+
+                if (report.LeftEdgeAlpha > report.CenterAlpha * 0.60f || report.RightEdgeAlpha > report.CenterAlpha * 0.60f)
+                {
+                    report.Issues.Add($"Edge alpha must stay well below center alpha. left={report.LeftEdgeAlpha:0.000}, right={report.RightEdgeAlpha:0.000}, center={report.CenterAlpha:0.000}.");
+                }
+
+                if (report.TopLeftCornerAlpha > 0.012f || report.TopRightCornerAlpha > 0.012f || report.BottomLeftCornerAlpha > 0.012f || report.BottomRightCornerAlpha > 0.012f)
+                {
+                    report.Issues.Add($"Corner alpha must stay near transparent. tl={report.TopLeftCornerAlpha:0.000}, tr={report.TopRightCornerAlpha:0.000}, bl={report.BottomLeftCornerAlpha:0.000}, br={report.BottomRightCornerAlpha:0.000}.");
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+
+            return report;
+        }
+
+        private static string BuildSurfaceDirectionalShadeTextureCycle20Markdown(SurfaceDirectionalShadeTextureCycle20Report report)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("# Fast VS HD2D Surface Directional Shade Texture Cycle 20 Report");
+            builder.AppendLine();
+            builder.AppendLine("Deterministic v2 texture foundation for the house-slice surface directional shade overlay. This step reduces the risk of the overlay reading as a flat dark rectangle.");
+            builder.AppendLine();
+            builder.AppendLine($"- Texture PNG: `{Cycle20TexturePath}`");
+            builder.AppendLine($"- Report file: `{Cycle20ReportPath}`");
+            builder.AppendLine($"- Result: {report.Result}");
+            builder.AppendLine();
+            builder.AppendLine("| Metric | Value |");
+            builder.AppendLine("|---|---:|");
+            builder.AppendLine($"| Width | {report.Width} |");
+            builder.AppendLine($"| Height | {report.Height} |");
+            builder.AppendLine($"| Center alpha | {report.CenterAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Max alpha | {report.MaxAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Left edge alpha | {report.LeftEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Right edge alpha | {report.RightEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-left interior alpha | {report.TopLeftInteriorAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Lower-right interior alpha | {report.LowerRightInteriorAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-left corner alpha | {report.TopLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-right corner alpha | {report.TopRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom-left corner alpha | {report.BottomLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom-right corner alpha | {report.BottomRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+
+            if (report.Issues.Count > 0)
+            {
+                builder.AppendLine();
+                builder.AppendLine("## Issues");
+                foreach (var issue in report.Issues)
+                {
+                    builder.AppendLine($"- {issue}");
+                }
+            }
+
+            return builder.ToString();
+        }
+
         private static void ValidateProfile(
             List<string> issues,
             string objectName,
@@ -523,6 +687,24 @@ namespace Anemora.EditorTools
             }
 
             return null;
+        }
+
+        private sealed class SurfaceDirectionalShadeTextureCycle20Report
+        {
+            public int Width;
+            public int Height;
+            public float CenterAlpha;
+            public float MaxAlpha;
+            public float LeftEdgeAlpha;
+            public float RightEdgeAlpha;
+            public float TopLeftInteriorAlpha;
+            public float LowerRightInteriorAlpha;
+            public float TopLeftCornerAlpha;
+            public float TopRightCornerAlpha;
+            public float BottomLeftCornerAlpha;
+            public float BottomRightCornerAlpha;
+            public List<string> Issues = new List<string>();
+            public string Result => Issues.Count == 0 ? "PASS" : "FAIL";
         }
     }
 }
