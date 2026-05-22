@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.22 fast VS HD2D outdoor perimeter edge breakup index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.23 fast VS HD2D outdoor horizon silhouette blend index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 401 files including INDEX.md and README.md.
-- Dated devlog records: 399 files.
-- Linked evidence files present under docs/devlog/screenshots/: 827 files.
+- Root-level Markdown coverage: 402 files including INDEX.md and README.md.
+- Dated devlog records: 400 files.
+- Linked evidence files present under docs/devlog/screenshots/: 832 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 3 |
+| 2026-05-23 | 4 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_outdoor_horizon_silhouette_blend_cycle55.md](2026-05-23_fast_vs_hd2d_outdoor_horizon_silhouette_blend_cycle55.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Outdoor Horizon Silhouette Blend Cycle 55 |
 | [2026-05-23_fast_vs_hd2d_outdoor_perimeter_edge_breakup_cycle54.md](2026-05-23_fast_vs_hd2d_outdoor_perimeter_edge_breakup_cycle54.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Outdoor Perimeter Edge Breakup Cycle 54 |
 | [2026-05-23_fast_vs_hd2d_outdoor_perimeter_world_continuation_cycle53.md](2026-05-23_fast_vs_hd2d_outdoor_perimeter_world_continuation_cycle53.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Outdoor Perimeter World Continuation Cycle 53 |
 | [2026-05-23_fast_vs_hd2d_house_facade_porch_closure_cycle52.md](2026-05-23_fast_vs_hd2d_house_facade_porch_closure_cycle52.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D House Facade Porch Closure Cycle 52 |
@@ -545,6 +546,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.23 | 2026-05-23 | Added Fast VS HD2D outdoor horizon silhouette blend cycle record with low distant horizon bands and side carry strips for house exterior and plaza, validation, close review, and screenshot evidence. |
 | v7.22 | 2026-05-23 | Added Fast VS HD2D outdoor perimeter edge breakup cycle record with low-profile terrain and stone silhouette fragments around the house exterior and plaza edges, validation, and screenshot evidence. |
 | v7.21 | 2026-05-23 | Added Fast VS HD2D outdoor perimeter world continuation cycle record with low-profile house exterior and plaza world-envelope ground extensions, validation, and screenshot evidence. |
 | v7.20 | 2026-05-23 | Added Fast VS HD2D house facade porch closure cycle record with forward porch posts, side/outer cheek wall fills, eave board support, validation, and screenshot evidence. |
