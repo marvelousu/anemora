@@ -348,6 +348,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dOneHundredEighthCycleOutdoorGroundContinuationAndLibraryVerticality();
             ValidateFastVsHd2dOneHundredNinthCycleOutdoorWorldEnvelopeFoundation();
             ValidateFastVsHd2dOneHundredTenthCycleOutdoorHorizonScenicDepth();
+            ValidateFastVsHd2dOneHundredEleventhCycleOutdoorLightCompositionContactGrounding();
             ValidateFastVsHd2dFiftyFifthCycleLibraryWallPlaneDressing();
             ValidateFastVsHd2dTwentyNinthCycleLibraryReadingTableDetails();
             ValidateFastVsHd2dThirtyEighthCycleReadableBookProps();
@@ -5919,6 +5920,7 @@ namespace Anemora.EditorTools
             CreateOutdoorWorldGroundingFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorWorldEnvelopeFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorHorizonScenicDepthFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateOutdoorLightCompositionContactGrounding(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorVoidBackgroundTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyWashTreatment(root, prefix, past, FastVsHouseArea.Exterior);
             CreateOutdoorSkyDetailPolish(root, prefix, past, FastVsHouseArea.Exterior, materials);
@@ -6071,6 +6073,296 @@ namespace Anemora.EditorTools
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowLeftA", root, c + new Vector3(-1.85f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_left_a");
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_PorchPostFootShadowRightA", root, c + new Vector3(-0.25f, 0.115f, -1.78f), new Vector3(0.30f, 0.018f, 0.22f), Quaternion.identity, materials.Shadow, "Current.house_exterior.eave_contact.porch_post_foot_shadow_right_a");
             CreateNonArrivalLandmarkCube("Current_HouseExterior_EaveContact_FoundationScuffLineA", root, c + new Vector3(-1.72f, 0.365f, -1.28f), new Vector3(2.30f, 0.026f, 0.050f), Quaternion.Euler(0f, 3f, 0f), materials.CurrentStone, "Current.house_exterior.eave_contact.foundation_scuff_line_a");
+        }
+
+        private static void CreateOutdoorLightCompositionContactGrounding(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            if (area == FastVsHouseArea.Exterior)
+            {
+                CreateHouseExteriorLightCompositionContactGrounding(root, prefix, past, materials);
+                return;
+            }
+
+            CreateCentralPlazaLightCompositionContactGrounding(root, prefix, past, materials);
+        }
+
+        private static void CreateHouseExteriorLightCompositionContactGrounding(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var warmLight = EnsureHd2dWarmLightPoolMaterial();
+            var coolLight = EnsureHd2dCoolLightPoolMaterial();
+            var shadow = materials.Shadow;
+            var dust = materials.Dust;
+            var baseStone = past ? materials.PastStone : materials.CurrentStone;
+            var roof = past ? materials.PastRoof : materials.CurrentRoof;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add(
+                    "Past_HouseExterior_LightComposition_UnderEaveWarmSegmentLeftA",
+                    new Vector3(-2.50f, 1.86f, -1.66f),
+                    new Vector3(1.02f, 0.028f, 0.06f),
+                    Quaternion.Euler(0f, -2f, 0f),
+                    warmLight,
+                    "Past.house_exterior.light_composition.under_eave_warm_segment_left_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_UnderEaveWarmSegmentCenterA",
+                    new Vector3(-1.02f, 1.88f, -1.70f),
+                    new Vector3(1.48f, 0.028f, 0.06f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.house_exterior.light_composition.under_eave_warm_segment_center_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_UnderEaveWarmSegmentRightA",
+                    new Vector3(0.46f, 1.90f, -1.58f),
+                    new Vector3(0.82f, 0.028f, 0.06f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    warmLight,
+                    "Past.house_exterior.light_composition.under_eave_warm_segment_right_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_FacadeBaseWarmLiftA",
+                    new Vector3(-1.38f, 0.365f, -1.28f),
+                    new Vector3(2.20f, 0.022f, 0.05f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    baseStone,
+                    "Past.house_exterior.light_composition.facade_base_warm_lift_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_DoorThresholdWarmGlowA",
+                    new Vector3(-1.05f, 0.160f, -2.00f),
+                    new Vector3(0.94f, 0.018f, 0.12f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.house_exterior.light_composition.door_threshold_warm_glow_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_TreeBaseWarmContactA",
+                    new Vector3(3.35f, 0.032f, 2.72f),
+                    new Vector3(0.58f, 0.018f, 0.28f),
+                    Quaternion.Euler(0f, -10f, 0f),
+                    warmLight,
+                    "Past.house_exterior.light_composition.tree_base_warm_contact_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_RoadEdgeDustBandA",
+                    new Vector3(5.00f, 0.082f, 1.50f),
+                    new Vector3(1.02f, 0.016f, 0.14f),
+                    Quaternion.Euler(0f, 36f, 0f),
+                    dust,
+                    "Past.house_exterior.light_composition.road_edge_dust_band_a");
+                Add(
+                    "Past_HouseExterior_LightComposition_RoofSideWarmHighlightA",
+                    new Vector3(1.10f, 2.32f, -1.08f),
+                    new Vector3(0.48f, 0.028f, 0.22f),
+                    Quaternion.Euler(8f, 0f, 8f),
+                    roof,
+                    "Past.house_exterior.light_composition.roof_side_warm_highlight_a");
+            }
+            else
+            {
+                Add(
+                    "Current_HouseExterior_LightComposition_UnderEaveShadowSegmentLeftA",
+                    new Vector3(-2.50f, 1.86f, -1.66f),
+                    new Vector3(1.02f, 0.028f, 0.06f),
+                    Quaternion.Euler(0f, -2f, 0f),
+                    shadow,
+                    "Current.house_exterior.light_composition.under_eave_shadow_segment_left_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_UnderEaveShadowSegmentCenterA",
+                    new Vector3(-1.02f, 1.88f, -1.70f),
+                    new Vector3(1.48f, 0.028f, 0.06f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.house_exterior.light_composition.under_eave_shadow_segment_center_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_UnderEaveShadowSegmentRightA",
+                    new Vector3(0.46f, 1.90f, -1.58f),
+                    new Vector3(0.82f, 0.028f, 0.06f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    shadow,
+                    "Current.house_exterior.light_composition.under_eave_shadow_segment_right_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_FacadeBaseCoolLiftA",
+                    new Vector3(-1.38f, 0.365f, -1.28f),
+                    new Vector3(2.20f, 0.022f, 0.05f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    baseStone,
+                    "Current.house_exterior.light_composition.facade_base_cool_lift_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_DoorThresholdCoolGlowA",
+                    new Vector3(-1.05f, 0.160f, -2.00f),
+                    new Vector3(0.94f, 0.018f, 0.12f),
+                    Quaternion.identity,
+                    coolLight,
+                    "Current.house_exterior.light_composition.door_threshold_cool_glow_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_PorchStepShadowA",
+                    new Vector3(-1.58f, 0.102f, -2.03f),
+                    new Vector3(0.26f, 0.016f, 0.06f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.house_exterior.light_composition.porch_step_shadow_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_TreeBaseShadowA",
+                    new Vector3(3.35f, 0.032f, 2.72f),
+                    new Vector3(0.58f, 0.018f, 0.28f),
+                    Quaternion.Euler(0f, -10f, 0f),
+                    shadow,
+                    "Current.house_exterior.light_composition.tree_base_shadow_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_RoadEdgeDustBandA",
+                    new Vector3(5.00f, 0.082f, 1.50f),
+                    new Vector3(1.02f, 0.016f, 0.14f),
+                    Quaternion.Euler(0f, 36f, 0f),
+                    dust,
+                    "Current.house_exterior.light_composition.road_edge_dust_band_a");
+                Add(
+                    "Current_HouseExterior_LightComposition_RoofSideCoolHighlightA",
+                    new Vector3(1.10f, 2.32f, -1.08f),
+                    new Vector3(0.48f, 0.028f, 0.22f),
+                    Quaternion.Euler(8f, 0f, 8f),
+                    roof,
+                    "Current.house_exterior.light_composition.roof_side_cool_highlight_a");
+            }
+        }
+
+        private static void CreateCentralPlazaLightCompositionContactGrounding(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var warmLight = EnsureHd2dWarmLightPoolMaterial();
+            var coolLight = EnsureHd2dCoolLightPoolMaterial();
+            var shadow = materials.Shadow;
+            var dust = materials.Dust;
+            var baseStone = past ? materials.PastStone : materials.CurrentStone;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add(
+                    "Past_CentralPlaza_LightComposition_LibraryEaveWarmSegmentLeftA",
+                    new Vector3(-4.06f, 2.88f, 8.34f),
+                    new Vector3(0.86f, 0.030f, 0.12f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.library_eave_warm_segment_left_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_LibraryEaveWarmSegmentCenterA",
+                    new Vector3(0.00f, 2.88f, 8.34f),
+                    new Vector3(6.86f, 0.030f, 0.12f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.library_eave_warm_segment_center_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_LibraryEaveWarmSegmentRightA",
+                    new Vector3(4.06f, 2.88f, 8.34f),
+                    new Vector3(0.86f, 0.030f, 0.12f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.library_eave_warm_segment_right_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_LibraryFacadeWarmBaseA",
+                    new Vector3(0.00f, 0.190f, 8.04f),
+                    new Vector3(8.84f, 0.018f, 0.06f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.library_facade_warm_base_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_LibraryDoorWarmGlowA",
+                    new Vector3(0.00f, 1.00f, 7.72f),
+                    new Vector3(0.96f, 0.024f, 0.10f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.library_door_warm_glow_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_LibraryApproachWarmBounceA",
+                    new Vector3(0.00f, 0.12f, 6.88f),
+                    new Vector3(2.20f, 0.016f, 0.34f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.library_approach_warm_bounce_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_NoticeBoardWarmContactA",
+                    new Vector3(-3.18f, 0.090f, 1.92f),
+                    new Vector3(0.30f, 0.016f, 0.12f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.notice_board_warm_contact_a");
+                Add(
+                    "Past_CentralPlaza_LightComposition_FountainWarmContactA",
+                    new Vector3(0.06f, 0.080f, 2.72f),
+                    new Vector3(1.18f, 0.014f, 0.12f),
+                    Quaternion.identity,
+                    warmLight,
+                    "Past.central_plaza.light_composition.fountain_warm_contact_a");
+            }
+            else
+            {
+                Add(
+                    "Current_CentralPlaza_LightComposition_LibraryEaveShadowSegmentLeftA",
+                    new Vector3(-4.06f, 2.88f, 8.34f),
+                    new Vector3(0.86f, 0.030f, 0.12f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.central_plaza.light_composition.library_eave_shadow_segment_left_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_LibraryEaveShadowSegmentCenterA",
+                    new Vector3(0.00f, 2.88f, 8.34f),
+                    new Vector3(6.86f, 0.030f, 0.12f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.central_plaza.light_composition.library_eave_shadow_segment_center_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_LibraryEaveShadowSegmentRightA",
+                    new Vector3(4.06f, 2.88f, 8.34f),
+                    new Vector3(0.86f, 0.030f, 0.12f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.central_plaza.light_composition.library_eave_shadow_segment_right_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_LibraryFacadeShadowBaseA",
+                    new Vector3(0.00f, 0.190f, 8.04f),
+                    new Vector3(8.84f, 0.018f, 0.06f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.central_plaza.light_composition.library_facade_shadow_base_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA",
+                    new Vector3(0.00f, 1.00f, 7.72f),
+                    new Vector3(0.96f, 0.024f, 0.10f),
+                    Quaternion.identity,
+                    coolLight,
+                    "Current.central_plaza.light_composition.library_door_cool_glow_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA",
+                    new Vector3(0.00f, 0.12f, 6.88f),
+                    new Vector3(2.20f, 0.016f, 0.34f),
+                    Quaternion.identity,
+                    coolLight,
+                    "Current.central_plaza.light_composition.library_approach_cool_bounce_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_NoticeBoardShadowContactA",
+                    new Vector3(-3.18f, 0.090f, 1.92f),
+                    new Vector3(0.30f, 0.016f, 0.12f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.central_plaza.light_composition.notice_board_shadow_contact_a");
+                Add(
+                    "Current_CentralPlaza_LightComposition_FountainShadowContactA",
+                    new Vector3(0.06f, 0.080f, 2.72f),
+                    new Vector3(1.18f, 0.014f, 0.12f),
+                    Quaternion.identity,
+                    shadow,
+                    "Current.central_plaza.light_composition.fountain_shadow_contact_a");
+            }
+
+            _ = baseStone;
+            _ = dust;
         }
 
         private static void CreateHouseExteriorPorchDoorGroundingPolish(Transform root, string prefix, bool past, Materials materials, Vector3 center, Material stone, Material trim, Material wall)
@@ -6527,6 +6819,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryOcclusionShell(root, prefix, past, materials);
             CreatePlazaLibraryVerticalityFoundation(root, prefix, past, materials);
             CreateOutdoorHorizonScenicDepthFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateOutdoorLightCompositionContactGrounding(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorBackdropOcclusionFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorScenicBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
             CreateOutdoorCompositionSkyBackdropFoundation(root, prefix, past, FastVsHouseArea.CentralPlaza, materials);
@@ -27630,6 +27923,37 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_HorizonScenicDepth_RightDetailClusterA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_path", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(6.00f, 0.14f, 13.90f), new Vector3(6.40f, 0.24f, 14.18f), new Vector3(0.22f, 0.03f, 0.08f), new Vector3(0.30f, 0.08f, 0.20f));
         }
 
+        private static void ValidateFastVsHd2dOneHundredEleventhCycleOutdoorLightCompositionContactGrounding()
+        {
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_LightComposition_UnderEaveShadowSegmentCenterA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.28f, 1.84f, -1.74f), new Vector3(-0.76f, 1.92f, -1.62f), new Vector3(1.30f, 0.024f, 0.04f), new Vector3(1.66f, 0.040f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_LightComposition_DoorThresholdCoolGlowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.18f, 0.14f, -2.06f), new Vector3(-0.90f, 0.18f, -1.94f), new Vector3(0.80f, 0.012f, 0.08f), new Vector3(1.10f, 0.032f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_LightComposition_FacadeBaseCoolLiftA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.62f, 0.33f, -1.34f), new Vector3(-1.16f, 0.40f, -1.20f), new Vector3(1.95f, 0.018f, 0.04f), new Vector3(2.45f, 0.030f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_LightComposition_TreeBaseShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(3.16f, 0.02f, 2.60f), new Vector3(3.54f, 0.05f, 2.84f), new Vector3(0.44f, 0.014f, 0.20f), new Vector3(0.74f, 0.024f, 0.36f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_LightComposition_RoadEdgeDustBandA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "dust", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.78f, 0.07f, 1.40f), new Vector3(5.22f, 0.10f, 1.60f), new Vector3(0.90f, 0.012f, 0.10f), new Vector3(1.12f, 0.022f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_LightComposition_RoofSideCoolHighlightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(0.92f, 2.26f, -1.18f), new Vector3(1.28f, 2.38f, -0.98f), new Vector3(0.34f, 0.020f, 0.14f), new Vector3(0.60f, 0.040f, 0.30f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_LightComposition_UnderEaveWarmSegmentCenterA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.28f, 1.84f, -1.74f), new Vector3(-0.76f, 1.92f, -1.62f), new Vector3(1.30f, 0.024f, 0.04f), new Vector3(1.66f, 0.040f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_LightComposition_DoorThresholdWarmGlowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.18f, 0.14f, -2.06f), new Vector3(-0.90f, 0.18f, -1.94f), new Vector3(0.80f, 0.012f, 0.08f), new Vector3(1.10f, 0.032f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_LightComposition_FacadeBaseWarmLiftA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.62f, 0.33f, -1.34f), new Vector3(-1.16f, 0.40f, -1.20f), new Vector3(1.95f, 0.018f, 0.04f), new Vector3(2.45f, 0.030f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_LightComposition_TreeBaseWarmContactA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(3.16f, 0.02f, 2.60f), new Vector3(3.54f, 0.05f, 2.84f), new Vector3(0.44f, 0.014f, 0.20f), new Vector3(0.74f, 0.024f, 0.36f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_LightComposition_RoadEdgeDustBandA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "dust", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.78f, 0.07f, 1.40f), new Vector3(5.22f, 0.10f, 1.60f), new Vector3(0.90f, 0.012f, 0.10f), new Vector3(1.12f, 0.022f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_LightComposition_RoofSideWarmHighlightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "past_roof", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(0.92f, 2.26f, -1.18f), new Vector3(1.28f, 2.38f, -0.98f), new Vector3(0.34f, 0.020f, 0.14f), new Vector3(0.60f, 0.040f, 0.30f));
+
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LightComposition_LibraryEaveShadowSegmentCenterA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.20f, 2.84f, 8.28f), new Vector3(0.20f, 2.92f, 8.40f), new Vector3(6.40f, 0.024f, 0.08f), new Vector3(7.20f, 0.040f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LightComposition_LibraryFacadeShadowBaseA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.20f, 0.16f, 7.98f), new Vector3(0.20f, 0.22f, 8.10f), new Vector3(8.40f, 0.012f, 0.04f), new Vector3(9.20f, 0.030f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 0.96f, 7.66f), new Vector3(0.12f, 1.04f, 7.78f), new Vector3(0.80f, 0.016f, 0.08f), new Vector3(1.10f, 0.032f, 0.14f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "hd2d_cool_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.14f, 0.10f, 6.80f), new Vector3(0.14f, 0.14f, 6.96f), new Vector3(2.00f, 0.012f, 0.24f), new Vector3(2.40f, 0.022f, 0.42f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LightComposition_NoticeBoardShadowContactA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.28f, 0.07f, 1.84f), new Vector3(-3.08f, 0.11f, 2.00f), new Vector3(0.24f, 0.012f, 0.08f), new Vector3(0.36f, 0.022f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_LightComposition_FountainShadowContactA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.06f, 0.06f, 2.64f), new Vector3(0.18f, 0.10f, 2.80f), new Vector3(1.00f, 0.010f, 0.08f), new Vector3(1.30f, 0.020f, 0.16f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_LibraryEaveWarmSegmentCenterA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.20f, 2.84f, 8.28f), new Vector3(0.20f, 2.92f, 8.40f), new Vector3(6.40f, 0.024f, 0.08f), new Vector3(7.20f, 0.040f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_LibraryFacadeWarmBaseA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.20f, 0.16f, 7.98f), new Vector3(0.20f, 0.22f, 8.10f), new Vector3(8.40f, 0.012f, 0.04f), new Vector3(9.20f, 0.030f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_LibraryDoorWarmGlowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.12f, 0.96f, 7.66f), new Vector3(0.12f, 1.04f, 7.78f), new Vector3(0.80f, 0.016f, 0.08f), new Vector3(1.10f, 0.032f, 0.14f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_LibraryApproachWarmBounceA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.14f, 0.10f, 6.80f), new Vector3(0.14f, 0.14f, 6.96f), new Vector3(2.00f, 0.012f, 0.24f), new Vector3(2.40f, 0.022f, 0.42f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_NoticeBoardWarmContactA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.28f, 0.07f, 1.84f), new Vector3(-3.08f, 0.11f, 2.00f), new Vector3(0.24f, 0.012f, 0.08f), new Vector3(0.36f, 0.022f, 0.16f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_LightComposition_FountainWarmContactA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "warm_light_pool", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.06f, 0.06f, 2.64f), new Vector3(0.18f, 0.10f, 2.80f), new Vector3(1.00f, 0.010f, 0.08f), new Vector3(1.30f, 0.020f, 0.16f));
+        }
+
         private static void ValidateHouseExteriorPathPorchDressingObject(string objectName, string expectedMaterialToken, string expectedParentName, float maxScaleY)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -31909,6 +32233,28 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material EnsureHd2dCoolLightPoolMaterial()
+        {
+            var material = FlatMaterial("hd2d_cool_light_pool", Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3008);
+            var texture = EnsureHd2dCoolLightPoolTexture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(0.82f, 0.90f, 1.0f, 0.16f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
         private static Material EnsureHd2dOutdoorScenicBackdropMaterial(string id, bool past, FastVsHouseArea area, string layer)
         {
             var material = FlatMaterial(id, Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
@@ -32022,6 +32368,29 @@ namespace Anemora.EditorTools
                     var alpha = (softEdge * softEdge * 0.20f) + (halo * 0.04f);
                     alpha = Mathf.Clamp(alpha, 0f, 0.24f);
                     return new Color(1.0f, 0.72f, 0.30f, alpha);
+                });
+        }
+
+        private static Texture2D EnsureHd2dCoolLightPoolTexture()
+        {
+            return EnsureGeneratedTexture(
+                "hd2d_cool_light_pool_soft",
+                128,
+                96,
+                FilterMode.Bilinear,
+                (x, y) =>
+                {
+                    var u = (x / 127f) * 2f - 1f;
+                    var v = (y / 95f) * 2f - 1f;
+                    var dx = u / 0.82f;
+                    var dy = v / 0.54f;
+                    var ellipse = Mathf.Sqrt((dx * dx) + (dy * dy));
+                    var core = Mathf.Clamp01(1f - ellipse);
+                    var softEdge = Mathf.SmoothStep(0f, 1f, core);
+                    var halo = Mathf.Clamp01(1f - Mathf.Max(Mathf.Abs(u) * 0.88f, Mathf.Abs(v) * 1.10f));
+                    var alpha = (softEdge * softEdge * 0.18f) + (halo * 0.03f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.22f);
+                    return new Color(0.84f, 0.91f, 1.0f, alpha);
                 });
         }
 
