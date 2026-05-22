@@ -328,6 +328,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightyThirdCycleHouseExteriorEaveContact();
             ValidateFastVsHd2dEightyFourthCyclePlazaLibraryEntryDepth();
             ValidateFastVsHd2dCycle48ShadowOcclusionReadability();
+            ValidateFastVsHd2dCycle49DecisiveLightShadowContrast();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
@@ -5505,7 +5506,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_ReturnDoorHandleCue", exteriorRoot, HouseExteriorCenter + new Vector3(-0.72f, 0.94f, -1.29f), new Vector3(0.10f, 0.10f, 0.08f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.return_door_handle_cue");
             CreateGlowDisc($"{prefix}_HouseExterior_MapMoveGlowPad", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.58f, 0.02f), new Vector3(0.46f, 0.018f, 0.30f), glow, true);
             CreateGlowDisc($"{prefix}_HouseExterior_DoorEntrySmallGlow", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.50f, 0.02f), new Vector3(0.30f, 0.015f, 0.20f), glow, true);
-            CreateLandmarkCube($"{prefix}_HouseExterior_DoorClosedPanel", exteriorRoot, HouseExteriorCenter + new Vector3(-1.32f, 0.83f, -1.48f), new Vector3(1.52f, 1.38f, 0.07f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.closed_door_panel");
+            CreateLandmarkCube($"{prefix}_HouseExterior_DoorClosedPanel", exteriorRoot, HouseExteriorCenter + new Vector3(-1.05f, 0.83f, -1.48f), new Vector3(1.86f, 1.38f, 0.07f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.closed_door_panel");
         }
 
         private static void CreateHd2dDepthFraming(HouseMapAreas currentAreas, HouseMapAreas pastAreas)
@@ -5918,6 +5919,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorStaticDirectionalCastShadow(root, prefix, past, materials);
             CreateHouseExteriorSurfaceDirectionalShadeOverlay(root, prefix, past, materials);
             CreateHouseExteriorOcclusionReadabilityCycle48(root, prefix, past, materials);
+            CreateHouseExteriorDecisiveLightShadowCycle49(root, prefix, past, materials);
 
             if (!past)
             {
@@ -7002,6 +7004,34 @@ namespace Anemora.EditorTools
             Add("Current_HouseExterior_OcclusionReadability_FacadeBaseShadowA", new Vector3(-1.70f, 0.360f, -1.28f), new Vector3(2.28f, 0.028f, 0.050f), Quaternion.Euler(0f, 2f, 0f), shadow, "Current.house_exterior.occlusion_readability.facade_base_shadow_a");
         }
 
+        private static void CreateHouseExteriorDecisiveLightShadowCycle49(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var shadow = materials.Shadow;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_HouseExterior_Cycle49_UnderEaveSpanShadowA", new Vector3(-1.03f, 1.80f, -1.68f), new Vector3(4.10f, 0.026f, 0.06f), Quaternion.identity, occlusion, "Past.house_exterior.cycle49.under_eave_span_shadow_a");
+                Add("Past_HouseExterior_Cycle49_PorchFloorContactShadowA", new Vector3(-1.05f, 0.090f, -1.90f), new Vector3(1.06f, 0.016f, 0.18f), Quaternion.identity, shadow, "Past.house_exterior.cycle49.porch_floor_contact_shadow_a");
+                Add("Past_HouseExterior_Cycle49_WallGroundContactShadowA", new Vector3(-1.70f, 0.300f, -1.28f), new Vector3(2.28f, 0.018f, 0.05f), Quaternion.Euler(0f, 2f, 0f), shadow, "Past.house_exterior.cycle49.wall_ground_contact_shadow_a");
+                Add("Past_HouseExterior_Cycle49_PorchPostBaseShadowLeftA", new Vector3(-1.84f, 0.102f, -1.79f), new Vector3(0.24f, 0.014f, 0.16f), Quaternion.identity, shadow, "Past.house_exterior.cycle49.porch_post_base_shadow_left_a");
+                Add("Past_HouseExterior_Cycle49_PorchPostBaseShadowRightA", new Vector3(-0.26f, 0.102f, -1.79f), new Vector3(0.24f, 0.014f, 0.16f), Quaternion.identity, shadow, "Past.house_exterior.cycle49.porch_post_base_shadow_right_a");
+                return;
+            }
+
+            Add("Current_HouseExterior_Cycle49_UnderEaveSpanShadowA", new Vector3(-1.03f, 1.80f, -1.68f), new Vector3(4.10f, 0.026f, 0.06f), Quaternion.identity, occlusion, "Current.house_exterior.cycle49.under_eave_span_shadow_a");
+            Add("Current_HouseExterior_Cycle49_PorchFloorContactShadowA", new Vector3(-1.05f, 0.090f, -1.90f), new Vector3(1.06f, 0.016f, 0.18f), Quaternion.identity, shadow, "Current.house_exterior.cycle49.porch_floor_contact_shadow_a");
+            Add("Current_HouseExterior_Cycle49_WallGroundContactShadowA", new Vector3(-1.70f, 0.300f, -1.28f), new Vector3(2.28f, 0.018f, 0.05f), Quaternion.Euler(0f, 2f, 0f), shadow, "Current.house_exterior.cycle49.wall_ground_contact_shadow_a");
+            Add("Current_HouseExterior_Cycle49_PorchPostBaseShadowLeftA", new Vector3(-1.84f, 0.102f, -1.79f), new Vector3(0.24f, 0.014f, 0.16f), Quaternion.identity, shadow, "Current.house_exterior.cycle49.porch_post_base_shadow_left_a");
+            Add("Current_HouseExterior_Cycle49_PorchPostBaseShadowRightA", new Vector3(-0.26f, 0.102f, -1.79f), new Vector3(0.24f, 0.014f, 0.16f), Quaternion.identity, shadow, "Current.house_exterior.cycle49.porch_post_base_shadow_right_a");
+        }
+
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
         {
             CreateExternalTreeSpriteLandmark(
@@ -7207,6 +7237,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryStaticDirectionalCastShadow(root, prefix, past, materials);
             CreateCentralPlazaLibrarySurfaceDirectionalShadeOverlay(root, prefix, past, materials);
             CreateCentralPlazaLibraryOcclusionReadabilityCycle48(root, prefix, past, materials);
+            CreateCentralPlazaDecisiveLightShadowCycle49(root, prefix, past, materials);
             CreateCentralPlazaLibraryRearVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryVolumeReadabilityPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryBackwardVolumePolish(root, prefix, c, past, materials, stone, trim, wall);
@@ -10757,6 +10788,7 @@ namespace Anemora.EditorTools
             CreateLibraryReadableMicropropPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryReadingTableGroundingPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryInteriorOcclusionReadabilityCycle48(root, prefix, past, materials);
+            CreateLibraryDecisiveLightShadowCycle49(root, prefix, past, materials);
             CreateLibraryEntryTableContrastPolish(root, prefix, past, materials, c, floor, wood, trim);
             CreateLibraryTableSilhouettePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryReadingSurfaceDensityPolish(root, prefix, past, materials, c);
@@ -11550,6 +11582,25 @@ namespace Anemora.EditorTools
             Add("Current_Library_OcclusionReadability_ClerestoryShadowBandA", new Vector3(0.00f, 3.78f, 6.96f), new Vector3(8.72f, 0.038f, 0.12f), occlusion, "Current.library.occlusion_readability.clerestory_shadow_band_a");
             Add("Current_Library_OcclusionReadability_RetoDeskBaseShadowA", new Vector3(1.08f, 0.040f, 0.12f), new Vector3(1.00f, 0.016f, 0.30f), shadow, "Current.library.occlusion_readability.reto_desk_base_shadow_a");
             Add("Current_Library_OcclusionReadability_SideTableBaseShadowA", new Vector3(3.60f, 0.040f, -1.82f), new Vector3(0.86f, 0.016f, 0.22f), shadow, "Current.library.occlusion_readability.side_table_base_shadow_a");
+        }
+
+        private static void CreateLibraryDecisiveLightShadowCycle49(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = LibraryVsCenter;
+            var shadow = materials.Shadow;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_Library_Cycle49_TableUnderShadowA", new Vector3(-2.88f, 0.060f, -0.92f), new Vector3(1.18f, 0.014f, 0.24f), Quaternion.identity, shadow, "Past.library.cycle49.table_under_shadow_a");
+                return;
+            }
+
+            Add("Current_Library_Cycle49_RetoDeskUnderShadowA", new Vector3(1.35f, 0.060f, 0.72f), new Vector3(1.04f, 0.014f, 0.24f), Quaternion.identity, shadow, "Current.library.cycle49.reto_desk_under_shadow_a");
         }
 
         private static void CreateLibraryEntryTableContrastPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material floor, Material wood, Material trim)
@@ -17513,6 +17564,31 @@ namespace Anemora.EditorTools
             Add("Current_CentralPlaza_LibraryOcclusionReadability_EastReturnOcclusionA", new Vector3(4.62f, 1.92f, 8.95f), new Vector3(0.38f, 2.14f, 0.10f), Quaternion.identity, occlusion, "Current.central_plaza.library_occlusion_readability.east_return_occlusion_a");
         }
 
+        private static void CreateCentralPlazaDecisiveLightShadowCycle49(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var shadow = materials.Shadow;
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, shadow, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_CentralPlaza_Cycle49_LibraryFacadeFootShadowA", new Vector3(0f, 0.120f, 8.00f), new Vector3(9.00f, 0.016f, 0.06f), Quaternion.identity, "Past.central_plaza.cycle49.library_facade_foot_shadow_a");
+                Add("Past_CentralPlaza_Cycle49_LibraryEntranceStepShadowA", new Vector3(0f, 0.100f, 7.30f), new Vector3(1.60f, 0.016f, 0.10f), Quaternion.identity, "Past.central_plaza.cycle49.library_entrance_step_shadow_a");
+                Add("Past_CentralPlaza_Cycle49_LibraryWestReturnContactShadowA", new Vector3(-4.62f, 0.160f, 8.90f), new Vector3(0.40f, 0.016f, 0.10f), Quaternion.identity, "Past.central_plaza.cycle49.library_west_return_contact_shadow_a");
+                Add("Past_CentralPlaza_Cycle49_LibraryEastReturnContactShadowA", new Vector3(4.62f, 0.160f, 8.90f), new Vector3(0.40f, 0.016f, 0.10f), Quaternion.identity, "Past.central_plaza.cycle49.library_east_return_contact_shadow_a");
+                return;
+            }
+
+            Add("Current_CentralPlaza_Cycle49_LibraryFacadeFootShadowA", new Vector3(0f, 0.120f, 8.00f), new Vector3(9.00f, 0.016f, 0.06f), Quaternion.identity, "Current.central_plaza.cycle49.library_facade_foot_shadow_a");
+            Add("Current_CentralPlaza_Cycle49_LibraryEntranceStepShadowA", new Vector3(0f, 0.100f, 7.30f), new Vector3(1.60f, 0.016f, 0.10f), Quaternion.identity, "Current.central_plaza.cycle49.library_entrance_step_shadow_a");
+            Add("Current_CentralPlaza_Cycle49_LibraryWestReturnContactShadowA", new Vector3(-4.62f, 0.160f, 8.90f), new Vector3(0.40f, 0.016f, 0.10f), Quaternion.identity, "Current.central_plaza.cycle49.library_west_return_contact_shadow_a");
+            Add("Current_CentralPlaza_Cycle49_LibraryEastReturnContactShadowA", new Vector3(4.62f, 0.160f, 8.90f), new Vector3(0.40f, 0.016f, 0.10f), Quaternion.identity, "Current.central_plaza.cycle49.library_east_return_contact_shadow_a");
+        }
+
         private static void CreatePlazaLibraryEntryDepthPolish(Transform root, string prefix, bool past, Materials materials)
         {
             var c = CentralPlazaVsCenter;
@@ -19683,14 +19759,14 @@ namespace Anemora.EditorTools
             light.type = LightType.Directional;
             light.intensity = 0.86f;
             light.shadows = LightShadows.Soft;
-            light.shadowStrength = 0.48f;
+            light.shadowStrength = 0.58f;
             light.color = new Color(1.00f, 0.88f, 0.72f, 1f);
             lightObject.transform.rotation = Quaternion.Euler(46f, -42f, 0f);
             var warmFillObject = new GameObject("FastVS_HD2D_WarmFillLight", typeof(Light));
             var warmFill = warmFillObject.GetComponent<Light>();
             warmFill.type = LightType.Point;
-            warmFill.intensity = 0.30f;
-            warmFill.range = 6.0f;
+            warmFill.intensity = 0.28f;
+            warmFill.range = 5.8f;
             warmFill.color = new Color(1.00f, 0.72f, 0.46f, 1f);
             warmFill.shadows = LightShadows.None;
             warmFillObject.transform.position = new Vector3(-7.25f, 1.65f, -9.10f);
@@ -19698,7 +19774,7 @@ namespace Anemora.EditorTools
             var coolRimObject = new GameObject("FastVS_HD2D_CoolRimLight", typeof(Light));
             var coolRim = coolRimObject.GetComponent<Light>();
             coolRim.type = LightType.Directional;
-            coolRim.intensity = 0.045f;
+            coolRim.intensity = 0.040f;
             coolRim.color = new Color(0.58f, 0.70f, 1.00f, 1f);
             coolRim.shadows = LightShadows.None;
             coolRimObject.transform.rotation = Quaternion.Euler(25f, 132f, 0f);
@@ -19726,7 +19802,7 @@ namespace Anemora.EditorTools
             director.ApplyAreaForReview(FastVsHouseArea.Interior);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.205f, 0.195f, 0.190f);
+            RenderSettings.ambientLight = new Color(0.176f, 0.168f, 0.163f);
             RenderSettings.fog = false;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = new Color(0.080f, 0.074f, 0.070f);
@@ -19743,14 +19819,14 @@ namespace Anemora.EditorTools
                 "house interior",
                 true,
                 HouseInteriorCenter,
-                new Vector2(0.16f, 0.24f),
+                new Vector2(0.15f, 0.23f),
                 new Vector3(46f, -42f, 0f),
                 0.86f,
                 new Color(1.00f, 0.88f, 0.72f, 1f),
-                0.30f,
+                0.28f,
                 new Color(1.00f, 0.72f, 0.46f, 1f),
-                0.197f,
-                new Color(0.205f, 0.195f, 0.190f, 1f));
+                0.169f,
+                new Color(0.176f, 0.168f, 0.163f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.Exterior.transform,
@@ -19759,14 +19835,14 @@ namespace Anemora.EditorTools
                 "house exterior",
                 false,
                 HouseExteriorCenter,
-                new Vector2(0.21f, 0.29f),
+                new Vector2(0.19f, 0.27f),
                 new Vector3(50f, -36f, 0f),
-                1.04f,
+                1.05f,
                 new Color(1.00f, 0.94f, 0.82f, 1f),
-                0.18f,
+                0.15f,
                 new Color(1.00f, 0.76f, 0.48f, 1f),
-                0.254f,
-                new Color(0.245f, 0.255f, 0.265f, 1f));
+                0.213f,
+                new Color(0.206f, 0.214f, 0.223f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.CentralPlaza.transform,
@@ -19775,14 +19851,14 @@ namespace Anemora.EditorTools
                 "central plaza",
                 false,
                 CentralPlazaVsCenter,
-                new Vector2(0.20f, 0.28f),
+                new Vector2(0.18f, 0.26f),
                 new Vector3(49f, -31f, 0f),
-                1.08f,
+                1.07f,
                 new Color(1.00f, 0.92f, 0.78f, 1f),
-                0.14f,
+                0.11f,
                 new Color(1.00f, 0.72f, 0.42f, 1f),
-                0.244f,
-                new Color(0.235f, 0.245f, 0.260f, 1f));
+                0.201f,
+                new Color(0.193f, 0.201f, 0.213f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.Library.transform,
@@ -19791,14 +19867,14 @@ namespace Anemora.EditorTools
                 "library",
                 true,
                 LibraryVsCenter,
-                new Vector2(0.13f, 0.20f),
+                new Vector2(0.11f, 0.18f),
                 new Vector3(54f, -28f, 0f),
-                0.74f,
+                0.76f,
                 new Color(1.00f, 0.86f, 0.64f, 1f),
-                0.24f,
+                0.20f,
                 new Color(1.00f, 0.70f, 0.42f, 1f),
-                0.146f,
-                new Color(0.155f, 0.145f, 0.135f, 1f));
+                0.121f,
+                new Color(0.128f, 0.120f, 0.111f, 1f));
         }
 
         private static GameObject CreateAreaLightingProfile(
@@ -23094,9 +23170,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: outdoor sky clear-color review components are missing.");
             }
 
-            var houseExteriorSky = new Color(0.245f, 0.315f, 0.385f, 1f);
-            var centralPlazaSky = new Color(0.235f, 0.305f, 0.375f, 1f);
-            var indoorDark = new Color(0.064f, 0.060f, 0.060f, 1f);
+            var houseExteriorSky = new Color(0.214f, 0.282f, 0.348f, 1f);
+            var centralPlazaSky = new Color(0.204f, 0.271f, 0.335f, 1f);
+            var indoorDark = new Color(0.060f, 0.056f, 0.055f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
             visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
@@ -25489,9 +25565,9 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            if (ambient.r < 0.13f || ambient.r > 0.30f ||
-                ambient.g < 0.13f || ambient.g > 0.30f ||
-                ambient.b < 0.12f || ambient.b > 0.30f)
+            if (ambient.r < 0.11f || ambient.r > 0.30f ||
+                ambient.g < 0.11f || ambient.g > 0.30f ||
+                ambient.b < 0.10f || ambient.b > 0.30f)
             {
                 throw new InvalidOperationException($"House slice validation failed: ambient light must remain inside the HD-2D shading foundation profile range, found ({ambient.r:0.000}, {ambient.g:0.000}, {ambient.b:0.000}).");
             }
@@ -25591,9 +25667,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Directional Light must use soft shadows.");
             }
 
-            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.65f)
+            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.72f)
             {
-                throw new InvalidOperationException("House slice validation failed: Directional Light shadow strength must stay in the HD-2D balance range.");
+                throw new InvalidOperationException("House slice validation failed: Directional Light shadow strength must stay in the HD-2D decisive shadow balance range.");
             }
 
             if (directionalLight.intensity < 0.70f || directionalLight.intensity > 1.25f)
@@ -25607,9 +25683,9 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            if (ambient.r < 0.14f || ambient.r > 0.32f ||
-                ambient.g < 0.14f || ambient.g > 0.32f ||
-                ambient.b < 0.13f || ambient.b > 0.32f)
+            if (ambient.r < 0.11f || ambient.r > 0.32f ||
+                ambient.g < 0.11f || ambient.g > 0.32f ||
+                ambient.b < 0.10f || ambient.b > 0.32f)
             {
                 throw new InvalidOperationException("House slice validation failed: ambient light must stay within the HD-2D readability range.");
             }
@@ -29996,6 +30072,236 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_OutdoorWorldEnvelope_LeftPerimeterShoulderA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_grass", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-7.42f, 0.02f, 2.72f), new Vector3(-6.92f, 0.09f, 3.12f), new Vector3(2.26f, 0.04f, 10.00f), new Vector3(2.58f, 0.08f, 10.48f));
             ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_OutdoorWorldEnvelope_RearPlinthShelfA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-0.20f, 0.02f, 9.10f), new Vector3(0.20f, 0.18f, 9.42f), new Vector3(12.00f, 0.04f, 0.92f), new Vector3(12.36f, 0.12f, 1.18f));
             ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_OutdoorWorldEnvelope_RearPlinthShelfA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "past_stone", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-0.20f, 0.02f, 9.10f), new Vector3(0.20f, 0.18f, 9.42f), new Vector3(12.00f, 0.04f, 0.92f), new Vector3(12.36f, 0.12f, 1.18f));
+        }
+
+        private static void ValidateFastVsHd2dCycle49DecisiveLightShadowContrast()
+        {
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>(FindObjectsInactive.Include);
+            if (director == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing FastVS_HD2D_LightingDirector for cycle 49 validation.");
+            }
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var warmFill = FindSceneObjectIncludingInactive("FastVS_HD2D_WarmFillLight")?.GetComponent<Light>();
+            var libraryWindow = FindSceneObjectIncludingInactive("FastVS_HD2D_LibraryWindowLight")?.GetComponent<Light>();
+            if (mainLight == null || warmFill == null || libraryWindow == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 49 lighting profile validation requires the main, warm fill, and library window lights.");
+            }
+
+            ValidateCycle49LightingProfileRange(
+                director,
+                FastVsHouseArea.Exterior,
+                mainLight,
+                warmFill,
+                libraryWindow,
+                true,
+                new Vector3(0.20f, 0.21f, 0.22f),
+                new Vector3(0.22f, 0.22f, 0.23f),
+                1.04f,
+                1.06f,
+                0.67f,
+                0.69f,
+                0.13f,
+                0.17f,
+                false,
+                0f,
+                0f);
+
+            ValidateCycle49LightingProfileRange(
+                director,
+                FastVsHouseArea.CentralPlaza,
+                mainLight,
+                warmFill,
+                libraryWindow,
+                true,
+                new Vector3(0.19f, 0.20f, 0.21f),
+                new Vector3(0.20f, 0.21f, 0.22f),
+                1.06f,
+                1.08f,
+                0.68f,
+                0.70f,
+                0.10f,
+                0.12f,
+                false,
+                0f,
+                0f);
+
+            ValidateCycle49LightingProfileRange(
+                director,
+                FastVsHouseArea.Library,
+                mainLight,
+                warmFill,
+                libraryWindow,
+                true,
+                new Vector3(0.12f, 0.11f, 0.10f),
+                new Vector3(0.14f, 0.13f, 0.12f),
+                0.75f,
+                0.77f,
+                0.61f,
+                0.63f,
+                0.19f,
+                0.21f,
+                true,
+                0.58f,
+                0.62f);
+
+            ValidateCycle49LightingProfileRange(
+                director,
+                FastVsHouseArea.Interior,
+                mainLight,
+                warmFill,
+                libraryWindow,
+                false,
+                new Vector3(0.17f, 0.16f, 0.16f),
+                new Vector3(0.18f, 0.17f, 0.17f),
+                0.85f,
+                0.87f,
+                0.57f,
+                0.59f,
+                0.27f,
+                0.29f,
+                false,
+                0f,
+                0f);
+
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle49_UnderEaveSpanShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.15f, 1.76f, -1.74f), new Vector3(-0.91f, 1.84f, -1.62f), new Vector3(3.95f, 0.020f, 0.05f), new Vector3(4.25f, 0.032f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle49_PorchFloorContactShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.12f, 0.07f, -1.98f), new Vector3(-0.98f, 0.11f, -1.84f), new Vector3(1.00f, 0.012f, 0.16f), new Vector3(1.12f, 0.020f, 0.22f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle49_WallGroundContactShadowA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.78f, 0.27f, -1.34f), new Vector3(-1.60f, 0.33f, -1.22f), new Vector3(2.18f, 0.014f, 0.04f), new Vector3(2.36f, 0.024f, 0.07f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle49_PorchPostBaseShadowLeftA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.90f, 0.09f, -1.86f), new Vector3(-1.78f, 0.115f, -1.72f), new Vector3(0.20f, 0.010f, 0.12f), new Vector3(0.28f, 0.018f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle49_PorchPostBaseShadowRightA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.32f, 0.09f, -1.86f), new Vector3(-0.20f, 0.115f, -1.72f), new Vector3(0.20f, 0.010f, 0.12f), new Vector3(0.28f, 0.018f, 0.18f));
+            ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
+
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle49_UnderEaveSpanShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "hd2d_outdoor_occlusion_gradient", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.15f, 1.76f, -1.74f), new Vector3(-0.91f, 1.84f, -1.62f), new Vector3(3.95f, 0.020f, 0.05f), new Vector3(4.25f, 0.032f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle49_PorchFloorContactShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.12f, 0.07f, -1.98f), new Vector3(-0.98f, 0.11f, -1.84f), new Vector3(1.00f, 0.012f, 0.16f), new Vector3(1.12f, 0.020f, 0.22f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle49_WallGroundContactShadowA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.78f, 0.27f, -1.34f), new Vector3(-1.60f, 0.33f, -1.22f), new Vector3(2.18f, 0.014f, 0.04f), new Vector3(2.36f, 0.024f, 0.07f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle49_PorchPostBaseShadowLeftA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-1.90f, 0.09f, -1.86f), new Vector3(-1.78f, 0.115f, -1.72f), new Vector3(0.20f, 0.010f, 0.12f), new Vector3(0.28f, 0.018f, 0.18f));
+            ValidateNonArrivalLandmarkCubeObject("Past_HouseExterior_Cycle49_PorchPostBaseShadowRightA", "Past_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.32f, 0.09f, -1.86f), new Vector3(-0.20f, 0.115f, -1.72f), new Vector3(0.20f, 0.010f, 0.12f), new Vector3(0.28f, 0.018f, 0.18f));
+            ValidateHouseExteriorClosedDoorPanelNoSideLeak("Past", "past_house_door_detail");
+
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_Cycle49_LibraryFacadeFootShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 0.10f, 7.96f), new Vector3(0.16f, 0.14f, 8.04f), new Vector3(8.85f, 0.012f, 0.04f), new Vector3(9.15f, 0.020f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_Cycle49_LibraryEntranceStepShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.14f, 0.08f, 7.26f), new Vector3(0.14f, 0.12f, 7.34f), new Vector3(1.50f, 0.012f, 0.08f), new Vector3(1.70f, 0.020f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_Cycle49_LibraryWestReturnContactShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.72f, 0.14f, 8.86f), new Vector3(-4.52f, 0.18f, 8.94f), new Vector3(0.34f, 0.012f, 0.08f), new Vector3(0.46f, 0.020f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Current_CentralPlaza_Cycle49_LibraryEastReturnContactShadowA", "Current_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.52f, 0.14f, 8.86f), new Vector3(4.72f, 0.18f, 8.94f), new Vector3(0.34f, 0.012f, 0.08f), new Vector3(0.46f, 0.020f, 0.12f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_Cycle49_LibraryFacadeFootShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.16f, 0.10f, 7.96f), new Vector3(0.16f, 0.14f, 8.04f), new Vector3(8.85f, 0.012f, 0.04f), new Vector3(9.15f, 0.020f, 0.08f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_Cycle49_LibraryEntranceStepShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.14f, 0.08f, 7.26f), new Vector3(0.14f, 0.12f, 7.34f), new Vector3(1.50f, 0.012f, 0.08f), new Vector3(1.70f, 0.020f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_Cycle49_LibraryWestReturnContactShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-4.72f, 0.14f, 8.86f), new Vector3(-4.52f, 0.18f, 8.94f), new Vector3(0.34f, 0.012f, 0.08f), new Vector3(0.46f, 0.020f, 0.12f));
+            ValidateNonArrivalLandmarkCubeObject("Past_CentralPlaza_Cycle49_LibraryEastReturnContactShadowA", "Past_CentralPlazaMap_SeparateSpace", CentralPlazaVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(4.52f, 0.14f, 8.86f), new Vector3(4.72f, 0.18f, 8.94f), new Vector3(0.34f, 0.012f, 0.08f), new Vector3(0.46f, 0.020f, 0.12f));
+
+            ValidateNonArrivalLandmarkCubeObject("Current_Library_Cycle49_RetoDeskUnderShadowA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.26f, 0.04f, 0.62f), new Vector3(1.42f, 0.08f, 0.82f), new Vector3(0.96f, 0.012f, 0.20f), new Vector3(1.10f, 0.018f, 0.28f));
+
+            ValidateNonArrivalLandmarkCubeObject("Past_Library_Cycle49_TableUnderShadowA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.00f, 0.04f, -1.00f), new Vector3(-2.76f, 0.08f, -0.84f), new Vector3(1.10f, 0.012f, 0.20f), new Vector3(1.26f, 0.018f, 0.28f));
+        }
+
+        private static void ValidateCycle49LightingProfileRange(
+            FastVsHouseLightingDirector director,
+            FastVsHouseArea area,
+            Light mainLight,
+            Light warmFill,
+            Light libraryWindow,
+            bool expectFog,
+            Vector3 minAmbient,
+            Vector3 maxAmbient,
+            float minMainIntensity,
+            float maxMainIntensity,
+            float minShadowStrength,
+            float maxShadowStrength,
+            float minWarmFillIntensity,
+            float maxWarmFillIntensity,
+            bool expectLibraryWindowEnabled,
+            float minLibraryWindowIntensity,
+            float maxLibraryWindowIntensity)
+        {
+            director.ApplyAreaForReview(area);
+
+            if (mainLight.intensity < minMainIntensity || mainLight.intensity > maxMainIntensity)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} main light intensity must stay within {minMainIntensity:0.000}-{maxMainIntensity:0.000}, found {mainLight.intensity:0.000}.");
+            }
+
+            if (mainLight.shadowStrength < minShadowStrength || mainLight.shadowStrength > maxShadowStrength)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} main light shadow strength must stay within {minShadowStrength:0.000}-{maxShadowStrength:0.000}, found {mainLight.shadowStrength:0.000}.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            if (ambient.r < minAmbient.x || ambient.r > maxAmbient.x ||
+                ambient.g < minAmbient.y || ambient.g > maxAmbient.y ||
+                ambient.b < minAmbient.z || ambient.b > maxAmbient.z)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} ambient light must stay within the decisive shadow range, found ({ambient.r:0.000}, {ambient.g:0.000}, {ambient.b:0.000}).");
+            }
+
+            if (warmFill.intensity < minWarmFillIntensity || warmFill.intensity > maxWarmFillIntensity)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} warm fill intensity must stay within {minWarmFillIntensity:0.000}-{maxWarmFillIntensity:0.000}, found {warmFill.intensity:0.000}.");
+            }
+
+            if (RenderSettings.fog != expectFog)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} fog state must be {expectFog}.");
+            }
+
+            if (expectLibraryWindowEnabled)
+            {
+                if (!libraryWindow.enabled || libraryWindow.type != LightType.Spot)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {area} library window light must stay enabled as a spot light.");
+                }
+
+                if (libraryWindow.intensity < minLibraryWindowIntensity || libraryWindow.intensity > maxLibraryWindowIntensity)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {area} library window intensity must stay within {minLibraryWindowIntensity:0.000}-{maxLibraryWindowIntensity:0.000}, found {libraryWindow.intensity:0.000}.");
+                }
+            }
+            else if (libraryWindow.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} library window light must stay disabled.");
+            }
+        }
+
+        private static void ValidateHouseExteriorClosedDoorPanelNoSideLeak(string prefix, string expectedMaterialToken)
+        {
+            var objectName = $"{prefix}_HouseExterior_DoorClosedPanel";
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing closed house exterior door panel {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != $"{prefix}_HouseExteriorMap_SeparateSpace")
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay under the {prefix.ToLowerInvariant()} house exterior map space.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer and material.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain visual-only and must not create a new collision wall.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var localPosition = sceneObject.transform.localPosition - HouseExteriorCenter;
+            ValidateVectorWithinRange($"{objectName} local position", localPosition, new Vector3(-1.12f, 0.78f, -1.54f), new Vector3(-0.98f, 0.90f, -1.42f));
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, new Vector3(1.78f, 1.30f, 0.06f), new Vector3(1.94f, 1.46f, 0.09f));
         }
 
         private static void ValidateFastVsHd2dCycle47LibraryInteriorVerticalityAndGroundSkirtContinuation()
