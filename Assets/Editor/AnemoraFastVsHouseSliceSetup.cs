@@ -28,6 +28,8 @@ namespace Anemora.EditorTools
         private const float SpriteCardPaperEdgeStrength = 0.10f;
         private const float SpriteCardPaperRimStrength = 0.07f;
         private const float SpriteCardPaperLowerShadeStrength = 0.08f;
+        private const float SpriteCardWorldLightStrength = 0.08f;
+        private const float SpriteCardWorldShadowReceiveStrength = 0.05f;
         private const float SurfaceRampStrength = 0.20f;
         private const float SurfaceRampDirectionalLightStrength = 0.12f;
         private const float SurfaceRampShadowReceiveStrength = 0.18f;
@@ -31970,6 +31972,16 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_PaperLowerShadeStrength"))
             {
                 material.SetFloat("_PaperLowerShadeStrength", SpriteCardPaperLowerShadeStrength);
+            }
+
+            if (material.HasProperty("_WorldLightStrength"))
+            {
+                material.SetFloat("_WorldLightStrength", SpriteCardWorldLightStrength);
+            }
+
+            if (material.HasProperty("_WorldShadowReceiveStrength"))
+            {
+                material.SetFloat("_WorldShadowReceiveStrength", SpriteCardWorldShadowReceiveStrength);
             }
 
             ApplyMaterialRole(material, id, FastVsHd2dMaterialRole.SpriteCard);

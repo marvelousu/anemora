@@ -23,12 +23,19 @@ namespace Anemora.EditorTools
         private const float SpriteCardPaperRimStrengthMax = 0.12f;
         private const float SpriteCardPaperLowerShadeStrengthMin = 0.04f;
         private const float SpriteCardPaperLowerShadeStrengthMax = 0.14f;
+        private const float SpriteCardWorldLightStrengthMin = 0.04f;
+        private const float SpriteCardWorldLightStrengthMax = 0.12f;
+        private const float SpriteCardWorldShadowReceiveStrengthMin = 0.025f;
+        private const float SpriteCardWorldShadowReceiveStrengthMax = 0.08f;
         private const int SpriteCardRenderQueueMin = 3000;
         private const int SpriteCardRenderQueueMax = 3015;
         private const string Cycle23ReportFileName = "sprite_card_edge_rim_cycle23_20260522.md";
+        private const string Cycle24ReportFileName = "sprite_card_world_light_bridge_cycle24_20260522.md";
         private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
         private static readonly string Cycle23OutputDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "docs/devlog/screenshots/fast_vs_hd2d_sprite_card_edge_rim_cycle23_20260522"));
         private static readonly string Cycle23ReportPath = Path.Combine(Cycle23OutputDirectory, Cycle23ReportFileName);
+        private static readonly string Cycle24OutputDirectory = Path.GetFullPath(Path.Combine(ProjectRoot, "docs/devlog/screenshots/fast_vs_hd2d_sprite_card_world_light_bridge_cycle24_20260522"));
+        private static readonly string Cycle24ReportPath = Path.Combine(Cycle24OutputDirectory, Cycle24ReportFileName);
 
         [MenuItem("Tools/Anemora/Verify HD2D Sprite Card Lighting V1")]
         public static void VerifySpriteCardLightingV1()
@@ -107,6 +114,24 @@ namespace Anemora.EditorTools
             }
 
             Debug.Log($"HD2D sprite card edge rim report written: {Cycle23ReportPath}");
+        }
+
+        [MenuItem("Tools/Anemora/Write HD2D Sprite Card World Light Bridge Cycle 24 Report")]
+        public static void WriteSpriteCardWorldLightBridgeCycle24ReportBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+
+            var report = BuildSpriteCardWorldLightBridgeCycle24Report();
+            Directory.CreateDirectory(Cycle24OutputDirectory);
+            File.WriteAllText(Cycle24ReportPath, BuildSpriteCardWorldLightBridgeCycle24Markdown(report), Encoding.UTF8);
+            AssetDatabase.Refresh();
+
+            if (report.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D sprite card world light bridge cycle 24 report failed:\n- " + string.Join("\n- ", report.Issues));
+            }
+
+            Debug.Log($"HD2D sprite card world light bridge report written: {Cycle24ReportPath}");
         }
 
         private static void ValidateSpriteTexture(List<string> issues, string spriteId, string sourcePath)
@@ -277,6 +302,8 @@ namespace Anemora.EditorTools
             ValidateSpriteCardStrengthBand(issues, material, path, "_PaperEdgeStrength", SpriteCardPaperEdgeStrengthMin, SpriteCardPaperEdgeStrengthMax, required: true);
             ValidateSpriteCardStrengthBand(issues, material, path, "_PaperRimStrength", SpriteCardPaperRimStrengthMin, SpriteCardPaperRimStrengthMax, required: true);
             ValidateSpriteCardStrengthBand(issues, material, path, "_PaperLowerShadeStrength", SpriteCardPaperLowerShadeStrengthMin, SpriteCardPaperLowerShadeStrengthMax, required: false);
+            ValidateSpriteCardStrengthBand(issues, material, path, "_WorldLightStrength", SpriteCardWorldLightStrengthMin, SpriteCardWorldLightStrengthMax, required: true);
+            ValidateSpriteCardStrengthBand(issues, material, path, "_WorldShadowReceiveStrength", SpriteCardWorldShadowReceiveStrengthMin, SpriteCardWorldShadowReceiveStrengthMax, required: true);
         }
 
         private static void ValidateSpriteCardColorBand(
@@ -335,6 +362,16 @@ namespace Anemora.EditorTools
             return report;
         }
 
+        private static SpriteCardWorldLightBridgeCycle24Report BuildSpriteCardWorldLightBridgeCycle24Report()
+        {
+            var report = new SpriteCardWorldLightBridgeCycle24Report();
+            AddSpriteCardWorldLightBridgeMaterial(report, "niro_front_sprite");
+            AddSpriteCardWorldLightBridgeMaterial(report, "niro_walk_front_sprite");
+            AddSpriteCardWorldLightBridgeMaterial(report, "reto_v02_writing_loop_sprite");
+            AddSpriteCardWorldLightBridgeMaterial(report, "aria_v46_normal_loop_breath_sprite");
+            return report;
+        }
+
         private static void AddSpriteCardEdgeRimMaterial(SpriteCardEdgeRimCycle23Report report, string materialId)
         {
             var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
@@ -365,6 +402,48 @@ namespace Anemora.EditorTools
             entry.TopLight = material.HasProperty("_TopLight") ? material.GetColor("_TopLight") : default;
             entry.SideShade = material.HasProperty("_SideShade") ? material.GetColor("_SideShade") : default;
             entry.FloorShade = material.HasProperty("_FloorShade") ? material.GetColor("_FloorShade") : default;
+
+            var texture = material.GetTexture("_BaseMap") as Texture2D ?? material.GetTexture("_MainTex") as Texture2D;
+            if (texture != null)
+            {
+                entry.TextureName = texture.name;
+                var textureAssetPath = AssetDatabase.GetAssetPath(texture);
+                if (!string.IsNullOrEmpty(textureAssetPath))
+                {
+                    entry.TexturePath = GetAbsoluteAssetPath(textureAssetPath);
+                }
+            }
+        }
+
+        private static void AddSpriteCardWorldLightBridgeMaterial(SpriteCardWorldLightBridgeCycle24Report report, string materialId)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            var entry = new SpriteCardWorldLightBridgeMaterialReport
+            {
+                MaterialId = materialId,
+                MaterialPath = GetAbsoluteAssetPath(materialPath),
+                ShaderName = "<missing>",
+                TexturePath = "<missing>",
+                TextureName = "<missing>"
+            };
+
+            report.Materials.Add(entry);
+            ValidateSpriteCardMaterial(report.Issues, materialId);
+
+            if (material == null)
+            {
+                return;
+            }
+
+            entry.ShaderName = material.shader != null ? material.shader.name : "<missing>";
+            entry.RenderQueue = material.renderQueue;
+            entry.RampStrength = material.HasProperty("_RampStrength") ? material.GetFloat("_RampStrength") : float.NaN;
+            entry.PaperEdgeStrength = material.HasProperty("_PaperEdgeStrength") ? material.GetFloat("_PaperEdgeStrength") : float.NaN;
+            entry.PaperRimStrength = material.HasProperty("_PaperRimStrength") ? material.GetFloat("_PaperRimStrength") : float.NaN;
+            entry.PaperLowerShadeStrength = material.HasProperty("_PaperLowerShadeStrength") ? material.GetFloat("_PaperLowerShadeStrength") : float.NaN;
+            entry.WorldLightStrength = material.HasProperty("_WorldLightStrength") ? material.GetFloat("_WorldLightStrength") : float.NaN;
+            entry.WorldShadowReceiveStrength = material.HasProperty("_WorldShadowReceiveStrength") ? material.GetFloat("_WorldShadowReceiveStrength") : float.NaN;
 
             var texture = material.GetTexture("_BaseMap") as Texture2D ?? material.GetTexture("_MainTex") as Texture2D;
             if (texture != null)
@@ -423,6 +502,41 @@ namespace Anemora.EditorTools
             return builder.ToString();
         }
 
+        private static string BuildSpriteCardWorldLightBridgeCycle24Markdown(SpriteCardWorldLightBridgeCycle24Report report)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("# Fast VS HD2D Sprite Card World Light Bridge Cycle 24 Report");
+            builder.AppendLine();
+            builder.AppendLine("Restraint-first bridge from the current sprite-card ramp into scene lighting for Niro, Reto, Aria, and the sprite-card vegetation. The goal is to keep the existing paper-edge and rim shading while letting the cards read a small amount of URP main-light color and shadow attenuation.");
+            builder.AppendLine();
+            builder.AppendLine($"- Project root: `{ProjectRoot}`");
+            builder.AppendLine($"- Report file: `{Cycle24ReportPath}`");
+            builder.AppendLine($"- Shader: `{SpriteCardRampShaderName}`");
+            builder.AppendLine($"- Result: {report.Result}");
+            builder.AppendLine();
+            builder.AppendLine("## Representative Materials");
+            builder.AppendLine();
+            builder.AppendLine("| Material | Material Path | Texture Name | Texture Path | Shader | Render Queue | Ramp Strength | Paper Edge | Paper Rim | Paper Lower Shade | World Light | World Shadow Receive | Result |");
+            builder.AppendLine("|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|");
+            foreach (var material in report.Materials)
+            {
+                builder.AppendLine(
+                    $"| `{material.MaterialId}` | `{material.MaterialPath}` | `{material.TextureName}` | `{material.TexturePath}` | `{material.ShaderName}` | {material.RenderQueue} | {FormatOptionalFloat(material.RampStrength)} | {FormatOptionalFloat(material.PaperEdgeStrength)} | {FormatOptionalFloat(material.PaperRimStrength)} | {FormatOptionalFloat(material.PaperLowerShadeStrength)} | {FormatOptionalFloat(material.WorldLightStrength)} | {FormatOptionalFloat(material.WorldShadowReceiveStrength)} | {report.Result} |");
+            }
+
+            if (report.Issues.Count > 0)
+            {
+                builder.AppendLine();
+                builder.AppendLine("## Issues");
+                foreach (var issue in report.Issues)
+                {
+                    builder.AppendLine($"- {issue}");
+                }
+            }
+
+            return builder.ToString();
+        }
+
         private static string FormatOptionalFloat(float value)
         {
             if (float.IsNaN(value) || float.IsInfinity(value))
@@ -457,6 +571,14 @@ namespace Anemora.EditorTools
             public string Result => Issues.Count > 0 ? "FAIL" : "PASS";
         }
 
+        private sealed class SpriteCardWorldLightBridgeCycle24Report
+        {
+            public readonly List<string> Issues = new List<string>();
+            public readonly List<SpriteCardWorldLightBridgeMaterialReport> Materials = new List<SpriteCardWorldLightBridgeMaterialReport>();
+
+            public string Result => Issues.Count > 0 ? "FAIL" : "PASS";
+        }
+
         private sealed class SpriteCardEdgeRimMaterialReport
         {
             public string MaterialId;
@@ -472,6 +594,22 @@ namespace Anemora.EditorTools
             public Color TopLight;
             public Color SideShade;
             public Color FloorShade;
+        }
+
+        private sealed class SpriteCardWorldLightBridgeMaterialReport
+        {
+            public string MaterialId;
+            public string MaterialPath;
+            public string TextureName;
+            public string TexturePath;
+            public string ShaderName;
+            public int RenderQueue;
+            public float RampStrength;
+            public float PaperEdgeStrength;
+            public float PaperRimStrength;
+            public float PaperLowerShadeStrength;
+            public float WorldLightStrength;
+            public float WorldShadowReceiveStrength;
         }
 
         private static bool TryFindOpaqueSample(Texture2D texture, int frameWidth, bool topLeftSearch, out Color pixel)

@@ -12,6 +12,8 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
         _PaperEdgeStrength("Paper Edge Strength", Range(0, 0.35)) = 0.10
         _PaperRimStrength("Paper Rim Strength", Range(0, 0.25)) = 0.07
         _PaperLowerShadeStrength("Paper Lower Shade Strength", Range(0, 0.25)) = 0.08
+        _WorldLightStrength("World Light Strength", Range(0, 0.25)) = 0.08
+        _WorldShadowReceiveStrength("World Shadow Receive Strength", Range(0, 0.20)) = 0.05
     }
 
     SubShader
@@ -37,8 +39,12 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment Frag
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile _ _SHADOWS_SOFT
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
@@ -57,6 +63,8 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             half _PaperEdgeStrength;
             half _PaperRimStrength;
             half _PaperLowerShadeStrength;
+            half _WorldLightStrength;
+            half _WorldShadowReceiveStrength;
 
             struct Attributes
             {
@@ -68,12 +76,14 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             {
                 float4 positionHCS : SV_POSITION;
                 float2 uv : TEXCOORD0;
+                float3 positionWS : TEXCOORD1;
             };
 
             Varyings Vert(Attributes input)
             {
                 Varyings output;
-                output.positionHCS = TransformObjectToHClip(input.positionOS.xyz);
+                output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                output.positionHCS = TransformWorldToHClip(output.positionWS);
                 output.uv = input.uv;
                 return output;
             }
@@ -138,7 +148,14 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
                 grade *= lerp(neutral, half3(0.970h, 0.980h, 1.020h), (half)(edgeAccent * coolSide * paperEdgeStrength));
                 grade *= lerp(neutral, half3(0.965h, 0.975h, 1.015h), (half)(edgeAccent * saturate((1.0 - frameUv.y) * (0.55 + frameUv.x * 0.45)) * paperLowerShadeStrength));
 
-                half3 rgb = baseSample.rgb * grade;
+                float4 shadowCoord = TransformWorldToShadowCoord(input.positionWS);
+                Light mainLight = GetMainLight(shadowCoord);
+                half worldLightStrength = saturate((half)_WorldLightStrength);
+                half worldShadowReceiveStrength = saturate((half)_WorldShadowReceiveStrength);
+                half3 mainTint = lerp(neutral, (half3)saturate(mainLight.color.rgb), worldLightStrength);
+                half shadowGrade = lerp(1.0h - worldShadowReceiveStrength, 1.0h, (half)mainLight.shadowAttenuation);
+
+                half3 rgb = baseSample.rgb * grade * mainTint * shadowGrade;
                 return half4(rgb, baseSample.a);
             }
             ENDHLSL
