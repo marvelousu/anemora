@@ -31,6 +31,22 @@ namespace Anemora.EditorTools
             "FastVS",
             "HouseSlice",
             "FastVS_House_surface_directional_shade_overlay_soft.png"));
+        private static readonly string Cycle21OutputDirectory = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "..",
+            "docs",
+            "devlog",
+            "screenshots",
+            "fast_vs_hd2d_static_directional_shadow_texture_cycle21_20260522"));
+        private const string Cycle21ReportFileName = "static_directional_shadow_texture_cycle21_20260522.md";
+        private static readonly string Cycle21ReportPath = Path.Combine(Cycle21OutputDirectory, Cycle21ReportFileName);
+        private static readonly string Cycle21TexturePath = Path.GetFullPath(Path.Combine(
+            Application.dataPath,
+            "Art",
+            "Textures",
+            "FastVS",
+            "HouseSlice",
+            "FastVS_House_static_directional_cast_shadow_soft.png"));
 
         [MenuItem("Tools/Anemora/Verify HD2D Overlay Profiles V1")]
         public static void VerifyOverlayProfilesV1()
@@ -387,6 +403,156 @@ namespace Anemora.EditorTools
             Debug.Log($"HD2D surface directional shade texture report written: {Cycle20ReportPath}");
         }
 
+        [MenuItem("Tools/Anemora/Write HD2D Static Directional Shadow Texture Cycle 21 Report")]
+        public static void WriteStaticDirectionalShadowTextureCycle21ReportBatch()
+        {
+            AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene();
+
+            var report = BuildStaticDirectionalShadowTextureCycle21Report();
+            Directory.CreateDirectory(Cycle21OutputDirectory);
+            File.WriteAllText(Cycle21ReportPath, BuildStaticDirectionalShadowTextureCycle21Markdown(report), Encoding.UTF8);
+            AssetDatabase.Refresh();
+
+            if (report.Issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D static directional shadow texture cycle 21 report failed:\n- " + string.Join("\n- ", report.Issues));
+            }
+
+            Debug.Log($"HD2D static directional shadow texture report written: {Cycle21ReportPath}");
+        }
+
+        private static StaticDirectionalShadowTextureCycle21Report BuildStaticDirectionalShadowTextureCycle21Report()
+        {
+            var report = new StaticDirectionalShadowTextureCycle21Report();
+            if (!File.Exists(Cycle21TexturePath))
+            {
+                report.Issues.Add($"Static directional cast shadow texture PNG is missing at {Cycle21TexturePath}.");
+                return report;
+            }
+
+            var bytes = File.ReadAllBytes(Cycle21TexturePath);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                if (!texture.LoadImage(bytes, false))
+                {
+                    report.Issues.Add($"Static directional cast shadow texture PNG could not be read at {Cycle21TexturePath}.");
+                    return report;
+                }
+
+                texture.name = "FastVS_House_static_directional_cast_shadow_soft";
+                report.Width = texture.width;
+                report.Height = texture.height;
+
+                var centerX = texture.width / 2;
+                var centerY = texture.height / 2;
+                var coreX = Mathf.Min(64, texture.width - 1);
+                var coreY = Mathf.Min(42, texture.height - 1);
+                var tailX = Mathf.Min(108, texture.width - 1);
+                var tailY = Mathf.Min(40, texture.height - 1);
+
+                report.CenterAlpha = texture.GetPixel(centerX, centerY).a;
+                report.LeftEdgeAlpha = texture.GetPixel(0, centerY).a;
+                report.RightEdgeAlpha = texture.GetPixel(texture.width - 1, centerY).a;
+                report.CoreAlpha = texture.GetPixel(coreX, coreY).a;
+                report.TailAlpha = texture.GetPixel(tailX, tailY).a;
+                report.TopLeftCornerAlpha = texture.GetPixel(0, 0).a;
+                report.TopRightCornerAlpha = texture.GetPixel(texture.width - 1, 0).a;
+                report.BottomLeftCornerAlpha = texture.GetPixel(0, texture.height - 1).a;
+                report.BottomRightCornerAlpha = texture.GetPixel(texture.width - 1, texture.height - 1).a;
+
+                foreach (var pixel in texture.GetPixels32())
+                {
+                    report.MaxAlpha = Mathf.Max(report.MaxAlpha, pixel.a / 255f);
+                }
+
+                if (report.Width != 160 || report.Height != 80)
+                {
+                    report.Issues.Add($"Static directional cast shadow texture must stay exactly 160x80, but was {report.Width}x{report.Height}.");
+                }
+
+                if (report.CenterAlpha < 0.12f || report.CenterAlpha > 0.20f)
+                {
+                    report.Issues.Add($"Center alpha {report.CenterAlpha:0.000} is outside the 0.12-0.20 range.");
+                }
+
+                if (report.CoreAlpha < 0.12f || report.CoreAlpha > 0.20f)
+                {
+                    report.Issues.Add($"Core sample alpha {report.CoreAlpha:0.000} is outside the 0.12-0.20 range.");
+                }
+
+                if (report.MaxAlpha < 0.12f || report.MaxAlpha > 0.20f)
+                {
+                    report.Issues.Add($"Max alpha {report.MaxAlpha:0.000} is outside the 0.12-0.20 range.");
+                }
+
+                if (report.TailAlpha < report.LeftEdgeAlpha + 0.025f)
+                {
+                    report.Issues.Add($"Tail alpha {report.TailAlpha:0.000} must exceed left edge alpha {report.LeftEdgeAlpha:0.000} by at least 0.025.");
+                }
+
+                if (report.TailAlpha >= report.CoreAlpha || report.TailAlpha >= report.MaxAlpha)
+                {
+                    report.Issues.Add($"Tail alpha {report.TailAlpha:0.000} must stay below core alpha {report.CoreAlpha:0.000} and max alpha {report.MaxAlpha:0.000}.");
+                }
+
+                if (report.LeftEdgeAlpha > report.CenterAlpha * 0.55f || report.RightEdgeAlpha > report.CenterAlpha * 0.55f)
+                {
+                    report.Issues.Add($"Edge alpha must stay well below center alpha. left={report.LeftEdgeAlpha:0.000}, right={report.RightEdgeAlpha:0.000}, center={report.CenterAlpha:0.000}.");
+                }
+
+                if (report.TopLeftCornerAlpha > 0.02f || report.TopRightCornerAlpha > 0.02f || report.BottomLeftCornerAlpha > 0.02f || report.BottomRightCornerAlpha > 0.02f)
+                {
+                    report.Issues.Add($"Corner alpha must stay near transparent. tl={report.TopLeftCornerAlpha:0.000}, tr={report.TopRightCornerAlpha:0.000}, bl={report.BottomLeftCornerAlpha:0.000}, br={report.BottomRightCornerAlpha:0.000}.");
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+
+            return report;
+        }
+
+        private static string BuildStaticDirectionalShadowTextureCycle21Markdown(StaticDirectionalShadowTextureCycle21Report report)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("# Fast VS HD2D Static Directional Shadow Texture Cycle 21 Report");
+            builder.AppendLine();
+            builder.AppendLine("Deterministic v2 elongated asymmetric cast-shadow foundation for the house facade, central plaza library facade, and library back shelf. The goal is a restrained painterly shadow that reads as contact and depth without collapsing into a flat black rectangle.");
+            builder.AppendLine();
+            builder.AppendLine($"- Texture PNG: `{Cycle21TexturePath}`");
+            builder.AppendLine($"- Report file: `{Cycle21ReportPath}`");
+            builder.AppendLine($"- Result: {report.Result}");
+            builder.AppendLine();
+            builder.AppendLine("| Metric | Value |");
+            builder.AppendLine("|---|---:|");
+            builder.AppendLine($"| Width | {report.Width} |");
+            builder.AppendLine($"| Height | {report.Height} |");
+            builder.AppendLine($"| Center alpha | {report.CenterAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Max alpha | {report.MaxAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Left edge alpha | {report.LeftEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Right edge alpha | {report.RightEdgeAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Core sample alpha | {report.CoreAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Tail sample alpha | {report.TailAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-left corner alpha | {report.TopLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Top-right corner alpha | {report.TopRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom-left corner alpha | {report.BottomLeftCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+            builder.AppendLine($"| Bottom-right corner alpha | {report.BottomRightCornerAlpha.ToString("0.000", CultureInfo.InvariantCulture)} |");
+
+            if (report.Issues.Count > 0)
+            {
+                builder.AppendLine();
+                builder.AppendLine("## Issues");
+                foreach (var issue in report.Issues)
+                {
+                    builder.AppendLine($"- {issue}");
+                }
+            }
+
+            return builder.ToString();
+        }
+
         private static SurfaceDirectionalShadeTextureCycle20Report BuildSurfaceDirectionalShadeTextureCycle20Report()
         {
             var report = new SurfaceDirectionalShadeTextureCycle20Report();
@@ -699,6 +865,24 @@ namespace Anemora.EditorTools
             public float RightEdgeAlpha;
             public float TopLeftInteriorAlpha;
             public float LowerRightInteriorAlpha;
+            public float TopLeftCornerAlpha;
+            public float TopRightCornerAlpha;
+            public float BottomLeftCornerAlpha;
+            public float BottomRightCornerAlpha;
+            public List<string> Issues = new List<string>();
+            public string Result => Issues.Count == 0 ? "PASS" : "FAIL";
+        }
+
+        private sealed class StaticDirectionalShadowTextureCycle21Report
+        {
+            public int Width;
+            public int Height;
+            public float CenterAlpha;
+            public float MaxAlpha;
+            public float LeftEdgeAlpha;
+            public float RightEdgeAlpha;
+            public float CoreAlpha;
+            public float TailAlpha;
             public float TopLeftCornerAlpha;
             public float TopRightCornerAlpha;
             public float BottomLeftCornerAlpha;

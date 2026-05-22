@@ -23278,29 +23278,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: static directional shadow texture alpha must not be empty.");
             }
 
-            var centerAlpha = validationTexture.GetPixel(validationTexture.width / 2, validationTexture.height / 2).a;
-            var edgeAlpha = validationTexture.GetPixel(0, validationTexture.height / 2).a;
-            var cornerAlpha = validationTexture.GetPixel(0, 0).a;
-            var maxAlpha = 0f;
-            foreach (var pixel in validationTexture.GetPixels32())
-            {
-                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
-            }
-
-            if (centerAlpha < 0.12f || centerAlpha > 0.20f)
-            {
-                throw new InvalidOperationException($"House slice validation failed: static_directional_cast_shadow_soft center alpha must stay in the 0.12-0.20 range, but was {centerAlpha:0.000}.");
-            }
-
-            if (edgeAlpha > centerAlpha * 0.55f || cornerAlpha > 0.02f)
-            {
-                throw new InvalidOperationException($"House slice validation failed: static directional shadow alpha falloff looks broken. edge={edgeAlpha:0.000}, corner={cornerAlpha:0.000}.");
-            }
-
-            if (maxAlpha < 0.12f || maxAlpha > 0.20f)
-            {
-                throw new InvalidOperationException($"House slice validation failed: static_directional_cast_shadow_soft max alpha must stay in the 0.12-0.20 range, but was {maxAlpha:0.000}.");
-            }
+            ValidateStaticDirectionalCastShadowTextureMetrics(validationTexture, "static_directional_cast_shadow_soft");
 
             UnityEngine.Object.DestroyImmediate(validationTexture);
         }
@@ -23439,10 +23417,30 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {objectName} static directional shadow texture alpha must not be empty.");
             }
 
-            var centerAlpha = validationTexture.GetPixel(validationTexture.width / 2, validationTexture.height / 2).a;
-            var edgeAlpha = validationTexture.GetPixel(0, validationTexture.height / 2).a;
+            ValidateStaticDirectionalCastShadowTextureMetrics(validationTexture, $"{objectName} static_directional_cast_shadow_soft");
+
+            UnityEngine.Object.DestroyImmediate(validationTexture);
+        }
+
+        private static void ValidateStaticDirectionalCastShadowTextureMetrics(Texture2D validationTexture, string context)
+        {
+            var centerX = validationTexture.width / 2;
+            var centerY = validationTexture.height / 2;
+            var coreX = Mathf.Min(64, validationTexture.width - 1);
+            var coreY = Mathf.Min(42, validationTexture.height - 1);
+            var tailX = Mathf.Min(108, validationTexture.width - 1);
+            var tailY = Mathf.Min(40, validationTexture.height - 1);
+            var centerAlpha = validationTexture.GetPixel(centerX, centerY).a;
+            var coreAlpha = validationTexture.GetPixel(coreX, coreY).a;
+            var tailAlpha = validationTexture.GetPixel(tailX, tailY).a;
+            var leftEdgeAlpha = validationTexture.GetPixel(0, centerY).a;
+            var rightEdgeAlpha = validationTexture.GetPixel(validationTexture.width - 1, centerY).a;
             var cornerAlpha = validationTexture.GetPixel(0, 0).a;
+            var topRightCornerAlpha = validationTexture.GetPixel(validationTexture.width - 1, 0).a;
+            var bottomLeftCornerAlpha = validationTexture.GetPixel(0, validationTexture.height - 1).a;
+            var bottomRightCornerAlpha = validationTexture.GetPixel(validationTexture.width - 1, validationTexture.height - 1).a;
             var maxAlpha = 0f;
+
             foreach (var pixel in validationTexture.GetPixels32())
             {
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
@@ -23450,20 +23448,38 @@ namespace Anemora.EditorTools
 
             if (centerAlpha < 0.12f || centerAlpha > 0.20f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {objectName} static_directional_cast_shadow_soft center alpha must stay in the 0.12-0.20 range, but was {centerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} center alpha must stay in the 0.12-0.20 range, but was {centerAlpha:0.000}.");
             }
 
-            if (edgeAlpha > centerAlpha * 0.55f || cornerAlpha > 0.02f)
+            if (coreAlpha < 0.12f || coreAlpha > 0.20f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {objectName} static directional shadow alpha falloff looks broken. edge={edgeAlpha:0.000}, corner={cornerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} core alpha at ({coreX},{coreY}) must stay in the 0.12-0.20 range, but was {coreAlpha:0.000}.");
+            }
+
+            if (tailAlpha < leftEdgeAlpha + 0.025f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} tail alpha at ({tailX},{tailY}) must exceed the left edge alpha by at least 0.025, but tail={tailAlpha:0.000}, left={leftEdgeAlpha:0.000}.");
+            }
+
+            if (tailAlpha >= coreAlpha || tailAlpha >= maxAlpha)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} tail alpha at ({tailX},{tailY}) must stay softer than the core and max alpha, but tail={tailAlpha:0.000}, core={coreAlpha:0.000}, max={maxAlpha:0.000}.");
+            }
+
+            if (leftEdgeAlpha > centerAlpha * 0.55f || rightEdgeAlpha > centerAlpha * 0.55f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} edge alpha falloff looks broken. left={leftEdgeAlpha:0.000}, right={rightEdgeAlpha:0.000}, center={centerAlpha:0.000}.");
+            }
+
+            if (cornerAlpha > 0.02f || topRightCornerAlpha > 0.02f || bottomLeftCornerAlpha > 0.02f || bottomRightCornerAlpha > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {context} corner alpha must stay near transparent. tl={cornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
 
             if (maxAlpha < 0.12f || maxAlpha > 0.20f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {objectName} static_directional_cast_shadow_soft max alpha must stay in the 0.12-0.20 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} max alpha must stay in the 0.12-0.20 range, but was {maxAlpha:0.000}.");
             }
-
-            UnityEngine.Object.DestroyImmediate(validationTexture);
         }
 
         private static Texture2D LoadSurfaceDirectionalShadeOverlayTextureForValidation()
@@ -29093,16 +29109,42 @@ namespace Anemora.EditorTools
                 {
                     var u = x / 159f;
                     var v = y / 79f;
-                    var dx = (u - 0.42f) / 0.34f;
-                    var dy = (v - 0.53f) / 0.22f;
-                    var core = Mathf.Clamp01(1f - Mathf.Sqrt((dx * dx) + (dy * dy * 1.85f)));
-                    var tailDx = (u - 0.68f) / 0.24f;
-                    var tailDy = (v - 0.50f) / 0.18f;
-                    var tail = Mathf.Clamp01(1f - Mathf.Sqrt((tailDx * tailDx * 1.12f) + (tailDy * tailDy * 2.20f)));
-                    var bloom = Mathf.Clamp01(1f - Mathf.Sqrt(((u - 0.50f) * (u - 0.50f) / 0.30f) + ((v - 0.56f) * (v - 0.56f) / 0.18f)));
-                    var alpha = (core * 0.15f) + (tail * 0.05f) + (bloom * 0.02f);
-                    alpha *= Mathf.Lerp(0.88f, 1f, Mathf.Clamp01(1f - Mathf.Abs(v - 0.53f) / 0.34f));
-                    alpha = Mathf.Clamp(alpha, 0f, 0.18f);
+                    var edgeMask =
+                        SmoothFade01(0.00f, 0.03f, u) *
+                        SmoothFade01(0.00f, 0.09f, 1f - u) *
+                        SmoothFade01(0.00f, 0.05f, v) *
+                        SmoothFade01(0.00f, 0.07f, 1f - v);
+
+                    var coreDx = (u - 0.41f) / 0.15f;
+                    var coreDy = (v - 0.54f) / 0.09f;
+                    var core = Mathf.Clamp01(1f - Mathf.Sqrt((coreDx * coreDx * 1.05f) + (coreDy * coreDy * 1.55f)));
+                    core = core * core;
+
+                    var tailStart = new Vector2(0.44f, 0.54f);
+                    var tailEnd = new Vector2(0.82f, 0.48f);
+                    var tailSegment = tailEnd - tailStart;
+                    var tailLengthSq = Mathf.Max(0.0001f, Vector2.Dot(tailSegment, tailSegment));
+                    var tailT = Mathf.Clamp01(Vector2.Dot(new Vector2(u, v) - tailStart, tailSegment) / tailLengthSq);
+                    var tailClosest = tailStart + (tailSegment * tailT);
+                    var tailRadius = Mathf.Lerp(0.078f, 0.034f, tailT);
+                    var tailDistance = Vector2.Distance(new Vector2(u, v), tailClosest);
+                    var tail = Mathf.Clamp01(1f - (tailDistance / tailRadius));
+                    tail = tail * tail;
+
+                    var tailCapDx = (u - 0.70f) / 0.11f;
+                    var tailCapDy = (v - 0.50f) / 0.08f;
+                    var tailCap = Mathf.Clamp01(1f - Mathf.Sqrt((tailCapDx * tailCapDx * 1.10f) + (tailCapDy * tailCapDy * 1.70f)));
+                    tailCap = tailCap * tailCap;
+
+                    var bridgeDx = (u - 0.505f) / 0.13f;
+                    var bridgeDy = (v - 0.505f) / 0.080f;
+                    var bridge = Mathf.Clamp01(1f - Mathf.Sqrt((bridgeDx * bridgeDx * 0.92f) + (bridgeDy * bridgeDy * 1.85f)));
+
+                    var alpha = (tail * 0.075f) + (core * 0.140f) + (tailCap * 0.014f) + (bridge * 0.088f);
+                    alpha *= Mathf.Lerp(0.95f, 1f, edgeMask);
+                    var noiseSeed = (((x * 17) ^ (y * 29) ^ (x * y * 5)) & 31) / 31f;
+                    alpha += (noiseSeed - 0.5f) * 0.0045f;
+                    alpha = Mathf.Clamp(alpha * edgeMask, 0f, 0.19f);
                     texture.SetPixel(x, y, new Color(0.03f, 0.035f, 0.045f, alpha));
                 }
             }
