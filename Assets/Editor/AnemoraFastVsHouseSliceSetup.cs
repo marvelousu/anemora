@@ -361,6 +361,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle54OutdoorPerimeterEdgeBreakup();
             ValidateFastVsHd2dCycle55OutdoorHorizonSilhouetteBlend();
             ValidateFastVsHd2dCycle56PlazaLibraryFacadeMassClosure();
+            ValidateFastVsHd2dCycle58PlazaLibrarySideRelief();
             ValidateFastVsHd2dOneHundredNinthCycleOutdoorWorldEnvelopeFoundation();
             ValidateFastVsHd2dOneHundredTenthCycleOutdoorHorizonScenicDepth();
             ValidateFastVsHd2dOneHundredEleventhCycleOutdoorLightCompositionContactGrounding();
@@ -7270,6 +7271,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryWindowRevealDepthPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryDoorReliefPolish(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryFacadeMassClosureCycle56(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaLibrarySideReliefCycle58(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryApproachHd2dPolish(root, prefix, past, materials, c, stone, trim, path);
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareNorthBorder", root, c + new Vector3(0f, 0.066f, 8.14f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_north");
             CreateLandmarkCube($"{prefix}_CentralPlaza_StoneSquareSouthBorder", root, c + new Vector3(0f, 0.066f, -3.64f), new Vector3(12.55f, 0.03f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.square.border_south");
@@ -18891,6 +18893,48 @@ namespace Anemora.EditorTools
             _ = trimMaterial;
         }
 
+        private static void CreateCentralPlazaLibrarySideReliefCycle58(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
+        {
+            var objectPrefix = $"{prefix}_CentralPlaza_Cycle58_LibrarySideRelief";
+            var trimMaterial = trim;
+            var wallMaterial = wall;
+            var shadowMaterial = materials.Shadow;
+            var stoneMaterial = past ? materials.PastStone : materials.CurrentStone;
+            var roofMaterial = past ? materials.PastRoof : materials.CurrentRoof;
+
+            void Add(string nameSuffix, Vector3 localPosition, Vector3 localScale, Material material, string landmarkSuffix)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_{nameSuffix}",
+                    root,
+                    center + localPosition,
+                    localScale,
+                    Quaternion.identity,
+                    material,
+                    $"{prefix}.central_plaza.cycle58.library_side_relief.{landmarkSuffix}");
+            }
+
+            Add("WestOuterVerticalRibFrontA", new Vector3(-5.24f, past ? 2.44f : 2.36f, past ? 8.82f : 8.74f), new Vector3(0.070f, past ? 2.88f : 2.74f, 0.095f), trimMaterial, "west_outer_vertical_rib_front_a");
+            Add("WestOuterVerticalRibRearA", new Vector3(-5.24f, past ? 2.50f : 2.42f, past ? 11.14f : 11.04f), new Vector3(0.070f, past ? 2.96f : 2.82f, 0.095f), trimMaterial, "west_outer_vertical_rib_rear_a");
+            Add("WestMidHorizontalCourseA", new Vector3(-5.23f, past ? 1.62f : 1.56f, past ? 10.02f : 9.92f), new Vector3(0.075f, 0.060f, past ? 2.72f : 2.58f), stoneMaterial, "west_mid_horizontal_course_a");
+            Add("WestUpperHorizontalCourseA", new Vector3(-5.23f, past ? 2.76f : 2.66f, past ? 10.10f : 10.00f), new Vector3(0.075f, 0.055f, past ? 2.98f : 2.82f), trimMaterial, "west_upper_horizontal_course_a");
+            Add("WestRoofUndersideShadowA", new Vector3(-5.25f, past ? 3.58f : 3.48f, past ? 10.18f : 10.08f), new Vector3(0.090f, 0.080f, past ? 3.58f : 3.42f), shadowMaterial, "west_roof_underside_shadow_a");
+            Add("WestBaseContactDarkA", new Vector3(-5.25f, past ? 0.34f : 0.30f, past ? 10.12f : 10.00f), new Vector3(0.085f, 0.060f, past ? 3.46f : 3.30f), stoneMaterial, "west_base_contact_dark_a");
+
+            Add("EastOuterVerticalRibFrontA", new Vector3(5.24f, past ? 2.44f : 2.36f, past ? 8.82f : 8.74f), new Vector3(0.070f, past ? 2.88f : 2.74f, 0.095f), trimMaterial, "east_outer_vertical_rib_front_a");
+            Add("EastOuterVerticalRibRearA", new Vector3(5.24f, past ? 2.50f : 2.42f, past ? 11.14f : 11.04f), new Vector3(0.070f, past ? 2.96f : 2.82f, 0.095f), trimMaterial, "east_outer_vertical_rib_rear_a");
+            Add("EastMidHorizontalCourseA", new Vector3(5.23f, past ? 1.62f : 1.56f, past ? 10.02f : 9.92f), new Vector3(0.075f, 0.060f, past ? 2.72f : 2.58f), stoneMaterial, "east_mid_horizontal_course_a");
+            Add("EastUpperHorizontalCourseA", new Vector3(5.23f, past ? 2.76f : 2.66f, past ? 10.10f : 10.00f), new Vector3(0.075f, 0.055f, past ? 2.98f : 2.82f), trimMaterial, "east_upper_horizontal_course_a");
+            Add("EastRoofUndersideShadowA", new Vector3(5.25f, past ? 3.58f : 3.48f, past ? 10.18f : 10.08f), new Vector3(0.090f, 0.080f, past ? 3.58f : 3.42f), shadowMaterial, "east_roof_underside_shadow_a");
+            Add("EastBaseContactDarkA", new Vector3(5.25f, past ? 0.34f : 0.30f, past ? 10.12f : 10.00f), new Vector3(0.085f, 0.060f, past ? 3.46f : 3.30f), stoneMaterial, "east_base_contact_dark_a");
+
+            Add("WestRoofSideLipA", new Vector3(-5.28f, past ? 5.28f : 5.20f, past ? 10.14f : 10.04f), new Vector3(0.085f, 0.085f, past ? 3.42f : 3.28f), roofMaterial, "west_roof_side_lip_a");
+            Add("EastRoofSideLipA", new Vector3(5.28f, past ? 5.28f : 5.20f, past ? 10.14f : 10.04f), new Vector3(0.085f, 0.085f, past ? 3.42f : 3.28f), roofMaterial, "east_roof_side_lip_a");
+
+            _ = stone;
+            _ = wallMaterial;
+        }
+
         private static void CreateCentralPlazaLibraryRearVolumePolish(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
         {
             var objectPrefix = $"{prefix}_CentralPlaza_LibraryRearVolume";
@@ -24176,6 +24220,58 @@ namespace Anemora.EditorTools
             Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastUnderEaveSideShadowA", pastParent, "shadow", new Vector3(4.31f, 2.83f, 9.47f), new Vector3(5.21f, 3.73f, 10.37f), 0.20f, 0.18f, 3.62f);
             Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_WestSideBaseContactA", pastParent, "past_stone", new Vector3(-5.25f, -0.23f, 9.40f), new Vector3(-4.35f, 0.67f, 10.30f), 0.26f, 0.16f, 3.84f);
             Validate("Past_CentralPlaza_Cycle56_LibraryMassClosure_EastSideBaseContactA", pastParent, "past_stone", new Vector3(4.35f, -0.23f, 9.40f), new Vector3(5.25f, 0.67f, 10.30f), 0.26f, 0.16f, 3.84f);
+        }
+
+        private static void ValidateFastVsHd2dCycle58PlazaLibrarySideRelief()
+        {
+            var currentParent = "Current_CentralPlazaMap_SeparateSpace";
+            var pastParent = "Past_CentralPlazaMap_SeparateSpace";
+            var currentPrefix = "Current.central_plaza.cycle58.library_side_relief.";
+            var pastPrefix = "Past.central_plaza.cycle58.library_side_relief.";
+
+            void Validate(string objectName, string parentName, string materialToken, string expectedPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
+            {
+                ValidateCentralPlazaLibraryDeepExteriorVolumeObject(
+                    objectName,
+                    materialToken,
+                    parentName,
+                    expectedPrefix,
+                    minLocalPosition,
+                    maxLocalPosition,
+                    maxScaleX,
+                    maxScaleY,
+                    maxScaleZ);
+            }
+
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestOuterVerticalRibFrontA", currentParent, "current_fence", currentPrefix, new Vector3(-5.60f, 2.01f, 8.39f), new Vector3(-4.90f, 2.71f, 9.09f), 0.30f, 3.08f, 0.30f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestOuterVerticalRibRearA", currentParent, "current_fence", currentPrefix, new Vector3(-5.60f, 2.07f, 10.71f), new Vector3(-4.90f, 2.77f, 11.41f), 0.30f, 3.16f, 0.30f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestMidHorizontalCourseA", currentParent, "current_stone", currentPrefix, new Vector3(-5.60f, 1.21f, 9.57f), new Vector3(-4.90f, 1.91f, 10.27f), 0.30f, 0.30f, 2.78f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestUpperHorizontalCourseA", currentParent, "current_fence", currentPrefix, new Vector3(-5.60f, 2.31f, 9.65f), new Vector3(-4.90f, 3.01f, 10.35f), 0.30f, 0.30f, 3.02f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestRoofUndersideShadowA", currentParent, "shadow", currentPrefix, new Vector3(-5.62f, 3.13f, 9.73f), new Vector3(-4.92f, 3.83f, 10.43f), 0.32f, 0.30f, 3.78f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestBaseContactDarkA", currentParent, "current_stone", currentPrefix, new Vector3(-5.62f, -0.01f, 9.60f), new Vector3(-4.92f, 0.69f, 10.30f), 0.32f, 0.30f, 3.50f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastOuterVerticalRibFrontA", currentParent, "current_fence", currentPrefix, new Vector3(4.90f, 2.01f, 8.39f), new Vector3(5.60f, 2.71f, 9.09f), 0.30f, 3.08f, 0.30f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastOuterVerticalRibRearA", currentParent, "current_fence", currentPrefix, new Vector3(4.90f, 2.07f, 10.71f), new Vector3(5.60f, 2.77f, 11.41f), 0.30f, 3.16f, 0.30f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastMidHorizontalCourseA", currentParent, "current_stone", currentPrefix, new Vector3(4.90f, 1.21f, 9.57f), new Vector3(5.60f, 1.91f, 10.27f), 0.30f, 0.30f, 2.78f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastUpperHorizontalCourseA", currentParent, "current_fence", currentPrefix, new Vector3(4.90f, 2.31f, 9.65f), new Vector3(5.60f, 3.01f, 10.35f), 0.30f, 0.30f, 3.02f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastRoofUndersideShadowA", currentParent, "shadow", currentPrefix, new Vector3(4.92f, 3.13f, 9.73f), new Vector3(5.62f, 3.83f, 10.43f), 0.32f, 0.30f, 3.78f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastBaseContactDarkA", currentParent, "current_stone", currentPrefix, new Vector3(4.92f, -0.01f, 9.60f), new Vector3(5.62f, 0.69f, 10.30f), 0.32f, 0.30f, 3.50f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_WestRoofSideLipA", currentParent, "current_roof", currentPrefix, new Vector3(-5.64f, 4.93f, 9.70f), new Vector3(-4.94f, 5.63f, 10.40f), 0.32f, 0.32f, 3.48f);
+            Validate("Current_CentralPlaza_Cycle58_LibrarySideRelief_EastRoofSideLipA", currentParent, "current_roof", currentPrefix, new Vector3(4.94f, 4.93f, 9.70f), new Vector3(5.64f, 5.63f, 10.40f), 0.32f, 0.32f, 3.48f);
+
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestOuterVerticalRibFrontA", pastParent, "past_fence", pastPrefix, new Vector3(-5.60f, 2.09f, 8.39f), new Vector3(-4.90f, 2.79f, 9.09f), 0.30f, 3.08f, 0.30f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestOuterVerticalRibRearA", pastParent, "past_fence", pastPrefix, new Vector3(-5.60f, 2.15f, 10.71f), new Vector3(-4.90f, 2.85f, 11.41f), 0.30f, 3.16f, 0.30f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestMidHorizontalCourseA", pastParent, "past_stone", pastPrefix, new Vector3(-5.60f, 1.27f, 9.57f), new Vector3(-4.90f, 1.97f, 10.27f), 0.30f, 0.30f, 2.78f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestUpperHorizontalCourseA", pastParent, "past_fence", pastPrefix, new Vector3(-5.60f, 2.37f, 9.65f), new Vector3(-4.90f, 3.07f, 10.35f), 0.30f, 0.30f, 3.02f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestRoofUndersideShadowA", pastParent, "shadow", pastPrefix, new Vector3(-5.62f, 3.21f, 9.73f), new Vector3(-4.92f, 3.91f, 10.43f), 0.32f, 0.30f, 3.78f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestBaseContactDarkA", pastParent, "past_stone", pastPrefix, new Vector3(-5.62f, 0.03f, 9.60f), new Vector3(-4.92f, 0.73f, 10.30f), 0.32f, 0.30f, 3.50f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastOuterVerticalRibFrontA", pastParent, "past_fence", pastPrefix, new Vector3(4.90f, 2.09f, 8.39f), new Vector3(5.60f, 2.79f, 9.09f), 0.30f, 3.08f, 0.30f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastOuterVerticalRibRearA", pastParent, "past_fence", pastPrefix, new Vector3(4.90f, 2.15f, 10.71f), new Vector3(5.60f, 2.85f, 11.41f), 0.30f, 3.16f, 0.30f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastMidHorizontalCourseA", pastParent, "past_stone", pastPrefix, new Vector3(4.90f, 1.27f, 9.57f), new Vector3(5.60f, 1.97f, 10.27f), 0.30f, 0.30f, 2.78f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastUpperHorizontalCourseA", pastParent, "past_fence", pastPrefix, new Vector3(4.90f, 2.37f, 9.65f), new Vector3(5.60f, 3.07f, 10.35f), 0.30f, 0.30f, 3.02f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastRoofUndersideShadowA", pastParent, "shadow", pastPrefix, new Vector3(4.92f, 3.21f, 9.73f), new Vector3(5.62f, 3.91f, 10.43f), 0.32f, 0.30f, 3.78f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastBaseContactDarkA", pastParent, "past_stone", pastPrefix, new Vector3(4.92f, 0.03f, 9.60f), new Vector3(5.62f, 0.73f, 10.30f), 0.32f, 0.30f, 3.50f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_WestRoofSideLipA", pastParent, "past_roof", pastPrefix, new Vector3(-5.64f, 5.01f, 9.70f), new Vector3(-4.94f, 5.71f, 10.40f), 0.32f, 0.32f, 3.48f);
+            Validate("Past_CentralPlaza_Cycle58_LibrarySideRelief_EastRoofSideLipA", pastParent, "past_roof", pastPrefix, new Vector3(4.94f, 5.01f, 9.70f), new Vector3(5.64f, 5.71f, 10.40f), 0.32f, 0.32f, 3.48f);
         }
 
         private static void ValidateCentralPlazaLibrarySideWallSurfaceTuningObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
