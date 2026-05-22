@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.27 fast VS HD2D plaza library roof underside shadow index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.28 fast VS HD2D plaza library side wall material breakup index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 406 files including INDEX.md and README.md.
-- Dated devlog records: 404 files.
-- Linked evidence files present under docs/devlog/screenshots/: 848 files.
+- Root-level Markdown coverage: 407 files including INDEX.md and README.md.
+- Dated devlog records: 405 files.
+- Linked evidence files present under docs/devlog/screenshots/: 852 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 8 |
+| 2026-05-23 | 9 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_plaza_library_side_wall_material_breakup_cycle60.md](2026-05-23_fast_vs_hd2d_plaza_library_side_wall_material_breakup_cycle60.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Wall Material Breakup Cycle 60 |
 | [2026-05-23_fast_vs_hd2d_plaza_library_roof_underside_shadow_cycle59.md](2026-05-23_fast_vs_hd2d_plaza_library_roof_underside_shadow_cycle59.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Roof Underside Shadow Cycle 59 |
 | [2026-05-23_fast_vs_hd2d_plaza_library_side_relief_cycle58.md](2026-05-23_fast_vs_hd2d_plaza_library_side_relief_cycle58.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Relief Cycle 58 |
 | [2026-05-23_fast_vs_hd2d_plaza_library_oblique_review_cycle57.md](2026-05-23_fast_vs_hd2d_plaza_library_oblique_review_cycle57.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Oblique Review Cycle 57 |
@@ -550,6 +551,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.28 | 2026-05-23 | Added Fast VS HD2D plaza library side wall material breakup cycle record with visible trim and stone side-wall courses, validation, parent visibility fix, and oblique screenshot evidence. |
 | v7.27 | 2026-05-23 | Added Fast VS HD2D plaza library roof underside shadow cycle record with softened eave, side-wall, and base depth overlays, validation, and oblique screenshot evidence. |
 | v7.26 | 2026-05-23 | Added Fast VS HD2D plaza library side relief cycle record with visible outside side-wall ribs, horizontal courses, roof underside shadows, validation, and oblique screenshot evidence. |
 | v7.25 | 2026-05-23 | Added Fast VS HD2D plaza library oblique review cycle record with dedicated current/past left and right oblique screenshot capture, validation, and evidence for future side-mass review. |
