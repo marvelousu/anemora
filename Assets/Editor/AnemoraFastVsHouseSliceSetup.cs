@@ -14968,6 +14968,11 @@ namespace Anemora.EditorTools
             CaptureHd2dExaggeratedGroundedShadowsCycle101ScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle101_exaggerated_grounded_shadows_parent_review_20260524_01");
         }
 
+        public static void CaptureHd2dGroundedShadowVisualGateCycle102ScreenshotsBatch()
+        {
+            CaptureHd2dGroundedShadowVisualGateCycle102ScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle102_grounded_shadow_visual_gate_parent_review_20260524_01");
+        }
+
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
         {
             CaptureHd2dNinetiethCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_roof_side_depth_20260521");
@@ -37093,6 +37098,81 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS cycle 101 exaggerated grounded shadows screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dGroundedShadowVisualGateCycle102ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 102 grounded shadow visual gate screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCentralPlazaFile = $"{audiencePrefix}01_current_central_plaza_niro_grounding_overview.png";
+            var currentLibraryDeskFile = $"{audiencePrefix}02_current_library_reto_desk_grounding_close.png";
+            var pastCentralPlazaFile = $"{audiencePrefix}03_past_central_plaza_grounding_overview.png";
+            var currentLibraryFloorShadowWideFile = $"{audiencePrefix}04_current_library_floor_shadow_wide.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.18f, 0.02f, 2.08f),
+                Path.Combine(outputDirectory, currentCentralPlazaFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentCentralPlazaFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-0.92f, 0.02f, -1.08f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.38f, -0.14f),
+                new Vector3(1.22f, 1.22f, -2.62f),
+                new Vector3(0.02f, 0.22f, 0.22f),
+                outputDirectory,
+                currentLibraryDeskFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentLibraryDeskFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.10f),
+                Path.Combine(outputDirectory, pastCentralPlazaFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastCentralPlazaFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f),
+                Path.Combine(outputDirectory, currentLibraryFloorShadowWideFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentLibraryFloorShadowWideFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 102 grounded shadow visual gate screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
         {
             ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
@@ -40287,6 +40367,11 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateUnifiedSunDirectionContract();
             ValidateCoreRouteObjectsPresent();
+        }
+
+        public static void ValidateGroundedShadowVisualGateBatch()
+        {
+            ValidateExaggeratedGroundedShadowsBatch();
         }
 
         private static void ValidateHouseExteriorPorchOcclusionReadabilityObject(
