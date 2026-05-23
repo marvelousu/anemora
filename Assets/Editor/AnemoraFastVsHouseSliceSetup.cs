@@ -289,6 +289,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadowFoundationCycle89OutdoorBackdropForegroundCleanup();
             ValidateFastVsHd2dShadowFoundationCycle90DuskSunMood();
             ValidateFastVsHd2dShadowFoundationCycle91HouseSkyBarMask();
+            ValidateFastVsHd2dShadowFoundationCycle92FadedDuskCameraGrade();
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorArchitecturalClosure();
             ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
@@ -14531,6 +14532,11 @@ namespace Anemora.EditorTools
             CaptureHd2dShadowFoundationCycle91ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle91_house_exterior_sky_bar_mask_parent_review_20260524_01");
         }
 
+        public static void CaptureHd2dShadowFoundationCycle92ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle92ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle92_faded_dusk_camera_grade_parent_review_20260524_01");
+        }
+
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
         {
             CaptureHd2dNinetiethCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_roof_side_depth_20260521");
@@ -22025,7 +22031,126 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"Fast VS HD-2D global volume profile is missing: {profilePath}");
             }
 
+            ApplyCycle92FadedDuskCameraGrade(profile);
             volume.sharedProfile = profile;
+        }
+
+        private static void ApplyCycle92FadedDuskCameraGrade(VolumeProfile profile)
+        {
+            if (profile == null)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D faded dusk camera grade failed: volume profile is missing.");
+            }
+
+            if (!profile.TryGet<ColorAdjustments>(out var colorAdjustments))
+            {
+                colorAdjustments = profile.Add<ColorAdjustments>(true);
+            }
+
+            if (!profile.TryGet<Bloom>(out var bloom))
+            {
+                bloom = profile.Add<Bloom>(true);
+            }
+
+            if (!profile.TryGet<Vignette>(out var vignette))
+            {
+                vignette = profile.Add<Vignette>(true);
+            }
+
+            if (!profile.TryGet<Tonemapping>(out var tonemapping))
+            {
+                tonemapping = profile.Add<Tonemapping>(true);
+            }
+
+            if (!profile.TryGet<FilmGrain>(out var filmGrain))
+            {
+                filmGrain = profile.Add<FilmGrain>(true);
+            }
+
+            if (!profile.TryGet<DepthOfField>(out var depthOfField))
+            {
+                depthOfField = profile.Add<DepthOfField>(true);
+            }
+
+            colorAdjustments.active = true;
+            colorAdjustments.postExposure.overrideState = true;
+            colorAdjustments.postExposure.value = -0.21f;
+            colorAdjustments.contrast.overrideState = true;
+            colorAdjustments.contrast.value = 6f;
+            colorAdjustments.colorFilter.overrideState = true;
+            colorAdjustments.colorFilter.value = new Color(1.04f, 0.98f, 0.92f, 1f);
+            colorAdjustments.hueShift.overrideState = true;
+            colorAdjustments.hueShift.value = 0f;
+            colorAdjustments.saturation.overrideState = true;
+            colorAdjustments.saturation.value = -14f;
+
+            bloom.active = true;
+            bloom.threshold.overrideState = true;
+            bloom.threshold.value = 0.80f;
+            bloom.intensity.overrideState = true;
+            bloom.intensity.value = 0.10f;
+            bloom.scatter.overrideState = true;
+            bloom.scatter.value = 0.50f;
+            bloom.clamp.overrideState = true;
+            bloom.clamp.value = 65472f;
+            bloom.tint.overrideState = true;
+            bloom.tint.value = new Color(1.00f, 0.94f, 0.86f, 1f);
+            bloom.highQualityFiltering.overrideState = true;
+            bloom.highQualityFiltering.value = false;
+            bloom.downscale.overrideState = true;
+            bloom.downscale.value = BloomDownscaleMode.Half;
+            bloom.maxIterations.overrideState = true;
+            bloom.maxIterations.value = 6;
+            bloom.dirtTexture.overrideState = true;
+            bloom.dirtTexture.value = null;
+            bloom.dirtIntensity.overrideState = true;
+            bloom.dirtIntensity.value = 0f;
+
+            vignette.active = true;
+            vignette.color.overrideState = true;
+            vignette.color.value = Color.black;
+            vignette.center.overrideState = true;
+            vignette.center.value = new Vector2(0.5f, 0.5f);
+            vignette.intensity.overrideState = true;
+            vignette.intensity.value = 0.055f;
+            vignette.smoothness.overrideState = true;
+            vignette.smoothness.value = 0.36f;
+            vignette.rounded.overrideState = true;
+            vignette.rounded.value = false;
+
+            tonemapping.active = true;
+
+            filmGrain.active = false;
+            filmGrain.intensity.overrideState = true;
+            filmGrain.intensity.value = 0f;
+            filmGrain.response.overrideState = true;
+            filmGrain.response.value = 0.8f;
+            filmGrain.texture.overrideState = true;
+            filmGrain.texture.value = null;
+
+            depthOfField.active = false;
+            depthOfField.gaussianStart.overrideState = true;
+            depthOfField.gaussianStart.value = 10f;
+            depthOfField.gaussianEnd.overrideState = true;
+            depthOfField.gaussianEnd.value = 30f;
+            depthOfField.gaussianMaxRadius.overrideState = true;
+            depthOfField.gaussianMaxRadius.value = 1f;
+            depthOfField.highQualitySampling.overrideState = true;
+            depthOfField.highQualitySampling.value = false;
+            depthOfField.focusDistance.overrideState = true;
+            depthOfField.focusDistance.value = 10f;
+            depthOfField.aperture.overrideState = true;
+            depthOfField.aperture.value = 5.6f;
+            depthOfField.focalLength.overrideState = true;
+            depthOfField.focalLength.value = 50f;
+            depthOfField.bladeCount.overrideState = true;
+            depthOfField.bladeCount.value = 5;
+            depthOfField.bladeCurvature.overrideState = true;
+            depthOfField.bladeCurvature.value = 1f;
+            depthOfField.bladeRotation.overrideState = true;
+            depthOfField.bladeRotation.value = 0f;
+
+            EditorUtility.SetDirty(profile);
         }
 
         private static void CreateHd2dAtmosphere(Transform currentRoot, Transform pastRoot)
@@ -24914,6 +25039,74 @@ namespace Anemora.EditorTools
                 new Vector3(8.74f, 5.20f, 7.60f),
                 new Vector3(1.05f, 3.92f, 0.95f),
                 new Vector3(1.30f, 4.38f, 1.05f));
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle92FadedDuskCameraGrade()
+        {
+            var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject != null ? volumeObject.GetComponent<Volume>() : null;
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            if (volumeObject == null ||
+                volume == null ||
+                volume.sharedProfile == null ||
+                AssetDatabase.GetAssetPath(volume.sharedProfile) != profilePath)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 92 must keep FastVS_HD2D_GlobalVolume backed by Assets/Settings/DefaultVolumeProfile.asset.");
+            }
+
+            var profile = volume.sharedProfile;
+            if (!profile.TryGet<ColorAdjustments>(out var colorAdjustments) ||
+                !profile.TryGet<Bloom>(out var bloom) ||
+                !profile.TryGet<Vignette>(out var vignette) ||
+                !profile.TryGet<Tonemapping>(out var tonemapping) ||
+                !profile.TryGet<FilmGrain>(out var filmGrain) ||
+                !profile.TryGet<DepthOfField>(out var depthOfField))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 92 global volume profile must include ColorAdjustments, Bloom, Vignette, Tonemapping, FilmGrain, and DepthOfField.");
+            }
+
+            if (!colorAdjustments.active ||
+                colorAdjustments.postExposure.value < -0.24f || colorAdjustments.postExposure.value > -0.18f ||
+                colorAdjustments.saturation.value < -18f || colorAdjustments.saturation.value > -10f ||
+                colorAdjustments.contrast.value > 10f ||
+                colorAdjustments.colorFilter.value.r < 1.00f || colorAdjustments.colorFilter.value.r > 1.08f ||
+                colorAdjustments.colorFilter.value.g < 0.95f || colorAdjustments.colorFilter.value.g > 1.00f ||
+                colorAdjustments.colorFilter.value.b < 0.88f || colorAdjustments.colorFilter.value.b > 0.96f ||
+                colorAdjustments.colorFilter.value.r < colorAdjustments.colorFilter.value.g ||
+                colorAdjustments.colorFilter.value.g < colorAdjustments.colorFilter.value.b)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 92 color adjustments must stay in the faded dusk range, found postExposure={colorAdjustments.postExposure.value:0.000}, saturation={colorAdjustments.saturation.value:0.000}, contrast={colorAdjustments.contrast.value:0.000}, filter=({colorAdjustments.colorFilter.value.r:0.000}, {colorAdjustments.colorFilter.value.g:0.000}, {colorAdjustments.colorFilter.value.b:0.000}).");
+            }
+
+            if (!bloom.active ||
+                bloom.intensity.value < 0.06f || bloom.intensity.value > 0.12f ||
+                bloom.threshold.value < 0.75f || bloom.threshold.value > 0.88f ||
+                bloom.scatter.value < 0.40f || bloom.scatter.value > 0.55f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 92 bloom must stay subtle, found intensity={bloom.intensity.value:0.000}, threshold={bloom.threshold.value:0.000}, scatter={bloom.scatter.value:0.000}.");
+            }
+
+            if (!vignette.active ||
+                vignette.intensity.value < 0.04f || vignette.intensity.value > 0.07f ||
+                vignette.smoothness.value < 0.30f || vignette.smoothness.value > 0.42f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 92 vignette must stay subtle, found intensity={vignette.intensity.value:0.000}, smoothness={vignette.smoothness.value:0.000}.");
+            }
+
+            if (!tonemapping.active)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 92 tonemapping must remain active.");
+            }
+
+            if (filmGrain.active || filmGrain.intensity.value > 0.001f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 92 film grain must stay inactive or at zero intensity.");
+            }
+
+            if (depthOfField.active)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 92 depth of field must stay off.");
+            }
         }
 
         private static void ValidateHd2dHouseSkyBarMaskCycle91TextureMetrics()
@@ -35018,6 +35211,77 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 91 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle92ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 92 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_faded_dusk_camera_grade_overview.png";
+            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_faded_dusk_camera_grade_overview.png";
+            var pastHouseOverviewFile = $"{audiencePrefix}03_past_house_exterior_faded_dusk_camera_grade_overview.png";
+            var currentLibraryOverviewFile = $"{audiencePrefix}04_current_library_faded_dusk_camera_grade_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.45f),
+                Path.Combine(outputDirectory, currentHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentHouseOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.38f),
+                Path.Combine(outputDirectory, currentPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentPlazaOverviewFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.45f),
+                Path.Combine(outputDirectory, pastHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastHouseOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(0.10f, 0.02f, -2.80f),
+                Path.Combine(outputDirectory, currentLibraryOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentLibraryOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 92 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()

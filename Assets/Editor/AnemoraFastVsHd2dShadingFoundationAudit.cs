@@ -156,11 +156,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(bloom.active, true, issues, "Bloom must be active.");
                 RequireBool(bloom.threshold.overrideState, true, issues, "Bloom threshold override must be enabled.");
-                RequireFloat(bloom.threshold.value, 0.78f, 0.03f, issues, "Bloom threshold must be near 0.78.");
+                RequireFloat(bloom.threshold.value, 0.80f, 0.05f, issues, "Bloom threshold must stay in the faded dusk range.");
                 RequireBool(bloom.intensity.overrideState, true, issues, "Bloom intensity override must be enabled.");
-                RequireFloat(bloom.intensity.value, 0.08f, 0.02f, issues, "Bloom intensity must be near 0.08.");
+                RequireFloat(bloom.intensity.value, 0.10f, 0.03f, issues, "Bloom intensity must stay subtle for the faded dusk grade.");
                 RequireBool(bloom.scatter.overrideState, true, issues, "Bloom scatter override must be enabled.");
-                RequireFloat(bloom.scatter.value, 0.47f, 0.03f, issues, "Bloom scatter must be near 0.47.");
+                RequireFloat(bloom.scatter.value, 0.50f, 0.05f, issues, "Bloom scatter must stay subtle for the faded dusk grade.");
             }
 
             if (!volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
@@ -171,11 +171,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(colorAdjustments.active, true, issues, "ColorAdjustments must be active.");
                 RequireBool(colorAdjustments.postExposure.overrideState, true, issues, "ColorAdjustments post exposure override must be enabled.");
-                RequireFloat(colorAdjustments.postExposure.value, -0.08f, 0.005f, issues, "ColorAdjustments post exposure must be near -0.08.");
+                RequireFloat(colorAdjustments.postExposure.value, -0.21f, 0.035f, issues, "ColorAdjustments post exposure must stay in the faded dusk range.");
                 RequireBool(colorAdjustments.contrast.overrideState, true, issues, "ColorAdjustments contrast override must be enabled.");
-                RequireFloat(colorAdjustments.contrast.value, 6f, 0.5f, issues, "ColorAdjustments contrast must be near 6.");
+                RequireFloat(colorAdjustments.contrast.value, 6f, 1.0f, issues, "ColorAdjustments contrast must keep readability.");
                 RequireBool(colorAdjustments.saturation.overrideState, true, issues, "ColorAdjustments saturation override must be enabled.");
-                RequireFloat(colorAdjustments.saturation.value, -6f, 0.5f, issues, "ColorAdjustments saturation must be near -6.");
+                RequireFloat(colorAdjustments.saturation.value, -14f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded dusk range.");
             }
 
             if (!volumeProfile.TryGet<Vignette>(out var vignette))
@@ -186,9 +186,9 @@ namespace Anemora.EditorTools
             {
                 RequireBool(vignette.active, true, issues, "Vignette must be active.");
                 RequireBool(vignette.intensity.overrideState, true, issues, "Vignette intensity override must be enabled.");
-                if (vignette.intensity.value > 0.050f)
+                if (vignette.intensity.value > 0.070f)
                 {
-                    issues.Add("Vignette intensity must be at or below 0.050.");
+                    issues.Add("Vignette intensity must be at or below 0.070.");
                 }
             }
 
