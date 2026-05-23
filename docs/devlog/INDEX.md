@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.73 fast VS HD2D outdoor sunbreak dapple balance index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.74 fast VS HD2D outdoor sunbreak streak breakup index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 452 files including INDEX.md and README.md.
-- Dated devlog records: 450 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1066 files.
+- Root-level Markdown coverage: 453 files including INDEX.md and README.md.
+- Dated devlog records: 451 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1070 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 14 |
+| 2026-05-24 | 15 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_outdoor_sunbreak_streak_breakup_cycle105.md](2026-05-24_fast_vs_hd2d_outdoor_sunbreak_streak_breakup_cycle105.md) | Fast VS / HD2D | feat(hd2d): break plaza sunbreak into streaks |
 | [2026-05-24_fast_vs_hd2d_outdoor_sunbreak_dapple_balance_cycle104.md](2026-05-24_fast_vs_hd2d_outdoor_sunbreak_dapple_balance_cycle104.md) | Fast VS / HD2D | feat(hd2d): balance outdoor sunbreak against dappled shadows |
 | [2026-05-24_fast_vs_hd2d_cinematic_dappled_ground_shadows_cycle103.md](2026-05-24_fast_vs_hd2d_cinematic_dappled_ground_shadows_cycle103.md) | Fast VS / HD2D | feat(hd2d): add cinematic dappled ground shadows |
 | [2026-05-24_fast_vs_hd2d_grounded_shadow_visual_gate_cycle102.md](2026-05-24_fast_vs_hd2d_grounded_shadow_visual_gate_cycle102.md) | Fast VS / HD2D | test(hd2d): correct grounded shadow visual gate |
@@ -602,6 +603,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.74 | 2026-05-24 | Added Fast VS HD2D outdoor sunbreak streak breakup cycle record with plaza sunbreak texture/placement refinement plan, validation, build, smoke, and parent-review screenshot evidence. |
 | v7.73 | 2026-05-24 | Added Fast VS HD2D outdoor sunbreak dapple balance cycle record with current plaza sunbreak counter-light plan, current/past/library guard screenshots, validation, build, and smoke evidence. |
 | v7.68 | 2026-05-24 | Added Fast VS HD2D reference sun shadow grade cycle record with warm key-light tuning, lower ambient, runtime director sync, audit sync, validation plan, build/smoke plan, and four parent-review screenshot evidence files. |
 | v7.60 | 2026-05-24 | Added Fast VS HD2D house exterior sky bar mask cycle record with generated dusk mask material/texture, persisted disabled DepthOfField/FilmGrain baseline, validation, build, smoke, and three parent-review screenshot evidence files. |
