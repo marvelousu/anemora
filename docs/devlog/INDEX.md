@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.69 fast VS HD2D unified sun direction index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.70 fast VS HD2D exaggerated grounded shadows index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 448 files including INDEX.md and README.md.
-- Dated devlog records: 446 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1050 files.
+- Root-level Markdown coverage: 449 files including INDEX.md and README.md.
+- Dated devlog records: 447 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1054 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 10 |
+| 2026-05-24 | 11 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_exaggerated_grounded_shadows_cycle101.md](2026-05-24_fast_vs_hd2d_exaggerated_grounded_shadows_cycle101.md) | Fast VS / HD2D | feat(hd2d): exaggerate grounded shadows |
 | [2026-05-24_fast_vs_hd2d_unified_sun_direction_cycle100.md](2026-05-24_fast_vs_hd2d_unified_sun_direction_cycle100.md) | Fast VS / HD2D | feat(hd2d): unify sun direction |
 | [2026-05-24_fast_vs_hd2d_reference_sun_shadow_grade_cycle99.md](2026-05-24_fast_vs_hd2d_reference_sun_shadow_grade_cycle99.md) | Fast VS / HD2D | feat(hd2d): strengthen reference sun shadows |
 | [2026-05-24_fast_vs_hd2d_house_exterior_ground_continuity_artifact_cleanup_cycle98.md](2026-05-24_fast_vs_hd2d_house_exterior_ground_continuity_artifact_cleanup_cycle98.md) | Fast VS / HD2D | feat(hd2d): replace house black ground boards |

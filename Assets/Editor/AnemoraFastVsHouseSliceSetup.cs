@@ -103,12 +103,12 @@ namespace Anemora.EditorTools
         private const float UnifiedInteriorSunElevationDegrees = 48f;
         private const float CharacterDirectionalCastShadowYawDegrees = 142f;
         private const float StaticDirectionalCastShadowYawDegrees = 142f;
-        private static readonly Vector3 NiroDirectionalCastShadowScale = new Vector3(0.78f, 0.20f, 1f);
-        private static readonly Vector3 RetoDirectionalCastShadowScale = new Vector3(0.66f, 0.18f, 1f);
-        private static readonly Vector3 AriaDirectionalCastShadowScale = new Vector3(0.66f, 0.18f, 1f);
-        private static readonly Vector3 HouseStaticDirectionalCastShadowScale = new Vector3(2.16f, 0.20f, 1f);
-        private static readonly Vector3 CentralPlazaStaticDirectionalCastShadowScale = new Vector3(3.12f, 0.18f, 1f);
-        private static readonly Vector3 LibraryStaticDirectionalCastShadowScale = new Vector3(5.18f, 0.18f, 1f);
+        private static readonly Vector3 NiroDirectionalCastShadowScale = new Vector3(0.88f, 0.24f, 1f);
+        private static readonly Vector3 RetoDirectionalCastShadowScale = new Vector3(0.76f, 0.22f, 1f);
+        private static readonly Vector3 AriaDirectionalCastShadowScale = new Vector3(0.76f, 0.22f, 1f);
+        private static readonly Vector3 HouseStaticDirectionalCastShadowScale = new Vector3(2.55f, 0.25f, 1f);
+        private static readonly Vector3 CentralPlazaStaticDirectionalCastShadowScale = new Vector3(3.58f, 0.23f, 1f);
+        private static readonly Vector3 LibraryStaticDirectionalCastShadowScale = new Vector3(5.70f, 0.24f, 1f);
         private static readonly Vector3 HouseSurfaceDirectionalShadeOverlayCurrentScale = new Vector3(1.30f, 2.10f, 1f);
         private static readonly Vector3 HouseSurfaceDirectionalShadeOverlayPastScale = new Vector3(1.24f, 2.04f, 1f);
         private static readonly Vector3 CentralPlazaSurfaceDirectionalShadeOverlayCurrentScale = new Vector3(8.96f, 2.62f, 1f);
@@ -14961,6 +14961,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dUnifiedSunDirectionCycle100ScreenshotsBatch()
         {
             CaptureHd2dUnifiedSunDirectionCycle100ScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle100_unified_sun_direction_parent_review_20260524_01");
+        }
+
+        public static void CaptureHd2dExaggeratedGroundedShadowsCycle101ScreenshotsBatch()
+        {
+            CaptureHd2dExaggeratedGroundedShadowsCycle101ScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle101_exaggerated_grounded_shadows_parent_review_20260524_01");
         }
 
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
@@ -31272,9 +31277,9 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (centerAlpha < 0.18f || centerAlpha > 0.30f)
+            if (centerAlpha < 0.22f || centerAlpha > 0.38f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} center alpha {centerAlpha:0.000} is outside the 0.18-0.30 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} center alpha {centerAlpha:0.000} is outside the 0.22-0.38 range.");
             }
 
             if (leftEdgeAlpha > 0.02f || rightEdgeAlpha > 0.02f)
@@ -31287,19 +31292,19 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {context} top/bottom edge alpha must stay soft. top={topEdgeAlpha:0.000}, bottom={bottomEdgeAlpha:0.000}.");
             }
 
-            if (leftFootAlpha < 0.24f || leftFootAlpha > 0.40f)
+            if (leftFootAlpha < 0.34f || leftFootAlpha > 0.52f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} left foot alpha {leftFootAlpha:0.000} is outside the 0.24-0.40 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} left foot alpha {leftFootAlpha:0.000} is outside the 0.34-0.52 range.");
             }
 
-            if (rightFootAlpha < 0.24f || rightFootAlpha > 0.40f)
+            if (rightFootAlpha < 0.34f || rightFootAlpha > 0.52f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} right foot alpha {rightFootAlpha:0.000} is outside the 0.24-0.40 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} right foot alpha {rightFootAlpha:0.000} is outside the 0.34-0.52 range.");
             }
 
-            if (maxAlpha < 0.30f || maxAlpha > 0.42f)
+            if (maxAlpha < 0.48f || maxAlpha > 0.54f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} max alpha {maxAlpha:0.000} is outside the 0.30-0.42 range.");
+                throw new InvalidOperationException($"House slice validation failed: {context} max alpha {maxAlpha:0.000} is outside the 0.48-0.54 range.");
             }
 
             if (topLeftCornerAlpha > 0.01f || topRightCornerAlpha > 0.01f || bottomLeftCornerAlpha > 0.01f || bottomRightCornerAlpha > 0.01f)
@@ -31336,9 +31341,9 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (center < 0.18f || center > 0.30f)
+            if (center < 0.16f || center > 0.24f)
             {
-                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft center alpha must stay in the 0.18-0.30 range, but was {center:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft center alpha must stay in the 0.16-0.24 range, but was {center:0.000}.");
             }
 
             if (edge > center * 0.55f || corner > 0.025f)
@@ -31346,9 +31351,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft alpha falloff looks broken. edge={edge:0.000}, corner={corner:0.000}.");
             }
 
-            if (maxAlpha < 0.20f || maxAlpha > 0.30f)
+            if (maxAlpha < 0.18f || maxAlpha > 0.24f)
             {
-                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft max alpha must stay in the 0.20-0.30 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: hd2d_character_ground_bounce_soft max alpha must stay in the 0.18-0.24 range, but was {maxAlpha:0.000}.");
             }
         }
 
@@ -31390,19 +31395,19 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (center < 0.16f || center > 0.26f)
+            if (center < 0.20f || center > 0.34f)
             {
-                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft center alpha must stay in the 0.16-0.26 range, but was {center:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft center alpha must stay in the 0.20-0.34 range, but was {center:0.000}.");
             }
 
-            if (edge > center * 0.65f || tail > center * 0.70f || corner > 0.02f)
+            if (edge > center * 0.65f || tail > center * 0.82f || corner > 0.02f)
             {
                 throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft alpha falloff looks broken. edge={edge:0.000}, tail={tail:0.000}, corner={corner:0.000}.");
             }
 
-            if (maxAlpha < 0.24f || maxAlpha > 0.32f)
+            if (maxAlpha < 0.36f || maxAlpha > 0.44f)
             {
-                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft max alpha must stay in the 0.24-0.32 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: character_directional_cast_shadow_soft max alpha must stay in the 0.36-0.44 range, but was {maxAlpha:0.000}.");
             }
 
             UnityEngine.Object.DestroyImmediate(texture);
@@ -31647,14 +31652,14 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (centerAlpha < 0.15f || centerAlpha > 0.24f)
+            if (centerAlpha < 0.22f || centerAlpha > 0.34f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} center alpha must stay in the 0.15-0.24 range, but was {centerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} center alpha must stay in the 0.22-0.34 range, but was {centerAlpha:0.000}.");
             }
 
-            if (coreAlpha < 0.15f || coreAlpha > 0.24f)
+            if (coreAlpha < 0.22f || coreAlpha > 0.42f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} core alpha at ({coreX},{coreY}) must stay in the 0.15-0.24 range, but was {coreAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} core alpha at ({coreX},{coreY}) must stay in the 0.22-0.42 range, but was {coreAlpha:0.000}.");
             }
 
             if (tailAlpha < leftEdgeAlpha + 0.025f)
@@ -31677,9 +31682,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {context} corner alpha must stay near transparent. tl={cornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
 
-            if (maxAlpha < 0.24f || maxAlpha > 0.30f)
+            if (maxAlpha < 0.34f || maxAlpha > 0.42f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {context} max alpha must stay in the 0.24-0.30 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {context} max alpha must stay in the 0.34-0.42 range, but was {maxAlpha:0.000}.");
             }
         }
 
@@ -37009,6 +37014,85 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS cycle 100 unified sun-direction screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dExaggeratedGroundedShadowsCycle101ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 101 exaggerated grounded shadows screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCentralPlazaFile = $"{audiencePrefix}01_current_central_plaza_niro_grounding_overview.png";
+            var currentLibraryDeskFile = $"{audiencePrefix}02_current_library_reto_desk_grounding_close.png";
+            var pastCentralPlazaFile = $"{audiencePrefix}03_past_central_plaza_grounding_overview.png";
+            var currentExteriorCloseFile = $"{audiencePrefix}04_current_house_exterior_player_grounding_close.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.18f, 0.02f, 2.08f),
+                Path.Combine(outputDirectory, currentCentralPlazaFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentCentralPlazaFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-0.92f, 0.02f, -1.08f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.38f, -0.14f),
+                new Vector3(1.22f, 1.22f, -2.62f),
+                new Vector3(0.02f, 0.22f, 0.22f),
+                outputDirectory,
+                currentLibraryDeskFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentLibraryDeskFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.10f),
+                Path.Combine(outputDirectory, pastCentralPlazaFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastCentralPlazaFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-0.20f, 0.02f, 0.62f),
+                HouseExteriorCenter + new Vector3(1.42f, 0.30f, 1.55f),
+                new Vector3(-1.92f, 1.10f, -2.76f),
+                new Vector3(0.02f, 0.18f, 0.12f),
+                outputDirectory,
+                currentExteriorCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentExteriorCloseFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 101 exaggerated grounded shadows screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
         {
             ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
@@ -40189,6 +40273,18 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadowFoundationCycle85SunKeyLighting();
             ValidateFastVsHd2dCharacterDirectionalCastShadows();
             ValidateFastVsHd2dStaticDirectionalCastShadows();
+            ValidateUnifiedSunDirectionContract();
+            ValidateCoreRouteObjectsPresent();
+        }
+
+        public static void ValidateExaggeratedGroundedShadowsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateFastVsHd2dSeventeenthCycleCharacterContactShadows();
+            ValidateFastVsHd2dCharacterDirectionalCastShadows();
+            ValidateFastVsHd2dStaticDirectionalCastShadows();
+            ValidateFastVsHd2dTwentyFifthCycleCharacterGroundBounce();
             ValidateUnifiedSunDirectionContract();
             ValidateCoreRouteObjectsPresent();
         }
@@ -44707,15 +44803,16 @@ namespace Anemora.EditorTools
                     var skewU = u + ((0.5f - v) * 0.020f);
                     var skewV = v + ((u - 0.5f) * 0.010f);
 
-                    var frame = ContactShadowEllipseFalloff(u, v, 0.5f, 0.48f, 0.49f, 0.38f, 1.35f);
-                    var body = ContactShadowEllipseFalloff(skewU, skewV, 0.5f, 0.48f, 0.39f, 0.28f, 1.65f);
-                    var leftFoot = ContactShadowEllipseFalloff(skewU, skewV, 0.37f, 0.60f, 0.12f, 0.11f, 1.90f);
-                    var rightFoot = ContactShadowEllipseFalloff(skewU, skewV, 0.63f, 0.60f, 0.12f, 0.11f, 1.90f);
-                    var tailBias = ContactShadowEllipseFalloff(skewU, skewV, 0.57f, 0.40f, 0.28f, 0.16f, 1.75f);
+                    var frame = ContactShadowEllipseFalloff(u, v, 0.5f, 0.50f, 0.50f, 0.40f, 1.22f);
+                    var body = ContactShadowEllipseFalloff(skewU, skewV, 0.5f, 0.48f, 0.38f, 0.26f, 1.60f);
+                    var heelBridge = ContactShadowEllipseFalloff(skewU, skewV, 0.50f, 0.56f, 0.22f, 0.10f, 1.85f);
+                    var leftFootCore = ContactShadowEllipseFalloff(skewU, skewV, 0.37f, 0.60f, 0.10f, 0.10f, 2.25f);
+                    var rightFootCore = ContactShadowEllipseFalloff(skewU, skewV, 0.63f, 0.60f, 0.10f, 0.10f, 2.25f);
+                    var tailBias = ContactShadowEllipseFalloff(skewU, skewV, 0.59f, 0.40f, 0.30f, 0.18f, 1.55f);
 
-                    var alpha = (body * 0.22f) + (leftFoot * 0.30f) + (rightFoot * 0.30f) + (tailBias * 0.050f);
+                    var alpha = (body * 0.26f) + (heelBridge * 0.11f) + (leftFootCore * 0.43f) + (rightFootCore * 0.43f) + (tailBias * 0.11f);
                     alpha *= frame;
-                    alpha = Mathf.Clamp(alpha, 0f, 0.42f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.54f);
 
                     return new Color(0.025f, 0.026f, 0.033f, alpha);
                 });
@@ -44753,15 +44850,34 @@ namespace Anemora.EditorTools
                 {
                     var u = x / 95f;
                     var v = y / 63f;
-                    var coreDx = (u - 0.50f) / 0.34f;
-                    var coreDy = (v - 0.53f) / 0.16f;
+                    var edgeMask =
+                        SmoothFade01(0.00f, 0.04f, u) *
+                        SmoothFade01(0.00f, 0.06f, 1f - u) *
+                        SmoothFade01(0.00f, 0.08f, v) *
+                        SmoothFade01(0.00f, 0.10f, 1f - v);
+
+                    var coreDx = (u - 0.47f) / 0.28f;
+                    var coreDy = (v - 0.53f) / 0.14f;
                     var core = Mathf.Clamp01(1f - Mathf.Sqrt((coreDx * coreDx) + (coreDy * coreDy)));
-                    var tailDx = (u - 0.76f) / 0.20f;
-                    var tailDy = (v - 0.53f) / 0.12f;
-                    var tail = Mathf.Clamp01(1f - Mathf.Sqrt((tailDx * tailDx) + (tailDy * tailDy * 1.55f)));
-                    var alpha = (core * 0.29f) + (tail * 0.12f);
-                    alpha *= Mathf.Lerp(0.88f, 1f, Mathf.Clamp01(1f - Mathf.Abs(v - 0.53f) / 0.28f));
-                    alpha = Mathf.Clamp(alpha, 0f, 0.33f);
+                    core *= core;
+
+                    var bridgeDx = (u - 0.64f) / 0.18f;
+                    var bridgeDy = (v - 0.53f) / 0.11f;
+                    var bridge = Mathf.Clamp01(1f - Mathf.Sqrt((bridgeDx * bridgeDx * 1.02f) + (bridgeDy * bridgeDy * 1.55f)));
+                    bridge *= bridge;
+
+                    var tailDx = (u - 0.83f) / 0.22f;
+                    var tailDy = (v - 0.52f) / 0.12f;
+                    var tail = Mathf.Clamp01(1f - Mathf.Sqrt((tailDx * tailDx * 1.10f) + (tailDy * tailDy * 1.72f)));
+                    tail *= tail;
+
+                    var featherDx = (u - 0.70f) / 0.24f;
+                    var featherDy = (v - 0.52f) / 0.13f;
+                    var feather = Mathf.Clamp01(1f - Mathf.Sqrt((featherDx * featherDx * 0.94f) + (featherDy * featherDy * 1.34f)));
+
+                    var alpha = (core * 0.44f) + (bridge * 0.16f) + (tail * 0.12f) + (feather * 0.06f);
+                    alpha *= Mathf.Lerp(0.92f, 1f, edgeMask);
+                    alpha = Mathf.Clamp(alpha * edgeMask, 0f, 0.44f);
                     texture.SetPixel(x, y, new Color(0.03f, 0.035f, 0.05f, alpha));
                 }
             }
@@ -44818,36 +44934,37 @@ namespace Anemora.EditorTools
                         SmoothFade01(0.00f, 0.05f, v) *
                         SmoothFade01(0.00f, 0.07f, 1f - v);
 
-                    var coreDx = (u - 0.41f) / 0.15f;
-                    var coreDy = (v - 0.54f) / 0.09f;
-                    var core = Mathf.Clamp01(1f - Mathf.Sqrt((coreDx * coreDx * 1.05f) + (coreDy * coreDy * 1.55f)));
+                    var coreDx = (u - 0.40f) / 0.14f;
+                    var coreDy = (v - 0.54f) / 0.10f;
+                    var core = Mathf.Clamp01(1f - Mathf.Sqrt((coreDx * coreDx * 1.05f) + (coreDy * coreDy * 1.50f)));
                     core = core * core;
 
-                    var tailStart = new Vector2(0.44f, 0.54f);
-                    var tailEnd = new Vector2(0.82f, 0.48f);
+                    var tailStart = new Vector2(0.42f, 0.54f);
+                    var tailEnd = new Vector2(0.86f, 0.48f);
                     var tailSegment = tailEnd - tailStart;
                     var tailLengthSq = Mathf.Max(0.0001f, Vector2.Dot(tailSegment, tailSegment));
                     var tailT = Mathf.Clamp01(Vector2.Dot(new Vector2(u, v) - tailStart, tailSegment) / tailLengthSq);
                     var tailClosest = tailStart + (tailSegment * tailT);
-                    var tailRadius = Mathf.Lerp(0.078f, 0.034f, tailT);
+                    var tailRadius = Mathf.Lerp(0.084f, 0.036f, tailT);
                     var tailDistance = Vector2.Distance(new Vector2(u, v), tailClosest);
                     var tail = Mathf.Clamp01(1f - (tailDistance / tailRadius));
                     tail = tail * tail;
 
-                    var tailCapDx = (u - 0.70f) / 0.11f;
+                    var tailCapDx = (u - 0.74f) / 0.12f;
                     var tailCapDy = (v - 0.50f) / 0.08f;
-                    var tailCap = Mathf.Clamp01(1f - Mathf.Sqrt((tailCapDx * tailCapDx * 1.10f) + (tailCapDy * tailCapDy * 1.70f)));
+                    var tailCap = Mathf.Clamp01(1f - Mathf.Sqrt((tailCapDx * tailCapDx * 1.08f) + (tailCapDy * tailCapDy * 1.70f)));
                     tailCap = tailCap * tailCap;
 
-                    var bridgeDx = (u - 0.505f) / 0.13f;
-                    var bridgeDy = (v - 0.505f) / 0.080f;
-                    var bridge = Mathf.Clamp01(1f - Mathf.Sqrt((bridgeDx * bridgeDx * 0.92f) + (bridgeDy * bridgeDy * 1.85f)));
+                    var bridgeDx = (u - 0.52f) / 0.15f;
+                    var bridgeDy = (v - 0.505f) / 0.085f;
+                    var bridge = Mathf.Clamp01(1f - Mathf.Sqrt((bridgeDx * bridgeDx * 0.92f) + (bridgeDy * bridgeDy * 1.78f)));
+                    bridge = bridge * bridge;
 
-                    var alpha = (tail * 0.112f) + (core * 0.205f) + (tailCap * 0.026f) + (bridge * 0.128f);
+                    var alpha = (tail * 0.185f) + (core * 0.355f) + (tailCap * 0.050f) + (bridge * 0.180f);
                     alpha *= Mathf.Lerp(0.95f, 1f, edgeMask);
                     var noiseSeed = (((x * 17) ^ (y * 29) ^ (x * y * 5)) & 31) / 31f;
                     alpha += (noiseSeed - 0.5f) * 0.0045f;
-                    alpha = Mathf.Clamp(alpha * edgeMask, 0f, 0.30f);
+                    alpha = Mathf.Clamp(alpha * edgeMask, 0f, 0.42f);
                     texture.SetPixel(x, y, new Color(0.03f, 0.035f, 0.045f, alpha));
                 }
             }
@@ -44959,10 +45076,10 @@ namespace Anemora.EditorTools
                     var ellipse = Mathf.Sqrt((dx * dx * 0.86f) + (dy * dy * 2.70f));
                     var core = Mathf.Clamp01(1f - ellipse);
                     var glow = Mathf.Clamp01(1f - ellipse * 0.78f);
-                    var baseAlpha = (core * core * 0.30f) + (glow * 0.04f);
+                    var baseAlpha = (core * core * 0.24f) + (glow * 0.028f);
                     var dither = ((((x * 19) ^ (y * 11) ^ (x * y * 5)) & 15) / 15f);
-                    var alpha = Mathf.Clamp(baseAlpha * Mathf.Lerp(0.90f, 1f, dither), 0f, 0.26f);
-                    return new Color(1f, 0.78f, 0.40f, alpha);
+                    var alpha = Mathf.Clamp(baseAlpha * Mathf.Lerp(0.90f, 1f, dither), 0f, 0.22f);
+                    return new Color(0.98f, 0.77f, 0.42f, alpha);
                 });
         }
 

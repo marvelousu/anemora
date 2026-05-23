@@ -102,7 +102,7 @@ namespace Anemora.EditorTools
                 currentWorld: true,
                 dynamicSubject: true,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(0.78f, 0.20f),
+                new Vector2(0.88f, 0.24f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -138,7 +138,7 @@ namespace Anemora.EditorTools
                 currentWorld: true,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(0.66f, 0.18f),
+                new Vector2(0.76f, 0.22f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -174,7 +174,7 @@ namespace Anemora.EditorTools
                 currentWorld: false,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(0.66f, 0.18f),
+                new Vector2(0.76f, 0.22f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -186,7 +186,7 @@ namespace Anemora.EditorTools
                 currentWorld: true,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(2.16f, 0.20f),
+                new Vector2(2.55f, 0.25f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -198,7 +198,7 @@ namespace Anemora.EditorTools
                 currentWorld: false,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(2.16f, 0.20f),
+                new Vector2(2.55f, 0.25f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -210,7 +210,7 @@ namespace Anemora.EditorTools
                 currentWorld: true,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(3.12f, 0.18f),
+                new Vector2(3.58f, 0.23f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -222,7 +222,7 @@ namespace Anemora.EditorTools
                 currentWorld: false,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(3.12f, 0.18f),
+                new Vector2(3.58f, 0.23f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -234,7 +234,7 @@ namespace Anemora.EditorTools
                 currentWorld: true,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(5.18f, 0.18f),
+                new Vector2(5.70f, 0.24f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
@@ -246,7 +246,7 @@ namespace Anemora.EditorTools
                 currentWorld: false,
                 dynamicSubject: false,
                 new Vector2(0.10f, 0.34f),
-                new Vector2(5.18f, 0.18f),
+                new Vector2(5.70f, 0.24f),
                 new Color(0.20f, 0.19f, 0.18f, 0.90f),
                 AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.ContactShadow);
 
