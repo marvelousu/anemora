@@ -11,6 +11,11 @@ namespace Anemora.EditorTools
         private const float PositionTolerance = 0.01f;
         private const float FloatTolerance = 0.001f;
         private const float RotationToleranceDegrees = 0.25f;
+        private const float UnifiedSunAzimuthDegrees = -38f;
+        private const float UnifiedExteriorSunElevationDegrees = 52f;
+        private const float UnifiedCentralPlazaSunElevationDegrees = 52f;
+        private const float UnifiedLibrarySunElevationDegrees = 56f;
+        private const float UnifiedInteriorSunElevationDegrees = 48f;
         private static readonly Vector2 InteriorLuminanceBand = new Vector2(0.16f, 0.24f);
         private static readonly Vector2 ExteriorLuminanceBand = new Vector2(0.24f, 0.32f);
         private static readonly Vector2 CentralPlazaLuminanceBand = new Vector2(0.25f, 0.33f);
@@ -53,7 +58,7 @@ namespace Anemora.EditorTools
                 true,
                 new Vector3(-8.35f, 0f, -8.35f),
                 InteriorLuminanceBand,
-                new Vector3(46f, -42f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior),
                 0.88f,
                 new Color(1.00f, 0.85f, 0.64f, 1f),
                 0.24f,
@@ -74,7 +79,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector3(8.20f, 0f, 8.20f),
                 ExteriorLuminanceBand,
-                new Vector3(50f, -36f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Exterior),
                 1.18f,
                 new Color(1.00f, 0.92f, 0.76f, 1f),
                 0.11f,
@@ -95,7 +100,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector3(20.80f, 0f, 15.80f),
                 CentralPlazaLuminanceBand,
-                new Vector3(49f, -31f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
                 1.24f,
                 new Color(1.00f, 0.91f, 0.75f, 1f),
                 0.09f,
@@ -116,7 +121,7 @@ namespace Anemora.EditorTools
                 true,
                 new Vector3(31.00f, 0f, 20.00f),
                 LibraryLuminanceBand,
-                new Vector3(54f, -28f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Library),
                 0.82f,
                 new Color(1.00f, 0.83f, 0.62f, 1f),
                 0.18f,
@@ -227,6 +232,22 @@ namespace Anemora.EditorTools
             }
 
             ValidateRuntimeLightingSync(issues, objectName, director, mainLight, warmFill, profile);
+        }
+
+        private static Vector3 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Interior:
+                    return new Vector3(UnifiedInteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.Library:
+                    return new Vector3(UnifiedLibrarySunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.CentralPlaza:
+                    return new Vector3(UnifiedCentralPlazaSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.Exterior:
+                default:
+                    return new Vector3(UnifiedExteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+            }
         }
 
         private static void ValidateVector2(List<string> issues, string objectName, string fieldName, Vector2 actual, Vector2 expected)

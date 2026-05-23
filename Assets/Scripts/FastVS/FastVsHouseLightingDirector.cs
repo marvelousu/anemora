@@ -12,6 +12,12 @@ namespace Anemora.FastVS
         [SerializeField] private Light libraryWindowLight;
         [SerializeField] private float transitionDuration = 0.55f;
 
+        private const float UnifiedSunAzimuthDegrees = -38f;
+        private const float UnifiedExteriorSunElevationDegrees = 52f;
+        private const float UnifiedCentralPlazaSunElevationDegrees = 52f;
+        private const float UnifiedLibrarySunElevationDegrees = 56f;
+        private const float UnifiedInteriorSunElevationDegrees = 48f;
+
         private FastVsHouseArea lastArea = (FastVsHouseArea)(-1);
         private FastVsHouseArea targetArea = (FastVsHouseArea)(-1);
         private bool transitionActive;
@@ -340,7 +346,7 @@ namespace Anemora.FastVS
                         mainLightIntensity = 1.18f,
                         mainLightShadowStrength = 0.80f,
                         mainLightColor = new Color(1.00f, 0.92f, 0.76f, 1f),
-                        mainLightRotation = Quaternion.Euler(50f, -36f, 0f),
+                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Exterior)),
                         ambientLight = new Color(0.152f, 0.158f, 0.164f, 1f),
                         fogEnabled = true,
                         fogColor = new Color(0.226f, 0.221f, 0.204f, 1f),
@@ -368,7 +374,7 @@ namespace Anemora.FastVS
                         mainLightIntensity = 1.24f,
                         mainLightShadowStrength = 0.80f,
                         mainLightColor = new Color(1.00f, 0.91f, 0.75f, 1f),
-                        mainLightRotation = Quaternion.Euler(49f, -31f, 0f),
+                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza)),
                         ambientLight = new Color(0.148f, 0.154f, 0.160f, 1f),
                         fogEnabled = true,
                         fogColor = new Color(0.221f, 0.216f, 0.200f, 1f),
@@ -396,7 +402,7 @@ namespace Anemora.FastVS
                         mainLightIntensity = 0.82f,
                         mainLightShadowStrength = 0.66f,
                         mainLightColor = new Color(1.00f, 0.83f, 0.62f, 1f),
-                        mainLightRotation = Quaternion.Euler(54f, -28f, 0f),
+                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Library)),
                         ambientLight = new Color(0.110f, 0.102f, 0.096f, 1f),
                         fogEnabled = true,
                         fogColor = new Color(0.075f, 0.068f, 0.060f, 1f),
@@ -424,7 +430,7 @@ namespace Anemora.FastVS
                         mainLightIntensity = 0.88f,
                         mainLightShadowStrength = 0.68f,
                         mainLightColor = new Color(1.00f, 0.85f, 0.64f, 1f),
-                        mainLightRotation = Quaternion.Euler(46f, -42f, 0f),
+                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior)),
                         ambientLight = new Color(0.155f, 0.145f, 0.138f, 1f),
                         fogEnabled = false,
                         fogColor = new Color(0.080f, 0.074f, 0.070f, 1f),
@@ -446,6 +452,22 @@ namespace Anemora.FastVS
                         libraryWindowSpotAngle = 48f,
                         libraryWindowColor = new Color(1.00f, 0.76f, 0.48f, 1f)
                     };
+            }
+        }
+
+        private static Vector3 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Interior:
+                    return new Vector3(UnifiedInteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.Library:
+                    return new Vector3(UnifiedLibrarySunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.CentralPlaza:
+                    return new Vector3(UnifiedCentralPlazaSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.Exterior:
+                default:
+                    return new Vector3(UnifiedExteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
             }
         }
 

@@ -96,8 +96,13 @@ namespace Anemora.EditorTools
         private const int NiroAnimatedFrameCount = 4;
         private const int NiroExpectedStripWidth = NiroExpectedTextureWidth * NiroAnimatedFrameCount;
         private const float NiroTransparentFootPixels = 2f;
-        private const float CharacterDirectionalCastShadowYawDegrees = 138f;
-        private const float StaticDirectionalCastShadowYawDegrees = 138f;
+        private const float UnifiedSunAzimuthDegrees = -38f;
+        private const float UnifiedExteriorSunElevationDegrees = 52f;
+        private const float UnifiedCentralPlazaSunElevationDegrees = 52f;
+        private const float UnifiedLibrarySunElevationDegrees = 56f;
+        private const float UnifiedInteriorSunElevationDegrees = 48f;
+        private const float CharacterDirectionalCastShadowYawDegrees = 142f;
+        private const float StaticDirectionalCastShadowYawDegrees = 142f;
         private static readonly Vector3 NiroDirectionalCastShadowScale = new Vector3(0.78f, 0.20f, 1f);
         private static readonly Vector3 RetoDirectionalCastShadowScale = new Vector3(0.66f, 0.18f, 1f);
         private static readonly Vector3 AriaDirectionalCastShadowScale = new Vector3(0.66f, 0.18f, 1f);
@@ -14953,6 +14958,11 @@ namespace Anemora.EditorTools
             CaptureHd2dReferenceSunShadowGradeCycle99ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle99_reference_sun_shadow_grade_parent_review_20260524_01");
         }
 
+        public static void CaptureHd2dUnifiedSunDirectionCycle100ScreenshotsBatch()
+        {
+            CaptureHd2dUnifiedSunDirectionCycle100ScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle100_unified_sun_direction_parent_review_20260524_01");
+        }
+
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
         {
             CaptureHd2dNinetiethCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_roof_side_depth_20260521");
@@ -22279,7 +22289,7 @@ namespace Anemora.EditorTools
             light.shadows = LightShadows.Soft;
             light.shadowStrength = 0.80f;
             light.color = new Color(1.00f, 0.88f, 0.68f, 1f);
-            lightObject.transform.rotation = Quaternion.Euler(46f, -42f, 0f);
+            lightObject.transform.rotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior));
             var warmFillObject = new GameObject("FastVS_HD2D_WarmFillLight", typeof(Light));
             var warmFill = warmFillObject.GetComponent<Light>();
             warmFill.type = LightType.Point;
@@ -22366,6 +22376,22 @@ namespace Anemora.EditorTools
             RenderSettings.fogEndDistance = 48f;
         }
 
+        private static Vector3 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Interior:
+                    return new Vector3(UnifiedInteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.Library:
+                    return new Vector3(UnifiedLibrarySunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.CentralPlaza:
+                    return new Vector3(UnifiedCentralPlazaSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+                case FastVsHouseArea.Exterior:
+                default:
+                    return new Vector3(UnifiedExteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
+            }
+        }
+
         private static void CreateAreaLightingProfiles(HouseMapAreas currentAreas)
         {
             CreateAreaLightingProfile(
@@ -22376,7 +22402,7 @@ namespace Anemora.EditorTools
                 true,
                 HouseInteriorCenter,
                 new Vector2(0.16f, 0.24f),
-                new Vector3(46f, -42f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior),
                 0.88f,
                 new Color(1.00f, 0.85f, 0.64f, 1f),
                 0.24f,
@@ -22392,7 +22418,7 @@ namespace Anemora.EditorTools
                 false,
                 HouseExteriorCenter,
                 new Vector2(0.24f, 0.32f),
-                new Vector3(50f, -36f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Exterior),
                 1.18f,
                 new Color(1.00f, 0.92f, 0.76f, 1f),
                 0.11f,
@@ -22408,7 +22434,7 @@ namespace Anemora.EditorTools
                 false,
                 CentralPlazaVsCenter,
                 new Vector2(0.25f, 0.33f),
-                new Vector3(49f, -31f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
                 1.24f,
                 new Color(1.00f, 0.91f, 0.75f, 1f),
                 0.09f,
@@ -22424,7 +22450,7 @@ namespace Anemora.EditorTools
                 true,
                 LibraryVsCenter,
                 new Vector2(0.12f, 0.19f),
-                new Vector3(54f, -28f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Library),
                 0.82f,
                 new Color(1.00f, 0.83f, 0.62f, 1f),
                 0.18f,
@@ -36908,6 +36934,81 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS cycle 99 reference sun-shadow grade screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dUnifiedSunDirectionCycle100ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 100 unified sun-direction screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentExteriorOverviewFile = $"{audiencePrefix}01_current_exterior_overview.png";
+            var currentCentralPlazaLibraryFacadeFile = $"{audiencePrefix}02_current_central_plaza_library_facade_overview.png";
+            var currentLibraryDeskCloseFile = $"{audiencePrefix}03_current_library_reto_desk_close.png";
+            var pastPlazaOverviewFile = $"{audiencePrefix}04_past_plaza_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-2.60f, 0.02f, 1.20f),
+                Path.Combine(outputDirectory, currentExteriorOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentExteriorOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.10f),
+                Path.Combine(outputDirectory, currentCentralPlazaLibraryFacadeFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentCentralPlazaLibraryFacadeFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-0.92f, 0.02f, -1.08f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.38f, -0.14f),
+                new Vector3(1.22f, 1.22f, -2.62f),
+                new Vector3(0.02f, 0.22f, 0.22f),
+                outputDirectory,
+                currentLibraryDeskCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentLibraryDeskCloseFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.10f),
+                Path.Combine(outputDirectory, pastPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastPlazaOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 100 unified sun-direction screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
         {
             ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
@@ -39882,7 +39983,7 @@ namespace Anemora.EditorTools
                 1.18f,
                 0.80f,
                 new Color(1.00f, 0.92f, 0.76f, 1f),
-                new Vector3(50f, -36f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Exterior),
                 0.11f,
                 new Color(1.00f, 0.72f, 0.46f, 1f),
                 0.157f,
@@ -39895,7 +39996,7 @@ namespace Anemora.EditorTools
                 1.24f,
                 0.80f,
                 new Color(1.00f, 0.91f, 0.75f, 1f),
-                new Vector3(49f, -31f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
                 0.09f,
                 new Color(1.00f, 0.70f, 0.44f, 1f),
                 0.153f,
@@ -39908,7 +40009,7 @@ namespace Anemora.EditorTools
                 0.82f,
                 0.66f,
                 new Color(1.00f, 0.83f, 0.62f, 1f),
-                new Vector3(54f, -28f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Library),
                 0.18f,
                 new Color(1.00f, 0.68f, 0.42f, 1f),
                 0.103f,
@@ -39921,12 +40022,68 @@ namespace Anemora.EditorTools
                 0.88f,
                 0.68f,
                 new Color(1.00f, 0.85f, 0.64f, 1f),
-                new Vector3(46f, -42f, 0f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior),
                 0.24f,
                 new Color(1.00f, 0.70f, 0.44f, 1f),
                 0.147f,
                 new Color(0.155f, 0.145f, 0.138f, 1f),
                 false);
+        }
+
+        private static void ValidateCoreRouteObjectsPresent()
+        {
+            if (FindSceneObjectIncludingInactive("FastVS_Player_NiroHouseSlice") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Reto_WritingAtDesk") == null ||
+                FindSceneObjectIncludingInactive("Current_HouseExterior_ToPlaza_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 100 unified sun direction must keep the core route objects present.");
+            }
+        }
+
+        private static void ValidateUnifiedSunDirectionProfileAndRuntime(FastVsHouseArea area, string profileObjectName)
+        {
+            var directorObject = FindSceneObjectIncludingInactive("FastVS_HD2D_LightingDirector");
+            var director = directorObject != null ? directorObject.GetComponent<FastVsHouseLightingDirector>() : null;
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var profileObject = FindSceneObjectIncludingInactive(profileObjectName);
+            var profile = profileObject != null ? profileObject.GetComponent<FastVsHd2dAreaLightingProfile>() : null;
+
+            if (director == null || mainLight == null || profile == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 100 unified sun direction needs {profileObjectName}, the lighting director, and the main light.");
+            }
+
+            var expectedKeyLightEulerDegrees = GetUnifiedSunKeyLightEulerDegrees(area);
+            if (profile.AreaIdForReview != area)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {profileObjectName} must keep area id {area}.");
+            }
+
+            if (Vector3.Distance(profile.KeyLightEulerDegreesForReview, expectedKeyLightEulerDegrees) > 0.001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {profileObjectName} key light rotation must stay near {expectedKeyLightEulerDegrees}, but was {profile.KeyLightEulerDegreesForReview}.");
+            }
+
+            director.ApplyAreaForReview(area);
+
+            if (director.LastAppliedAreaForReview != area || director.TargetAreaForReview != area || director.TransitionActiveForReview)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} must apply immediately without leaving a transition active.");
+            }
+
+            if (Quaternion.Angle(mainLight.transform.rotation, Quaternion.Euler(expectedKeyLightEulerDegrees)) > 0.1f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {area} runtime main light rotation must stay near {expectedKeyLightEulerDegrees}, but was {mainLight.transform.rotation.eulerAngles}.");
+            }
+        }
+
+        private static void ValidateUnifiedSunDirectionContract()
+        {
+            ValidateUnifiedSunDirectionProfileAndRuntime(FastVsHouseArea.Exterior, "FastVS_HD2D_HouseExteriorLightingProfile");
+            ValidateUnifiedSunDirectionProfileAndRuntime(FastVsHouseArea.CentralPlaza, "FastVS_HD2D_CentralPlazaLightingProfile");
+            ValidateUnifiedSunDirectionProfileAndRuntime(FastVsHouseArea.Library, "FastVS_HD2D_LibraryLightingProfile");
+            ValidateUnifiedSunDirectionProfileAndRuntime(FastVsHouseArea.Interior, "FastVS_HD2D_HouseInteriorLightingProfile");
         }
 
         public static void ValidateReferenceSunShadowGradeBatch()
@@ -40023,6 +40180,17 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 99 reference sun-shadow grade must keep the core route objects present.");
             }
+        }
+
+        public static void ValidateUnifiedSunDirectionBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateFastVsHd2dShadowFoundationCycle85SunKeyLighting();
+            ValidateFastVsHd2dCharacterDirectionalCastShadows();
+            ValidateFastVsHd2dStaticDirectionalCastShadows();
+            ValidateUnifiedSunDirectionContract();
+            ValidateCoreRouteObjectsPresent();
         }
 
         private static void ValidateHouseExteriorPorchOcclusionReadabilityObject(
