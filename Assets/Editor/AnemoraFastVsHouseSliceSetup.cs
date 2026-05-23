@@ -14948,6 +14948,11 @@ namespace Anemora.EditorTools
             CaptureHd2dShadowFoundationCycle98ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle98_ground_cleanup_parent_review_20260524_01");
         }
 
+        public static void CaptureHd2dReferenceSunShadowGradeCycle99ScreenshotsBatch()
+        {
+            CaptureHd2dReferenceSunShadowGradeCycle99ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle99_reference_sun_shadow_grade_parent_review_20260524_01");
+        }
+
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
         {
             CaptureHd2dNinetiethCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_roof_side_depth_20260521");
@@ -22270,27 +22275,29 @@ namespace Anemora.EditorTools
             var lightObject = new GameObject("Directional Light", typeof(Light));
             var light = lightObject.GetComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 0.85f;
+            light.intensity = 1.10f;
             light.shadows = LightShadows.Soft;
-            light.shadowStrength = 0.59f;
-            light.color = new Color(1.00f, 0.84f, 0.62f, 1f);
+            light.shadowStrength = 0.80f;
+            light.color = new Color(1.00f, 0.88f, 0.68f, 1f);
             lightObject.transform.rotation = Quaternion.Euler(46f, -42f, 0f);
             var warmFillObject = new GameObject("FastVS_HD2D_WarmFillLight", typeof(Light));
             var warmFill = warmFillObject.GetComponent<Light>();
             warmFill.type = LightType.Point;
-            warmFill.intensity = 0.27f;
+            warmFill.intensity = 0.24f;
             warmFill.range = 5.8f;
-            warmFill.color = new Color(1.00f, 0.68f, 0.42f, 1f);
+            warmFill.color = new Color(1.00f, 0.72f, 0.46f, 1f);
             warmFill.shadows = LightShadows.None;
             warmFillObject.transform.position = new Vector3(-7.25f, 1.65f, -9.10f);
 
             var coolRimObject = new GameObject("FastVS_HD2D_CoolRimLight", typeof(Light));
             var coolRim = coolRimObject.GetComponent<Light>();
             coolRim.type = LightType.Directional;
-            coolRim.intensity = 0.040f;
-            coolRim.color = new Color(0.58f, 0.70f, 1.00f, 1f);
+            coolRim.intensity = 0.032f;
+            coolRim.color = new Color(0.60f, 0.72f, 1.00f, 1f);
             coolRim.shadows = LightShadows.None;
             coolRimObject.transform.rotation = Quaternion.Euler(25f, 132f, 0f);
+
+            ApplyReferenceSunShadowGradeCycle99(light, warmFill, coolRim);
 
             var libraryWindowObject = new GameObject("FastVS_HD2D_LibraryWindowLight", typeof(Light));
             var libraryWindow = libraryWindowObject.GetComponent<Light>();
@@ -22315,12 +22322,48 @@ namespace Anemora.EditorTools
             director.ApplyAreaForReview(FastVsHouseArea.Interior);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.170f, 0.160f, 0.160f, 1f);
+            RenderSettings.ambientLight = new Color(0.155f, 0.145f, 0.138f, 1f);
             RenderSettings.fog = false;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = new Color(0.080f, 0.074f, 0.070f);
             RenderSettings.fogStartDistance = 10f;
             RenderSettings.fogEndDistance = 42f;
+        }
+
+        private static void ApplyReferenceSunShadowGradeCycle99(Light mainLight, Light warmFill, Light coolRim)
+        {
+            if (mainLight != null)
+            {
+                mainLight.type = LightType.Directional;
+                mainLight.intensity = 1.10f;
+                mainLight.shadows = LightShadows.Soft;
+                mainLight.shadowStrength = 0.80f;
+                mainLight.color = new Color(1.00f, 0.88f, 0.68f, 1f);
+            }
+
+            if (warmFill != null)
+            {
+                warmFill.type = LightType.Point;
+                warmFill.intensity = 0.24f;
+                warmFill.shadows = LightShadows.None;
+                warmFill.color = new Color(1.00f, 0.72f, 0.46f, 1f);
+            }
+
+            if (coolRim != null)
+            {
+                coolRim.type = LightType.Directional;
+                coolRim.intensity = 0.032f;
+                coolRim.shadows = LightShadows.None;
+                coolRim.color = new Color(0.60f, 0.72f, 1.00f, 1f);
+            }
+
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientLight = new Color(0.145f, 0.136f, 0.128f, 1f);
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = new Color(0.186f, 0.154f, 0.124f);
+            RenderSettings.fogStartDistance = 12f;
+            RenderSettings.fogEndDistance = 48f;
         }
 
         private static void CreateAreaLightingProfiles(HouseMapAreas currentAreas)
@@ -22332,14 +22375,14 @@ namespace Anemora.EditorTools
                 "house interior",
                 true,
                 HouseInteriorCenter,
-                new Vector2(0.15f, 0.23f),
+                new Vector2(0.16f, 0.24f),
                 new Vector3(46f, -42f, 0f),
-                0.85f,
-                new Color(1.00f, 0.84f, 0.62f, 1f),
-                0.27f,
-                new Color(1.00f, 0.68f, 0.42f, 1f),
-                0.163f,
-                new Color(0.170f, 0.160f, 0.160f, 1f));
+                0.88f,
+                new Color(1.00f, 0.85f, 0.64f, 1f),
+                0.24f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.147f,
+                new Color(0.155f, 0.145f, 0.138f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.Exterior.transform,
@@ -22348,14 +22391,14 @@ namespace Anemora.EditorTools
                 "house exterior",
                 false,
                 HouseExteriorCenter,
-                new Vector2(0.19f, 0.27f),
+                new Vector2(0.24f, 0.32f),
                 new Vector3(50f, -36f, 0f),
-                1.06f,
-                new Color(1.00f, 0.90f, 0.72f, 1f),
-                0.13f,
-                new Color(1.00f, 0.70f, 0.42f, 1f),
-                0.209f,
-                new Color(0.200f, 0.210f, 0.220f, 1f));
+                1.18f,
+                new Color(1.00f, 0.92f, 0.76f, 1f),
+                0.11f,
+                new Color(1.00f, 0.72f, 0.46f, 1f),
+                0.157f,
+                new Color(0.152f, 0.158f, 0.164f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.CentralPlaza.transform,
@@ -22364,14 +22407,14 @@ namespace Anemora.EditorTools
                 "central plaza",
                 false,
                 CentralPlazaVsCenter,
-                new Vector2(0.18f, 0.26f),
+                new Vector2(0.25f, 0.33f),
                 new Vector3(49f, -31f, 0f),
-                1.08f,
-                new Color(1.00f, 0.88f, 0.68f, 1f),
-                0.10f,
-                new Color(1.00f, 0.68f, 0.38f, 1f),
-                0.199f,
-                new Color(0.190f, 0.200f, 0.210f, 1f));
+                1.24f,
+                new Color(1.00f, 0.91f, 0.75f, 1f),
+                0.09f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.153f,
+                new Color(0.148f, 0.154f, 0.160f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.Library.transform,
@@ -22380,14 +22423,14 @@ namespace Anemora.EditorTools
                 "library",
                 true,
                 LibraryVsCenter,
-                new Vector2(0.11f, 0.18f),
+                new Vector2(0.12f, 0.19f),
                 new Vector3(54f, -28f, 0f),
-                0.75f,
-                new Color(1.00f, 0.82f, 0.58f, 1f),
-                0.19f,
-                new Color(1.00f, 0.66f, 0.38f, 1f),
-                0.112f,
-                new Color(0.120f, 0.110f, 0.100f, 1f));
+                0.82f,
+                new Color(1.00f, 0.83f, 0.62f, 1f),
+                0.18f,
+                new Color(1.00f, 0.68f, 0.42f, 1f),
+                0.103f,
+                new Color(0.110f, 0.102f, 0.096f, 1f));
         }
 
         private static GameObject CreateAreaLightingProfile(
@@ -26266,8 +26309,8 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: outdoor sky clear-color review components are missing.");
             }
 
-            var houseExteriorSky = new Color(0.214f, 0.282f, 0.348f, 1f);
-            var centralPlazaSky = new Color(0.204f, 0.271f, 0.335f, 1f);
+            var houseExteriorSky = new Color(0.234f, 0.221f, 0.198f, 1f);
+            var centralPlazaSky = new Color(0.227f, 0.213f, 0.189f, 1f);
             var indoorDark = new Color(0.060f, 0.056f, 0.055f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
@@ -29246,7 +29289,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Directional Light must use soft shadows.");
             }
 
-            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.72f)
+            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.82f)
             {
                 throw new InvalidOperationException("House slice validation failed: Directional Light shadow strength must stay in the HD-2D decisive shadow balance range.");
             }
@@ -33676,14 +33719,14 @@ namespace Anemora.EditorTools
                 warmFill,
                 libraryWindow,
                 true,
-                new Vector3(0.20f, 0.21f, 0.22f),
-                new Vector3(0.22f, 0.22f, 0.23f),
-                1.04f,
-                1.06f,
-                0.67f,
-                0.69f,
+                new Vector3(0.14f, 0.14f, 0.14f),
+                new Vector3(0.17f, 0.18f, 0.18f),
+                1.16f,
+                1.20f,
+                0.78f,
+                0.82f,
+                0.09f,
                 0.13f,
-                0.17f,
                 false,
                 0f,
                 0f);
@@ -33695,14 +33738,14 @@ namespace Anemora.EditorTools
                 warmFill,
                 libraryWindow,
                 true,
-                new Vector3(0.19f, 0.20f, 0.21f),
-                new Vector3(0.20f, 0.21f, 0.22f),
-                1.06f,
-                1.08f,
-                0.68f,
-                0.70f,
-                0.10f,
-                0.12f,
+                new Vector3(0.14f, 0.14f, 0.14f),
+                new Vector3(0.17f, 0.18f, 0.18f),
+                1.22f,
+                1.26f,
+                0.78f,
+                0.82f,
+                0.07f,
+                0.11f,
                 false,
                 0f,
                 0f);
@@ -33714,14 +33757,14 @@ namespace Anemora.EditorTools
                 warmFill,
                 libraryWindow,
                 true,
-                new Vector3(0.12f, 0.11f, 0.10f),
-                new Vector3(0.14f, 0.13f, 0.12f),
-                0.75f,
-                0.77f,
-                0.61f,
-                0.63f,
-                0.19f,
-                0.21f,
+                new Vector3(0.10f, 0.09f, 0.08f),
+                new Vector3(0.12f, 0.12f, 0.11f),
+                0.80f,
+                0.84f,
+                0.64f,
+                0.68f,
+                0.16f,
+                0.20f,
                 true,
                 0.58f,
                 0.62f);
@@ -33733,14 +33776,14 @@ namespace Anemora.EditorTools
                 warmFill,
                 libraryWindow,
                 false,
-                new Vector3(0.17f, 0.16f, 0.16f),
-                new Vector3(0.18f, 0.17f, 0.17f),
-                0.85f,
-                0.87f,
-                0.57f,
-                0.59f,
-                0.27f,
-                0.29f,
+                new Vector3(0.14f, 0.13f, 0.12f),
+                new Vector3(0.17f, 0.16f, 0.15f),
+                0.86f,
+                0.90f,
+                0.66f,
+                0.70f,
+                0.22f,
+                0.26f,
                 false,
                 0f,
                 0f);
@@ -36790,6 +36833,81 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS shadow foundation cycle 98 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dReferenceSunShadowGradeCycle99ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 99 reference sun-shadow grade screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_overview.png";
+            var currentPlazaFacadeOverviewFile = $"{audiencePrefix}02_current_central_plaza_library_facade_overview.png";
+            var currentLibraryDeskCloseFile = $"{audiencePrefix}03_current_library_reto_desk_close.png";
+            var pastPlazaOverviewFile = $"{audiencePrefix}04_past_plaza_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-2.60f, 0.02f, 1.20f),
+                Path.Combine(outputDirectory, currentHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentHouseOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.10f),
+                Path.Combine(outputDirectory, currentPlazaFacadeOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentPlazaFacadeOverviewFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                RetoLibraryDeskLocalPosition + new Vector3(-0.92f, 0.02f, -1.08f),
+                RetoLibraryDeskLocalPosition + new Vector3(0.00f, 0.38f, -0.14f),
+                new Vector3(1.22f, 1.22f, -2.62f),
+                new Vector3(0.02f, 0.22f, 0.22f),
+                outputDirectory,
+                currentLibraryDeskCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentLibraryDeskCloseFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.10f),
+                Path.Combine(outputDirectory, pastPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastPlazaOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 99 reference sun-shadow grade screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
         {
             ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
@@ -39761,54 +39879,150 @@ namespace Anemora.EditorTools
             ValidateAreaLighting(
                 FastVsHouseArea.Exterior,
                 "FastVS_HD2D_HouseExteriorLightingProfile",
-                1.06f,
-                0.69f,
-                new Color(1.00f, 0.90f, 0.72f, 1f),
+                1.18f,
+                0.80f,
+                new Color(1.00f, 0.92f, 0.76f, 1f),
                 new Vector3(50f, -36f, 0f),
-                0.13f,
-                new Color(1.00f, 0.70f, 0.42f, 1f),
-                0.209f,
-                new Color(0.200f, 0.210f, 0.220f, 1f),
+                0.11f,
+                new Color(1.00f, 0.72f, 0.46f, 1f),
+                0.157f,
+                new Color(0.152f, 0.158f, 0.164f, 1f),
                 true);
 
             ValidateAreaLighting(
                 FastVsHouseArea.CentralPlaza,
                 "FastVS_HD2D_CentralPlazaLightingProfile",
-                1.08f,
-                0.70f,
-                new Color(1.00f, 0.88f, 0.68f, 1f),
+                1.24f,
+                0.80f,
+                new Color(1.00f, 0.91f, 0.75f, 1f),
                 new Vector3(49f, -31f, 0f),
-                0.10f,
-                new Color(1.00f, 0.68f, 0.38f, 1f),
-                0.199f,
-                new Color(0.190f, 0.200f, 0.210f, 1f),
+                0.09f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.153f,
+                new Color(0.148f, 0.154f, 0.160f, 1f),
                 true);
 
             ValidateAreaLighting(
                 FastVsHouseArea.Library,
                 "FastVS_HD2D_LibraryLightingProfile",
-                0.75f,
-                0.63f,
-                new Color(1.00f, 0.82f, 0.58f, 1f),
+                0.82f,
+                0.66f,
+                new Color(1.00f, 0.83f, 0.62f, 1f),
                 new Vector3(54f, -28f, 0f),
-                0.19f,
-                new Color(1.00f, 0.66f, 0.38f, 1f),
-                0.112f,
-                new Color(0.120f, 0.110f, 0.100f, 1f),
+                0.18f,
+                new Color(1.00f, 0.68f, 0.42f, 1f),
+                0.103f,
+                new Color(0.110f, 0.102f, 0.096f, 1f),
                 true);
 
             ValidateAreaLighting(
                 FastVsHouseArea.Interior,
                 "FastVS_HD2D_HouseInteriorLightingProfile",
-                0.85f,
-                0.59f,
-                new Color(1.00f, 0.84f, 0.62f, 1f),
+                0.88f,
+                0.68f,
+                new Color(1.00f, 0.85f, 0.64f, 1f),
                 new Vector3(46f, -42f, 0f),
-                0.27f,
-                new Color(1.00f, 0.68f, 0.42f, 1f),
-                0.163f,
-                new Color(0.170f, 0.160f, 0.160f, 1f),
+                0.24f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.147f,
+                new Color(0.155f, 0.145f, 0.138f, 1f),
                 false);
+        }
+
+        public static void ValidateReferenceSunShadowGradeBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateFastVsHd2dShadowFoundationCycle85SunKeyLighting();
+
+            var directorObject = FindSceneObjectIncludingInactive("FastVS_HD2D_LightingDirector");
+            var director = directorObject != null ? directorObject.GetComponent<FastVsHouseLightingDirector>() : null;
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var warmFill = FindSceneObjectIncludingInactive("FastVS_HD2D_WarmFillLight")?.GetComponent<Light>();
+            var coolRim = FindSceneObjectIncludingInactive("FastVS_HD2D_CoolRimLight")?.GetComponent<Light>();
+            if (director == null || !director.HasRequiredLightsForReview || mainLight == null || warmFill == null || coolRim == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 reference sun-shadow grade needs the lighting director, main light, warm fill, and cool rim.");
+            }
+
+            if (mainLight.type != LightType.Directional || mainLight.shadows != LightShadows.Soft)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 main light must remain a soft directional light.");
+            }
+
+            if (mainLight.color.r <= mainLight.color.g || mainLight.color.g <= mainLight.color.b)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 main light must stay warm.");
+            }
+
+            if (warmFill.shadows != LightShadows.None)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 warm fill must remain non-shadowing.");
+            }
+
+            if (coolRim.shadows != LightShadows.None)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 cool rim must remain non-shadowing.");
+            }
+
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+
+            if (mainLight.intensity < 0.95f || mainLight.intensity > 1.35f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 99 main light intensity must stay within 0.95..1.35 after applying CentralPlaza, but was {mainLight.intensity:0.000}.");
+            }
+
+            if (mainLight.shadowStrength < 0.76f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 99 main light shadow strength must stay at or above 0.76 after applying CentralPlaza, but was {mainLight.shadowStrength:0.000}.");
+            }
+
+            if (RenderSettings.ambientMode != AmbientMode.Flat)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 outdoor ambient mode must remain Flat.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            if (ambient.r >= 0.18f || ambient.g >= 0.18f || ambient.b >= 0.18f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 99 outdoor ambient light must stay below 0.18 per channel, found ({ambient.r:0.000}, {ambient.g:0.000}, {ambient.b:0.000}).");
+            }
+
+            if (!RenderSettings.fog)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 outdoor fog must remain enabled.");
+            }
+
+            var activeScene = SceneManager.GetActiveScene();
+            var shadowingDirectionalCount = 0;
+            foreach (var light in Resources.FindObjectsOfTypeAll<Light>())
+            {
+                if (light == null ||
+                    !light.gameObject.scene.IsValid() ||
+                    light.gameObject.scene != activeScene ||
+                    light.type != LightType.Directional)
+                {
+                    continue;
+                }
+
+                if (light.shadows != LightShadows.None)
+                {
+                    shadowingDirectionalCount++;
+                }
+            }
+
+            if (shadowingDirectionalCount != 1)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 99 expected exactly one shadowing directional light in the house slice scene, found {shadowingDirectionalCount}.");
+            }
+
+            if (FindSceneObjectIncludingInactive("Current_HouseExterior_ToPlaza_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Player_NiroHouseSlice") == null ||
+                FindSceneObjectIncludingInactive("FastVS_Reto_WritingAtDesk") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 99 reference sun-shadow grade must keep the core route objects present.");
+            }
         }
 
         private static void ValidateHouseExteriorPorchOcclusionReadabilityObject(

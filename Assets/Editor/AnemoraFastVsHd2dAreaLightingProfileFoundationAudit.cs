@@ -11,10 +11,10 @@ namespace Anemora.EditorTools
         private const float PositionTolerance = 0.01f;
         private const float FloatTolerance = 0.001f;
         private const float RotationToleranceDegrees = 0.25f;
-        private static readonly Vector2 InteriorLuminanceBand = new Vector2(0.15f, 0.23f);
-        private static readonly Vector2 ExteriorLuminanceBand = new Vector2(0.19f, 0.27f);
-        private static readonly Vector2 CentralPlazaLuminanceBand = new Vector2(0.18f, 0.26f);
-        private static readonly Vector2 LibraryLuminanceBand = new Vector2(0.11f, 0.18f);
+        private static readonly Vector2 InteriorLuminanceBand = new Vector2(0.16f, 0.24f);
+        private static readonly Vector2 ExteriorLuminanceBand = new Vector2(0.24f, 0.32f);
+        private static readonly Vector2 CentralPlazaLuminanceBand = new Vector2(0.25f, 0.33f);
+        private static readonly Vector2 LibraryLuminanceBand = new Vector2(0.12f, 0.19f);
 
         [MenuItem("Tools/Anemora/Verify HD2D Area Lighting Profiles V1")]
         public static void VerifyAreaLightingProfilesV1()
@@ -54,12 +54,12 @@ namespace Anemora.EditorTools
                 new Vector3(-8.35f, 0f, -8.35f),
                 InteriorLuminanceBand,
                 new Vector3(46f, -42f, 0f),
-                0.85f,
-                new Color(1.00f, 0.84f, 0.62f, 1f),
-                0.27f,
-                new Color(1.00f, 0.68f, 0.42f, 1f),
-                0.163f,
-                new Color(0.170f, 0.160f, 0.160f, 1f));
+                0.88f,
+                new Color(1.00f, 0.85f, 0.64f, 1f),
+                0.24f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.147f,
+                new Color(0.155f, 0.145f, 0.138f, 1f));
 
             ValidateProfile(
                 issues,
@@ -75,12 +75,12 @@ namespace Anemora.EditorTools
                 new Vector3(8.20f, 0f, 8.20f),
                 ExteriorLuminanceBand,
                 new Vector3(50f, -36f, 0f),
-                1.06f,
-                new Color(1.00f, 0.90f, 0.72f, 1f),
-                0.13f,
-                new Color(1.00f, 0.70f, 0.42f, 1f),
-                0.209f,
-                new Color(0.200f, 0.210f, 0.220f, 1f));
+                1.18f,
+                new Color(1.00f, 0.92f, 0.76f, 1f),
+                0.11f,
+                new Color(1.00f, 0.72f, 0.46f, 1f),
+                0.157f,
+                new Color(0.152f, 0.158f, 0.164f, 1f));
 
             ValidateProfile(
                 issues,
@@ -96,12 +96,12 @@ namespace Anemora.EditorTools
                 new Vector3(20.80f, 0f, 15.80f),
                 CentralPlazaLuminanceBand,
                 new Vector3(49f, -31f, 0f),
-                1.08f,
-                new Color(1.00f, 0.88f, 0.68f, 1f),
-                0.10f,
-                new Color(1.00f, 0.68f, 0.38f, 1f),
-                0.199f,
-                new Color(0.190f, 0.200f, 0.210f, 1f));
+                1.24f,
+                new Color(1.00f, 0.91f, 0.75f, 1f),
+                0.09f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.153f,
+                new Color(0.148f, 0.154f, 0.160f, 1f));
 
             ValidateProfile(
                 issues,
@@ -117,12 +117,12 @@ namespace Anemora.EditorTools
                 new Vector3(31.00f, 0f, 20.00f),
                 LibraryLuminanceBand,
                 new Vector3(54f, -28f, 0f),
-                0.75f,
-                new Color(1.00f, 0.82f, 0.58f, 1f),
-                0.19f,
-                new Color(1.00f, 0.66f, 0.38f, 1f),
-                0.112f,
-                new Color(0.120f, 0.110f, 0.100f, 1f));
+                0.82f,
+                new Color(1.00f, 0.83f, 0.62f, 1f),
+                0.18f,
+                new Color(1.00f, 0.68f, 0.42f, 1f),
+                0.103f,
+                new Color(0.110f, 0.102f, 0.096f, 1f));
 
             if (director != null && visibility != null)
             {
