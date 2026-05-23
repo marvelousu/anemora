@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.50 fast VS HD2D house door sightline diagnostics index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.51 fast VS HD2D house door jamb blend index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 429 files including INDEX.md and README.md.
-- Dated devlog records: 427 files.
-- Linked evidence files present under docs/devlog/screenshots/: 981 files.
+- Root-level Markdown coverage: 430 files including INDEX.md and README.md.
+- Dated devlog records: 428 files.
+- Linked evidence files present under docs/devlog/screenshots/: 985 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 31 |
+| 2026-05-23 | 32 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_house_door_jamb_blend_cycle82.md](2026-05-23_fast_vs_hd2d_house_door_jamb_blend_cycle82.md) | Fast VS / HD2D | feat(hd2d): blend house door jamb |
 | [2026-05-23_fast_vs_hd2d_house_door_sightline_diagnostics_cycle81.md](2026-05-23_fast_vs_hd2d_house_door_sightline_diagnostics_cycle81.md) | Fast VS / HD2D | test(hd2d): add house door sightline diagnostics |
 | [2026-05-23_fast_vs_hd2d_transparent_depth_test_cycle80.md](2026-05-23_fast_vs_hd2d_transparent_depth_test_cycle80.md) | Fast VS / HD2D | feat(hd2d): depth-test transparent world overlays |
 | [2026-05-23_fast_vs_hd2d_house_exterior_door_front_leaf_cycle79.md](2026-05-23_fast_vs_hd2d_house_exterior_door_front_leaf_cycle79.md) | Fast VS / HD2D | feat(hd2d): add house door front leaf seal |
@@ -573,6 +574,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.51 | 2026-05-23 | Added Fast VS HD2D house door jamb blend cycle record with narrow occlusion strip, wall blend, top shadow, validation, and lower/oblique screenshot evidence. |
 | v7.50 | 2026-05-23 | Added Fast VS HD2D house door sightline diagnostics cycle record with current/past medium, lower-close, and oblique-left captures plus validation. |
 | v7.49 | 2026-05-23 | Added Fast VS HD2D transparent depth-test cycle record with `_ZTest=LessEqual` setup for transparent world overlays, validation, and no-player screenshot evidence. |
 | v7.48 | 2026-05-23 | Added Fast VS HD2D house door front-leaf seal cycle record with visual-only current/past closed-door veneer, seam/band details, validation, and no-player screenshot evidence. |
