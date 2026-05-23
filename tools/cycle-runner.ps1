@@ -269,16 +269,11 @@ function Invoke-Batch {
         method      = $Method
         logFile     = $LogFile
     }
-    # Split the expanded args while preserving double-quoted segments.
-    $argv = [System.Management.Automation.Language.Parser]::ParseInput(
-        $argString, [ref]$null, [ref]$null
-    ).Find({ param($n) $n -is [System.Management.Automation.Language.CommandAst] }, $false).CommandElements |
-        Select-Object -Skip 1 |
-        ForEach-Object { $_.Value }
-    if (-not $argv) {
-        # Fallback: naive whitespace split (template had no command-shaped tokens)
-        $argv = $argString -split ' '
-    }
+    # Split expanded args while preserving double-quoted segments. The template is an
+    # argument string, not a command line with an executable prefix, so do not drop
+    # the first token.
+    $argv = [regex]::Matches($argString, '("[^"]*"|\S+)') |
+        ForEach-Object { $_.Value.Trim('"') }
     & $BatchTool @argv
     $exit = $LASTEXITCODE
     Append-File -SrcPath $LogFile -Header "$PhaseName batch log ($LogFile)"
