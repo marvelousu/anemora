@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.77 fast VS HD2D plaza shadow penumbra breakup index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.78 fast VS HD2D plaza sunlit floor islands index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 456 files including INDEX.md and README.md.
-- Dated devlog records: 454 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1082 files.
+- Root-level Markdown coverage: 457 files including INDEX.md and README.md.
+- Dated devlog records: 455 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1086 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 18 |
+| 2026-05-24 | 19 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_sunlit_floor_islands_cycle109.md](2026-05-24_fast_vs_hd2d_plaza_sunlit_floor_islands_cycle109.md) | Fast VS / HD2D | feat(hd2d): add plaza sunlit floor islands |
 | [2026-05-24_fast_vs_hd2d_plaza_shadow_penumbra_breakup_cycle108.md](2026-05-24_fast_vs_hd2d_plaza_shadow_penumbra_breakup_cycle108.md) | Fast VS / HD2D | feat(hd2d): soften plaza hard shadow strips |
 | [2026-05-24_fast_vs_hd2d_plaza_shadow_midtone_lift_cycle107.md](2026-05-24_fast_vs_hd2d_plaza_shadow_midtone_lift_cycle107.md) | Fast VS / HD2D | feat(hd2d): lift plaza shadow midtones |
 | [2026-05-24_fast_vs_hd2d_outdoor_sun_slash_highlights_cycle106.md](2026-05-24_fast_vs_hd2d_outdoor_sun_slash_highlights_cycle106.md) | Fast VS / HD2D | feat(hd2d): add plaza sun slash highlights |
