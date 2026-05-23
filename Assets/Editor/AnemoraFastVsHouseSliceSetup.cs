@@ -133,6 +133,9 @@ namespace Anemora.EditorTools
         private const string PlazaShadowMidtoneCycle107MaterialId = "hd2d_plaza_shadow_midtone_cycle107";
         private const string PlazaShadowMidtoneCycle107MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_shadow_midtone_cycle107.mat";
         private const string PlazaShadowMidtoneCycle107TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_shadow_midtone_cycle107.asset";
+        private const string PlazaShadowPenumbraCycle108MaterialId = "hd2d_plaza_shadow_penumbra_cycle108";
+        private const string PlazaShadowPenumbraCycle108MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_shadow_penumbra_cycle108.mat";
+        private const string PlazaShadowPenumbraCycle108TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_shadow_penumbra_cycle108.asset";
         private const int CurrentSpaceRenderLayer = 27;
         private const int OtherTimeSpaceRenderLayer = 28;
         private const int PortalFrameRenderLayer = 26;
@@ -7860,6 +7863,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaSunbreakCounterLightCycle104(root, prefix, past, materials);
             CreateCentralPlazaSunSlashHighlightsCycle106(root, prefix, past, materials);
             CreateCentralPlazaShadowMidtoneLiftCycle107(root, prefix, past, materials);
+            CreateCentralPlazaShadowPenumbraBreakupCycle108(root, prefix, past, materials);
             CreateCentralPlazaLibrarySideWallMaterialBreakupCycle60(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibrarySideWindowLedgesCycle61(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaOuterGroundSkirtCycle62(root, prefix, c, past, materials, stone, trim, path);
@@ -15020,6 +15024,11 @@ namespace Anemora.EditorTools
         public static void CapturePlazaShadowMidtoneLiftCycle107ScreenshotsBatch()
         {
             CapturePlazaShadowMidtoneLiftCycle107ScreenshotsToDirectory(GetPlazaShadowMidtoneLiftCycle107ScreenshotsDirectory());
+        }
+
+        public static void CapturePlazaShadowPenumbraBreakupCycle108ScreenshotsBatch()
+        {
+            CapturePlazaShadowPenumbraBreakupCycle108ScreenshotsToDirectory(GetPlazaShadowPenumbraBreakupCycle108ScreenshotsDirectory());
         }
 
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
@@ -32438,6 +32447,72 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateFastVsHd2dCycle108CentralPlazaShadowPenumbraBreakup()
+        {
+            ValidateHd2dPlazaShadowPenumbraCycle108TextureMetrics();
+
+            ValidateHd2dPlazaShadowPenumbraCycle108Object(
+                "Current_CentralPlaza_Cycle108_ShadowPenumbra_LibraryGroundEdgeA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(-1.30f, 0.046f, 6.74f),
+                new Vector3(6.36f, 0.20f, 1f),
+                4f);
+            ValidateHd2dPlazaShadowPenumbraCycle108Object(
+                "Current_CentralPlaza_Cycle108_ShadowPenumbra_LibraryDiagonalEdgeA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(0.18f, 0.046f, 5.08f),
+                new Vector3(4.22f, 0.18f, 1f),
+                24f);
+            ValidateHd2dPlazaShadowPenumbraCycle108Object(
+                "Current_CentralPlaza_Cycle108_ShadowPenumbra_WestRoadFalloffA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(-4.48f, 0.046f, 1.42f),
+                new Vector3(2.30f, 0.18f, 1f),
+                -14f);
+            ValidateHd2dPlazaShadowPenumbraCycle108Object(
+                "Current_CentralPlaza_Cycle108_ShadowPenumbra_NoticeboardForegroundStripA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(-3.18f, 0.046f, 1.82f),
+                new Vector3(1.68f, 0.16f, 1f),
+                10f);
+            ValidateHd2dPlazaShadowPenumbraCycle108Object(
+                "Current_CentralPlaza_Cycle108_ShadowPenumbra_ForegroundPatchA",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CentralPlazaVsCenter + new Vector3(0.76f, 0.046f, 2.18f),
+                new Vector3(1.52f, 0.16f, 1f),
+                -22f);
+
+            var currentCycle108Count = 0;
+            var pastCycle108Count = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate == null || !candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (candidate.name.StartsWith("Current_CentralPlaza_Cycle108_", StringComparison.Ordinal))
+                {
+                    currentCycle108Count++;
+                }
+
+                if (candidate.name.StartsWith("Past_CentralPlaza_Cycle108_", StringComparison.Ordinal))
+                {
+                    pastCycle108Count++;
+                }
+            }
+
+            if (currentCycle108Count != 5)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 108 must keep exactly 5 current central plaza penumbra breakup objects, found {currentCycle108Count}.");
+            }
+
+            if (pastCycle108Count != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 108 must remain current-world only, but found {pastCycle108Count} past central plaza penumbra breakup objects.");
+            }
+        }
+
         private static void ValidateHd2dPlazaShadowMidtoneCycle107TextureMetrics()
         {
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(PlazaShadowMidtoneCycle107TexturePath);
@@ -32505,6 +32580,94 @@ namespace Anemora.EditorTools
             if (interiorAverage < 0.03f || interiorAverage > 0.11f)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 107 plaza shadow midtone texture must stay low-alpha and broken.");
+            }
+        }
+
+        private static void ValidateHd2dPlazaShadowPenumbraCycle108TextureMetrics()
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(PlazaShadowPenumbraCycle108TexturePath);
+            if (texture == null || texture.width != 192 || texture.height != 128)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 108 plaza shadow penumbra texture must be generated at 192x128: {PlazaShadowPenumbraCycle108TexturePath}");
+            }
+
+            if (texture.filterMode != FilterMode.Bilinear || texture.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 108 plaza shadow penumbra texture must stay bilinear and clamp-wrapped: {PlazaShadowPenumbraCycle108TexturePath}");
+            }
+
+            var cornerMax = Mathf.Max(
+                Mathf.Max(texture.GetPixel(0, 0).a, texture.GetPixel(texture.width - 1, 0).a),
+                Mathf.Max(texture.GetPixel(0, texture.height - 1).a, texture.GetPixel(texture.width - 1, texture.height - 1).a));
+            if (cornerMax > 0.025f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 108 plaza shadow penumbra texture corners must stay feathered.");
+            }
+
+            var edgeMidMax = Mathf.Max(
+                Mathf.Max(texture.GetPixel(texture.width / 2, 0).a, texture.GetPixel(texture.width / 2, texture.height - 1).a),
+                Mathf.Max(texture.GetPixel(0, texture.height / 2).a, texture.GetPixel(texture.width - 1, texture.height / 2).a));
+            if (edgeMidMax > 0.05f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 108 plaza shadow penumbra texture edges must stay feathered.");
+            }
+
+            var centerAlpha = texture.GetPixel(texture.width / 2, texture.height / 2).a;
+            if (centerAlpha < 0.05f || centerAlpha > 0.18f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 108 plaza shadow penumbra texture center must stay visible without becoming a board.");
+            }
+
+            float interiorTotal = 0f;
+            float interiorMax = 0f;
+            float leftHalfTotal = 0f;
+            float rightHalfTotal = 0f;
+            var interiorSamples = 0;
+            var samplePoints = new[]
+            {
+                new Vector2Int(24, 20),
+                new Vector2Int(42, 32),
+                new Vector2Int(61, 44),
+                new Vector2Int(79, 55),
+                new Vector2Int(97, 67),
+                new Vector2Int(116, 78),
+                new Vector2Int(139, 88),
+                new Vector2Int(163, 98)
+            };
+
+            foreach (var point in samplePoints)
+            {
+                var alpha = texture.GetPixel(point.x, point.y).a;
+                interiorTotal += alpha;
+                interiorMax = Mathf.Max(interiorMax, alpha);
+                if (point.x < texture.width / 2)
+                {
+                    leftHalfTotal += alpha;
+                }
+                else
+                {
+                    rightHalfTotal += alpha;
+                }
+
+                interiorSamples++;
+            }
+
+            var interiorAverage = interiorTotal / Mathf.Max(1, interiorSamples);
+            if (interiorMax < 0.09f || interiorMax > 0.28f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 108 plaza shadow penumbra texture must keep visible broken patches without filling the tile.");
+            }
+
+            if (interiorAverage < 0.02f || interiorAverage > 0.09f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 108 plaza shadow penumbra texture must stay low-alpha and broken.");
+            }
+
+            var leftHalfAverage = leftHalfTotal / 4f;
+            var rightHalfAverage = rightHalfTotal / 4f;
+            if (Mathf.Abs(leftHalfAverage - rightHalfAverage) < 0.005f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 108 plaza shadow penumbra texture must keep an asymmetric streak and patch distribution.");
             }
         }
 
@@ -32597,6 +32760,141 @@ namespace Anemora.EditorTools
             if (!landmarkId.StartsWith("Current.central_plaza.cycle107.shadow_midtone_lift.", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the cycle 107 plaza shadow midtone landmark id.");
+            }
+
+            var profile = sceneObject.GetComponent<FastVsHd2dOverlayProfile>();
+            if (profile == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a FastVsHd2dOverlayProfile.");
+            }
+
+            var profileSerialized = new SerializedObject(profile);
+            var areaIdProperty = profileSerialized.FindProperty("areaId");
+            var overlayKindProperty = profileSerialized.FindProperty("overlayKind");
+            var currentWorldProperty = profileSerialized.FindProperty("currentWorld");
+            var dynamicSubjectProperty = profileSerialized.FindProperty("dynamicSubject");
+            var footprintProperty = profileSerialized.FindProperty("footprintWorldSize");
+            var intendedTintProperty = profileSerialized.FindProperty("intendedTint");
+            if (areaIdProperty == null ||
+                areaIdProperty.propertyType != SerializedPropertyType.Enum ||
+                areaIdProperty.enumValueIndex != Convert.ToInt32(FastVsHouseArea.CentralPlaza) ||
+                overlayKindProperty == null ||
+                overlayKindProperty.propertyType != SerializedPropertyType.Enum ||
+                overlayKindProperty.enumValueIndex != Convert.ToInt32(FastVsHd2dOverlayKind.LightPool) ||
+                currentWorldProperty == null ||
+                currentWorldProperty.propertyType != SerializedPropertyType.Boolean ||
+                !currentWorldProperty.boolValue ||
+                dynamicSubjectProperty == null ||
+                dynamicSubjectProperty.propertyType != SerializedPropertyType.Boolean ||
+                dynamicSubjectProperty.boolValue ||
+                footprintProperty == null ||
+                footprintProperty.propertyType != SerializedPropertyType.Vector2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a current-world LightPool overlay profile.");
+            }
+
+            var footprint = footprintProperty.vector2Value;
+            if (Mathf.Abs(footprint.x - sceneObject.transform.localScale.x) > 0.02f ||
+                Mathf.Abs(footprint.y - sceneObject.transform.localScale.y) > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a footprint aligned to its quad scale.");
+            }
+
+            if (intendedTintProperty == null || intendedTintProperty.propertyType != SerializedPropertyType.Color)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep its intended tint.");
+            }
+        }
+
+        private static void ValidateHd2dPlazaShadowPenumbraCycle108Object(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, float expectedYawDegrees)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing cycle 108 plaza shadow penumbra object {objectName}.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, expectedLocalScale);
+
+            if (Quaternion.Angle(sceneObject.transform.localRotation, Quaternion.Euler(90f, 0f, expectedYawDegrees)) > 1.5f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay horizontal with yaw near {expectedYawDegrees:0.#} degrees.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            var renderer = sceneObject.GetComponent<MeshRenderer>();
+            if (renderer == null || renderer.sharedMaterial == null || !renderer.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have an enabled MeshRenderer and a shared material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep real shadow casting disabled.");
+            }
+
+            var material = renderer.sharedMaterial;
+            if (!string.Equals(AssetDatabase.GetAssetPath(material), PlazaShadowPenumbraCycle108MaterialPath, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the generated cycle 108 plaza shadow penumbra material.");
+            }
+
+            if (material.name.IndexOf(PlazaShadowPenumbraCycle108MaterialId, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the cycle 108 plaza shadow penumbra material name.");
+            }
+
+            if (!string.Equals(material.GetTag(MaterialRoleTagName, false, string.Empty), FastVsHd2dMaterialRole.OverlayGlow.ToString(), StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the overlay-glow material role.");
+            }
+
+            if (material.renderQueue < 3018 || material.renderQueue > 3020)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the cycle 108 transparent render queue above cycle 107.");
+            }
+
+            var resolvedTexture = ResolveMaterialTexture(material) as Texture2D;
+            if (resolvedTexture == null || !string.Equals(AssetDatabase.GetAssetPath(resolvedTexture), PlazaShadowPenumbraCycle108TexturePath, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must reference the generated cycle 108 plaza shadow penumbra texture.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            var landmarkIdProperty = landmarkSerialized.FindProperty("landmarkId");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue ||
+                landmarkIdProperty == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindowPairedSpaceLandmarkKind.PropOrFeature landmark.");
+            }
+
+            var landmarkId = landmarkIdProperty.stringValue ?? string.Empty;
+            if (!landmarkId.StartsWith("Current.central_plaza.cycle108.shadow_penumbra.", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the cycle 108 plaza shadow penumbra landmark id.");
             }
 
             var profile = sceneObject.GetComponent<FastVsHd2dOverlayProfile>();
@@ -38656,9 +38954,89 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS cycle 107 plaza shadow midtone lift screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CapturePlazaShadowPenumbraBreakupCycle108ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 108 plaza shadow penumbra breakup screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCentralPlazaOverviewFile = $"{audiencePrefix}01_current_central_plaza_shadow_penumbra_overview.png";
+            var currentCentralPlazaStripAngleFile = $"{audiencePrefix}02_current_central_plaza_shadow_penumbra_strip_angle.png";
+            var pastCentralPlazaGuardFile = $"{audiencePrefix}03_past_central_plaza_guard.png";
+            var currentLibraryGuardFile = $"{audiencePrefix}04_current_library_guard.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.18f, 0.02f, 1.14f),
+                Path.Combine(outputDirectory, currentCentralPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentCentralPlazaOverviewFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-0.88f, 0.02f, 1.04f),
+                CentralPlazaVsCenter + new Vector3(0.08f, 0.18f, 2.10f),
+                new Vector3(0.32f, 1.02f, -2.02f),
+                new Vector3(0.03f, 0.16f, 0.10f),
+                outputDirectory,
+                currentCentralPlazaStripAngleFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentCentralPlazaStripAngleFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.18f, 0.02f, 1.14f),
+                Path.Combine(outputDirectory, pastCentralPlazaGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastCentralPlazaGuardFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f),
+                Path.Combine(outputDirectory, currentLibraryGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentLibraryGuardFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 108 plaza shadow penumbra breakup screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static string GetPlazaShadowMidtoneLiftCycle107ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle107_plaza_shadow_midtone_parent_review_20260524_01";
+        }
+
+        private static string GetPlazaShadowPenumbraBreakupCycle108ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle108_plaza_shadow_penumbra_parent_review_20260524_01";
         }
 
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
@@ -41905,6 +42283,17 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle104CentralPlazaSunbreakCounterLight();
             ValidateFastVsHd2dCycle106CentralPlazaSunSlashHighlights();
             ValidateFastVsHd2dCycle107CentralPlazaShadowMidtoneLift();
+        }
+
+        public static void ValidatePlazaShadowPenumbraBreakupBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateFastVsHd2dCycle103CinematicDappledGroundShadows();
+            ValidateFastVsHd2dCycle104CentralPlazaSunbreakCounterLight();
+            ValidateFastVsHd2dCycle106CentralPlazaSunSlashHighlights();
+            ValidateFastVsHd2dCycle107CentralPlazaShadowMidtoneLift();
+            ValidateFastVsHd2dCycle108CentralPlazaShadowPenumbraBreakup();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()
@@ -45390,6 +45779,34 @@ namespace Anemora.EditorTools
             return shadowMidtone;
         }
 
+        private static GameObject CreateHd2dPlazaShadowPenumbraCycle108(string name, Transform parent, Vector3 localPosition, Vector3 localScale, float yawDegrees, string landmarkId, FastVsHouseArea area, bool currentWorld)
+        {
+            var shadowPenumbra = CreateQuad(name, parent, localPosition, localScale, EnsureHd2dPlazaShadowPenumbraCycle108Material());
+            shadowPenumbra.transform.localRotation = Quaternion.Euler(90f, 0f, yawDegrees);
+            var renderer = shadowPenumbra.GetComponent<MeshRenderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = shadowPenumbra.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            AddHd2dOverlayProfile(
+                shadowPenumbra,
+                name,
+                area,
+                FastVsHd2dOverlayKind.LightPool,
+                currentWorld,
+                false,
+                new Vector2(0.02f, 0.16f),
+                new Vector2(localScale.x, localScale.y),
+                new Color(0.74f, 0.69f, 0.61f, 0.17f));
+            return shadowPenumbra;
+        }
+
         private static void CreateCentralPlazaShadowMidtoneLiftCycle107(Transform root, string prefix, bool past, Materials materials)
         {
             if (past)
@@ -45436,6 +45853,67 @@ namespace Anemora.EditorTools
                 new Vector3(2.12f, 0.28f, 1f),
                 11f,
                 $"{prefix}.central_plaza.cycle107.shadow_midtone_lift.d",
+                FastVsHouseArea.CentralPlaza,
+                currentWorld);
+
+            _ = materials;
+        }
+
+        private static void CreateCentralPlazaShadowPenumbraBreakupCycle108(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var currentWorld = true;
+            var objectPrefix = "Current";
+
+            CreateHd2dPlazaShadowPenumbraCycle108(
+                $"{objectPrefix}_CentralPlaza_Cycle108_ShadowPenumbra_LibraryGroundEdgeA",
+                root,
+                c + new Vector3(-1.30f, 0.046f, 6.74f),
+                new Vector3(6.36f, 0.20f, 1f),
+                4f,
+                $"{prefix}.central_plaza.cycle108.shadow_penumbra.library_ground_edge.a",
+                FastVsHouseArea.CentralPlaza,
+                currentWorld);
+            CreateHd2dPlazaShadowPenumbraCycle108(
+                $"{objectPrefix}_CentralPlaza_Cycle108_ShadowPenumbra_LibraryDiagonalEdgeA",
+                root,
+                c + new Vector3(0.18f, 0.046f, 5.08f),
+                new Vector3(4.22f, 0.18f, 1f),
+                24f,
+                $"{prefix}.central_plaza.cycle108.shadow_penumbra.library_diagonal_edge.a",
+                FastVsHouseArea.CentralPlaza,
+                currentWorld);
+            CreateHd2dPlazaShadowPenumbraCycle108(
+                $"{objectPrefix}_CentralPlaza_Cycle108_ShadowPenumbra_WestRoadFalloffA",
+                root,
+                c + new Vector3(-4.48f, 0.046f, 1.42f),
+                new Vector3(2.30f, 0.18f, 1f),
+                -14f,
+                $"{prefix}.central_plaza.cycle108.shadow_penumbra.west_road_falloff.a",
+                FastVsHouseArea.CentralPlaza,
+                currentWorld);
+            CreateHd2dPlazaShadowPenumbraCycle108(
+                $"{objectPrefix}_CentralPlaza_Cycle108_ShadowPenumbra_NoticeboardForegroundStripA",
+                root,
+                c + new Vector3(-3.18f, 0.046f, 1.82f),
+                new Vector3(1.68f, 0.16f, 1f),
+                10f,
+                $"{prefix}.central_plaza.cycle108.shadow_penumbra.noticeboard_foreground_strip.a",
+                FastVsHouseArea.CentralPlaza,
+                currentWorld);
+            CreateHd2dPlazaShadowPenumbraCycle108(
+                $"{objectPrefix}_CentralPlaza_Cycle108_ShadowPenumbra_ForegroundPatchA",
+                root,
+                c + new Vector3(0.76f, 0.046f, 2.18f),
+                new Vector3(1.52f, 0.16f, 1f),
+                -22f,
+                $"{prefix}.central_plaza.cycle108.shadow_penumbra.foreground_patch.a",
                 FastVsHouseArea.CentralPlaza,
                 currentWorld);
 
@@ -45864,6 +46342,29 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material EnsureHd2dPlazaShadowPenumbraCycle108Material()
+        {
+            var material = FlatMaterial(PlazaShadowPenumbraCycle108MaterialId, new Color(0.74f, 0.69f, 0.61f, 0.17f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3018);
+            var texture = EnsureHd2dPlazaShadowPenumbraCycle108Texture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(0.74f, 0.69f, 0.61f, 0.17f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
         private static Material EnsureHd2dCoolLightPoolMaterial()
         {
             var material = FlatMaterial("hd2d_cool_light_pool", Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
@@ -45930,6 +46431,16 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(material);
             AssetDatabase.SaveAssets();
             return material;
+        }
+
+        private static Texture2D EnsureHd2dPlazaShadowPenumbraCycle108Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaShadowPenumbraCycle108MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaShadowPenumbraCycle108Pixel);
         }
 
         private static Texture2D EnsureHd2dOutdoorOcclusionGradientTexture()
@@ -46221,6 +46732,60 @@ namespace Anemora.EditorTools
             }
 
             return color;
+        }
+
+        private static Color SampleHd2dPlazaShadowPenumbraCycle108Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+
+            var edgeMask =
+                SmoothFade01(0.02f, 0.10f, u) *
+                SmoothFade01(0.06f, 0.18f, 1f - u) *
+                SmoothFade01(0.03f, 0.15f, v) *
+                SmoothFade01(0.05f, 0.20f, 1f - v);
+
+            var ridgeA = Mathf.Clamp01(1f - Mathf.Abs((v * 2.02f) - 0.60f));
+            ridgeA *= ridgeA;
+            var ridgeB = Mathf.Clamp01(1f - Mathf.Abs(((u * 1.24f) + (v * 0.90f)) - 0.84f));
+            var ridgeC = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.88f) - (v * 1.16f)) - 0.04f));
+
+            var patchA = ContactShadowEllipseFalloff(u, v, 0.18f, 0.48f, 0.20f, 0.10f, 1.75f);
+            var patchB = ContactShadowEllipseFalloff(u, v, 0.42f, 0.36f, 0.24f, 0.14f, 1.58f);
+            var patchC = ContactShadowEllipseFalloff(u, v, 0.70f, 0.54f, 0.18f, 0.10f, 1.82f);
+            var patchD = ContactShadowEllipseFalloff(u, v, 0.83f, 0.31f, 0.12f, 0.08f, 2.10f);
+
+            var noiseA = SampleSmoothValueNoise2D((u * 8.8f) + 2.3f, (v * 6.4f) + 0.9f, 1901);
+            var noiseB = SampleSmoothValueNoise2D((u * 14.2f) + 5.7f, (v * 10.1f) + 4.4f, 1907);
+            var streakA = Mathf.SmoothStep(0.24f, 0.84f, noiseA);
+            var streakB = Mathf.SmoothStep(0.18f, 0.90f, noiseB);
+            var diagonalSkew = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.92f) + (v * 1.66f)) - 1.04f));
+
+            var alpha =
+                (ridgeA * 0.10f) +
+                (ridgeB * 0.08f) +
+                (ridgeC * 0.07f) +
+                (patchA * 0.07f) +
+                (patchB * 0.06f) +
+                (patchC * 0.05f) +
+                (patchD * 0.04f) +
+                (streakA * 0.02f) +
+                (streakB * 0.02f) +
+                (diagonalSkew * 0.02f);
+
+            alpha *= edgeMask;
+            alpha += edgeMask * (Mathf.Sin((u * 19.0f) + (v * 7.0f) + 0.44f) * 0.005f);
+            alpha *= 0.44f;
+            alpha = Mathf.Clamp(alpha, 0f, 0.18f);
+
+            var tint = new Color(0.74f, 0.69f, 0.61f, alpha);
+            if (alpha > 0.014f)
+            {
+                var warmth = Mathf.Clamp01((ridgeA * 0.60f) + (patchB * 0.18f) + (streakA * 0.10f));
+                tint = LerpColor(tint, new Color(0.82f, 0.77f, 0.68f, alpha), warmth * 0.10f);
+            }
+
+            return tint;
         }
 
         private static float SampleHd2dPlazaSunbreakCycle104DiagonalStreak(float u, float v, float slopeU, float slopeV, float offset, float width)
