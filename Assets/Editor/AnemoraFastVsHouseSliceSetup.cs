@@ -12495,18 +12495,18 @@ namespace Anemora.EditorTools
                 CreateNonArrivalLandmarkCube(
                     "Current_Library_TableSilhouette_RetoDeskLeftLegShadeA",
                     root,
-                    RetoLibraryDeskLocalPosition + new Vector3(-0.46f, 0.18f, 0.02f),
-                    new Vector3(0.14f, 0.28f, 0.12f),
+                    RetoLibraryDeskLocalPosition + new Vector3(-0.46f, 0.170f, 0.02f),
+                    new Vector3(0.075f, 0.24f, 0.075f),
                     Quaternion.Euler(0f, 3f, 0f),
-                    materials.Shadow,
+                    wood,
                     "Current.library.table_silhouette.reto_desk_left_leg_shade_a");
                 CreateNonArrivalLandmarkCube(
                     "Current_Library_TableSilhouette_RetoDeskRightLegShadeA",
                     root,
-                    RetoLibraryDeskLocalPosition + new Vector3(0.46f, 0.18f, 0.02f),
-                    new Vector3(0.14f, 0.28f, 0.12f),
+                    RetoLibraryDeskLocalPosition + new Vector3(0.46f, 0.170f, 0.02f),
+                    new Vector3(0.075f, 0.24f, 0.075f),
                     Quaternion.Euler(0f, -3f, 0f),
-                    materials.Shadow,
+                    wood,
                     "Current.library.table_silhouette.reto_desk_right_leg_shade_a");
                 CreateNonArrivalLandmarkCube(
                     "Current_Library_TableSilhouette_SideTableBrokenBevelA",
@@ -22770,8 +22770,8 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_Library_AriaIdleAtTable", "Past_LibraryMap_SeparateSpace");
 
             ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskFrontBevelA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
-            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskLeftLegShadeA", "Current_LibraryMap_SeparateSpace", "shadow", "Current.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
-            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskRightLegShadeA", "Current_LibraryMap_SeparateSpace", "shadow", "Current.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
+            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskLeftLegShadeA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
+            ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_RetoDeskRightLegShadeA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.table_silhouette.", 0.10f, 0.30f, 0.30f);
             ValidateLibraryTableSilhouetteObject("Current_Library_TableSilhouette_SideTableBrokenBevelA", "Current_LibraryMap_SeparateSpace", "current_furniture", "Current.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
 
             ValidateLibraryTableSilhouetteObject("Past_Library_TableSilhouette_LeftFrontFrontBevelA", "Past_LibraryMap_SeparateSpace", "past_furniture", "Past.library.table_silhouette.", 0.34f, 0.46f, 0.03f);
