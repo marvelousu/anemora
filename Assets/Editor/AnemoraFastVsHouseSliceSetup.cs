@@ -338,6 +338,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadowFoundationCycle72HouseExteriorSightlineClosure();
             ValidateFastVsHd2dShadowFoundationCycle73PorchOcclusionReadability();
             ValidateFastVsHd2dShadowFoundationCycle74DoorwayReadableDepth();
+            ValidateFastVsHd2dShadowFoundationCycle75DoorwayEaveReadability();
             ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
@@ -1631,6 +1632,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dShadowFoundationCycle74ScreenshotsBatch()
         {
             CaptureHd2dShadowFoundationCycle74ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle74_door_readability_parent_review_20260523_01");
+        }
+
+        public static void CaptureHd2dShadowFoundationCycle75ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle75ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle75_door_eave_parent_review_20260523_01");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -10483,28 +10489,28 @@ namespace Anemora.EditorTools
             CreateNonArrivalLandmarkCubeShadowSafe(
                 $"{prefix}_HouseExterior_HeroReadability_EaveUndersideBandA",
                 root,
-                c + new Vector3(-1.04f, 1.86f, -1.18f),
-                new Vector3(4.22f, 0.08f, 0.12f),
+                c + new Vector3(-1.04f, 1.84f, -1.18f),
+                new Vector3(4.00f, 0.035f, 0.08f),
                 Quaternion.identity,
-                shadow,
+                doorwayOcclusion,
                 $"{prefix}.house_exterior.hero_readability.eave_underside_band_a");
 
             CreateNonArrivalLandmarkCubeShadowSafe(
                 $"{prefix}_HouseExterior_HeroReadability_FacadeAOBandUpperA",
                 root,
                 c + new Vector3(-1.04f, 1.56f, -1.16f),
-                new Vector3(4.06f, 0.04f, 0.06f),
+                new Vector3(4.00f, 0.028f, 0.06f),
                 Quaternion.identity,
-                shadow,
+                doorwayOcclusion,
                 $"{prefix}.house_exterior.hero_readability.facade_ao_band_upper_a");
 
             CreateNonArrivalLandmarkCubeShadowSafe(
                 $"{prefix}_HouseExterior_HeroReadability_FacadeAOBandLowerA",
                 root,
                 c + new Vector3(-1.04f, 0.74f, -1.16f),
-                new Vector3(4.00f, 0.04f, 0.06f),
+                new Vector3(4.00f, 0.026f, 0.06f),
                 Quaternion.identity,
-                shadow,
+                doorwayOcclusion,
                 $"{prefix}.house_exterior.hero_readability.facade_ao_band_lower_a");
 
             CreateNonArrivalLandmarkCubeShadowSafe(
@@ -32723,6 +32729,89 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS shadow foundation cycle 74 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dShadowFoundationCycle75ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 75 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCloseFile = $"{audiencePrefix}01_current_house_exterior_door_eave_close.png";
+            var pastCloseFile = $"{audiencePrefix}02_past_house_exterior_door_eave_close.png";
+            var currentOverviewFile = $"{audiencePrefix}03_current_house_exterior_door_eave_overview.png";
+            var pastOverviewFile = $"{audiencePrefix}04_past_house_exterior_door_eave_overview.png";
+            var closePlayerLocal = HouseExteriorCenter + new Vector3(2.80f, 0.02f, -2.10f);
+            var closeAnchorLocal = HouseExteriorCenter + new Vector3(-1.04f, 0.94f, -1.28f);
+            var overviewPlayerLocal = HouseExteriorCenter + new Vector3(-2.18f, 0.02f, 1.00f);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.20f, 1.12f, -3.56f),
+                new Vector3(0.02f, 0.18f, 0.10f),
+                outputDirectory,
+                currentCloseFile);
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.20f, 1.12f, -3.56f),
+                new Vector3(0.02f, 0.18f, 0.10f),
+                outputDirectory,
+                pastCloseFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, currentOverviewFile));
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, pastOverviewFile));
+
+            ValidateCloseReviewOutputExists(outputDirectory, currentCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, pastCloseFile);
+            ValidateScreenshotOutputExists(outputDirectory, currentOverviewFile);
+            ValidateScreenshotOutputExists(outputDirectory, pastOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 75 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
         {
             ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
@@ -33026,6 +33115,51 @@ namespace Anemora.EditorTools
                 new Vector3(-1.42f, 0.98f, -1.26f),
                 new Vector3(0.06f, 1.08f, 0.016f),
                 new Vector3(0.10f, 1.30f, 0.030f));
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle75DoorwayEaveReadability()
+        {
+            void ValidateEaveBand(
+                string objectName,
+                string expectedParentName,
+                Vector3 minLocalPosition,
+                Vector3 maxLocalPosition,
+                Vector3 minLocalScale,
+                Vector3 maxLocalScale)
+            {
+                ValidateHouseExteriorFacadeBackdropReadabilityObject(
+                    objectName,
+                    "hd2d_outdoor_occlusion_gradient",
+                    expectedParentName,
+                    minLocalPosition,
+                    maxLocalPosition,
+                    minLocalScale,
+                    maxLocalScale);
+
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+                if (renderer == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must stay shadow-safe.");
+                }
+
+                if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+                }
+            }
+
+            ValidateEaveBand("Current_HouseExterior_HeroReadability_EaveUndersideBandA", "Current_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 1.80f, -1.24f), new Vector3(-0.98f, 1.88f, -1.10f), new Vector3(3.92f, 0.028f, 0.06f), new Vector3(4.08f, 0.042f, 0.10f));
+            ValidateEaveBand("Past_HouseExterior_HeroReadability_EaveUndersideBandA", "Past_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 1.80f, -1.24f), new Vector3(-0.98f, 1.88f, -1.10f), new Vector3(3.92f, 0.028f, 0.06f), new Vector3(4.08f, 0.042f, 0.10f));
+            ValidateEaveBand("Current_HouseExterior_HeroReadability_FacadeAOBandUpperA", "Current_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 1.52f, -1.20f), new Vector3(-0.98f, 1.60f, -1.10f), new Vector3(3.92f, 0.020f, 0.04f), new Vector3(4.08f, 0.034f, 0.08f));
+            ValidateEaveBand("Past_HouseExterior_HeroReadability_FacadeAOBandUpperA", "Past_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 1.52f, -1.20f), new Vector3(-0.98f, 1.60f, -1.10f), new Vector3(3.92f, 0.020f, 0.04f), new Vector3(4.08f, 0.034f, 0.08f));
+            ValidateEaveBand("Current_HouseExterior_HeroReadability_FacadeAOBandLowerA", "Current_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 0.70f, -1.20f), new Vector3(-0.98f, 0.78f, -1.10f), new Vector3(3.92f, 0.018f, 0.04f), new Vector3(4.08f, 0.032f, 0.08f));
+            ValidateEaveBand("Past_HouseExterior_HeroReadability_FacadeAOBandLowerA", "Past_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 0.70f, -1.20f), new Vector3(-0.98f, 0.78f, -1.10f), new Vector3(3.92f, 0.018f, 0.04f), new Vector3(4.08f, 0.032f, 0.08f));
         }
 
         private static void ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy()
@@ -35237,54 +35371,54 @@ namespace Anemora.EditorTools
 
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Current_HouseExterior_HeroReadability_EaveUndersideBandA",
-                "shadow",
+                "hd2d_outdoor_occlusion_gradient",
                 "Current_HouseExteriorMap_SeparateSpace",
-                new Vector3(-1.18f, 1.76f, -1.24f),
-                new Vector3(-0.90f, 1.98f, -1.04f),
-                new Vector3(4.10f, 0.06f, 0.08f),
-                new Vector3(4.36f, 0.10f, 0.16f));
+                new Vector3(-1.10f, 1.80f, -1.24f),
+                new Vector3(-0.98f, 1.88f, -1.10f),
+                new Vector3(3.92f, 0.028f, 0.06f),
+                new Vector3(4.08f, 0.042f, 0.10f));
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Past_HouseExterior_HeroReadability_EaveUndersideBandA",
-                "shadow",
+                "hd2d_outdoor_occlusion_gradient",
                 "Past_HouseExteriorMap_SeparateSpace",
-                new Vector3(-1.18f, 1.76f, -1.24f),
-                new Vector3(-0.90f, 1.98f, -1.04f),
-                new Vector3(4.10f, 0.06f, 0.08f),
-                new Vector3(4.36f, 0.10f, 0.16f));
+                new Vector3(-1.10f, 1.80f, -1.24f),
+                new Vector3(-0.98f, 1.88f, -1.10f),
+                new Vector3(3.92f, 0.028f, 0.06f),
+                new Vector3(4.08f, 0.042f, 0.10f));
 
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Current_HouseExterior_HeroReadability_FacadeAOBandUpperA",
-                "shadow",
+                "hd2d_outdoor_occlusion_gradient",
                 "Current_HouseExteriorMap_SeparateSpace",
-                new Vector3(-1.18f, 1.46f, -1.22f),
-                new Vector3(-0.90f, 1.64f, -1.04f),
-                new Vector3(3.90f, 0.03f, 0.04f),
-                new Vector3(4.20f, 0.06f, 0.08f));
+                new Vector3(-1.10f, 1.52f, -1.20f),
+                new Vector3(-0.98f, 1.60f, -1.10f),
+                new Vector3(3.92f, 0.020f, 0.04f),
+                new Vector3(4.08f, 0.034f, 0.08f));
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Past_HouseExterior_HeroReadability_FacadeAOBandUpperA",
-                "shadow",
+                "hd2d_outdoor_occlusion_gradient",
                 "Past_HouseExteriorMap_SeparateSpace",
-                new Vector3(-1.18f, 1.46f, -1.22f),
-                new Vector3(-0.90f, 1.64f, -1.04f),
-                new Vector3(3.90f, 0.03f, 0.04f),
-                new Vector3(4.20f, 0.06f, 0.08f));
+                new Vector3(-1.10f, 1.52f, -1.20f),
+                new Vector3(-0.98f, 1.60f, -1.10f),
+                new Vector3(3.92f, 0.020f, 0.04f),
+                new Vector3(4.08f, 0.034f, 0.08f));
 
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Current_HouseExterior_HeroReadability_FacadeAOBandLowerA",
-                "shadow",
+                "hd2d_outdoor_occlusion_gradient",
                 "Current_HouseExteriorMap_SeparateSpace",
-                new Vector3(-1.18f, 0.64f, -1.22f),
-                new Vector3(-0.90f, 0.84f, -1.04f),
-                new Vector3(3.84f, 0.03f, 0.04f),
-                new Vector3(4.16f, 0.06f, 0.08f));
+                new Vector3(-1.10f, 0.70f, -1.20f),
+                new Vector3(-0.98f, 0.78f, -1.10f),
+                new Vector3(3.92f, 0.018f, 0.04f),
+                new Vector3(4.08f, 0.032f, 0.08f));
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Past_HouseExterior_HeroReadability_FacadeAOBandLowerA",
-                "shadow",
+                "hd2d_outdoor_occlusion_gradient",
                 "Past_HouseExteriorMap_SeparateSpace",
-                new Vector3(-1.18f, 0.64f, -1.22f),
-                new Vector3(-0.90f, 0.84f, -1.04f),
-                new Vector3(3.84f, 0.03f, 0.04f),
-                new Vector3(4.16f, 0.06f, 0.08f));
+                new Vector3(-1.10f, 0.70f, -1.20f),
+                new Vector3(-0.98f, 0.78f, -1.10f),
+                new Vector3(3.92f, 0.018f, 0.04f),
+                new Vector3(4.08f, 0.032f, 0.08f));
 
             ValidateHouseExteriorFacadeBackdropReadabilityObject(
                 "Current_HouseExterior_HeroReadability_PorchThresholdGroundingA",
