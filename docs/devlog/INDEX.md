@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.41 fast VS HD2D house exterior sightline closure index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.42 fast VS HD2D house exterior porch occlusion readability index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 420 files including INDEX.md and README.md.
-- Dated devlog records: 418 files.
-- Linked evidence files present under docs/devlog/screenshots/: 943 files.
+- Root-level Markdown coverage: 421 files including INDEX.md and README.md.
+- Dated devlog records: 419 files.
+- Linked evidence files present under docs/devlog/screenshots/: 947 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 22 |
+| 2026-05-23 | 23 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_house_exterior_porch_occlusion_readability_cycle73.md](2026-05-23_fast_vs_hd2d_house_exterior_porch_occlusion_readability_cycle73.md) | Fast VS / HD2D | feat(hd2d): soften house porch occlusion slab |
 | [2026-05-23_fast_vs_hd2d_house_exterior_sightline_closure_cycle72.md](2026-05-23_fast_vs_hd2d_house_exterior_sightline_closure_cycle72.md) | Fast VS / HD2D | feat(hd2d): close house exterior sightline gaps |
 | [2026-05-23_cycle_tool_operation_report_for_blog_session.md](2026-05-23_cycle_tool_operation_report_for_blog_session.md) | Tooling / Cycle | Cycle Tool Operation Report For Blog Session |
 | [2026-05-23_fast_vs_hd2d_outdoor_shadow_softening_cycle71.md](2026-05-23_fast_vs_hd2d_outdoor_shadow_softening_cycle71.md) | Fast VS / HD2D | feat(hd2d): soften outdoor directional shadows |
