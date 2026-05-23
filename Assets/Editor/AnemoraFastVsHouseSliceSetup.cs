@@ -365,6 +365,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle56PlazaLibraryFacadeMassClosure();
             ValidateFastVsHd2dCycle58PlazaLibrarySideRelief();
             ValidateFastVsHd2dCycle59PlazaLibraryRoofUndersideShadow();
+            ValidateFastVsHd2dShadowFoundationCycle68PlazaLibraryGroundShadow();
             ValidateFastVsHd2dCycle60PlazaLibrarySideWallMaterialBreakup();
             ValidateFastVsHd2dCycle61PlazaLibrarySideWindowLedges();
             ValidateFastVsHd2dCycle62CentralPlazaOuterGroundSkirt();
@@ -7281,6 +7282,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLibraryFacadeMassClosureCycle56(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibrarySideReliefCycle58(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibraryRoofUndersideShadowCycle59(root, prefix, c, past, materials, stone, trim, wall);
+            CreateCentralPlazaLibraryExaggeratedGroundShadowCycle68(root, prefix, past, materials);
             CreateCentralPlazaLibrarySideWallMaterialBreakupCycle60(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibrarySideWindowLedgesCycle61(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaOuterGroundSkirtCycle62(root, prefix, c, past, materials, stone, trim, path);
@@ -19081,6 +19083,55 @@ namespace Anemora.EditorTools
             _ = wall;
         }
 
+        private static void CreateCentralPlazaLibraryExaggeratedGroundShadowCycle68(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var groundShadowMaterial = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var canopyShadowMaterial = EnsureHd2dDepthShadowMaterial();
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    objectName,
+                    root,
+                    c + localPosition,
+                    localScale,
+                    Quaternion.identity,
+                    material,
+                    landmarkId);
+            }
+
+            Add(
+                past ? "Past_CentralPlaza_ShadowFoundationCycle68_LibraryGroundCastBroadA" : "Current_CentralPlaza_ShadowFoundationCycle68_LibraryGroundCastBroadA",
+                new Vector3(0f, past ? 0.090f : 0.084f, past ? 7.72f : 7.68f),
+                past ? new Vector3(10.78f, 0.024f, 1.16f) : new Vector3(10.66f, 0.022f, 1.08f),
+                groundShadowMaterial,
+                past ? "Past.central_plaza.shadow_foundation_cycle68.library_ground_cast_broad_a" : "Current.central_plaza.shadow_foundation_cycle68.library_ground_cast_broad_a");
+
+            Add(
+                past ? "Past_CentralPlaza_ShadowFoundationCycle68_LibraryEntryCanopyCastA" : "Current_CentralPlaza_ShadowFoundationCycle68_LibraryEntryCanopyCastA",
+                new Vector3(0f, past ? 1.04f : 1.02f, past ? 7.82f : 7.80f),
+                past ? new Vector3(1.68f, 0.020f, 0.22f) : new Vector3(1.60f, 0.018f, 0.20f),
+                canopyShadowMaterial,
+                past ? "Past.central_plaza.shadow_foundation_cycle68.library_entry_canopy_cast_a" : "Current.central_plaza.shadow_foundation_cycle68.library_entry_canopy_cast_a");
+
+            Add(
+                past ? "Past_CentralPlaza_ShadowFoundationCycle68_LibraryWestReturnGroundA" : "Current_CentralPlaza_ShadowFoundationCycle68_LibraryWestReturnGroundA",
+                new Vector3(-4.62f, past ? 0.086f : 0.080f, past ? 8.98f : 8.96f),
+                past ? new Vector3(0.76f, 0.022f, 0.96f) : new Vector3(0.72f, 0.020f, 0.90f),
+                groundShadowMaterial,
+                past ? "Past.central_plaza.shadow_foundation_cycle68.library_west_return_ground_a" : "Current.central_plaza.shadow_foundation_cycle68.library_west_return_ground_a");
+
+            Add(
+                past ? "Past_CentralPlaza_ShadowFoundationCycle68_LibraryEastReturnGroundA" : "Current_CentralPlaza_ShadowFoundationCycle68_LibraryEastReturnGroundA",
+                new Vector3(4.62f, past ? 0.086f : 0.080f, past ? 8.98f : 8.96f),
+                past ? new Vector3(0.76f, 0.022f, 0.96f) : new Vector3(0.72f, 0.020f, 0.90f),
+                groundShadowMaterial,
+                past ? "Past.central_plaza.shadow_foundation_cycle68.library_east_return_ground_a" : "Current.central_plaza.shadow_foundation_cycle68.library_east_return_ground_a");
+
+            _ = materials;
+        }
+
         private static void CreateCentralPlazaLibrarySideWallMaterialBreakupCycle60(Transform root, string prefix, Vector3 center, bool past, Materials materials, Material stone, Material trim, Material wall)
         {
             var objectPrefix = $"{prefix}_CentralPlaza_Cycle60_LibrarySideWallMaterialBreakup";
@@ -24644,6 +24695,48 @@ namespace Anemora.EditorTools
             Validate("Past_CentralPlaza_Cycle59_LibraryRoofUndersideShadow_EastSideWallCoolFalloffA", pastParent, "hd2d_depth_shadow", pastPrefix, new Vector3(4.75f, 2.17f, 9.55f), new Vector3(5.55f, 3.07f, 10.75f), 0.35f, 2.60f, 4.10f);
             Validate("Past_CentralPlaza_Cycle59_LibraryRoofUndersideShadow_WestLowerBaseOcclusionA", pastParent, "hd2d_depth_shadow", pastPrefix, new Vector3(-5.55f, 0.15f, 9.50f), new Vector3(-4.79f, 1.05f, 10.70f), 0.35f, 0.35f, 4.10f);
             Validate("Past_CentralPlaza_Cycle59_LibraryRoofUndersideShadow_EastLowerBaseOcclusionA", pastParent, "hd2d_depth_shadow", pastPrefix, new Vector3(4.79f, 0.15f, 9.50f), new Vector3(5.55f, 1.05f, 10.70f), 0.35f, 0.35f, 4.10f);
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle68PlazaLibraryGroundShadow()
+        {
+            var currentParent = "Current_CentralPlazaMap_SeparateSpace";
+            var pastParent = "Past_CentralPlazaMap_SeparateSpace";
+
+            void Validate(string objectName, string parentName, string materialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 minLocalScale, Vector3 maxLocalScale)
+            {
+                ValidateNonArrivalLandmarkCubeObject(
+                    objectName,
+                    parentName,
+                    CentralPlazaVsCenter,
+                    materialToken,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    minLocalPosition,
+                    maxLocalPosition,
+                    minLocalScale,
+                    maxLocalScale);
+
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+                if (renderer == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must remain shadow-safe.");
+                }
+            }
+
+            Validate("Current_CentralPlaza_ShadowFoundationCycle68_LibraryGroundCastBroadA", currentParent, "hd2d_outdoor_occlusion_gradient", new Vector3(-0.30f, 0.06f, 7.54f), new Vector3(0.30f, 0.10f, 7.86f), new Vector3(10.30f, 0.018f, 0.86f), new Vector3(10.90f, 0.032f, 1.24f));
+            Validate("Current_CentralPlaza_ShadowFoundationCycle68_LibraryEntryCanopyCastA", currentParent, "hd2d_depth_shadow", new Vector3(-0.18f, 0.96f, 7.66f), new Vector3(0.18f, 1.12f, 7.90f), new Vector3(1.44f, 0.014f, 0.14f), new Vector3(1.84f, 0.028f, 0.30f));
+            Validate("Current_CentralPlaza_ShadowFoundationCycle68_LibraryWestReturnGroundA", currentParent, "hd2d_outdoor_occlusion_gradient", new Vector3(-4.82f, 0.06f, 8.76f), new Vector3(-4.38f, 0.10f, 9.08f), new Vector3(0.52f, 0.014f, 0.70f), new Vector3(0.84f, 0.032f, 1.08f));
+            Validate("Current_CentralPlaza_ShadowFoundationCycle68_LibraryEastReturnGroundA", currentParent, "hd2d_outdoor_occlusion_gradient", new Vector3(4.38f, 0.06f, 8.76f), new Vector3(4.82f, 0.10f, 9.08f), new Vector3(0.52f, 0.014f, 0.70f), new Vector3(0.84f, 0.032f, 1.08f));
+
+            Validate("Past_CentralPlaza_ShadowFoundationCycle68_LibraryGroundCastBroadA", pastParent, "hd2d_outdoor_occlusion_gradient", new Vector3(-0.30f, 0.06f, 7.58f), new Vector3(0.30f, 0.10f, 7.88f), new Vector3(10.30f, 0.018f, 0.92f), new Vector3(10.90f, 0.032f, 1.30f));
+            Validate("Past_CentralPlaza_ShadowFoundationCycle68_LibraryEntryCanopyCastA", pastParent, "hd2d_depth_shadow", new Vector3(-0.18f, 0.96f, 7.66f), new Vector3(0.18f, 1.12f, 7.90f), new Vector3(1.44f, 0.014f, 0.14f), new Vector3(1.84f, 0.028f, 0.30f));
+            Validate("Past_CentralPlaza_ShadowFoundationCycle68_LibraryWestReturnGroundA", pastParent, "hd2d_outdoor_occlusion_gradient", new Vector3(-4.82f, 0.06f, 8.76f), new Vector3(-4.38f, 0.10f, 9.08f), new Vector3(0.52f, 0.014f, 0.70f), new Vector3(0.84f, 0.032f, 1.08f));
+            Validate("Past_CentralPlaza_ShadowFoundationCycle68_LibraryEastReturnGroundA", pastParent, "hd2d_outdoor_occlusion_gradient", new Vector3(4.38f, 0.06f, 8.76f), new Vector3(4.82f, 0.10f, 9.08f), new Vector3(0.52f, 0.014f, 0.70f), new Vector3(0.84f, 0.032f, 1.08f));
         }
 
         private static void ValidateFastVsHd2dCycle60PlazaLibrarySideWallMaterialBreakup()
