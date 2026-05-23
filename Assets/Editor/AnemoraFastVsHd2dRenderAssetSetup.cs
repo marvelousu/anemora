@@ -39,7 +39,7 @@ namespace Anemora.EditorTools
             Debug.Log(
                 "Shading Foundation v1 applied: " +
                 "shadowDistance=35, mainShadowmap=4096, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
-                "volumeProfile=Neutral Bloom/ColorAdjustments/Vignette with optional subtle grade.");
+                "volumeProfile=slightly darker faded Bloom/ColorAdjustments/Vignette with Neutral tonemapping.");
         }
 
         public static void ApplyFastVsHd2dRenderAssets()
@@ -192,25 +192,25 @@ namespace Anemora.EditorTools
             var bloom = EnsureVolumeComponent<Bloom>(volumeProfile);
             bloom.active = true;
             bloom.threshold.overrideState = true;
-            bloom.threshold.value = 0.80f;
+            bloom.threshold.value = 0.78f;
             bloom.intensity.overrideState = true;
-            bloom.intensity.value = 0.07f;
+            bloom.intensity.value = 0.08f;
             bloom.scatter.overrideState = true;
-            bloom.scatter.value = 0.45f;
+            bloom.scatter.value = 0.47f;
 
             var colorAdjustments = EnsureVolumeComponent<ColorAdjustments>(volumeProfile);
             colorAdjustments.active = true;
             colorAdjustments.postExposure.overrideState = true;
-            colorAdjustments.postExposure.value = 0.0f;
+            colorAdjustments.postExposure.value = -0.08f;
             colorAdjustments.contrast.overrideState = true;
-            colorAdjustments.contrast.value = 8f;
+            colorAdjustments.contrast.value = 6f;
             colorAdjustments.saturation.overrideState = true;
-            colorAdjustments.saturation.value = 2f;
+            colorAdjustments.saturation.value = -6f;
 
             var vignette = EnsureVolumeComponent<Vignette>(volumeProfile);
             vignette.active = true;
             vignette.intensity.overrideState = true;
-            vignette.intensity.value = 0.04f;
+            vignette.intensity.value = 0.045f;
             vignette.smoothness.overrideState = true;
             vignette.smoothness.value = 0.35f;
 

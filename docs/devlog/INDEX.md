@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.54 fast VS HD2D sun key lighting index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.55 fast VS HD2D faded camera grade index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 433 files including INDEX.md and README.md.
-- Dated devlog records: 431 files.
-- Linked evidence files present under docs/devlog/screenshots/: 997 files.
+- Root-level Markdown coverage: 434 files including INDEX.md and README.md.
+- Dated devlog records: 432 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1001 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 35 |
+| 2026-05-23 | 36 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_faded_camera_grade_cycle86.md](2026-05-23_fast_vs_hd2d_faded_camera_grade_cycle86.md) | Fast VS / HD2D | feat(hd2d): add faded camera grade |
 | [2026-05-23_fast_vs_hd2d_sun_key_lighting_cycle85.md](2026-05-23_fast_vs_hd2d_sun_key_lighting_cycle85.md) | Fast VS / HD2D | feat(hd2d): strengthen sun key lighting |
 | [2026-05-23_fast_vs_hd2d_cinematic_sun_grade_cycle84.md](2026-05-23_fast_vs_hd2d_cinematic_sun_grade_cycle84.md) | Fast VS / HD2D | feat(hd2d): add cinematic sun grade |
 | [2026-05-23_fast_vs_hd2d_house_door_jamb_regression_fix_cycle83.md](2026-05-23_fast_vs_hd2d_house_door_jamb_regression_fix_cycle83.md) | Fast VS / HD2D | fix(hd2d): keep house door jamb opaque |
@@ -577,6 +578,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.55 | 2026-05-23 | Added Fast VS HD2D faded camera grade cycle record with darker/desaturated VolumeProfile values, audit sync, validation, and overview screenshot evidence. |
 | v7.54 | 2026-05-23 | Added Fast VS HD2D sun key lighting cycle record with runtime/setup/audit profile sync, stronger warm key light, lower ambient/fill values, validation, and overview screenshot evidence. |
 | v7.53 | 2026-05-23 | Added Fast VS HD2D cinematic sun grade cycle record with generated sun-disc and sky-veil assets, current/past outdoor validation, and overview screenshot evidence. |
 | v7.52 | 2026-05-23 | Added Fast VS HD2D house door jamb regression fix cycle record with opaque narrow jamb lines, updated validation, and lower/oblique screenshot evidence. |

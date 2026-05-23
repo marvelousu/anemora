@@ -156,11 +156,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(bloom.active, true, issues, "Bloom must be active.");
                 RequireBool(bloom.threshold.overrideState, true, issues, "Bloom threshold override must be enabled.");
-                RequireFloat(bloom.threshold.value, 0.80f, 0.03f, issues, "Bloom threshold must be near 0.80.");
+                RequireFloat(bloom.threshold.value, 0.78f, 0.03f, issues, "Bloom threshold must be near 0.78.");
                 RequireBool(bloom.intensity.overrideState, true, issues, "Bloom intensity override must be enabled.");
-                RequireFloat(bloom.intensity.value, 0.07f, 0.02f, issues, "Bloom intensity must be near 0.07.");
+                RequireFloat(bloom.intensity.value, 0.08f, 0.02f, issues, "Bloom intensity must be near 0.08.");
                 RequireBool(bloom.scatter.overrideState, true, issues, "Bloom scatter override must be enabled.");
-                RequireFloat(bloom.scatter.value, 0.45f, 0.03f, issues, "Bloom scatter must be near 0.45.");
+                RequireFloat(bloom.scatter.value, 0.47f, 0.03f, issues, "Bloom scatter must be near 0.47.");
             }
 
             if (!volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
@@ -171,11 +171,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(colorAdjustments.active, true, issues, "ColorAdjustments must be active.");
                 RequireBool(colorAdjustments.postExposure.overrideState, true, issues, "ColorAdjustments post exposure override must be enabled.");
-                RequireFloat(colorAdjustments.postExposure.value, 0f, 0.001f, issues, "ColorAdjustments post exposure must stay at 0.");
+                RequireFloat(colorAdjustments.postExposure.value, -0.08f, 0.005f, issues, "ColorAdjustments post exposure must be near -0.08.");
                 RequireBool(colorAdjustments.contrast.overrideState, true, issues, "ColorAdjustments contrast override must be enabled.");
-                RequireFloat(colorAdjustments.contrast.value, 8f, 0.5f, issues, "ColorAdjustments contrast must be near 8.");
+                RequireFloat(colorAdjustments.contrast.value, 6f, 0.5f, issues, "ColorAdjustments contrast must be near 6.");
                 RequireBool(colorAdjustments.saturation.overrideState, true, issues, "ColorAdjustments saturation override must be enabled.");
-                RequireFloat(colorAdjustments.saturation.value, 2f, 0.5f, issues, "ColorAdjustments saturation must be near 2.");
+                RequireFloat(colorAdjustments.saturation.value, -6f, 0.5f, issues, "ColorAdjustments saturation must be near -6.");
             }
 
             if (!volumeProfile.TryGet<Vignette>(out var vignette))
@@ -186,9 +186,9 @@ namespace Anemora.EditorTools
             {
                 RequireBool(vignette.active, true, issues, "Vignette must be active.");
                 RequireBool(vignette.intensity.overrideState, true, issues, "Vignette intensity override must be enabled.");
-                if (vignette.intensity.value > 0.045f)
+                if (vignette.intensity.value > 0.050f)
                 {
-                    issues.Add("Vignette intensity must be at or below 0.045.");
+                    issues.Add("Vignette intensity must be at or below 0.050.");
                 }
             }
 
@@ -266,7 +266,7 @@ namespace Anemora.EditorTools
             var builder = new StringBuilder();
             builder.AppendLine("# Fast VS HD2D Postprocess Grade Cycle 25 Report");
             builder.AppendLine();
-            builder.AppendLine("Foundation discovery report for the already-applied URP, renderer, and volume HD-2D shading setup. This cycle does not introduce new grade target values; it records the current contract and confirms DepthOfField and FilmGrain are disabled for the Fast VS baseline.");
+            builder.AppendLine("Foundation audit report for the already-applied URP, renderer, and volume HD-2D shading setup. It records the faded camera grade contract and confirms DepthOfField and FilmGrain remain disabled for the Fast VS baseline.");
             builder.AppendLine();
             builder.AppendLine($"- Branch: `work/fast-vs-hd2d-shading-foundation-20260522`");
             builder.AppendLine($"- Worktree: `{GetAbsoluteProjectPath("")}`");

@@ -14104,6 +14104,11 @@ namespace Anemora.EditorTools
             CaptureHd2dShadowFoundationCycle85ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle85_sun_key_lighting_parent_review_20260523_01");
         }
 
+        public static void CaptureHd2dShadowFoundationCycle86ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle86ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle86_faded_camera_grade_parent_review_20260523_01");
+        }
+
         public static void CaptureHd2dEightyFourthCycleScreenshotsBatch()
         {
             CaptureHd2dEightyFourthCycleScreenshotsToDirectory(@"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_plaza_library_entry_depth_20260521");
@@ -34004,6 +34009,77 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 85 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle86ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 86 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_faded_grade_overview.png";
+            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_faded_grade_overview.png";
+            var currentLibraryOverviewFile = $"{audiencePrefix}03_current_library_faded_grade_overview.png";
+            var currentInteriorOverviewFile = $"{audiencePrefix}04_current_house_interior_faded_grade_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.45f),
+                Path.Combine(outputDirectory, currentHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentHouseOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.38f),
+                Path.Combine(outputDirectory, currentPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentPlazaOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(0.10f, 0.02f, -2.80f),
+                Path.Combine(outputDirectory, currentLibraryOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentLibraryOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Interior,
+                HouseInteriorPlayerStart,
+                Path.Combine(outputDirectory, currentInteriorOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentInteriorOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 86 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
