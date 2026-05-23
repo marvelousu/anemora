@@ -339,6 +339,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadowFoundationCycle73PorchOcclusionReadability();
             ValidateFastVsHd2dShadowFoundationCycle74DoorwayReadableDepth();
             ValidateFastVsHd2dShadowFoundationCycle75DoorwayEaveReadability();
+            ValidateFastVsHd2dShadowFoundationCycle76NoPlayerDoorReviewCapture();
             ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
@@ -1637,6 +1638,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dShadowFoundationCycle75ScreenshotsBatch()
         {
             CaptureHd2dShadowFoundationCycle75ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle75_door_eave_parent_review_20260523_01");
+        }
+
+        public static void CaptureHd2dShadowFoundationCycle76ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle76ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle76_no_player_door_parent_review_20260523_01");
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -4908,6 +4914,52 @@ namespace Anemora.EditorTools
             ValidateCloseReviewOutputExists(outputDirectory, fileName);
         }
 
+        private static void CaptureCloseReviewScreenshotWithoutPlayer(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            Vector3 anchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputDirectory,
+            string fileName)
+        {
+            visibility.SetActiveAreaForReview(area);
+            var player = UnityEngine.Object.FindFirstObjectByType<CharacterController>();
+            var previousPlayerLocal = Vector3.zero;
+            var hasPlayer = player != null && controller.CurrentSpaceRootForReview != null;
+            if (hasPlayer)
+            {
+                previousPlayerLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
+            }
+
+            controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            var previousMask = camera.cullingMask;
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = previousMask & ~playerBit;
+            try
+            {
+                PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(anchorLocalPosition), cameraOffset, lookOffset);
+                SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
+            }
+            finally
+            {
+                camera.cullingMask = previousMask;
+                if (hasPlayer)
+                {
+                    controller.ForcePlayerCurrentLocalForReview(previousPlayerLocal);
+                }
+
+                guide.ApplyActiveTimeIsolationForReview();
+            }
+
+            ValidateCloseReviewOutputExists(outputDirectory, fileName);
+        }
+
         private static void CaptureOtherTimeReviewScreenshot(
             TimeWindowPairedSpacePortalController controller,
             FastVsHouseAreaVisibility visibility,
@@ -4959,6 +5011,54 @@ namespace Anemora.EditorTools
             camera.cullingMask = previousMask;
             controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
             guide.ApplyActiveTimeIsolationForReview();
+        }
+
+        private static void CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            Vector3 anchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputDirectory,
+            string fileName)
+        {
+            visibility.SetActiveAreaForReview(area);
+            var player = UnityEngine.Object.FindFirstObjectByType<CharacterController>();
+            var previousPlayerLocal = Vector3.zero;
+            var hasPlayer = player != null && controller.CurrentSpaceRootForReview != null;
+            if (hasPlayer)
+            {
+                previousPlayerLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
+            }
+
+            controller.ForcePlayerOtherTimeLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            var previousMask = camera.cullingMask;
+            var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+            var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = ((previousMask & ~currentBit) | otherBit) & ~playerBit;
+            try
+            {
+                PositionCloseReviewCamera(camera, controller.OtherTimeSpaceRootForReview.TransformPoint(anchorLocalPosition), cameraOffset, lookOffset);
+                SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
+            }
+            finally
+            {
+                camera.cullingMask = previousMask;
+                if (hasPlayer)
+                {
+                    controller.ForcePlayerCurrentLocalForReview(previousPlayerLocal);
+                }
+
+                guide.ApplyActiveTimeIsolationForReview();
+            }
+
+            ValidateCloseReviewOutputExists(outputDirectory, fileName);
         }
 
         private static void PositionCloseReviewCamera(Camera camera, Vector3 anchor, Vector3 offset, Vector3 lookOffset)
@@ -32812,6 +32912,86 @@ namespace Anemora.EditorTools
             Debug.Log($"Fast VS shadow foundation cycle 75 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
+        private static void CaptureHd2dShadowFoundationCycle76ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 76 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCloseFile = $"{audiencePrefix}01_current_house_exterior_no_player_door_close.png";
+            var pastCloseFile = $"{audiencePrefix}02_past_house_exterior_no_player_door_close.png";
+            var currentOverviewFile = $"{audiencePrefix}03_current_house_exterior_no_player_door_overview.png";
+            var pastOverviewFile = $"{audiencePrefix}04_past_house_exterior_no_player_door_overview.png";
+            var closePlayerLocal = HouseExteriorCenter + new Vector3(-1.08f, 0.02f, -1.70f);
+            var closeAnchorLocal = HouseExteriorCenter + new Vector3(-1.05f, 0.88f, -1.50f);
+            var overviewPlayerLocal = HouseExteriorCenter + new Vector3(-1.42f, 0.02f, -1.20f);
+
+            CaptureCloseReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.00f, 1.05f, -4.85f),
+                new Vector3(0.00f, -0.12f, 0.16f),
+                outputDirectory,
+                currentCloseFile);
+
+            CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.00f, 1.05f, -4.85f),
+                new Vector3(0.00f, -0.12f, 0.16f),
+                outputDirectory,
+                pastCloseFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, currentOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentOverviewFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                Path.Combine(outputDirectory, pastOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 76 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
         {
             ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
@@ -33160,6 +33340,33 @@ namespace Anemora.EditorTools
             ValidateEaveBand("Past_HouseExterior_HeroReadability_FacadeAOBandUpperA", "Past_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 1.52f, -1.20f), new Vector3(-0.98f, 1.60f, -1.10f), new Vector3(3.92f, 0.020f, 0.04f), new Vector3(4.08f, 0.034f, 0.08f));
             ValidateEaveBand("Current_HouseExterior_HeroReadability_FacadeAOBandLowerA", "Current_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 0.70f, -1.20f), new Vector3(-0.98f, 0.78f, -1.10f), new Vector3(3.92f, 0.018f, 0.04f), new Vector3(4.08f, 0.032f, 0.08f));
             ValidateEaveBand("Past_HouseExterior_HeroReadability_FacadeAOBandLowerA", "Past_HouseExteriorMap_SeparateSpace", new Vector3(-1.10f, 0.70f, -1.20f), new Vector3(-0.98f, 0.78f, -1.10f), new Vector3(3.92f, 0.018f, 0.04f), new Vector3(4.08f, 0.032f, 0.08f));
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle76NoPlayerDoorReviewCapture()
+        {
+            const string outputDirectory = "docs/devlog/screenshots/fast_vs_hd2d_cycle76_no_player_door_parent_review_20260523_01";
+            var fullOutputDirectory = Path.GetFullPath(outputDirectory);
+            if (outputDirectory.Length > 120 || fullOutputDirectory.Length >= 240)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 76 output directory is too long for Windows paths: {fullOutputDirectory}");
+            }
+
+            ValidateHouseExteriorClosedDoorPanelNoSideLeak("Current", "current_house_door_detail");
+            ValidateHouseExteriorClosedDoorPanelNoSideLeak("Past", "past_house_door_detail");
+            ValidateFastVsHd2dShadowFoundationCycle72HouseExteriorSightlineClosure();
+            ValidateFastVsHd2dShadowFoundationCycle74DoorwayReadableDepth();
+
+            if (FindSceneObjectIncludingInactive("Current_HouseExterior_DoorClosedPanel") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseExterior_DoorClosedPanel") == null ||
+                FindSceneObjectIncludingInactive("Current_HouseExterior_Cycle72_PorchSightlineClosure_LeftFrontWallFillA") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseExterior_Cycle72_PorchSightlineClosure_LeftFrontWallFillA") == null ||
+                FindSceneObjectIncludingInactive("Current_HouseExterior_Cycle72_PorchSightlineClosure_RightFrontWallFillA") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseExterior_Cycle72_PorchSightlineClosure_RightFrontWallFillA") == null ||
+                FindSceneObjectIncludingInactive("Current_HouseExterior_Cycle74_DoorwaySoftDepthLineA") == null ||
+                FindSceneObjectIncludingInactive("Past_HouseExterior_Cycle74_DoorwaySoftDepthLineA") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 76 door review capture prerequisites are missing required house exterior objects.");
+            }
         }
 
         private static void ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy()
