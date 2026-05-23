@@ -223,16 +223,12 @@ namespace Anemora.EditorTools
 
             if (volumeProfile.TryGet<DepthOfField>(out var depthOfField))
             {
-                depthOfField.active = false;
-                depthOfField.SetAllOverridesTo(false);
-                EditorUtility.SetDirty(depthOfField);
+                DisableVolumeComponentForBaseline(depthOfField);
             }
 
             if (volumeProfile.TryGet<FilmGrain>(out var filmGrain))
             {
-                filmGrain.active = false;
-                filmGrain.SetAllOverridesTo(false);
-                EditorUtility.SetDirty(filmGrain);
+                DisableVolumeComponentForBaseline(filmGrain);
             }
 
             EditorUtility.SetDirty(bloom);
@@ -254,6 +250,26 @@ namespace Anemora.EditorTools
 
             component.active = true;
             return component;
+        }
+
+        private static void DisableVolumeComponentForBaseline(VolumeComponent component)
+        {
+            if (component == null)
+            {
+                return;
+            }
+
+            component.active = false;
+            component.SetAllOverridesTo(false);
+
+            var serialized = new SerializedObject(component);
+            if (TryFindProperty(serialized, "active", out var activeProperty, "m_Active"))
+            {
+                activeProperty.boolValue = false;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(component);
         }
 
         private static void ApplyOptionalColorGrade(VolumeProfile volumeProfile)
