@@ -329,6 +329,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightyFourthCyclePlazaLibraryEntryDepth();
             ValidateFastVsHd2dCycle48ShadowOcclusionReadability();
             ValidateFastVsHd2dCycle49DecisiveLightShadowContrast();
+            ValidateFastVsHd2dShadowFoundationCycle69HouseExteriorGroundShadow();
             ValidateFastVsHd2dCycle50HouseFacadeClosureShadow();
             ValidateFastVsHd2dCycle51MaterialLightShadowResponse();
             ValidateFastVsHd2dCycle52HouseFacadePorchClosure();
@@ -5936,6 +5937,7 @@ namespace Anemora.EditorTools
             CreateHouseExteriorSurfaceDirectionalShadeOverlay(root, prefix, past, materials);
             CreateHouseExteriorOcclusionReadabilityCycle48(root, prefix, past, materials);
             CreateHouseExteriorDecisiveLightShadowCycle49(root, prefix, past, materials);
+            CreateHouseExteriorExaggeratedGroundShadowCycle69(root, prefix, past, materials);
 
             if (!past)
             {
@@ -7055,6 +7057,34 @@ namespace Anemora.EditorTools
             Add("Current_HouseExterior_Cycle49_PorchPostBaseShadowRightA", new Vector3(-0.26f, 0.102f, -1.79f), new Vector3(0.24f, 0.014f, 0.16f), Quaternion.identity, shadow, "Current.house_exterior.cycle49.porch_post_base_shadow_right_a");
             Add("Current_HouseExterior_Cycle49_DoorRightReturnFaceA", new Vector3(-0.44f, 1.00f, -1.55f), new Vector3(0.14f, 1.16f, 0.06f), Quaternion.identity, wall, "Current.house_exterior.cycle49.door_right_return_face_a");
             Add("Current_HouseExterior_Cycle49_DoorRightReturnShadowA", new Vector3(-0.30f, 1.00f, -1.57f), new Vector3(0.18f, 1.10f, 0.05f), Quaternion.identity, occlusion, "Current.house_exterior.cycle49.door_right_return_shadow_a");
+        }
+
+        private static void CreateHouseExteriorExaggeratedGroundShadowCycle69(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var depthShadow = EnsureHd2dDepthShadowMaterial();
+            var objectPrefix = $"{prefix}_HouseExterior_ShadowFoundationCycle69";
+            var landmarkPrefix = $"{prefix}.house_exterior.shadow_foundation_cycle69";
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, localRotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add($"{objectPrefix}_HouseGroundCastBroadA", new Vector3(-1.00f, 0.058f, -0.34f), new Vector3(7.05f, 0.036f, 3.05f), Quaternion.Euler(0f, -8f, 0f), occlusion, $"{landmarkPrefix}.house_ground_cast_broad_a");
+                Add($"{objectPrefix}_PorchEntryCastA", new Vector3(-1.05f, 0.082f, -1.90f), new Vector3(1.78f, 0.022f, 0.44f), Quaternion.identity, depthShadow, $"{landmarkPrefix}.porch_entry_cast_a");
+                Add($"{objectPrefix}_NorthEastRoadEdgeFalloffA", new Vector3(4.54f, 0.062f, 1.12f), new Vector3(4.10f, 0.028f, 1.36f), Quaternion.Euler(0f, -18f, 0f), occlusion, $"{landmarkPrefix}.north_east_road_edge_falloff_a");
+                Add($"{objectPrefix}_YardFrontFalloffA", new Vector3(-0.86f, 0.060f, 3.16f), new Vector3(5.10f, 0.028f, 1.36f), Quaternion.identity, occlusion, $"{landmarkPrefix}.yard_front_falloff_a");
+                return;
+            }
+
+            Add($"{objectPrefix}_HouseGroundCastBroadA", new Vector3(-1.00f, 0.058f, -0.34f), new Vector3(7.05f, 0.036f, 3.05f), Quaternion.Euler(0f, -8f, 0f), occlusion, $"{landmarkPrefix}.house_ground_cast_broad_a");
+            Add($"{objectPrefix}_PorchEntryCastA", new Vector3(-1.05f, 0.082f, -1.90f), new Vector3(1.78f, 0.022f, 0.44f), Quaternion.identity, depthShadow, $"{landmarkPrefix}.porch_entry_cast_a");
+            Add($"{objectPrefix}_NorthEastRoadEdgeFalloffA", new Vector3(4.54f, 0.062f, 1.12f), new Vector3(4.10f, 0.028f, 1.36f), Quaternion.Euler(0f, -18f, 0f), occlusion, $"{landmarkPrefix}.north_east_road_edge_falloff_a");
+            Add($"{objectPrefix}_YardFrontFalloffA", new Vector3(-0.86f, 0.060f, 3.16f), new Vector3(5.10f, 0.028f, 1.36f), Quaternion.identity, occlusion, $"{landmarkPrefix}.yard_front_falloff_a");
         }
 
         private static void CreateHouseExteriorExternalTreeSprite(Transform root, string prefix, bool past)
@@ -31811,6 +31841,133 @@ namespace Anemora.EditorTools
             ValidateNonArrivalLandmarkCubeObject("Current_Library_Cycle49_RetoDeskUnderShadowA", "Current_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(1.26f, 0.04f, 0.62f), new Vector3(1.42f, 0.08f, 0.82f), new Vector3(0.96f, 0.012f, 0.20f), new Vector3(1.10f, 0.018f, 0.28f));
 
             ValidateNonArrivalLandmarkCubeObject("Past_Library_Cycle49_TableUnderShadowA", "Past_LibraryMap_SeparateSpace", LibraryVsCenter, "shadow", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-3.00f, 0.04f, -1.00f), new Vector3(-2.76f, 0.08f, -0.84f), new Vector3(1.10f, 0.012f, 0.20f), new Vector3(1.26f, 0.018f, 0.28f));
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle69HouseExteriorGroundShadow()
+        {
+            void Validate(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalPosition, Vector3 maxLocalPosition, Vector3 minLocalScale, Vector3 maxLocalScale)
+            {
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                if (sceneObject == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing house exterior shadow foundation object {objectName}.");
+                }
+
+                var renderer = sceneObject.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must have a renderer with a material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must remain shadow-safe.");
+                }
+
+                if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+                }
+
+                if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+                }
+
+                var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+                }
+
+                var landmarkSerialized = new SerializedObject(landmark);
+                var kindProperty = landmarkSerialized.FindProperty("kind");
+                var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+                if (kindProperty == null ||
+                    kindProperty.propertyType != SerializedPropertyType.Enum ||
+                    kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature) ||
+                    countsForArrivalProperty == null ||
+                    countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                    countsForArrivalProperty.boolValue)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindowPairedSpaceLandmarkKind.PropOrFeature landmark.");
+                }
+
+                ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - HouseExteriorCenter, minLocalPosition, maxLocalPosition);
+                ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, minLocalScale, maxLocalScale);
+
+                var materialName = renderer.sharedMaterial.name ?? string.Empty;
+                if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
+                }
+            }
+
+            Validate(
+                "Current_HouseExterior_ShadowFoundationCycle69_HouseGroundCastBroadA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(-1.14f, 0.048f, -0.48f),
+                new Vector3(-0.86f, 0.070f, -0.18f),
+                new Vector3(6.88f, 0.026f, 2.82f),
+                new Vector3(7.22f, 0.046f, 3.26f));
+            Validate(
+                "Current_HouseExterior_ShadowFoundationCycle69_PorchEntryCastA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_depth_shadow",
+                new Vector3(-1.16f, 0.072f, -2.04f),
+                new Vector3(-0.94f, 0.094f, -1.76f),
+                new Vector3(1.62f, 0.014f, 0.34f),
+                new Vector3(1.94f, 0.030f, 0.52f));
+            Validate(
+                "Current_HouseExterior_ShadowFoundationCycle69_NorthEastRoadEdgeFalloffA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(4.34f, 0.052f, 0.96f),
+                new Vector3(4.76f, 0.074f, 1.28f),
+                new Vector3(3.82f, 0.018f, 1.14f),
+                new Vector3(4.34f, 0.038f, 1.54f));
+            Validate(
+                "Current_HouseExterior_ShadowFoundationCycle69_YardFrontFalloffA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(-0.98f, 0.050f, 2.94f),
+                new Vector3(-0.70f, 0.072f, 3.36f),
+                new Vector3(4.82f, 0.018f, 1.14f),
+                new Vector3(5.38f, 0.038f, 1.54f));
+
+            Validate(
+                "Past_HouseExterior_ShadowFoundationCycle69_HouseGroundCastBroadA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(-1.14f, 0.048f, -0.48f),
+                new Vector3(-0.86f, 0.070f, -0.18f),
+                new Vector3(6.88f, 0.026f, 2.82f),
+                new Vector3(7.22f, 0.046f, 3.26f));
+            Validate(
+                "Past_HouseExterior_ShadowFoundationCycle69_PorchEntryCastA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_depth_shadow",
+                new Vector3(-1.16f, 0.072f, -2.04f),
+                new Vector3(-0.94f, 0.094f, -1.76f),
+                new Vector3(1.62f, 0.014f, 0.34f),
+                new Vector3(1.94f, 0.030f, 0.52f));
+            Validate(
+                "Past_HouseExterior_ShadowFoundationCycle69_NorthEastRoadEdgeFalloffA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(4.34f, 0.052f, 0.96f),
+                new Vector3(4.76f, 0.074f, 1.28f),
+                new Vector3(3.82f, 0.018f, 1.14f),
+                new Vector3(4.34f, 0.038f, 1.54f));
+            Validate(
+                "Past_HouseExterior_ShadowFoundationCycle69_YardFrontFalloffA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(-0.98f, 0.050f, 2.94f),
+                new Vector3(-0.70f, 0.072f, 3.36f),
+                new Vector3(4.82f, 0.018f, 1.14f),
+                new Vector3(5.38f, 0.038f, 1.54f));
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
