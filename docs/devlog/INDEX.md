@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.63 fast VS HD2D house exterior opaque artifact closure index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.64 fast VS HD2D house exterior facade naturalization index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 442 files including INDEX.md and README.md.
-- Dated devlog records: 440 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1026 files.
+- Root-level Markdown coverage: 443 files including INDEX.md and README.md.
+- Dated devlog records: 441 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1030 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 4 |
+| 2026-05-24 | 5 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_house_exterior_facade_naturalization_cycle95.md](2026-05-24_fast_vs_hd2d_house_exterior_facade_naturalization_cycle95.md) | Fast VS / HD2D | feat(hd2d): naturalize house exterior facade |
 | [2026-05-24_fast_vs_hd2d_house_exterior_opaque_artifact_closure_cycle94.md](2026-05-24_fast_vs_hd2d_house_exterior_opaque_artifact_closure_cycle94.md) | Fast VS / HD2D | feat(hd2d): close house exterior opaque artifacts |
 | [2026-05-24_fast_vs_hd2d_house_exterior_leak_closure_cycle93.md](2026-05-24_fast_vs_hd2d_house_exterior_leak_closure_cycle93.md) | Fast VS / HD2D | feat(hd2d): close house exterior leak bars |
 | [2026-05-24_fast_vs_hd2d_faded_dusk_camera_grade_cycle92.md](2026-05-24_fast_vs_hd2d_faded_dusk_camera_grade_cycle92.md) | Fast VS / HD2D | feat(hd2d): deepen faded dusk camera grade |
