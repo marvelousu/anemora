@@ -302,14 +302,14 @@ function Rollback-AndReport {
     if (Test-Path $RunLog) {
         $tail = (Get-Content $RunLog -Tail 80) -join "`n"
     }
-    $failureText = @"
-
-## Cycle $CycleNumber failure ($PhaseName) -- $Stamp
-
-```
-$tail
-```
-"@
+    $failureText = @(
+        "",
+        "## Cycle $CycleNumber failure ($PhaseName) -- $Stamp",
+        "",
+        "```",
+        $tail,
+        "```"
+    ) -join "`n"
     Add-Content -Path $DevlogResolved -Value $failureText -Encoding utf8
     Write-Run "Failure tail appended to devlog: $DevlogResolved"
 }
