@@ -274,8 +274,8 @@ function Invoke-Batch {
     # the first token.
     $argv = [regex]::Matches($argString, '("[^"]*"|\S+)') |
         ForEach-Object { $_.Value.Trim('"') }
-    & $BatchTool @argv
-    $exit = $LASTEXITCODE
+    $proc = Start-Process -FilePath $BatchTool -ArgumentList $argv -PassThru -Wait -WindowStyle Hidden
+    $exit = $proc.ExitCode
     Append-File -SrcPath $LogFile -Header "$PhaseName batch log ($LogFile)"
     if ($exit -ne 0) {
         Write-Run "Phase '$PhaseName' FAILED with exit $exit"
@@ -302,7 +302,15 @@ function Rollback-AndReport {
     if (Test-Path $RunLog) {
         $tail = (Get-Content $RunLog -Tail 80) -join "`n"
     }
-    Add-Content -Path $DevlogResolved -Value "`n## Cycle $CycleNumber failure ($PhaseName) -- $Stamp`n`n``````n$tail`n``````" -Encoding utf8
+    $failureText = @"
+
+## Cycle $CycleNumber failure ($PhaseName) -- $Stamp
+
+```
+$tail
+```
+"@
+    Add-Content -Path $DevlogResolved -Value $failureText -Encoding utf8
     Write-Run "Failure tail appended to devlog: $DevlogResolved"
 }
 
