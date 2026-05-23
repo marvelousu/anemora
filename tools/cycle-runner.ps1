@@ -84,6 +84,11 @@
 .PARAMETER SkipPush
     Commit locally but do not push.
 
+.PARAMETER CommitPath
+    Optional explicit path allowlist to stage before commit. When omitted, the legacy behavior
+    is `git add -A`. Paths may be repo-relative or absolute. Use this for Unity projects where
+    batch validation dirties scenes or ProjectSettings that are not authored side effects.
+
 .PARAMETER NoRollback
     Do not run git reset --hard HEAD when a phase fails. The failure tail is still appended
     to the devlog and the script exits non-zero. Use this when the caller must preserve a
@@ -131,6 +136,7 @@ param(
     [string]$SmokeArgsTemplate = '-batchmode -nographics -logFile "{logFile}"',
     [int]$SmokeSeconds = 20,
     [string]$SmokePatterns = 'Error|Exception|Assert|NullReference|Font Atlas Texture|DrawObjectsPass|RenderGraph',
+    [string[]]$CommitPath = @(),
     [switch]$SkipBuild,
     [switch]$SkipPush,
     [switch]$NoRollback,
@@ -235,6 +241,7 @@ Write-Run "  CaptureOutDir  : $CaptureOutputDir"
 Write-Run "  DevlogPath     : $DevlogResolved"
 Write-Run "  SmokeSeconds   : $SmokeSeconds"
 Write-Run "  SmokePatterns  : $SmokePatterns"
+Write-Run "  CommitPath     : $($CommitPath -join '; ')"
 Write-Run "  NoRollback     : $NoRollback"
 Write-Run "  RunLog         : $RunLog"
 
@@ -442,7 +449,25 @@ try {
     Add-Content -Path $msgFile -Value "$commitBody" -Encoding utf8
 
     Write-Run "Committing: $commitSubject"
-    git add -A
+    if ($CommitPath -and $CommitPath.Count -gt 0) {
+        foreach ($path in $CommitPath) {
+            $stagePath = $path
+            if ([System.IO.Path]::IsPathRooted($stagePath)) {
+                $resolvedStagePath = Resolve-Path -LiteralPath $stagePath -ErrorAction SilentlyContinue
+                if ($resolvedStagePath) {
+                    $stagePath = Resolve-Path -Relative $resolvedStagePath.Path
+                }
+            }
+            Write-Run "  staging path: $stagePath"
+            git add -- "$stagePath"
+            if ($LASTEXITCODE -ne 0) {
+                Write-Run "git add failed for $stagePath (exit $LASTEXITCODE)"
+                exit 1
+            }
+        }
+    } else {
+        git add -A
+    }
     git commit -F $msgFile.FullName
     $commitExit = $LASTEXITCODE
     Remove-Item $msgFile -ErrorAction SilentlyContinue
