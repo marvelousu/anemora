@@ -280,6 +280,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentySeventhCycleExteriorOcclusionBackdropFoundation();
             ValidateFastVsHd2dTwentyNinthCycleOutdoorScenicBackdropFoundation();
             ValidateFastVsHd2dThirtySecondCycleOutdoorCompositionSkyBackdropFoundation();
+            ValidateFastVsHd2dShadowFoundationCycle89OutdoorBackdropForegroundCleanup();
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorArchitecturalClosure();
             ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
@@ -11046,7 +11047,34 @@ namespace Anemora.EditorTools
                     $"{prefix}.central_plaza.scenic_backdrop.right_sky_wrap_a");
             }
 
+            ApplyCycle89HouseExteriorBackdropForegroundCleanup(past, area);
             _ = materials;
+        }
+
+        private static void ApplyCycle89HouseExteriorBackdropForegroundCleanup(bool past, FastVsHouseArea area)
+        {
+            if (past || area != FastVsHouseArea.Exterior)
+            {
+                return;
+            }
+
+            SetHouseExteriorSceneObjectOffset("Current_HouseExterior_BackdropFoundation_HorizonTreeLine", new Vector3(0.00f, 0.84f, 9.72f));
+            SetHouseExteriorSceneObjectOffset("Current_HouseExterior_ScenicBackdrop_SkyCurtainA", new Vector3(0.00f, 4.90f, 9.18f));
+            SetHouseExteriorSceneObjectOffset("Current_HouseExterior_ScenicBackdrop_LowHazeBandA", new Vector3(0.00f, 3.02f, 8.96f));
+            SetHouseExteriorSceneObjectOffset("Current_HouseExterior_ScenicBackdrop_DistantTreeLineA", new Vector3(0.80f, 2.34f, 8.68f));
+            SetHouseExteriorSceneObjectOffset("Current_HouseExterior_ScenicBackdrop_LeftSkyWrapA", new Vector3(-8.10f, 3.30f, 6.96f));
+            SetHouseExteriorSceneObjectOffset("Current_HouseExterior_ScenicBackdrop_RightSkyWrapA", new Vector3(8.10f, 3.30f, 6.96f));
+        }
+
+        private static void SetHouseExteriorSceneObjectOffset(string objectName, Vector3 localOffset)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing scene object {objectName}.");
+            }
+
+            sceneObject.transform.localPosition = HouseExteriorCenter + localOffset;
         }
 
         private static void CreateOutdoorBackgroundSkyDepthCycle44(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
@@ -24472,6 +24500,17 @@ namespace Anemora.EditorTools
             ValidateOutdoorScenicBackdropBillboardObject("Past_CentralPlaza_ScenicBackdrop_DistantRooflineA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.25f, 13.70f), new Vector3(0.35f, 2.95f, 14.85f), new Vector3(16.40f, 1.00f, 0.90f), new Vector3(18.20f, 1.32f, 1.10f));
         }
 
+        private static void ValidateFastVsHd2dShadowFoundationCycle89OutdoorBackdropForegroundCleanup()
+        {
+            ValidateFastVsHd2dShadowFoundationCycle88OutdoorBackdropBillboards();
+            ValidateOutdoorBackdropFoundationBillboardObject("Current_HouseExterior_BackdropFoundation_HorizonTreeLine", "Current_HouseExteriorMap_SeparateSpace", "outdoor_void_background", new Vector3(-0.80f, 0.52f, 9.22f), new Vector3(0.80f, 1.28f, 10.08f), new Vector3(10.00f, 0.30f, 0.05f), new Vector3(12.20f, 0.60f, 0.15f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_SkyCurtainA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 4.82f, 9.05f), new Vector3(0.35f, 5.18f, 9.36f), new Vector3(15.80f, 4.90f, 0.90f), new Vector3(17.80f, 5.50f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_LowHazeBandA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.94f, 8.86f), new Vector3(0.35f, 3.30f, 9.08f), new Vector3(13.80f, 0.88f, 0.90f), new Vector3(15.40f, 1.24f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_DistantTreeLineA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(0.30f, 2.28f, 8.60f), new Vector3(1.30f, 2.48f, 8.86f), new Vector3(11.70f, 0.95f, 0.90f), new Vector3(13.90f, 1.28f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_LeftSkyWrapA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-8.70f, 3.16f, 6.90f), new Vector3(-7.45f, 3.52f, 7.10f), new Vector3(1.80f, 2.70f, 0.90f), new Vector3(2.60f, 3.40f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_RightSkyWrapA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(7.45f, 3.16f, 6.90f), new Vector3(8.70f, 3.52f, 7.10f), new Vector3(1.80f, 2.70f, 0.90f), new Vector3(2.60f, 3.40f, 1.10f));
+        }
+
         private static void ValidateFastVsHd2dEightyNinthCycleOutdoorSkyTextureReadability()
         {
             ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop();
@@ -33987,8 +34026,8 @@ namespace Anemora.EditorTools
                 audiencePrefix = cycleAudience + "_";
             }
 
-            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_backdrop_billboards_overview.png";
-            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_backdrop_billboards_overview.png";
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_overview.png";
+            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_overview.png";
             var currentLibraryOverviewFile = $"{audiencePrefix}03_current_library_overview.png";
             var currentInteriorOverviewFile = $"{audiencePrefix}04_current_house_interior_overview.png";
 
@@ -34117,6 +34156,11 @@ namespace Anemora.EditorTools
             CaptureHd2dShadowFoundationCycle88ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle88_outdoor_backdrop_billboards_parent_review_20260523_01");
         }
 
+        public static void CaptureHd2dShadowFoundationCycle89ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle89ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle89_outdoor_backdrop_foreground_cleanup_parent_review_20260523_01");
+        }
+
         private static void CaptureHd2dShadowFoundationCycle87ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -34219,6 +34263,55 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 88 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle89ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 89 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_front_backdrop_cleanup_overview.png";
+            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_backdrop_cleanup_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.45f),
+                Path.Combine(outputDirectory, currentHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentHouseOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.38f),
+                Path.Combine(outputDirectory, currentPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentPlazaOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 89 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()

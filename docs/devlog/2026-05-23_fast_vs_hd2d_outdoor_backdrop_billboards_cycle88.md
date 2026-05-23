@@ -30,7 +30,7 @@ notes: Converted only the six far-background slab objects to quad billboards and
 - Keep gameplay colliders and map geometry unchanged.
 - Add a Cycle88 validator that proves the converted backdrop objects are rendered as quads and remain non-colliding landmark props.
 - Add Cycle88 parent-review captures for current house exterior and current central plaza wide views.
-- Parent adjusted the capture filenames to match this devlog's expected evidence names before running the cycle runner.
+- Parent kept the committed capture filenames aligned with the actual runner output for this cycle.
 - Parent reapplied `Anemora.EditorTools.AnemoraFastVsHd2dRenderAssetSetup.ApplyShadingFoundationV1()` after the first validate attempt exposed that `DefaultVolumeProfile.asset` still had `DepthOfField` and `FilmGrain` active in HEAD.
 
 ## Validation Plan
@@ -44,8 +44,8 @@ The parent runner will execute:
 
 Expected screenshots:
 
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle88_outdoor_backdrop_billboards_parent_review_20260523_01\parent_review_01_current_house_exterior_backdrop_billboards_overview.png`
-- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle88_outdoor_backdrop_billboards_parent_review_20260523_01\parent_review_02_current_central_plaza_backdrop_billboards_overview.png`
+- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle88_outdoor_backdrop_billboards_parent_review_20260523_01\parent_review_01_current_house_exterior_overview.png`
+- `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle88_outdoor_backdrop_billboards_parent_review_20260523_01\parent_review_02_current_central_plaza_overview.png`
 
 ## Review Notes
 
