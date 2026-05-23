@@ -306,9 +306,9 @@ function Rollback-AndReport {
         "",
         "## Cycle $CycleNumber failure ($PhaseName) -- $Stamp",
         "",
-        "```",
+        '```',
         $tail,
-        "```"
+        '```'
     ) -join "`n"
     Add-Content -Path $DevlogResolved -Value $failureText -Encoding utf8
     Write-Run "Failure tail appended to devlog: $DevlogResolved"
