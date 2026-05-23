@@ -61,6 +61,8 @@ namespace Anemora.EditorTools
         private const string DuskSkyMoodCycle90TexturePath = TextureDirectory + "/FastVS_House_hd2d_dusk_sky_mood_cycle90.asset";
         private const string VisibleSunDiscCycle90MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_visible_sun_disc_cycle90.mat";
         private const string VisibleSunDiscCycle90TexturePath = TextureDirectory + "/FastVS_House_hd2d_visible_sun_disc_cycle90.asset";
+        private const string HouseSkyBarMaskCycle91MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_house_sky_bar_mask_cycle91.mat";
+        private const string HouseSkyBarMaskCycle91TexturePath = TextureDirectory + "/FastVS_House_hd2d_house_sky_bar_mask_cycle91.asset";
         private const string TimewriterBrushIconTexturePath = TextureDirectory + "/FastVS_House_timewriter_brush_icon_v01.png";
         private const string MusicClipPath = "Assets/Audio/Music/Zone1_Ambient.ogg";
         private const string WindClipPath = "Assets/Audio/SFX/env/sfx_env_wind_loop_01.ogg";
@@ -286,6 +288,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtySecondCycleOutdoorCompositionSkyBackdropFoundation();
             ValidateFastVsHd2dShadowFoundationCycle89OutdoorBackdropForegroundCleanup();
             ValidateFastVsHd2dShadowFoundationCycle90DuskSunMood();
+            ValidateFastVsHd2dShadowFoundationCycle91HouseSkyBarMask();
             ValidateFastVsHd2dTwentyEighthCycleHouseExteriorFacadeComposition();
             ValidateFastVsHd2dThirtiethCycleHouseExteriorArchitecturalClosure();
             ValidateFastVsHd2dThirtyFirstCycleHouseExteriorFacadeBackdropReadability();
@@ -6273,6 +6276,7 @@ namespace Anemora.EditorTools
             CreateOutdoorCompositionSkyBackdropFoundation(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorCinematicSunGradeCycle84(root, prefix, past, FastVsHouseArea.Exterior, materials);
             CreateOutdoorDuskSunMoodCycle90(root, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateHouseExteriorSkyBarMaskCycle91(root, prefix, past, FastVsHouseArea.Exterior, materials);
 
         }
 
@@ -11494,6 +11498,47 @@ namespace Anemora.EditorTools
             _ = materials;
         }
 
+        private static void CreateHouseExteriorSkyBarMaskCycle91(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
+        {
+            if (area != FastVsHouseArea.Exterior)
+            {
+                return;
+            }
+
+            var c = HouseExteriorCenter;
+            var maskMaterial = EnsureHd2dHouseSkyBarMaskCycle91Material();
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_HouseExterior_Cycle91_SkyBarMask_MainA",
+                root,
+                c + new Vector3(0.00f, 5.18f, 7.72f),
+                new Vector3(18.85f, 2.26f, 1f),
+                Quaternion.identity,
+                maskMaterial,
+                $"{prefix}.house_exterior.cycle91.sky_bar_mask_main_a");
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_HouseExterior_Cycle91_SkyBarMask_MainB",
+                root,
+                c + new Vector3(-0.05f, 4.74f, 7.38f),
+                new Vector3(18.20f, 2.00f, 1f),
+                Quaternion.identity,
+                maskMaterial,
+                $"{prefix}.house_exterior.cycle91.sky_bar_mask_main_b");
+
+            CreateOutdoorSkyWashQuad(
+                $"{prefix}_HouseExterior_Cycle91_SkyBarMask_RightFillA",
+                root,
+                c + new Vector3(8.58f, 5.00f, 7.42f),
+                new Vector3(1.16f, 4.12f, 1f),
+                Quaternion.Euler(0f, -10f, 0f),
+                maskMaterial,
+                $"{prefix}.house_exterior.cycle91.sky_bar_mask_right_fill_a");
+
+            _ = past;
+            _ = materials;
+        }
+
         private static Texture2D EnsureHd2dDuskSkyMoodCycle90Texture()
         {
             var path = DuskSkyMoodCycle90TexturePath;
@@ -11653,6 +11698,93 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(material);
             AssetDatabase.SaveAssets();
             return material;
+        }
+
+        private static Material EnsureHd2dHouseSkyBarMaskCycle91Material()
+        {
+            var material = FlatMaterial("hd2d_house_sky_bar_mask_cycle91", Color.white, true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3008);
+            var texture = EnsureHd2dHouseSkyBarMaskCycle91Texture();
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            var tint = new Color(0.72f, 0.75f, 0.82f, 0.72f);
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
+        private static Texture2D EnsureHd2dHouseSkyBarMaskCycle91Texture()
+        {
+            var path = HouseSkyBarMaskCycle91TexturePath;
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture != null &&
+                (texture.width != 256 || texture.height != 160 || texture.format != TextureFormat.RGBA32 || TextureAlphaChannelIsEmpty(texture)))
+            {
+                AssetDatabase.DeleteAsset(path);
+                texture = null;
+            }
+
+            if (texture == null)
+            {
+                texture = new Texture2D(256, 160, TextureFormat.RGBA32, false);
+                AssetDatabase.CreateAsset(texture, path);
+            }
+
+            texture.name = "FastVS_House_hd2d_house_sky_bar_mask_cycle91";
+            texture.filterMode = FilterMode.Bilinear;
+            texture.wrapMode = TextureWrapMode.Clamp;
+
+            for (var y = 0; y < texture.height; y++)
+            {
+                var v = y / 159f;
+                var upperBlend = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((v - 0.08f) / 0.84f));
+                var hazeBand = Mathf.Exp(-Mathf.Pow((v - 0.34f) / 0.10f, 2f));
+                var duskBand = Mathf.Exp(-Mathf.Pow((v - 0.62f) / 0.18f, 2f));
+
+                for (var x = 0; x < texture.width; x++)
+                {
+                    var u = x / 255f;
+                    var edgeFade = SmoothFade01(0f, 0.10f, u) * SmoothFade01(0f, 0.10f, 1f - u) * SmoothFade01(0f, 0.12f, v) * SmoothFade01(0f, 0.10f, 1f - v);
+                    var coreLift = Mathf.Clamp01(1f - Mathf.Abs(v - 0.52f) * 1.72f);
+                    var leftGlow = Mathf.Exp(-Mathf.Pow((u - 0.26f) / 0.24f, 2f)) * Mathf.Exp(-Mathf.Pow((v - 0.54f) / 0.20f, 2f));
+                    var rightGlow = Mathf.Exp(-Mathf.Pow((u - 0.72f) / 0.18f, 2f)) * Mathf.Exp(-Mathf.Pow((v - 0.42f) / 0.24f, 2f));
+                    var streakA = Mathf.Exp(-Mathf.Pow((v - 0.28f) / 0.08f, 2f)) * Mathf.Clamp01(0.82f - Mathf.Abs(u - 0.50f) * 1.24f);
+                    var streakB = Mathf.Exp(-Mathf.Pow((v - 0.55f) / 0.11f, 2f)) * Mathf.Clamp01(0.90f - Mathf.Abs(u - 0.50f) * 1.04f);
+                    var streakC = Mathf.Exp(-Mathf.Pow((v - 0.78f) / 0.07f, 2f)) * Mathf.Clamp01(0.58f - Mathf.Abs(u - 0.50f) * 0.86f);
+                    var grain = Mathf.Sin((u * 18.6f) + (v * 7.2f) + 0.45f) * 0.012f;
+
+                    var lowerDusk = new Color(0.60f, 0.50f, 0.45f, 1f);
+                    var midDusk = new Color(0.40f, 0.46f, 0.56f, 1f);
+                    var upperDusk = new Color(0.25f, 0.30f, 0.39f, 1f);
+                    var warmHaze = new Color(0.68f, 0.56f, 0.47f, 1f);
+
+                    var tint = Color.Lerp(lowerDusk, midDusk, Mathf.SmoothStep(0f, 1f, v));
+                    tint = Color.Lerp(tint, upperDusk, Mathf.Clamp01((v - 0.36f) * 1.34f));
+                    tint = Color.Lerp(tint, warmHaze, Mathf.Clamp01((hazeBand * 0.28f) + (streakA * 0.16f) + (leftGlow * 0.08f)));
+                    tint.r = Mathf.Clamp01(tint.r + grain + (rightGlow * 0.03f));
+                    tint.g = Mathf.Clamp01(tint.g + (grain * 0.72f) + (rightGlow * 0.02f));
+                    tint.b = Mathf.Clamp01(tint.b + (grain * 0.52f) - 0.01f);
+
+                    var alpha = ((0.12f + coreLift * 0.30f) + (leftGlow * 0.08f) + (rightGlow * 0.10f) + (streakA * 0.08f) + (streakB * 0.10f) + (streakC * 0.05f) + (duskBand * 0.06f)) * edgeFade * 0.82f;
+                    alpha = Mathf.Clamp(alpha, 0f, 0.62f);
+                    texture.SetPixel(x, y, new Color(tint.r, tint.g, tint.b, alpha));
+                }
+            }
+
+            texture.Apply(false, false);
+            EditorUtility.SetDirty(texture);
+            AssetDatabase.SaveAssets();
+            return texture;
         }
 
         private static void CreateHouseExteriorBoundaryNatureDetails(Transform root, string prefix, bool past, Materials materials)
@@ -14392,6 +14524,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dShadowFoundationCycle90ScreenshotsBatch()
         {
             CaptureHd2dShadowFoundationCycle90ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle90_dusk_sun_mood_parent_review_20260523_01");
+        }
+
+        public static void CaptureHd2dShadowFoundationCycle91ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle91ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle91_house_exterior_sky_bar_mask_parent_review_20260524_01");
         }
 
         public static void CaptureHd2dNinetiethCycleScreenshotsBatch()
@@ -24723,6 +24860,117 @@ namespace Anemora.EditorTools
             ValidateOutdoorScenicBackdropBillboardObject("Past_CentralPlaza_ScenicBackdrop_DistantRooflineA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.25f, 13.70f), new Vector3(0.35f, 2.95f, 14.85f), new Vector3(16.40f, 1.00f, 0.90f), new Vector3(18.20f, 1.32f, 1.10f));
         }
 
+        private static void ValidateFastVsHd2dShadowFoundationCycle91HouseSkyBarMask()
+        {
+            ValidateGeneratedSurfaceMaterialTexture("hd2d_house_sky_bar_mask_cycle91", "hd2d_house_sky_bar_mask_cycle91");
+            ValidateHd2dHouseSkyBarMaskCycle91TextureMetrics();
+
+            ValidateOutdoorScenicBackdropBillboardObject(
+                "Current_HouseExterior_Cycle91_SkyBarMask_MainA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_house_sky_bar_mask_cycle91",
+                new Vector3(-0.20f, 5.00f, 7.55f),
+                new Vector3(0.20f, 5.34f, 7.88f),
+                new Vector3(18.60f, 2.10f, 0.95f),
+                new Vector3(19.10f, 2.42f, 1.05f));
+            ValidateOutdoorScenicBackdropBillboardObject(
+                "Current_HouseExterior_Cycle91_SkyBarMask_MainB",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_house_sky_bar_mask_cycle91",
+                new Vector3(-0.24f, 4.56f, 7.22f),
+                new Vector3(0.14f, 4.90f, 7.54f),
+                new Vector3(17.90f, 1.82f, 0.95f),
+                new Vector3(18.50f, 2.18f, 1.05f));
+            ValidateOutdoorScenicBackdropBillboardObject(
+                "Current_HouseExterior_Cycle91_SkyBarMask_RightFillA",
+                "Current_HouseExteriorMap_SeparateSpace",
+                "hd2d_house_sky_bar_mask_cycle91",
+                new Vector3(8.42f, 4.80f, 7.24f),
+                new Vector3(8.74f, 5.20f, 7.60f),
+                new Vector3(1.05f, 3.92f, 0.95f),
+                new Vector3(1.30f, 4.38f, 1.05f));
+
+            ValidateOutdoorScenicBackdropBillboardObject(
+                "Past_HouseExterior_Cycle91_SkyBarMask_MainA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_house_sky_bar_mask_cycle91",
+                new Vector3(-0.20f, 5.00f, 7.55f),
+                new Vector3(0.20f, 5.34f, 7.88f),
+                new Vector3(18.60f, 2.10f, 0.95f),
+                new Vector3(19.10f, 2.42f, 1.05f));
+            ValidateOutdoorScenicBackdropBillboardObject(
+                "Past_HouseExterior_Cycle91_SkyBarMask_MainB",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_house_sky_bar_mask_cycle91",
+                new Vector3(-0.24f, 4.56f, 7.22f),
+                new Vector3(0.14f, 4.90f, 7.54f),
+                new Vector3(17.90f, 1.82f, 0.95f),
+                new Vector3(18.50f, 2.18f, 1.05f));
+            ValidateOutdoorScenicBackdropBillboardObject(
+                "Past_HouseExterior_Cycle91_SkyBarMask_RightFillA",
+                "Past_HouseExteriorMap_SeparateSpace",
+                "hd2d_house_sky_bar_mask_cycle91",
+                new Vector3(8.42f, 4.80f, 7.24f),
+                new Vector3(8.74f, 5.20f, 7.60f),
+                new Vector3(1.05f, 3.92f, 0.95f),
+                new Vector3(1.30f, 4.38f, 1.05f));
+        }
+
+        private static void ValidateHd2dHouseSkyBarMaskCycle91TextureMetrics()
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(HouseSkyBarMaskCycle91TexturePath);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing texture asset {HouseSkyBarMaskCycle91TexturePath}.");
+            }
+
+            if (texture.width != 256 || texture.height != 160)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_house_sky_bar_mask_cycle91 must stay at 256x160, but was {texture.width}x{texture.height}.");
+            }
+
+            if (texture.filterMode != FilterMode.Bilinear || texture.wrapMode != TextureWrapMode.Clamp)
+            {
+                throw new InvalidOperationException("House slice validation failed: hd2d_house_sky_bar_mask_cycle91 must stay bilinear and clamp-wrapped.");
+            }
+
+            if (TextureAlphaChannelIsEmpty(texture))
+            {
+                throw new InvalidOperationException("House slice validation failed: hd2d_house_sky_bar_mask_cycle91 alpha must not be empty.");
+            }
+
+            var centerAlpha = texture.GetPixel(texture.width / 2, texture.height / 2).a;
+            var leftEdgeAlpha = texture.GetPixel(0, texture.height / 2).a;
+            var rightEdgeAlpha = texture.GetPixel(texture.width - 1, texture.height / 2).a;
+            var topEdgeAlpha = texture.GetPixel(texture.width / 2, texture.height - 1).a;
+            var bottomEdgeAlpha = texture.GetPixel(texture.width / 2, 0).a;
+            var maxAlpha = 0f;
+            foreach (var pixel in texture.GetPixels32())
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
+            }
+
+            if (centerAlpha < 0.26f || centerAlpha > 0.52f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_house_sky_bar_mask_cycle91 center alpha must stay in the 0.26-0.52 range, but was {centerAlpha:0.000}.");
+            }
+
+            if (leftEdgeAlpha > 0.05f || rightEdgeAlpha > 0.05f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_house_sky_bar_mask_cycle91 edge alpha must stay near transparent. left={leftEdgeAlpha:0.000}, right={rightEdgeAlpha:0.000}.");
+            }
+
+            if (topEdgeAlpha > 0.05f || bottomEdgeAlpha > 0.05f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_house_sky_bar_mask_cycle91 vertical edge alpha must stay near transparent. top={topEdgeAlpha:0.000}, bottom={bottomEdgeAlpha:0.000}.");
+            }
+
+            if (maxAlpha < 0.48f || maxAlpha > 0.66f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: hd2d_house_sky_bar_mask_cycle91 max alpha must stay in the 0.48-0.66 range, but was {maxAlpha:0.000}.");
+            }
+        }
+
         private static void ValidateFastVsHd2dShadowFoundationCycle89OutdoorBackdropForegroundCleanup()
         {
             ValidateFastVsHd2dShadowFoundationCycle88OutdoorBackdropBillboards();
@@ -34707,6 +34955,69 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 90 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle91ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 91 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_sky_bar_mask_overview.png";
+            var currentHouseCloseFile = $"{audiencePrefix}02_current_house_exterior_sky_bar_mask_lower_close.png";
+            var pastHouseOverviewFile = $"{audiencePrefix}03_past_house_exterior_sky_bar_mask_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.45f),
+                Path.Combine(outputDirectory, currentHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentHouseOverviewFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.18f),
+                HouseExteriorCenter + new Vector3(-0.86f, 2.12f, -1.20f),
+                new Vector3(0.44f, 1.16f, -2.28f),
+                new Vector3(0.02f, 0.14f, 0.08f),
+                outputDirectory,
+                currentHouseCloseFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -2.45f),
+                Path.Combine(outputDirectory, pastHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastHouseOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 91 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
