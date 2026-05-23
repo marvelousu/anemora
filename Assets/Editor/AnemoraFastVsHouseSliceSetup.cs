@@ -1610,6 +1610,11 @@ namespace Anemora.EditorTools
             CaptureHd2dShadowFoundationCycle70ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_shadow_foundation_cycle70_outdoor_directional_shadow_parent_review_20260523_01");
         }
 
+        public static void CaptureHd2dShadowFoundationCycle71ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle71ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_shadow_foundation_cycle71_outdoor_shadow_softening_parent_review_20260523_01");
+        }
+
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -7197,7 +7202,7 @@ namespace Anemora.EditorTools
         private static void CreateOutdoorExaggeratedDirectionalShadowCycle70(Transform root, string prefix, bool past, Materials materials, Vector3 center, string areaKey)
         {
             var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
-            var depthShadow = EnsureHd2dDepthShadowMaterial();
+            _ = EnsureHd2dDepthShadowMaterial();
 
             string objectScope;
             if (areaKey == "house_exterior")
@@ -7230,15 +7235,15 @@ namespace Anemora.EditorTools
 
             if (areaKey == "house_exterior")
             {
-                Add("RoofDiagonalCastA", "roof_diagonal_cast_a", new Vector3(1.85f, 0.070f, 0.96f), new Vector3(4.80f, 0.026f, 1.10f), -24f, occlusion);
-                Add("TreeDirectionalCastA", "tree_directional_cast_a", new Vector3(3.85f, 0.072f, 2.92f), new Vector3(2.30f, 0.022f, 0.72f), -32f, occlusion);
-                Add("SignpostDirectionalCastA", "signpost_directional_cast_a", new Vector3(4.75f, 0.078f, 4.15f), new Vector3(1.28f, 0.018f, 0.30f), -28f, depthShadow);
+                Add("RoofDiagonalCastA", "roof_diagonal_cast_a", new Vector3(1.68f, 0.036f, 0.82f), new Vector3(3.12f, 0.010f, 0.74f), -24f, occlusion);
+                Add("TreeDirectionalCastA", "tree_directional_cast_a", new Vector3(3.76f, 0.038f, 2.80f), new Vector3(1.54f, 0.009f, 0.52f), -32f, occlusion);
+                Add("SignpostDirectionalCastA", "signpost_directional_cast_a", new Vector3(4.73f, 0.036f, 4.10f), new Vector3(0.92f, 0.008f, 0.22f), -28f, occlusion);
             }
             else
             {
-                Add("LibraryDiagonalCastA", "library_diagonal_cast_a", new Vector3(2.20f, 0.092f, 6.76f), new Vector3(6.20f, 0.024f, 1.20f), -18f, occlusion);
-                Add("WestRoadFalloffCastA", "west_road_falloff_cast_a", new Vector3(-3.65f, 0.080f, 2.84f), new Vector3(2.80f, 0.020f, 0.72f), -16f, occlusion);
-                Add("NoticeBoardDirectionalCastA", "notice_board_directional_cast_a", new Vector3(-3.05f, 0.088f, 1.72f), new Vector3(1.16f, 0.016f, 0.28f), -26f, depthShadow);
+                Add("LibraryDiagonalCastA", "library_diagonal_cast_a", new Vector3(2.10f, 0.054f, 6.66f), new Vector3(4.28f, 0.010f, 0.84f), -18f, occlusion);
+                Add("WestRoadFalloffCastA", "west_road_falloff_cast_a", new Vector3(-3.60f, 0.046f, 2.75f), new Vector3(2.04f, 0.009f, 0.50f), -16f, occlusion);
+                Add("NoticeBoardDirectionalCastA", "notice_board_directional_cast_a", new Vector3(-3.03f, 0.044f, 1.68f), new Vector3(0.88f, 0.008f, 0.22f), -26f, occlusion);
             }
 
             _ = materials;
@@ -32199,112 +32204,204 @@ namespace Anemora.EditorTools
                 "Current_HouseExteriorMap_SeparateSpace",
                 HouseExteriorCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(1.62f, 0.040f, 0.72f),
-                new Vector3(2.08f, 0.100f, 1.20f),
-                new Vector3(4.45f, 0.018f, 0.85f),
-                new Vector3(5.15f, 0.036f, 1.35f));
+                new Vector3(1.54f, 0.030f, 0.68f),
+                new Vector3(1.80f, 0.044f, 0.94f),
+                new Vector3(2.70f, 0.007f, 0.58f),
+                new Vector3(3.45f, 0.013f, 0.90f));
             ValidateDirectionalShadowObject(
                 "Current_HouseExterior_ShadowFoundationCycle70_TreeDirectionalCastA",
                 "Current_HouseExteriorMap_SeparateSpace",
                 HouseExteriorCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(3.60f, 0.042f, 2.67f),
-                new Vector3(4.10f, 0.102f, 3.17f),
-                new Vector3(2.00f, 0.014f, 0.50f),
-                new Vector3(2.60f, 0.030f, 0.94f));
+                new Vector3(3.62f, 0.032f, 2.68f),
+                new Vector3(3.90f, 0.044f, 2.92f),
+                new Vector3(1.20f, 0.007f, 0.38f),
+                new Vector3(1.85f, 0.012f, 0.68f));
             ValidateDirectionalShadowObject(
                 "Current_HouseExterior_ShadowFoundationCycle70_SignpostDirectionalCastA",
                 "Current_HouseExteriorMap_SeparateSpace",
                 HouseExteriorCenter,
-                "hd2d_depth_shadow",
-                new Vector3(4.58f, 0.048f, 3.95f),
-                new Vector3(4.92f, 0.108f, 4.35f),
-                new Vector3(1.00f, 0.010f, 0.18f),
-                new Vector3(1.48f, 0.026f, 0.42f));
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(4.64f, 0.030f, 4.00f),
+                new Vector3(4.82f, 0.040f, 4.20f),
+                new Vector3(0.72f, 0.006f, 0.16f),
+                new Vector3(1.06f, 0.011f, 0.30f));
 
             ValidateDirectionalShadowObject(
                 "Past_HouseExterior_ShadowFoundationCycle70_RoofDiagonalCastA",
                 "Past_HouseExteriorMap_SeparateSpace",
                 HouseExteriorCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(1.62f, 0.040f, 0.72f),
-                new Vector3(2.08f, 0.100f, 1.20f),
-                new Vector3(4.45f, 0.018f, 0.85f),
-                new Vector3(5.15f, 0.036f, 1.35f));
+                new Vector3(1.54f, 0.030f, 0.68f),
+                new Vector3(1.80f, 0.044f, 0.94f),
+                new Vector3(2.70f, 0.007f, 0.58f),
+                new Vector3(3.45f, 0.013f, 0.90f));
             ValidateDirectionalShadowObject(
                 "Past_HouseExterior_ShadowFoundationCycle70_TreeDirectionalCastA",
                 "Past_HouseExteriorMap_SeparateSpace",
                 HouseExteriorCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(3.60f, 0.042f, 2.67f),
-                new Vector3(4.10f, 0.102f, 3.17f),
-                new Vector3(2.00f, 0.014f, 0.50f),
-                new Vector3(2.60f, 0.030f, 0.94f));
+                new Vector3(3.62f, 0.032f, 2.68f),
+                new Vector3(3.90f, 0.044f, 2.92f),
+                new Vector3(1.20f, 0.007f, 0.38f),
+                new Vector3(1.85f, 0.012f, 0.68f));
             ValidateDirectionalShadowObject(
                 "Past_HouseExterior_ShadowFoundationCycle70_SignpostDirectionalCastA",
                 "Past_HouseExteriorMap_SeparateSpace",
                 HouseExteriorCenter,
-                "hd2d_depth_shadow",
-                new Vector3(4.58f, 0.048f, 3.95f),
-                new Vector3(4.92f, 0.108f, 4.35f),
-                new Vector3(1.00f, 0.010f, 0.18f),
-                new Vector3(1.48f, 0.026f, 0.42f));
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(4.64f, 0.030f, 4.00f),
+                new Vector3(4.82f, 0.040f, 4.20f),
+                new Vector3(0.72f, 0.006f, 0.16f),
+                new Vector3(1.06f, 0.011f, 0.30f));
 
             ValidateDirectionalShadowObject(
                 "Current_CentralPlaza_ShadowFoundationCycle70_LibraryDiagonalCastA",
                 "Current_CentralPlazaMap_SeparateSpace",
                 CentralPlazaVsCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(1.95f, 0.062f, 6.48f),
-                new Vector3(2.45f, 0.122f, 7.04f),
-                new Vector3(5.80f, 0.018f, 0.92f),
-                new Vector3(6.60f, 0.034f, 1.48f));
+                new Vector3(1.92f, 0.048f, 6.56f),
+                new Vector3(2.26f, 0.060f, 6.80f),
+                new Vector3(3.55f, 0.007f, 0.66f),
+                new Vector3(4.90f, 0.013f, 1.10f));
             ValidateDirectionalShadowObject(
                 "Current_CentralPlaza_ShadowFoundationCycle70_WestRoadFalloffCastA",
                 "Current_CentralPlazaMap_SeparateSpace",
                 CentralPlazaVsCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(-3.90f, 0.050f, 2.59f),
-                new Vector3(-3.40f, 0.110f, 3.09f),
-                new Vector3(2.45f, 0.012f, 0.50f),
-                new Vector3(3.15f, 0.028f, 0.94f));
+                new Vector3(-3.76f, 0.040f, 2.63f),
+                new Vector3(-3.42f, 0.052f, 2.85f),
+                new Vector3(1.60f, 0.006f, 0.38f),
+                new Vector3(2.40f, 0.011f, 0.76f));
             ValidateDirectionalShadowObject(
                 "Current_CentralPlaza_ShadowFoundationCycle70_NoticeBoardDirectionalCastA",
                 "Current_CentralPlazaMap_SeparateSpace",
                 CentralPlazaVsCenter,
-                "hd2d_depth_shadow",
-                new Vector3(-3.23f, 0.058f, 1.52f),
-                new Vector3(-2.87f, 0.118f, 1.92f),
-                new Vector3(0.98f, 0.008f, 0.18f),
-                new Vector3(1.34f, 0.024f, 0.38f));
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(-3.12f, 0.038f, 1.60f),
+                new Vector3(-2.94f, 0.048f, 1.78f),
+                new Vector3(0.70f, 0.006f, 0.16f),
+                new Vector3(1.10f, 0.011f, 0.30f));
 
             ValidateDirectionalShadowObject(
                 "Past_CentralPlaza_ShadowFoundationCycle70_LibraryDiagonalCastA",
                 "Past_CentralPlazaMap_SeparateSpace",
                 CentralPlazaVsCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(1.95f, 0.062f, 6.48f),
-                new Vector3(2.45f, 0.122f, 7.04f),
-                new Vector3(5.80f, 0.018f, 0.92f),
-                new Vector3(6.60f, 0.034f, 1.48f));
+                new Vector3(1.92f, 0.048f, 6.56f),
+                new Vector3(2.26f, 0.060f, 6.80f),
+                new Vector3(3.55f, 0.007f, 0.66f),
+                new Vector3(4.90f, 0.013f, 1.10f));
             ValidateDirectionalShadowObject(
                 "Past_CentralPlaza_ShadowFoundationCycle70_WestRoadFalloffCastA",
                 "Past_CentralPlazaMap_SeparateSpace",
                 CentralPlazaVsCenter,
                 "hd2d_outdoor_occlusion_gradient",
-                new Vector3(-3.90f, 0.050f, 2.59f),
-                new Vector3(-3.40f, 0.110f, 3.09f),
-                new Vector3(2.45f, 0.012f, 0.50f),
-                new Vector3(3.15f, 0.028f, 0.94f));
+                new Vector3(-3.76f, 0.040f, 2.63f),
+                new Vector3(-3.42f, 0.052f, 2.85f),
+                new Vector3(1.60f, 0.006f, 0.38f),
+                new Vector3(2.40f, 0.011f, 0.76f));
             ValidateDirectionalShadowObject(
                 "Past_CentralPlaza_ShadowFoundationCycle70_NoticeBoardDirectionalCastA",
                 "Past_CentralPlazaMap_SeparateSpace",
                 CentralPlazaVsCenter,
-                "hd2d_depth_shadow",
-                new Vector3(-3.23f, 0.058f, 1.52f),
-                new Vector3(-2.87f, 0.118f, 1.92f),
-                new Vector3(0.98f, 0.008f, 0.18f),
-                new Vector3(1.34f, 0.024f, 0.38f));
+                "hd2d_outdoor_occlusion_gradient",
+                new Vector3(-3.12f, 0.038f, 1.60f),
+                new Vector3(-2.94f, 0.048f, 1.78f),
+                new Vector3(0.70f, 0.006f, 0.16f),
+                new Vector3(1.10f, 0.011f, 0.30f));
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle71ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 71 screenshot capture failed: scene review components are missing.");
+            }
+
+            var houseOverviewPlayerLocal = HouseExteriorCenter + new Vector3(-3.24f, 0.02f, 1.78f);
+            var houseClosePlayerLocal = HouseExteriorCenter + new Vector3(-2.56f, 0.02f, 0.92f);
+            var houseCloseAnchorLocal = HouseExteriorCenter + new Vector3(-0.36f, 0.26f, 1.42f);
+            var plazaOverviewPlayerLocal = CentralPlazaVsCenter + new Vector3(-0.58f, 0.02f, 4.46f);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                houseOverviewPlayerLocal,
+                Path.Combine(outputDirectory, "01_current_house_exterior_shadow_softening_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "01_current_house_exterior_shadow_softening_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                houseOverviewPlayerLocal,
+                Path.Combine(outputDirectory, "02_past_house_exterior_shadow_softening_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "02_past_house_exterior_shadow_softening_overview.png");
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                houseClosePlayerLocal,
+                houseCloseAnchorLocal,
+                new Vector3(0.22f, 1.10f, -2.24f),
+                new Vector3(-0.06f, 0.04f, 0.12f),
+                outputDirectory,
+                "03_current_house_exterior_shadow_softening_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "03_current_house_exterior_shadow_softening_close.png");
+
+            CaptureCloseOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                houseClosePlayerLocal,
+                houseCloseAnchorLocal,
+                new Vector3(0.22f, 1.10f, -2.24f),
+                new Vector3(-0.06f, 0.04f, 0.12f),
+                outputDirectory,
+                "04_past_house_exterior_shadow_softening_close.png");
+            ValidateCloseReviewOutputExists(outputDirectory, "04_past_house_exterior_shadow_softening_close.png");
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaOverviewPlayerLocal,
+                Path.Combine(outputDirectory, "05_current_plaza_shadow_softening_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "05_current_plaza_shadow_softening_overview.png");
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                plazaOverviewPlayerLocal,
+                Path.Combine(outputDirectory, "06_past_plaza_shadow_softening_overview.png"));
+            ValidateScreenshotOutputExists(outputDirectory, "06_past_plaza_shadow_softening_overview.png");
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 71 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()

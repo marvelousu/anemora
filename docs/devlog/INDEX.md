@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.38 fast VS HD2D outdoor directional shadow index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.39 fast VS HD2D outdoor shadow softening index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 417 files including INDEX.md and README.md.
-- Dated devlog records: 415 files.
-- Linked evidence files present under docs/devlog/screenshots/: 933 files.
+- Root-level Markdown coverage: 418 files including INDEX.md and README.md.
+- Dated devlog records: 416 files.
+- Linked evidence files present under docs/devlog/screenshots/: 939 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 19 |
+| 2026-05-23 | 20 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_outdoor_shadow_softening_cycle71.md](2026-05-23_fast_vs_hd2d_outdoor_shadow_softening_cycle71.md) | Fast VS / HD2D | feat(hd2d): soften outdoor directional shadows |
 | [2026-05-23_fast_vs_hd2d_outdoor_directional_shadow_cycle70.md](2026-05-23_fast_vs_hd2d_outdoor_directional_shadow_cycle70.md) | Fast VS / HD2D | feat(hd2d): add outdoor directional shadow pass |
 | [2026-05-23_fast_vs_hd2d_house_exterior_ground_shadow_cycle69.md](2026-05-23_fast_vs_hd2d_house_exterior_ground_shadow_cycle69.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D House Exterior Ground Shadow Cycle 69 |
 | [2026-05-23_fast_vs_hd2d_plaza_library_ground_shadow_cycle68.md](2026-05-23_fast_vs_hd2d_plaza_library_ground_shadow_cycle68.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Ground Shadow Cycle 68 |
