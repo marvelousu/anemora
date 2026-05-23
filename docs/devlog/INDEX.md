@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.58 fast VS HD2D outdoor backdrop foreground cleanup index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.59 fast VS HD2D dusk sun sky mood index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 437 files including INDEX.md and README.md.
-- Dated devlog records: 435 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1007 files.
+- Root-level Markdown coverage: 438 files including INDEX.md and README.md.
+- Dated devlog records: 436 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1011 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 39 |
+| 2026-05-23 | 40 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_dusk_sun_sky_mood_cycle90.md](2026-05-23_fast_vs_hd2d_dusk_sun_sky_mood_cycle90.md) | Fast VS / HD2D | feat(hd2d): add dusk sun sky mood |
 | [2026-05-23_fast_vs_hd2d_outdoor_backdrop_foreground_cleanup_cycle89.md](2026-05-23_fast_vs_hd2d_outdoor_backdrop_foreground_cleanup_cycle89.md) | Fast VS / HD2D | feat(hd2d): clean outdoor backdrop foreground |
 | [2026-05-23_fast_vs_hd2d_outdoor_backdrop_billboards_cycle88.md](2026-05-23_fast_vs_hd2d_outdoor_backdrop_billboards_cycle88.md) | Fast VS / HD2D | feat(hd2d): billboard outdoor backdrop layers |
 | [2026-05-23_fast_vs_hd2d_house_eave_shadow_softening_cycle87.md](2026-05-23_fast_vs_hd2d_house_eave_shadow_softening_cycle87.md) | Fast VS / HD2D | feat(hd2d): soften house eave shadow bands |
@@ -581,6 +582,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.59 | 2026-05-23 | Added Fast VS HD2D dusk sun sky mood cycle record with scene-side visible sun, darker faded outdoor mood, persisted disabled DepthOfField/FilmGrain baseline, validation, build, smoke, and four parent-review screenshot evidence files. |
 | v7.58 | 2026-05-23 | Added Fast VS HD2D outdoor backdrop foreground cleanup cycle record with capture filename correction, front house exterior backdrop cleanup review, validation, build, smoke, and parent-review screenshot evidence. |
 | v7.57 | 2026-05-23 | Added Fast VS HD2D outdoor backdrop billboard cycle record with far haze/horizon quad conversion plan, validation, build, smoke, and parent-review screenshot evidence. |
 | v7.56 | 2026-05-23 | Added Fast VS HD2D house eave shadow softening cycle record with current-side `hd2d_depth_shadow` eave-band replacement, persisted disabled DepthOfField/FilmGrain baseline, validation, and overview/oblique screenshot evidence. |
