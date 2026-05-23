@@ -359,6 +359,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
             ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop();
+            ValidateFastVsHd2dShadowFoundationCycle88OutdoorBackdropBillboards();
             ValidateFastVsHd2dEightyNinthCycleOutdoorSkyTextureReadability();
             ValidateFastVsHd2dNinetiethCyclePlazaLibraryRoofSideDepth();
             ValidateFastVsHd2dNinetyFirstCyclePlazaLibrarySideSurfaceBreakup();
@@ -10861,7 +10862,7 @@ namespace Anemora.EditorTools
                     skyMaterial,
                     $"{prefix}.house_exterior.backdrop_foundation.sky_back_plane");
 
-                CreateOutdoorVoidBackgroundSlab(
+                CreateOutdoorSkyWashQuad(
                     $"{prefix}_HouseExterior_BackdropFoundation_HorizonTreeLine",
                     root,
                     c + new Vector3(0.00f, 0.72f, 9.52f),
@@ -10881,7 +10882,7 @@ namespace Anemora.EditorTools
                     skyMaterial,
                     $"{prefix}.central_plaza.backdrop_foundation.sky_back_plane");
 
-                CreateOutdoorVoidBackgroundSlab(
+                CreateOutdoorSkyWashQuad(
                     $"{prefix}_CentralPlaza_BackdropFoundation_HorizonRoofline",
                     root,
                     c + new Vector3(0.00f, 0.82f, 14.20f),
@@ -10935,7 +10936,7 @@ namespace Anemora.EditorTools
                     skyCurtainMaterial,
                     $"{prefix}.house_exterior.scenic_backdrop.sky_curtain_a");
 
-                CreateOutdoorVoidBackgroundSlab(
+                CreateOutdoorSkyWashQuad(
                     $"{prefix}_HouseExterior_ScenicBackdrop_LowHazeBandA",
                     root,
                     c + new Vector3(0.0f, 2.86f, 8.72f),
@@ -10944,7 +10945,7 @@ namespace Anemora.EditorTools
                     hazeBandMaterial,
                     $"{prefix}.house_exterior.scenic_backdrop.low_haze_band_a");
 
-                CreateOutdoorVoidBackgroundSlab(
+                CreateOutdoorSkyWashQuad(
                     $"{prefix}_HouseExterior_ScenicBackdrop_DistantTreeLineA",
                     root,
                     c + new Vector3(0.8f, 2.22f, 8.42f),
@@ -11008,7 +11009,7 @@ namespace Anemora.EditorTools
                     skyCurtainMaterial,
                     $"{prefix}.central_plaza.scenic_backdrop.sky_curtain_a");
 
-                CreateOutdoorVoidBackgroundSlab(
+                CreateOutdoorSkyWashQuad(
                     $"{prefix}_CentralPlaza_ScenicBackdrop_LowHazeBandA",
                     root,
                     c + new Vector3(0.0f, 3.12f, 14.72f),
@@ -11017,7 +11018,7 @@ namespace Anemora.EditorTools
                     hazeBandMaterial,
                     $"{prefix}.central_plaza.scenic_backdrop.low_haze_band_a");
 
-                CreateOutdoorVoidBackgroundSlab(
+                CreateOutdoorSkyWashQuad(
                     $"{prefix}_CentralPlaza_ScenicBackdrop_DistantRooflineA",
                     root,
                     c + new Vector3(0.0f, 2.58f, 14.28f),
@@ -24455,6 +24456,22 @@ namespace Anemora.EditorTools
             ValidateOutdoorSkyClearColorForReview();
         }
 
+        private static void ValidateFastVsHd2dShadowFoundationCycle88OutdoorBackdropBillboards()
+        {
+            ValidateOutdoorBackdropFoundationBillboardObject("Current_HouseExterior_BackdropFoundation_HorizonTreeLine", "Current_HouseExteriorMap_SeparateSpace", "outdoor_void_background", new Vector3(-0.80f, 0.40f, 9.00f), new Vector3(0.80f, 1.20f, 9.80f), new Vector3(10.00f, 0.30f, 0.05f), new Vector3(12.20f, 0.60f, 0.15f));
+            ValidateOutdoorBackdropFoundationBillboardObject("Past_HouseExterior_BackdropFoundation_HorizonTreeLine", "Past_HouseExteriorMap_SeparateSpace", "outdoor_void_background", new Vector3(-0.80f, 0.40f, 9.00f), new Vector3(0.80f, 1.20f, 9.80f), new Vector3(10.00f, 0.30f, 0.05f), new Vector3(12.20f, 0.60f, 0.15f));
+            ValidateOutdoorBackdropFoundationBillboardObject("Current_CentralPlaza_BackdropFoundation_HorizonRoofline", "Current_CentralPlazaMap_SeparateSpace", "outdoor_void_background", new Vector3(-0.80f, 0.50f, 13.50f), new Vector3(0.80f, 1.20f, 14.80f), new Vector3(13.00f, 0.28f, 0.05f), new Vector3(14.50f, 0.50f, 0.15f));
+            ValidateOutdoorBackdropFoundationBillboardObject("Past_CentralPlaza_BackdropFoundation_HorizonRoofline", "Past_CentralPlazaMap_SeparateSpace", "outdoor_void_background", new Vector3(-0.80f, 0.50f, 13.50f), new Vector3(0.80f, 1.20f, 14.80f), new Vector3(13.00f, 0.28f, 0.05f), new Vector3(14.50f, 0.50f, 0.15f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_LowHazeBandA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.55f, 8.30f), new Vector3(0.35f, 3.15f, 9.10f), new Vector3(13.80f, 0.88f, 0.90f), new Vector3(15.40f, 1.24f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_HouseExterior_ScenicBackdrop_DistantTreeLineA", "Current_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(0.30f, 1.95f, 8.05f), new Vector3(1.30f, 2.55f, 8.80f), new Vector3(11.70f, 0.95f, 0.90f), new Vector3(13.90f, 1.28f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Past_HouseExterior_ScenicBackdrop_LowHazeBandA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.55f, 8.30f), new Vector3(0.35f, 3.15f, 9.10f), new Vector3(13.80f, 0.88f, 0.90f), new Vector3(15.40f, 1.24f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Past_HouseExterior_ScenicBackdrop_DistantTreeLineA", "Past_HouseExteriorMap_SeparateSpace", "scenic_backdrop", new Vector3(0.30f, 1.95f, 8.05f), new Vector3(1.30f, 2.55f, 8.80f), new Vector3(11.70f, 0.95f, 0.90f), new Vector3(13.90f, 1.28f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_CentralPlaza_ScenicBackdrop_LowHazeBandA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.85f, 14.20f), new Vector3(0.35f, 3.35f, 15.30f), new Vector3(18.60f, 0.90f, 0.90f), new Vector3(20.40f, 1.30f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Current_CentralPlaza_ScenicBackdrop_DistantRooflineA", "Current_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.25f, 13.70f), new Vector3(0.35f, 2.95f, 14.85f), new Vector3(16.40f, 1.00f, 0.90f), new Vector3(18.20f, 1.32f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Past_CentralPlaza_ScenicBackdrop_LowHazeBandA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.85f, 14.20f), new Vector3(0.35f, 3.35f, 15.30f), new Vector3(18.60f, 0.90f, 0.90f), new Vector3(20.40f, 1.30f, 1.10f));
+            ValidateOutdoorScenicBackdropBillboardObject("Past_CentralPlaza_ScenicBackdrop_DistantRooflineA", "Past_CentralPlazaMap_SeparateSpace", "scenic_backdrop", new Vector3(-0.35f, 2.25f, 13.70f), new Vector3(0.35f, 2.95f, 14.85f), new Vector3(16.40f, 1.00f, 0.90f), new Vector3(18.20f, 1.32f, 1.10f));
+        }
+
         private static void ValidateFastVsHd2dEightyNinthCycleOutdoorSkyTextureReadability()
         {
             ValidateFastVsHd2dEightyEighthCycleOutdoorSkyBackdrop();
@@ -33970,8 +33987,8 @@ namespace Anemora.EditorTools
                 audiencePrefix = cycleAudience + "_";
             }
 
-            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_overview.png";
-            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_overview.png";
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_backdrop_billboards_overview.png";
+            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_backdrop_billboards_overview.png";
             var currentLibraryOverviewFile = $"{audiencePrefix}03_current_library_overview.png";
             var currentInteriorOverviewFile = $"{audiencePrefix}04_current_house_interior_overview.png";
 
@@ -34095,6 +34112,11 @@ namespace Anemora.EditorTools
             CaptureHd2dShadowFoundationCycle87ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle87_eave_shadow_softening_parent_review_20260523_01");
         }
 
+        public static void CaptureHd2dShadowFoundationCycle88ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle88ScreenshotsToDirectory("docs/devlog/screenshots/fast_vs_hd2d_cycle88_outdoor_backdrop_billboards_parent_review_20260523_01");
+        }
+
         private static void CaptureHd2dShadowFoundationCycle87ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -34148,6 +34170,55 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 87 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle88ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 88 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentHouseOverviewFile = $"{audiencePrefix}01_current_house_exterior_overview.png";
+            var currentPlazaOverviewFile = $"{audiencePrefix}02_current_central_plaza_overview.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f),
+                Path.Combine(outputDirectory, currentHouseOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentHouseOverviewFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(0f, 0.02f, -1.38f),
+                Path.Combine(outputDirectory, currentPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentPlazaOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 88 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
@@ -36895,6 +36966,42 @@ namespace Anemora.EditorTools
             if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must not cast or receive shadows.");
+            }
+        }
+
+        private static void ValidateOutdoorBackdropFoundationBillboardObject(
+            string objectName,
+            string expectedParentName,
+            string expectedMaterialToken,
+            Vector3 minLocalPosition,
+            Vector3 maxLocalPosition,
+            Vector3 minLocalScale,
+            Vector3 maxLocalScale)
+        {
+            ValidateOcclusionBackdropObject(objectName, expectedParentName, expectedMaterialToken, minLocalPosition, maxLocalPosition, minLocalScale, maxLocalScale);
+            ValidateOutdoorBackdropQuadMesh(objectName);
+        }
+
+        private static void ValidateOutdoorScenicBackdropBillboardObject(
+            string objectName,
+            string expectedParentName,
+            string expectedMaterialToken,
+            Vector3 minLocalPosition,
+            Vector3 maxLocalPosition,
+            Vector3 minLocalScale,
+            Vector3 maxLocalScale)
+        {
+            ValidateOutdoorScenicBackdropObject(objectName, expectedParentName, expectedMaterialToken, minLocalPosition, maxLocalPosition, minLocalScale, maxLocalScale);
+            ValidateOutdoorBackdropQuadMesh(objectName);
+        }
+
+        private static void ValidateOutdoorBackdropQuadMesh(string objectName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var meshFilter = sceneObject != null ? sceneObject.GetComponent<MeshFilter>() : null;
+            if (meshFilter == null || meshFilter.sharedMesh == null || meshFilter.sharedMesh.name.IndexOf("Quad", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a quad mesh.");
             }
         }
 
