@@ -333,6 +333,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dCycle51MaterialLightShadowResponse();
             ValidateFastVsHd2dCycle52HouseFacadePorchClosure();
             ValidateFastVsHd2dCycle64HouseExteriorPorchGapClosure();
+            ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
             ValidateFastVsHd2dEightySeventhCyclePlazaLibraryBackwardVolume();
@@ -11475,6 +11476,7 @@ namespace Anemora.EditorTools
             CreateLibraryReadingTableGroundingPolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryInteriorOcclusionReadabilityCycle48(root, prefix, past, materials);
             CreateLibraryDecisiveLightShadowCycle49(root, prefix, past, materials);
+            CreateLibraryInteriorShadowHierarchyCycle66(root, prefix, past, materials);
             CreateLibraryEntryTableContrastPolish(root, prefix, past, materials, c, floor, wood, trim);
             CreateLibraryTableSilhouettePolish(root, prefix, past, materials, c, wood, trim);
             CreateLibraryReadingSurfaceDensityPolish(root, prefix, past, materials, c);
@@ -12287,6 +12289,33 @@ namespace Anemora.EditorTools
             }
 
             Add("Current_Library_Cycle49_RetoDeskUnderShadowA", new Vector3(1.35f, 0.060f, 0.72f), new Vector3(1.04f, 0.014f, 0.24f), Quaternion.identity, shadow, "Current.library.cycle49.reto_desk_under_shadow_a");
+        }
+
+        private static void CreateLibraryInteriorShadowHierarchyCycle66(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = LibraryVsCenter;
+            var occlusion = EnsureHd2dOutdoorOcclusionGradientMaterial();
+            var depthShadow = EnsureHd2dDepthShadowMaterial();
+
+            void Add(string objectName, Vector3 localPosition, Vector3 localScale, Quaternion rotation, Material material, string landmarkId)
+            {
+                CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, c + localPosition, localScale, rotation, material, landmarkId);
+            }
+
+            if (past)
+            {
+                Add("Past_Library_Cycle66_ShadowHierarchy_BackShelfEveningBandA", new Vector3(0.00f, 0.052f, 5.66f), new Vector3(8.50f, 0.026f, 1.08f), Quaternion.identity, occlusion, "Past.library.cycle66.shadow_hierarchy.back_shelf_evening_band_a");
+                Add("Past_Library_Cycle66_ShadowHierarchy_LeftTableLongCastA", new Vector3(-2.88f, 0.052f, -0.62f), new Vector3(1.72f, 0.016f, 0.46f), Quaternion.Euler(0f, -3f, 0f), depthShadow, "Past.library.cycle66.shadow_hierarchy.left_table_long_cast_a");
+                Add("Past_Library_Cycle66_ShadowHierarchy_RightTableLongCastA", new Vector3(2.88f, 0.052f, -0.62f), new Vector3(1.72f, 0.016f, 0.46f), Quaternion.Euler(0f, 3f, 0f), depthShadow, "Past.library.cycle66.shadow_hierarchy.right_table_long_cast_a");
+                Add("Past_Library_Cycle66_ShadowHierarchy_RearTablesSharedCastA", new Vector3(0.00f, 0.052f, 2.18f), new Vector3(6.90f, 0.020f, 0.78f), Quaternion.identity, occlusion, "Past.library.cycle66.shadow_hierarchy.rear_tables_shared_cast_a");
+                return;
+            }
+
+            Add("Current_Library_Cycle66_ShadowHierarchy_BackShelfDeepFloorA", new Vector3(0.00f, 0.052f, 5.58f), new Vector3(8.60f, 0.030f, 1.32f), Quaternion.identity, occlusion, "Current.library.cycle66.shadow_hierarchy.back_shelf_deep_floor_a");
+            Add("Current_Library_Cycle66_ShadowHierarchy_LeftGalleryFloorFalloffA", new Vector3(-3.76f, 0.052f, 0.90f), new Vector3(1.34f, 0.024f, 5.60f), Quaternion.identity, occlusion, "Current.library.cycle66.shadow_hierarchy.left_gallery_floor_falloff_a");
+            Add("Current_Library_Cycle66_ShadowHierarchy_RightGalleryFloorFalloffA", new Vector3(3.76f, 0.052f, 0.90f), new Vector3(1.34f, 0.024f, 5.60f), Quaternion.identity, occlusion, "Current.library.cycle66.shadow_hierarchy.right_gallery_floor_falloff_a");
+            Add("Current_Library_Cycle66_ShadowHierarchy_RetoDeskContactCoreA", new Vector3(1.20f, 0.070f, 0.44f), new Vector3(1.36f, 0.018f, 0.50f), Quaternion.Euler(0f, -4f, 0f), depthShadow, "Current.library.cycle66.shadow_hierarchy.reto_desk_contact_core_a");
+            Add("Current_Library_Cycle66_ShadowHierarchy_RetoBookCastA", (CurrentLibraryRetoDeskBookInitialLocalPosition - c) + new Vector3(0.02f, -0.012f, 0.05f), new Vector3(0.48f, 0.010f, 0.20f), Quaternion.Euler(0f, -8f, 0f), depthShadow, "Current.library.cycle66.shadow_hierarchy.reto_book_cast_a");
         }
 
         private static void CreateLibraryEntryTableContrastPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material floor, Material wood, Material trim)
@@ -31830,6 +31859,53 @@ namespace Anemora.EditorTools
             ValidatePiece("Current_HouseExterior_Cycle64_PorchGapClosure_RightThresholdShadowA", "Current_HouseExteriorMap_SeparateSpace", "shadow", new Vector3(-0.30f, 0.06f, -2.12f), new Vector3(-0.06f, 0.14f, -1.98f), new Vector3(0.24f, 0.010f, 0.08f), new Vector3(0.36f, 0.024f, 0.16f));
             ValidatePiece("Past_HouseExterior_Cycle64_PorchGapClosure_LeftThresholdShadowA", "Past_HouseExteriorMap_SeparateSpace", "shadow", new Vector3(-1.98f, 0.06f, -2.12f), new Vector3(-1.74f, 0.14f, -1.98f), new Vector3(0.24f, 0.010f, 0.08f), new Vector3(0.36f, 0.024f, 0.16f));
             ValidatePiece("Past_HouseExterior_Cycle64_PorchGapClosure_RightThresholdShadowA", "Past_HouseExteriorMap_SeparateSpace", "shadow", new Vector3(-0.30f, 0.06f, -2.12f), new Vector3(-0.06f, 0.14f, -1.98f), new Vector3(0.24f, 0.010f, 0.08f), new Vector3(0.36f, 0.024f, 0.16f));
+        }
+
+        private static void ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy()
+        {
+            void ValidatePiece(
+                string objectName,
+                string expectedParentName,
+                string expectedMaterialToken,
+                Vector3 minLocalPosition,
+                Vector3 maxLocalPosition,
+                Vector3 minLocalScale,
+                Vector3 maxLocalScale)
+            {
+                ValidateNonArrivalLandmarkCubeObject(
+                    objectName,
+                    expectedParentName,
+                    LibraryVsCenter,
+                    expectedMaterialToken,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    minLocalPosition,
+                    maxLocalPosition,
+                    minLocalScale,
+                    maxLocalScale);
+
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+                if (renderer == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} must stay shadow-safe.");
+                }
+            }
+
+            ValidatePiece("Current_Library_Cycle66_ShadowHierarchy_BackShelfDeepFloorA", "Current_LibraryMap_SeparateSpace", "hd2d_outdoor_occlusion_gradient", new Vector3(-0.12f, 0.04f, 5.46f), new Vector3(0.12f, 0.17f, 5.70f), new Vector3(6.88f, 0.018f, 1.06f), new Vector3(10.32f, 0.042f, 1.58f));
+            ValidatePiece("Current_Library_Cycle66_ShadowHierarchy_LeftGalleryFloorFalloffA", "Current_LibraryMap_SeparateSpace", "hd2d_outdoor_occlusion_gradient", new Vector3(-3.88f, 0.04f, 0.78f), new Vector3(-3.64f, 0.17f, 1.02f), new Vector3(1.07f, 0.014f, 4.48f), new Vector3(1.61f, 0.034f, 6.72f));
+            ValidatePiece("Current_Library_Cycle66_ShadowHierarchy_RightGalleryFloorFalloffA", "Current_LibraryMap_SeparateSpace", "hd2d_outdoor_occlusion_gradient", new Vector3(3.64f, 0.04f, 0.78f), new Vector3(3.88f, 0.17f, 1.02f), new Vector3(1.07f, 0.014f, 4.48f), new Vector3(1.61f, 0.034f, 6.72f));
+            ValidatePiece("Current_Library_Cycle66_ShadowHierarchy_RetoDeskContactCoreA", "Current_LibraryMap_SeparateSpace", "hd2d_depth_shadow", new Vector3(1.08f, -0.05f, 0.34f), new Vector3(1.32f, 0.19f, 0.54f), new Vector3(1.15f, 0.012f, 0.38f), new Vector3(1.57f, 0.026f, 0.60f));
+            ValidatePiece("Current_Library_Cycle66_ShadowHierarchy_RetoBookCastA", "Current_LibraryMap_SeparateSpace", "hd2d_depth_shadow", new Vector3(1.26f, 0.27f, 0.35f), new Vector3(1.50f, 0.51f, 0.59f), new Vector3(0.38f, 0.006f, 0.16f), new Vector3(0.58f, 0.014f, 0.24f));
+
+            ValidatePiece("Past_Library_Cycle66_ShadowHierarchy_BackShelfEveningBandA", "Past_LibraryMap_SeparateSpace", "hd2d_outdoor_occlusion_gradient", new Vector3(-0.12f, 0.04f, 5.54f), new Vector3(0.12f, 0.17f, 5.78f), new Vector3(6.80f, 0.016f, 0.86f), new Vector3(10.20f, 0.036f, 1.30f));
+            ValidatePiece("Past_Library_Cycle66_ShadowHierarchy_LeftTableLongCastA", "Past_LibraryMap_SeparateSpace", "hd2d_depth_shadow", new Vector3(-3.00f, 0.04f, -0.74f), new Vector3(-2.76f, 0.17f, -0.50f), new Vector3(1.38f, 0.012f, 0.37f), new Vector3(2.06f, 0.026f, 0.56f));
+            ValidatePiece("Past_Library_Cycle66_ShadowHierarchy_RightTableLongCastA", "Past_LibraryMap_SeparateSpace", "hd2d_depth_shadow", new Vector3(2.76f, 0.04f, -0.74f), new Vector3(3.00f, 0.17f, -0.50f), new Vector3(1.38f, 0.012f, 0.37f), new Vector3(2.06f, 0.026f, 0.56f));
+            ValidatePiece("Past_Library_Cycle66_ShadowHierarchy_RearTablesSharedCastA", "Past_LibraryMap_SeparateSpace", "hd2d_outdoor_occlusion_gradient", new Vector3(-0.12f, 0.04f, 2.06f), new Vector3(0.12f, 0.17f, 2.30f), new Vector3(5.52f, 0.014f, 0.62f), new Vector3(8.28f, 0.030f, 0.94f));
         }
 
         private static void ValidateFastVsHd2dCycle53OutdoorPerimeterWorldContinuation()
