@@ -26,7 +26,7 @@ namespace Anemora.EditorTools
         private const float SpriteCardWorldLightStrengthMin = 0.04f;
         private const float SpriteCardWorldLightStrengthMax = 0.12f;
         private const float SpriteCardWorldShadowReceiveStrengthMin = 0.025f;
-        private const float SpriteCardWorldShadowReceiveStrengthMax = 0.08f;
+        private const float SpriteCardWorldShadowReceiveStrengthMax = 0.13f;
         private const int SpriteCardRenderQueueMin = 3000;
         private const int SpriteCardRenderQueueMax = 3015;
         private const string Cycle23ReportFileName = "sprite_card_edge_rim_cycle23_20260522.md";

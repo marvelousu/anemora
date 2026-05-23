@@ -29,20 +29,20 @@ namespace Anemora.EditorTools
         private const float SpriteCardPaperRimStrength = 0.07f;
         private const float SpriteCardPaperLowerShadeStrength = 0.08f;
         private const float SpriteCardWorldLightStrength = 0.10f;
-        private const float SpriteCardWorldShadowReceiveStrength = 0.07f;
+        private const float SpriteCardWorldShadowReceiveStrength = 0.11f;
         private const string LibraryWindowLightCookieTextureId = "hd2d_library_window_light_cookie_soft";
         private const int LibraryWindowLightCookieSize = 128;
         private const float LibraryWindowLightCookieAverageMin = 0.58f;
         private const float LibraryWindowLightCookieAverageMax = 0.86f;
         private const float SurfaceRampStrength = 0.20f;
         private const float SurfaceRampDirectionalLightStrength = 0.18f;
-        private const float SurfaceRampShadowReceiveStrength = 0.26f;
+        private const float SurfaceRampShadowReceiveStrength = 0.30f;
         private static readonly Color SpriteCardTopLight = new Color(1.08f, 1.03f, 0.96f, 1f);
         private static readonly Color SpriteCardSideShade = new Color(0.94f, 0.97f, 1.03f, 1f);
         private static readonly Color SpriteCardFloorShade = new Color(0.89f, 0.92f, 0.96f, 1f);
         private static readonly Color SurfaceRampTopLight = new Color(1.05f, 1.03f, 0.97f, 1f);
-        private static readonly Color SurfaceRampSideShade = new Color(0.95f, 0.98f, 1.03f, 1f);
-        private static readonly Color SurfaceRampFloorShade = new Color(0.92f, 0.94f, 0.97f, 1f);
+        private static readonly Color SurfaceRampSideShade = new Color(0.91f, 0.94f, 1.00f, 1f);
+        private static readonly Color SurfaceRampFloorShade = new Color(0.86f, 0.89f, 0.94f, 1f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityFloorTextureScale = new Vector2(8f, 6f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityWallTextureScale = new Vector2(6f, 4f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityFurnitureTextureScale = new Vector2(4f, 4f);
@@ -29597,9 +29597,9 @@ namespace Anemora.EditorTools
                 maxAlpha = Mathf.Max(maxAlpha, pixel.a / 255f);
             }
 
-            if (centerAlpha < 0.06f || centerAlpha > 0.14f)
+            if (centerAlpha < 0.17f || centerAlpha > 0.21f)
             {
-                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft center alpha must stay in the 0.06-0.14 range, but was {centerAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft center alpha must stay in the 0.17-0.21 range, but was {centerAlpha:0.000}.");
             }
 
             if (topLeftInteriorAlpha <= lowerRightInteriorAlpha + 0.015f)
@@ -29617,9 +29617,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft corner alpha must stay near transparent. tl={topLeftCornerAlpha:0.000}, tr={topRightCornerAlpha:0.000}, bl={bottomLeftCornerAlpha:0.000}, br={bottomRightCornerAlpha:0.000}.");
             }
 
-            if (maxAlpha < 0.18f || maxAlpha > 0.24f)
+            if (maxAlpha < 0.27f || maxAlpha > 0.31f)
             {
-                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft max alpha must stay in the 0.18-0.24 range, but was {maxAlpha:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: surface_directional_shade_overlay_soft max alpha must stay in the 0.27-0.31 range, but was {maxAlpha:0.000}.");
             }
 
             UnityEngine.Object.DestroyImmediate(validationTexture);
@@ -31722,25 +31722,25 @@ namespace Anemora.EditorTools
         private static void ValidateFastVsHd2dCycle51MaterialLightShadowResponse()
         {
             ValidateMaterialFloatBand("current_exterior_wall", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.29f, 0.31f);
             ValidateMaterialFloatBand("current_ground", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("current_ground", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("current_ground", "_ShadowReceiveStrength", 0.29f, 0.31f);
             ValidateMaterialFloatBand("current_roof", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("current_roof", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("current_roof", "_ShadowReceiveStrength", 0.29f, 0.31f);
             ValidateMaterialFloatBand("past_exterior_wall", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.29f, 0.31f);
             ValidateMaterialFloatBand("past_wood_floor", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("past_wood_floor", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("past_wood_floor", "_ShadowReceiveStrength", 0.29f, 0.31f);
             ValidateMaterialFloatBand("book", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("book", "_ShadowReceiveStrength", 0.25f, 0.27f);
+            ValidateMaterialFloatBand("book", "_ShadowReceiveStrength", 0.29f, 0.31f);
             ValidateMaterialFloatBand("niro_front_sprite", "_WorldLightStrength", 0.09f, 0.11f);
-            ValidateMaterialFloatBand("niro_front_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("niro_front_sprite", "_WorldShadowReceiveStrength", 0.10f, 0.12f);
             ValidateMaterialFloatBand("niro_walk_front_sprite", "_WorldLightStrength", 0.09f, 0.11f);
-            ValidateMaterialFloatBand("niro_walk_front_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("niro_walk_front_sprite", "_WorldShadowReceiveStrength", 0.10f, 0.12f);
             ValidateMaterialFloatBand("reto_v02_writing_loop_sprite", "_WorldLightStrength", 0.09f, 0.11f);
-            ValidateMaterialFloatBand("reto_v02_writing_loop_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("reto_v02_writing_loop_sprite", "_WorldShadowReceiveStrength", 0.10f, 0.12f);
             ValidateMaterialFloatBand("aria_v46_normal_loop_breath_sprite", "_WorldLightStrength", 0.09f, 0.11f);
-            ValidateMaterialFloatBand("aria_v46_normal_loop_breath_sprite", "_WorldShadowReceiveStrength", 0.06f, 0.08f);
+            ValidateMaterialFloatBand("aria_v46_normal_loop_breath_sprite", "_WorldShadowReceiveStrength", 0.10f, 0.12f);
 
             ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle51_DoorSideShell_LeftReturnWallA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.11f, 0.94f, -1.08f), new Vector3(-1.99f, 1.10f, -0.88f), new Vector3(0.22f, 1.34f, 1.00f), new Vector3(0.32f, 1.50f, 1.16f));
             ValidateNonArrivalLandmarkCubeObject("Current_HouseExterior_Cycle51_DoorSideShell_RightReturnWallA", "Current_HouseExteriorMap_SeparateSpace", HouseExteriorCenter, "current_exterior_wall", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-0.04f, 0.94f, -1.08f), new Vector3(0.08f, 1.10f, -0.88f), new Vector3(0.22f, 1.34f, 1.00f), new Vector3(0.32f, 1.50f, 1.16f));
@@ -36595,7 +36595,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dDepthShadowMaterial()
         {
-            var material = FlatMaterial("hd2d_depth_shadow", new Color(0.04f, 0.035f, 0.035f, 0.12f), true, FastVsHd2dMaterialRole.ContactShadow);
+            var material = FlatMaterial("hd2d_depth_shadow", new Color(0.04f, 0.035f, 0.035f, 0.17f), true, FastVsHd2dMaterialRole.ContactShadow);
             ConfigureTransparentUnlitMaterial(material, 2990);
             return material;
         }
@@ -36646,12 +36646,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dOutdoorOcclusionGradientMaterial()
         {
-            var material = FlatMaterial("hd2d_outdoor_occlusion_gradient", new Color(0.13f, 0.14f, 0.17f, 0.24f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial("hd2d_outdoor_occlusion_gradient", new Color(0.13f, 0.14f, 0.17f, 0.28f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3007);
             var texture = EnsureHd2dOutdoorOcclusionGradientTexture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(0.13f, 0.14f, 0.17f, 0.24f);
+            var tint = new Color(0.13f, 0.14f, 0.17f, 0.28f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -37707,10 +37707,10 @@ namespace Anemora.EditorTools
                     var diagonal = Mathf.Clamp01(1f - ((u * 0.92f) + (v * 0.68f)));
                     var upperLeftFocus = Mathf.Clamp01(1f - Mathf.Sqrt(((u / 0.62f) * (u / 0.62f)) + ((v / 0.78f) * (v / 0.78f))));
                     var centerBulge = Mathf.Clamp01(1f - Mathf.Sqrt((((u - 0.44f) / 0.46f) * ((u - 0.44f) / 0.46f)) + (((v - 0.38f) / 0.52f) * ((v - 0.38f) / 0.52f))));
-                    var alpha = 0.060f + (diagonal * 0.100f) + (upperLeftFocus * 0.045f) + (centerBulge * 0.060f);
+                    var alpha = (0.060f + (diagonal * 0.100f) + (upperLeftFocus * 0.045f) + (centerBulge * 0.060f)) * 1.60f;
                     var noiseSeed = (((x * 17) ^ (y * 29) ^ (x * y * 3)) & 31) / 31f;
                     alpha += (noiseSeed - 0.5f) * 0.008f;
-                    alpha = Mathf.Clamp(edgeMask * alpha, 0f, 0.24f);
+                    alpha = Mathf.Clamp(edgeMask * alpha, 0f, 0.30f);
                     var rgb = new Color32(11, 12, 19, (byte)Mathf.Clamp(Mathf.RoundToInt(alpha * 255f), 0, 255));
                     pixels[(y * texture.width) + x] = rgb;
                 }
