@@ -54,12 +54,12 @@ namespace Anemora.EditorTools
                 new Vector3(-8.35f, 0f, -8.35f),
                 InteriorLuminanceBand,
                 new Vector3(46f, -42f, 0f),
-                0.86f,
-                new Color(1.00f, 0.88f, 0.72f, 1f),
-                0.28f,
-                new Color(1.00f, 0.72f, 0.46f, 1f),
-                0.169f,
-                new Color(0.176f, 0.168f, 0.163f, 1f));
+                0.85f,
+                new Color(1.00f, 0.84f, 0.62f, 1f),
+                0.27f,
+                new Color(1.00f, 0.68f, 0.42f, 1f),
+                0.163f,
+                new Color(0.170f, 0.160f, 0.160f, 1f));
 
             ValidateProfile(
                 issues,
@@ -75,12 +75,12 @@ namespace Anemora.EditorTools
                 new Vector3(8.20f, 0f, 8.20f),
                 ExteriorLuminanceBand,
                 new Vector3(50f, -36f, 0f),
-                1.05f,
-                new Color(1.00f, 0.94f, 0.82f, 1f),
-                0.15f,
-                new Color(1.00f, 0.76f, 0.48f, 1f),
-                0.213f,
-                new Color(0.206f, 0.214f, 0.223f, 1f));
+                1.06f,
+                new Color(1.00f, 0.90f, 0.72f, 1f),
+                0.13f,
+                new Color(1.00f, 0.70f, 0.42f, 1f),
+                0.209f,
+                new Color(0.200f, 0.210f, 0.220f, 1f));
 
             ValidateProfile(
                 issues,
@@ -96,12 +96,12 @@ namespace Anemora.EditorTools
                 new Vector3(20.80f, 0f, 15.80f),
                 CentralPlazaLuminanceBand,
                 new Vector3(49f, -31f, 0f),
-                1.07f,
-                new Color(1.00f, 0.92f, 0.78f, 1f),
-                0.11f,
-                new Color(1.00f, 0.72f, 0.42f, 1f),
-                0.201f,
-                new Color(0.193f, 0.201f, 0.213f, 1f));
+                1.08f,
+                new Color(1.00f, 0.88f, 0.68f, 1f),
+                0.10f,
+                new Color(1.00f, 0.68f, 0.38f, 1f),
+                0.199f,
+                new Color(0.190f, 0.200f, 0.210f, 1f));
 
             ValidateProfile(
                 issues,
@@ -117,12 +117,12 @@ namespace Anemora.EditorTools
                 new Vector3(31.00f, 0f, 20.00f),
                 LibraryLuminanceBand,
                 new Vector3(54f, -28f, 0f),
-                0.76f,
-                new Color(1.00f, 0.86f, 0.64f, 1f),
-                0.20f,
-                new Color(1.00f, 0.70f, 0.42f, 1f),
-                0.121f,
-                new Color(0.128f, 0.120f, 0.111f, 1f));
+                0.75f,
+                new Color(1.00f, 0.82f, 0.58f, 1f),
+                0.19f,
+                new Color(1.00f, 0.66f, 0.38f, 1f),
+                0.112f,
+                new Color(0.120f, 0.110f, 0.100f, 1f));
 
             if (director != null && visibility != null)
             {
