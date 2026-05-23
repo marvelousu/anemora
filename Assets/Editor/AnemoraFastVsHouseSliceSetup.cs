@@ -344,6 +344,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadowFoundationCycle78HouseDoorLightPlaneClearance();
             ValidateFastVsHd2dShadowFoundationCycle79DoorFrontLeafSeal();
             ValidateFastVsHd2dShadowFoundationCycle80TransparentDepthTest();
+            ValidateFastVsHd2dShadowFoundationCycle81HouseDoorSightlineDiagnostics();
             ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
@@ -1667,6 +1668,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dShadowFoundationCycle80ScreenshotsBatch()
         {
             CaptureHd2dShadowFoundationCycle80ScreenshotsToDirectory(GetHd2dShadowFoundationCycle80ScreenshotsDirectory());
+        }
+
+        public static void CaptureHd2dShadowFoundationCycle81ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle81ScreenshotsToDirectory(GetHd2dShadowFoundationCycle81ScreenshotsDirectory());
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -33168,6 +33174,11 @@ namespace Anemora.EditorTools
             return "docs/devlog/screenshots/fast_vs_hd2d_cycle80_transparent_depth_parent_review_20260523_01";
         }
 
+        private static string GetHd2dShadowFoundationCycle81ScreenshotsDirectory()
+        {
+            return "docs/devlog/screenshots/fast_vs_hd2d_cycle81_door_sightline_parent_review_20260523_01";
+        }
+
         private static void CaptureHd2dShadowFoundationCycle78ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -33442,6 +33453,127 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 80 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle81ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 81 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentMediumFile = $"{audiencePrefix}01_current_house_exterior_door_sightline_medium.png";
+            var currentLowerFile = $"{audiencePrefix}02_current_house_exterior_door_sightline_lower_close.png";
+            var currentObliqueFile = $"{audiencePrefix}03_current_house_exterior_door_sightline_oblique_left.png";
+            var pastMediumFile = $"{audiencePrefix}04_past_house_exterior_door_sightline_medium.png";
+            var pastLowerFile = $"{audiencePrefix}05_past_house_exterior_door_sightline_lower_close.png";
+            var pastObliqueFile = $"{audiencePrefix}06_past_house_exterior_door_sightline_oblique_left.png";
+
+            var sightlinePlayerLocal = HouseExteriorCenter + new Vector3(-1.06f, 0.02f, -1.74f);
+            var sightlineAnchorLocal = HouseExteriorCenter + new Vector3(-1.06f, 0.84f, -2.02f);
+
+            CaptureCloseReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                sightlinePlayerLocal,
+                sightlineAnchorLocal,
+                new Vector3(0f, 0.70f, -5.80f),
+                new Vector3(0f, -0.05f, 0.00f),
+                outputDirectory,
+                currentMediumFile);
+
+            CaptureCloseReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                sightlinePlayerLocal,
+                sightlineAnchorLocal,
+                new Vector3(0f, 0.36f, -4.40f),
+                new Vector3(0f, -0.02f, 0.00f),
+                outputDirectory,
+                currentLowerFile);
+
+            CaptureCloseReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                sightlinePlayerLocal,
+                sightlineAnchorLocal,
+                new Vector3(-1.35f, 0.60f, -5.10f),
+                new Vector3(0f, -0.03f, 0.00f),
+                outputDirectory,
+                currentObliqueFile);
+
+            CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                sightlinePlayerLocal,
+                sightlineAnchorLocal,
+                new Vector3(0f, 0.70f, -5.80f),
+                new Vector3(0f, -0.05f, 0.00f),
+                outputDirectory,
+                pastMediumFile);
+
+            CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                sightlinePlayerLocal,
+                sightlineAnchorLocal,
+                new Vector3(0f, 0.36f, -4.40f),
+                new Vector3(0f, -0.02f, 0.00f),
+                outputDirectory,
+                pastLowerFile);
+
+            CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                sightlinePlayerLocal,
+                sightlineAnchorLocal,
+                new Vector3(-1.35f, 0.60f, -5.10f),
+                new Vector3(0f, -0.03f, 0.00f),
+                outputDirectory,
+                pastObliqueFile);
+
+            ValidateCloseReviewOutputExists(outputDirectory, currentMediumFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentLowerFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentObliqueFile);
+            ValidateCloseReviewOutputExists(outputDirectory, pastMediumFile);
+            ValidateCloseReviewOutputExists(outputDirectory, pastLowerFile);
+            ValidateCloseReviewOutputExists(outputDirectory, pastObliqueFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 81 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
@@ -35434,6 +35566,57 @@ namespace Anemora.EditorTools
             ValidateTransparentWorldMaterialDepthTest(
                 EnsureHd2dOutdoorOcclusionGradientMaterial(),
                 "hd2d_outdoor_occlusion_gradient");
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle81HouseDoorSightlineDiagnostics()
+        {
+            ValidateFastVsHd2dShadowFoundationCycle79DoorFrontLeafSeal();
+
+            void ValidateLeafSightline(string prefix)
+            {
+                var leafName = $"{prefix}_HouseExterior_Cycle79_DoorFrontLeafSealA";
+                var panelName = $"{prefix}_HouseExterior_DoorClosedPanel";
+                var leaf = FindSceneObjectIncludingInactive(leafName);
+                var panel = FindSceneObjectIncludingInactive(panelName);
+
+                if (leaf == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing Cycle79 front leaf diagnostic object {leafName}.");
+                }
+
+                if (panel == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing door closed panel reference {panelName}.");
+                }
+
+                var leafRenderer = leaf.GetComponent<Renderer>();
+                if (leafRenderer == null || leafRenderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {leafName} must keep a visible renderer and material.");
+                }
+
+                if (leaf.GetComponent<Collider>() != null || leaf.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {leafName} must remain visual-only with no collider.");
+                }
+
+                var materialName = leafRenderer.sharedMaterial.name ?? string.Empty;
+                if (materialName.IndexOf("house_door_detail", StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {leafName} must continue using a house door detail material.");
+                }
+
+                var leafLocalZ = leaf.transform.localPosition.z - HouseExteriorCenter.z;
+                var panelLocalZ = panel.transform.localPosition.z - HouseExteriorCenter.z;
+                const float minForwardDelta = 0.35f;
+                if (leafLocalZ > panelLocalZ - minForwardDelta)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {leafName} must sit at least {minForwardDelta:0.00} units forward of {panelName} on local Z for the sightline diagnostic.");
+                }
+            }
+
+            ValidateLeafSightline("Current");
+            ValidateLeafSightline("Past");
         }
 
         private static void ValidateHouseExteriorPorchOcclusionReadabilityObject(
