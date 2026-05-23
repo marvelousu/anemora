@@ -343,6 +343,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dShadowFoundationCycle77FrontPlaneDoorClearance();
             ValidateFastVsHd2dShadowFoundationCycle78HouseDoorLightPlaneClearance();
             ValidateFastVsHd2dShadowFoundationCycle79DoorFrontLeafSeal();
+            ValidateFastVsHd2dShadowFoundationCycle80TransparentDepthTest();
             ValidateFastVsHd2dCycle66LibraryInteriorShadowHierarchy();
             ValidateFastVsHd2dEightyFifthCycleLibraryReadingSurfaceDensity();
             ValidateFastVsHd2dEightySixthCycleOutdoorHorizonDepthCleanup();
@@ -1661,6 +1662,11 @@ namespace Anemora.EditorTools
         public static void CaptureHd2dShadowFoundationCycle79ScreenshotsBatch()
         {
             CaptureHd2dShadowFoundationCycle79ScreenshotsToDirectory(GetHd2dShadowFoundationCycle79ScreenshotsDirectory());
+        }
+
+        public static void CaptureHd2dShadowFoundationCycle80ScreenshotsBatch()
+        {
+            CaptureHd2dShadowFoundationCycle80ScreenshotsToDirectory(GetHd2dShadowFoundationCycle80ScreenshotsDirectory());
         }
 
         private static void CaptureReviewScreenshotsToDirectory(string outputDirectory)
@@ -33157,6 +33163,11 @@ namespace Anemora.EditorTools
             return "docs/devlog/screenshots/fast_vs_hd2d_cycle79_door_front_leaf_parent_review_20260523_01";
         }
 
+        private static string GetHd2dShadowFoundationCycle80ScreenshotsDirectory()
+        {
+            return "docs/devlog/screenshots/fast_vs_hd2d_cycle80_transparent_depth_parent_review_20260523_01";
+        }
+
         private static void CaptureHd2dShadowFoundationCycle78ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -33339,6 +33350,98 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS shadow foundation cycle 79 screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dShadowFoundationCycle80ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS shadow foundation cycle 80 screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCloseFile = $"{audiencePrefix}01_current_house_exterior_transparent_depth_close.png";
+            var pastCloseFile = $"{audiencePrefix}02_past_house_exterior_transparent_depth_close.png";
+            var currentOverviewFile = $"{audiencePrefix}03_current_house_exterior_transparent_depth_overview.png";
+            var pastOverviewFile = $"{audiencePrefix}04_past_house_exterior_transparent_depth_overview.png";
+            var closePlayerLocal = HouseExteriorCenter + new Vector3(-1.06f, 0.02f, -1.74f);
+            var closeAnchorLocal = HouseExteriorCenter + new Vector3(-1.06f, 0.84f, -1.98f);
+            var overviewPlayerLocal = HouseExteriorCenter + new Vector3(-1.36f, 0.02f, -1.20f);
+            var overviewAnchorLocal = HouseExteriorCenter + new Vector3(-1.06f, 1.46f, -1.98f);
+
+            CaptureCloseReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.00f, 1.04f, -4.88f),
+                new Vector3(0.00f, -0.08f, 0.16f),
+                outputDirectory,
+                currentCloseFile);
+
+            CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                closePlayerLocal,
+                closeAnchorLocal,
+                new Vector3(0.00f, 1.04f, -4.88f),
+                new Vector3(0.00f, -0.08f, 0.16f),
+                outputDirectory,
+                pastCloseFile);
+
+            CaptureCloseReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                overviewAnchorLocal,
+                new Vector3(0.00f, 1.28f, -5.36f),
+                new Vector3(0.00f, -0.02f, 0.18f),
+                outputDirectory,
+                currentOverviewFile);
+
+            CaptureCloseOtherTimeReviewScreenshotWithoutPlayer(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Exterior,
+                overviewPlayerLocal,
+                overviewAnchorLocal,
+                new Vector3(0.00f, 1.28f, -5.36f),
+                new Vector3(0.00f, -0.02f, 0.18f),
+                outputDirectory,
+                pastOverviewFile);
+
+            ValidateCloseReviewOutputExists(outputDirectory, currentCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, pastCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentOverviewFile);
+            ValidateCloseReviewOutputExists(outputDirectory, pastOverviewFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS shadow foundation cycle 80 screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void ValidateFastVsHd2dCycle50HouseFacadeClosureShadow()
@@ -35288,6 +35391,49 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken} in its name.");
             }
+        }
+
+        private static void ValidateFastVsHd2dShadowFoundationCycle80TransparentDepthTest()
+        {
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureOutdoorVoidBackgroundMaterial(
+                    "current_house_exterior_outdoor_void_background",
+                    new Color(0.36f, 0.45f, 0.54f, 0.070f)),
+                "current_house_exterior_outdoor_void_background");
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureOutdoorVoidBackgroundMaterial(
+                    "past_house_exterior_outdoor_void_background",
+                    new Color(0.47f, 0.42f, 0.34f, 0.070f)),
+                "past_house_exterior_outdoor_void_background");
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureHd2dOutdoorScenicBackdropMaterial(
+                    "current_house_exterior_scenic_backdrop_sky_curtain",
+                    false,
+                    FastVsHouseArea.Exterior,
+                    "sky_curtain"),
+                "current_house_exterior_scenic_backdrop_sky_curtain");
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureHd2dOutdoorScenicBackdropMaterial(
+                    "past_house_exterior_scenic_backdrop_sky_curtain",
+                    true,
+                    FastVsHouseArea.Exterior,
+                    "sky_curtain"),
+                "past_house_exterior_scenic_backdrop_sky_curtain");
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureHd2dOutdoorSkyWashMaterial(
+                    "hd2d_outdoor_sky_wash_current_house_exterior",
+                    false,
+                    FastVsHouseArea.Exterior),
+                "hd2d_outdoor_sky_wash_current_house_exterior");
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureHd2dOutdoorSkyWashMaterial(
+                    "hd2d_outdoor_sky_wash_past_house_exterior",
+                    true,
+                    FastVsHouseArea.Exterior),
+                "hd2d_outdoor_sky_wash_past_house_exterior");
+            ValidateTransparentWorldMaterialDepthTest(
+                EnsureHd2dOutdoorOcclusionGradientMaterial(),
+                "hd2d_outdoor_occlusion_gradient");
         }
 
         private static void ValidateHouseExteriorPorchOcclusionReadabilityObject(
@@ -37732,6 +37878,26 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateTransparentWorldMaterialDepthTest(Material material, string materialLabel)
+        {
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing material for {materialLabel}.");
+            }
+
+            if (!material.HasProperty("_ZTest"))
+            {
+                return;
+            }
+
+            var zTest = material.GetFloat("_ZTest");
+            var expected = (float)CompareFunction.LessEqual;
+            if (Math.Abs(zTest - expected) > 0.001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialLabel} must keep _ZTest at LessEqual, but was {zTest:0.000}.");
+            }
+        }
+
         private static void ValidateFastVsStoryFlow()
         {
             var story = UnityEngine.Object.FindFirstObjectByType<FastVsStoryFlowController>(FindObjectsInactive.Include);
@@ -39199,6 +39365,11 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_ZWrite"))
             {
                 material.SetFloat("_ZWrite", 0f);
+            }
+
+            if (material.HasProperty("_ZTest"))
+            {
+                material.SetFloat("_ZTest", (float)CompareFunction.LessEqual);
             }
 
             if (material.HasProperty("_Cull"))
