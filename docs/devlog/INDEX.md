@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.52 fast VS HD2D house door jamb regression fix index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.53 fast VS HD2D cinematic sun grade index update (2026-05-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 431 files including INDEX.md and README.md.
-- Dated devlog records: 429 files.
-- Linked evidence files present under docs/devlog/screenshots/: 989 files.
+- Root-level Markdown coverage: 432 files including INDEX.md and README.md.
+- Dated devlog records: 430 files.
+- Linked evidence files present under docs/devlog/screenshots/: 993 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -33,7 +33,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-20 | 54 |
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
-| 2026-05-23 | 33 |
+| 2026-05-23 | 34 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -41,6 +41,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-23_fast_vs_hd2d_cinematic_sun_grade_cycle84.md](2026-05-23_fast_vs_hd2d_cinematic_sun_grade_cycle84.md) | Fast VS / HD2D | feat(hd2d): add cinematic sun grade |
 | [2026-05-23_fast_vs_hd2d_house_door_jamb_regression_fix_cycle83.md](2026-05-23_fast_vs_hd2d_house_door_jamb_regression_fix_cycle83.md) | Fast VS / HD2D | fix(hd2d): keep house door jamb opaque |
 | [2026-05-23_fast_vs_hd2d_house_door_jamb_blend_cycle82.md](2026-05-23_fast_vs_hd2d_house_door_jamb_blend_cycle82.md) | Fast VS / HD2D | feat(hd2d): blend house door jamb |
 | [2026-05-23_fast_vs_hd2d_house_door_sightline_diagnostics_cycle81.md](2026-05-23_fast_vs_hd2d_house_door_sightline_diagnostics_cycle81.md) | Fast VS / HD2D | test(hd2d): add house door sightline diagnostics |
@@ -575,6 +576,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v7.53 | 2026-05-23 | Added Fast VS HD2D cinematic sun grade cycle record with generated sun-disc and sky-veil assets, current/past outdoor validation, and overview screenshot evidence. |
 | v7.52 | 2026-05-23 | Added Fast VS HD2D house door jamb regression fix cycle record with opaque narrow jamb lines, updated validation, and lower/oblique screenshot evidence. |
 | v7.51 | 2026-05-23 | Added Fast VS HD2D house door jamb blend cycle record with narrow occlusion strip, wall blend, top shadow, validation, and lower/oblique screenshot evidence. |
 | v7.50 | 2026-05-23 | Added Fast VS HD2D house door sightline diagnostics cycle record with current/past medium, lower-close, and oblique-left captures plus validation. |
