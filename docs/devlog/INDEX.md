@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.04 fast VS HD2D plaza realtime shadow recovery index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.05 fast VS HD2D plaza VS camera recovery index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 482 files including INDEX.md and README.md.
-- Dated devlog records: 480 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1186 files.
+- Root-level Markdown coverage: 483 files including INDEX.md and README.md.
+- Dated devlog records: 481 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1190 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 7 |
+| 2026-05-25 | 8 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_vs_camera_recovery_cycle135.md](2026-05-25_fast_vs_hd2d_plaza_vs_camera_recovery_cycle135.md) | Fast VS / HD2D | feat(hd2d): recover plaza VS camera framing |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_recovery_cycle134.md](2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_recovery_cycle134.md) | Fast VS / HD2D | feat(hd2d): recover plaza realtime shadow read |
 | [2026-05-25_fast_vs_hd2d_plaza_reference_shadow_rebalance_cycle133.md](2026-05-25_fast_vs_hd2d_plaza_reference_shadow_rebalance_cycle133.md) | Fast VS / HD2D | feat(hd2d): rebalance plaza reference shadow grade |
 | [2026-05-25_fast_vs_hd2d_plaza_reference_shadow_contrast_cycle132.md](2026-05-25_fast_vs_hd2d_plaza_reference_shadow_contrast_cycle132.md) | Fast VS / HD2D | feat(hd2d): force plaza reference shadow contrast |
@@ -638,6 +639,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.05 | 2026-05-25 | Added Fast VS HD2D plaza VS camera recovery cycle record with central-plaza follow camera reframing, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.04 | 2026-05-25 | Added Fast VS HD2D plaza realtime shadow recovery cycle record with central-plaza realtime caster preservation, eight added ShadowOnly occluders, painted/camera overlay suppression, fog removal, VS camera recovery, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.03 | 2026-05-25 | Added Fast VS HD2D plaza reference shadow rebalance cycle record with fixed central-plaza sun intensity, runtime oversized sun-patch suppression, warmer fog grade, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.02 | 2026-05-25 | Added Fast VS HD2D plaza reference shadow contrast cycle record with repainted central-plaza camera grade texture, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
