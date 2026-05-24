@@ -14,6 +14,15 @@ namespace Anemora.FastVS
         private const string OverlayGlowRole = "OverlayGlow";
         private const string ContactShadowRole = "ContactShadow";
         private const float ShadowPolicyRefreshSeconds = 0.35f;
+        private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
+        private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
+        private static readonly int ShadowReceiveStrengthId = Shader.PropertyToID("_ShadowReceiveStrength");
+        private static readonly int TopLightId = Shader.PropertyToID("_TopLight");
+        private static readonly int SideShadeId = Shader.PropertyToID("_SideShade");
+        private static readonly int FloorShadeId = Shader.PropertyToID("_FloorShade");
+        private static readonly Color CentralPlazaTopLight = new Color(1.34f, 1.14f, 0.82f, 1f);
+        private static readonly Color CentralPlazaSideShade = new Color(0.58f, 0.52f, 0.44f, 1f);
+        private static readonly Color CentralPlazaFloorShade = new Color(0.52f, 0.47f, 0.40f, 1f);
 
         [SerializeField] private FastVsHouseAreaVisibility areaVisibility;
         [SerializeField] private Camera sceneCamera;
@@ -132,6 +141,7 @@ namespace Anemora.FastVS
 
         private void ApplyRendererShadowPolicy()
         {
+            var isCentralPlaza = areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.CentralPlaza;
             foreach (var renderer in FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (renderer == null || !renderer.gameObject.scene.IsValid())
@@ -160,6 +170,10 @@ namespace Anemora.FastVS
                     renderer.enabled = true;
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
                     renderer.receiveShadows = true;
+                    if (isCentralPlaza)
+                    {
+                        ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
+                    }
                     continue;
                 }
 
@@ -167,6 +181,10 @@ namespace Anemora.FastVS
                 if (role == SurfaceLitRole)
                 {
                     ApplySurfaceShadowPolicy(renderer);
+                    if (isCentralPlaza)
+                    {
+                        ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
+                    }
                 }
                 else if (role == SpriteCardRole || role == PaperCardRole)
                 {
@@ -297,12 +315,22 @@ namespace Anemora.FastVS
             if (surface != null &&
                 (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Floor ||
                  surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Ground ||
-                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Road))
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Road ||
+                 (surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                  surface.IsCurrentWorldForReview &&
+                  (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
+                   surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door ||
+                   surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Roof))))
             {
                 return true;
             }
 
             var name = renderer.gameObject.name;
+            if (IsCurrentCentralPlazaRealtimeFacadeReceiverName(name))
+            {
+                return true;
+            }
+
             if (name.Contains("Shadow") ||
                 name.Contains("Light") ||
                 name.Contains("Sun") ||
@@ -353,6 +381,92 @@ namespace Anemora.FastVS
                    name.Contains("Pebble") ||
                    name.Contains("DustScuff") ||
                    name.Contains("FountainDryBasinInnerFloor");
+        }
+
+        private static void ApplyCentralPlazaSurfaceRealtimeGrade(Renderer renderer)
+        {
+            var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
+            var objectName = renderer.gameObject.name;
+            var isCentralSurface =
+                surface != null &&
+                surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                surface.IsCurrentWorldForReview;
+            if (!isCentralSurface && !IsCurrentCentralPlazaRealtimeFacadeReceiverName(objectName))
+            {
+                return;
+            }
+
+            var material = renderer.sharedMaterial;
+            if (material == null)
+            {
+                return;
+            }
+
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            if (material.HasProperty(SurfaceRampStrengthId))
+            {
+                block.SetFloat(SurfaceRampStrengthId, 0.42f);
+            }
+
+            if (material.HasProperty(DirectionalLightStrengthId))
+            {
+                block.SetFloat(DirectionalLightStrengthId, 0.56f);
+            }
+
+            if (material.HasProperty(ShadowReceiveStrengthId))
+            {
+                block.SetFloat(ShadowReceiveStrengthId, 0.66f);
+            }
+
+            if (material.HasProperty(TopLightId))
+            {
+                block.SetColor(TopLightId, CentralPlazaTopLight);
+            }
+
+            if (material.HasProperty(SideShadeId))
+            {
+                block.SetColor(SideShadeId, CentralPlazaSideShade);
+            }
+
+            if (material.HasProperty(FloorShadeId))
+            {
+                block.SetColor(FloorShadeId, CentralPlazaFloorShade);
+            }
+
+            renderer.SetPropertyBlock(block);
+        }
+
+        private static bool IsCurrentCentralPlazaRealtimeFacadeReceiverName(string name)
+        {
+            if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
+            {
+                return false;
+            }
+
+            if (name.Contains("Shadow") ||
+                name.Contains("Light") ||
+                name.Contains("Sun") ||
+                name.Contains("Sky") ||
+                name.Contains("Backdrop") ||
+                name.Contains("Haze") ||
+                name.Contains("Veil") ||
+                name.Contains("Wash") ||
+                name.Contains("Window") ||
+                name.Contains("Mullion") ||
+                name.Contains("Pane"))
+            {
+                return false;
+            }
+
+            return name.Contains("Wall") ||
+                   name.Contains("Facade") ||
+                   name.Contains("Door") ||
+                   name.Contains("Roof") ||
+                   name.Contains("Lintel") ||
+                   name.Contains("Eave") ||
+                   name.Contains("Post") ||
+                   name.Contains("Board");
         }
 
         private static string GetMaterialRole(Material material)

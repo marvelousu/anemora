@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.08 fast VS HD2D plaza realtime dapple caster index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.09 fast VS HD2D plaza realtime surface response index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 486 files including INDEX.md and README.md.
-- Dated devlog records: 484 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1204 files.
+- Root-level Markdown coverage: 487 files including INDEX.md and README.md.
+- Dated devlog records: 485 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1209 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 11 |
+| 2026-05-25 | 12 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md](2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md) | Fast VS / HD2D | feat(hd2d): boost plaza realtime surface response |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md](2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime dapple casters |
 | [2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md](2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md) | Fast VS / HD2D | feat(hd2d): recover plaza realtime follow framing |
 | [2026-05-25_fast_vs_hd2d_plaza_map_safe_camera_cycle136.md](2026-05-25_fast_vs_hd2d_plaza_map_safe_camera_cycle136.md) | Fast VS / HD2D | feat(hd2d): keep plaza follow camera on map |
