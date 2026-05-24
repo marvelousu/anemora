@@ -186,9 +186,9 @@ namespace Anemora.EditorTools
             {
                 RequireBool(vignette.active, true, issues, "Vignette must be active.");
                 RequireBool(vignette.intensity.overrideState, true, issues, "Vignette intensity override must be enabled.");
-                if (vignette.intensity.value > 0.120f)
+                if (vignette.intensity.value > 0.280f)
                 {
-                    issues.Add("Vignette intensity must be at or below 0.120.");
+                    issues.Add("Vignette intensity must be at or below 0.280 for the stronger reference shadow frame.");
                 }
             }
 

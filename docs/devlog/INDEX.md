@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.87 fast VS HD2D plaza reference shadow quality index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.88 fast VS HD2D plaza shadow receiver field index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 465 files including INDEX.md and README.md.
-- Dated devlog records: 463 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1118 files.
+- Root-level Markdown coverage: 466 files including INDEX.md and README.md.
+- Dated devlog records: 464 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1122 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 27 |
+| 2026-05-24 | 28 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_shadow_receiver_field_cycle118.md](2026-05-24_fast_vs_hd2d_plaza_shadow_receiver_field_cycle118.md) | Fast VS / HD2D | feat(hd2d): layer plaza shadow receiver field |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_shadow_quality_cycle117.md](2026-05-24_fast_vs_hd2d_plaza_reference_shadow_quality_cycle117.md) | Fast VS / HD2D | feat(hd2d): stamp plaza reference shadow quality |
 | [2026-05-24_fast_vs_hd2d_plaza_solar_shadow_reset_cycle116.md](2026-05-24_fast_vs_hd2d_plaza_solar_shadow_reset_cycle116.md) | Fast VS / HD2D | feat(hd2d): reset plaza solar shadow grade |
 | [2026-05-24_fast_vs_hd2d_plaza_sun_shadow_grade_cycle115.md](2026-05-24_fast_vs_hd2d_plaza_sun_shadow_grade_cycle115.md) | Fast VS / HD2D | feat(hd2d): deepen plaza sun shadow grade |
