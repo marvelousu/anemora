@@ -422,7 +422,7 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(ShadowTextureStrengthId))
             {
-                block.SetFloat(ShadowTextureStrengthId, 0.28f);
+                block.SetFloat(ShadowTextureStrengthId, 0.36f);
             }
 
             if (material.HasProperty(TopLightId))

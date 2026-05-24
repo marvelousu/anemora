@@ -15384,6 +15384,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_texture_cycle142.md");
         }
 
+        public static void CapturePlazaRealtimeShadowLiftCycle143ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeShadowLiftCycle143ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_lift_cycle143.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38071,6 +38078,38 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeShadowLiftCycle143()
+        {
+            ValidateHd2dPlazaRealtimeShadowTextureCycle142();
+
+            var liftedReceiverCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled || !renderer.receiveShadows)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null || !material.HasProperty("_ShadowTextureStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_ShadowTextureStrength") >= 0.34f)
+                {
+                    liftedReceiverCount++;
+                }
+            }
+
+            if (liftedReceiverCount < 24)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 143 expected stronger realtime shadow lift property blocks, found {liftedReceiverCount}.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45220,6 +45259,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle142_plaza_realtime_shadow_texture_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeShadowLiftCycle143ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle143_plaza_realtime_shadow_lift_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48725,6 +48769,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeShadowTextureCycle142();
+        }
+
+        public static void ValidatePlazaRealtimeShadowLiftCycle143Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeShadowLiftCycle143();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
@@ -61189,10 +61240,6 @@ namespace Anemora.EditorTools
                 material.SetFloat("_ShadowReceiveStrength", SurfaceRampShadowReceiveStrength);
             }
 
-            if (material.HasProperty("_ShadowTextureStrength"))
-            {
-                material.SetFloat("_ShadowTextureStrength", 0f);
-            }
         }
 
         private static bool IsCurrentInteriorSurfaceReadabilityMaterial(string id)
