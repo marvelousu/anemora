@@ -17,6 +17,7 @@ namespace Anemora.FastVS
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
         private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
         private static readonly int ShadowReceiveStrengthId = Shader.PropertyToID("_ShadowReceiveStrength");
+        private static readonly int ShadowTextureStrengthId = Shader.PropertyToID("_ShadowTextureStrength");
         private static readonly int TopLightId = Shader.PropertyToID("_TopLight");
         private static readonly int SideShadeId = Shader.PropertyToID("_SideShade");
         private static readonly int FloorShadeId = Shader.PropertyToID("_FloorShade");
@@ -417,6 +418,11 @@ namespace Anemora.FastVS
             if (material.HasProperty(ShadowReceiveStrengthId))
             {
                 block.SetFloat(ShadowReceiveStrengthId, 0.66f);
+            }
+
+            if (material.HasProperty(ShadowTextureStrengthId))
+            {
+                block.SetFloat(ShadowTextureStrengthId, 0.28f);
             }
 
             if (material.HasProperty(TopLightId))

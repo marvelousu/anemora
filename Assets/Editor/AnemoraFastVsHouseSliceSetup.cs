@@ -15377,6 +15377,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_caster_shape_rewrite_cycle141.md");
         }
 
+        public static void CapturePlazaRealtimeShadowTextureCycle142ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeShadowTextureCycle142ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_texture_cycle142.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38032,6 +38039,38 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeShadowTextureCycle142()
+        {
+            ValidateHd2dPlazaRealtimeCasterShapeRewriteCycle141();
+
+            var texturedReceiverCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled || !renderer.receiveShadows)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null || !material.HasProperty("_ShadowTextureStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_ShadowTextureStrength") >= 0.26f)
+                {
+                    texturedReceiverCount++;
+                }
+            }
+
+            if (texturedReceiverCount < 24)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 142 expected realtime receiver shadow texture property blocks, found {texturedReceiverCount}.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45176,6 +45215,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle141_plaza_realtime_caster_shape_rewrite_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeShadowTextureCycle142ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle142_plaza_realtime_shadow_texture_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48674,6 +48718,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeCasterShapeRewriteCycle141();
+        }
+
+        public static void ValidatePlazaRealtimeShadowTextureCycle142Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeShadowTextureCycle142();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
@@ -61136,6 +61187,11 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_ShadowReceiveStrength"))
             {
                 material.SetFloat("_ShadowReceiveStrength", SurfaceRampShadowReceiveStrength);
+            }
+
+            if (material.HasProperty("_ShadowTextureStrength"))
+            {
+                material.SetFloat("_ShadowTextureStrength", 0f);
             }
         }
 

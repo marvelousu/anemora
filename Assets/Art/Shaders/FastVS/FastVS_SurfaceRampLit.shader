@@ -14,6 +14,7 @@ Shader "Anemora/FastVS/SurfaceRampLit"
         _SpecularHighlights("Specular Highlights", Float) = 0
         _DirectionalLightStrength("Directional Light Strength", Range(0, 0.60)) = 0.12
         _ShadowReceiveStrength("Shadow Receive Strength", Range(0, 0.70)) = 0.18
+        _ShadowTextureStrength("Shadow Texture Strength", Range(0, 0.35)) = 0
     }
 
     SubShader
@@ -64,6 +65,7 @@ Shader "Anemora/FastVS/SurfaceRampLit"
             float _SpecularHighlights;
             float _DirectionalLightStrength;
             float _ShadowReceiveStrength;
+            float _ShadowTextureStrength;
             CBUFFER_END
 
             struct Attributes
@@ -112,11 +114,17 @@ Shader "Anemora/FastVS/SurfaceRampLit"
                 half ndotl = saturate(dot(normalWS, mainLight.direction));
                 half litResponse = smoothstep(0.12h, 0.86h, ndotl);
                 half lightGrade = lerp(1.0h - (half)_DirectionalLightStrength, 1.0h + ((half)_DirectionalLightStrength * 0.72h), litResponse);
-                half shadowResponse = smoothstep(0.10h, 0.95h, (half)mainLight.shadowAttenuation);
-                half shadowGrade = lerp(1.0h - (half)_ShadowReceiveStrength, 1.0h, shadowResponse);
+                half shadowTextureStrength = saturate((half)_ShadowTextureStrength);
+                float2 shadowNoiseCell = floor(input.positionWS.xz * 3.75f + input.positionWS.y * 0.65f);
+                half shadowNoise = (half)frac(sin(dot(shadowNoiseCell, float2(12.9898f, 78.233f))) * 43758.5453f);
+                half shadowAttenuation = (half)mainLight.shadowAttenuation;
+                half shadowResponse = smoothstep(0.10h, 0.95h, saturate(shadowAttenuation + ((shadowNoise - 0.5h) * shadowTextureStrength * 0.24h)));
+                half shadowFloorLift = shadowTextureStrength * (0.28h + shadowNoise * 0.10h) * (1.0h - shadowResponse);
+                half shadowGrade = lerp(saturate(1.0h - (half)_ShadowReceiveStrength + shadowFloorLift), 1.0h, shadowResponse);
                 half3 mainLightColor = half3(mainLight.color.r, mainLight.color.g, mainLight.color.b);
                 half3 sunTint = lerp(half3(0.92h, 0.84h, 0.72h), saturate(mainLightColor + half3(0.10h, 0.03h, -0.08h)), litResponse * saturate((half)_DirectionalLightStrength * 1.25h));
-                half3 shadowTint = lerp(half3(0.70h, 0.62h, 0.50h), half3(1.0h, 1.0h, 1.0h), shadowResponse);
+                half3 texturedShadowTint = half3(0.70h, 0.62h, 0.50h) * lerp(0.92h, 1.08h, shadowNoise * shadowTextureStrength + (1.0h - shadowTextureStrength) * 0.5h);
+                half3 shadowTint = lerp(texturedShadowTint, half3(1.0h, 1.0h, 1.0h), shadowResponse);
 
                 half3 rgb = baseSample.rgb * grade * lightGrade * shadowGrade * lerp(shadowTint, sunTint, litResponse);
                 return half4(rgb, baseSample.a);
