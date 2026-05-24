@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.82 fast VS HD2D plaza sunbeam shafts index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.83 fast VS HD2D plaza cast shadow contrast index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 461 files including INDEX.md and README.md.
-- Dated devlog records: 459 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1102 files.
+- Root-level Markdown coverage: 462 files including INDEX.md and README.md.
+- Dated devlog records: 460 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1106 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 23 |
+| 2026-05-24 | 24 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_cast_shadow_contrast_cycle114.md](2026-05-24_fast_vs_hd2d_plaza_cast_shadow_contrast_cycle114.md) | Fast VS / HD2D | feat(hd2d): deepen plaza cast shadow contrast |
 | [2026-05-24_fast_vs_hd2d_plaza_sunbeam_shafts_cycle113.md](2026-05-24_fast_vs_hd2d_plaza_sunbeam_shafts_cycle113.md) | Fast VS / HD2D | feat(hd2d): add plaza sunbeam shafts |
 | [2026-05-24_fast_vs_hd2d_plaza_sun_exposure_base_cycle112.md](2026-05-24_fast_vs_hd2d_plaza_sun_exposure_base_cycle112.md) | Fast VS / HD2D | feat(hd2d): add plaza sun exposure base |
 | [2026-05-24_fast_vs_hd2d_plaza_broad_sunfield_cycle111.md](2026-05-24_fast_vs_hd2d_plaza_broad_sunfield_cycle111.md) | Fast VS / HD2D | feat(hd2d): add plaza broad sunfield |
