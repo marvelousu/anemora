@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5843737239610994843
+--- !u!114 &-7065593684100552623
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FastVS_House_hd2d_plaza_solar_reset_sun_cycle116
+  m_Name: FastVS_House_hd2d_plaza_reference_shadow_stack_cycle117
   m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -30,9 +30,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 3044
+  m_CustomRenderQueue: 3052
   stringTagMap:
-    AnemoraFastVsHd2dRole: OverlayGlow
+    AnemoraFastVsHd2dRole: ContactShadow
     RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -43,11 +43,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 6a7110f8995f44d4ebad54e9c0846975, type: 2}
+        m_Texture: {fileID: 2800000, guid: f67b5097b364ec541b4580d4a3a069d2, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 6a7110f8995f44d4ebad54e9c0846975, type: 2}
+        m_Texture: {fileID: 2800000, guid: f67b5097b364ec541b4580d4a3a069d2, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -61,7 +61,7 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 10
     - _DstBlendAlpha: 10
-    - _QueueOffset: 44
+    - _QueueOffset: 52
     - _SampleGI: 0
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1
@@ -69,7 +69,7 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.8, b: 0.42, a: 0.56}
-    - _Color: {r: 1, g: 0.8, b: 0.42, a: 0.56}
+    - _BaseColor: {r: 1, g: 0.96, b: 0.9, a: 0.94}
+    - _Color: {r: 1, g: 0.96, b: 0.9, a: 0.94}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
