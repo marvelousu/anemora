@@ -79,6 +79,8 @@ namespace Anemora.FastVS
         [SerializeField] private Vector3 doorBrushBeatTriggerLocalCenter = new Vector3(-7.53f, 0.70f, -10.16f);
         [SerializeField] private Vector3 doorBrushBeatTriggerLocalSize = new Vector3(0.86f, 1.72f, 0.34f);
         [SerializeField] private bool showOpeningHint = true;
+        [SerializeField] private bool startAfterLibraryEvent;
+        [SerializeField] private Vector3 postLibraryStartLocalPosition = new Vector3(23.35f, 0.02f, 12.16f);
 
         private static readonly StoryStep[] RetoOpeningSteps =
         {
@@ -157,6 +159,8 @@ namespace Anemora.FastVS
         private bool vsClear;
 
         public string CurrentBeatIdForReview => currentBeatId;
+        public bool StartsAfterLibraryEventForReview => startAfterLibraryEvent;
+        public Vector3 PostLibraryStartLocalPositionForReview => postLibraryStartLocalPosition;
         public bool OpeningWakeCompleteForReview => openingWakeComplete;
         public bool DoorBrushBeatCompleteForReview => doorBrushBeatComplete;
         public int DoorBrushBeatPageForReview => doorBeatPage;
@@ -198,6 +202,11 @@ namespace Anemora.FastVS
 
         private void Awake()
         {
+            ApplyConfiguredStartStateForReview();
+        }
+
+        public void ApplyConfiguredStartStateForReview()
+        {
             ResolveReferences();
             lastArea = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
             if (retoAnimator != null)
@@ -205,12 +214,86 @@ namespace Anemora.FastVS
                 retoAnimator.SetWritingImmediateForReview();
             }
 
+            if (startAfterLibraryEvent)
+            {
+                InitializePostLibraryEventStart();
+                return;
+            }
+
+            InitializeDefaultStart();
+        }
+
+        private void InitializeDefaultStart()
+        {
+            mode = StoryMode.None;
+            activeRetoSequence = RetoSequence.None;
+            currentBeatId = "opening.house_interior";
+            ignoreInputFrame = -1;
+            doorBeatPage = 0;
+            retoStepIndex = -1;
+            ariaStepIndex = -1;
+            pauseAdvanceAt = -1f;
+            openingWakeComplete = false;
+            doorBrushBeatComplete = false;
+            retoOpeningComplete = false;
+            bookTakenForReview = false;
+            ariaObservedForReview = false;
+            waitingForPastObservation = false;
+            pastObservationComplete = false;
+            waitingForRetoBookShow = false;
+            bookShownToRetoForReview = false;
+            retoEventComplete = false;
+            vsClear = false;
             SetCurrentDeskBookVisible(false);
             SetCurrentTimeWindowCuesVisible(false);
             SetPastTargetBookVisible(true);
             SetTimewriterPocketGlowVisible(false);
             portalController?.SetRuntimeInputEnabledForReview(false);
             CompleteOpeningWakeWithoutDialogue();
+        }
+
+        private void InitializePostLibraryEventStart()
+        {
+            mode = StoryMode.None;
+            activeRetoSequence = RetoSequence.None;
+            currentBeatId = "scene1.after_library.continuation_start";
+            ignoreInputFrame = -1;
+            doorBeatPage = 0;
+            retoStepIndex = -1;
+            ariaStepIndex = -1;
+            pauseAdvanceAt = -1f;
+            openingWakeComplete = true;
+            doorBrushBeatComplete = true;
+            retoOpeningComplete = true;
+            bookTakenForReview = true;
+            ariaObservedForReview = true;
+            waitingForPastObservation = false;
+            pastObservationComplete = true;
+            waitingForRetoBookShow = false;
+            bookShownToRetoForReview = true;
+            retoEventComplete = true;
+            vsClear = true;
+
+            areaVisibility?.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            if (portalController != null)
+            {
+                portalController.SetRuntimeInputEnabledForReview(true);
+                portalController.ForcePlayerCurrentLocalForReview(postLibraryStartLocalPosition);
+            }
+            else if (player != null)
+            {
+                player.position = postLibraryStartLocalPosition;
+            }
+
+            SetCurrentDeskBookVisible(true);
+            SetCurrentTimeWindowCuesVisible(false);
+            SetPastTargetBookVisible(false);
+            SetTimewriterPocketGlowVisible(false);
+            FreezeMovement(false);
+            if (retoAnimator != null)
+            {
+                retoAnimator.SetWritingImmediateForReview();
+            }
         }
 
         private void Update()
@@ -346,7 +429,7 @@ namespace Anemora.FastVS
             }
             else if (vsClear)
             {
-                DrawSmallObjective("レトの話を聞いた。");
+                DrawSmallObjective(ResolvePostLibraryObjectiveText());
             }
         }
 
@@ -429,7 +512,7 @@ namespace Anemora.FastVS
 
             if (vsClear)
             {
-                dialoguePresenter.ShowObjective("レトの話を聞いた。");
+                dialoguePresenter.ShowObjective(ResolvePostLibraryObjectiveText());
                 return;
             }
 
@@ -670,7 +753,7 @@ namespace Anemora.FastVS
 
             if (vsClear)
             {
-                runtimeHud.ShowObjective("レトの話を聞いた。");
+                runtimeHud.ShowObjective(ResolvePostLibraryObjectiveText());
                 return true;
             }
 
@@ -856,7 +939,7 @@ namespace Anemora.FastVS
 
             if (vsClear)
             {
-                return "レトの話を聞いた。";
+                return ResolvePostLibraryObjectiveText();
             }
 
             if (areaVisibility == null)
@@ -888,6 +971,33 @@ namespace Anemora.FastVS
                     return "東の端へ歩く。";
                 default:
                     return "進む。";
+            }
+        }
+
+        private string ResolvePostLibraryObjectiveText()
+        {
+            if (areaVisibility == null)
+            {
+                return "ミアの家へ向かう。";
+            }
+
+            switch (areaVisibility.ActiveAreaForReview)
+            {
+                case FastVsHouseArea.CentralPlaza:
+                case FastVsHouseArea.Library:
+                    return "ミアの家へ向かう。";
+                case FastVsHouseArea.MiaHouse:
+                    return "ミアの家の前へ進む。";
+                case FastVsHouseArea.AriaStreet:
+                    return "アリアの通りを進む。";
+                case FastVsHouseArea.KaiaFarm:
+                    return "カイアの畑へ向かう。";
+                case FastVsHouseArea.Ruins:
+                    return "谷の橋を渡る。";
+                case FastVsHouseArea.Chapter1End:
+                    return "東の端へ歩く。";
+                default:
+                    return "ミアの家へ向かう。";
             }
         }
 

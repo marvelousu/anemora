@@ -95,6 +95,7 @@ namespace Anemora.EditorTools
         private static readonly Vector3 Chapter1EndSideViewCameraAnchor = Chapter1EndSideViewCenter + new Vector3(0f, 2.25f, 0f);
         private static readonly Vector3 Chapter1ContinuationRightBoundaryCenter = CentralPlazaVsCenter + new Vector3(18.00f, 0.75f, 2.95f);
         private static readonly Vector3 Chapter1B3FromC1Target = Chapter1B3RouteTriggerCenter + new Vector3(-1.55f, -0.68f, -0.62f);
+        private static readonly Vector3 Chapter1PostLibraryStart = Chapter1B3FromC1Target;
         private static readonly Vector3 Chapter1C1FromB3Target = Chapter1C1RouteTriggerCenter + new Vector3(-0.10f, -0.68f, -1.70f);
         private static readonly Vector3 Chapter1C3FromD1Target = Chapter1C3RouteTriggerCenter + new Vector3(-1.60f, -0.68f, -0.55f);
         private static readonly Vector3 Chapter1D1FromC3Target = Chapter1D1RouteTriggerCenter + new Vector3(-0.04f, -0.68f, -1.70f);
@@ -169,6 +170,7 @@ namespace Anemora.EditorTools
             var guide = CreateGuide(camera, controller, player, areaVisibility);
             var story = CreateStoryFlow(camera, controller, player, areaVisibility, guide);
             CreateHouseDoorTransitions(controller, player, areaVisibility, story);
+            story.ApplyConfiguredStartStateForReview();
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -2166,7 +2168,9 @@ namespace Anemora.EditorTools
             SerializedSet(story, "pastAriaInteractionRadius", 1.05f);
             SerializedSet(story, "doorBrushBeatTriggerLocalCenter", InteriorDoorStoryTriggerCenter);
             SerializedSet(story, "doorBrushBeatTriggerLocalSize", InteriorDoorStoryTriggerSize);
-            SerializedSet(story, "showOpeningHint", true);
+            SerializedSet(story, "startAfterLibraryEvent", true);
+            SerializedSet(story, "postLibraryStartLocalPosition", Chapter1PostLibraryStart);
+            SerializedSet(story, "showOpeningHint", false);
             return story;
         }
 
@@ -4770,6 +4774,13 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: story flow must use the runtime TMP HUD with the bundled Japanese font instead of the legacy OnGUI panel.");
             }
 
+            if (story.StartsAfterLibraryEventForReview)
+            {
+                story.ApplyConfiguredStartStateForReview();
+                ValidateChapter1PostLibraryStartStoryFlow(story, controller, visibility, guide);
+                return;
+            }
+
             if (controller.RuntimeInputEnabledForReview ||
                 story.PortalInputUnlockedForReview ||
                 story.CurrentTimeWindowBookCueVisibleForReview ||
@@ -5119,6 +5130,73 @@ namespace Anemora.EditorTools
             if (retoAnimator.CurrentStateForReview != FastVsRetoWritingState.WritingRaised)
             {
                 throw new InvalidOperationException("House slice validation failed: Reto does not return to raised writing pose after the event.");
+            }
+        }
+
+        private static void ValidateChapter1PostLibraryStartStoryFlow(
+            FastVsStoryFlowController story,
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide)
+        {
+            if (!story.OpeningWakeCompleteForReview ||
+                !story.DoorBrushBeatCompleteForReview ||
+                !story.RetoOpeningCompleteForReview ||
+                !story.BookTakenForReview ||
+                !story.PastObservationCompleteForReview ||
+                !story.BookShownToRetoForReview ||
+                !story.RetoEventCompleteForReview ||
+                !story.VsClearForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start did not preserve the completed library and Reto flags.");
+            }
+
+            if (story.WaitingForPastObservationForReview ||
+                story.WaitingForRetoBookShowForReview ||
+                story.RetoInteractionReadyForReview ||
+                story.RetoBookShowReadyForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start must not leave any library event interaction gate open.");
+            }
+
+            if (!story.PortalInputUnlockedForReview ||
+                !controller.RuntimeInputEnabledForReview ||
+                controller.PlayerInOtherTime ||
+                guide.MovementFrozenForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start must keep portal input unlocked while movement remains free.");
+            }
+
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.CentralPlaza)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start must activate the central plaza map set.");
+            }
+
+            var player = UnityEngine.Object.FindFirstObjectByType<CharacterController>();
+            if (player == null || controller.CurrentSpaceRootForReview == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start is missing the player or current space root.");
+            }
+
+            ValidateVectorNear("post-library player placement", controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position), Chapter1PostLibraryStart);
+
+            var returnedDeskBook = FindSceneObjectIncludingInactive("Current_Library_ReturnedBookOnDesk");
+            if (returnedDeskBook == null || !returnedDeskBook.activeSelf || !story.CurrentDeskBookVisibleForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start must keep the returned desk book visible.");
+            }
+
+            if (story.CurrentTimeWindowBookCueVisibleForReview ||
+                story.CurrentTimeWindowAriaCueVisibleForReview ||
+                story.TimewriterPocketGlowVisibleForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start must hide the old Time Window cues.");
+            }
+
+            story.RefreshPresentationForReview();
+            if (story.RuntimeHudObjectiveTextForReview != "ミアの家へ向かう。")
+            {
+                throw new InvalidOperationException("House slice validation failed: post-library continuation start must set the objective to ミアの家へ向かう。");
             }
         }
 
