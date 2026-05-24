@@ -190,28 +190,28 @@ namespace Anemora.FastVS
 
             centralPlazaSkyboxMaterial = new Material(shader)
             {
-                name = "FastVS_CentralPlazaRuntimeSkyboxCycle156",
+                name = "FastVS_CentralPlazaRuntimeSkyboxCycle157",
                 hideFlags = HideFlags.DontSave
             };
 
             if (centralPlazaSkyboxMaterial.HasProperty("_SkyTint"))
             {
-                centralPlazaSkyboxMaterial.SetColor("_SkyTint", new Color(0.42f, 0.50f, 0.56f, 1f));
+                centralPlazaSkyboxMaterial.SetColor("_SkyTint", new Color(0.50f, 0.56f, 0.61f, 1f));
             }
 
             if (centralPlazaSkyboxMaterial.HasProperty("_GroundColor"))
             {
-                centralPlazaSkyboxMaterial.SetColor("_GroundColor", new Color(0.18f, 0.20f, 0.20f, 1f));
+                centralPlazaSkyboxMaterial.SetColor("_GroundColor", new Color(0.31f, 0.37f, 0.41f, 1f));
             }
 
             if (centralPlazaSkyboxMaterial.HasProperty("_AtmosphereThickness"))
             {
-                centralPlazaSkyboxMaterial.SetFloat("_AtmosphereThickness", 0.62f);
+                centralPlazaSkyboxMaterial.SetFloat("_AtmosphereThickness", 0.48f);
             }
 
             if (centralPlazaSkyboxMaterial.HasProperty("_Exposure"))
             {
-                centralPlazaSkyboxMaterial.SetFloat("_Exposure", 0.56f);
+                centralPlazaSkyboxMaterial.SetFloat("_Exposure", 0.62f);
             }
 
             if (centralPlazaSkyboxMaterial.HasProperty("_SunSize"))
