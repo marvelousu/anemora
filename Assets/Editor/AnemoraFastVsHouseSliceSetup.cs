@@ -15433,6 +15433,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_sprite_tracking_cycle149.md");
         }
 
+        public static void CapturePlazaVisibleCasterCycle150ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaVisibleCasterCycle150ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_visible_caster_cycle150.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38455,6 +38462,136 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaVisibleCasterCycle150()
+        {
+            ValidateHd2dPlazaRealtimeSpriteTrackingCycle149();
+
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            if (visibility == null || realtimeRig == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 150 needs visibility and realtime rig.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            realtimeRig.ApplyNowForReview();
+
+            var visibleCasterCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!IsCycle150VisibleCentralPlazaCaster(renderer))
+                {
+                    continue;
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.On || !renderer.receiveShadows)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material != null && material.HasProperty("_ShadowReceiveStrength"))
+                {
+                    renderer.GetPropertyBlock(block);
+                    if (block.GetFloat("_ShadowReceiveStrength") < 0.64f)
+                    {
+                        continue;
+                    }
+                }
+
+                visibleCasterCount++;
+            }
+
+            if (visibleCasterCount < 8)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 150 expected visible central-plaza props to cast and receive realtime shadows, found {visibleCasterCount}.");
+            }
+        }
+
+        private static bool IsCycle150VisibleCentralPlazaCaster(Renderer renderer)
+        {
+            var name = renderer.gameObject.name;
+            var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
+            if (surface != null &&
+                surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                surface.IsCurrentWorldForReview &&
+                (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Furniture ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Prop ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Window ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Bookshelf))
+            {
+                return !IsCycle150SuppressedVisibleCasterName(name);
+            }
+
+            return IsCycle150VisibleCentralPlazaCasterName(name);
+        }
+
+        private static bool IsCycle150VisibleCentralPlazaCasterName(string name)
+        {
+            if (string.IsNullOrEmpty(name) ||
+                !name.Contains("Current_CentralPlaza") ||
+                IsCycle150SuppressedVisibleCasterName(name))
+            {
+                return false;
+            }
+
+            return name.Contains("Fountain") ||
+                   name.Contains("Market") ||
+                   name.Contains("Plank") ||
+                   name.Contains("RimChip") ||
+                   name.Contains("StoneChip") ||
+                   name.Contains("ThresholdChip") ||
+                   name.Contains("Crack") ||
+                   name.Contains("Shard") ||
+                   name.Contains("Pebble") ||
+                   name.Contains("Board") ||
+                   name.Contains("Paper") ||
+                   name.Contains("Post") ||
+                   name.Contains("Crate") ||
+                   name.Contains("Rubble") ||
+                   name.Contains("Brick") ||
+                   name.Contains("Frame") ||
+                   name.Contains("Trim") ||
+                   name.Contains("Mullion") ||
+                   name.Contains("Pane") ||
+                   name.Contains("Window") ||
+                   name.Contains("KickPlate") ||
+                   name.Contains("Hinge") ||
+                   name.Contains("DoorNail");
+        }
+
+        private static bool IsCycle150SuppressedVisibleCasterName(string name)
+        {
+            return string.IsNullOrEmpty(name) ||
+                   name.Contains("Shadow") ||
+                   name.Contains("Light") ||
+                   name.Contains("Sun") ||
+                   name.Contains("Air") ||
+                   name.Contains("Haze") ||
+                   name.Contains("Veil") ||
+                   name.Contains("Wash") ||
+                   name.Contains("Sky") ||
+                   name.Contains("Backdrop") ||
+                   name.Contains("Glow") ||
+                   name.Contains("Occlusion") ||
+                   name.Contains("Water") ||
+                   name.Contains("Horizon") ||
+                   name.Contains("Silhouette") ||
+                   name.Contains("Field") ||
+                   name.Contains("WorldEnvelope") ||
+                   name.Contains("RealtimeShadowCasterCycle") ||
+                   name.Contains("Painted") ||
+                   name.Contains("Reference") ||
+                   name.Contains("FramedLight") ||
+                   name.Contains("LightComposition");
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45639,6 +45776,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle149_plaza_realtime_sprite_tracking_parent_review_20260525_01";
         }
 
+        private static string GetPlazaVisibleCasterCycle150ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle150_plaza_visible_caster_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49193,6 +49335,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeSpriteTrackingCycle149();
+        }
+
+        public static void ValidatePlazaVisibleCasterCycle150Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaVisibleCasterCycle150();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

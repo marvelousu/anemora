@@ -260,7 +260,7 @@ namespace Anemora.FastVS
                 var role = GetMaterialRole(renderer.sharedMaterial);
                 if (role == SurfaceLitRole)
                 {
-                    ApplySurfaceShadowPolicy(renderer);
+                    ApplySurfaceShadowPolicy(renderer, isCentralPlaza);
                     if (isCentralPlaza)
                     {
                         ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
@@ -280,13 +280,21 @@ namespace Anemora.FastVS
             }
         }
 
-        private static void ApplySurfaceShadowPolicy(Renderer renderer)
+        private static void ApplySurfaceShadowPolicy(Renderer renderer, bool isCentralPlaza)
         {
             renderer.enabled = true;
             if (ShouldReceiveRealtimeSurfaceShadow(renderer))
             {
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
                 renderer.receiveShadows = true;
+                return;
+            }
+
+            if (isCentralPlaza && ShouldCastVisibleCentralPlazaRealtimeShadow(renderer))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.On;
+                renderer.receiveShadows = true;
+                ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
                 return;
             }
 
@@ -464,6 +472,84 @@ namespace Anemora.FastVS
                    name.Contains("FountainDryBasinInnerFloor");
         }
 
+        private static bool ShouldCastVisibleCentralPlazaRealtimeShadow(Renderer renderer)
+        {
+            var name = renderer.gameObject.name;
+            var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
+            if (surface != null &&
+                surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                surface.IsCurrentWorldForReview &&
+                (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Furniture ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Prop ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Window ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Bookshelf))
+            {
+                return !IsSuppressedCentralPlazaVisibleCasterName(name);
+            }
+
+            return IsCurrentCentralPlazaVisibleCasterName(name);
+        }
+
+        private static bool IsCurrentCentralPlazaVisibleCasterName(string name)
+        {
+            if (string.IsNullOrEmpty(name) ||
+                !name.Contains("Current_CentralPlaza") ||
+                IsSuppressedCentralPlazaVisibleCasterName(name))
+            {
+                return false;
+            }
+
+            return name.Contains("Fountain") ||
+                   name.Contains("Market") ||
+                   name.Contains("Plank") ||
+                   name.Contains("RimChip") ||
+                   name.Contains("StoneChip") ||
+                   name.Contains("ThresholdChip") ||
+                   name.Contains("Crack") ||
+                   name.Contains("Shard") ||
+                   name.Contains("Pebble") ||
+                   name.Contains("Board") ||
+                   name.Contains("Paper") ||
+                   name.Contains("Post") ||
+                   name.Contains("Crate") ||
+                   name.Contains("Rubble") ||
+                   name.Contains("Brick") ||
+                   name.Contains("Frame") ||
+                   name.Contains("Trim") ||
+                   name.Contains("Mullion") ||
+                   name.Contains("Pane") ||
+                   name.Contains("Window") ||
+                   name.Contains("KickPlate") ||
+                   name.Contains("Hinge") ||
+                   name.Contains("DoorNail");
+        }
+
+        private static bool IsSuppressedCentralPlazaVisibleCasterName(string name)
+        {
+            return string.IsNullOrEmpty(name) ||
+                   name.Contains("Shadow") ||
+                   name.Contains("Light") ||
+                   name.Contains("Sun") ||
+                   name.Contains("Air") ||
+                   name.Contains("Haze") ||
+                   name.Contains("Veil") ||
+                   name.Contains("Wash") ||
+                   name.Contains("Sky") ||
+                   name.Contains("Backdrop") ||
+                   name.Contains("Glow") ||
+                   name.Contains("Occlusion") ||
+                   name.Contains("Water") ||
+                   name.Contains("Horizon") ||
+                   name.Contains("Silhouette") ||
+                   name.Contains("Field") ||
+                   name.Contains("WorldEnvelope") ||
+                   name.Contains("RealtimeShadowCasterCycle") ||
+                   name.Contains("Painted") ||
+                   name.Contains("Reference") ||
+                   name.Contains("FramedLight") ||
+                   name.Contains("LightComposition");
+        }
+
         private static void ApplyCentralPlazaSurfaceRealtimeGrade(Renderer renderer)
         {
             var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
@@ -473,7 +559,8 @@ namespace Anemora.FastVS
                 surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
                 surface.IsCurrentWorldForReview;
             var isNamedFacadeReceiver = IsCurrentCentralPlazaRealtimeFacadeReceiverName(objectName);
-            if (!isCentralSurface && !isNamedFacadeReceiver)
+            var isNamedVisibleCaster = IsCurrentCentralPlazaVisibleCasterName(objectName);
+            if (!isCentralSurface && !isNamedFacadeReceiver && !isNamedVisibleCaster)
             {
                 return;
             }
