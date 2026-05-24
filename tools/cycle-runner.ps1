@@ -221,6 +221,58 @@ function Expand-Template {
     return $out
 }
 
+function Wait-UnityBatchChildren {
+    param(
+        [datetime]$PhaseStart,
+        [int]$TimeoutSeconds = 900
+    )
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    do {
+        $running = @()
+        foreach ($process in (Get-Process -ErrorAction SilentlyContinue)) {
+            if ($process.ProcessName -notlike '*Unity*' -or
+                $process.ProcessName -like 'Unity Hub*' -or
+                $process.ProcessName -like 'Unity.Licensing.Client*') {
+                continue
+            }
+
+            try {
+                if ($process.StartTime -ge $PhaseStart.AddSeconds(-3)) {
+                    $running += $process
+                }
+            } catch {
+                # Some short-lived helper processes can disappear while being inspected.
+            }
+        }
+
+        if ($running.Count -eq 0) {
+            return
+        }
+
+        Start-Sleep -Seconds 2
+    } while ((Get-Date) -lt $deadline)
+}
+
+function Get-UnityBatchReturnCodeFromLog {
+    param([string]$LogFile)
+    if (-not (Test-Path $LogFile)) {
+        return $null
+    }
+
+    $tail = Get-Content -Path $LogFile -Tail 80 -ErrorAction SilentlyContinue
+    foreach ($line in $tail) {
+        if ($line -match 'return code\s+(-?\d+)') {
+            return [int]$Matches[1]
+        }
+    }
+
+    if ($tail -match 'Exiting batchmode successfully') {
+        return 0
+    }
+
+    return $null
+}
+
 # ---------------------------------------------------------------------------
 # Plan summary
 # ---------------------------------------------------------------------------
@@ -274,8 +326,14 @@ function Invoke-Batch {
     # the first token.
     $argv = [regex]::Matches($argString, '("[^"]*"|\S+)') |
         ForEach-Object { $_.Value.Trim('"') }
+    $phaseStart = Get-Date
     $proc = Start-Process -FilePath $BatchTool -ArgumentList $argv -PassThru -Wait -WindowStyle Hidden
     $exit = $proc.ExitCode
+    Wait-UnityBatchChildren -PhaseStart $phaseStart
+    $loggedExit = Get-UnityBatchReturnCodeFromLog -LogFile $LogFile
+    if ($loggedExit -ne $null) {
+        $exit = $loggedExit
+    }
     Append-File -SrcPath $LogFile -Header "$PhaseName batch log ($LogFile)"
     if ($exit -ne 0) {
         Write-Run "Phase '$PhaseName' FAILED with exit $exit"

@@ -116,53 +116,7 @@ Passing criteria:
 - Current close frame should keep route readability while showing stronger facade/ground shadow separation.
 - Past plaza and current library guard captures remain usable and are not redesigned.
 
+## Runner Result
 
-
-
-
-## Cycle 119 failure (validate) -- 20260524-155304
-
-```
-[15:53:04] Cycle runner starting
-[15:53:04]   CycleNumber    : 119
-[15:53:04]   ProjectPath    : C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work
-[15:53:04]   BatchTool      : C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe
-[15:53:04]   ValidateMethod : Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.ValidatePlazaReferenceCompositeCycle119Batch
-[15:53:04]   CaptureMethod  : Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.CapturePlazaReferenceCompositeCycle119ScreenshotsBatch
-[15:53:04]   BuildMethod    : Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.BuildAndValidateBatch
-[15:53:05]   Audience       : parent_review
-[15:53:05]   CaptureOutDir  : C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots
-[15:53:05]   DevlogPath     : C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\2026-05-24_fast_vs_hd2d_plaza_reference_composite_cycle119.md
-[15:53:05]   SmokeSeconds   : 20
-[15:53:05]   SmokePatterns  : Error|Exception|Assert|NullReference|Font Atlas Texture|DrawObjectsPass|RenderGraph
-[15:53:05]   CommitPath     : Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_book.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_bookshelf_front_painted_hd2d_Past_Library_BackWallBookshelfFrontTexturePanel.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_bookshelf_front_painted_hd2d_Past_Library_BackWallShelfWide.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_bookshelf_front_painted_hd2d_Past_Library_LeftSideBookshelf_BookshelfFrontTexturePanel.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_bookshelf_front_painted_hd2d_Past_Library_RightSideBookshelf_BookshelfFrontTexturePanel.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_empty_bookshelf_front_hd2d_Current_Library_BackWallShelfWide.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_empty_bookshelf_front_hd2d_Current_Library_LeftSideBookshelf_EmptyShelfFrontTexturePanel.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_empty_bookshelf_front_hd2d_Current_Library_RightSideBookshelf_EmptyShelfFrontTexturePanel.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_exterior_wall.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_fence.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_grass.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_ground.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_house_door_detail.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_leaf.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_library_door_detail.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_path.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_roof.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_rubble_detail.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_current_stone.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_dust.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_broad_sunfield_cycle111.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_air_veil_cycle119.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_air_veil_cycle119.mat.meta; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_deep_shadow_cycle119.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_deep_shadow_cycle119.mat.meta; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_stone_matte_cycle119.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_stone_matte_cycle119.mat.meta; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_sun_fleck_cycle119.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_sun_fleck_cycle119.mat.meta; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_solar_reset_air_cycle116.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_solar_reset_sun_cycle116.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_sun_breakthrough_cycle118.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_sun_exposure_base_cycle112.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_sun_slash_cycle106.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_sunbeam_shafts_cycle113.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_sunbreak_cycle104.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_hd2d_plaza_sunlit_islands_cycle109.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_leaf.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_bed.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_exterior_wall.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_fence.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_furniture.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_grass.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_house_door_detail.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_interior_wall.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_library_door_detail.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_path.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_roof.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_stone.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_past_wood_floor.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_pillow.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_rope.mat; Assets/Art/Materials/FastVS/HouseSlice/FastVS_House_sign_paint.mat; Assets/Art/Shaders/FastVS/FastVS_SurfaceRampLit.shader; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_air_veil_cycle119.asset; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_air_veil_cycle119.asset.meta; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_deep_shadow_cycle119.asset; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_deep_shadow_cycle119.asset.meta; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_stone_matte_cycle119.asset; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_stone_matte_cycle119.asset.meta; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_sun_fleck_cycle119.asset; Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_plaza_reference_sun_fleck_cycle119.asset.meta; Assets/Editor/AnemoraFastVsHd2dAreaLightingProfileFoundationAudit.cs; Assets/Editor/AnemoraFastVsHd2dMaterialRoleFoundationAudit.cs; Assets/Editor/AnemoraFastVsHd2dShadingFoundationAudit.cs; Assets/Editor/AnemoraFastVsHouseSliceSetup.cs; Assets/Scripts/FastVS/FastVsHouseLightingDirector.cs; Assets/Settings/DefaultVolumeProfile.asset; docs/devlog/2026-05-24_fast_vs_hd2d_plaza_reference_composite_cycle119.md; docs/devlog/INDEX.md; docs/devlog/screenshots/fast_vs_hd2d_cycle119_plaza_reference_composite_parent_review_20260524_01
-[15:53:05]   NoRollback     : True
-[15:53:05]   RunLog         : C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\tools\logs\cycle-119-20260524-155304.log
-[15:53:05] Phase 'validate' begin: Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.ValidatePlazaReferenceCompositeCycle119Batch
-
-===== validate batch log (C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Logs\cycle-119-20260524-155304-validate.log) =====
-[Licensing::Module] Trying to connect to existing licensing client channel...
-Built from '6000.3/staging' branch; Version is '6000.3.14f1 (d68c3f99a318) revision 14060607'; Using compiler version '194234433'; Build Type 'Release'
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-maro6" at "2026-05-24T06:53:05.3347934Z"
-OS: 'Windows 11  (10.0.26200) Core' Language: 'en' Physical Memory: 14177 MB
-BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
-System  architecture: x64
-Process architecture: x64
-Date: 2026-05-24T06:53:05Z
-
-COMMAND LINE ARGUMENTS:
-C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe
--batchmode
--quit
--projectPath
-C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work
--executeMethod
-Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.ValidatePlazaReferenceCompositeCycle119Batch
--logFile
-C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Logs\cycle-119-20260524-155304-validate.log
-Successfully changed project path to: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work
-C:/Users/maro6/Documents/Unity/Anemora-fast-vs-v24-hd2d-work
-Exiting without the bug reporter. Application will terminate with return code 1
-[15:53:08] Phase 'validate' FAILED with exit 1
-[15:53:08] NoRollback set; preserving worktree after validate failure
-```
+- `tools\cycle-runner.ps1` passed validate / capture / build / smoke for Cycle119 at 2026-05-24 15:58 JST.
+- Parent-review screenshots were written to the expected Cycle119 directory.
