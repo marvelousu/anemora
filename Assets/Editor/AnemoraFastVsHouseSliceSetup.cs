@@ -15300,6 +15300,11 @@ namespace Anemora.EditorTools
             CapturePlazaReferenceShadowBloomCycle131ScreenshotsToDirectory(GetPlazaReferenceShadowBloomCycle131ScreenshotsDirectory());
         }
 
+        public static void CapturePlazaReferenceShadowContrastCycle132ScreenshotsBatch()
+        {
+            CapturePlazaReferenceShadowContrastCycle132ScreenshotsToDirectory(GetPlazaReferenceShadowContrastCycle132ScreenshotsDirectory());
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -16521,6 +16526,121 @@ namespace Anemora.EditorTools
             File.WriteAllText(
                 Path.Combine(reviewDirectory, "devlog.txt"),
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_shadow_bloom_cycle131.md" + Environment.NewLine);
+
+            foreach (var fileName in fileNames)
+            {
+                File.Copy(Path.Combine(outputDirectory, fileName), Path.Combine(reviewDirectory, fileName), true);
+            }
+        }
+
+        private static void CapturePlazaReferenceShadowContrastCycle132ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 132 reference shadow-contrast screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var heroFile = $"{audiencePrefix}01_current_central_plaza_reference_shadow_contrast_follow.png";
+            var floorFile = $"{audiencePrefix}02_current_central_plaza_reference_shadow_contrast_floor.png";
+            var facadeFile = $"{audiencePrefix}03_current_central_plaza_reference_shadow_contrast_facade.png";
+            var libraryGuardFile = $"{audiencePrefix}04_current_library_reference_shadow_contrast_guard.png";
+
+            void ApplyCurrent(FastVsHouseArea area, Vector3 playerLocalPosition, float fieldOfView)
+            {
+                camera.fieldOfView = fieldOfView;
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                realtimeRig.ApplyNowForReview();
+                SuppressPortalReviewArtifactsForLightingCapture(controller, camera);
+            }
+
+            var followPlayer = CentralPlazaVsCenter + new Vector3(-0.34f, 0.02f, 3.26f);
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, followPlayer, 37f);
+            var followProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
+            PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(followPlayer), followProfile.PositionOffset, followProfile.LookOffset);
+            realtimeRig.ApplyNowForReview();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, heroFile));
+            ValidateScreenshotOutputExists(outputDirectory, heroFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(0.20f, 0.02f, 3.08f), 33f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(0.36f, 0.12f, 3.96f)),
+                new Vector3(0.56f, 1.86f, -3.12f),
+                new Vector3(-0.10f, 0.10f, 0.74f));
+            realtimeRig.ApplyNowForReview();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, floorFile));
+            ValidateScreenshotOutputExists(outputDirectory, floorFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(-0.42f, 0.02f, 3.70f), 32f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(0.08f, 0.24f, 5.40f)),
+                new Vector3(0.48f, 1.84f, -3.36f),
+                new Vector3(0.00f, 0.24f, 0.78f));
+            realtimeRig.ApplyNowForReview();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, facadeFile));
+            ValidateScreenshotOutputExists(outputDirectory, facadeFile);
+
+            var libraryPlayer = LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f);
+            ApplyCurrent(FastVsHouseArea.Library, libraryPlayer, 38f);
+            PositionReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(libraryPlayer));
+            SaveCameraPng(camera, Path.Combine(outputDirectory, libraryGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, libraryGuardFile);
+
+            WriteCycle132ReviewDirectory(outputDirectory, new[] { heroFile, floorFile, facadeFile, libraryGuardFile });
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 132 reference shadow-contrast screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void WriteCycle132ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames)
+        {
+            var projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            var baseTime = DateTime.Now;
+            string reviewDirectory = null;
+            for (var i = 0; i < 10; i++)
+            {
+                var candidate = Path.Combine(projectRoot, "docs", "review", baseTime.AddMinutes(i).ToString("yyyy-MM-ddTHH-mm"));
+                var devlogPath = Path.Combine(candidate, "devlog.txt");
+                if (!Directory.Exists(candidate) || !File.Exists(devlogPath))
+                {
+                    reviewDirectory = candidate;
+                    break;
+                }
+
+                if (File.ReadAllText(devlogPath).Trim() == "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_shadow_contrast_cycle132.md")
+                {
+                    reviewDirectory = candidate;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(reviewDirectory))
+            {
+                reviewDirectory = Path.Combine(projectRoot, "docs", "review", baseTime.AddMinutes(10).ToString("yyyy-MM-ddTHH-mm"));
+            }
+
+            Directory.CreateDirectory(reviewDirectory);
+            File.WriteAllText(
+                Path.Combine(reviewDirectory, "devlog.txt"),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_shadow_contrast_cycle132.md" + Environment.NewLine);
 
             foreach (var fileName in fileNames)
             {
@@ -36937,6 +37057,31 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaReferenceShadowContrastCycle132()
+        {
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (visibility == null || realtimeRig == null || director == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 132 reference shadow contrast needs visibility, director, realtime rig, and main light.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+            realtimeRig.ApplyNowForReview();
+
+            if (mainLight.intensity < 2.80f || mainLight.shadowStrength < 0.98f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 132 must keep decisive sun/shadow light, found intensity={mainLight.intensity:0.000}, shadowStrength={mainLight.shadowStrength:0.000}.");
+            }
+
+            ValidateCycle131CameraPaintPlate("FastVS_Cycle128GradePlate", 5000, "cycle 132 repainted grade");
+            ValidateCycle131CameraPaintPlate("FastVS_Cycle131ShadowPaintPlate", 5020, "cycle 132 shadow paint");
+            ValidateCycle131CameraPaintPlate("FastVS_Cycle131SunPaintPlate", 5030, "cycle 132 sun paint");
+        }
+
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -43999,6 +44144,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle131_plaza_reference_shadow_bloom_parent_review_20260525_01";
         }
 
+        private static string GetPlazaReferenceShadowContrastCycle132ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle132_plaza_reference_shadow_contrast_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -47422,6 +47572,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaReferenceShadowBloomCycle131();
+        }
+
+        public static void ValidatePlazaReferenceShadowContrastCycle132Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaReferenceShadowContrastCycle132();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()

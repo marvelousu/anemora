@@ -567,8 +567,25 @@ namespace Anemora.FastVS
                     var edge = Mathf.SmoothStep(0.48f, 1.18f, radius);
                     var topWarm = Mathf.SmoothStep(0.52f, 1.00f, v);
                     var baseAlpha = 0.004f + edge * 0.10f + topWarm * 0.010f;
-                    var warm = Color.Lerp(new Color(1.00f, 0.86f, 0.54f, baseAlpha * 0.35f), new Color(0.020f, 0.026f, 0.022f, baseAlpha), edge);
-                    cycle128GradeTexture.SetPixel(x, y, warm);
+                    var sunPatch =
+                        SoftEllipseCycle131(u, v, 0.50f, 0.43f, 0.34f, 0.14f, -12f, 0.52f) +
+                        SoftEllipseCycle131(u, v, 0.70f, 0.30f, 0.20f, 0.09f, -18f, 0.28f);
+                    var ray = Mathf.SmoothStep(0.10f, 0.006f, Mathf.Abs((u - 0.02f) - (1f - v) * 0.54f)) * 0.32f;
+                    ray += Mathf.SmoothStep(0.085f, 0.006f, Mathf.Abs((u - 0.30f) - (1f - v) * 0.42f)) * 0.22f;
+                    ray *= Mathf.SmoothStep(0.10f, 0.56f, v) * Mathf.SmoothStep(1.00f, 0.60f, v);
+
+                    var shadowBand =
+                        Mathf.SmoothStep(0.34f, 0.018f, Mathf.Abs((v - 0.36f) - (u - 0.48f) * -0.32f)) * 0.42f +
+                        Mathf.SmoothStep(0.26f, 0.020f, Mathf.Abs((v - 0.62f) - (u - 0.46f) * -0.44f)) * 0.34f +
+                        Mathf.SmoothStep(0.54f, 0.06f, v) * 0.24f;
+                    var dapple = Hash01Cycle131(x / 5, y / 4) > 0.56f ? 0.060f : 0f;
+
+                    var lightAlpha = Mathf.Min(sunPatch + ray, 0.52f);
+                    var shadowAlpha = Mathf.Min(baseAlpha + shadowBand + dapple, 0.62f);
+                    var pixel = lightAlpha > shadowAlpha * 0.58f
+                        ? new Color(1.00f, 0.92f, 0.68f, lightAlpha)
+                        : new Color(0.010f, 0.013f, 0.011f, shadowAlpha);
+                    cycle128GradeTexture.SetPixel(x, y, pixel);
                 }
             }
 
