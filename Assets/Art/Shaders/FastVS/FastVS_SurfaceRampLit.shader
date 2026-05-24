@@ -12,7 +12,7 @@ Shader "Anemora/FastVS/SurfaceRampLit"
         _Metallic("Metallic", Range(0, 1)) = 0
         _Smoothness("Smoothness", Range(0, 1)) = 0.16
         _SpecularHighlights("Specular Highlights", Float) = 0
-        _DirectionalLightStrength("Directional Light Strength", Range(0, 0.60)) = 0.12
+        _DirectionalLightStrength("Directional Light Strength", Range(0, 0.8)) = 0.12
         _ShadowReceiveStrength("Shadow Receive Strength", Range(0, 0.70)) = 0.18
         _ShadowTextureStrength("Shadow Texture Strength", Range(0, 0.5)) = 0
     }

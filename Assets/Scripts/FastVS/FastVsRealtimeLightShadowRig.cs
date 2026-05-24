@@ -21,7 +21,7 @@ namespace Anemora.FastVS
         private static readonly int TopLightId = Shader.PropertyToID("_TopLight");
         private static readonly int SideShadeId = Shader.PropertyToID("_SideShade");
         private static readonly int FloorShadeId = Shader.PropertyToID("_FloorShade");
-        private static readonly Color CentralPlazaTopLight = new Color(1.34f, 1.14f, 0.82f, 1f);
+        private static readonly Color CentralPlazaTopLight = new Color(1.48f, 1.25f, 0.88f, 1f);
         private static readonly Color CentralPlazaSideShade = new Color(0.58f, 0.52f, 0.44f, 1f);
         private static readonly Color CentralPlazaFloorShade = new Color(0.52f, 0.47f, 0.40f, 1f);
 
@@ -407,12 +407,12 @@ namespace Anemora.FastVS
             renderer.GetPropertyBlock(block);
             if (material.HasProperty(SurfaceRampStrengthId))
             {
-                block.SetFloat(SurfaceRampStrengthId, 0.42f);
+                block.SetFloat(SurfaceRampStrengthId, 0.45f);
             }
 
             if (material.HasProperty(DirectionalLightStrengthId))
             {
-                block.SetFloat(DirectionalLightStrengthId, 0.56f);
+                block.SetFloat(DirectionalLightStrengthId, 0.70f);
             }
 
             if (material.HasProperty(ShadowReceiveStrengthId))

@@ -123,6 +123,7 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _ShadowReceiveStrength: 0.56
+    - _ShadowTextureStrength: 0
     - _Smoothness: 0.16
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0

@@ -50,6 +50,7 @@ Material:
     - _QueueOffset: 0
     - _SampleGI: 0
     - _ShadowReceiveStrength: 0.56
+    - _ShadowTextureStrength: 0
     - _Smoothness: 0.16
     - _SpecularHighlights: 0
     - _SrcBlend: 1

@@ -15391,6 +15391,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_lift_cycle143.md");
         }
 
+        public static void CapturePlazaRealtimeSunLiftCycle144ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeSunLiftCycle144ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_sun_lift_cycle144.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38110,6 +38117,39 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeSunLiftCycle144()
+        {
+            ValidateHd2dPlazaRealtimeShadowLiftCycle143();
+
+            var sunLiftReceiverCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled || !renderer.receiveShadows)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null || !material.HasProperty("_DirectionalLightStrength") || !material.HasProperty("_SurfaceRampStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_DirectionalLightStrength") >= 0.68f &&
+                    block.GetFloat("_SurfaceRampStrength") >= 0.44f)
+                {
+                    sunLiftReceiverCount++;
+                }
+            }
+
+            if (sunLiftReceiverCount < 24)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 144 expected realtime sun-lift receiver property blocks, found {sunLiftReceiverCount}.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45264,6 +45304,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle143_plaza_realtime_shadow_lift_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeSunLiftCycle144ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle144_plaza_realtime_sun_lift_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48776,6 +48821,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeShadowLiftCycle143();
+        }
+
+        public static void ValidatePlazaRealtimeSunLiftCycle144Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeSunLiftCycle144();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

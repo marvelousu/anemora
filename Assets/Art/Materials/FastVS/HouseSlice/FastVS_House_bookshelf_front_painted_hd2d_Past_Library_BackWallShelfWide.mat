@@ -38,6 +38,7 @@ Material:
     - _DirectionalLightStrength: 0.42
     - _Metallic: 0
     - _ShadowReceiveStrength: 0.56
+    - _ShadowTextureStrength: 0
     - _Smoothness: 0.16
     - _SpecularHighlights: 0
     - _SurfaceRampStrength: 0.36
