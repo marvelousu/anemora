@@ -5388,6 +5388,7 @@ namespace Anemora.EditorTools
             ApplyCentralPlazaPaintedSoftShadowCycle129(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaReferenceShadowQualityCycle130(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeShadowRecoveryCycle134(plazaRoot, prefix, past, materials);
+            ApplyCentralPlazaRealtimeDappleCasterCycle138(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15346,6 +15347,13 @@ namespace Anemora.EditorTools
             CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(GetPlazaFollowRealtimeTrackingCycle137ScreenshotsDirectory());
         }
 
+        public static void CapturePlazaRealtimeDappleCasterCycle138ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeDappleCasterCycle138ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17034,7 +17042,9 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static void CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(string outputDirectory)
+        private static void CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+            string outputDirectory,
+            string reviewDevlogPath = "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md")
         {
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
@@ -17116,12 +17126,12 @@ namespace Anemora.EditorTools
             SaveCameraPng(camera, Path.Combine(outputDirectory, libraryGuardFile));
             ValidateScreenshotOutputExists(outputDirectory, libraryGuardFile);
 
-            WriteCycle137ReviewDirectory(outputDirectory, new[] { followStartFile, followForwardFile, floorFile, facadeFile, libraryGuardFile });
+            WriteCycle137ReviewDirectory(outputDirectory, new[] { followStartFile, followForwardFile, floorFile, facadeFile, libraryGuardFile }, reviewDevlogPath);
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS cycle 137 realtime follow screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
-        private static void WriteCycle137ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames)
+        private static void WriteCycle137ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames, string reviewDevlogPath)
         {
             var projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
             var baseTime = DateTime.Now;
@@ -17136,7 +17146,7 @@ namespace Anemora.EditorTools
                     break;
                 }
 
-                if (File.ReadAllText(devlogPath).Trim() == "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md")
+                if (File.ReadAllText(devlogPath).Trim() == reviewDevlogPath)
                 {
                     reviewDirectory = candidate;
                     break;
@@ -17151,7 +17161,7 @@ namespace Anemora.EditorTools
             Directory.CreateDirectory(reviewDirectory);
             File.WriteAllText(
                 Path.Combine(reviewDirectory, "devlog.txt"),
-                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md" + Environment.NewLine);
+                reviewDevlogPath + Environment.NewLine);
 
             foreach (var fileName in fileNames)
             {
@@ -37823,6 +37833,45 @@ namespace Anemora.EditorTools
             ValidateColorApproximately(camera.backgroundColor, new Color(0.620f, 0.580f, 0.470f, 1f), "cycle 137 central plaza clear color");
         }
 
+        private static void ValidateHd2dPlazaRealtimeDappleCasterCycle138()
+        {
+            ValidateHd2dPlazaFollowRealtimeTrackingCycle137();
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 138 needs the directional light.");
+            }
+
+            if (mainLight.shadowBias > 0.013f || mainLight.shadowNormalBias > 0.11f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 138 needs low-bias realtime shadow detail, found bias={mainLight.shadowBias:0.000}, normalBias={mainLight.shadowNormalBias:0.000}.");
+            }
+
+            var cycle138CasterCount = 0;
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.gameObject.name.Contains("RealtimeShadowCasterCycle138"))
+                {
+                    continue;
+                }
+
+                cycle138CasterCount++;
+                if (!renderer.enabled ||
+                    renderer.shadowCastingMode != ShadowCastingMode.ShadowsOnly ||
+                    renderer.receiveShadows ||
+                    renderer.GetComponent<Collider>() != null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 138 caster {renderer.gameObject.name} must be enabled ShadowsOnly, non-receiving, and collider-free.");
+                }
+            }
+
+            if (cycle138CasterCount != 12)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 138 expected 12 realtime dapple casters, found {cycle138CasterCount}.");
+            }
+        }
+
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -44915,6 +44964,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle137_plaza_follow_realtime_tracking_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeDappleCasterCycle138ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle138_plaza_realtime_dapple_caster_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48385,6 +48439,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaFollowRealtimeTrackingCycle137();
+        }
+
+        public static void ValidatePlazaRealtimeDappleCasterCycle138Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeDappleCasterCycle138();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
@@ -53847,6 +53908,29 @@ namespace Anemora.EditorTools
             CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_DappleLeafB", c + new Vector3(1.18f, 2.24f, 4.38f), new Vector3(0.66f, 0.10f, 0.35f), Quaternion.Euler(0f, 31f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle134.realtime_dapple_leaf_b");
             CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_DappleLeafC", c + new Vector3(0.22f, 2.46f, 3.22f), new Vector3(0.76f, 0.10f, 0.32f), Quaternion.Euler(0f, -46f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle134.realtime_dapple_leaf_c");
             CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_DappleLeafD", c + new Vector3(2.62f, 2.06f, 5.06f), new Vector3(0.84f, 0.10f, 0.34f), Quaternion.Euler(0f, 12f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle134.realtime_dapple_leaf_d");
+        }
+
+        private static void ApplyCentralPlazaRealtimeDappleCasterCycle138(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_BranchLaceA", c + new Vector3(-2.18f, 2.54f, 5.18f), new Vector3(2.10f, 0.070f, 0.120f), Quaternion.Euler(0f, -46f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_branch_lace_a");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_BranchLaceB", c + new Vector3(-1.16f, 2.42f, 4.70f), new Vector3(1.46f, 0.065f, 0.110f), Quaternion.Euler(0f, 31f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_branch_lace_b");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_BranchLaceC", c + new Vector3(0.18f, 2.60f, 5.06f), new Vector3(1.68f, 0.065f, 0.115f), Quaternion.Euler(0f, -18f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_branch_lace_c");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_BranchLaceD", c + new Vector3(1.48f, 2.36f, 4.36f), new Vector3(1.54f, 0.065f, 0.115f), Quaternion.Euler(0f, 43f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_branch_lace_d");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_RafterNeedleA", c + new Vector3(-1.78f, 1.86f, 3.34f), new Vector3(3.25f, 0.060f, 0.105f), Quaternion.Euler(0f, -24f, 0f), materials.CurrentFence, $"{prefix}.central_plaza.cycle138.realtime_rafter_needle_a");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_RafterNeedleB", c + new Vector3(1.36f, 1.76f, 3.68f), new Vector3(2.75f, 0.060f, 0.105f), Quaternion.Euler(0f, 22f, 0f), materials.CurrentFence, $"{prefix}.central_plaza.cycle138.realtime_rafter_needle_b");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_CanopyChipA", c + new Vector3(-0.66f, 2.70f, 3.82f), new Vector3(0.62f, 0.070f, 0.175f), Quaternion.Euler(0f, -55f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_canopy_chip_a");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_CanopyChipB", c + new Vector3(0.74f, 2.64f, 3.58f), new Vector3(0.58f, 0.070f, 0.165f), Quaternion.Euler(0f, 51f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_canopy_chip_b");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_CanopyChipC", c + new Vector3(2.16f, 2.48f, 5.34f), new Vector3(0.72f, 0.070f, 0.185f), Quaternion.Euler(0f, -9f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle138.realtime_canopy_chip_c");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_ForegroundTwigA", c + new Vector3(-2.70f, 1.54f, 2.74f), new Vector3(1.82f, 0.055f, 0.100f), Quaternion.Euler(0f, 17f, 0f), materials.CurrentFurniture, $"{prefix}.central_plaza.cycle138.realtime_foreground_twig_a");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_ForegroundTwigB", c + new Vector3(2.44f, 1.50f, 2.92f), new Vector3(1.66f, 0.055f, 0.100f), Quaternion.Euler(0f, -34f, 0f), materials.CurrentFurniture, $"{prefix}.central_plaza.cycle138.realtime_foreground_twig_b");
+            CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", c + new Vector3(0.04f, 2.06f, 5.84f), new Vector3(3.18f, 0.060f, 0.105f), Quaternion.Euler(0f, -6f, 0f), materials.CurrentExteriorWall, $"{prefix}.central_plaza.cycle138.realtime_door_lintel_fine");
         }
 
         private static GameObject CreateCentralPlazaRealtimeShadowCasterCycle127(

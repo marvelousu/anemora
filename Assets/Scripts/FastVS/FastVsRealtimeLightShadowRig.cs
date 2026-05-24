@@ -93,8 +93,8 @@ namespace Anemora.FastVS
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
                 mainLight.shadowStrength = isCentralPlaza ? 0.92f : Mathf.Max(mainLight.shadowStrength, 0.82f);
-                mainLight.shadowBias = Mathf.Min(mainLight.shadowBias, 0.025f);
-                mainLight.shadowNormalBias = Mathf.Min(mainLight.shadowNormalBias, 0.18f);
+                mainLight.shadowBias = isCentralPlaza ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
+                mainLight.shadowNormalBias = isCentralPlaza ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
 
                 if (isCentralPlaza)
