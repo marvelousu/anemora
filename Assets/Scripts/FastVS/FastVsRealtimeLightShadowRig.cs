@@ -27,9 +27,9 @@ namespace Anemora.FastVS
         private static readonly int RampStrengthId = Shader.PropertyToID("_RampStrength");
         private static readonly int WorldLightStrengthId = Shader.PropertyToID("_WorldLightStrength");
         private static readonly int WorldShadowReceiveStrengthId = Shader.PropertyToID("_WorldShadowReceiveStrength");
-        private static readonly Color CentralPlazaTopLight = new Color(1.48f, 1.25f, 0.88f, 1f);
-        private static readonly Color CentralPlazaSideShade = new Color(0.58f, 0.52f, 0.44f, 1f);
-        private static readonly Color CentralPlazaFloorShade = new Color(0.52f, 0.47f, 0.40f, 1f);
+        private static readonly Color CentralPlazaTopLight = new Color(1.20f, 1.10f, 0.88f, 1f);
+        private static readonly Color CentralPlazaSideShade = new Color(0.50f, 0.50f, 0.47f, 1f);
+        private static readonly Color CentralPlazaFloorShade = new Color(0.44f, 0.45f, 0.42f, 1f);
 
         [SerializeField] private FastVsHouseAreaVisibility areaVisibility;
         [SerializeField] private Camera sceneCamera;
@@ -117,7 +117,7 @@ namespace Anemora.FastVS
                 if (isCentralPlaza)
                 {
                     mainLight.intensity = 2.45f;
-                    mainLight.color = new Color(1.00f, 0.88f, 0.62f, 1f);
+                    mainLight.color = new Color(1.00f, 0.93f, 0.78f, 1f);
                     mainLight.transform.rotation = Quaternion.Euler(43f, -38f, 0f);
                     mainLight.cookie = EnsureCentralPlazaSunCookieTexture();
                     mainLight.cookieSize = CentralPlazaSunCookieWorldSize;

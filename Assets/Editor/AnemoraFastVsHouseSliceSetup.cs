@@ -15454,6 +15454,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_cookie_no_ribbon_cycle152.md");
         }
 
+        public static void CapturePlazaDesaturatedRealtimeSunCycle153ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaDesaturatedRealtimeSunCycle153ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_desaturated_realtime_sun_cycle153.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38595,6 +38602,66 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaDesaturatedRealtimeSunCycle153()
+        {
+            ValidateHd2dPlazaRealtimeCookieNoRibbonCycle152();
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 153 needs the central-plaza Directional Light.");
+            }
+
+            if (mainLight.color.g < 0.92f || mainLight.color.b < 0.77f || mainLight.color.r < 0.99f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 153 central-plaza sun color must be warm-neutral instead of orange-yellow, found {mainLight.color}.");
+            }
+
+            var desaturatedSurfaceCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null ||
+                    !material.HasProperty("_TopLight") ||
+                    !material.HasProperty("_FloorShade") ||
+                    !renderer.gameObject.name.Contains("Current_CentralPlaza"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                var topLight = block.GetColor("_TopLight");
+                var floorShade = block.GetColor("_FloorShade");
+                if (topLight.r <= 1.22f &&
+                    topLight.g <= 1.12f &&
+                    topLight.b >= 0.86f &&
+                    floorShade.r <= 0.46f &&
+                    floorShade.b >= 0.41f)
+                {
+                    desaturatedSurfaceCount++;
+                }
+            }
+
+            if (desaturatedSurfaceCount < 12)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 153 expected desaturated central-plaza realtime surface grade on receivers, found {desaturatedSurfaceCount}.");
+            }
+
+            var realtimeRigPath = Path.Combine(Application.dataPath, "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var realtimeRigText = File.ReadAllText(realtimeRigPath);
+            if (realtimeRigText.Contains("1.48f, 1.25f, 0.88f") ||
+                realtimeRigText.Contains("1.00f, 0.88f, 0.62f"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 153 must not restore the previous saturated yellow plaza sun grade.");
+            }
+        }
+
         private static bool IsCycle150VisibleCentralPlazaCaster(Renderer renderer)
         {
             var name = renderer.gameObject.name;
@@ -45872,6 +45939,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle152_plaza_realtime_cookie_no_ribbon_parent_review_20260525_01";
         }
 
+        private static string GetPlazaDesaturatedRealtimeSunCycle153ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle153_plaza_desaturated_realtime_sun_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49447,6 +49519,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeCookieNoRibbonCycle152();
+        }
+
+        public static void ValidatePlazaDesaturatedRealtimeSunCycle153Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaDesaturatedRealtimeSunCycle153();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
