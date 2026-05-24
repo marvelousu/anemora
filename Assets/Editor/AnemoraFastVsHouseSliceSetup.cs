@@ -236,7 +236,7 @@ namespace Anemora.EditorTools
         private static readonly Vector3 ExteriorDoorTriggerCenter = HouseExteriorCenter + new Vector3(-1.05f, 0.70f, -2.22f);
         private static readonly Vector3 ExteriorDoorExitTarget = HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -3.18f);
         private static readonly Vector3 ExteriorToPlazaTriggerCenter = HouseExteriorCenter + new Vector3(10.95f, 0.70f, 5.90f);
-        private static readonly Vector3 PlazaFromExteriorTarget = CentralPlazaVsCenter + new Vector3(-3.15f, 0.02f, -2.15f);
+        private static readonly Vector3 PlazaFromExteriorTarget = CentralPlazaVsCenter + new Vector3(0.20f, 0.02f, 4.40f);
         private static readonly Vector3 PlazaToExteriorTriggerCenter = CentralPlazaVsCenter + new Vector3(-5.25f, 0.70f, -3.65f);
         private static readonly Vector3 ExteriorFromPlazaTarget = HouseExteriorCenter + new Vector3(8.95f, 0.02f, 4.55f);
         private static readonly Vector3 PlazaToLibraryTriggerCenter = CentralPlazaVsCenter + new Vector3(0.00f, 0.70f, 7.30f);
@@ -5341,6 +5341,26 @@ namespace Anemora.EditorTools
                 renderTexture.Release();
                 UnityEngine.Object.DestroyImmediate(renderTexture);
                 UnityEngine.Object.DestroyImmediate(texture);
+            }
+        }
+
+        private static void WarmUpCameraRender(Camera camera)
+        {
+            var previousTarget = camera.targetTexture;
+            var previousActive = RenderTexture.active;
+            var renderTexture = RenderTexture.GetTemporary(64, 36, 16, RenderTextureFormat.ARGB32);
+            try
+            {
+                camera.targetTexture = renderTexture;
+                RenderTexture.active = renderTexture;
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+            }
+            finally
+            {
+                camera.targetTexture = previousTarget;
+                RenderTexture.active = previousActive;
+                RenderTexture.ReleaseTemporary(renderTexture);
             }
         }
 
@@ -15321,6 +15341,11 @@ namespace Anemora.EditorTools
             CapturePlazaMapSafeCameraCycle136ScreenshotsToDirectory(GetPlazaMapSafeCameraCycle136ScreenshotsDirectory());
         }
 
+        public static void CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(GetPlazaFollowRealtimeTrackingCycle137ScreenshotsDirectory());
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17002,6 +17027,131 @@ namespace Anemora.EditorTools
             File.WriteAllText(
                 Path.Combine(reviewDirectory, "devlog.txt"),
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_map_safe_camera_cycle136.md" + Environment.NewLine);
+
+            foreach (var fileName in fileNames)
+            {
+                File.Copy(Path.Combine(outputDirectory, fileName), Path.Combine(reviewDirectory, fileName), true);
+            }
+        }
+
+        private static void CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 137 realtime follow screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var followStartFile = $"{audiencePrefix}01_current_central_plaza_follow_start.png";
+            var followForwardFile = $"{audiencePrefix}02_current_central_plaza_follow_forward.png";
+            var floorFile = $"{audiencePrefix}03_current_central_plaza_realtime_shadow_floor.png";
+            var facadeFile = $"{audiencePrefix}04_current_central_plaza_realtime_shadow_facade.png";
+            var libraryGuardFile = $"{audiencePrefix}05_current_library_guard.png";
+
+            void ApplyCurrent(FastVsHouseArea area, Vector3 playerLocalPosition, float fieldOfView)
+            {
+                camera.fieldOfView = fieldOfView;
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                realtimeRig.ApplyNowForReview();
+                SuppressPortalReviewArtifactsForLightingCapture(controller, camera);
+            }
+
+            void CaptureFollow(Vector3 playerLocalPosition, string fileName)
+            {
+                var followProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
+                ApplyCurrent(FastVsHouseArea.CentralPlaza, playerLocalPosition, followProfile.FieldOfView);
+                PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(playerLocalPosition), followProfile.PositionOffset, followProfile.LookOffset);
+                realtimeRig.ApplyNowForReview();
+                WarmUpCameraRender(camera);
+                SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
+                ValidateScreenshotOutputExists(outputDirectory, fileName);
+            }
+
+            CaptureFollow(PlazaFromExteriorTarget, followStartFile);
+            CaptureFollow(PlazaFromLibraryTarget, followForwardFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(0.20f, 0.02f, 3.08f), 34f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(0.36f, 0.12f, 3.96f)),
+                new Vector3(0.64f, 2.10f, -4.28f),
+                new Vector3(-0.04f, 0.22f, 0.92f));
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, floorFile));
+            ValidateScreenshotOutputExists(outputDirectory, floorFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(-0.42f, 0.02f, 3.70f), 35f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(0.08f, 0.24f, 5.40f)),
+                new Vector3(0.72f, 2.20f, -4.55f),
+                new Vector3(0.04f, 0.28f, 0.94f));
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, facadeFile));
+            ValidateScreenshotOutputExists(outputDirectory, facadeFile);
+
+            var libraryPlayer = LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f);
+            ApplyCurrent(FastVsHouseArea.Library, libraryPlayer, 38f);
+            PositionReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(libraryPlayer));
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, libraryGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, libraryGuardFile);
+
+            WriteCycle137ReviewDirectory(outputDirectory, new[] { followStartFile, followForwardFile, floorFile, facadeFile, libraryGuardFile });
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 137 realtime follow screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void WriteCycle137ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames)
+        {
+            var projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            var baseTime = DateTime.Now;
+            string reviewDirectory = null;
+            for (var i = 0; i < 10; i++)
+            {
+                var candidate = Path.Combine(projectRoot, "docs", "review", baseTime.AddMinutes(i).ToString("yyyy-MM-ddTHH-mm"));
+                var devlogPath = Path.Combine(candidate, "devlog.txt");
+                if (!Directory.Exists(candidate) || !File.Exists(devlogPath))
+                {
+                    reviewDirectory = candidate;
+                    break;
+                }
+
+                if (File.ReadAllText(devlogPath).Trim() == "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md")
+                {
+                    reviewDirectory = candidate;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(reviewDirectory))
+            {
+                reviewDirectory = Path.Combine(projectRoot, "docs", "review", baseTime.AddMinutes(10).ToString("yyyy-MM-ddTHH-mm"));
+            }
+
+            Directory.CreateDirectory(reviewDirectory);
+            File.WriteAllText(
+                Path.Combine(reviewDirectory, "devlog.txt"),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md" + Environment.NewLine);
 
             foreach (var fileName in fileNames)
             {
@@ -37527,15 +37677,18 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 134 ambient must leave realtime shadows readable without camera paint, found {ambient}.");
             }
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.112f, 0.138f, 0.164f, 1f), "cycle 134 central plaza VS clear color");
+            ValidateColorApproximately(camera.backgroundColor, new Color(0.620f, 0.580f, 0.470f, 1f), "cycle 137 central plaza VS clear color");
 
             var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
-            if (Mathf.Abs(profile.PositionOffset.x - 0.64f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.y - 2.65f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.z + 4.40f) > 0.01f ||
-                Mathf.Abs(profile.FieldOfView - 36f) > 0.01f)
+            if (Mathf.Abs(profile.PositionOffset.x - 0.80f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.y - 2.20f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.z + 3.40f) > 0.01f ||
+                Mathf.Abs(profile.LookOffset.x - 0.12f) > 0.01f ||
+                Mathf.Abs(profile.LookOffset.y - 0.32f) > 0.01f ||
+                Mathf.Abs(profile.LookOffset.z - 1.80f) > 0.01f ||
+                Mathf.Abs(profile.FieldOfView - 34f) > 0.01f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 134 central-plaza follow camera must stay inside the plaza map while keeping a VS-like view, found offset={profile.PositionOffset}, fov={profile.FieldOfView:0.0}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 137 central-plaza follow camera must track from the playable floor with a VS-like look-ahead, found position={profile.PositionOffset}, look={profile.LookOffset}, fov={profile.FieldOfView:0.0}.");
             }
 
             var realtimeCasterCount = 0;
@@ -37623,13 +37776,13 @@ namespace Anemora.EditorTools
             ValidateHd2dPlazaRealtimeShadowRecoveryCycle134();
 
             var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
-            if (Mathf.Abs(profile.PositionOffset.x - 0.64f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.y - 2.65f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.z + 4.40f) > 0.01f ||
-                Mathf.Abs(profile.LookOffset.x + 0.04f) > 0.01f ||
+            if (Mathf.Abs(profile.PositionOffset.x - 0.80f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.y - 2.20f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.z + 3.40f) > 0.01f ||
+                Mathf.Abs(profile.LookOffset.x - 0.12f) > 0.01f ||
                 Mathf.Abs(profile.LookOffset.y - 0.32f) > 0.01f ||
-                Mathf.Abs(profile.LookOffset.z - 0.98f) > 0.01f ||
-                Mathf.Abs(profile.FieldOfView - 36f) > 0.01f)
+                Mathf.Abs(profile.LookOffset.z - 1.80f) > 0.01f ||
+                Mathf.Abs(profile.FieldOfView - 34f) > 0.01f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 135 central-plaza camera must use the map-safe VS follow framing, found position={profile.PositionOffset}, look={profile.LookOffset}, fov={profile.FieldOfView:0.0}.");
             }
@@ -37638,6 +37791,36 @@ namespace Anemora.EditorTools
         private static void ValidateHd2dPlazaMapSafeCameraCycle136()
         {
             ValidateHd2dPlazaVsCameraRecoveryCycle135();
+        }
+
+        private static void ValidateHd2dPlazaFollowRealtimeTrackingCycle137()
+        {
+            ValidateHd2dPlazaMapSafeCameraCycle136();
+
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var camera = Camera.main;
+            if (visibility == null || realtimeRig == null || director == null || camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 137 realtime tracking needs visibility, director, camera, and realtime rig.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+            realtimeRig.ApplyNowForReview();
+
+            if (RenderSettings.fog)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 137 central plaza must not rely on painted fog or RenderSettings fog.");
+            }
+
+            if (camera.clearFlags != CameraClearFlags.SolidColor)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 137 central plaza must use a stable VS clear color behind the realtime-lit map.");
+            }
+
+            ValidateColorApproximately(camera.backgroundColor, new Color(0.620f, 0.580f, 0.470f, 1f), "cycle 137 central plaza clear color");
         }
 
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
@@ -44727,6 +44910,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle136_plaza_map_safe_camera_parent_review_20260525_01";
         }
 
+        private static string GetPlazaFollowRealtimeTrackingCycle137ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle137_plaza_follow_realtime_tracking_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48190,6 +48378,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaMapSafeCameraCycle136();
+        }
+
+        public static void ValidatePlazaFollowRealtimeTrackingCycle137Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaFollowRealtimeTrackingCycle137();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

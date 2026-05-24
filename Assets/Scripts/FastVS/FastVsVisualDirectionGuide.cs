@@ -212,7 +212,7 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Exterior:
                     return new FollowCameraProfile(new Vector3(0.90f, 3.85f, -7.10f), new Vector3(0.42f, 0.70f, 1.12f), 38f);
                 case FastVsHouseArea.CentralPlaza:
-                    return new FollowCameraProfile(new Vector3(0.64f, 2.65f, -4.40f), new Vector3(-0.04f, 0.32f, 0.98f), 36f);
+                    return new FollowCameraProfile(new Vector3(0.80f, 2.20f, -3.40f), new Vector3(0.12f, 0.32f, 1.80f), 34f);
                 case FastVsHouseArea.Library:
                     return new FollowCameraProfile(new Vector3(0f, 2.70f, -4.45f), new Vector3(0f, 0.70f, 0.42f), 38f);
                 default:

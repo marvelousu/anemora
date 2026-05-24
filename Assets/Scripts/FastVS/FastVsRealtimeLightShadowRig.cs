@@ -20,7 +20,7 @@ namespace Anemora.FastVS
         [SerializeField] private Light mainLight;
         [SerializeField] private bool enforceRendererShadowPolicy = true;
         [SerializeField] private Color exteriorSkyColor = new Color(0.48f, 0.50f, 0.46f, 1f);
-        [SerializeField] private Color centralPlazaSkyColor = new Color(0.112f, 0.138f, 0.164f, 1f);
+        [SerializeField] private Color centralPlazaSkyColor = new Color(0.620f, 0.580f, 0.470f, 1f);
 
         private float nextShadowPolicyRefreshTime;
         private GameObject cycle128GradeRoot;
