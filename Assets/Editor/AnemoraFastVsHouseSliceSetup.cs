@@ -5366,6 +5366,7 @@ namespace Anemora.EditorTools
             ApplyCentralPlazaRealtimeSunShadowCycle127(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaReferenceGradeCycle128(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaPaintedSoftShadowCycle129(plazaRoot, prefix, past, materials);
+            ApplyCentralPlazaReferenceShadowQualityCycle130(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15289,6 +15290,11 @@ namespace Anemora.EditorTools
             CapturePlazaPaintedSoftShadowCycle129ScreenshotsToDirectory(GetPlazaPaintedSoftShadowCycle129ScreenshotsDirectory());
         }
 
+        public static void CapturePlazaReferenceShadowQualityCycle130ScreenshotsBatch()
+        {
+            CapturePlazaReferenceShadowQualityCycle130ScreenshotsToDirectory(GetPlazaReferenceShadowQualityCycle130ScreenshotsDirectory());
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -16277,6 +16283,125 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS cycle 129 painted soft-shadow screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CapturePlazaReferenceShadowQualityCycle130ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 130 reference shadow-quality screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var heroFile = $"{audiencePrefix}01_current_central_plaza_reference_shadow_quality_follow.png";
+            var floorFile = $"{audiencePrefix}02_current_central_plaza_reference_shadow_quality_floor.png";
+            var facadeFile = $"{audiencePrefix}03_current_central_plaza_reference_shadow_quality_facade.png";
+            var libraryGuardFile = $"{audiencePrefix}04_current_library_reference_shadow_quality_guard.png";
+
+            void ApplyCurrent(FastVsHouseArea area, Vector3 playerLocalPosition, float fieldOfView)
+            {
+                camera.fieldOfView = fieldOfView;
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                realtimeRig.ApplyNowForReview();
+                SuppressPortalReviewArtifactsForLightingCapture(controller, camera);
+            }
+
+            var followPlayer = CentralPlazaVsCenter + new Vector3(-0.34f, 0.02f, 3.26f);
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, followPlayer, 37f);
+            var followProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(followPlayer),
+                followProfile.PositionOffset,
+                followProfile.LookOffset);
+            realtimeRig.ApplyNowForReview();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, heroFile));
+            ValidateScreenshotOutputExists(outputDirectory, heroFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(0.20f, 0.02f, 3.08f), 33f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(0.36f, 0.12f, 3.96f)),
+                new Vector3(0.56f, 1.86f, -3.12f),
+                new Vector3(-0.10f, 0.10f, 0.74f));
+            realtimeRig.ApplyNowForReview();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, floorFile));
+            ValidateScreenshotOutputExists(outputDirectory, floorFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(-0.42f, 0.02f, 3.70f), 32f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(0.08f, 0.24f, 5.40f)),
+                new Vector3(0.48f, 1.84f, -3.36f),
+                new Vector3(0.00f, 0.24f, 0.78f));
+            realtimeRig.ApplyNowForReview();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, facadeFile));
+            ValidateScreenshotOutputExists(outputDirectory, facadeFile);
+
+            var libraryPlayer = LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f);
+            ApplyCurrent(FastVsHouseArea.Library, libraryPlayer, 38f);
+            PositionReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(libraryPlayer));
+            SaveCameraPng(camera, Path.Combine(outputDirectory, libraryGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, libraryGuardFile);
+
+            WriteCycle130ReviewDirectory(outputDirectory, new[] { heroFile, floorFile, facadeFile, libraryGuardFile });
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 130 reference shadow-quality screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void WriteCycle130ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames)
+        {
+            var projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            var baseTime = DateTime.Now;
+            string reviewDirectory = null;
+            for (var i = 0; i < 10; i++)
+            {
+                var candidate = Path.Combine(projectRoot, "docs", "review", baseTime.AddMinutes(i).ToString("yyyy-MM-ddTHH-mm"));
+                var devlogPath = Path.Combine(candidate, "devlog.txt");
+                if (!Directory.Exists(candidate) || !File.Exists(devlogPath))
+                {
+                    reviewDirectory = candidate;
+                    break;
+                }
+
+                if (File.ReadAllText(devlogPath).Trim() == "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_shadow_quality_cycle130.md")
+                {
+                    reviewDirectory = candidate;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(reviewDirectory))
+            {
+                reviewDirectory = Path.Combine(projectRoot, "docs", "review", baseTime.AddMinutes(10).ToString("yyyy-MM-ddTHH-mm"));
+            }
+
+            Directory.CreateDirectory(reviewDirectory);
+            File.WriteAllText(
+                Path.Combine(reviewDirectory, "devlog.txt"),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_shadow_quality_cycle130.md" + Environment.NewLine);
+
+            foreach (var fileName in fileNames)
+            {
+                File.Copy(Path.Combine(outputDirectory, fileName), Path.Combine(reviewDirectory, fileName), true);
+            }
         }
 
         private static void CapturePlazaSunExposureBaseCycle112ScreenshotsToDirectory(string outputDirectory)
@@ -36568,6 +36693,85 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaReferenceShadowQualityCycle130()
+        {
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var camera = Camera.main;
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (visibility == null || realtimeRig == null || director == null || camera == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 130 reference shadow quality needs visibility, director, camera, realtime rig, and main light.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+            realtimeRig.ApplyNowForReview();
+
+            if (mainLight.intensity < 2.80f || mainLight.shadowStrength < 0.98f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 must push strong sun and near-black shadows, found intensity={mainLight.intensity:0.000}, shadowStrength={mainLight.shadowStrength:0.000}.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            if (ambient.r > 0.034f || ambient.g > 0.036f || ambient.b > 0.040f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 ambient must stay low/cool for reference-like contrast, found {ambient}.");
+            }
+
+            var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
+            if (profile.PositionOffset.y < 3.00f || profile.PositionOffset.z > -4.70f || profile.FieldOfView < 36f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 central-plaza camera must regain high HD-2D viewing angle, found offset={profile.PositionOffset}, fov={profile.FieldOfView:0.0}.");
+            }
+
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceInkShadowA", "FastVS_House_hd2d_plaza_reference_ink_shadow_cycle130", "FastVS_House_hd2d_plaza_reference_ink_shadow_cycle130");
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceInkShadowB", "FastVS_House_hd2d_plaza_reference_ink_shadow_cycle130", "FastVS_House_hd2d_plaza_reference_ink_shadow_cycle130");
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceSunPatchA", "FastVS_House_hd2d_plaza_reference_sun_patch_cycle130", "FastVS_House_hd2d_plaza_reference_sun_patch_cycle130");
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceContactShadowA", "FastVS_House_hd2d_plaza_reference_contact_shadow_cycle130", "FastVS_House_hd2d_plaza_reference_contact_shadow_cycle130");
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceContactShadowB", "FastVS_House_hd2d_plaza_reference_contact_shadow_cycle130", "FastVS_House_hd2d_plaza_reference_contact_shadow_cycle130");
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceContactShadowC", "FastVS_House_hd2d_plaza_reference_contact_shadow_cycle130", "FastVS_House_hd2d_plaza_reference_contact_shadow_cycle130");
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceSunShaftA", "FastVS_House_hd2d_plaza_reference_sun_shaft_cycle130", "FastVS_House_hd2d_plaza_reference_sun_shaft_cycle130", 3020, 3030);
+            ValidateCycle130ReferenceQuad("Current_CentralPlaza_Cycle130ReferenceSunShaftB", "FastVS_House_hd2d_plaza_reference_sun_shaft_cycle130", "FastVS_House_hd2d_plaza_reference_sun_shaft_cycle130", 3020, 3030);
+        }
+
+        private static void ValidateCycle130ReferenceQuad(string objectName, string expectedMaterialName, string expectedTextureName, int minQueue = 3000, int maxQueue = 3020)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+            if (sceneObject == null || !sceneObject.activeSelf || renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 reference quad {objectName} must be active with a material.");
+            }
+
+            if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 reference quad {objectName} must not cast or receive realtime shadows.");
+            }
+
+            if (renderer.GetComponentInParent<FastVsHd2dOverlayProfile>(true) != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 reference quad {objectName} must bypass legacy overlay profile grading.");
+            }
+
+            var material = renderer.sharedMaterial;
+            var role = material.GetTag(MaterialRoleTagName, false, string.Empty);
+            if (!string.Equals(role, FastVsHd2dMaterialRole.PortalWindow.ToString(), StringComparison.Ordinal) ||
+                !string.Equals(material.name, expectedMaterialName, StringComparison.Ordinal) ||
+                material.renderQueue < minQueue ||
+                material.renderQueue > maxQueue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 reference quad {objectName} must use transparent PortalWindow material {expectedMaterialName}.");
+            }
+
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>($"{TextureDirectory}/{expectedTextureName}.asset");
+            if (texture == null || !MaterialUsesTexture(material, texture))
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 130 reference quad {objectName} must use texture {expectedTextureName}.");
+            }
+        }
+
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -43620,6 +43824,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle129_plaza_painted_soft_shadow_parent_review_20260525_01";
         }
 
+        private static string GetPlazaReferenceShadowQualityCycle130ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle130_plaza_reference_shadow_quality_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -47029,6 +47238,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaPaintedSoftShadowCycle129();
+        }
+
+        public static void ValidatePlazaReferenceShadowQualityCycle130Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaReferenceShadowQualityCycle130();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()
@@ -52300,6 +52516,60 @@ namespace Anemora.EditorTools
             return quad;
         }
 
+        private static void ApplyCentralPlazaReferenceShadowQualityCycle130(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var inkShadowMaterial = EnsureHd2dPlazaReferenceInkShadowCycle130Material();
+            var sunPatchMaterial = EnsureHd2dPlazaReferenceSunPatchCycle130Material();
+            var contactShadowMaterial = EnsureHd2dPlazaReferenceContactShadowCycle130Material();
+            var shaftMaterial = EnsureHd2dPlazaReferenceShaftCycle130Material();
+
+            CreateCentralPlazaPaintedGradeQuadCycle130("Current_CentralPlaza_Cycle130ReferenceInkShadowA", root, c + new Vector3(-1.22f, 0.074f, 4.30f), new Vector3(4.90f, 2.10f, 1f), -22f, inkShadowMaterial, $"{prefix}.central_plaza.cycle130.reference_ink_shadow_a");
+            CreateCentralPlazaPaintedGradeQuadCycle130("Current_CentralPlaza_Cycle130ReferenceInkShadowB", root, c + new Vector3(1.34f, 0.078f, 3.25f), new Vector3(5.40f, 1.95f, 1f), -12f, inkShadowMaterial, $"{prefix}.central_plaza.cycle130.reference_ink_shadow_b");
+            CreateCentralPlazaPaintedGradeQuadCycle130("Current_CentralPlaza_Cycle130ReferenceSunPatchA", root, c + new Vector3(0.16f, 0.086f, 3.78f), new Vector3(7.30f, 3.80f, 1f), -18f, sunPatchMaterial, $"{prefix}.central_plaza.cycle130.reference_sun_patch_a");
+            CreateCentralPlazaPaintedGradeQuadCycle130("Current_CentralPlaza_Cycle130ReferenceContactShadowA", root, c + new Vector3(-0.34f, 0.092f, 3.24f), new Vector3(1.36f, 0.46f, 1f), -14f, contactShadowMaterial, $"{prefix}.central_plaza.cycle130.reference_contact_shadow_a");
+            CreateCentralPlazaPaintedGradeQuadCycle130("Current_CentralPlaza_Cycle130ReferenceContactShadowB", root, c + new Vector3(-0.26f, 0.094f, 5.05f), new Vector3(4.60f, 0.58f, 1f), -4f, contactShadowMaterial, $"{prefix}.central_plaza.cycle130.reference_contact_shadow_b");
+            CreateCentralPlazaPaintedGradeQuadCycle130("Current_CentralPlaza_Cycle130ReferenceContactShadowC", root, c + new Vector3(-2.76f, 0.096f, 4.66f), new Vector3(1.90f, 0.52f, 1f), 8f, contactShadowMaterial, $"{prefix}.central_plaza.cycle130.reference_contact_shadow_c");
+
+            CreateOutdoorSkyWashQuad("Current_CentralPlaza_Cycle130ReferenceSunShaftA", root, c + new Vector3(-2.12f, 3.15f, 7.84f), new Vector3(1.28f, 4.70f, 1f), Quaternion.Euler(0f, -5f, -18f), shaftMaterial, $"{prefix}.central_plaza.cycle130.reference_sun_shaft_a");
+            CreateOutdoorSkyWashQuad("Current_CentralPlaza_Cycle130ReferenceSunShaftB", root, c + new Vector3(0.82f, 2.92f, 7.52f), new Vector3(0.92f, 3.70f, 1f), Quaternion.Euler(0f, -8f, -15f), shaftMaterial, $"{prefix}.central_plaza.cycle130.reference_sun_shaft_b");
+
+            _ = materials;
+        }
+
+        private static GameObject CreateCentralPlazaPaintedGradeQuadCycle130(
+            string objectName,
+            Transform root,
+            Vector3 localPosition,
+            Vector3 localScale,
+            float yawDegrees,
+            Material material,
+            string landmarkId)
+        {
+            var quad = CreateOutdoorSkyWashQuad(
+                objectName,
+                root,
+                localPosition,
+                localScale,
+                Quaternion.Euler(90f, 0f, yawDegrees),
+                material,
+                landmarkId);
+            var renderer = quad.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            return quad;
+        }
+
         private static GameObject CreateCentralPlazaRealtimeShadowCasterCycle127(
             Transform root,
             string objectName,
@@ -52969,6 +53239,155 @@ namespace Anemora.EditorTools
                 var n = x * 73856093 ^ y * 19349663 ^ 0x5f3759df;
                 n = (n << 13) ^ n;
                 return ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 2147483647f;
+            }
+        }
+
+        private static Material EnsureHd2dPlazaReferenceInkShadowCycle130Material()
+        {
+            var material = FlatMaterial("hd2d_plaza_reference_ink_shadow_cycle130", Color.white, true, FastVsHd2dMaterialRole.PortalWindow);
+            ConfigureTransparentUnlitMaterial(material, 3004);
+            AssignMaterialTexture(material, EnsureHd2dPlazaReferenceInkShadowCycle130Texture(), Vector2.one);
+            if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", Color.white);
+            if (material.HasProperty("_Color")) material.SetColor("_Color", Color.white);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureHd2dPlazaReferenceSunPatchCycle130Material()
+        {
+            var material = FlatMaterial("hd2d_plaza_reference_sun_patch_cycle130", Color.white, true, FastVsHd2dMaterialRole.PortalWindow);
+            ConfigureTransparentUnlitMaterial(material, 3014);
+            AssignMaterialTexture(material, EnsureHd2dPlazaReferenceSunPatchCycle130Texture(), Vector2.one);
+            if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", Color.white);
+            if (material.HasProperty("_Color")) material.SetColor("_Color", Color.white);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureHd2dPlazaReferenceContactShadowCycle130Material()
+        {
+            var material = FlatMaterial("hd2d_plaza_reference_contact_shadow_cycle130", Color.white, true, FastVsHd2dMaterialRole.PortalWindow);
+            ConfigureTransparentUnlitMaterial(material, 3018);
+            AssignMaterialTexture(material, EnsureHd2dPlazaReferenceContactShadowCycle130Texture(), Vector2.one);
+            if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", Color.white);
+            if (material.HasProperty("_Color")) material.SetColor("_Color", Color.white);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureHd2dPlazaReferenceShaftCycle130Material()
+        {
+            var material = FlatMaterial("hd2d_plaza_reference_sun_shaft_cycle130", Color.white, true, FastVsHd2dMaterialRole.PortalWindow);
+            ConfigureTransparentUnlitMaterial(material, 3022);
+            AssignMaterialTexture(material, EnsureHd2dPlazaReferenceShaftCycle130Texture(), Vector2.one);
+            var tint = new Color(1f, 1f, 1f, 0.86f);
+            if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", tint);
+            if (material.HasProperty("_Color")) material.SetColor("_Color", tint);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceInkShadowCycle130Texture()
+        {
+            return EnsureGeneratedTexture("hd2d_plaza_reference_ink_shadow_cycle130", 320, 192, FilterMode.Bilinear, SampleHd2dPlazaReferenceInkShadowCycle130Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceSunPatchCycle130Texture()
+        {
+            return EnsureGeneratedTexture("hd2d_plaza_reference_sun_patch_cycle130", 320, 192, FilterMode.Bilinear, SampleHd2dPlazaReferenceSunPatchCycle130Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceContactShadowCycle130Texture()
+        {
+            return EnsureGeneratedTexture("hd2d_plaza_reference_contact_shadow_cycle130", 256, 128, FilterMode.Bilinear, SampleHd2dPlazaReferenceContactShadowCycle130Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceShaftCycle130Texture()
+        {
+            return EnsureGeneratedTexture("hd2d_plaza_reference_sun_shaft_cycle130", 160, 256, FilterMode.Bilinear, SampleHd2dPlazaReferenceShaftCycle130Pixel);
+        }
+
+        private static Color SampleHd2dPlazaReferenceInkShadowCycle130Pixel(int x, int y)
+        {
+            var u = x / 319f;
+            var v = y / 191f;
+            var alpha =
+                SoftEllipseCycle130(u, v, 0.18f, 0.62f, 0.28f, 0.105f, -22f, 0.40f) +
+                SoftEllipseCycle130(u, v, 0.43f, 0.48f, 0.38f, 0.120f, -10f, 0.34f) +
+                SoftEllipseCycle130(u, v, 0.70f, 0.35f, 0.30f, 0.115f, -17f, 0.42f);
+            var edgeBreakup = Hash01Cycle130(x / 3, y / 3) * 0.075f;
+            var pathBreak = Mathf.SmoothStep(0.31f, 0.38f, Mathf.Abs(v - (0.70f - u * 0.36f)));
+            alpha = Mathf.Clamp01((alpha + edgeBreakup) * EdgeFadeCycle130(u, v, 0.030f) * Mathf.Lerp(0.72f, 1.0f, pathBreak));
+            return new Color(0.020f, 0.026f, 0.022f, Mathf.Min(alpha, 0.64f));
+        }
+
+        private static Color SampleHd2dPlazaReferenceSunPatchCycle130Pixel(int x, int y)
+        {
+            var u = x / 319f;
+            var v = y / 191f;
+            var core =
+                SoftEllipseCycle130(u, v, 0.28f, 0.54f, 0.25f, 0.080f, -18f, 0.30f) +
+                SoftEllipseCycle130(u, v, 0.52f, 0.43f, 0.34f, 0.095f, -17f, 0.36f) +
+                SoftEllipseCycle130(u, v, 0.73f, 0.30f, 0.26f, 0.075f, -12f, 0.25f);
+            var holes =
+                SoftEllipseCycle130(u, v, 0.38f, 0.50f, 0.12f, 0.040f, 8f, 0.16f) +
+                SoftEllipseCycle130(u, v, 0.66f, 0.36f, 0.10f, 0.034f, -9f, 0.13f);
+            var grain = (Hash01Cycle130(x, y) - 0.5f) * 0.035f;
+            var alpha = Mathf.Clamp01((core - holes + grain) * EdgeFadeCycle130(u, v, 0.045f));
+            return new Color(1.00f, 0.86f, 0.50f, Mathf.Min(alpha, 0.36f));
+        }
+
+        private static Color SampleHd2dPlazaReferenceContactShadowCycle130Pixel(int x, int y)
+        {
+            var u = x / 255f;
+            var v = y / 127f;
+            var alpha =
+                SoftEllipseCycle130(u, v, 0.50f, 0.50f, 0.46f, 0.28f, 0f, 0.78f) +
+                SoftEllipseCycle130(u, v, 0.58f, 0.48f, 0.30f, 0.16f, -8f, 0.42f);
+            alpha *= EdgeFadeCycle130(u, v, 0.060f);
+            return new Color(0.008f, 0.010f, 0.008f, Mathf.Min(alpha, 0.82f));
+        }
+
+        private static Color SampleHd2dPlazaReferenceShaftCycle130Pixel(int x, int y)
+        {
+            var u = x / 159f;
+            var v = y / 255f;
+            var center = 0.48f + (1f - v) * 0.16f;
+            var beam = Mathf.SmoothStep(0.42f, 0.00f, Mathf.Abs(u - center));
+            var shoulder = Mathf.SmoothStep(0.34f, 0.02f, Mathf.Abs(u - center - 0.18f)) * 0.45f;
+            var vertical = Mathf.SmoothStep(0.02f, 0.30f, v) * Mathf.SmoothStep(1.00f, 0.68f, v);
+            var alpha = Mathf.Clamp01((beam + shoulder) * vertical * Mathf.Lerp(0.78f, 1.0f, Hash01Cycle130(x / 2, y / 4)) * 0.30f);
+            return new Color(1.00f, 0.95f, 0.78f, alpha);
+        }
+
+        private static float SoftEllipseCycle130(float u, float v, float centerU, float centerV, float radiusU, float radiusV, float rotationDegrees, float strength)
+        {
+            var radians = rotationDegrees * Mathf.Deg2Rad;
+            var cos = Mathf.Cos(radians);
+            var sin = Mathf.Sin(radians);
+            var dx = u - centerU;
+            var dy = v - centerV;
+            var rotatedU = dx * cos + dy * sin;
+            var rotatedV = -dx * sin + dy * cos;
+            var distance = (rotatedU * rotatedU) / (radiusU * radiusU) + (rotatedV * rotatedV) / (radiusV * radiusV);
+            return Mathf.SmoothStep(1.10f, 0.05f, distance) * strength;
+        }
+
+        private static float EdgeFadeCycle130(float u, float v, float width)
+        {
+            return Mathf.SmoothStep(0.00f, width, u) *
+                   Mathf.SmoothStep(0.00f, width, v) *
+                   Mathf.SmoothStep(1.00f, 1.00f - width, u) *
+                   Mathf.SmoothStep(1.00f, 1.00f - width, v);
+        }
+
+        private static float Hash01Cycle130(int x, int y)
+        {
+            unchecked
+            {
+                var n = x * 1597334677 ^ y * 381201583 ^ 0x27d4eb2d;
+                n = (n << 13) ^ n;
+                return ((n * (n * n * 60493 + 19990303) + 1376312589) & 0x7fffffff) / 2147483647f;
             }
         }
 

@@ -20,7 +20,7 @@ namespace Anemora.FastVS
         [SerializeField] private Light mainLight;
         [SerializeField] private bool enforceRendererShadowPolicy = true;
         [SerializeField] private Color exteriorSkyColor = new Color(0.48f, 0.50f, 0.46f, 1f);
-        [SerializeField] private Color centralPlazaSkyColor = new Color(0.48f, 0.43f, 0.33f, 1f);
+        [SerializeField] private Color centralPlazaSkyColor = new Color(0.58f, 0.55f, 0.46f, 1f);
 
         private float nextShadowPolicyRefreshTime;
         private GameObject cycle128GradeRoot;
@@ -93,9 +93,9 @@ namespace Anemora.FastVS
 
                 if (isCentralPlaza)
                 {
-                    mainLight.intensity = Mathf.Max(mainLight.intensity, 2.16f);
-                    mainLight.color = new Color(1.00f, 0.88f, 0.58f, 1f);
-                    mainLight.transform.rotation = Quaternion.Euler(31f, -42f, 0f);
+                    mainLight.intensity = Mathf.Max(mainLight.intensity, 3.05f);
+                    mainLight.color = new Color(1.00f, 0.94f, 0.72f, 1f);
+                    mainLight.transform.rotation = Quaternion.Euler(36f, -35f, 0f);
                 }
             }
 
@@ -113,7 +113,7 @@ namespace Anemora.FastVS
 
             if (isCentralPlaza)
             {
-                RenderSettings.ambientLight = new Color(0.040f, 0.036f, 0.030f, 1f);
+                RenderSettings.ambientLight = new Color(0.024f, 0.028f, 0.030f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
                 EnsureCycle128CameraGrade();
                 SetCycle128CameraGradeActive(true);
@@ -524,8 +524,8 @@ namespace Anemora.FastVS
                     var radius = Mathf.Sqrt(dx * dx * 0.82f + dy * dy * 1.38f);
                     var edge = Mathf.SmoothStep(0.48f, 1.18f, radius);
                     var topWarm = Mathf.SmoothStep(0.52f, 1.00f, v);
-                    var baseAlpha = 0.018f + edge * 0.14f + topWarm * 0.024f;
-                    var warm = Color.Lerp(new Color(0.82f, 0.58f, 0.30f, baseAlpha), new Color(0.11f, 0.070f, 0.035f, baseAlpha), edge);
+                    var baseAlpha = 0.004f + edge * 0.10f + topWarm * 0.010f;
+                    var warm = Color.Lerp(new Color(1.00f, 0.86f, 0.54f, baseAlpha * 0.35f), new Color(0.020f, 0.026f, 0.022f, baseAlpha), edge);
                     cycle128GradeTexture.SetPixel(x, y, warm);
                 }
             }
@@ -557,10 +557,10 @@ namespace Anemora.FastVS
                     var v = (y + 0.5f) / cycle128BeamTexture.height;
                     var rayA = Mathf.Abs((u - 0.05f) - (1f - v) * 0.58f);
                     var rayB = Mathf.Abs((u - 0.34f) - (1f - v) * 0.46f);
-                    var beam = Mathf.SmoothStep(0.11f, 0.010f, rayA) * 0.10f + Mathf.SmoothStep(0.09f, 0.010f, rayB) * 0.055f;
+                    var beam = Mathf.SmoothStep(0.11f, 0.010f, rayA) * 0.22f + Mathf.SmoothStep(0.09f, 0.010f, rayB) * 0.13f;
                     beam *= Mathf.SmoothStep(0.04f, 0.42f, v) * Mathf.SmoothStep(1.00f, 0.62f, v);
                     beam *= Mathf.SmoothStep(1.04f, 0.58f, u);
-                    cycle128BeamTexture.SetPixel(x, y, new Color(1.00f, 0.83f, 0.48f, beam));
+                    cycle128BeamTexture.SetPixel(x, y, new Color(1.00f, 0.95f, 0.74f, beam));
                 }
             }
 
