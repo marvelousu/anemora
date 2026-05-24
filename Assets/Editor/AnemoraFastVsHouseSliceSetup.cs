@@ -211,6 +211,15 @@ namespace Anemora.EditorTools
         private const string PlazaReferenceAirGradeCycle122MaterialId = "hd2d_plaza_reference_air_grade_cycle122";
         private const string PlazaReferenceAirGradeCycle122MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_air_grade_cycle122.mat";
         private const string PlazaReferenceAirGradeCycle122TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_air_grade_cycle122.asset";
+        private const string PlazaReferenceDioramaSunCycle125MaterialId = "hd2d_plaza_reference_diorama_sun_cycle125";
+        private const string PlazaReferenceDioramaSunCycle125MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_diorama_sun_cycle125.mat";
+        private const string PlazaReferenceDioramaSunCycle125TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_diorama_sun_cycle125.asset";
+        private const string PlazaReferenceDioramaShadowCycle125MaterialId = "hd2d_plaza_reference_diorama_shadow_cycle125";
+        private const string PlazaReferenceDioramaShadowCycle125MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_diorama_shadow_cycle125.mat";
+        private const string PlazaReferenceDioramaShadowCycle125TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_diorama_shadow_cycle125.asset";
+        private const string PlazaReferenceDioramaAirCycle125MaterialId = "hd2d_plaza_reference_diorama_air_cycle125";
+        private const string PlazaReferenceDioramaAirCycle125MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_diorama_air_cycle125.mat";
+        private const string PlazaReferenceDioramaAirCycle125TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_diorama_air_cycle125.asset";
         private const int CurrentSpaceRenderLayer = 27;
         private const int OtherTimeSpaceRenderLayer = 28;
         private const int PortalFrameRenderLayer = 26;
@@ -5352,6 +5361,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaReferenceSurfaceRemapCycle122(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceAerialLiftCycle123(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceFocusShadowCycle124(plazaRoot, prefix, past, materials);
+            CreateCentralPlazaReferenceDioramaShadowCycle125(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15248,6 +15258,11 @@ namespace Anemora.EditorTools
         public static void CapturePlazaReferenceFocusShadowCycle124ScreenshotsBatch()
         {
             CapturePlazaReferenceSurfaceRemapCycle122ScreenshotsToDirectory(GetPlazaReferenceFocusShadowCycle124ScreenshotsDirectory());
+        }
+
+        public static void CapturePlazaReferenceDioramaShadowCycle125ScreenshotsBatch()
+        {
+            CapturePlazaReferenceSurfaceRemapCycle122ScreenshotsToDirectory(GetPlazaReferenceDioramaShadowCycle125ScreenshotsDirectory());
         }
 
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
@@ -35868,6 +35883,82 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaReferenceDioramaShadowCycle125()
+        {
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_StoneSunMatteFieldA",
+                PlazaReferenceDioramaSunCycle125MaterialPath,
+                PlazaReferenceDioramaSunCycle125TexturePath,
+                FastVsHd2dOverlayKind.LightPool);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_CloseSeamSunMuteA",
+                PlazaReferenceDioramaSunCycle125MaterialPath,
+                PlazaReferenceDioramaSunCycle125TexturePath,
+                FastVsHd2dOverlayKind.LightPool);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_FacadeReferenceSunPatchA",
+                PlazaReferenceDioramaSunCycle125MaterialPath,
+                PlazaReferenceDioramaSunCycle125TexturePath,
+                FastVsHd2dOverlayKind.LightPool);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_LeftCanopyDappleGroundA",
+                PlazaReferenceDioramaShadowCycle125MaterialPath,
+                PlazaReferenceDioramaShadowCycle125TexturePath,
+                FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_LibraryEaveHardContactA",
+                PlazaReferenceDioramaShadowCycle125MaterialPath,
+                PlazaReferenceDioramaShadowCycle125TexturePath,
+                FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_HighSunbeamColumnA",
+                PlazaReferenceDioramaAirCycle125MaterialPath,
+                PlazaReferenceDioramaAirCycle125TexturePath,
+                FastVsHd2dOverlayKind.Atmosphere);
+
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceDioramaSunCycle125MaterialPath, 3120, 3124, "cycle 125 reference diorama sun");
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceDioramaAirCycle125MaterialPath, 3122, 3126, "cycle 125 reference diorama air");
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceDioramaShadowCycle125MaterialPath, 3126, 3130, "cycle 125 reference diorama shadow");
+            ValidateCycle116TextureMetrics(PlazaReferenceDioramaSunCycle125TexturePath, 0.38f, 0.70f, 0.05f, 0.38f, "cycle 125 reference diorama sun");
+            ValidateCycle116TextureMetrics(PlazaReferenceDioramaShadowCycle125TexturePath, 0.28f, 0.62f, 0.03f, 0.30f, "cycle 125 reference diorama shadow");
+            ValidateCycle116TextureMetrics(PlazaReferenceDioramaAirCycle125TexturePath, 0.16f, 0.44f, 0.02f, 0.22f, "cycle 125 reference diorama air");
+
+            var currentCycle125Count = 0;
+            var pastCycle125Count = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate == null || !candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (candidate.name.StartsWith("Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_", StringComparison.Ordinal))
+                {
+                    currentCycle125Count++;
+                }
+
+                if (candidate.name.StartsWith("Past_CentralPlaza_Cycle125_ReferenceDioramaShadow_", StringComparison.Ordinal))
+                {
+                    pastCycle125Count++;
+                }
+
+                if (IsCycle125SuppressedReferenceLightingObjectName(candidate.name) && candidate.activeSelf)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 125 must disable old central-plaza lighting overlay {candidate.name}.");
+                }
+            }
+
+            if (currentCycle125Count != 12)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 125 must keep exactly 12 current plaza reference diorama overlays, found {currentCycle125Count}.");
+            }
+
+            if (pastCycle125Count != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 125 must stay current-world only, found {pastCycle125Count} past overlays.");
+            }
+        }
+
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -42895,6 +42986,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle124_plaza_reference_focus_shadow_parent_review_20260524_01";
         }
 
+        private static string GetPlazaReferenceDioramaShadowCycle125ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle125_plaza_reference_diorama_shadow_parent_review_20260524_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -46270,6 +46366,12 @@ namespace Anemora.EditorTools
         {
             ValidatePlazaReferenceAerialLiftCycle123Batch();
             ValidateHd2dPlazaReferenceFocusShadowCycle124();
+        }
+
+        public static void ValidatePlazaReferenceDioramaShadowCycle125Batch()
+        {
+            ValidatePlazaReferenceFocusShadowCycle124Batch();
+            ValidateHd2dPlazaReferenceDioramaShadowCycle125();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()
@@ -51095,6 +51197,128 @@ namespace Anemora.EditorTools
             _ = materials;
         }
 
+        private static void CreateCentralPlazaReferenceDioramaShadowCycle125(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var sunMaterial = EnsureHd2dPlazaReferenceDioramaSunCycle125Material();
+            var shadowMaterial = EnsureHd2dPlazaReferenceDioramaShadowCycle125Material();
+            var airMaterial = EnsureHd2dPlazaReferenceDioramaAirCycle125Material();
+
+            foreach (var child in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (child != null && IsCycle125SuppressedReferenceLightingObjectName(child.name))
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+
+            void Sun(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle125.reference_diorama_shadow.{suffix.ToLowerInvariant()}",
+                    sunMaterial,
+                    FastVsHd2dOverlayKind.LightPool,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            void Air(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle125.reference_diorama_shadow.{suffix.ToLowerInvariant()}",
+                    airMaterial,
+                    FastVsHd2dOverlayKind.Atmosphere,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            void Shadow(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle125.reference_diorama_shadow.{suffix.ToLowerInvariant()}",
+                    shadowMaterial,
+                    FastVsHd2dOverlayKind.StaticDirectionalCastShadow,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            Sun("StoneSunMatteFieldA", new Vector3(-0.18f, 0.216f, 3.42f), new Vector3(10.80f, 3.40f, 1f), Quaternion.Euler(90f, 0f, -12f), new Vector2(0.07f, 0.34f), new Color(1.00f, 0.94f, 0.78f, 0.32f));
+            Sun("ReferenceReceiverLiftA", new Vector3(0.05f, 0.217f, 3.58f), new Vector3(13.80f, 4.80f, 1f), Quaternion.Euler(90f, 0f, -4f), new Vector2(0.04f, 0.16f), new Color(0.98f, 0.94f, 0.82f, 0.15f));
+            Sun("CloseSeamSunMuteA", new Vector3(0.12f, 0.218f, 2.12f), new Vector3(13.60f, 2.85f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.04f, 0.18f), new Color(1.00f, 0.95f, 0.82f, 0.18f));
+            Sun("CenterChalkSunCatchA", new Vector3(-0.92f, 0.219f, 4.16f), new Vector3(5.30f, 1.34f, 1f), Quaternion.Euler(90f, 0f, -16f), new Vector2(0.06f, 0.26f), new Color(1.00f, 0.95f, 0.80f, 0.25f));
+            Sun("BackStepPaleSunA", new Vector3(0.12f, 0.220f, 6.12f), new Vector3(6.85f, 0.62f, 1f), Quaternion.Euler(90f, 0f, -4f), new Vector2(0.05f, 0.22f), new Color(1.00f, 0.94f, 0.78f, 0.21f));
+            Sun("FacadeReferenceSunPatchA", new Vector3(-0.12f, 1.66f, 7.545f), new Vector3(7.90f, 2.28f, 1f), Quaternion.identity, new Vector2(0.04f, 0.18f), new Color(1.00f, 0.92f, 0.74f, 0.17f));
+
+            Shadow("LeftCanopyDappleGroundA", new Vector3(-3.10f, 0.224f, 3.92f), new Vector3(4.70f, 0.92f, 1f), Quaternion.Euler(90f, 0f, -24f), new Vector2(0.22f, 0.62f), new Color(0.022f, 0.019f, 0.015f, 0.58f));
+            Shadow("RightCrateProjectedCastA", new Vector3(3.30f, 0.225f, 3.34f), new Vector3(3.80f, 0.48f, 1f), Quaternion.Euler(90f, 0f, 18f), new Vector2(0.22f, 0.66f), new Color(0.022f, 0.019f, 0.015f, 0.60f));
+            Shadow("LibraryEaveHardContactA", new Vector3(0.02f, 0.226f, 6.58f), new Vector3(7.05f, 0.24f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.20f, 0.60f), new Color(0.020f, 0.017f, 0.014f, 0.54f));
+            Shadow("PlayerTinyContactA", new Vector3(-1.16f, 0.227f, 4.20f), new Vector3(0.62f, 0.10f, 1f), Quaternion.Euler(90f, 0f, -12f), new Vector2(0.14f, 0.34f), new Color(0.018f, 0.016f, 0.013f, 0.24f));
+
+            Air("HighSunbeamColumnA", new Vector3(-1.12f, 1.96f, 7.552f), new Vector3(3.30f, 3.32f, 1f), Quaternion.identity, new Vector2(0.03f, 0.20f), new Color(0.96f, 0.90f, 0.76f, 0.18f));
+            Air("BackDepthHazeA", new Vector3(0.00f, 1.70f, 7.558f), new Vector3(10.80f, 2.30f, 1f), Quaternion.identity, new Vector2(0.02f, 0.12f), new Color(0.94f, 0.90f, 0.78f, 0.10f));
+
+            _ = materials;
+        }
+
+        private static bool IsCycle125SuppressedReferenceLightingObjectName(string objectName)
+        {
+            var suppressedPrefixes = new[]
+            {
+                "Current_CentralPlaza_Cycle84_",
+                "Current_CentralPlaza_Cycle90_",
+                "Current_CentralPlaza_Cycle103_",
+                "Current_CentralPlaza_Cycle104_",
+                "Current_CentralPlaza_Cycle106_",
+                "Current_CentralPlaza_Cycle107_",
+                "Current_CentralPlaza_Cycle108_",
+                "Current_CentralPlaza_Cycle109_",
+                "Current_CentralPlaza_Cycle111_",
+                "Current_CentralPlaza_Cycle112_",
+                "Current_CentralPlaza_Cycle113_",
+                "Current_CentralPlaza_Cycle114_",
+                "Current_CentralPlaza_Cycle116_",
+                "Current_CentralPlaza_Cycle117_",
+                "Current_CentralPlaza_Cycle118_",
+                "Current_CentralPlaza_Cycle119_",
+                "Current_CentralPlaza_Cycle120_",
+                "Current_CentralPlaza_Cycle121_",
+                "Current_CentralPlaza_Cycle122_",
+                "Current_CentralPlaza_Cycle123_",
+                "Current_CentralPlaza_Cycle124_"
+            };
+
+            for (var i = 0; i < suppressedPrefixes.Length; i++)
+            {
+                if (objectName.StartsWith(suppressedPrefixes[i], StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static void CreateLibraryCinematicDappledFloorShadowsCycle103(Transform root, string prefix, bool past, Materials materials)
         {
             var c = LibraryVsCenter;
@@ -52239,6 +52463,36 @@ namespace Anemora.EditorTools
                 EnsureHd2dPlazaReferenceSurfaceShadowCycle122Texture());
         }
 
+        private static Material EnsureHd2dPlazaReferenceDioramaSunCycle125Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceDioramaSunCycle125MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.OverlayGlow,
+                3122,
+                EnsureHd2dPlazaReferenceDioramaSunCycle125Texture());
+        }
+
+        private static Material EnsureHd2dPlazaReferenceDioramaAirCycle125Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceDioramaAirCycle125MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.OverlayGlow,
+                3124,
+                EnsureHd2dPlazaReferenceDioramaAirCycle125Texture());
+        }
+
+        private static Material EnsureHd2dPlazaReferenceDioramaShadowCycle125Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceDioramaShadowCycle125MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.ContactShadow,
+                3128,
+                EnsureHd2dPlazaReferenceDioramaShadowCycle125Texture());
+        }
+
         private static Texture2D EnsureHd2dPlazaReferenceLightColumnShadowCycle120Texture()
         {
             return EnsureGeneratedTexture(
@@ -52317,6 +52571,36 @@ namespace Anemora.EditorTools
                 128,
                 FilterMode.Bilinear,
                 SampleHd2dPlazaReferenceAirGradeCycle122Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceDioramaSunCycle125Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceDioramaSunCycle125MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceDioramaSunCycle125Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceDioramaShadowCycle125Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceDioramaShadowCycle125MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceDioramaShadowCycle125Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceDioramaAirCycle125Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceDioramaAirCycle125MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceDioramaAirCycle125Pixel);
         }
 
         private static Color SampleHd2dPlazaSolarResetSunCycle116Pixel(int x, int y)
@@ -52789,6 +53073,73 @@ namespace Anemora.EditorTools
             var alpha = (upper + centerHaze + shaftDust) * Mathf.Lerp(0.76f, 1.12f, noise) * edgeMask;
             alpha = Mathf.Clamp(alpha, 0f, 0.26f);
             return new Color(0.96f, Mathf.Lerp(0.86f, 0.94f, noise), Mathf.Lerp(0.70f, 0.80f, noise), alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceDioramaSunCycle125Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.07f, u) *
+                SmoothFade01(0.00f, 0.07f, 1f - u) *
+                SmoothFade01(0.00f, 0.09f, v) *
+                SmoothFade01(0.00f, 0.09f, 1f - v);
+
+            var broad = ContactShadowEllipseFalloff(u, v, 0.48f, 0.54f, 0.62f, 0.38f, 1.05f);
+            var plateA = ContactShadowEllipseFalloff(u, v, 0.30f, 0.60f, 0.26f, 0.16f, 1.48f);
+            var plateB = ContactShadowEllipseFalloff(u, v, 0.64f, 0.42f, 0.25f, 0.15f, 1.60f);
+            var diagonal = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.76f) + (v * 0.56f)) - 0.64f) / 0.35f);
+            diagonal *= diagonal;
+            var noiseA = SampleSmoothValueNoise2D((u * 8.6f) + 6.4f, (v * 6.6f) + 1.7f, 9921);
+            var noiseB = SampleSmoothValueNoise2D((u * 22.0f) + 2.2f, (v * 17.5f) + 8.3f, 9931);
+            var chip = Mathf.Clamp01((noiseA * 0.60f) + (noiseB * 0.40f));
+            var sparkle = Mathf.SmoothStep(0.54f, 0.94f, chip);
+            var alpha = ((broad * 0.38f) + (plateA * 0.20f) + (plateB * 0.18f) + (diagonal * 0.12f) + (sparkle * broad * 0.17f)) * edgeMask;
+            alpha *= Mathf.Lerp(0.86f, 1.12f, Hash01(x, y, 9941));
+            alpha = Mathf.Clamp(alpha, 0f, 0.66f);
+            return new Color(1.00f, Mathf.Lerp(0.88f, 0.99f, chip), Mathf.Lerp(0.64f, 0.80f, noiseA), alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceDioramaShadowCycle125Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.055f, u) *
+                SmoothFade01(0.00f, 0.065f, 1f - u) *
+                SmoothFade01(0.00f, 0.075f, v) *
+                SmoothFade01(0.00f, 0.080f, 1f - v);
+
+            var body = ContactShadowEllipseFalloff(u, v, 0.45f, 0.54f, 0.56f, 0.30f, 1.20f);
+            var coreA = ContactShadowEllipseFalloff(u, v, 0.31f, 0.58f, 0.25f, 0.14f, 2.05f);
+            var coreB = ContactShadowEllipseFalloff(u, v, 0.64f, 0.43f, 0.24f, 0.13f, 2.00f);
+            var trailingCut = Mathf.Clamp01(1f - Mathf.Abs(((u * 1.10f) - (v * 0.58f)) - 0.10f) / 0.25f);
+            trailingCut *= trailingCut;
+            var noiseA = SampleSmoothValueNoise2D((u * 9.4f) + 1.7f, (v * 7.3f) + 3.5f, 9951);
+            var noiseB = SampleSmoothValueNoise2D((u * 18.8f) + 9.8f, (v * 14.6f) + 2.2f, 9961);
+            var breakup = Mathf.Clamp01((noiseA * 0.55f) + (noiseB * 0.45f));
+            var alpha = ((body * 0.31f) + (coreA * 0.25f) + (coreB * 0.24f) + (trailingCut * 0.14f)) * Mathf.Lerp(0.72f, 1.06f, breakup) * edgeMask;
+            alpha = Mathf.Clamp(alpha, 0f, 0.58f);
+            return new Color(0.020f, 0.016f, 0.012f, alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceDioramaAirCycle125Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.10f, u) *
+                SmoothFade01(0.00f, 0.10f, 1f - u) *
+                SmoothFade01(0.00f, 0.08f, v) *
+                SmoothFade01(0.00f, 0.08f, 1f - v);
+
+            var verticalLift = Mathf.Pow(Mathf.Clamp01(v), 1.22f) * 0.14f;
+            var shaft = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.42f) + (v * 1.30f)) - 0.78f) / 0.28f) * 0.16f;
+            var backVeil = ContactShadowEllipseFalloff(u, v, 0.52f, 0.62f, 0.58f, 0.32f, 1.10f) * 0.10f;
+            var noise = SampleSmoothValueNoise2D((u * 5.4f) + 7.3f, (v * 4.8f) + 2.9f, 9971);
+            var alpha = (verticalLift + shaft + backVeil) * Mathf.Lerp(0.72f, 1.12f, noise) * edgeMask;
+            alpha = Mathf.Clamp(alpha, 0f, 0.40f);
+            return new Color(0.98f, Mathf.Lerp(0.88f, 0.96f, noise), Mathf.Lerp(0.70f, 0.82f, noise), alpha);
         }
 
         private static Texture2D EnsureHd2dOutdoorOcclusionGradientTexture()
@@ -55555,24 +55906,24 @@ namespace Anemora.EditorTools
         {
             var broad = SampleSmoothValueNoise2D((x * 0.050f) + 8.1f, (y * 0.052f) + 4.3f, 401);
             var fine = SampleSmoothValueNoise2D((x * 0.190f) + 2.4f, (y * 0.170f) + 11.6f, 409);
-            var tone = LerpColor(new Color(0.340f, 0.302f, 0.230f, 1f), new Color(0.580f, 0.530f, 0.410f, 1f), Mathf.Clamp01((broad * 0.72f) + (fine * 0.18f)));
+            var tone = LerpColor(new Color(0.405f, 0.375f, 0.290f, 1f), new Color(0.660f, 0.610f, 0.465f, 1f), Mathf.Clamp01((broad * 0.72f) + (fine * 0.18f)));
             var seam = x % 18 <= 1 || y % 16 <= 1;
             if (seam)
             {
-                tone = LerpColor(tone, new Color(0.110f, 0.094f, 0.070f, 1f), 0.54f);
+                tone = LerpColor(tone, new Color(0.260f, 0.235f, 0.180f, 1f), 0.24f);
             }
 
             if (fine > 0.72f && !seam)
             {
-                tone = Lighten(tone, 0.055f);
+                tone = Lighten(tone, 0.052f);
             }
 
             if (Hash01(x, y, 421) > 0.985f)
             {
-                tone = Darken(tone, 0.035f);
+                tone = Darken(tone, 0.020f);
             }
 
-            return ShadeSurface(tone, x, y, 128, 128, 0.018f, 0.034f);
+            return ShadeSurface(tone, x, y, 128, 128, 0.010f, 0.022f);
         }
 
         private static Color SamplePastPathHd2dPixel(int x, int y)
