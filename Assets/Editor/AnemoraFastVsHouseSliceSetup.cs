@@ -15398,6 +15398,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_sun_lift_cycle144.md");
         }
 
+        public static void CapturePlazaReferenceCameraGradeCycle145ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaReferenceCameraGradeCycle145ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_camera_grade_cycle145.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -24885,23 +24892,23 @@ namespace Anemora.EditorTools
 
             colorAdjustments.active = true;
             colorAdjustments.postExposure.overrideState = true;
-            colorAdjustments.postExposure.value = -0.06f;
+            colorAdjustments.postExposure.value = -0.02f;
             colorAdjustments.contrast.overrideState = true;
-            colorAdjustments.contrast.value = 11f;
+            colorAdjustments.contrast.value = 14f;
             colorAdjustments.colorFilter.overrideState = true;
-            colorAdjustments.colorFilter.value = new Color(1.06f, 1.03f, 0.94f, 1f);
+            colorAdjustments.colorFilter.value = new Color(1.08f, 1.04f, 0.92f, 1f);
             colorAdjustments.hueShift.overrideState = true;
             colorAdjustments.hueShift.value = 0f;
             colorAdjustments.saturation.overrideState = true;
-            colorAdjustments.saturation.value = -16f;
+            colorAdjustments.saturation.value = -12f;
 
             bloom.active = true;
             bloom.threshold.overrideState = true;
-            bloom.threshold.value = 0.72f;
+            bloom.threshold.value = 0.62f;
             bloom.intensity.overrideState = true;
-            bloom.intensity.value = 0.18f;
+            bloom.intensity.value = 0.30f;
             bloom.scatter.overrideState = true;
-            bloom.scatter.value = 0.60f;
+            bloom.scatter.value = 0.72f;
             bloom.clamp.overrideState = true;
             bloom.clamp.value = 65472f;
             bloom.tint.overrideState = true;
@@ -24923,9 +24930,9 @@ namespace Anemora.EditorTools
             vignette.center.overrideState = true;
             vignette.center.value = new Vector2(0.5f, 0.5f);
             vignette.intensity.overrideState = true;
-            vignette.intensity.value = 0.24f;
+            vignette.intensity.value = 0.22f;
             vignette.smoothness.overrideState = true;
-            vignette.smoothness.value = 0.48f;
+            vignette.smoothness.value = 0.55f;
             vignette.rounded.overrideState = true;
             vignette.rounded.value = false;
 
@@ -24943,13 +24950,13 @@ namespace Anemora.EditorTools
             depthOfField.mode.overrideState = true;
             depthOfField.mode.value = DepthOfFieldMode.Gaussian;
             depthOfField.gaussianStart.overrideState = true;
-            depthOfField.gaussianStart.value = 8f;
+            depthOfField.gaussianStart.value = 5.5f;
             depthOfField.gaussianEnd.overrideState = true;
-            depthOfField.gaussianEnd.value = 26f;
+            depthOfField.gaussianEnd.value = 16.5f;
             depthOfField.gaussianMaxRadius.overrideState = true;
-            depthOfField.gaussianMaxRadius.value = 0.80f;
+            depthOfField.gaussianMaxRadius.value = 1.25f;
             depthOfField.highQualitySampling.overrideState = true;
-            depthOfField.highQualitySampling.value = false;
+            depthOfField.highQualitySampling.value = true;
             depthOfField.focusDistance.overrideState = true;
             depthOfField.focusDistance.value = 10f;
             depthOfField.aperture.overrideState = true;
@@ -27880,9 +27887,9 @@ namespace Anemora.EditorTools
 
             if (!colorAdjustments.active ||
                 colorAdjustments.postExposure.value < -0.10f || colorAdjustments.postExposure.value > 0.02f ||
-                colorAdjustments.saturation.value < -20f || colorAdjustments.saturation.value > -12f ||
-                colorAdjustments.contrast.value < 10f || colorAdjustments.contrast.value > 12f ||
-                colorAdjustments.colorFilter.value.r < 1.02f || colorAdjustments.colorFilter.value.r > 1.08f ||
+                colorAdjustments.saturation.value < -16f || colorAdjustments.saturation.value > -8f ||
+                colorAdjustments.contrast.value < 13f || colorAdjustments.contrast.value > 15f ||
+                colorAdjustments.colorFilter.value.r < 1.02f || colorAdjustments.colorFilter.value.r > 1.09f ||
                 colorAdjustments.colorFilter.value.g < 0.99f || colorAdjustments.colorFilter.value.g > 1.05f ||
                 colorAdjustments.colorFilter.value.b < 0.90f || colorAdjustments.colorFilter.value.b > 0.98f ||
                 colorAdjustments.colorFilter.value.r < colorAdjustments.colorFilter.value.g ||
@@ -27892,9 +27899,9 @@ namespace Anemora.EditorTools
             }
 
             if (!bloom.active ||
-                bloom.intensity.value < 0.14f || bloom.intensity.value > 0.22f ||
-                bloom.threshold.value < 0.67f || bloom.threshold.value > 0.77f ||
-                bloom.scatter.value < 0.54f || bloom.scatter.value > 0.66f)
+                bloom.intensity.value < 0.26f || bloom.intensity.value > 0.34f ||
+                bloom.threshold.value < 0.58f || bloom.threshold.value > 0.66f ||
+                bloom.scatter.value < 0.66f || bloom.scatter.value > 0.78f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 92 bloom must stay in the reset sun-shadow grade, found intensity={bloom.intensity.value:0.000}, threshold={bloom.threshold.value:0.000}, scatter={bloom.scatter.value:0.000}.");
             }
@@ -27919,12 +27926,13 @@ namespace Anemora.EditorTools
             if (!depthOfField.active ||
                 !depthOfField.mode.overrideState ||
                 depthOfField.mode.value != DepthOfFieldMode.Gaussian ||
-                depthOfField.gaussianStart.value < 7f ||
-                depthOfField.gaussianStart.value > 9f ||
-                depthOfField.gaussianEnd.value < 24f ||
-                depthOfField.gaussianEnd.value > 28f ||
-                depthOfField.gaussianMaxRadius.value < 0.65f ||
-                depthOfField.gaussianMaxRadius.value > 0.95f)
+                depthOfField.gaussianStart.value < 5.0f ||
+                depthOfField.gaussianStart.value > 6.0f ||
+                depthOfField.gaussianEnd.value < 15.5f ||
+                depthOfField.gaussianEnd.value > 17.5f ||
+                depthOfField.gaussianMaxRadius.value < 1.10f ||
+                depthOfField.gaussianMaxRadius.value > 1.40f ||
+                !depthOfField.highQualitySampling.value)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 92 depth of field must stay on as controlled Gaussian HD-2D depth grade.");
             }
@@ -38150,6 +38158,46 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaReferenceCameraGradeCycle145()
+        {
+            ValidateHd2dPlazaRealtimeSunLiftCycle144();
+
+            var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject != null ? volumeObject.GetComponent<Volume>() : null;
+            if (volume == null || volume.sharedProfile == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 145 needs the HD-2D global volume profile.");
+            }
+
+            if (!volume.sharedProfile.TryGet<ColorAdjustments>(out var colorAdjustments) ||
+                !volume.sharedProfile.TryGet<Bloom>(out var bloom) ||
+                !volume.sharedProfile.TryGet<Vignette>(out var vignette) ||
+                !volume.sharedProfile.TryGet<DepthOfField>(out var depthOfField))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 145 needs ColorAdjustments, Bloom, Vignette, and DepthOfField on the global volume.");
+            }
+
+            if (!colorAdjustments.active ||
+                Mathf.Abs(colorAdjustments.postExposure.value + 0.02f) > 0.01f ||
+                Mathf.Abs(colorAdjustments.contrast.value - 14f) > 0.10f ||
+                Mathf.Abs(colorAdjustments.saturation.value + 12f) > 0.10f ||
+                !bloom.active ||
+                Mathf.Abs(bloom.threshold.value - 0.62f) > 0.02f ||
+                Mathf.Abs(bloom.intensity.value - 0.30f) > 0.02f ||
+                Mathf.Abs(bloom.scatter.value - 0.72f) > 0.02f ||
+                !vignette.active ||
+                Mathf.Abs(vignette.intensity.value - 0.22f) > 0.02f ||
+                !depthOfField.active ||
+                depthOfField.mode.value != DepthOfFieldMode.Gaussian ||
+                Mathf.Abs(depthOfField.gaussianStart.value - 5.5f) > 0.20f ||
+                Mathf.Abs(depthOfField.gaussianEnd.value - 16.5f) > 0.30f ||
+                Mathf.Abs(depthOfField.gaussianMaxRadius.value - 1.25f) > 0.05f ||
+                !depthOfField.highQualitySampling.value)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 145 reference camera grade values drifted.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45309,6 +45357,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle144_plaza_realtime_sun_lift_parent_review_20260525_01";
         }
 
+        private static string GetPlazaReferenceCameraGradeCycle145ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle145_plaza_reference_camera_grade_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48828,6 +48881,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeSunLiftCycle144();
+        }
+
+        public static void ValidatePlazaReferenceCameraGradeCycle145Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaReferenceCameraGradeCycle145();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

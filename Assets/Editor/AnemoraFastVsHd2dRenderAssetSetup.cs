@@ -39,7 +39,7 @@ namespace Anemora.EditorTools
             Debug.Log(
                 "Shading Foundation v1 applied: " +
                 "shadowDistance=35, mainShadowmap=4096, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
-                "volumeProfile=slightly darker faded Bloom/ColorAdjustments/Vignette with Neutral tonemapping.");
+                "volumeProfile=reference Bloom/ColorAdjustments/Vignette/DepthOfField with Neutral tonemapping.");
         }
 
         public static void ApplyFastVsHd2dRenderAssets()
@@ -192,27 +192,27 @@ namespace Anemora.EditorTools
             var bloom = EnsureVolumeComponent<Bloom>(volumeProfile);
             bloom.active = true;
             bloom.threshold.overrideState = true;
-            bloom.threshold.value = 0.78f;
+            bloom.threshold.value = 0.62f;
             bloom.intensity.overrideState = true;
-            bloom.intensity.value = 0.08f;
+            bloom.intensity.value = 0.30f;
             bloom.scatter.overrideState = true;
-            bloom.scatter.value = 0.47f;
+            bloom.scatter.value = 0.72f;
 
             var colorAdjustments = EnsureVolumeComponent<ColorAdjustments>(volumeProfile);
             colorAdjustments.active = true;
             colorAdjustments.postExposure.overrideState = true;
-            colorAdjustments.postExposure.value = -0.08f;
+            colorAdjustments.postExposure.value = -0.02f;
             colorAdjustments.contrast.overrideState = true;
-            colorAdjustments.contrast.value = 6f;
+            colorAdjustments.contrast.value = 14f;
             colorAdjustments.saturation.overrideState = true;
-            colorAdjustments.saturation.value = -6f;
+            colorAdjustments.saturation.value = -12f;
 
             var vignette = EnsureVolumeComponent<Vignette>(volumeProfile);
             vignette.active = true;
             vignette.intensity.overrideState = true;
-            vignette.intensity.value = 0.045f;
+            vignette.intensity.value = 0.22f;
             vignette.smoothness.overrideState = true;
-            vignette.smoothness.value = 0.35f;
+            vignette.smoothness.value = 0.55f;
 
             var tonemapping = EnsureVolumeComponent<Tonemapping>(volumeProfile);
             tonemapping.active = true;
@@ -221,10 +221,18 @@ namespace Anemora.EditorTools
 
             ApplyOptionalColorGrade(volumeProfile);
 
-            if (volumeProfile.TryGet<DepthOfField>(out var depthOfField))
-            {
-                DisableVolumeComponentForBaseline(depthOfField);
-            }
+            var depthOfField = EnsureVolumeComponent<DepthOfField>(volumeProfile);
+            depthOfField.active = true;
+            depthOfField.mode.overrideState = true;
+            depthOfField.mode.value = DepthOfFieldMode.Gaussian;
+            depthOfField.gaussianStart.overrideState = true;
+            depthOfField.gaussianStart.value = 5.5f;
+            depthOfField.gaussianEnd.overrideState = true;
+            depthOfField.gaussianEnd.value = 16.5f;
+            depthOfField.gaussianMaxRadius.overrideState = true;
+            depthOfField.gaussianMaxRadius.value = 1.25f;
+            depthOfField.highQualitySampling.overrideState = true;
+            depthOfField.highQualitySampling.value = true;
 
             if (volumeProfile.TryGet<FilmGrain>(out var filmGrain))
             {
@@ -235,6 +243,7 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(colorAdjustments);
             EditorUtility.SetDirty(vignette);
             EditorUtility.SetDirty(tonemapping);
+            EditorUtility.SetDirty(depthOfField);
         }
 
         private static T EnsureVolumeComponent<T>(VolumeProfile volumeProfile) where T : VolumeComponent

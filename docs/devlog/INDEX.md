@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.14 fast VS HD2D plaza realtime sun lift index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.15 fast VS HD2D plaza reference camera grade index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 492 files including INDEX.md and README.md.
-- Dated devlog records: 490 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1234 files.
+- Root-level Markdown coverage: 493 files including INDEX.md and README.md.
+- Dated devlog records: 491 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1239 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 17 |
+| 2026-05-25 | 18 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_reference_camera_grade_cycle145.md](2026-05-25_fast_vs_hd2d_plaza_reference_camera_grade_cycle145.md) | Fast VS / HD2D | feat(hd2d): tune plaza reference camera grade |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_sun_lift_cycle144.md](2026-05-25_fast_vs_hd2d_plaza_realtime_sun_lift_cycle144.md) | Fast VS / HD2D | feat(hd2d): lift plaza realtime sun response |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_lift_cycle143.md](2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_lift_cycle143.md) | Fast VS / HD2D | feat(hd2d): lift plaza realtime shadow texture |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_texture_cycle142.md](2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_texture_cycle142.md) | Fast VS / HD2D | feat(hd2d): texture plaza realtime shadows |

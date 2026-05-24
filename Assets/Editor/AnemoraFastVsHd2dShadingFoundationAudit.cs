@@ -156,11 +156,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(bloom.active, true, issues, "Bloom must be active.");
                 RequireBool(bloom.threshold.overrideState, true, issues, "Bloom threshold override must be enabled.");
-                RequireFloat(bloom.threshold.value, 0.72f, 0.05f, issues, "Bloom threshold must stay in the faded sun-shadow range.");
+                RequireFloat(bloom.threshold.value, 0.62f, 0.05f, issues, "Bloom threshold must stay in the reference sun-shadow range.");
                 RequireBool(bloom.intensity.overrideState, true, issues, "Bloom intensity override must be enabled.");
-                RequireFloat(bloom.intensity.value, 0.18f, 0.04f, issues, "Bloom intensity must stay controlled for the faded sun-shadow grade.");
+                RequireFloat(bloom.intensity.value, 0.30f, 0.05f, issues, "Bloom intensity must stay controlled for the reference sun-shadow grade.");
                 RequireBool(bloom.scatter.overrideState, true, issues, "Bloom scatter override must be enabled.");
-                RequireFloat(bloom.scatter.value, 0.60f, 0.06f, issues, "Bloom scatter must stay controlled for the faded sun-shadow grade.");
+                RequireFloat(bloom.scatter.value, 0.72f, 0.06f, issues, "Bloom scatter must stay controlled for the reference sun-shadow grade.");
             }
 
             if (!volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
@@ -171,11 +171,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(colorAdjustments.active, true, issues, "ColorAdjustments must be active.");
                 RequireBool(colorAdjustments.postExposure.overrideState, true, issues, "ColorAdjustments post exposure override must be enabled.");
-                RequireFloat(colorAdjustments.postExposure.value, -0.06f, 0.035f, issues, "ColorAdjustments post exposure must keep the brighter reference sun-shadow range.");
+                RequireFloat(colorAdjustments.postExposure.value, -0.02f, 0.035f, issues, "ColorAdjustments post exposure must keep the brighter reference sun-shadow range.");
                 RequireBool(colorAdjustments.contrast.overrideState, true, issues, "ColorAdjustments contrast override must be enabled.");
-                RequireFloat(colorAdjustments.contrast.value, 11f, 1.0f, issues, "ColorAdjustments contrast must support the stronger sun-shadow grade while keeping readability.");
+                RequireFloat(colorAdjustments.contrast.value, 14f, 1.0f, issues, "ColorAdjustments contrast must support the stronger sun-shadow grade while keeping readability.");
                 RequireBool(colorAdjustments.saturation.overrideState, true, issues, "ColorAdjustments saturation override must be enabled.");
-                RequireFloat(colorAdjustments.saturation.value, -16f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded sun-shadow range without flattening sunlit stone.");
+                RequireFloat(colorAdjustments.saturation.value, -12f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded sun-shadow range without flattening sunlit stone.");
             }
 
             if (!volumeProfile.TryGet<Vignette>(out var vignette))
@@ -186,9 +186,9 @@ namespace Anemora.EditorTools
             {
                 RequireBool(vignette.active, true, issues, "Vignette must be active.");
                 RequireBool(vignette.intensity.overrideState, true, issues, "Vignette intensity override must be enabled.");
-                if (vignette.intensity.value > 0.280f)
+                if (vignette.intensity.value > 0.260f)
                 {
-                    issues.Add("Vignette intensity must be at or below 0.280 for the stronger reference shadow frame.");
+                    issues.Add("Vignette intensity must be at or below 0.260 for the stronger reference shadow frame.");
                 }
             }
 
@@ -213,11 +213,11 @@ namespace Anemora.EditorTools
                 RequireBool(depthOfField.mode.overrideState, true, issues, "DepthOfField mode override must be enabled.");
                 RequireEnumValue(depthOfField.mode.value, DepthOfFieldMode.Gaussian, issues, "DepthOfField mode must be Gaussian.");
                 RequireBool(depthOfField.gaussianStart.overrideState, true, issues, "DepthOfField gaussian start override must be enabled.");
-                RequireFloat(depthOfField.gaussianStart.value, 8f, 1.0f, issues, "DepthOfField gaussian start must stay near the review grade.");
+                RequireFloat(depthOfField.gaussianStart.value, 5.5f, 0.8f, issues, "DepthOfField gaussian start must stay near the reference review grade.");
                 RequireBool(depthOfField.gaussianEnd.overrideState, true, issues, "DepthOfField gaussian end override must be enabled.");
-                RequireFloat(depthOfField.gaussianEnd.value, 26f, 2.0f, issues, "DepthOfField gaussian end must stay near the review grade.");
+                RequireFloat(depthOfField.gaussianEnd.value, 16.5f, 1.5f, issues, "DepthOfField gaussian end must stay near the reference review grade.");
                 RequireBool(depthOfField.gaussianMaxRadius.overrideState, true, issues, "DepthOfField gaussian max radius override must be enabled.");
-                RequireFloat(depthOfField.gaussianMaxRadius.value, 0.80f, 0.15f, issues, "DepthOfField gaussian max radius must stay controlled.");
+                RequireFloat(depthOfField.gaussianMaxRadius.value, 1.25f, 0.18f, issues, "DepthOfField gaussian max radius must stay controlled.");
             }
 
             if (volumeProfile.TryGet<FilmGrain>(out var filmGrain) && filmGrain.active)
