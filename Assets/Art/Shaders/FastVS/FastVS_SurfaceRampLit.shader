@@ -12,8 +12,8 @@ Shader "Anemora/FastVS/SurfaceRampLit"
         _Metallic("Metallic", Range(0, 1)) = 0
         _Smoothness("Smoothness", Range(0, 1)) = 0.16
         _SpecularHighlights("Specular Highlights", Float) = 0
-        _DirectionalLightStrength("Directional Light Strength", Range(0, 0.35)) = 0.12
-        _ShadowReceiveStrength("Shadow Receive Strength", Range(0, 0.45)) = 0.18
+        _DirectionalLightStrength("Directional Light Strength", Range(0, 0.60)) = 0.12
+        _ShadowReceiveStrength("Shadow Receive Strength", Range(0, 0.70)) = 0.18
     }
 
     SubShader
@@ -110,10 +110,15 @@ Shader "Anemora/FastVS/SurfaceRampLit"
                 float4 shadowCoord = TransformWorldToShadowCoord(input.positionWS);
                 Light mainLight = GetMainLight(shadowCoord);
                 half ndotl = saturate(dot(normalWS, mainLight.direction));
-                half lightGrade = lerp(1.0h - (half)_DirectionalLightStrength, 1.0h + ((half)_DirectionalLightStrength * 0.35h), ndotl);
-                half shadowGrade = lerp(1.0h - (half)_ShadowReceiveStrength, 1.0h, (half)mainLight.shadowAttenuation);
+                half litResponse = smoothstep(0.12h, 0.86h, ndotl);
+                half lightGrade = lerp(1.0h - (half)_DirectionalLightStrength, 1.0h + ((half)_DirectionalLightStrength * 0.72h), litResponse);
+                half shadowResponse = smoothstep(0.10h, 0.95h, (half)mainLight.shadowAttenuation);
+                half shadowGrade = lerp(1.0h - (half)_ShadowReceiveStrength, 1.0h, shadowResponse);
+                half3 mainLightColor = half3(mainLight.color.r, mainLight.color.g, mainLight.color.b);
+                half3 sunTint = lerp(half3(0.92h, 0.84h, 0.72h), saturate(mainLightColor + half3(0.10h, 0.03h, -0.08h)), litResponse * saturate((half)_DirectionalLightStrength * 1.25h));
+                half3 shadowTint = lerp(half3(0.70h, 0.62h, 0.50h), half3(1.0h, 1.0h, 1.0h), shadowResponse);
 
-                half3 rgb = baseSample.rgb * grade * lightGrade * shadowGrade;
+                half3 rgb = baseSample.rgb * grade * lightGrade * shadowGrade * lerp(shadowTint, sunTint, litResponse);
                 return half4(rgb, baseSample.a);
             }
             ENDHLSL

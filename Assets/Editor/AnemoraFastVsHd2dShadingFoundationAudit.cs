@@ -171,11 +171,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(colorAdjustments.active, true, issues, "ColorAdjustments must be active.");
                 RequireBool(colorAdjustments.postExposure.overrideState, true, issues, "ColorAdjustments post exposure override must be enabled.");
-                RequireFloat(colorAdjustments.postExposure.value, -0.16f, 0.035f, issues, "ColorAdjustments post exposure must stay in the faded sun-shadow range.");
+                RequireFloat(colorAdjustments.postExposure.value, -0.06f, 0.035f, issues, "ColorAdjustments post exposure must keep the brighter reference sun-shadow range.");
                 RequireBool(colorAdjustments.contrast.overrideState, true, issues, "ColorAdjustments contrast override must be enabled.");
-                RequireFloat(colorAdjustments.contrast.value, 9f, 1.0f, issues, "ColorAdjustments contrast must support the stronger sun-shadow grade while keeping readability.");
+                RequireFloat(colorAdjustments.contrast.value, 11f, 1.0f, issues, "ColorAdjustments contrast must support the stronger sun-shadow grade while keeping readability.");
                 RequireBool(colorAdjustments.saturation.overrideState, true, issues, "ColorAdjustments saturation override must be enabled.");
-                RequireFloat(colorAdjustments.saturation.value, -22f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded sun-shadow range.");
+                RequireFloat(colorAdjustments.saturation.value, -16f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded sun-shadow range without flattening sunlit stone.");
             }
 
             if (!volumeProfile.TryGet<Vignette>(out var vignette))

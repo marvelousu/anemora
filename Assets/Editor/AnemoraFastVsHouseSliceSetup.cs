@@ -34,15 +34,15 @@ namespace Anemora.EditorTools
         private const int LibraryWindowLightCookieSize = 128;
         private const float LibraryWindowLightCookieAverageMin = 0.58f;
         private const float LibraryWindowLightCookieAverageMax = 0.86f;
-        private const float SurfaceRampStrength = 0.20f;
-        private const float SurfaceRampDirectionalLightStrength = 0.18f;
-        private const float SurfaceRampShadowReceiveStrength = 0.30f;
+        private const float SurfaceRampStrength = 0.36f;
+        private const float SurfaceRampDirectionalLightStrength = 0.42f;
+        private const float SurfaceRampShadowReceiveStrength = 0.56f;
         private static readonly Color SpriteCardTopLight = new Color(1.08f, 1.03f, 0.96f, 1f);
         private static readonly Color SpriteCardSideShade = new Color(0.94f, 0.97f, 1.03f, 1f);
         private static readonly Color SpriteCardFloorShade = new Color(0.89f, 0.92f, 0.96f, 1f);
-        private static readonly Color SurfaceRampTopLight = new Color(1.05f, 1.03f, 0.97f, 1f);
-        private static readonly Color SurfaceRampSideShade = new Color(0.91f, 0.94f, 1.00f, 1f);
-        private static readonly Color SurfaceRampFloorShade = new Color(0.86f, 0.89f, 0.94f, 1f);
+        private static readonly Color SurfaceRampTopLight = new Color(1.18f, 1.06f, 0.84f, 1f);
+        private static readonly Color SurfaceRampSideShade = new Color(0.70f, 0.64f, 0.54f, 1f);
+        private static readonly Color SurfaceRampFloorShade = new Color(0.62f, 0.56f, 0.48f, 1f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityFloorTextureScale = new Vector2(8f, 6f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityWallTextureScale = new Vector2(6f, 4f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityFurnitureTextureScale = new Vector2(4f, 4f);
@@ -175,6 +175,18 @@ namespace Anemora.EditorTools
         private const string PlazaSunBreakthroughCycle118MaterialId = "hd2d_plaza_sun_breakthrough_cycle118";
         private const string PlazaSunBreakthroughCycle118MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_sun_breakthrough_cycle118.mat";
         private const string PlazaSunBreakthroughCycle118TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_sun_breakthrough_cycle118.asset";
+        private const string PlazaReferenceStoneMatteCycle119MaterialId = "hd2d_plaza_reference_stone_matte_cycle119";
+        private const string PlazaReferenceStoneMatteCycle119MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_stone_matte_cycle119.mat";
+        private const string PlazaReferenceStoneMatteCycle119TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_stone_matte_cycle119.asset";
+        private const string PlazaReferenceDeepShadowCycle119MaterialId = "hd2d_plaza_reference_deep_shadow_cycle119";
+        private const string PlazaReferenceDeepShadowCycle119MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_deep_shadow_cycle119.mat";
+        private const string PlazaReferenceDeepShadowCycle119TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_deep_shadow_cycle119.asset";
+        private const string PlazaReferenceSunFleckCycle119MaterialId = "hd2d_plaza_reference_sun_fleck_cycle119";
+        private const string PlazaReferenceSunFleckCycle119MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_sun_fleck_cycle119.mat";
+        private const string PlazaReferenceSunFleckCycle119TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_sun_fleck_cycle119.asset";
+        private const string PlazaReferenceAirVeilCycle119MaterialId = "hd2d_plaza_reference_air_veil_cycle119";
+        private const string PlazaReferenceAirVeilCycle119MaterialPath = MaterialDirectory + "/FastVS_House_hd2d_plaza_reference_air_veil_cycle119.mat";
+        private const string PlazaReferenceAirVeilCycle119TexturePath = TextureDirectory + "/FastVS_House_hd2d_plaza_reference_air_veil_cycle119.asset";
         private const int CurrentSpaceRenderLayer = 27;
         private const int OtherTimeSpaceRenderLayer = 28;
         private const int PortalFrameRenderLayer = 26;
@@ -7913,6 +7925,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaSolarShadowResetCycle116(root, prefix, past, materials);
             CreateCentralPlazaReferenceShadowQualityCycle117(root, prefix, past, materials);
             CreateCentralPlazaShadowReceiverFieldCycle118(root, prefix, past, materials);
+            CreateCentralPlazaReferenceCompositeCycle119(root, prefix, past, materials);
             CreateCentralPlazaLibrarySideWallMaterialBreakupCycle60(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaLibrarySideWindowLedgesCycle61(root, prefix, c, past, materials, stone, trim, wall);
             CreateCentralPlazaOuterGroundSkirtCycle62(root, prefix, c, past, materials, stone, trim, path);
@@ -15130,6 +15143,11 @@ namespace Anemora.EditorTools
             CapturePlazaShadowReceiverFieldCycle118ScreenshotsToDirectory(GetPlazaShadowReceiverFieldCycle118ScreenshotsDirectory());
         }
 
+        public static void CapturePlazaReferenceCompositeCycle119ScreenshotsBatch()
+        {
+            CapturePlazaReferenceCompositeCycle119ScreenshotsToDirectory(GetPlazaReferenceCompositeCycle119ScreenshotsDirectory());
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -15578,6 +15596,81 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS cycle 118 plaza shadow receiver field screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CapturePlazaReferenceCompositeCycle119ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 119 plaza reference composite screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCentralPlazaOverviewFile = $"{audiencePrefix}01_current_central_plaza_reference_composite_overview.png";
+            var currentCentralPlazaCloseFile = $"{audiencePrefix}02_current_central_plaza_reference_composite_close.png";
+            var pastCentralPlazaGuardFile = $"{audiencePrefix}03_past_central_plaza_reference_composite_guard.png";
+            var currentLibraryGuardFile = $"{audiencePrefix}04_current_library_reference_composite_guard.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.16f, 0.02f, 4.28f),
+                Path.Combine(outputDirectory, currentCentralPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentCentralPlazaOverviewFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.18f, 0.02f, 3.96f),
+                CentralPlazaVsCenter + new Vector3(0.22f, 0.20f, 6.42f),
+                new Vector3(0.34f, 1.04f, -2.08f),
+                new Vector3(0.03f, 0.16f, 0.10f),
+                outputDirectory,
+                currentCentralPlazaCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentCentralPlazaCloseFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.16f, 0.02f, 4.28f),
+                Path.Combine(outputDirectory, pastCentralPlazaGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastCentralPlazaGuardFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f),
+                Path.Combine(outputDirectory, currentLibraryGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentLibraryGuardFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 119 plaza reference composite screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CapturePlazaSunExposureBaseCycle112ScreenshotsToDirectory(string outputDirectory)
@@ -23127,12 +23220,12 @@ namespace Anemora.EditorTools
                 CentralPlazaVsCenter,
                 new Vector2(0.17f, 0.39f),
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
-                1.72f,
-                new Color(1.00f, 0.78f, 0.48f, 1f),
-                0.025f,
-                new Color(1.00f, 0.62f, 0.34f, 1f),
-                0.067f,
-                new Color(0.074f, 0.066f, 0.054f, 1f));
+                1.84f,
+                new Color(1.00f, 0.74f, 0.42f, 1f),
+                0.012f,
+                new Color(1.00f, 0.55f, 0.26f, 1f),
+                0.045f,
+                new Color(0.052f, 0.044f, 0.034f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.Library.transform,
@@ -23246,15 +23339,15 @@ namespace Anemora.EditorTools
 
             colorAdjustments.active = true;
             colorAdjustments.postExposure.overrideState = true;
-            colorAdjustments.postExposure.value = -0.16f;
+            colorAdjustments.postExposure.value = -0.06f;
             colorAdjustments.contrast.overrideState = true;
-            colorAdjustments.contrast.value = 9f;
+            colorAdjustments.contrast.value = 11f;
             colorAdjustments.colorFilter.overrideState = true;
-            colorAdjustments.colorFilter.value = new Color(1.08f, 0.98f, 0.86f, 1f);
+            colorAdjustments.colorFilter.value = new Color(1.06f, 1.03f, 0.94f, 1f);
             colorAdjustments.hueShift.overrideState = true;
             colorAdjustments.hueShift.value = 0f;
             colorAdjustments.saturation.overrideState = true;
-            colorAdjustments.saturation.value = -22f;
+            colorAdjustments.saturation.value = -16f;
 
             bloom.active = true;
             bloom.threshold.overrideState = true;
@@ -26240,12 +26333,12 @@ namespace Anemora.EditorTools
             }
 
             if (!colorAdjustments.active ||
-                colorAdjustments.postExposure.value < -0.20f || colorAdjustments.postExposure.value > -0.12f ||
-                colorAdjustments.saturation.value < -26f || colorAdjustments.saturation.value > -18f ||
-                colorAdjustments.contrast.value < 8f || colorAdjustments.contrast.value > 10f ||
-                colorAdjustments.colorFilter.value.r < 1.04f || colorAdjustments.colorFilter.value.r > 1.10f ||
-                colorAdjustments.colorFilter.value.g < 0.94f || colorAdjustments.colorFilter.value.g > 1.00f ||
-                colorAdjustments.colorFilter.value.b < 0.82f || colorAdjustments.colorFilter.value.b > 0.90f ||
+                colorAdjustments.postExposure.value < -0.10f || colorAdjustments.postExposure.value > 0.02f ||
+                colorAdjustments.saturation.value < -20f || colorAdjustments.saturation.value > -12f ||
+                colorAdjustments.contrast.value < 10f || colorAdjustments.contrast.value > 12f ||
+                colorAdjustments.colorFilter.value.r < 1.02f || colorAdjustments.colorFilter.value.r > 1.08f ||
+                colorAdjustments.colorFilter.value.g < 0.99f || colorAdjustments.colorFilter.value.g > 1.05f ||
+                colorAdjustments.colorFilter.value.b < 0.90f || colorAdjustments.colorFilter.value.b > 0.98f ||
                 colorAdjustments.colorFilter.value.r < colorAdjustments.colorFilter.value.g ||
                 colorAdjustments.colorFilter.value.g < colorAdjustments.colorFilter.value.b)
             {
@@ -27038,7 +27131,7 @@ namespace Anemora.EditorTools
             }
 
             var houseExteriorSky = new Color(0.234f, 0.221f, 0.198f, 1f);
-            var centralPlazaSky = new Color(0.215f, 0.184f, 0.136f, 1f);
+            var centralPlazaSky = new Color(0.196f, 0.158f, 0.104f, 1f);
             var indoorDark = new Color(0.060f, 0.056f, 0.055f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
@@ -29915,11 +30008,11 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            if (ambient.r < 0.050f || ambient.r > 0.30f ||
-                ambient.g < 0.045f || ambient.g > 0.30f ||
-                ambient.b < 0.040f || ambient.b > 0.30f)
+            if (ambient.r < 0.045f || ambient.r > 0.30f ||
+                ambient.g < 0.040f || ambient.g > 0.30f ||
+                ambient.b < 0.030f || ambient.b > 0.30f)
             {
-                throw new InvalidOperationException($"House slice validation failed: ambient light must remain inside the HD-2D shading foundation profile range, found ({ambient.r:0.000}, {ambient.g:0.000}, {ambient.b:0.000}).");
+                throw new InvalidOperationException($"House slice validation failed: ambient light must remain inside the HD-2D shading foundation profile range for the deeper reference-shadow grade, found ({ambient.r:0.000}, {ambient.g:0.000}, {ambient.b:0.000}).");
             }
 
             if (Mathf.Abs(ambient.r - 0.30f) < 0.001f &&
@@ -30033,9 +30126,9 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            if (ambient.r < 0.050f || ambient.r > 0.32f ||
-                ambient.g < 0.045f || ambient.g > 0.32f ||
-                ambient.b < 0.040f || ambient.b > 0.32f)
+            if (ambient.r < 0.045f || ambient.r > 0.32f ||
+                ambient.g < 0.040f || ambient.g > 0.32f ||
+                ambient.b < 0.030f || ambient.b > 0.32f)
             {
                 throw new InvalidOperationException("House slice validation failed: ambient light must stay within the HD-2D readability range.");
             }
@@ -33434,7 +33527,7 @@ namespace Anemora.EditorTools
                 tint = material.GetColor("_Color");
             }
 
-            ValidateColorNear($"{objectName} material tint", tint, new Color(1.00f, 0.86f, 0.56f, 0.48f), 0.02f);
+            ValidateColorNear($"{objectName} material tint", tint, new Color(1.00f, 0.90f, 0.72f, 0.12f), 0.02f);
 
             if (resolvedTexture == null || !string.Equals(AssetDatabase.GetAssetPath(resolvedTexture), PlazaSunlitIslandsCycle109TexturePath, StringComparison.Ordinal))
             {
@@ -33744,7 +33837,7 @@ namespace Anemora.EditorTools
                 tint = material.GetColor("_Color");
             }
 
-            ValidateColorNear($"{objectName} material tint", tint, new Color(1.00f, 0.82f, 0.48f, 0.42f), 0.03f);
+            ValidateColorNear($"{objectName} material tint", tint, new Color(1.00f, 0.82f, 0.48f, 0.05f), 0.03f);
 
             if (resolvedTexture == null || !string.Equals(AssetDatabase.GetAssetPath(resolvedTexture), PlazaBroadSunfieldCycle111TexturePath, StringComparison.Ordinal))
             {
@@ -34041,7 +34134,7 @@ namespace Anemora.EditorTools
                 tint = material.GetColor("_Color");
             }
 
-            ValidateColorNear($"{objectName} material tint", tint, new Color(0.96f, 0.76f, 0.45f, 0.34f), 0.03f);
+            ValidateColorNear($"{objectName} material tint", tint, new Color(0.96f, 0.76f, 0.45f, 0.06f), 0.03f);
 
             if (resolvedTexture == null || !string.Equals(AssetDatabase.GetAssetPath(resolvedTexture), PlazaSunExposureBaseCycle112TexturePath, StringComparison.Ordinal))
             {
@@ -34167,7 +34260,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a footprint aligned to its quad scale.");
             }
 
-            ValidateColorNear($"{objectName} intended tint", intendedTintProperty.colorValue, new Color(0.96f, 0.76f, 0.45f, 0.34f), 0.03f);
+            ValidateColorNear($"{objectName} intended tint", intendedTintProperty.colorValue, new Color(0.96f, 0.76f, 0.45f, 0.12f), 0.03f);
         }
 
         private static void ValidateFastVsHd2dCycle112CentralPlazaSunExposureBase()
@@ -34736,26 +34829,26 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: central plaza lighting profile must keep area id CentralPlaza.");
             }
 
-            if (Mathf.Abs(profile.KeyLightIntensityForReview - 1.72f) > 0.002f)
+            if (Mathf.Abs(profile.KeyLightIntensityForReview - 1.84f) > 0.002f)
             {
-                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile key intensity must stay at 1.720, but was {profile.KeyLightIntensityForReview:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile key intensity must stay at 1.840, but was {profile.KeyLightIntensityForReview:0.000}.");
             }
 
-            ValidateColorApproximately(profile.KeyLightTintForReview, new Color(1.00f, 0.78f, 0.48f, 1f), "cycle 115 central plaza key tint");
+            ValidateColorApproximately(profile.KeyLightTintForReview, new Color(1.00f, 0.74f, 0.42f, 1f), "cycle 115 central plaza key tint");
 
-            if (Mathf.Abs(profile.FillIntensityForReview - 0.025f) > 0.002f)
+            if (Mathf.Abs(profile.FillIntensityForReview - 0.012f) > 0.002f)
             {
-                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile fill intensity must stay at 0.025, but was {profile.FillIntensityForReview:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile fill intensity must stay at 0.012, but was {profile.FillIntensityForReview:0.000}.");
             }
 
-            ValidateColorApproximately(profile.FillTintForReview, new Color(1.00f, 0.62f, 0.34f, 1f), "cycle 115 central plaza fill tint");
+            ValidateColorApproximately(profile.FillTintForReview, new Color(1.00f, 0.55f, 0.26f, 1f), "cycle 115 central plaza fill tint");
 
-            if (Mathf.Abs(profile.AmbientIntensityForReview - 0.067f) > 0.002f)
+            if (Mathf.Abs(profile.AmbientIntensityForReview - 0.045f) > 0.002f)
             {
-                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile ambient intensity must stay at 0.067, but was {profile.AmbientIntensityForReview:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile ambient intensity must stay at 0.045, but was {profile.AmbientIntensityForReview:0.000}.");
             }
 
-            ValidateColorApproximately(profile.AmbientTintForReview, new Color(0.074f, 0.066f, 0.054f, 1f), "cycle 115 central plaza ambient tint");
+            ValidateColorApproximately(profile.AmbientTintForReview, new Color(0.052f, 0.044f, 0.034f, 1f), "cycle 115 central plaza ambient tint");
 
             director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
 
@@ -34769,9 +34862,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cycle 115 main light must remain a soft directional light.");
             }
 
-            if (Mathf.Abs(mainLight.intensity - 1.72f) > 0.04f)
+            if (Mathf.Abs(mainLight.intensity - 1.84f) > 0.04f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light intensity must stay within 1.68..1.76 after applying CentralPlaza, but was {mainLight.intensity:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light intensity must stay within 1.80..1.88 after applying CentralPlaza, but was {mainLight.intensity:0.000}.");
             }
 
             if (Mathf.Abs(mainLight.shadowStrength - 1.00f) > 0.02f)
@@ -34779,9 +34872,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 115 main light shadow strength must stay within 0.98..1.02 after applying CentralPlaza, but was {mainLight.shadowStrength:0.000}.");
             }
 
-            if (mainLight.color.r < mainLight.color.g || mainLight.color.g < mainLight.color.b || mainLight.color.b < 0.46f || mainLight.color.b > 0.50f)
+            if (mainLight.color.r < mainLight.color.g || mainLight.color.g < mainLight.color.b || mainLight.color.b < 0.40f || mainLight.color.b > 0.44f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light color must stay hot and blue must remain around 0.46-0.50, but was ({mainLight.color.r:0.000}, {mainLight.color.g:0.000}, {mainLight.color.b:0.000}).");
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light color must stay hot and blue must remain around 0.40-0.44, but was ({mainLight.color.r:0.000}, {mainLight.color.g:0.000}, {mainLight.color.b:0.000}).");
             }
 
             if (Mathf.Max(RenderSettings.ambientLight.r, Mathf.Max(RenderSettings.ambientLight.g, RenderSettings.ambientLight.b)) > 0.080f)
@@ -34794,9 +34887,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cycle 115 ambient mode must remain Flat.");
             }
 
-            if (Mathf.Abs(warmFill.intensity - 0.025f) > 0.012f)
+            if (Mathf.Abs(warmFill.intensity - 0.012f) > 0.008f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 115 warm fill intensity must stay within 0.013..0.037, but was {warmFill.intensity:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 warm fill intensity must stay within 0.004..0.020, but was {warmFill.intensity:0.000}.");
             }
 
             if (Mathf.Abs(coolRim.intensity - 0.025f) > 0.010f)
@@ -34819,14 +34912,14 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 115 fog distances must stay within 7-9 and 40-48, but were start={RenderSettings.fogStartDistance:0.000}, end={RenderSettings.fogEndDistance:0.000}.");
             }
 
-            ValidateColorApproximately(RenderSettings.fogColor, new Color(0.245f, 0.200f, 0.148f, 1f), "cycle 115 fog color");
+            ValidateColorApproximately(RenderSettings.fogColor, new Color(0.265f, 0.205f, 0.138f, 1f), "cycle 115 fog color");
 
-            if (sceneCamera.backgroundColor.r >= 0.230f || sceneCamera.backgroundColor.b >= 0.150f)
+            if (sceneCamera.backgroundColor.r >= 0.210f || sceneCamera.backgroundColor.b >= 0.120f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 115 camera background must stay below the reference fade thresholds, but was ({sceneCamera.backgroundColor.r:0.000}, {sceneCamera.backgroundColor.g:0.000}, {sceneCamera.backgroundColor.b:0.000}).");
             }
 
-            ValidateColorApproximately(sceneCamera.backgroundColor, new Color(0.215f, 0.184f, 0.136f, 1f), "cycle 115 camera background");
+            ValidateColorApproximately(sceneCamera.backgroundColor, new Color(0.196f, 0.158f, 0.104f, 1f), "cycle 115 camera background");
 
             if (!volume.sharedProfile.TryGet<ColorAdjustments>(out var colorAdjustments) ||
                 !volume.sharedProfile.TryGet<Bloom>(out var bloom) ||
@@ -34843,14 +34936,14 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cycle 115 color grade overrides must remain active.");
             }
 
-            if (Mathf.Abs(colorAdjustments.postExposure.value - (-0.16f)) > 0.02f ||
-                Mathf.Abs(colorAdjustments.contrast.value - 9f) > 1f ||
-                Mathf.Abs(colorAdjustments.saturation.value - (-22f)) > 2f)
+            if (Mathf.Abs(colorAdjustments.postExposure.value - (-0.06f)) > 0.025f ||
+                Mathf.Abs(colorAdjustments.contrast.value - 11f) > 1f ||
+                Mathf.Abs(colorAdjustments.saturation.value - (-16f)) > 2f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 115 color adjustments must stay near postExposure=-0.16, contrast=9, saturation=-22, but were postExposure={colorAdjustments.postExposure.value:0.000}, contrast={colorAdjustments.contrast.value:0.000}, saturation={colorAdjustments.saturation.value:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 color adjustments must stay near postExposure=-0.06, contrast=11, saturation=-16, but were postExposure={colorAdjustments.postExposure.value:0.000}, contrast={colorAdjustments.contrast.value:0.000}, saturation={colorAdjustments.saturation.value:0.000}.");
             }
 
-            ValidateColorApproximately(colorAdjustments.colorFilter.value, new Color(1.08f, 0.98f, 0.86f, 1f), "cycle 115 color filter");
+            ValidateColorApproximately(colorAdjustments.colorFilter.value, new Color(1.06f, 1.03f, 0.94f, 1f), "cycle 115 color filter");
 
             if (Mathf.Abs(bloom.intensity.value - 0.18f) > 0.03f)
             {
@@ -35050,6 +35143,146 @@ namespace Anemora.EditorTools
             ValidateCycle116TextureMetrics(PlazaSunBreakthroughCycle118TexturePath, 0.40f, 0.74f, 0.05f, 0.30f, "cycle 118 sun breakthrough");
         }
 
+        private static void ValidateHd2dPlazaReferenceCompositeCycle119()
+        {
+            var stoneObjects = new[]
+            {
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_StoneMatteForegroundA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_StoneMattePlayerLaneA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_StoneMatteLibraryApproachA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_StoneMatteLeftEdgeA"
+            };
+            var shadowObjects = new[]
+            {
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowLeftCanopyA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowLibraryBaseA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowFountainA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowForegroundPocketA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowRightEdgeA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowGoldBandSuppressPlayerA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_DeepShadowGoldBandSuppressForegroundA"
+            };
+            var sunObjects = new[]
+            {
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_SunFleckPlayerA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_SunFleckLibraryDoorA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_SunFleckForegroundRimA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_SunFleckLeftCanopyA"
+            };
+            var airObjects = new[]
+            {
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_AirVeilFacadeLiftA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_AirVeilUpperDepthA",
+                "Current_CentralPlaza_Cycle119_ReferenceComposite_AirVeilForegroundDustA"
+            };
+
+            foreach (var objectName in stoneObjects)
+            {
+                ValidatePlazaSolarResetProfileObject(
+                    objectName,
+                    PlazaReferenceStoneMatteCycle119MaterialPath,
+                    PlazaReferenceStoneMatteCycle119TexturePath,
+                    FastVsHd2dOverlayKind.LightPool);
+            }
+
+            foreach (var objectName in shadowObjects)
+            {
+                ValidatePlazaSolarResetProfileObject(
+                    objectName,
+                    PlazaReferenceDeepShadowCycle119MaterialPath,
+                    PlazaReferenceDeepShadowCycle119TexturePath,
+                    FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+            }
+
+            foreach (var objectName in sunObjects)
+            {
+                ValidatePlazaSolarResetProfileObject(
+                    objectName,
+                    PlazaReferenceSunFleckCycle119MaterialPath,
+                    PlazaReferenceSunFleckCycle119TexturePath,
+                    FastVsHd2dOverlayKind.LightPool);
+            }
+
+            foreach (var objectName in airObjects)
+            {
+                ValidatePlazaSolarResetProfileObject(
+                    objectName,
+                    PlazaReferenceAirVeilCycle119MaterialPath,
+                    PlazaReferenceAirVeilCycle119TexturePath,
+                    FastVsHd2dOverlayKind.Atmosphere);
+            }
+
+            ValidatePlazaReferenceCompositeObjectCounts();
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceStoneMatteCycle119MaterialPath, 3064, 3068, "cycle 119 stone matte");
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceDeepShadowCycle119MaterialPath, 3068, 3072, "cycle 119 deep shadow");
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceSunFleckCycle119MaterialPath, 3072, 3076, "cycle 119 sun fleck");
+            ValidatePlazaReferenceCompositeMaterialQueue(PlazaReferenceAirVeilCycle119MaterialPath, 3074, 3078, "cycle 119 air veil");
+            ValidateCycle116TextureMetrics(PlazaReferenceStoneMatteCycle119TexturePath, 0.24f, 0.58f, 0.07f, 0.34f, "cycle 119 reference stone matte");
+            ValidateCycle116TextureMetrics(PlazaReferenceDeepShadowCycle119TexturePath, 0.52f, 0.88f, 0.08f, 0.34f, "cycle 119 reference deep shadow");
+            ValidateCycle116TextureMetrics(PlazaReferenceSunFleckCycle119TexturePath, 0.34f, 0.70f, 0.015f, 0.18f, "cycle 119 reference sun fleck");
+            ValidateCycle116TextureMetrics(PlazaReferenceAirVeilCycle119TexturePath, 0.20f, 0.62f, 0.04f, 0.26f, "cycle 119 reference air veil");
+        }
+
+        private static void ValidateHd2dPlazaSurfaceLightResponseCycle119()
+        {
+            foreach (var materialId in new[]
+            {
+                "current_exterior_wall",
+                "current_ground",
+                "current_path",
+                "current_roof",
+                "current_stone",
+                "past_exterior_wall",
+                "past_wood_floor",
+                "book"
+            })
+            {
+                ValidateSurfaceLightResponseMaterialCycle119(materialId);
+            }
+        }
+
+        private static void ValidateSurfaceLightResponseMaterialCycle119(string materialId)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 119 surface-light response missing material {materialPath}.");
+            }
+
+            ValidateMaterialFloatBand(materialId, "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand(materialId, "_ShadowReceiveStrength", 0.54f, 0.58f);
+
+            var surfaceRampStrength = material.HasProperty("_SurfaceRampStrength") ? material.GetFloat("_SurfaceRampStrength") : -1f;
+            if (surfaceRampStrength < 0.34f || surfaceRampStrength > 0.38f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 119 {materialPath} must keep _SurfaceRampStrength near 0.36, but was {surfaceRampStrength:0.000}.");
+            }
+
+            if (!material.HasProperty("_TopLight") || !material.HasProperty("_SideShade") || !material.HasProperty("_FloorShade"))
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 119 {materialPath} must keep SurfaceRampLit light/shade color controls.");
+            }
+
+            ValidateColorApproximately(material.GetColor("_TopLight"), SurfaceRampTopLight, $"cycle 119 {materialId} surface top light");
+            ValidateColorApproximately(material.GetColor("_SideShade"), SurfaceRampSideShade, $"cycle 119 {materialId} surface side shade");
+            ValidateColorApproximately(material.GetColor("_FloorShade"), SurfaceRampFloorShade, $"cycle 119 {materialId} surface floor shade");
+        }
+
+        private static void ValidatePlazaReferenceCompositeMaterialQueue(string materialPath, int minRenderQueue, int maxRenderQueue, string label)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing {label} material at {materialPath}.");
+            }
+
+            if (material.renderQueue < minRenderQueue || material.renderQueue > maxRenderQueue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} material renderQueue must stay in {minRenderQueue}-{maxRenderQueue}, but was {material.renderQueue}.");
+            }
+        }
+
         private static void ValidatePlazaSolarResetObjectCounts()
         {
             var currentCycle116Count = 0;
@@ -35113,6 +35346,39 @@ namespace Anemora.EditorTools
             if (pastCycle118Count != 0)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 118 shadow receiver field must stay current-world only, found {pastCycle118Count} past overlays.");
+            }
+        }
+
+        private static void ValidatePlazaReferenceCompositeObjectCounts()
+        {
+            var currentCycle119Count = 0;
+            var pastCycle119Count = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate == null || !candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (candidate.name.StartsWith("Current_CentralPlaza_Cycle119_ReferenceComposite_", StringComparison.Ordinal))
+                {
+                    currentCycle119Count++;
+                }
+
+                if (candidate.name.StartsWith("Past_CentralPlaza_Cycle119_ReferenceComposite_", StringComparison.Ordinal))
+                {
+                    pastCycle119Count++;
+                }
+            }
+
+            if (currentCycle119Count != 18)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 119 reference composite must keep exactly 18 current central plaza composite overlays, found {currentCycle119Count}.");
+            }
+
+            if (pastCycle119Count != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 119 reference composite must stay current-world only, found {pastCycle119Count} past overlays.");
             }
         }
 
@@ -37768,14 +38034,14 @@ namespace Anemora.EditorTools
                 warmFill,
                 libraryWindow,
                 true,
-                new Vector3(0.070f, 0.062f, 0.050f),
-                new Vector3(0.078f, 0.070f, 0.058f),
-                1.68f,
-                1.76f,
+                new Vector3(0.048f, 0.040f, 0.030f),
+                new Vector3(0.056f, 0.048f, 0.038f),
+                1.82f,
+                1.86f,
                 0.98f,
                 1.01f,
-                0.015f,
-                0.035f,
+                0.010f,
+                0.016f,
                 false,
                 0f,
                 0f);
@@ -41897,6 +42163,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle118_plaza_shadow_receiver_field_parent_review_20260524_01";
         }
 
+        private static string GetPlazaReferenceCompositeCycle119ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle119_plaza_reference_composite_parent_review_20260524_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -41932,18 +42203,18 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dCycle51MaterialLightShadowResponse()
         {
-            ValidateMaterialFloatBand("current_exterior_wall", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.29f, 0.31f);
-            ValidateMaterialFloatBand("current_ground", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("current_ground", "_ShadowReceiveStrength", 0.29f, 0.31f);
-            ValidateMaterialFloatBand("current_roof", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("current_roof", "_ShadowReceiveStrength", 0.29f, 0.31f);
-            ValidateMaterialFloatBand("past_exterior_wall", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.29f, 0.31f);
-            ValidateMaterialFloatBand("past_wood_floor", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("past_wood_floor", "_ShadowReceiveStrength", 0.29f, 0.31f);
-            ValidateMaterialFloatBand("book", "_DirectionalLightStrength", 0.17f, 0.19f);
-            ValidateMaterialFloatBand("book", "_ShadowReceiveStrength", 0.29f, 0.31f);
+            ValidateMaterialFloatBand("current_exterior_wall", "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("current_ground", "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand("current_ground", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("current_roof", "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand("current_roof", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("past_wood_floor", "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand("past_wood_floor", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("book", "_DirectionalLightStrength", 0.40f, 0.44f);
+            ValidateMaterialFloatBand("book", "_ShadowReceiveStrength", 0.54f, 0.58f);
             ValidateMaterialFloatBand("niro_front_sprite", "_WorldLightStrength", 0.09f, 0.11f);
             ValidateMaterialFloatBand("niro_front_sprite", "_WorldShadowReceiveStrength", 0.10f, 0.12f);
             ValidateMaterialFloatBand("niro_walk_front_sprite", "_WorldLightStrength", 0.09f, 0.11f);
@@ -44886,14 +45157,14 @@ namespace Anemora.EditorTools
             ValidateAreaLighting(
                 FastVsHouseArea.CentralPlaza,
                 "FastVS_HD2D_CentralPlazaLightingProfile",
-                1.72f,
+                1.84f,
                 1.00f,
-                new Color(1.00f, 0.78f, 0.48f, 1f),
+                new Color(1.00f, 0.74f, 0.42f, 1f),
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
-                0.025f,
-                new Color(1.00f, 0.62f, 0.34f, 1f),
-                0.067f,
-                new Color(0.074f, 0.066f, 0.054f, 1f),
+                0.012f,
+                new Color(1.00f, 0.55f, 0.26f, 1f),
+                0.045f,
+                new Color(0.052f, 0.044f, 0.034f, 1f),
                 true);
 
             ValidateAreaLighting(
@@ -45235,6 +45506,13 @@ namespace Anemora.EditorTools
         {
             ValidatePlazaReferenceShadowQualityCycle117Batch();
             ValidateHd2dPlazaShadowReceiverFieldCycle118();
+        }
+
+        public static void ValidatePlazaReferenceCompositeCycle119Batch()
+        {
+            ValidatePlazaShadowReceiverFieldCycle118Batch();
+            ValidateHd2dPlazaReferenceCompositeCycle119();
+            ValidateHd2dPlazaSurfaceLightResponseCycle119();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()
@@ -47676,13 +47954,13 @@ namespace Anemora.EditorTools
             }
 
             var surfaceRampStrength = material.GetFloat("_SurfaceRampStrength");
-            if (surfaceRampStrength < 0.10f || surfaceRampStrength > 0.30f)
+            if (surfaceRampStrength < 0.10f || surfaceRampStrength > 0.42f)
             {
-                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep _SurfaceRampStrength in the 0.10-0.30 range, but was {surfaceRampStrength:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep _SurfaceRampStrength in the 0.10-0.42 range, but was {surfaceRampStrength:0.000}.");
             }
 
-            ValidateSurfaceRampFloatBand(material, materialPath, "_DirectionalLightStrength", 0.04f, 0.24f);
-            ValidateSurfaceRampFloatBand(material, materialPath, "_ShadowReceiveStrength", 0.05f, 0.30f);
+            ValidateSurfaceRampFloatBand(material, materialPath, "_DirectionalLightStrength", 0.04f, 0.46f);
+            ValidateSurfaceRampFloatBand(material, materialPath, "_ShadowReceiveStrength", 0.05f, 0.60f);
         }
 
         private static void ValidateSurfaceRampFloatBand(Material material, string materialPath, string propertyName, float min, float max)
@@ -48558,7 +48836,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector2(0.06f, 0.26f),
                 new Vector2(localScale.x, localScale.y),
-                new Color(1.00f, 0.86f, 0.56f, 0.24f));
+                new Color(1.00f, 0.90f, 0.70f, 0.07f));
             return sunbreak;
         }
 
@@ -48629,7 +48907,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector2(0.08f, 0.36f),
                 new Vector2(localScale.x, localScale.y),
-                new Color(1.00f, 0.94f, 0.74f, 0.86f));
+                new Color(1.00f, 0.90f, 0.68f, 0.06f));
             return sunSlash;
         }
 
@@ -48896,7 +49174,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector2(0.10f, 0.30f),
                 new Vector2(localScale.x, localScale.y),
-                new Color(1.00f, 0.88f, 0.62f, 0.90f));
+                new Color(1.00f, 0.90f, 0.72f, 0.16f));
             return sunlitIsland;
         }
 
@@ -48985,7 +49263,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector2(0.12f, 0.28f),
                 new Vector2(localScale.x, localScale.y),
-                new Color(1.00f, 0.82f, 0.48f, 0.42f));
+                new Color(1.00f, 0.82f, 0.48f, 0.12f));
             return broadSunfield;
         }
 
@@ -49056,7 +49334,7 @@ namespace Anemora.EditorTools
                 false,
                 new Vector2(0.05f, 0.18f),
                 new Vector2(localScale.x, localScale.y),
-                new Color(0.96f, 0.76f, 0.45f, 0.34f));
+                new Color(0.96f, 0.76f, 0.45f, 0.12f));
             return sunExposureBase;
         }
 
@@ -49278,7 +49556,7 @@ namespace Anemora.EditorTools
                     sunMaterial,
                     FastVsHd2dOverlayKind.LightPool,
                     new Vector2(0.14f, 0.52f),
-                    new Color(1.00f, 0.78f, 0.42f, 0.68f));
+                    new Color(1.00f, 0.72f, 0.42f, 0.10f));
             }
 
             void Shadow(string suffix, Vector3 position, Vector3 scale, Quaternion rotation)
@@ -49308,7 +49586,7 @@ namespace Anemora.EditorTools
                     airMaterial,
                     FastVsHd2dOverlayKind.Atmosphere,
                     new Vector2(0.04f, 0.28f),
-                    new Color(0.95f, 0.78f, 0.52f, 0.34f));
+                    new Color(0.94f, 0.86f, 0.74f, 0.14f));
             }
 
             Sun("SunFloorLibraryApproachA", new Vector3(-0.10f, 0.060f, 5.95f), new Vector3(8.10f, 0.88f, 1f), Quaternion.Euler(90f, 0f, -21f));
@@ -49443,7 +49721,7 @@ namespace Anemora.EditorTools
                     sunBreakMaterial,
                     FastVsHd2dOverlayKind.LightPool,
                     new Vector2(0.16f, 0.58f),
-                    new Color(1.00f, 0.78f, 0.43f, 0.78f));
+                    new Color(1.00f, 0.78f, 0.50f, 0.12f));
             }
 
             Receiver("ForegroundBrokenA", new Vector3(-2.08f, 0.058f, 0.84f), new Vector3(8.10f, 2.38f, 1f), Quaternion.Euler(90f, 0f, -14f));
@@ -49462,6 +49740,105 @@ namespace Anemora.EditorTools
             SunBreak("SunBreakPlayerLaneA", new Vector3(-0.82f, 0.067f, 3.16f), new Vector3(5.70f, 0.72f, 1f), Quaternion.Euler(90f, 0f, -27f));
             SunBreak("SunBreakLibraryDoorA", new Vector3(0.18f, 0.067f, 5.84f), new Vector3(6.90f, 0.64f, 1f), Quaternion.Euler(90f, 0f, -9f));
             SunBreak("SunBreakLeftCanopyA", new Vector3(-4.48f, 0.067f, 4.42f), new Vector3(2.86f, 0.56f, 1f), Quaternion.Euler(90f, 0f, -30f));
+
+            _ = materials;
+        }
+
+        private static void CreateCentralPlazaReferenceCompositeCycle119(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var stoneMaterial = EnsureHd2dPlazaReferenceStoneMatteCycle119Material();
+            var shadowMaterial = EnsureHd2dPlazaReferenceDeepShadowCycle119Material();
+            var sunMaterial = EnsureHd2dPlazaReferenceSunFleckCycle119Material();
+            var airMaterial = EnsureHd2dPlazaReferenceAirVeilCycle119Material();
+
+            void Stone(string suffix, Vector3 position, Vector3 scale, Quaternion rotation)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle119_ReferenceComposite_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle119.reference_composite.{suffix.ToLowerInvariant()}",
+                    stoneMaterial,
+                    FastVsHd2dOverlayKind.LightPool,
+                    new Vector2(0.10f, 0.36f),
+                    new Color(0.76f, 0.67f, 0.50f, 0.42f));
+            }
+
+            void DeepShadow(string suffix, Vector3 position, Vector3 scale, Quaternion rotation)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle119_ReferenceComposite_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle119.reference_composite.{suffix.ToLowerInvariant()}",
+                    shadowMaterial,
+                    FastVsHd2dOverlayKind.StaticDirectionalCastShadow,
+                    new Vector2(0.12f, 0.62f),
+                    new Color(0.026f, 0.022f, 0.018f, 0.96f));
+            }
+
+            void SunFleck(string suffix, Vector3 position, Vector3 scale, Quaternion rotation)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle119_ReferenceComposite_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle119.reference_composite.{suffix.ToLowerInvariant()}",
+                    sunMaterial,
+                    FastVsHd2dOverlayKind.LightPool,
+                    new Vector2(0.08f, 0.40f),
+                    new Color(1.00f, 0.84f, 0.52f, 0.60f));
+            }
+
+            void AirVeil(string suffix, Vector3 position, Vector3 scale, Quaternion rotation)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle119_ReferenceComposite_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle119.reference_composite.{suffix.ToLowerInvariant()}",
+                    airMaterial,
+                    FastVsHd2dOverlayKind.Atmosphere,
+                    new Vector2(0.04f, 0.22f),
+                    new Color(0.92f, 0.78f, 0.58f, 0.28f));
+            }
+
+            Stone("StoneMatteForegroundA", new Vector3(-1.64f, 0.074f, 0.92f), new Vector3(11.40f, 2.62f, 1f), Quaternion.Euler(90f, 0f, -6f));
+            Stone("StoneMattePlayerLaneA", new Vector3(-0.72f, 0.075f, 3.04f), new Vector3(11.80f, 2.78f, 1f), Quaternion.Euler(90f, 0f, -11f));
+            Stone("StoneMatteLibraryApproachA", new Vector3(0.02f, 0.076f, 5.90f), new Vector3(11.20f, 2.42f, 1f), Quaternion.Euler(90f, 0f, -4f));
+            Stone("StoneMatteLeftEdgeA", new Vector3(-4.72f, 0.077f, 4.14f), new Vector3(3.96f, 3.40f, 1f), Quaternion.Euler(90f, 0f, -24f));
+
+            DeepShadow("DeepShadowLeftCanopyA", new Vector3(-4.74f, 0.083f, 4.82f), new Vector3(4.40f, 2.78f, 1f), Quaternion.Euler(90f, 0f, -28f));
+            DeepShadow("DeepShadowLibraryBaseA", new Vector3(-0.10f, 0.084f, 6.60f), new Vector3(9.90f, 1.18f, 1f), Quaternion.Euler(90f, 0f, 0f));
+            DeepShadow("DeepShadowFountainA", new Vector3(-0.62f, 0.085f, 2.10f), new Vector3(3.48f, 1.26f, 1f), Quaternion.Euler(90f, 0f, -21f));
+            DeepShadow("DeepShadowForegroundPocketA", new Vector3(-2.76f, 0.086f, 0.38f), new Vector3(5.72f, 1.24f, 1f), Quaternion.Euler(90f, 0f, -10f));
+            DeepShadow("DeepShadowRightEdgeA", new Vector3(4.26f, 0.086f, 3.54f), new Vector3(3.56f, 2.08f, 1f), Quaternion.Euler(90f, 0f, -15f));
+            DeepShadow("DeepShadowGoldBandSuppressPlayerA", new Vector3(-0.74f, 0.088f, 3.18f), new Vector3(10.80f, 0.86f, 1f), Quaternion.Euler(90f, 0f, -12f));
+            DeepShadow("DeepShadowGoldBandSuppressForegroundA", new Vector3(-2.54f, 0.089f, 0.76f), new Vector3(9.30f, 0.72f, 1f), Quaternion.Euler(90f, 0f, -16f));
+
+            SunFleck("SunFleckPlayerA", new Vector3(-0.20f, 0.091f, 3.10f), new Vector3(3.62f, 1.16f, 1f), Quaternion.Euler(90f, 0f, -20f));
+            SunFleck("SunFleckLibraryDoorA", new Vector3(0.18f, 0.092f, 5.72f), new Vector3(3.80f, 1.02f, 1f), Quaternion.Euler(90f, 0f, -7f));
+            SunFleck("SunFleckForegroundRimA", new Vector3(-3.18f, 0.093f, 1.08f), new Vector3(3.42f, 0.94f, 1f), Quaternion.Euler(90f, 0f, -12f));
+            SunFleck("SunFleckLeftCanopyA", new Vector3(-4.34f, 0.094f, 4.22f), new Vector3(2.28f, 0.82f, 1f), Quaternion.Euler(90f, 0f, -25f));
+
+            AirVeil("AirVeilFacadeLiftA", new Vector3(0.00f, 1.54f, 7.58f), new Vector3(9.90f, 2.72f, 1f), Quaternion.identity);
+            AirVeil("AirVeilUpperDepthA", new Vector3(0.18f, 2.58f, 7.48f), new Vector3(10.40f, 1.18f, 1f), Quaternion.identity);
+            AirVeil("AirVeilForegroundDustA", new Vector3(-0.44f, 0.84f, 2.32f), new Vector3(8.80f, 1.30f, 1f), Quaternion.Euler(0f, 0f, -5f));
 
             _ = materials;
         }
@@ -49821,12 +50198,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dPlazaSunbreakCycle104Material()
         {
-            var material = FlatMaterial(PlazaSunbreakCycle104MaterialId, new Color(1.00f, 0.86f, 0.56f, 0.24f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial(PlazaSunbreakCycle104MaterialId, new Color(1.00f, 0.90f, 0.70f, 0.07f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3016);
             var texture = EnsureHd2dPlazaSunbreakCycle104Texture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(1.00f, 0.86f, 0.56f, 0.24f);
+            var tint = new Color(1.00f, 0.90f, 0.70f, 0.07f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -49844,12 +50221,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dPlazaSunSlashCycle106Material()
         {
-            var material = FlatMaterial(PlazaSunSlashCycle106MaterialId, new Color(1.00f, 0.94f, 0.74f, 0.86f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial(PlazaSunSlashCycle106MaterialId, new Color(1.00f, 0.90f, 0.68f, 0.06f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3016);
             var texture = EnsureHd2dPlazaSunSlashCycle106Texture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(1.00f, 0.94f, 0.74f, 0.86f);
+            var tint = new Color(1.00f, 0.90f, 0.68f, 0.06f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -49913,12 +50290,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dPlazaSunlitIslandsCycle109Material()
         {
-            var material = FlatMaterial(PlazaSunlitIslandsCycle109MaterialId, new Color(1.00f, 0.86f, 0.56f, 0.48f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial(PlazaSunlitIslandsCycle109MaterialId, new Color(1.00f, 0.90f, 0.72f, 0.12f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3022);
             var texture = EnsureHd2dPlazaSunlitIslandsCycle109Texture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(1.00f, 0.86f, 0.56f, 0.48f);
+            var tint = new Color(1.00f, 0.90f, 0.72f, 0.12f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -49936,12 +50313,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dPlazaBroadSunfieldCycle111Material()
         {
-            var material = FlatMaterial(PlazaBroadSunfieldCycle111MaterialId, new Color(1.00f, 0.82f, 0.48f, 0.42f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial(PlazaBroadSunfieldCycle111MaterialId, new Color(1.00f, 0.82f, 0.48f, 0.05f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3024);
             var texture = EnsureHd2dPlazaBroadSunfieldCycle111Texture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(1.00f, 0.82f, 0.48f, 0.42f);
+            var tint = new Color(1.00f, 0.82f, 0.48f, 0.05f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -49959,12 +50336,12 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dPlazaSunExposureBaseCycle112Material()
         {
-            var material = FlatMaterial(PlazaSunExposureBaseCycle112MaterialId, new Color(0.96f, 0.76f, 0.45f, 0.34f), true, FastVsHd2dMaterialRole.OverlayGlow);
+            var material = FlatMaterial(PlazaSunExposureBaseCycle112MaterialId, new Color(0.96f, 0.76f, 0.45f, 0.06f), true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3007);
             var texture = EnsureHd2dPlazaSunExposureBaseCycle112Texture();
             AssignMaterialTexture(material, texture, Vector2.one);
 
-            var tint = new Color(0.96f, 0.76f, 0.45f, 0.34f);
+            var tint = new Color(0.96f, 0.76f, 0.45f, 0.06f);
             if (material.HasProperty("_BaseColor"))
             {
                 material.SetColor("_BaseColor", tint);
@@ -49982,7 +50359,7 @@ namespace Anemora.EditorTools
 
         private static Material EnsureHd2dPlazaSunbeamShaftsCycle113Material()
         {
-            var tint = new Color(1.00f, 0.88f, 0.58f, 0.30f);
+            var tint = new Color(1.00f, 0.88f, 0.58f, 0.045f);
             var material = FlatMaterial(PlazaSunbeamShaftsCycle113MaterialId, tint, true, FastVsHd2dMaterialRole.OverlayGlow);
             ConfigureTransparentUnlitMaterial(material, 3032);
             var texture = EnsureHd2dPlazaSunbeamShaftsCycle113Texture();
@@ -50273,7 +50650,7 @@ namespace Anemora.EditorTools
         {
             return EnsureHd2dPlazaSolarResetCycle116Material(
                 PlazaSolarResetSunCycle116MaterialId,
-                new Color(1.00f, 0.80f, 0.42f, 0.56f),
+                new Color(1.00f, 0.72f, 0.42f, 0.10f),
                 FastVsHd2dMaterialRole.OverlayGlow,
                 3044,
                 EnsureHd2dPlazaSolarResetSunCycle116Texture());
@@ -50293,7 +50670,7 @@ namespace Anemora.EditorTools
         {
             return EnsureHd2dPlazaSolarResetCycle116Material(
                 PlazaSolarResetAirCycle116MaterialId,
-                new Color(1.00f, 0.84f, 0.58f, 0.42f),
+                new Color(0.94f, 0.86f, 0.74f, 0.14f),
                 FastVsHd2dMaterialRole.OverlayGlow,
                 3048,
                 EnsureHd2dPlazaSolarResetAirCycle116Texture());
@@ -50414,7 +50791,7 @@ namespace Anemora.EditorTools
         {
             return EnsureHd2dPlazaSolarResetCycle116Material(
                 PlazaSunBreakthroughCycle118MaterialId,
-                new Color(1.00f, 0.82f, 0.48f, 0.82f),
+                new Color(1.00f, 0.78f, 0.50f, 0.10f),
                 FastVsHd2dMaterialRole.OverlayGlow,
                 3062,
                 EnsureHd2dPlazaSunBreakthroughCycle118Texture());
@@ -50448,6 +50825,86 @@ namespace Anemora.EditorTools
                 128,
                 FilterMode.Bilinear,
                 SampleHd2dPlazaSunBreakthroughCycle118Pixel);
+        }
+
+        private static Material EnsureHd2dPlazaReferenceStoneMatteCycle119Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceStoneMatteCycle119MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.OverlayGlow,
+                3066,
+                EnsureHd2dPlazaReferenceStoneMatteCycle119Texture());
+        }
+
+        private static Material EnsureHd2dPlazaReferenceDeepShadowCycle119Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceDeepShadowCycle119MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.ContactShadow,
+                3070,
+                EnsureHd2dPlazaReferenceDeepShadowCycle119Texture());
+        }
+
+        private static Material EnsureHd2dPlazaReferenceSunFleckCycle119Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceSunFleckCycle119MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.OverlayGlow,
+                3074,
+                EnsureHd2dPlazaReferenceSunFleckCycle119Texture());
+        }
+
+        private static Material EnsureHd2dPlazaReferenceAirVeilCycle119Material()
+        {
+            return EnsureHd2dPlazaSolarResetCycle116Material(
+                PlazaReferenceAirVeilCycle119MaterialId,
+                Color.white,
+                FastVsHd2dMaterialRole.OverlayGlow,
+                3076,
+                EnsureHd2dPlazaReferenceAirVeilCycle119Texture());
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceStoneMatteCycle119Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceStoneMatteCycle119MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceStoneMatteCycle119Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceDeepShadowCycle119Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceDeepShadowCycle119MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceDeepShadowCycle119Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceSunFleckCycle119Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceSunFleckCycle119MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceSunFleckCycle119Pixel);
+        }
+
+        private static Texture2D EnsureHd2dPlazaReferenceAirVeilCycle119Texture()
+        {
+            return EnsureGeneratedTexture(
+                PlazaReferenceAirVeilCycle119MaterialId,
+                192,
+                128,
+                FilterMode.Bilinear,
+                SampleHd2dPlazaReferenceAirVeilCycle119Pixel);
         }
 
         private static Color SampleHd2dPlazaSolarResetSunCycle116Pixel(int x, int y)
@@ -50654,6 +51111,103 @@ namespace Anemora.EditorTools
             var alpha = ((slashA * 0.24f) + (slashB * 0.18f) + (hardCore * 0.18f) + (softFlare * 0.10f)) * breakMask * edgeMask;
             alpha = Mathf.Clamp(alpha, 0f, 0.66f);
             return new Color(1.00f, Mathf.Lerp(0.72f, 0.90f, breakMask), Mathf.Lerp(0.36f, 0.54f, breakMask), alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceStoneMatteCycle119Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.035f, u) *
+                SmoothFade01(0.00f, 0.040f, 1f - u) *
+                SmoothFade01(0.00f, 0.040f, v) *
+                SmoothFade01(0.00f, 0.050f, 1f - v);
+
+            var broadReceiver = ContactShadowEllipseFalloff(u, v, 0.50f, 0.50f, 0.62f, 0.46f, 0.92f);
+            var playerLane = ContactShadowEllipseFalloff(u, v, 0.46f, 0.48f, 0.42f, 0.24f, 1.12f);
+            var grainA = SampleSmoothValueNoise2D((u * 10.0f) + 1.7f, (v * 8.2f) + 4.1f, 8911);
+            var grainB = SampleSmoothValueNoise2D((u * 27.0f) + 6.2f, (v * 22.0f) + 2.8f, 8923);
+            var mortarU = 1f - Mathf.Abs((Mathf.Repeat((u * 8.0f) + (v * 0.9f), 1f) * 2f) - 1f);
+            var mortarV = 1f - Mathf.Abs((Mathf.Repeat((v * 5.0f) + (u * 0.3f), 1f) * 2f) - 1f);
+            var mortar = Mathf.Clamp01((SmoothFade01(0.82f, 0.98f, mortarU) * 0.55f) + (SmoothFade01(0.84f, 0.98f, mortarV) * 0.45f));
+            var mottledStone = Mathf.Clamp01((grainA * 0.58f) + (grainB * 0.42f));
+            var playerReadabilityCut = ContactShadowEllipseFalloff(u, v, 0.52f, 0.48f, 0.24f, 0.20f, 1.36f);
+            var alpha = (0.14f + (broadReceiver * 0.10f) + (playerLane * 0.05f) + (mottledStone * 0.06f) - (mortar * 0.05f)) * edgeMask;
+            alpha *= Mathf.Lerp(1f, 0.46f, playerReadabilityCut);
+            alpha = Mathf.Clamp(alpha, 0f, 0.42f);
+
+            var tone = Mathf.Clamp01((mottledStone * 0.62f) + (Hash01(x, y, 8937) * 0.18f) + (mortar * 0.20f));
+            return new Color(
+                Mathf.Lerp(0.48f, 0.68f, tone),
+                Mathf.Lerp(0.41f, 0.60f, tone),
+                Mathf.Lerp(0.30f, 0.46f, tone),
+                alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceDeepShadowCycle119Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.045f, u) *
+                SmoothFade01(0.00f, 0.055f, 1f - u) *
+                SmoothFade01(0.00f, 0.050f, v) *
+                SmoothFade01(0.00f, 0.060f, 1f - v);
+
+            var canopyMass = ContactShadowEllipseFalloff(u, v, 0.34f, 0.58f, 0.50f, 0.32f, 1.22f);
+            var wallBase = Mathf.Clamp01(1f - Mathf.Abs(v - 0.72f) / 0.22f) * Mathf.Clamp01(1f - Mathf.Abs(u - 0.50f) / 0.62f);
+            var propCastA = ContactShadowEllipseFalloff(u, v, 0.42f, 0.38f, 0.28f, 0.16f, 1.74f);
+            var propCastB = ContactShadowEllipseFalloff(u, v, 0.68f, 0.40f, 0.24f, 0.13f, 1.92f);
+            var frontPocket = ContactShadowEllipseFalloff(u, v, 0.28f, 0.28f, 0.42f, 0.16f, 1.54f);
+            var noiseA = SampleSmoothValueNoise2D((u * 8.2f) + 5.1f, (v * 9.2f) + 1.4f, 9011);
+            var noiseB = SampleSmoothValueNoise2D((u * 24.0f) + 3.2f, (v * 20.0f) + 8.1f, 9021);
+            var leafBreakup = Mathf.Clamp01(((noiseA * 0.58f) + (noiseB * 0.42f) - 0.32f) * 1.62f);
+            var alpha = ((canopyMass * leafBreakup * 0.34f) + (wallBase * 0.28f) + (propCastA * 0.22f) + (propCastB * 0.14f) + (frontPocket * 0.22f)) * edgeMask * 1.65f;
+            alpha = Mathf.Clamp(alpha, 0f, 0.84f);
+            return new Color(0.022f, 0.019f, 0.016f, alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceSunFleckCycle119Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.070f, u) *
+                SmoothFade01(0.00f, 0.075f, 1f - u) *
+                SmoothFade01(0.00f, 0.075f, v) *
+                SmoothFade01(0.00f, 0.080f, 1f - v);
+
+            var fleckA = ContactShadowEllipseFalloff(u, v, 0.40f, 0.50f, 0.26f, 0.10f, 1.72f);
+            var fleckB = ContactShadowEllipseFalloff(u, v, 0.60f, 0.56f, 0.22f, 0.08f, 1.86f);
+            var fleckC = ContactShadowEllipseFalloff(u, v, 0.30f, 0.34f, 0.20f, 0.08f, 2.10f);
+            var pinLight = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.90f) + (v * 0.72f)) - 0.74f) / 0.12f);
+            pinLight *= pinLight;
+            var noise = SampleSmoothValueNoise2D((u * 18.0f) + 6.7f, (v * 14.0f) + 2.2f, 9111);
+            var alpha = ((fleckA * 0.22f) + (fleckB * 0.18f) + (fleckC * 0.16f) + (pinLight * 0.12f)) * Mathf.Lerp(0.68f, 1.20f, noise) * edgeMask * 1.92f;
+            alpha = Mathf.Clamp(alpha, 0f, 0.66f);
+            return new Color(1.00f, Mathf.Lerp(0.86f, 0.98f, noise), Mathf.Lerp(0.66f, 0.82f, noise), alpha);
+        }
+
+        private static Color SampleHd2dPlazaReferenceAirVeilCycle119Pixel(int x, int y)
+        {
+            var u = x / 191f;
+            var v = y / 127f;
+            var edgeMask =
+                SmoothFade01(0.00f, 0.055f, u) *
+                SmoothFade01(0.00f, 0.055f, 1f - u) *
+                SmoothFade01(0.00f, 0.050f, v) *
+                SmoothFade01(0.00f, 0.060f, 1f - v);
+
+            var upperHaze = SmoothFade01(0.18f, 1.00f, v) * 0.20f;
+            var centerLift = ContactShadowEllipseFalloff(u, v, 0.50f, 0.56f, 0.56f, 0.34f, 1.06f) * 0.12f;
+            var shaftA = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.72f) + (v * 1.12f)) - 0.78f) / 0.24f);
+            var shaftB = Mathf.Clamp01(1f - Mathf.Abs(((u * 1.06f) - (v * 0.58f)) - 0.12f) / 0.22f);
+            shaftA *= shaftA;
+            shaftB *= shaftB;
+            var noise = SampleSmoothValueNoise2D((u * 6.4f) + 2.4f, (v * 6.8f) + 7.2f, 9211);
+            var alpha = (upperHaze + centerLift + (shaftA * 0.16f) + (shaftB * 0.10f)) * Mathf.Lerp(0.76f, 1.18f, noise) * edgeMask;
+            alpha = Mathf.Clamp(alpha, 0f, 0.52f);
+            return new Color(0.96f, Mathf.Lerp(0.86f, 0.94f, noise), Mathf.Lerp(0.74f, 0.84f, noise), alpha);
         }
 
         private static Texture2D EnsureHd2dOutdoorOcclusionGradientTexture()

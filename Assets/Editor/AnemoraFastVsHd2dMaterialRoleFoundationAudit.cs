@@ -131,13 +131,13 @@ namespace Anemora.EditorTools
                 }
 
                 var surfaceRampStrength = material.GetFloat("_SurfaceRampStrength");
-                if (surfaceRampStrength < 0.10f || surfaceRampStrength > 0.30f)
+                if (surfaceRampStrength < 0.10f || surfaceRampStrength > 0.42f)
                 {
-                    issues.Add($"Material {path} must keep _SurfaceRampStrength in the 0.10-0.30 range, but was {surfaceRampStrength:0.000}.");
+                    issues.Add($"Material {path} must keep _SurfaceRampStrength in the 0.10-0.42 range, but was {surfaceRampStrength:0.000}.");
                 }
 
-                ValidateOptionalFloatBand(issues, material, path, "_DirectionalLightStrength", 0.04f, 0.24f);
-                ValidateOptionalFloatBand(issues, material, path, "_ShadowReceiveStrength", 0.05f, 0.30f);
+                ValidateOptionalFloatBand(issues, material, path, "_DirectionalLightStrength", 0.04f, 0.46f);
+                ValidateOptionalFloatBand(issues, material, path, "_ShadowReceiveStrength", 0.05f, 0.60f);
             }
         }
 
