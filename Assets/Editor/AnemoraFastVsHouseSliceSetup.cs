@@ -15468,6 +15468,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_highres_realtime_shadow_cycle154.md");
         }
 
+        public static void CapturePlazaTrimBroadRealtimeCastersCycle155ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaTrimBroadRealtimeCastersCycle155ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_trim_broad_realtime_casters_cycle155.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38690,6 +38697,44 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaTrimBroadRealtimeCastersCycle155()
+        {
+            ValidateHd2dPlazaHighResRealtimeShadowCycle154();
+
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle127_LibraryEave", 5.25f, 0.45f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle127_LeftCanopy", 1.85f, 0.75f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle127_FrontBrokenBeam", 3.15f, 0.27f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle128_EaveCurtain", 5.75f, 0.37f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle128_EntryLintel", 2.75f, 0.27f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterA", 3.20f, 0.23f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterB", 2.20f, 0.23f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle134_UpperEaveWide", 3.30f, 0.27f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle134_ForegroundCrossA", 1.95f, 0.25f);
+            ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", 2.60f, 0.21f);
+        }
+
+        private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+            var filter = sceneObject != null ? sceneObject.GetComponent<MeshFilter>() : null;
+            var mesh = filter != null ? filter.sharedMesh : null;
+            if (sceneObject == null || renderer == null || mesh == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 155 missing trimmed realtime caster {objectName}.");
+            }
+
+            var size = mesh.bounds.size;
+            if (!renderer.enabled ||
+                renderer.shadowCastingMode != ShadowCastingMode.ShadowsOnly ||
+                renderer.receiveShadows ||
+                size.x > maxX ||
+                size.z > maxZ)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 155 caster {objectName} should stay realtime but no longer be a broad slab, found enabled={renderer.enabled}, casting={renderer.shadowCastingMode}, receive={renderer.receiveShadows}, bounds={size}.");
+            }
+        }
+
         private static bool IsCycle150VisibleCentralPlazaCaster(Renderer renderer)
         {
             var name = renderer.gameObject.name;
@@ -45977,6 +46022,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle154_plaza_highres_realtime_shadow_parent_review_20260525_01";
         }
 
+        private static string GetPlazaTrimBroadRealtimeCastersCycle155ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle155_plaza_trim_broad_realtime_casters_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49566,6 +49616,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaHighResRealtimeShadowCycle154();
+        }
+
+        public static void ValidatePlazaTrimBroadRealtimeCastersCycle155Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaTrimBroadRealtimeCastersCycle155();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
@@ -55154,16 +55211,16 @@ namespace Anemora.EditorTools
                 new Vector2(-0.46f, 0.08f)
             };
 
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_LibraryEave", new Vector2(7.60f, 0.80f), raggedRibbon);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_LeftCanopy", new Vector2(2.70f, 1.24f), tornCanopy);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_FrontBrokenBeam", new Vector2(4.60f, 0.40f), narrowSliver);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_EaveCurtain", new Vector2(8.60f, 0.62f), raggedRibbon);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_EntryLintel", new Vector2(3.90f, 0.42f), narrowSliver);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterA", new Vector2(4.85f, 0.34f), narrowSliver);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterB", new Vector2(3.20f, 0.32f), narrowSliver);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_UpperEaveWide", new Vector2(4.85f, 0.38f), raggedRibbon);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_ForegroundCrossA", new Vector2(2.70f, 0.34f), narrowSliver);
-            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", new Vector2(3.18f, 0.24f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_LibraryEave", new Vector2(5.20f, 0.42f), raggedRibbon);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_LeftCanopy", new Vector2(1.80f, 0.72f), tornCanopy);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_FrontBrokenBeam", new Vector2(3.10f, 0.24f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_EaveCurtain", new Vector2(5.70f, 0.34f), raggedRibbon);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_EntryLintel", new Vector2(2.70f, 0.24f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterA", new Vector2(3.15f, 0.20f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterB", new Vector2(2.15f, 0.20f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_UpperEaveWide", new Vector2(3.25f, 0.24f), raggedRibbon);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_ForegroundCrossA", new Vector2(1.90f, 0.22f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", new Vector2(2.55f, 0.18f), narrowSliver);
             ApplyCentralPlazaRealtimeRendererPolicyCycle127(root);
         }
 
