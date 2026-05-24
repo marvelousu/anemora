@@ -392,10 +392,18 @@ namespace Anemora.FastVS
                 surface != null &&
                 surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
                 surface.IsCurrentWorldForReview;
-            if (!isCentralSurface && !IsCurrentCentralPlazaRealtimeFacadeReceiverName(objectName))
+            var isNamedFacadeReceiver = IsCurrentCentralPlazaRealtimeFacadeReceiverName(objectName);
+            if (!isCentralSurface && !isNamedFacadeReceiver)
             {
                 return;
             }
+
+            var isFacadeReceiver =
+                isNamedFacadeReceiver ||
+                surface != null &&
+                (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Roof);
 
             var material = renderer.sharedMaterial;
             if (material == null)
@@ -422,7 +430,7 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(ShadowTextureStrengthId))
             {
-                block.SetFloat(ShadowTextureStrengthId, 0.36f);
+                block.SetFloat(ShadowTextureStrengthId, isFacadeReceiver ? 0.48f : 0.36f);
             }
 
             if (material.HasProperty(TopLightId))

@@ -15405,6 +15405,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_reference_camera_grade_cycle145.md");
         }
 
+        public static void CapturePlazaFacadeShadowLiftCycle146ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaFacadeShadowLiftCycle146ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_facade_shadow_lift_cycle146.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38198,6 +38205,53 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaFacadeShadowLiftCycle146()
+        {
+            ValidateHd2dPlazaReferenceCameraGradeCycle145();
+
+            var liftedFacadeCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled || !renderer.receiveShadows)
+                {
+                    continue;
+                }
+
+                var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
+                var objectName = renderer.gameObject.name;
+                var isCurrentCentralFacade =
+                    IsCycle139CurrentCentralPlazaFacadeReceiverName(objectName) ||
+                    surface != null &&
+                    surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                    surface.IsCurrentWorldForReview &&
+                    (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
+                     surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door ||
+                     surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Roof);
+                if (!isCurrentCentralFacade)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null || !material.HasProperty("_ShadowTextureStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_ShadowTextureStrength") >= 0.46f)
+                {
+                    liftedFacadeCount++;
+                }
+            }
+
+            if (liftedFacadeCount < 12)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 146 expected lifted facade realtime shadow receivers, found {liftedFacadeCount}.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45362,6 +45416,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle145_plaza_reference_camera_grade_parent_review_20260525_01";
         }
 
+        private static string GetPlazaFacadeShadowLiftCycle146ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle146_plaza_facade_shadow_lift_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48888,6 +48947,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaReferenceCameraGradeCycle145();
+        }
+
+        public static void ValidatePlazaFacadeShadowLiftCycle146Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaFacadeShadowLiftCycle146();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
