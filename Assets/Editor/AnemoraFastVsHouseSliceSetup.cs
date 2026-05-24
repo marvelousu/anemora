@@ -5389,6 +5389,7 @@ namespace Anemora.EditorTools
             ApplyCentralPlazaReferenceShadowQualityCycle130(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeShadowRecoveryCycle134(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeDappleCasterCycle138(plazaRoot, prefix, past, materials);
+            ApplyCentralPlazaRealtimeMeshCasterCycle140(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15359,6 +15360,13 @@ namespace Anemora.EditorTools
             CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
                 GetPlazaRealtimeSurfaceResponseCycle139ScreenshotsDirectory(),
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md");
+        }
+
+        public static void CapturePlazaRealtimeMeshCasterCycle140ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeMeshCasterCycle140ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_mesh_caster_cycle140.md");
         }
 
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
@@ -37941,6 +37949,39 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeMeshCasterCycle140()
+        {
+            ValidateHd2dPlazaRealtimeSurfaceResponseCycle139();
+
+            var cycle140CasterCount = 0;
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.gameObject.name.Contains("RealtimeShadowCasterCycle140"))
+                {
+                    continue;
+                }
+
+                cycle140CasterCount++;
+                var filter = renderer.GetComponent<MeshFilter>();
+                if (!renderer.enabled ||
+                    renderer.shadowCastingMode != ShadowCastingMode.ShadowsOnly ||
+                    renderer.receiveShadows ||
+                    renderer.GetComponent<Collider>() != null ||
+                    filter == null ||
+                    filter.sharedMesh == null ||
+                    filter.sharedMesh.vertexCount < 12 ||
+                    filter.sharedMesh.triangles.Length < 24)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 140 caster {renderer.gameObject.name} must be enabled ShadowsOnly, mesh-backed, non-receiving, and collider-free.");
+                }
+            }
+
+            if (cycle140CasterCount != 10)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 140 expected 10 realtime mesh casters, found {cycle140CasterCount}.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45075,6 +45116,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle139_plaza_realtime_surface_response_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeMeshCasterCycle140ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle140_plaza_realtime_mesh_caster_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48559,6 +48605,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeSurfaceResponseCycle139();
+        }
+
+        public static void ValidatePlazaRealtimeMeshCasterCycle140Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeMeshCasterCycle140();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
@@ -54046,6 +54099,62 @@ namespace Anemora.EditorTools
             CreateCentralPlazaRealtimeShadowCasterCycle127(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", c + new Vector3(0.04f, 2.06f, 5.84f), new Vector3(3.18f, 0.060f, 0.105f), Quaternion.Euler(0f, -6f, 0f), materials.CurrentExteriorWall, $"{prefix}.central_plaza.cycle138.realtime_door_lintel_fine");
         }
 
+        private static void ApplyCentralPlazaRealtimeMeshCasterCycle140(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var canopyShard = new[]
+            {
+                new Vector2(-0.56f, -0.07f),
+                new Vector2(-0.28f, -0.18f),
+                new Vector2(0.12f, -0.11f),
+                new Vector2(0.54f, -0.04f),
+                new Vector2(0.42f, 0.14f),
+                new Vector2(0.05f, 0.20f),
+                new Vector2(-0.50f, 0.09f)
+            };
+            var brokenSlat = new[]
+            {
+                new Vector2(-0.55f, -0.09f),
+                new Vector2(-0.32f, -0.14f),
+                new Vector2(-0.06f, -0.08f),
+                new Vector2(0.28f, -0.13f),
+                new Vector2(0.56f, -0.05f),
+                new Vector2(0.49f, 0.08f),
+                new Vector2(0.08f, 0.12f),
+                new Vector2(-0.42f, 0.06f)
+            };
+            var forkShard = new[]
+            {
+                new Vector2(-0.52f, -0.04f),
+                new Vector2(-0.20f, -0.15f),
+                new Vector2(0.02f, -0.05f),
+                new Vector2(0.34f, -0.18f),
+                new Vector2(0.54f, -0.08f),
+                new Vector2(0.16f, 0.05f),
+                new Vector2(0.48f, 0.18f),
+                new Vector2(0.22f, 0.22f),
+                new Vector2(-0.06f, 0.09f),
+                new Vector2(-0.48f, 0.08f)
+            };
+
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_CanopyShardA", c + new Vector3(-2.55f, 2.88f, 5.42f), new Vector2(1.35f, 0.72f), Quaternion.Euler(0f, -32f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.canopy_shard_a", canopyShard);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_CanopyShardB", c + new Vector3(-1.25f, 2.78f, 4.86f), new Vector2(1.05f, 0.58f), Quaternion.Euler(0f, 18f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.canopy_shard_b", canopyShard);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_CanopyShardC", c + new Vector3(0.08f, 2.92f, 5.26f), new Vector2(1.28f, 0.64f), Quaternion.Euler(0f, -8f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.canopy_shard_c", canopyShard);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_CanopyShardD", c + new Vector3(1.55f, 2.72f, 4.64f), new Vector2(1.18f, 0.62f), Quaternion.Euler(0f, 34f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.canopy_shard_d", canopyShard);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_EaveBrokenPlateA", c + new Vector3(-0.72f, 2.32f, 5.92f), new Vector2(2.25f, 0.42f), Quaternion.Euler(0f, -10f, 0f), materials.CurrentFence, $"{prefix}.central_plaza.cycle140.realtime_mesh.eave_broken_plate_a", brokenSlat);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_EaveBrokenPlateB", c + new Vector3(1.25f, 2.18f, 5.70f), new Vector2(1.90f, 0.38f), Quaternion.Euler(0f, 12f, 0f), materials.CurrentFurniture, $"{prefix}.central_plaza.cycle140.realtime_mesh.eave_broken_plate_b", brokenSlat);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_ForegroundRaggedCasterA", c + new Vector3(-2.05f, 1.62f, 3.02f), new Vector2(2.30f, 0.38f), Quaternion.Euler(0f, -29f, 0f), materials.CurrentFence, $"{prefix}.central_plaza.cycle140.realtime_mesh.foreground_ragged_caster_a", brokenSlat);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_ForegroundRaggedCasterB", c + new Vector3(1.85f, 1.54f, 3.12f), new Vector2(2.10f, 0.34f), Quaternion.Euler(0f, 24f, 0f), materials.CurrentFence, $"{prefix}.central_plaza.cycle140.realtime_mesh.foreground_ragged_caster_b", brokenSlat);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_BranchForkLeft", c + new Vector3(-3.06f, 2.35f, 4.08f), new Vector2(1.30f, 0.50f), Quaternion.Euler(0f, 54f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.branch_fork_left", forkShard);
+            CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_BranchForkRight", c + new Vector3(2.84f, 2.28f, 4.24f), new Vector2(1.24f, 0.52f), Quaternion.Euler(0f, -47f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.branch_fork_right", forkShard);
+        }
+
         private static GameObject CreateCentralPlazaRealtimeShadowCasterCycle127(
             Transform root,
             string objectName,
@@ -54064,6 +54173,85 @@ namespace Anemora.EditorTools
                 material,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 landmarkId);
+            var renderer = caster.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                renderer.receiveShadows = false;
+            }
+
+            var collider = caster.GetComponent<Collider>();
+            if (collider != null)
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            return caster;
+        }
+
+        private static GameObject CreateCentralPlazaRealtimeShadowMeshCasterCycle140(
+            Transform root,
+            string objectName,
+            Vector3 localPosition,
+            Vector2 localSize,
+            Quaternion localRotation,
+            Material material,
+            string landmarkId,
+            Vector2[] outline)
+        {
+            var caster = CreateNonArrivalLandmarkCube(
+                objectName,
+                root,
+                localPosition,
+                Vector3.one,
+                localRotation,
+                material,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                landmarkId);
+
+            var filter = caster.GetComponent<MeshFilter>();
+            if (filter != null && outline != null && outline.Length >= 3)
+            {
+                var vertexCount = outline.Length;
+                var vertices = new Vector3[vertexCount * 2];
+                var normals = new Vector3[vertexCount * 2];
+                var uvs = new Vector2[vertexCount * 2];
+                for (var i = 0; i < vertexCount; i++)
+                {
+                    var x = outline[i].x * localSize.x;
+                    var z = outline[i].y * localSize.y;
+                    vertices[i] = new Vector3(x, 0f, z);
+                    vertices[i + vertexCount] = vertices[i];
+                    normals[i] = Vector3.up;
+                    normals[i + vertexCount] = Vector3.down;
+                    uvs[i] = new Vector2(outline[i].x + 0.5f, outline[i].y + 0.5f);
+                    uvs[i + vertexCount] = uvs[i];
+                }
+
+                var triangles = new int[(vertexCount - 2) * 6];
+                var cursor = 0;
+                for (var i = 1; i < vertexCount - 1; i++)
+                {
+                    triangles[cursor++] = 0;
+                    triangles[cursor++] = i;
+                    triangles[cursor++] = i + 1;
+                    triangles[cursor++] = vertexCount;
+                    triangles[cursor++] = vertexCount + i + 1;
+                    triangles[cursor++] = vertexCount + i;
+                }
+
+                var mesh = new Mesh
+                {
+                    name = objectName + "_RealtimeShadowMesh",
+                    vertices = vertices,
+                    normals = normals,
+                    uv = uvs,
+                    triangles = triangles,
+                    bounds = new Bounds(Vector3.zero, new Vector3(localSize.x, 0.08f, localSize.y))
+                };
+                filter.sharedMesh = mesh;
+            }
+
             var renderer = caster.GetComponent<Renderer>();
             if (renderer != null)
             {
