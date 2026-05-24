@@ -39,6 +39,7 @@ namespace Anemora.FastVS
         [SerializeField] private Color centralPlazaSkyColor = new Color(0.220f, 0.286f, 0.340f, 1f);
 
         private float nextShadowPolicyRefreshTime;
+        private Material centralPlazaSkyboxMaterial;
         private GameObject cycle128GradeRoot;
         private MeshRenderer cycle128GradeRenderer;
         private MeshRenderer cycle128BeamRenderer;
@@ -131,8 +132,15 @@ namespace Anemora.FastVS
 
             if (sceneCamera != null && (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza))
             {
-                sceneCamera.clearFlags = CameraClearFlags.SolidColor;
-                sceneCamera.backgroundColor = area == FastVsHouseArea.CentralPlaza ? centralPlazaSkyColor : exteriorSkyColor;
+                if (area == FastVsHouseArea.CentralPlaza && TryApplyCentralPlazaSkybox())
+                {
+                    sceneCamera.clearFlags = CameraClearFlags.Skybox;
+                }
+                else
+                {
+                    sceneCamera.clearFlags = CameraClearFlags.SolidColor;
+                    sceneCamera.backgroundColor = area == FastVsHouseArea.CentralPlaza ? centralPlazaSkyColor : exteriorSkyColor;
+                }
             }
 
             if (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza)
@@ -152,6 +160,71 @@ namespace Anemora.FastVS
                 RenderSettings.reflectionIntensity = 1f;
                 SetCycle128CameraGradeActive(false);
             }
+        }
+
+        private bool TryApplyCentralPlazaSkybox()
+        {
+            var skybox = EnsureCentralPlazaSkyboxMaterial();
+            if (skybox == null)
+            {
+                return false;
+            }
+
+            RenderSettings.skybox = skybox;
+            sceneCamera.backgroundColor = centralPlazaSkyColor;
+            return true;
+        }
+
+        private Material EnsureCentralPlazaSkyboxMaterial()
+        {
+            if (centralPlazaSkyboxMaterial != null)
+            {
+                return centralPlazaSkyboxMaterial;
+            }
+
+            var shader = Shader.Find("Skybox/Procedural");
+            if (shader == null)
+            {
+                return null;
+            }
+
+            centralPlazaSkyboxMaterial = new Material(shader)
+            {
+                name = "FastVS_CentralPlazaRuntimeSkyboxCycle156",
+                hideFlags = HideFlags.DontSave
+            };
+
+            if (centralPlazaSkyboxMaterial.HasProperty("_SkyTint"))
+            {
+                centralPlazaSkyboxMaterial.SetColor("_SkyTint", new Color(0.42f, 0.50f, 0.56f, 1f));
+            }
+
+            if (centralPlazaSkyboxMaterial.HasProperty("_GroundColor"))
+            {
+                centralPlazaSkyboxMaterial.SetColor("_GroundColor", new Color(0.18f, 0.20f, 0.20f, 1f));
+            }
+
+            if (centralPlazaSkyboxMaterial.HasProperty("_AtmosphereThickness"))
+            {
+                centralPlazaSkyboxMaterial.SetFloat("_AtmosphereThickness", 0.62f);
+            }
+
+            if (centralPlazaSkyboxMaterial.HasProperty("_Exposure"))
+            {
+                centralPlazaSkyboxMaterial.SetFloat("_Exposure", 0.56f);
+            }
+
+            if (centralPlazaSkyboxMaterial.HasProperty("_SunSize"))
+            {
+                centralPlazaSkyboxMaterial.SetFloat("_SunSize", 0.018f);
+            }
+
+            if (centralPlazaSkyboxMaterial.HasProperty("_SunSizeConvergence"))
+            {
+                centralPlazaSkyboxMaterial.SetFloat("_SunSizeConvergence", 4.0f);
+            }
+
+            return centralPlazaSkyboxMaterial;
         }
 
         private Texture2D EnsureCentralPlazaSunCookieTexture()

@@ -15475,6 +15475,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_trim_broad_realtime_casters_cycle155.md");
         }
 
+        public static void CapturePlazaSkyRevealCameraCycle156ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaSkyRevealCameraCycle156ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_sky_reveal_camera_cycle156.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -28765,6 +28772,30 @@ namespace Anemora.EditorTools
             ValidateColorApproximately(camera.backgroundColor, indoorDark, "interior clear color");
         }
 
+        private static void ValidateCentralPlazaRuntimeSkyForReview(Camera camera, string label)
+        {
+            if (camera == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} central plaza runtime sky needs the main camera.");
+            }
+
+            if (camera.clearFlags != CameraClearFlags.Skybox)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} central plaza sky must be a runtime skybox instead of a painted map/solid clear plate, found clearFlags={camera.clearFlags}.");
+            }
+
+            if (RenderSettings.skybox == null ||
+                !RenderSettings.skybox.name.Contains("FastVS_CentralPlazaRuntimeSkyboxCycle156"))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} central plaza skybox material is missing or stale, found {RenderSettings.skybox}.");
+            }
+
+            if (RenderSettings.fog)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} central plaza must not use RenderSettings fog for the HD2D depth read.");
+            }
+        }
+
         private static void ValidateColorApproximately(Color actual, Color expected, string label)
         {
             const float epsilon = 0.002f;
@@ -37331,17 +37362,14 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cycle 127 central plaza must not rely on RenderSettings fog.");
             }
 
-            if (camera.clearFlags != CameraClearFlags.SolidColor)
-            {
-                throw new InvalidOperationException("House slice validation failed: cycle 127 outdoor sky must come from a stable camera clear color, not stacked sky planes.");
-            }
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "cycle 127");
 
             var centralFollowProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
-            ValidateVectorNear("central plaza VS follow camera offset", centralFollowProfile.PositionOffset, new Vector3(0f, 2.75f, -4.55f));
-            ValidateVectorNear("central plaza VS follow look offset", centralFollowProfile.LookOffset, new Vector3(0f, 0.72f, 0.45f));
-            if (Mathf.Abs(centralFollowProfile.FieldOfView - 38f) > 0.001f)
+            ValidateVectorNear("central plaza VS follow camera offset", centralFollowProfile.PositionOffset, new Vector3(0f, 3.35f, -5.85f));
+            ValidateVectorNear("central plaza VS follow look offset", centralFollowProfile.LookOffset, new Vector3(0f, 0.92f, 1.10f));
+            if (Mathf.Abs(centralFollowProfile.FieldOfView - 39f) > 0.001f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 127 central plaza VS camera FOV expected 38, but got {centralFollowProfile.FieldOfView}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 127 central plaza VS camera FOV expected 39, but got {centralFollowProfile.FieldOfView}.");
             }
 
             var realtimeCasterNames = new[]
@@ -37441,7 +37469,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 128 must keep central plaza ambient low enough for real shadows, found {ambient}.");
             }
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 128 central plaza camera background");
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "cycle 128");
 
             var gradePlate = FindSceneObjectIncludingInactive("FastVS_Cycle128GradePlate");
             var rayPlate = FindSceneObjectIncludingInactive("FastVS_Cycle128RayPlate");
@@ -37809,18 +37837,18 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 134 ambient must leave realtime shadows readable without camera paint, found {ambient}.");
             }
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 137 central plaza VS clear color");
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "cycle 134");
 
             var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
             if (Mathf.Abs(profile.PositionOffset.x - 0f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.y - 2.75f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.z + 4.55f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.y - 3.35f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.z + 5.85f) > 0.01f ||
                 Mathf.Abs(profile.LookOffset.x - 0f) > 0.01f ||
-                Mathf.Abs(profile.LookOffset.y - 0.72f) > 0.01f ||
-                Mathf.Abs(profile.LookOffset.z - 0.45f) > 0.01f ||
-                Mathf.Abs(profile.FieldOfView - 38f) > 0.01f)
+                Mathf.Abs(profile.LookOffset.y - 0.92f) > 0.01f ||
+                Mathf.Abs(profile.LookOffset.z - 1.10f) > 0.01f ||
+                Mathf.Abs(profile.FieldOfView - 39f) > 0.01f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 137 central-plaza follow camera must use the VS side-view framing, found position={profile.PositionOffset}, look={profile.LookOffset}, fov={profile.FieldOfView:0.0}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 134 central-plaza follow camera must use the sky-revealing VS side-view framing, found position={profile.PositionOffset}, look={profile.LookOffset}, fov={profile.FieldOfView:0.0}.");
             }
 
             var realtimeCasterCount = 0;
@@ -37909,14 +37937,14 @@ namespace Anemora.EditorTools
 
             var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
             if (Mathf.Abs(profile.PositionOffset.x - 0f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.y - 2.75f) > 0.01f ||
-                Mathf.Abs(profile.PositionOffset.z + 4.55f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.y - 3.35f) > 0.01f ||
+                Mathf.Abs(profile.PositionOffset.z + 5.85f) > 0.01f ||
                 Mathf.Abs(profile.LookOffset.x - 0f) > 0.01f ||
-                Mathf.Abs(profile.LookOffset.y - 0.72f) > 0.01f ||
-                Mathf.Abs(profile.LookOffset.z - 0.45f) > 0.01f ||
-                Mathf.Abs(profile.FieldOfView - 38f) > 0.01f)
+                Mathf.Abs(profile.LookOffset.y - 0.92f) > 0.01f ||
+                Mathf.Abs(profile.LookOffset.z - 1.10f) > 0.01f ||
+                Mathf.Abs(profile.FieldOfView - 39f) > 0.01f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 135 central-plaza camera must use the VS side-view follow framing, found position={profile.PositionOffset}, look={profile.LookOffset}, fov={profile.FieldOfView:0.0}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 135 central-plaza camera must use the sky-revealing VS side-view follow framing, found position={profile.PositionOffset}, look={profile.LookOffset}, fov={profile.FieldOfView:0.0}.");
             }
         }
 
@@ -37947,12 +37975,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cycle 137 central plaza must not rely on painted fog or RenderSettings fog.");
             }
 
-            if (camera.clearFlags != CameraClearFlags.SolidColor)
-            {
-                throw new InvalidOperationException("House slice validation failed: cycle 137 central plaza must use a stable VS clear color behind the realtime-lit map.");
-            }
-
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 137 central plaza clear color");
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "cycle 137 realtime tracking");
         }
 
         private static void ValidateHd2dPlazaRealtimeDappleCasterCycle138()
@@ -38352,11 +38375,11 @@ namespace Anemora.EditorTools
             }
 
             var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
-            ValidateVectorNear("cycle 147 central plaza VS follow camera offset", profile.PositionOffset, new Vector3(0f, 2.75f, -4.55f));
-            ValidateVectorNear("cycle 147 central plaza VS follow look offset", profile.LookOffset, new Vector3(0f, 0.72f, 0.45f));
-            if (Mathf.Abs(profile.FieldOfView - 38f) > 0.01f)
+            ValidateVectorNear("cycle 147 central plaza VS follow camera offset", profile.PositionOffset, new Vector3(0f, 3.35f, -5.85f));
+            ValidateVectorNear("cycle 147 central plaza VS follow look offset", profile.LookOffset, new Vector3(0f, 0.92f, 1.10f));
+            if (Mathf.Abs(profile.FieldOfView - 39f) > 0.01f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 147 central plaza follow FOV must match VS 38, found {profile.FieldOfView:0.0}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 147 central plaza follow FOV must match sky-revealing VS 39, found {profile.FieldOfView:0.0}.");
             }
 
             var shaderPath = Path.Combine(Application.dataPath, "Art", "Shaders", "FastVS", "FastVS_SurfaceRampLit.shader");
@@ -38568,13 +38591,7 @@ namespace Anemora.EditorTools
             guide.ApplyActiveTimeIsolationForReview();
             realtimeRig.ApplyNowForReview();
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 151 central plaza VS sky clear color");
-            if (camera.backgroundColor.b <= camera.backgroundColor.r ||
-                camera.backgroundColor.b < 0.330f ||
-                camera.backgroundColor.r > 0.230f)
-            {
-                throw new InvalidOperationException($"House slice validation failed: cycle 151 central plaza sky must be blue-gray rather than the previous brown wash, found {camera.backgroundColor}.");
-            }
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "cycle 151");
 
             var anchorWorld = guide.ResolveActiveCameraAnchorForReview();
             var anchorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(anchorWorld);
@@ -38711,6 +38728,82 @@ namespace Anemora.EditorTools
             ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle134_UpperEaveWide", 3.30f, 0.27f);
             ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle134_ForegroundCrossA", 1.95f, 0.25f);
             ValidateCycle155CasterMeshBounds("Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", 2.60f, 0.21f);
+        }
+
+        private static void ValidateHd2dPlazaSkyRevealCameraCycle156()
+        {
+            ValidateHd2dPlazaTrimBroadRealtimeCastersCycle155();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (controller == null || visibility == null || director == null || guide == null || realtimeRig == null || camera == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 156 needs controller, visibility, director, guide, realtime rig, camera, and directional light.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            controller.ForcePlayerCurrentLocalForReview(PlazaFromLibraryTarget);
+            guide.ApplyActiveTimeIsolationForReview();
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+            realtimeRig.ApplyNowForReview();
+
+            var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
+            ValidateVectorNear("cycle 156 central plaza sky-reveal camera offset", profile.PositionOffset, new Vector3(0f, 3.35f, -5.85f));
+            ValidateVectorNear("cycle 156 central plaza sky-reveal look offset", profile.LookOffset, new Vector3(0f, 0.92f, 1.10f));
+            if (Mathf.Abs(profile.FieldOfView - 39f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 156 central plaza FOV must stay 39 for the VS sky-reveal framing, found {profile.FieldOfView:0.0}.");
+            }
+
+            var anchorWorld = guide.ResolveActiveCameraAnchorForReview();
+            var anchorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(anchorWorld);
+            var expectedAnchorZ = CentralPlazaVsCenter.z - 1.10f;
+            if (Mathf.Abs(anchorLocal.z - expectedAnchorZ) > 0.05f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 156 central plaza follow anchor should keep the VS depth clamp z={expectedAnchorZ:0.00}, found {anchorLocal.z:0.00}.");
+            }
+
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "cycle 156");
+            if (mainLight.type != LightType.Directional ||
+                mainLight.shadows != LightShadows.Soft ||
+                mainLight.shadowResolution != LightShadowResolution.VeryHigh ||
+                mainLight.cookie == null ||
+                mainLight.cookie.name != "FastVS_CentralPlazaRealtimeSunCookieCycle147")
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 156 must preserve realtime Directional Light shadows and cookie, found type={mainLight.type}, shadows={mainLight.shadows}, resolution={mainLight.shadowResolution}, cookie={mainLight.cookie}.");
+            }
+
+            var enabledPaintedAirCount = 0;
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                var objectName = renderer.gameObject.name;
+                if (objectName.Contains("Current_CentralPlaza") &&
+                    (objectName.Contains("Air") ||
+                     objectName.Contains("Haze") ||
+                     objectName.Contains("Veil") ||
+                     objectName.Contains("SkyWash") ||
+                     objectName.Contains("Sunbreak") ||
+                     objectName.Contains("Sunlit") ||
+                     objectName.Contains("Painted")))
+                {
+                    enabledPaintedAirCount++;
+                }
+            }
+
+            if (enabledPaintedAirCount != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 156 must not rely on enabled painted air/sun plates in central plaza, found {enabledPaintedAirCount}.");
+            }
         }
 
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
@@ -46027,6 +46120,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle155_plaza_trim_broad_realtime_casters_parent_review_20260525_01";
         }
 
+        private static string GetPlazaSkyRevealCameraCycle156ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle156_plaza_sky_reveal_camera_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49623,6 +49721,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaTrimBroadRealtimeCastersCycle155();
+        }
+
+        public static void ValidatePlazaSkyRevealCameraCycle156Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaSkyRevealCameraCycle156();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
