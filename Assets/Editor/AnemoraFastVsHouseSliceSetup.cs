@@ -15426,6 +15426,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_soft_shadow_cycle148.md");
         }
 
+        public static void CapturePlazaRealtimeSpriteTrackingCycle149ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeSpriteTrackingCycle149ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_sprite_tracking_cycle149.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38388,6 +38395,66 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeSpriteTrackingCycle149()
+        {
+            ValidateHd2dPlazaRealtimeSoftShadowCycle148();
+
+            var shaderPath = Path.Combine(Application.dataPath, "Art", "Shaders", "FastVS", "FastVS_SpriteCardRampUnlit.shader");
+            var shaderText = File.ReadAllText(shaderPath);
+            if (!shaderText.Contains("_LIGHT_COOKIES") ||
+                !shaderText.Contains("GetMainLight(shadowCoord, input.positionWS") ||
+                !shaderText.Contains("lightCookieResponse"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 149 SpriteCard shader must sample realtime light cookies and shadows.");
+            }
+
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            if (visibility == null || realtimeRig == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 149 needs visibility and realtime rig.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            realtimeRig.ApplyNowForReview();
+
+            var trackedSpriteCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null || !renderer.gameObject.scene.IsValid() || !renderer.enabled || !renderer.receiveShadows)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                var role = material != null ? material.GetTag(MaterialRoleTagName, false, string.Empty) : string.Empty;
+                if (role != FastVsHd2dMaterialRole.SpriteCard.ToString() &&
+                    role != FastVsHd2dMaterialRole.PaperCard.ToString())
+                {
+                    continue;
+                }
+
+                if (!material.HasProperty("_WorldLightStrength") ||
+                    !material.HasProperty("_WorldShadowReceiveStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_WorldLightStrength") >= 0.17f &&
+                    block.GetFloat("_WorldShadowReceiveStrength") >= 0.16f)
+                {
+                    trackedSpriteCount++;
+                }
+            }
+
+            if (trackedSpriteCount < 4)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 149 expected central-plaza sprite/card renderers to receive realtime light tracking, found {trackedSpriteCount}.");
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45567,6 +45634,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle148_plaza_realtime_soft_shadow_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeSpriteTrackingCycle149ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle149_plaza_realtime_sprite_tracking_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49114,6 +49186,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeSoftShadowCycle148();
+        }
+
+        public static void ValidatePlazaRealtimeSpriteTrackingCycle149Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeSpriteTrackingCycle149();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

@@ -24,6 +24,9 @@ namespace Anemora.FastVS
         private static readonly int TopLightId = Shader.PropertyToID("_TopLight");
         private static readonly int SideShadeId = Shader.PropertyToID("_SideShade");
         private static readonly int FloorShadeId = Shader.PropertyToID("_FloorShade");
+        private static readonly int RampStrengthId = Shader.PropertyToID("_RampStrength");
+        private static readonly int WorldLightStrengthId = Shader.PropertyToID("_WorldLightStrength");
+        private static readonly int WorldShadowReceiveStrengthId = Shader.PropertyToID("_WorldShadowReceiveStrength");
         private static readonly Color CentralPlazaTopLight = new Color(1.48f, 1.25f, 0.88f, 1f);
         private static readonly Color CentralPlazaSideShade = new Color(0.58f, 0.52f, 0.44f, 1f);
         private static readonly Color CentralPlazaFloorShade = new Color(0.52f, 0.47f, 0.40f, 1f);
@@ -267,6 +270,7 @@ namespace Anemora.FastVS
                 {
                     renderer.shadowCastingMode = ShadowCastingMode.On;
                     renderer.receiveShadows = true;
+                    ApplySpriteRealtimeGrade(renderer, isCentralPlaza);
                 }
                 else if (role == PortalWindowRole)
                 {
@@ -522,6 +526,35 @@ namespace Anemora.FastVS
             if (material.HasProperty(FloorShadeId))
             {
                 block.SetColor(FloorShadeId, CentralPlazaFloorShade);
+            }
+
+            renderer.SetPropertyBlock(block);
+        }
+
+        private static void ApplySpriteRealtimeGrade(Renderer renderer, bool isCentralPlaza)
+        {
+            var material = renderer.sharedMaterial;
+            if (material == null)
+            {
+                return;
+            }
+
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+
+            if (material.HasProperty(RampStrengthId))
+            {
+                block.SetFloat(RampStrengthId, isCentralPlaza ? 0.24f : 0.18f);
+            }
+
+            if (material.HasProperty(WorldLightStrengthId))
+            {
+                block.SetFloat(WorldLightStrengthId, isCentralPlaza ? 0.18f : 0.10f);
+            }
+
+            if (material.HasProperty(WorldShadowReceiveStrengthId))
+            {
+                block.SetFloat(WorldShadowReceiveStrengthId, isCentralPlaza ? 0.17f : 0.11f);
             }
 
             renderer.SetPropertyBlock(block);
