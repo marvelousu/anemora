@@ -20,9 +20,16 @@ namespace Anemora.FastVS
         [SerializeField] private Light mainLight;
         [SerializeField] private bool enforceRendererShadowPolicy = true;
         [SerializeField] private Color exteriorSkyColor = new Color(0.48f, 0.50f, 0.46f, 1f);
-        [SerializeField] private Color centralPlazaSkyColor = new Color(0.62f, 0.58f, 0.47f, 1f);
+        [SerializeField] private Color centralPlazaSkyColor = new Color(0.48f, 0.43f, 0.33f, 1f);
 
         private float nextShadowPolicyRefreshTime;
+        private GameObject cycle128GradeRoot;
+        private MeshRenderer cycle128GradeRenderer;
+        private MeshRenderer cycle128BeamRenderer;
+        private Material cycle128GradeMaterial;
+        private Material cycle128BeamMaterial;
+        private Texture2D cycle128GradeTexture;
+        private Texture2D cycle128BeamTexture;
 
         private void Awake()
         {
@@ -71,6 +78,9 @@ namespace Anemora.FastVS
 
         private void ApplyLightAndSky()
         {
+            var area = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
+            var isCentralPlaza = area == FastVsHouseArea.CentralPlaza;
+
             if (mainLight != null)
             {
                 mainLight.enabled = true;
@@ -80,9 +90,15 @@ namespace Anemora.FastVS
                 mainLight.shadowBias = Mathf.Min(mainLight.shadowBias, 0.025f);
                 mainLight.shadowNormalBias = Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
+
+                if (isCentralPlaza)
+                {
+                    mainLight.intensity = Mathf.Max(mainLight.intensity, 2.16f);
+                    mainLight.color = new Color(1.00f, 0.88f, 0.58f, 1f);
+                    mainLight.transform.rotation = Quaternion.Euler(31f, -42f, 0f);
+                }
             }
 
-            var area = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
             if (sceneCamera != null && (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza))
             {
                 sceneCamera.clearFlags = CameraClearFlags.SolidColor;
@@ -93,6 +109,20 @@ namespace Anemora.FastVS
             {
                 RenderSettings.fog = false;
                 RenderSettings.ambientMode = AmbientMode.Flat;
+            }
+
+            if (isCentralPlaza)
+            {
+                RenderSettings.ambientLight = new Color(0.040f, 0.036f, 0.030f, 1f);
+                RenderSettings.reflectionIntensity = 0f;
+                EnsureCycle128CameraGrade();
+                SetCycle128CameraGradeActive(true);
+                UpdateCycle128CameraGradeScale();
+            }
+            else
+            {
+                RenderSettings.reflectionIntensity = 1f;
+                SetCycle128CameraGradeActive(false);
             }
         }
 
@@ -113,7 +143,7 @@ namespace Anemora.FastVS
                     continue;
                 }
 
-                if (renderer.gameObject.name.Contains("RealtimeShadowCasterCycle127"))
+                if (renderer.gameObject.name.Contains("RealtimeShadowCasterCycle"))
                 {
                     renderer.enabled = true;
                     renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
@@ -304,6 +334,270 @@ namespace Anemora.FastVS
         private static string GetMaterialRole(Material material)
         {
             return material != null ? material.GetTag(MaterialRoleTagName, false, string.Empty) : string.Empty;
+        }
+
+        private void EnsureCycle128CameraGrade()
+        {
+            if (sceneCamera == null)
+            {
+                return;
+            }
+
+            if (cycle128GradeRoot == null)
+            {
+                cycle128GradeRoot = new GameObject("FastVS_Cycle128GradeRoot");
+                cycle128GradeRoot.hideFlags = HideFlags.DontSave;
+                cycle128GradeRoot.transform.SetParent(sceneCamera.transform, false);
+                cycle128GradeRoot.transform.localPosition = Vector3.zero;
+                cycle128GradeRoot.transform.localRotation = Quaternion.identity;
+                cycle128GradeRoot.transform.localScale = Vector3.one;
+            }
+
+            if (cycle128GradeRenderer == null)
+            {
+                cycle128GradeRenderer = CreateCycle128CameraQuad("FastVS_Cycle128GradePlate", 0.46f, EnsureCycle128GradeMaterial());
+            }
+
+            if (cycle128BeamRenderer == null)
+            {
+                cycle128BeamRenderer = CreateCycle128CameraQuad("FastVS_Cycle128RayPlate", 0.455f, EnsureCycle128BeamMaterial());
+            }
+        }
+
+        private MeshRenderer CreateCycle128CameraQuad(string objectName, float localZ, Material material)
+        {
+            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = objectName;
+            quad.hideFlags = HideFlags.DontSave;
+            quad.transform.SetParent(cycle128GradeRoot.transform, false);
+            quad.transform.localPosition = new Vector3(0f, 0f, localZ);
+            quad.transform.localRotation = Quaternion.identity;
+            quad.transform.localScale = Vector3.one;
+
+            var collider = quad.GetComponent<Collider>();
+            if (collider != null)
+            {
+                if (Application.isPlaying)
+                {
+                    Destroy(collider);
+                }
+                else
+                {
+                    DestroyImmediate(collider);
+                }
+            }
+
+            var renderer = quad.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.enabled = true;
+            return renderer;
+        }
+
+        private Material EnsureCycle128GradeMaterial()
+        {
+            if (cycle128GradeMaterial == null)
+            {
+                cycle128GradeMaterial = CreateCycle128TransparentMaterial("FastVS_Cycle128GradeMaterial", EnsureCycle128GradeTexture(), 5000);
+            }
+
+            return cycle128GradeMaterial;
+        }
+
+        private Material EnsureCycle128BeamMaterial()
+        {
+            if (cycle128BeamMaterial == null)
+            {
+                cycle128BeamMaterial = CreateCycle128TransparentMaterial("FastVS_Cycle128RayMaterial", EnsureCycle128BeamTexture(), 5010);
+            }
+
+            return cycle128BeamMaterial;
+        }
+
+        private static Material CreateCycle128TransparentMaterial(string materialName, Texture2D texture, int renderQueue)
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Unlit");
+            if (shader == null)
+            {
+                shader = Shader.Find("Unlit/Transparent");
+            }
+
+            if (shader == null)
+            {
+                shader = Shader.Find("Sprites/Default");
+            }
+
+            var material = new Material(shader)
+            {
+                name = materialName,
+                hideFlags = HideFlags.DontSave,
+                renderQueue = renderQueue,
+                doubleSidedGI = false
+            };
+
+            if (material.HasProperty("_BaseMap"))
+            {
+                material.SetTexture("_BaseMap", texture);
+            }
+
+            if (material.HasProperty("_MainTex"))
+            {
+                material.SetTexture("_MainTex", texture);
+            }
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", Color.white);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", Color.white);
+            }
+
+            if (material.HasProperty("_Surface"))
+            {
+                material.SetFloat("_Surface", 1f);
+            }
+
+            if (material.HasProperty("_Blend"))
+            {
+                material.SetFloat("_Blend", 0f);
+            }
+
+            if (material.HasProperty("_SrcBlend"))
+            {
+                material.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+            }
+
+            if (material.HasProperty("_DstBlend"))
+            {
+                material.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+            }
+
+            if (material.HasProperty("_ZWrite"))
+            {
+                material.SetFloat("_ZWrite", 0f);
+            }
+
+            if (material.HasProperty("_ZTest"))
+            {
+                material.SetFloat("_ZTest", (float)CompareFunction.Always);
+            }
+
+            if (material.HasProperty("_Cull"))
+            {
+                material.SetFloat("_Cull", 0f);
+            }
+
+            material.SetOverrideTag("RenderType", "Transparent");
+            material.SetShaderPassEnabled("DepthOnly", false);
+            material.SetShaderPassEnabled("SHADOWCASTER", false);
+            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            return material;
+        }
+
+        private Texture2D EnsureCycle128GradeTexture()
+        {
+            if (cycle128GradeTexture != null)
+            {
+                return cycle128GradeTexture;
+            }
+
+            cycle128GradeTexture = new Texture2D(256, 144, TextureFormat.RGBA32, false)
+            {
+                name = "FastVS_Cycle128GradeTexture",
+                hideFlags = HideFlags.DontSave,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+
+            for (var y = 0; y < cycle128GradeTexture.height; y++)
+            {
+                for (var x = 0; x < cycle128GradeTexture.width; x++)
+                {
+                    var u = (x + 0.5f) / cycle128GradeTexture.width;
+                    var v = (y + 0.5f) / cycle128GradeTexture.height;
+                    var dx = (u - 0.50f) * 2f;
+                    var dy = (v - 0.48f) * 2f;
+                    var radius = Mathf.Sqrt(dx * dx * 0.82f + dy * dy * 1.38f);
+                    var edge = Mathf.SmoothStep(0.48f, 1.18f, radius);
+                    var topWarm = Mathf.SmoothStep(0.52f, 1.00f, v);
+                    var baseAlpha = 0.045f + edge * 0.32f + topWarm * 0.055f;
+                    var warm = Color.Lerp(new Color(0.82f, 0.58f, 0.30f, baseAlpha), new Color(0.11f, 0.070f, 0.035f, baseAlpha), edge);
+                    cycle128GradeTexture.SetPixel(x, y, warm);
+                }
+            }
+
+            cycle128GradeTexture.Apply(false, true);
+            return cycle128GradeTexture;
+        }
+
+        private Texture2D EnsureCycle128BeamTexture()
+        {
+            if (cycle128BeamTexture != null)
+            {
+                return cycle128BeamTexture;
+            }
+
+            cycle128BeamTexture = new Texture2D(256, 144, TextureFormat.RGBA32, false)
+            {
+                name = "FastVS_Cycle128RayTexture",
+                hideFlags = HideFlags.DontSave,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+
+            for (var y = 0; y < cycle128BeamTexture.height; y++)
+            {
+                for (var x = 0; x < cycle128BeamTexture.width; x++)
+                {
+                    var u = (x + 0.5f) / cycle128BeamTexture.width;
+                    var v = (y + 0.5f) / cycle128BeamTexture.height;
+                    var rayA = Mathf.Abs((u - 0.05f) - (1f - v) * 0.58f);
+                    var rayB = Mathf.Abs((u - 0.34f) - (1f - v) * 0.46f);
+                    var beam = Mathf.SmoothStep(0.11f, 0.010f, rayA) * 0.18f + Mathf.SmoothStep(0.09f, 0.010f, rayB) * 0.10f;
+                    beam *= Mathf.SmoothStep(0.04f, 0.42f, v) * Mathf.SmoothStep(1.00f, 0.62f, v);
+                    beam *= Mathf.SmoothStep(1.04f, 0.58f, u);
+                    cycle128BeamTexture.SetPixel(x, y, new Color(1.00f, 0.83f, 0.48f, beam));
+                }
+            }
+
+            cycle128BeamTexture.Apply(false, true);
+            return cycle128BeamTexture;
+        }
+
+        private void SetCycle128CameraGradeActive(bool active)
+        {
+            if (cycle128GradeRoot != null && cycle128GradeRoot.activeSelf != active)
+            {
+                cycle128GradeRoot.SetActive(active);
+            }
+        }
+
+        private void UpdateCycle128CameraGradeScale()
+        {
+            if (sceneCamera == null || cycle128GradeRoot == null)
+            {
+                return;
+            }
+
+            var distance = 0.46f;
+            var height = 2f * distance * Mathf.Tan(sceneCamera.fieldOfView * Mathf.Deg2Rad * 0.5f);
+            var width = height * sceneCamera.aspect;
+            cycle128GradeRoot.transform.localPosition = Vector3.zero;
+            cycle128GradeRoot.transform.localRotation = Quaternion.identity;
+
+            if (cycle128GradeRenderer != null)
+            {
+                cycle128GradeRenderer.transform.localScale = new Vector3(width * 1.06f, height * 1.06f, 1f);
+            }
+
+            if (cycle128BeamRenderer != null)
+            {
+                cycle128BeamRenderer.transform.localScale = new Vector3(width * 1.10f, height * 1.10f, 1f);
+            }
         }
     }
 }

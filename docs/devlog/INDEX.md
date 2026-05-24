@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.97 fast VS HD2D plaza realtime light shadow index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.98 fast VS HD2D plaza reference grade index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 475 files including INDEX.md and README.md.
-- Dated devlog records: 473 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1158 files.
+- Root-level Markdown coverage: 476 files including INDEX.md and README.md.
+- Dated devlog records: 474 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1162 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,8 +35,15 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
+| 2026-05-25 | 1 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-05-25
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_reference_grade_cycle128.md](2026-05-25_fast_vs_hd2d_plaza_reference_grade_cycle128.md) | Fast VS / HD2D | feat(hd2d): push plaza reference grade |
 
 ### 2026-05-24
 
