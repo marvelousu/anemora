@@ -26,10 +26,16 @@ namespace Anemora.FastVS
         private GameObject cycle128GradeRoot;
         private MeshRenderer cycle128GradeRenderer;
         private MeshRenderer cycle128BeamRenderer;
+        private MeshRenderer cycle131ShadowPaintRenderer;
+        private MeshRenderer cycle131SunPaintRenderer;
         private Material cycle128GradeMaterial;
         private Material cycle128BeamMaterial;
+        private Material cycle131ShadowPaintMaterial;
+        private Material cycle131SunPaintMaterial;
         private Texture2D cycle128GradeTexture;
         private Texture2D cycle128BeamTexture;
+        private Texture2D cycle131ShadowPaintTexture;
+        private Texture2D cycle131SunPaintTexture;
 
         private void Awake()
         {
@@ -116,6 +122,7 @@ namespace Anemora.FastVS
                 RenderSettings.ambientLight = new Color(0.024f, 0.028f, 0.030f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
                 EnsureCycle128CameraGrade();
+                EnsureCycle131CameraPaint();
                 SetCycle128CameraGradeActive(true);
                 UpdateCycle128CameraGradeScale();
             }
@@ -364,6 +371,21 @@ namespace Anemora.FastVS
             }
         }
 
+        private void EnsureCycle131CameraPaint()
+        {
+            EnsureCycle128CameraGrade();
+
+            if (cycle131ShadowPaintRenderer == null)
+            {
+                cycle131ShadowPaintRenderer = CreateCycle128CameraQuad("FastVS_Cycle131ShadowPaintPlate", 0.450f, EnsureCycle131ShadowPaintMaterial());
+            }
+
+            if (cycle131SunPaintRenderer == null)
+            {
+                cycle131SunPaintRenderer = CreateCycle128CameraQuad("FastVS_Cycle131SunPaintPlate", 0.445f, EnsureCycle131SunPaintMaterial());
+            }
+        }
+
         private MeshRenderer CreateCycle128CameraQuad(string objectName, float localZ, Material material)
         {
             var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -413,6 +435,26 @@ namespace Anemora.FastVS
             }
 
             return cycle128BeamMaterial;
+        }
+
+        private Material EnsureCycle131ShadowPaintMaterial()
+        {
+            if (cycle131ShadowPaintMaterial == null)
+            {
+                cycle131ShadowPaintMaterial = CreateCycle128TransparentMaterial("FastVS_Cycle131ShadowPaintMaterial", EnsureCycle131ShadowPaintTexture(), 5020);
+            }
+
+            return cycle131ShadowPaintMaterial;
+        }
+
+        private Material EnsureCycle131SunPaintMaterial()
+        {
+            if (cycle131SunPaintMaterial == null)
+            {
+                cycle131SunPaintMaterial = CreateCycle128TransparentMaterial("FastVS_Cycle131SunPaintMaterial", EnsureCycle131SunPaintTexture(), 5030);
+            }
+
+            return cycle131SunPaintMaterial;
         }
 
         private static Material CreateCycle128TransparentMaterial(string materialName, Texture2D texture, int renderQueue)
@@ -568,6 +610,100 @@ namespace Anemora.FastVS
             return cycle128BeamTexture;
         }
 
+        private Texture2D EnsureCycle131ShadowPaintTexture()
+        {
+            if (cycle131ShadowPaintTexture != null)
+            {
+                return cycle131ShadowPaintTexture;
+            }
+
+            cycle131ShadowPaintTexture = new Texture2D(320, 180, TextureFormat.RGBA32, false)
+            {
+                name = "FastVS_Cycle131ShadowPaintTexture",
+                hideFlags = HideFlags.DontSave,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+
+            for (var y = 0; y < cycle131ShadowPaintTexture.height; y++)
+            {
+                for (var x = 0; x < cycle131ShadowPaintTexture.width; x++)
+                {
+                    var u = (x + 0.5f) / cycle131ShadowPaintTexture.width;
+                    var v = (y + 0.5f) / cycle131ShadowPaintTexture.height;
+                    var diagonalA = Mathf.SmoothStep(0.30f, 0.015f, Mathf.Abs((v - 0.35f) - (u - 0.50f) * -0.30f)) * 0.33f;
+                    var diagonalB = Mathf.SmoothStep(0.24f, 0.018f, Mathf.Abs((v - 0.60f) - (u - 0.45f) * -0.42f)) * 0.26f;
+                    var lowerContact = Mathf.SmoothStep(0.54f, 0.06f, v) * 0.24f;
+                    var sideVignette = Mathf.SmoothStep(0.55f, 1.06f, Mathf.Abs(u - 0.50f) * 2f) * 0.18f;
+                    var dapple = Hash01Cycle131(x / 5, y / 4) > 0.63f ? 0.045f : 0f;
+                    var alpha = Mathf.Clamp01(diagonalA + diagonalB + lowerContact + sideVignette + dapple);
+                    cycle131ShadowPaintTexture.SetPixel(x, y, new Color(0.012f, 0.014f, 0.012f, Mathf.Min(alpha, 0.56f)));
+                }
+            }
+
+            cycle131ShadowPaintTexture.Apply(false, true);
+            return cycle131ShadowPaintTexture;
+        }
+
+        private Texture2D EnsureCycle131SunPaintTexture()
+        {
+            if (cycle131SunPaintTexture != null)
+            {
+                return cycle131SunPaintTexture;
+            }
+
+            cycle131SunPaintTexture = new Texture2D(320, 180, TextureFormat.RGBA32, false)
+            {
+                name = "FastVS_Cycle131SunPaintTexture",
+                hideFlags = HideFlags.DontSave,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+
+            for (var y = 0; y < cycle131SunPaintTexture.height; y++)
+            {
+                for (var x = 0; x < cycle131SunPaintTexture.width; x++)
+                {
+                    var u = (x + 0.5f) / cycle131SunPaintTexture.width;
+                    var v = (y + 0.5f) / cycle131SunPaintTexture.height;
+                    var patchA = SoftEllipseCycle131(u, v, 0.52f, 0.43f, 0.32f, 0.13f, -12f, 0.30f);
+                    var patchB = SoftEllipseCycle131(u, v, 0.66f, 0.30f, 0.20f, 0.10f, -18f, 0.22f);
+                    var rayA = Mathf.SmoothStep(0.075f, 0.005f, Mathf.Abs((u - 0.03f) - (1f - v) * 0.55f)) * 0.22f;
+                    var rayB = Mathf.SmoothStep(0.090f, 0.006f, Mathf.Abs((u - 0.28f) - (1f - v) * 0.42f)) * 0.16f;
+                    var topToMid = Mathf.SmoothStep(0.12f, 0.52f, v) * Mathf.SmoothStep(1.00f, 0.58f, v);
+                    var grain = (Hash01Cycle131(x, y) - 0.5f) * 0.030f;
+                    var alpha = Mathf.Clamp01(patchA + patchB + (rayA + rayB) * topToMid + grain);
+                    cycle131SunPaintTexture.SetPixel(x, y, new Color(1.00f, 0.94f, 0.72f, Mathf.Min(alpha, 0.42f)));
+                }
+            }
+
+            cycle131SunPaintTexture.Apply(false, true);
+            return cycle131SunPaintTexture;
+        }
+
+        private static float SoftEllipseCycle131(float u, float v, float centerU, float centerV, float radiusU, float radiusV, float rotationDegrees, float strength)
+        {
+            var radians = rotationDegrees * Mathf.Deg2Rad;
+            var cos = Mathf.Cos(radians);
+            var sin = Mathf.Sin(radians);
+            var dx = u - centerU;
+            var dy = v - centerV;
+            var rotatedU = dx * cos + dy * sin;
+            var rotatedV = -dx * sin + dy * cos;
+            var distance = (rotatedU * rotatedU) / (radiusU * radiusU) + (rotatedV * rotatedV) / (radiusV * radiusV);
+            return Mathf.SmoothStep(1.12f, 0.08f, distance) * strength;
+        }
+
+        private static float Hash01Cycle131(int x, int y)
+        {
+            unchecked
+            {
+                var n = x * 1103515245 ^ y * 12345 ^ 0x45d9f3b;
+                n = (n << 13) ^ n;
+                return ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 2147483647f;
+            }
+        }
+
         private void SetCycle128CameraGradeActive(bool active)
         {
             if (cycle128GradeRoot != null && cycle128GradeRoot.activeSelf != active)
@@ -597,6 +733,16 @@ namespace Anemora.FastVS
             if (cycle128BeamRenderer != null)
             {
                 cycle128BeamRenderer.transform.localScale = new Vector3(width * 1.10f, height * 1.10f, 1f);
+            }
+
+            if (cycle131ShadowPaintRenderer != null)
+            {
+                cycle131ShadowPaintRenderer.transform.localScale = new Vector3(width * 1.12f, height * 1.12f, 1f);
+            }
+
+            if (cycle131SunPaintRenderer != null)
+            {
+                cycle131SunPaintRenderer.transform.localScale = new Vector3(width * 1.12f, height * 1.12f, 1f);
             }
         }
     }
