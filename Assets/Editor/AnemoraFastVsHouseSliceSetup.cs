@@ -15489,6 +15489,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_skybox_horizon_cycle157.md");
         }
 
+        public static void CapturePlazaRealtimeContrastCycle158ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeContrastCycle158ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_contrast_cycle158.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -37827,7 +37834,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 134 must remove painted/foggy plaza air, found fog={RenderSettings.fog}, density={RenderSettings.fogDensity:0.0000}.");
             }
 
-            if (mainLight.intensity < 2.05f || mainLight.intensity > 2.55f || mainLight.shadowStrength < 0.91f || mainLight.shadowStrength > 0.93f)
+            if (mainLight.intensity < 2.25f || mainLight.intensity > 2.40f || mainLight.shadowStrength < 0.98f || mainLight.shadowStrength > 0.99f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 134 must use realtime sun/shadow values, found intensity={mainLight.intensity:0.000}, shadowStrength={mainLight.shadowStrength:0.000}.");
             }
@@ -37839,7 +37846,7 @@ namespace Anemora.EditorTools
             }
 
             var ambient = RenderSettings.ambientLight;
-            if (ambient.r < 0.050f || ambient.r > 0.060f || ambient.g < 0.046f || ambient.g > 0.054f || ambient.b < 0.039f || ambient.b > 0.047f)
+            if (ambient.r < 0.034f || ambient.r > 0.042f || ambient.g < 0.035f || ambient.g > 0.043f || ambient.b < 0.034f || ambient.b > 0.042f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 134 ambient must leave realtime shadows readable without camera paint, found {ambient}.");
             }
@@ -38376,7 +38383,7 @@ namespace Anemora.EditorTools
                 mainLight.cookie.wrapMode != TextureWrapMode.Clamp ||
                 mainLight.cookieSize < 9.0f ||
                 mainLight.cookieSize > 9.5f ||
-                mainLight.intensity < 2.40f)
+                mainLight.intensity < 2.28f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 147 directional light must carry the realtime plaza sun cookie, found cookie={mainLight.cookie}, size={mainLight.cookieSize:0.00}, intensity={mainLight.intensity:0.00}.");
             }
@@ -38679,8 +38686,8 @@ namespace Anemora.EditorTools
                 if (topLight.r <= 1.22f &&
                     topLight.g <= 1.12f &&
                     topLight.b >= 0.86f &&
-                    floorShade.r <= 0.46f &&
-                    floorShade.b >= 0.41f)
+                    floorShade.r <= 0.36f &&
+                    floorShade.b >= 0.34f)
                 {
                     desaturatedSurfaceCount++;
                 }
@@ -38840,6 +38847,74 @@ namespace Anemora.EditorTools
                 exposure < 0.60f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 157 skybox horizon must stay blue-gray instead of black/brown, found ground={groundColor}, tint={skyTint}, exposure={exposure:0.00}.");
+            }
+        }
+
+        private static void ValidateHd2dPlazaRealtimeContrastCycle158()
+        {
+            ValidateHd2dPlazaSkyboxHorizonCycle157();
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 158 needs the realtime Directional Light.");
+            }
+
+            if (mainLight.intensity < 2.28f ||
+                mainLight.intensity > 2.36f ||
+                mainLight.shadowStrength < 0.98f ||
+                mainLight.color.g < 0.95f ||
+                mainLight.color.b < 0.84f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 158 central-plaza light must stay neutral and high-contrast, found intensity={mainLight.intensity:0.00}, shadowStrength={mainLight.shadowStrength:0.000}, color={mainLight.color}.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            if (ambient.r > 0.042f || ambient.g > 0.043f || ambient.b > 0.042f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 158 ambient must stay low so realtime shadows read, found {ambient}.");
+            }
+
+            var contrastReceiverCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null ||
+                    !renderer.gameObject.scene.IsValid() ||
+                    !renderer.enabled ||
+                    !renderer.receiveShadows ||
+                    !renderer.gameObject.name.Contains("Current_CentralPlaza"))
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null ||
+                    !material.HasProperty("_ShadowReceiveStrength") ||
+                    !material.HasProperty("_ShadowTextureStrength") ||
+                    !material.HasProperty("_TopLight") ||
+                    !material.HasProperty("_FloorShade"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                var topLight = block.GetColor("_TopLight");
+                var floorShade = block.GetColor("_FloorShade");
+                if (block.GetFloat("_ShadowReceiveStrength") >= 0.76f &&
+                    block.GetFloat("_ShadowTextureStrength") >= 0.45f &&
+                    topLight.r <= 1.08f &&
+                    topLight.b >= 0.92f &&
+                    floorShade.r <= 0.36f &&
+                    floorShade.b >= 0.34f)
+                {
+                    contrastReceiverCount++;
+                }
+            }
+
+            if (contrastReceiverCount < 12)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 158 expected neutral high-contrast realtime receiver property blocks, found {contrastReceiverCount}.");
             }
         }
 
@@ -46167,6 +46242,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle157_plaza_skybox_horizon_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeContrastCycle158ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle158_plaza_realtime_contrast_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49777,6 +49857,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaSkyboxHorizonCycle157();
+        }
+
+        public static void ValidatePlazaRealtimeContrastCycle158Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeContrastCycle158();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

@@ -27,9 +27,9 @@ namespace Anemora.FastVS
         private static readonly int RampStrengthId = Shader.PropertyToID("_RampStrength");
         private static readonly int WorldLightStrengthId = Shader.PropertyToID("_WorldLightStrength");
         private static readonly int WorldShadowReceiveStrengthId = Shader.PropertyToID("_WorldShadowReceiveStrength");
-        private static readonly Color CentralPlazaTopLight = new Color(1.20f, 1.10f, 0.88f, 1f);
-        private static readonly Color CentralPlazaSideShade = new Color(0.50f, 0.50f, 0.47f, 1f);
-        private static readonly Color CentralPlazaFloorShade = new Color(0.44f, 0.45f, 0.42f, 1f);
+        private static readonly Color CentralPlazaTopLight = new Color(1.06f, 1.04f, 0.94f, 1f);
+        private static readonly Color CentralPlazaSideShade = new Color(0.38f, 0.40f, 0.40f, 1f);
+        private static readonly Color CentralPlazaFloorShade = new Color(0.34f, 0.36f, 0.35f, 1f);
 
         [SerializeField] private FastVsHouseAreaVisibility areaVisibility;
         [SerializeField] private Camera sceneCamera;
@@ -111,15 +111,15 @@ namespace Anemora.FastVS
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
                 mainLight.shadowResolution = isCentralPlaza ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
-                mainLight.shadowStrength = isCentralPlaza ? 0.92f : Mathf.Max(mainLight.shadowStrength, 0.82f);
+                mainLight.shadowStrength = isCentralPlaza ? 0.985f : Mathf.Max(mainLight.shadowStrength, 0.82f);
                 mainLight.shadowBias = isCentralPlaza ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
                 mainLight.shadowNormalBias = isCentralPlaza ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
 
                 if (isCentralPlaza)
                 {
-                    mainLight.intensity = 2.45f;
-                    mainLight.color = new Color(1.00f, 0.93f, 0.78f, 1f);
+                    mainLight.intensity = 2.32f;
+                    mainLight.color = new Color(1.00f, 0.96f, 0.86f, 1f);
                     mainLight.transform.rotation = Quaternion.Euler(43f, -38f, 0f);
                     mainLight.cookie = EnsureCentralPlazaSunCookieTexture();
                     mainLight.cookieSize = CentralPlazaSunCookieWorldSize;
@@ -151,7 +151,7 @@ namespace Anemora.FastVS
 
             if (isCentralPlaza)
             {
-                RenderSettings.ambientLight = new Color(0.055f, 0.050f, 0.043f, 1f);
+                RenderSettings.ambientLight = new Color(0.038f, 0.039f, 0.038f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
                 SetCycle128CameraGradeActive(false);
             }
@@ -663,12 +663,12 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(ShadowReceiveStrengthId))
             {
-                block.SetFloat(ShadowReceiveStrengthId, 0.66f);
+                block.SetFloat(ShadowReceiveStrengthId, 0.78f);
             }
 
             if (material.HasProperty(ShadowTextureStrengthId))
             {
-                block.SetFloat(ShadowTextureStrengthId, isFacadeReceiver ? 0.48f : 0.36f);
+                block.SetFloat(ShadowTextureStrengthId, isFacadeReceiver ? 0.58f : 0.46f);
             }
 
             if (material.HasProperty(TopLightId))
