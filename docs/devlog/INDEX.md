@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.96 fast VS HD2D plaza close shadow bar mute index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.97 fast VS HD2D plaza realtime light shadow index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 474 files including INDEX.md and README.md.
-- Dated devlog records: 472 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1154 files.
+- Root-level Markdown coverage: 475 files including INDEX.md and README.md.
+- Dated devlog records: 473 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1158 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 36 |
+| 2026-05-24 | 37 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_realtime_light_shadow_cycle127.md](2026-05-24_fast_vs_hd2d_plaza_realtime_light_shadow_cycle127.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime light shadow rig |
 | [2026-05-24_fast_vs_hd2d_plaza_close_shadow_bar_mute_cycle126.md](2026-05-24_fast_vs_hd2d_plaza_close_shadow_bar_mute_cycle126.md) | Fast VS / HD2D | feat(hd2d): mute plaza close shadow bars |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_diorama_shadow_cycle125.md](2026-05-24_fast_vs_hd2d_plaza_reference_diorama_shadow_cycle125.md) | Fast VS / HD2D | feat(hd2d): rebuild plaza reference diorama shadow |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_focus_shadow_cycle124.md](2026-05-24_fast_vs_hd2d_plaza_reference_focus_shadow_cycle124.md) | Fast VS / HD2D | feat(hd2d): restore plaza focus shadow clarity |

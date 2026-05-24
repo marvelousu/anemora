@@ -160,5 +160,76 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             }
             ENDHLSL
         }
+
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags { "LightMode" = "ShadowCaster" }
+
+            ZWrite On
+            ZTest LEqual
+            ColorMask 0
+            Cull Off
+
+            HLSLPROGRAM
+            #pragma vertex ShadowPassVertex
+            #pragma fragment ShadowPassFragment
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
+            float4 _BaseMap_ST;
+            float4 _BaseColor;
+            float3 _LightDirection;
+            float3 _LightPosition;
+
+            struct ShadowAttributes
+            {
+                float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct ShadowVaryings
+            {
+                float4 positionCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            ShadowVaryings ShadowPassVertex(ShadowAttributes input)
+            {
+                ShadowVaryings output;
+                float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
+
+                #if defined(_CASTING_PUNCTUAL_LIGHT_SHADOW)
+                    float3 lightDirectionWS = normalize(_LightPosition - positionWS);
+                #else
+                    float3 lightDirectionWS = _LightDirection;
+                #endif
+
+                float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
+                #if UNITY_REVERSED_Z
+                    positionCS.z = min(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+                #else
+                    positionCS.z = max(positionCS.z, UNITY_NEAR_CLIP_VALUE);
+                #endif
+
+                output.positionCS = positionCS;
+                output.uv = input.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
+                return output;
+            }
+
+            half4 ShadowPassFragment(ShadowVaryings input) : SV_TARGET
+            {
+                half alpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).a * (half)_BaseColor.a;
+                clip(alpha - 0.15h);
+                return 0;
+            }
+            ENDHLSL
+        }
     }
 }

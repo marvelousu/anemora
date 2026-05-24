@@ -40,13 +40,13 @@ namespace Anemora.EditorTools
         private static readonly Vector3 LookOffset = new Vector3(0f, 0.72f, 0.45f);
         private static readonly Vector3 HouseExteriorSnapshotCameraOffset = new Vector3(0.90f, 3.85f, -7.10f);
         private static readonly Vector3 HouseExteriorSnapshotLookOffset = new Vector3(0.42f, 0.70f, 1.12f);
-        private static readonly Vector3 CentralPlazaSnapshotCameraOffset = new Vector3(0f, 3.95f, -7.40f);
-        private static readonly Vector3 CentralPlazaSnapshotLookOffset = new Vector3(0f, 0.95f, 2.20f);
+        private static readonly Vector3 CentralPlazaSnapshotCameraOffset = new Vector3(0f, 2.75f, -4.55f);
+        private static readonly Vector3 CentralPlazaSnapshotLookOffset = new Vector3(0f, 0.72f, 0.45f);
         private static readonly Vector3 HouseInteriorOverviewCameraOffset = new Vector3(0f, 4.25f, -7.20f);
         private static readonly Vector3 HouseInteriorOverviewLookOffset = new Vector3(0f, 1.10f, 0.90f);
         private const float HouseInteriorSnapshotTargetFov = 14f;
         private const float HouseExteriorSnapshotTargetFov = 38f;
-        private const float CentralPlazaSnapshotTargetFov = 36f;
+        private const float CentralPlazaSnapshotTargetFov = 38f;
         private const float LibrarySnapshotTargetFov = 38f;
 
         [MenuItem("Tools/Anemora/Capture Fast VS HD2D Visual Snapshot Audit")]
