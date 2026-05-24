@@ -5390,6 +5390,7 @@ namespace Anemora.EditorTools
             ApplyCentralPlazaRealtimeShadowRecoveryCycle134(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeDappleCasterCycle138(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeMeshCasterCycle140(plazaRoot, prefix, past, materials);
+            ApplyCentralPlazaRealtimeCasterShapeRewriteCycle141(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15367,6 +15368,13 @@ namespace Anemora.EditorTools
             CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
                 GetPlazaRealtimeMeshCasterCycle140ScreenshotsDirectory(),
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_mesh_caster_cycle140.md");
+        }
+
+        public static void CapturePlazaRealtimeCasterShapeRewriteCycle141ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeCasterShapeRewriteCycle141ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_caster_shape_rewrite_cycle141.md");
         }
 
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
@@ -37982,6 +37990,48 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeCasterShapeRewriteCycle141()
+        {
+            ValidateHd2dPlazaRealtimeMeshCasterCycle140();
+
+            var rewrittenCasters = new[]
+            {
+                "Current_CentralPlaza_RealtimeShadowCasterCycle127_LibraryEave",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle127_LeftCanopy",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle127_FrontBrokenBeam",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle128_EaveCurtain",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle128_EntryLintel",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterA",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterB",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle134_UpperEaveWide",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle134_ForegroundCrossA",
+                "Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine"
+            };
+
+            for (var i = 0; i < rewrittenCasters.Length; i++)
+            {
+                var sceneObject = FindSceneObjectIncludingInactive(rewrittenCasters[i]);
+                var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+                var filter = sceneObject != null ? sceneObject.GetComponent<MeshFilter>() : null;
+                if (sceneObject == null || renderer == null || filter == null || filter.sharedMesh == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 141 missing rewritten realtime caster mesh {rewrittenCasters[i]}.");
+                }
+
+                if (!renderer.enabled ||
+                    renderer.shadowCastingMode != ShadowCastingMode.ShadowsOnly ||
+                    renderer.receiveShadows ||
+                    renderer.GetComponent<Collider>() != null ||
+                    !filter.sharedMesh.name.Contains("Cycle141Rewrite") ||
+                    filter.sharedMesh.vertexCount < 14 ||
+                    filter.sharedMesh.triangles.Length < 30 ||
+                    Vector3.Distance(sceneObject.transform.localScale, Vector3.one) > 0.001f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 141 caster {rewrittenCasters[i]} must be mesh-rewritten, enabled ShadowsOnly, non-receiving, collider-free, and unit-scaled.");
+                }
+            }
+        }
+
         private static bool IsCycle139CurrentCentralPlazaFacadeReceiverName(string name)
         {
             if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
@@ -45121,6 +45171,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle140_plaza_realtime_mesh_caster_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeCasterShapeRewriteCycle141ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle141_plaza_realtime_caster_shape_rewrite_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -48612,6 +48667,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeMeshCasterCycle140();
+        }
+
+        public static void ValidatePlazaRealtimeCasterShapeRewriteCycle141Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeCasterShapeRewriteCycle141();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
@@ -54155,6 +54217,64 @@ namespace Anemora.EditorTools
             CreateCentralPlazaRealtimeShadowMeshCasterCycle140(root, "Current_CentralPlaza_RealtimeShadowCasterCycle140_BranchForkRight", c + new Vector3(2.84f, 2.28f, 4.24f), new Vector2(1.24f, 0.52f), Quaternion.Euler(0f, -47f, 0f), materials.CurrentLeaf, $"{prefix}.central_plaza.cycle140.realtime_mesh.branch_fork_right", forkShard);
         }
 
+        private static void ApplyCentralPlazaRealtimeCasterShapeRewriteCycle141(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var raggedRibbon = new[]
+            {
+                new Vector2(-0.55f, -0.22f),
+                new Vector2(-0.42f, -0.30f),
+                new Vector2(-0.18f, -0.20f),
+                new Vector2(0.02f, -0.27f),
+                new Vector2(0.31f, -0.18f),
+                new Vector2(0.55f, -0.24f),
+                new Vector2(0.49f, 0.17f),
+                new Vector2(0.21f, 0.28f),
+                new Vector2(-0.08f, 0.18f),
+                new Vector2(-0.36f, 0.25f),
+                new Vector2(-0.54f, 0.12f)
+            };
+            var tornCanopy = new[]
+            {
+                new Vector2(-0.56f, -0.34f),
+                new Vector2(-0.22f, -0.24f),
+                new Vector2(0.05f, -0.36f),
+                new Vector2(0.42f, -0.20f),
+                new Vector2(0.56f, 0.04f),
+                new Vector2(0.31f, 0.32f),
+                new Vector2(-0.05f, 0.22f),
+                new Vector2(-0.36f, 0.36f),
+                new Vector2(-0.52f, 0.10f)
+            };
+            var narrowSliver = new[]
+            {
+                new Vector2(-0.56f, -0.12f),
+                new Vector2(-0.28f, -0.16f),
+                new Vector2(0.08f, -0.09f),
+                new Vector2(0.56f, -0.13f),
+                new Vector2(0.49f, 0.06f),
+                new Vector2(0.10f, 0.14f),
+                new Vector2(-0.46f, 0.08f)
+            };
+
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_LibraryEave", new Vector2(7.60f, 0.80f), raggedRibbon);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_LeftCanopy", new Vector2(2.70f, 1.24f), tornCanopy);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle127_FrontBrokenBeam", new Vector2(4.60f, 0.40f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_EaveCurtain", new Vector2(8.60f, 0.62f), raggedRibbon);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_EntryLintel", new Vector2(3.90f, 0.42f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterA", new Vector2(4.85f, 0.34f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle128_ForegroundRafterB", new Vector2(3.20f, 0.32f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_UpperEaveWide", new Vector2(4.85f, 0.38f), raggedRibbon);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle134_ForegroundCrossA", new Vector2(2.70f, 0.34f), narrowSliver);
+            RewriteCentralPlazaRealtimeCasterMeshCycle141(root, "Current_CentralPlaza_RealtimeShadowCasterCycle138_DoorLintelFine", new Vector2(3.18f, 0.24f), narrowSliver);
+            ApplyCentralPlazaRealtimeRendererPolicyCycle127(root);
+        }
+
         private static GameObject CreateCentralPlazaRealtimeShadowCasterCycle127(
             Transform root,
             string objectName,
@@ -54189,6 +54309,41 @@ namespace Anemora.EditorTools
             return caster;
         }
 
+        private static void RewriteCentralPlazaRealtimeCasterMeshCycle141(Transform root, string objectName, Vector2 localSize, Vector2[] outline)
+        {
+            MeshFilter targetFilter = null;
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter != null && string.Equals(filter.gameObject.name, objectName, StringComparison.Ordinal))
+                {
+                    targetFilter = filter;
+                    break;
+                }
+            }
+
+            if (targetFilter == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: cycle 141 could not find realtime caster {objectName}.");
+            }
+
+            targetFilter.sharedMesh = CreateCentralPlazaRealtimeShadowMeshCycle140(objectName + "_Cycle141Rewrite", localSize, outline);
+            targetFilter.transform.localScale = Vector3.one;
+
+            var renderer = targetFilter.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.enabled = true;
+                renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                renderer.receiveShadows = false;
+            }
+
+            var collider = targetFilter.GetComponent<Collider>();
+            if (collider != null)
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+        }
+
         private static GameObject CreateCentralPlazaRealtimeShadowMeshCasterCycle140(
             Transform root,
             string objectName,
@@ -54212,44 +54367,7 @@ namespace Anemora.EditorTools
             var filter = caster.GetComponent<MeshFilter>();
             if (filter != null && outline != null && outline.Length >= 3)
             {
-                var vertexCount = outline.Length;
-                var vertices = new Vector3[vertexCount * 2];
-                var normals = new Vector3[vertexCount * 2];
-                var uvs = new Vector2[vertexCount * 2];
-                for (var i = 0; i < vertexCount; i++)
-                {
-                    var x = outline[i].x * localSize.x;
-                    var z = outline[i].y * localSize.y;
-                    vertices[i] = new Vector3(x, 0f, z);
-                    vertices[i + vertexCount] = vertices[i];
-                    normals[i] = Vector3.up;
-                    normals[i + vertexCount] = Vector3.down;
-                    uvs[i] = new Vector2(outline[i].x + 0.5f, outline[i].y + 0.5f);
-                    uvs[i + vertexCount] = uvs[i];
-                }
-
-                var triangles = new int[(vertexCount - 2) * 6];
-                var cursor = 0;
-                for (var i = 1; i < vertexCount - 1; i++)
-                {
-                    triangles[cursor++] = 0;
-                    triangles[cursor++] = i;
-                    triangles[cursor++] = i + 1;
-                    triangles[cursor++] = vertexCount;
-                    triangles[cursor++] = vertexCount + i + 1;
-                    triangles[cursor++] = vertexCount + i;
-                }
-
-                var mesh = new Mesh
-                {
-                    name = objectName + "_RealtimeShadowMesh",
-                    vertices = vertices,
-                    normals = normals,
-                    uv = uvs,
-                    triangles = triangles,
-                    bounds = new Bounds(Vector3.zero, new Vector3(localSize.x, 0.08f, localSize.y))
-                };
-                filter.sharedMesh = mesh;
+                filter.sharedMesh = CreateCentralPlazaRealtimeShadowMeshCycle140(objectName, localSize, outline);
             }
 
             var renderer = caster.GetComponent<Renderer>();
@@ -54266,6 +54384,47 @@ namespace Anemora.EditorTools
             }
 
             return caster;
+        }
+
+        private static Mesh CreateCentralPlazaRealtimeShadowMeshCycle140(string objectName, Vector2 localSize, Vector2[] outline)
+        {
+            var vertexCount = outline.Length;
+            var vertices = new Vector3[vertexCount * 2];
+            var normals = new Vector3[vertexCount * 2];
+            var uvs = new Vector2[vertexCount * 2];
+            for (var i = 0; i < vertexCount; i++)
+            {
+                var x = outline[i].x * localSize.x;
+                var z = outline[i].y * localSize.y;
+                vertices[i] = new Vector3(x, 0f, z);
+                vertices[i + vertexCount] = vertices[i];
+                normals[i] = Vector3.up;
+                normals[i + vertexCount] = Vector3.down;
+                uvs[i] = new Vector2(outline[i].x + 0.5f, outline[i].y + 0.5f);
+                uvs[i + vertexCount] = uvs[i];
+            }
+
+            var triangles = new int[(vertexCount - 2) * 6];
+            var cursor = 0;
+            for (var i = 1; i < vertexCount - 1; i++)
+            {
+                triangles[cursor++] = 0;
+                triangles[cursor++] = i;
+                triangles[cursor++] = i + 1;
+                triangles[cursor++] = vertexCount;
+                triangles[cursor++] = vertexCount + i + 1;
+                triangles[cursor++] = vertexCount + i;
+            }
+
+            return new Mesh
+            {
+                name = objectName + "_RealtimeShadowMesh",
+                vertices = vertices,
+                normals = normals,
+                uv = uvs,
+                triangles = triangles,
+                bounds = new Bounds(Vector3.zero, new Vector3(localSize.x, 0.08f, localSize.y))
+            };
         }
 
         private static void ApplyCentralPlazaRealtimeRendererPolicyCycle127(Transform root)

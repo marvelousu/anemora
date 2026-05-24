@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.10 fast VS HD2D plaza realtime mesh caster index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.11 fast VS HD2D plaza realtime caster shape rewrite index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 488 files including INDEX.md and README.md.
-- Dated devlog records: 486 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1214 files.
+- Root-level Markdown coverage: 489 files including INDEX.md and README.md.
+- Dated devlog records: 487 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1219 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 13 |
+| 2026-05-25 | 14 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_caster_shape_rewrite_cycle141.md](2026-05-25_fast_vs_hd2d_plaza_realtime_caster_shape_rewrite_cycle141.md) | Fast VS / HD2D | feat(hd2d): rewrite plaza realtime caster shapes |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_mesh_caster_cycle140.md](2026-05-25_fast_vs_hd2d_plaza_realtime_mesh_caster_cycle140.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime mesh casters |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md](2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md) | Fast VS / HD2D | feat(hd2d): boost plaza realtime surface response |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md](2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime dapple casters |
