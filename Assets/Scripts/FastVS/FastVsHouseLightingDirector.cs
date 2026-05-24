@@ -380,7 +380,7 @@ namespace Anemora.FastVS
                         fogColor = new Color(0.235f, 0.215f, 0.178f, 1f),
                         fogStartDistance = 8f,
                         fogEndDistance = 40f,
-                        cameraBackgroundColor = new Color(0.620f, 0.580f, 0.470f, 1f),
+                        cameraBackgroundColor = new Color(0.220f, 0.286f, 0.340f, 1f),
                         warmFillPosition = new Vector3(20.80f, 1.25f, 17.30f),
                         warmFillIntensity = 0.020f,
                         warmFillRange = 9.8f,

@@ -15440,6 +15440,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_visible_caster_cycle150.md");
         }
 
+        public static void CapturePlazaVsSkyCameraCycle151ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaVsSkyCameraCycle151ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17173,7 +17180,7 @@ namespace Anemora.EditorTools
             {
                 var followProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
                 ApplyCurrent(FastVsHouseArea.CentralPlaza, playerLocalPosition, followProfile.FieldOfView);
-                PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(playerLocalPosition), followProfile.PositionOffset, followProfile.LookOffset);
+                PositionCloseReviewCamera(camera, guide.ResolveActiveCameraAnchorForReview(), followProfile.PositionOffset, followProfile.LookOffset);
                 realtimeRig.ApplyNowForReview();
                 WarmUpCameraRender(camera);
                 SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
@@ -28720,7 +28727,7 @@ namespace Anemora.EditorTools
             }
 
             var houseExteriorSky = new Color(0.234f, 0.221f, 0.198f, 1f);
-            var centralPlazaSky = new Color(0.620f, 0.580f, 0.470f, 1f);
+            var centralPlazaSky = new Color(0.220f, 0.286f, 0.340f, 1f);
             var indoorDark = new Color(0.060f, 0.056f, 0.055f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
@@ -37406,7 +37413,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 128 must keep central plaza ambient low enough for real shadows, found {ambient}.");
             }
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.48f, 0.43f, 0.33f, 1f), "cycle 128 central plaza camera background");
+            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 128 central plaza camera background");
 
             var gradePlate = FindSceneObjectIncludingInactive("FastVS_Cycle128GradePlate");
             var rayPlate = FindSceneObjectIncludingInactive("FastVS_Cycle128RayPlate");
@@ -37774,7 +37781,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 134 ambient must leave realtime shadows readable without camera paint, found {ambient}.");
             }
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.620f, 0.580f, 0.470f, 1f), "cycle 137 central plaza VS clear color");
+            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 137 central plaza VS clear color");
 
             var profile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
             if (Mathf.Abs(profile.PositionOffset.x - 0f) > 0.01f ||
@@ -37917,7 +37924,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cycle 137 central plaza must use a stable VS clear color behind the realtime-lit map.");
             }
 
-            ValidateColorApproximately(camera.backgroundColor, new Color(0.620f, 0.580f, 0.470f, 1f), "cycle 137 central plaza clear color");
+            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 137 central plaza clear color");
         }
 
         private static void ValidateHd2dPlazaRealtimeDappleCasterCycle138()
@@ -38511,6 +38518,47 @@ namespace Anemora.EditorTools
             if (visibleCasterCount < 8)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 150 expected visible central-plaza props to cast and receive realtime shadows, found {visibleCasterCount}.");
+            }
+        }
+
+        private static void ValidateHd2dPlazaVsSkyCameraCycle151()
+        {
+            ValidateHd2dPlazaVisibleCasterCycle150();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 151 needs controller, visibility, guide, realtime rig, and camera.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            controller.ForcePlayerCurrentLocalForReview(PlazaFromLibraryTarget);
+            guide.ApplyActiveTimeIsolationForReview();
+            realtimeRig.ApplyNowForReview();
+
+            ValidateColorApproximately(camera.backgroundColor, new Color(0.220f, 0.286f, 0.340f, 1f), "cycle 151 central plaza VS sky clear color");
+            if (camera.backgroundColor.b <= camera.backgroundColor.r ||
+                camera.backgroundColor.b < 0.330f ||
+                camera.backgroundColor.r > 0.230f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 151 central plaza sky must be blue-gray rather than the previous brown wash, found {camera.backgroundColor}.");
+            }
+
+            var anchorWorld = guide.ResolveActiveCameraAnchorForReview();
+            var anchorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(anchorWorld);
+            var expectedAnchorZ = CentralPlazaVsCenter.z - 1.10f;
+            if (Mathf.Abs(anchorLocal.z - expectedAnchorZ) > 0.05f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 151 central plaza follow anchor should clamp to VS plaza framing z={expectedAnchorZ:0.00}, found {anchorLocal.z:0.00}.");
+            }
+
+            if (Mathf.Abs(anchorLocal.x - PlazaFromLibraryTarget.x) > 0.05f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 151 central plaza follow anchor should keep player X tracking while clamping depth, found x={anchorLocal.x:0.00}.");
             }
         }
 
@@ -45781,6 +45829,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle150_plaza_visible_caster_parent_review_20260525_01";
         }
 
+        private static string GetPlazaVsSkyCameraCycle151ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle151_plaza_vs_sky_camera_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49342,6 +49395,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaVisibleCasterCycle150();
+        }
+
+        public static void ValidatePlazaVsSkyCameraCycle151Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaVsSkyCameraCycle151();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

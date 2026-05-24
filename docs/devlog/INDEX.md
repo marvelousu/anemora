@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.20 fast VS HD2D plaza visible caster index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.21 fast VS HD2D plaza VS sky camera index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 498 files including INDEX.md and README.md.
-- Dated devlog records: 496 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1264 files.
+- Root-level Markdown coverage: 499 files including INDEX.md and README.md.
+- Dated devlog records: 497 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1269 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 23 |
+| 2026-05-25 | 24 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md](2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md) | Fast VS / HD2D | feat(hd2d): restore plaza VS sky camera |
 | [2026-05-25_fast_vs_hd2d_plaza_visible_caster_cycle150.md](2026-05-25_fast_vs_hd2d_plaza_visible_caster_cycle150.md) | Fast VS / HD2D | feat(hd2d): cast shadows from visible plaza props |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_sprite_tracking_cycle149.md](2026-05-25_fast_vs_hd2d_plaza_realtime_sprite_tracking_cycle149.md) | Fast VS / HD2D | feat(hd2d): track plaza sprite realtime light |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_soft_shadow_cycle148.md](2026-05-25_fast_vs_hd2d_plaza_realtime_soft_shadow_cycle148.md) | Fast VS / HD2D | feat(hd2d): soften plaza realtime shadowmap |
@@ -654,6 +655,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.21 | 2026-05-25 | Added Fast VS HD2D plaza VS sky camera cycle record with central-plaza follow-anchor depth clamp, blue-gray clear-color restoration, realtime lighting preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.06 | 2026-05-25 | Added Fast VS HD2D plaza map-safe camera cycle record with lower central-plaza follow camera, in-map review anchor, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.05 | 2026-05-25 | Added Fast VS HD2D plaza VS camera recovery cycle record with central-plaza follow camera reframing, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.04 | 2026-05-25 | Added Fast VS HD2D plaza realtime shadow recovery cycle record with central-plaza realtime caster preservation, eight added ShadowOnly occluders, painted/camera overlay suppression, fog removal, VS camera recovery, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |

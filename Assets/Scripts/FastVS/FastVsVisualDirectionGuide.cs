@@ -6,6 +6,7 @@ namespace Anemora.FastVS
     public sealed class FastVsVisualDirectionGuide : MonoBehaviour
     {
         private const float CameraModeFov = 38f;
+        private const float CentralPlazaVsCameraMaxAnchorZ = 14.70f;
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;
@@ -188,6 +189,11 @@ namespace Anemora.FastVS
             }
 
             var local = portalController.GetPlayerLocalCoordinateForReview();
+            if (areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.CentralPlaza)
+            {
+                local.z = Mathf.Min(local.z, CentralPlazaVsCameraMaxAnchorZ);
+            }
+
             return root.TransformPoint(local);
         }
 

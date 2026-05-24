@@ -23,7 +23,7 @@ namespace Anemora.FastVS
         [SerializeField] private FastVsHouseArea activeArea;
         [SerializeField] private Color indoorClearColor = new Color(0.064f, 0.060f, 0.060f, 1f);
         [SerializeField] private Color exteriorSkyClearColor = new Color(0.118f, 0.142f, 0.166f, 1f);
-        [SerializeField] private Color centralPlazaSkyClearColor = new Color(0.620f, 0.580f, 0.470f, 1f);
+        [SerializeField] private Color centralPlazaSkyClearColor = new Color(0.220f, 0.286f, 0.340f, 1f);
 
         public FastVsHouseArea ActiveAreaForReview => activeArea;
         public bool InteriorActiveForReview => IsActive(currentInteriorMap) && IsActive(pastInteriorMap);
