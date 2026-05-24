@@ -853,10 +853,10 @@ namespace Anemora.EditorTools
         {
             var halfWidth = facadeWidth * 0.5f;
             var sideScale = new Vector3(0.18f, facadeHeight * 0.92f, depth);
-            CreateLandmarkCube($"{objectPrefix}_LeftDepthWall", root, facadeCenter + new Vector3(-halfWidth + 0.09f, -0.04f, depth * 0.48f), sideScale, Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.left_wall");
-            CreateLandmarkCube($"{objectPrefix}_RightDepthWall", root, facadeCenter + new Vector3(halfWidth - 0.09f, -0.04f, depth * 0.48f), sideScale, Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.right_wall");
-            CreateLandmarkCube($"{objectPrefix}_BackDepthWall", root, facadeCenter + new Vector3(0f, -0.08f, depth * 0.96f), new Vector3(facadeWidth * 0.88f, facadeHeight * 0.82f, 0.18f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.back_wall");
-            CreateLandmarkCube($"{objectPrefix}_RoofBackPlane", root, facadeCenter + new Vector3(0f, facadeHeight * 0.55f, depth * 0.78f), new Vector3(facadeWidth * 1.06f, 0.20f, depth * 0.86f), Quaternion.Euler(7f, 0f, 0f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.roof_back_plane");
+            CreateLandmarkCube($"{objectPrefix}_LeftDepthWall", root, facadeCenter + new Vector3(-halfWidth + 0.09f, -0.04f, depth * 0.48f), sideScale, Quaternion.identity, wall, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.left_wall");
+            CreateLandmarkCube($"{objectPrefix}_RightDepthWall", root, facadeCenter + new Vector3(halfWidth - 0.09f, -0.04f, depth * 0.48f), sideScale, Quaternion.identity, wall, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.right_wall");
+            CreateLandmarkCube($"{objectPrefix}_BackDepthWall", root, facadeCenter + new Vector3(0f, -0.08f, depth * 0.96f), new Vector3(facadeWidth * 0.88f, facadeHeight * 0.82f, 0.18f), Quaternion.identity, wall, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.back_wall");
+            CreateLandmarkCube($"{objectPrefix}_RoofBackPlane", root, facadeCenter + new Vector3(0f, facadeHeight * 0.55f, depth * 0.78f), new Vector3(facadeWidth * 1.06f, 0.20f, depth * 0.86f), Quaternion.Euler(7f, 0f, 0f), roof, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{landmarkPrefix}.depth.roof_back_plane");
             CreateLandmarkCube($"{objectPrefix}_RoofRidgeTrim", root, facadeCenter + new Vector3(0f, facadeHeight * 0.67f, depth * 0.16f), new Vector3(facadeWidth * 1.08f, 0.08f, 0.12f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkPrefix}.depth.roof_ridge_trim");
             CreateLandmarkCube($"{objectPrefix}_UnderEaveShadow", root, facadeCenter + new Vector3(0f, facadeHeight * 0.40f, -0.13f), new Vector3(facadeWidth * 0.98f, 0.06f, 0.08f), Quaternion.identity, shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{landmarkPrefix}.depth.under_eave_shadow");
         }
@@ -887,7 +887,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_HouseDoor", root, c + new Vector3(-0.38f, 0.70f, 1.02f), new Vector3(0.62f, 1.28f, 0.08f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.house_door");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_HouseWindowLeft", root, c + new Vector3(-1.08f, 1.18f, 1.08f), new Vector3(0.56f, 0.50f, 0.08f), Quaternion.identity, past ? materials.WindowLight : materials.EmptyWindow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.house_window_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_HouseWindowRight", root, c + new Vector3(0.72f, 1.18f, 1.08f), new Vector3(0.56f, 0.50f, 0.08f), Quaternion.identity, past ? materials.WindowLight : materials.EmptyWindow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.house_window_right");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_FenceGate", root, c + new Vector3(1.75f, 0.46f, -1.98f), new Vector3(0.96f, 0.56f, 0.12f), Quaternion.Euler(0f, -16f, 0f), trim, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.c1.fence_gate");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_FenceGate", root, c + new Vector3(1.75f, 0.46f, -1.98f), new Vector3(0.96f, 0.56f, 0.12f), Quaternion.Euler(0f, -16f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.c1.fence_gate");
             CreatePathBetween(root, c + new Vector3(-1.30f, 0.06f, -2.05f), Chapter1C3RouteTriggerCenter + new Vector3(-0.62f, -0.64f, 0.08f), 0.96f, path, $"{prefix}_CentralPlaza_Chapter1_C1_To_C3_Path", true);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_SignBoard", root, c + new Vector3(-1.98f, 0.98f, 0.62f), new Vector3(0.72f, 0.30f, 0.08f), Quaternion.Euler(0f, 20f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.sign_board");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_HouseStoneBase", root, c + new Vector3(0f, 0.25f, 0.98f), new Vector3(3.58f, 0.18f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.house_stone_base");
@@ -901,7 +901,7 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Lantern", root, c + new Vector3(1.45f, 1.78f, 1.00f), new Vector3(0.22f, 0.30f, 0.08f), Quaternion.identity, materials.Lamp, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.c1.lantern");
                 CreateFlowerPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1", c + new Vector3(-1.05f, 0.20f, 1.38f), leaf, materials.FlowerRed, materials.FlowerYellow);
                 CreateFlowerPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1", c + new Vector3(0.88f, 0.20f, 1.42f), leaf, materials.FlowerBlue, materials.FlowerYellow);
-                CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_RepairedFenceGate", root, c + new Vector3(1.78f, 0.48f, -2.02f), new Vector3(1.02f, 0.58f, 0.12f), Quaternion.Euler(0f, -12f, 0f), materials.PastFence, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, "Past.central_plaza.chapter1.c1.repaired_gate");
+                CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_RepairedFenceGate", root, c + new Vector3(1.78f, 0.48f, -2.02f), new Vector3(1.02f, 0.58f, 0.12f), Quaternion.Euler(0f, -12f, 0f), materials.PastFence, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, "Past.central_plaza.chapter1.c1.repaired_gate");
             }
             else
             {
@@ -1054,7 +1054,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_HouseFrontDoor", root, c + new Vector3(-0.32f, 0.66f, 0.98f), new Vector3(0.52f, 1.20f, 0.08f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c2.house_front_door");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_HouseFrontWindowLeft", root, c + new Vector3(-1.00f, 1.14f, 1.02f), new Vector3(0.54f, 0.46f, 0.08f), Quaternion.identity, past ? materials.WindowLight : materials.EmptyWindow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c2.house_front_window_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_HouseFrontWindowRight", root, c + new Vector3(0.70f, 1.14f, 1.02f), new Vector3(0.54f, 0.46f, 0.08f), Quaternion.identity, past ? materials.WindowLight : materials.EmptyWindow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c2.house_front_window_right");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_FrontFence", root, c + new Vector3(1.70f, 0.44f, -1.86f), new Vector3(0.92f, 0.54f, 0.12f), Quaternion.Euler(0f, -12f, 0f), trim, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.c2.front_fence");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_FrontFence", root, c + new Vector3(1.70f, 0.44f, -1.86f), new Vector3(0.92f, 0.54f, 0.12f), Quaternion.Euler(0f, -12f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.c2.front_fence");
             CreateChapter1Tree(root, $"{prefix}_CentralPlaza_Chapter1_C2_YardTree", c + new Vector3(-1.72f, 0.20f, 1.20f), wood, leaf);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_C2", c + new Vector3(-0.88f, 0.20f, 1.48f), leaf, 0);
             CreateFlowerPatch(root, $"{prefix}_CentralPlaza_Chapter1_C2", c + new Vector3(0.88f, 0.20f, 1.30f), leaf, materials.FlowerBlue, materials.FlowerYellow);
@@ -1077,7 +1077,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_PlazaFloor", root, c + new Vector3(0f, 0.01f, 0f), new Vector3(5.80f, 0.08f, 4.92f), Quaternion.identity, path, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.d2.plaza_floor");
             CreatePathBetween(root, Chapter1D1RouteTriggerCenter + new Vector3(0.00f, -0.64f, -0.08f), c + new Vector3(-1.54f, 0.06f, -0.04f), 0.88f, path, $"{prefix}_CentralPlaza_Chapter1_D1_To_D2_Path", true);
             CreatePathBetween(root, c + new Vector3(1.34f, 0.06f, -0.08f), Chapter1D3RouteTriggerCenter + new Vector3(-0.66f, -0.64f, 0.04f), 0.88f, path, $"{prefix}_CentralPlaza_Chapter1_D2_To_D3_Path", true);
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_PlazaStage", root, c + new Vector3(-0.22f, 0.50f, -0.02f), new Vector3(2.32f, 0.96f, 1.42f), Quaternion.identity, wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.stage");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_PlazaStage", root, c + new Vector3(-0.22f, 0.50f, -0.02f), new Vector3(2.32f, 0.96f, 1.42f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.stage");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_StageBackdrop", root, c + new Vector3(-0.22f, 1.32f, 0.68f), new Vector3(2.08f, 0.22f, 0.10f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.d2.stage_backdrop");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_AriaHouseWall", root, c + new Vector3(2.08f, 1.06f, 1.46f), new Vector3(1.58f, 2.00f, 0.22f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.d2.aria_house_wall");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_AriaHouseRoof", root, c + new Vector3(2.02f, 2.20f, 1.42f), new Vector3(1.86f, 0.36f, 0.94f), Quaternion.Euler(7f, 0f, 0f), roof, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.d2.aria_house_roof");
@@ -2924,6 +2924,7 @@ namespace Anemora.EditorTools
             ValidateMapTransitionClosesCurrentTimePortal(controller, visibility, exteriorToPlaza);
             ValidateDoorTriggerReachability(controller, visibility, interiorToExterior, exteriorToInterior, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza, plazaB3ToMiaC1, miaC1ToPlazaB3, miaC3ToAriaD1, ariaD1ToMiaC3, ariaD3ToKaiaE1, kaiaE1ToAriaD3, kaiaE3ToRuinsF1, ruinsF1ToKaiaE3, ruinsF6ToEnd);
             ValidateDoorTransitionExecution(controller, visibility, interiorToExterior, exteriorToInterior, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza, plazaB3ToMiaC1, miaC1ToPlazaB3, miaC3ToAriaD1, ariaD1ToMiaC3, ariaD3ToKaiaE1, kaiaE1ToAriaD3, kaiaE3ToRuinsF1, ruinsF1ToKaiaE3, ruinsF6ToEnd);
+            ValidateChapter1ContinuationPlayableRoute(controller, visibility);
         }
 
         private static void ValidateDoorWarp(TimeWindowPairedSpacePortalController controller)
@@ -3291,6 +3292,149 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {label} spawn target is still inside the source trigger and may bounce back.");
             }
+        }
+
+        private static void ValidateChapter1ContinuationPlayableRoute(TimeWindowPairedSpacePortalController controller, FastVsHouseAreaVisibility visibility)
+        {
+            ValidateWalkableRoute(
+                controller,
+                visibility,
+                FastVsHouseArea.CentralPlaza,
+                "post-library start to B3",
+                Chapter1PostLibraryStart,
+                Chapter1B3RouteTriggerCenter);
+
+            ValidateWalkableRoute(
+                controller,
+                visibility,
+                FastVsHouseArea.MiaHouse,
+                "C1 arrival to C3",
+                Chapter1C1FromB3Target,
+                CentralPlazaVsCenter + new Vector3(9.35f, 0.02f, -5.45f),
+                CentralPlazaVsCenter + new Vector3(9.35f, 0.02f, -2.00f),
+                Chapter1C3RouteTriggerCenter);
+
+            ValidateWalkableRoute(
+                controller,
+                visibility,
+                FastVsHouseArea.AriaStreet,
+                "D1 arrival to D3",
+                Chapter1D1FromC3Target,
+                CentralPlazaVsCenter + new Vector3(9.61f, 0.02f, 0.66f),
+                CentralPlazaVsCenter + new Vector3(12.49f, 0.02f, 0.62f),
+                Chapter1D3RouteTriggerCenter);
+
+            ValidateWalkableRoute(
+                controller,
+                visibility,
+                FastVsHouseArea.KaiaFarm,
+                "E1 arrival to E3",
+                Chapter1E1FromD3Target,
+                CentralPlazaVsCenter + new Vector3(11.72f, 0.02f, 2.18f),
+                CentralPlazaVsCenter + new Vector3(14.05f, 0.02f, 2.26f),
+                Chapter1E3RouteTriggerCenter);
+
+            ValidateWalkableRoute(
+                controller,
+                visibility,
+                FastVsHouseArea.Ruins,
+                "F1 arrival to F6",
+                Chapter1F1FromE3Target,
+                CentralPlazaVsCenter + new Vector3(15.04f, 0.02f, -0.52f),
+                CentralPlazaVsCenter + new Vector3(17.00f, 0.02f, -0.38f),
+                Chapter1F6RouteTriggerCenter);
+        }
+
+        private static void ValidateWalkableRoute(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsHouseArea area,
+            string label,
+            params Vector3[] localPoints)
+        {
+            if (localPoints == null || localPoints.Length < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} walkable route needs at least two points.");
+            }
+
+            visibility.SetActiveAreaForReview(area);
+            controller.ForcePlayerCurrentLocalForReview(localPoints[0]);
+            UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>(FindObjectsInactive.Include)?.ApplyActiveTimeIsolationForReview();
+            Physics.SyncTransforms();
+
+            for (var i = 0; i < localPoints.Length; i++)
+            {
+                ValidateWalkablePoint(controller, localPoints[i], $"{label} point {i + 1}");
+            }
+
+            for (var i = 0; i < localPoints.Length - 1; i++)
+            {
+                ValidateWalkableSegment(controller, localPoints[i], localPoints[i + 1], $"{label} segment {i + 1}");
+            }
+        }
+
+        private static void ValidateWalkablePoint(TimeWindowPairedSpacePortalController controller, Vector3 localPoint, string label)
+        {
+            var root = controller.CurrentSpaceRootForReview;
+            if (root == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: current space root missing during continuation route clearance validation.");
+            }
+
+            var world = root.TransformPoint(localPoint);
+            var bottom = world + Vector3.up * 0.26f;
+            var top = world + Vector3.up * 1.10f;
+            var hits = Physics.OverlapCapsule(bottom, top, 0.24f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            foreach (var hit in hits)
+            {
+                if (IsBlockingContinuationRouteCollider(hit))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} overlaps blocking collider {hit.name}.");
+                }
+            }
+        }
+
+        private static void ValidateWalkableSegment(TimeWindowPairedSpacePortalController controller, Vector3 startLocal, Vector3 endLocal, string label)
+        {
+            var root = controller.CurrentSpaceRootForReview;
+            if (root == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: current space root missing during continuation route clearance validation.");
+            }
+
+            var start = root.TransformPoint(startLocal);
+            var end = root.TransformPoint(endLocal);
+            var direction = end - start;
+            direction.y = 0f;
+            var distance = direction.magnitude;
+            if (distance <= 0.001f)
+            {
+                return;
+            }
+
+            direction /= distance;
+            var bottom = start + Vector3.up * 0.26f;
+            var top = start + Vector3.up * 1.10f;
+            var hits = Physics.CapsuleCastAll(bottom, top, 0.24f, direction, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            foreach (var hit in hits)
+            {
+                if (IsBlockingContinuationRouteCollider(hit.collider))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} is blocked by collider {hit.collider.name}.");
+                }
+            }
+        }
+
+        private static bool IsBlockingContinuationRouteCollider(Collider collider)
+        {
+            if (collider == null ||
+                collider.GetComponentInParent<CharacterController>() != null)
+            {
+                return false;
+            }
+
+            var landmark = collider.GetComponentInParent<TimeWindowPairedSpaceLandmark>();
+            return landmark == null || landmark.Kind != TimeWindowPairedSpaceLandmarkKind.PathOrFloor;
         }
 
         private static void ValidateCameraStaysOnSameCoordinateRoot(TimeWindowPairedSpacePortalController controller)
