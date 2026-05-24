@@ -5362,6 +5362,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaReferenceAerialLiftCycle123(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceFocusShadowCycle124(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceDioramaShadowCycle125(plazaRoot, prefix, past, materials);
+            CreateCentralPlazaReferenceCloseShadowBarMuteCycle126(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15263,6 +15264,11 @@ namespace Anemora.EditorTools
         public static void CapturePlazaReferenceDioramaShadowCycle125ScreenshotsBatch()
         {
             CapturePlazaReferenceSurfaceRemapCycle122ScreenshotsToDirectory(GetPlazaReferenceDioramaShadowCycle125ScreenshotsDirectory());
+        }
+
+        public static void CapturePlazaReferenceCloseShadowBarMuteCycle126ScreenshotsBatch()
+        {
+            CapturePlazaReferenceSurfaceRemapCycle122ScreenshotsToDirectory(GetPlazaReferenceCloseShadowBarMuteCycle126ScreenshotsDirectory());
         }
 
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
@@ -35959,6 +35965,75 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaReferenceCloseShadowBarMuteCycle126()
+        {
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_ApproachBlackBarMuteA",
+                PlazaReferenceDioramaSunCycle125MaterialPath,
+                PlazaReferenceDioramaSunCycle125TexturePath,
+                FastVsHd2dOverlayKind.LightPool);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_CloseGridWashA",
+                PlazaReferenceDioramaSunCycle125MaterialPath,
+                PlazaReferenceDioramaSunCycle125TexturePath,
+                FastVsHd2dOverlayKind.LightPool);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_GroundAirUnifierA",
+                PlazaReferenceDioramaAirCycle125MaterialPath,
+                PlazaReferenceDioramaAirCycle125TexturePath,
+                FastVsHd2dOverlayKind.Atmosphere);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_StepAirLiftA",
+                PlazaReferenceDioramaAirCycle125MaterialPath,
+                PlazaReferenceDioramaAirCycle125TexturePath,
+                FastVsHd2dOverlayKind.Atmosphere);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_ShortStepContactA",
+                PlazaReferenceDioramaShadowCycle125MaterialPath,
+                PlazaReferenceDioramaShadowCycle125TexturePath,
+                FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_PlayerReferenceContactA",
+                PlazaReferenceDioramaShadowCycle125MaterialPath,
+                PlazaReferenceDioramaShadowCycle125TexturePath,
+                FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+
+            var currentCycle126Count = 0;
+            var pastCycle126Count = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate == null || !candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (candidate.name.StartsWith("Current_CentralPlaza_Cycle126_CloseShadowBarMute_", StringComparison.Ordinal))
+                {
+                    currentCycle126Count++;
+                }
+
+                if (candidate.name.StartsWith("Past_CentralPlaza_Cycle126_CloseShadowBarMute_", StringComparison.Ordinal))
+                {
+                    pastCycle126Count++;
+                }
+
+                if (IsCycle126SuppressedCloseShadowObjectName(candidate.name) && candidate.activeSelf)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 126 must disable close-shot shadow bar source {candidate.name}.");
+                }
+            }
+
+            if (currentCycle126Count != 6)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 126 must keep exactly 6 current close shadow bar mute overlays, found {currentCycle126Count}.");
+            }
+
+            if (pastCycle126Count != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 126 must stay current-world only, found {pastCycle126Count} past overlays.");
+            }
+        }
+
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -42991,6 +43066,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle125_plaza_reference_diorama_shadow_parent_review_20260524_01";
         }
 
+        private static string GetPlazaReferenceCloseShadowBarMuteCycle126ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle126_plaza_close_shadow_bar_mute_parent_review_20260524_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -46372,6 +46452,12 @@ namespace Anemora.EditorTools
         {
             ValidatePlazaReferenceFocusShadowCycle124Batch();
             ValidateHd2dPlazaReferenceDioramaShadowCycle125();
+        }
+
+        public static void ValidatePlazaReferenceCloseShadowBarMuteCycle126Batch()
+        {
+            ValidatePlazaReferenceDioramaShadowCycle125Batch();
+            ValidateHd2dPlazaReferenceCloseShadowBarMuteCycle126();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()
@@ -51281,6 +51367,127 @@ namespace Anemora.EditorTools
             _ = materials;
         }
 
+        private static void CreateCentralPlazaReferenceCloseShadowBarMuteCycle126(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var sunMaterial = EnsureHd2dPlazaReferenceDioramaSunCycle125Material();
+            var shadowMaterial = EnsureHd2dPlazaReferenceDioramaShadowCycle125Material();
+            var airMaterial = EnsureHd2dPlazaReferenceDioramaAirCycle125Material();
+
+            foreach (var child in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (child != null && IsCycle126SuppressedCloseShadowObjectName(child.name))
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+
+            void Sun(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle126_CloseShadowBarMute_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle126.close_shadow_bar_mute.{suffix.ToLowerInvariant()}",
+                    sunMaterial,
+                    FastVsHd2dOverlayKind.LightPool,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            void Air(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle126_CloseShadowBarMute_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle126.close_shadow_bar_mute.{suffix.ToLowerInvariant()}",
+                    airMaterial,
+                    FastVsHd2dOverlayKind.Atmosphere,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            void Shadow(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle126_CloseShadowBarMute_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle126.close_shadow_bar_mute.{suffix.ToLowerInvariant()}",
+                    shadowMaterial,
+                    FastVsHd2dOverlayKind.StaticDirectionalCastShadow,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            Sun("ApproachBlackBarMuteA", new Vector3(0.02f, 0.246f, 6.78f), new Vector3(12.80f, 0.82f, 1f), Quaternion.Euler(90f, 0f, -3f), new Vector2(0.06f, 0.30f), new Color(1.00f, 0.95f, 0.80f, 0.26f));
+            Sun("CloseGridWashA", new Vector3(0.06f, 0.247f, 2.62f), new Vector3(13.70f, 3.30f, 1f), Quaternion.Euler(90f, 0f, -5f), new Vector2(0.04f, 0.20f), new Color(0.98f, 0.94f, 0.82f, 0.15f));
+
+            Air("GroundAirUnifierA", new Vector3(0.02f, 0.248f, 3.44f), new Vector3(14.00f, 4.65f, 1f), Quaternion.Euler(90f, 0f, -4f), new Vector2(0.02f, 0.12f), new Color(0.96f, 0.90f, 0.76f, 0.10f));
+            Air("StepAirLiftA", new Vector3(0.00f, 0.249f, 6.52f), new Vector3(11.60f, 1.22f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.02f, 0.14f), new Color(0.96f, 0.90f, 0.76f, 0.12f));
+
+            Shadow("ShortStepContactA", new Vector3(0.02f, 0.251f, 6.46f), new Vector3(5.25f, 0.13f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.16f, 0.38f), new Color(0.020f, 0.016f, 0.012f, 0.34f));
+            Shadow("PlayerReferenceContactA", new Vector3(-1.16f, 0.252f, 4.16f), new Vector3(0.74f, 0.11f, 1f), Quaternion.Euler(90f, 0f, -12f), new Vector2(0.12f, 0.30f), new Color(0.018f, 0.015f, 0.012f, 0.22f));
+
+            _ = materials;
+        }
+
+        private static bool IsCycle126SuppressedCloseShadowObjectName(string objectName)
+        {
+            var suppressedExact = new[]
+            {
+                "Current_CentralPlaza_LibraryApproach_ThresholdShadowBand",
+                "Current_CentralPlaza_BackdropFoundation_HorizonRoofline",
+                "Current_CentralPlaza_OutdoorVoidBackground_NorthSilhouetteCenter",
+                "Current_CentralPlaza_LightComposition_LibraryFacadeShadowBaseA",
+                "Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA",
+                "Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryDoorCoolEntryLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryWestPlinthCoolLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryEastPlinthCoolLightA"
+            };
+
+            for (var i = 0; i < suppressedExact.Length; i++)
+            {
+                if (string.Equals(objectName, suppressedExact[i], StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            var suppressedPrefixes = new[]
+            {
+                "Current_CentralPlaza_StaticDirectionalCastShadow_",
+                "Current_CentralPlaza_SurfaceDirectionalShade_",
+                "Current_CentralPlaza_ShadowFoundationCycle68_",
+                "Current_CentralPlaza_ShadowFoundationCycle70_"
+            };
+
+            for (var i = 0; i < suppressedPrefixes.Length; i++)
+            {
+                if (objectName.StartsWith(suppressedPrefixes[i], StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static bool IsCycle125SuppressedReferenceLightingObjectName(string objectName)
         {
             var suppressedPrefixes = new[]
@@ -55906,24 +56113,24 @@ namespace Anemora.EditorTools
         {
             var broad = SampleSmoothValueNoise2D((x * 0.050f) + 8.1f, (y * 0.052f) + 4.3f, 401);
             var fine = SampleSmoothValueNoise2D((x * 0.190f) + 2.4f, (y * 0.170f) + 11.6f, 409);
-            var tone = LerpColor(new Color(0.405f, 0.375f, 0.290f, 1f), new Color(0.660f, 0.610f, 0.465f, 1f), Mathf.Clamp01((broad * 0.72f) + (fine * 0.18f)));
+            var tone = LerpColor(new Color(0.390f, 0.365f, 0.295f, 1f), new Color(0.610f, 0.570f, 0.445f, 1f), Mathf.Clamp01((broad * 0.70f) + (fine * 0.14f)));
             var seam = x % 18 <= 1 || y % 16 <= 1;
             if (seam)
             {
-                tone = LerpColor(tone, new Color(0.260f, 0.235f, 0.180f, 1f), 0.24f);
+                tone = LerpColor(tone, new Color(0.335f, 0.305f, 0.238f, 1f), 0.11f);
             }
 
             if (fine > 0.72f && !seam)
             {
-                tone = Lighten(tone, 0.052f);
+                tone = Lighten(tone, 0.026f);
             }
 
             if (Hash01(x, y, 421) > 0.985f)
             {
-                tone = Darken(tone, 0.020f);
+                tone = Darken(tone, 0.012f);
             }
 
-            return ShadeSurface(tone, x, y, 128, 128, 0.010f, 0.022f);
+            return ShadeSurface(tone, x, y, 128, 128, 0.006f, 0.014f);
         }
 
         private static Color SamplePastPathHd2dPixel(int x, int y)
