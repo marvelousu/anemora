@@ -20,7 +20,7 @@ namespace Anemora.FastVS
         [SerializeField] private Light mainLight;
         [SerializeField] private bool enforceRendererShadowPolicy = true;
         [SerializeField] private Color exteriorSkyColor = new Color(0.48f, 0.50f, 0.46f, 1f);
-        [SerializeField] private Color centralPlazaSkyColor = new Color(0.58f, 0.55f, 0.46f, 1f);
+        [SerializeField] private Color centralPlazaSkyColor = new Color(0.112f, 0.138f, 0.164f, 1f);
 
         private float nextShadowPolicyRefreshTime;
         private GameObject cycle128GradeRoot;
@@ -92,16 +92,16 @@ namespace Anemora.FastVS
                 mainLight.enabled = true;
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
-                mainLight.shadowStrength = Mathf.Max(mainLight.shadowStrength, 0.98f);
+                mainLight.shadowStrength = isCentralPlaza ? 0.92f : Mathf.Max(mainLight.shadowStrength, 0.82f);
                 mainLight.shadowBias = Mathf.Min(mainLight.shadowBias, 0.025f);
                 mainLight.shadowNormalBias = Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
 
                 if (isCentralPlaza)
                 {
-                    mainLight.intensity = 2.25f;
-                    mainLight.color = new Color(1.00f, 0.94f, 0.72f, 1f);
-                    mainLight.transform.rotation = Quaternion.Euler(36f, -35f, 0f);
+                    mainLight.intensity = 2.10f;
+                    mainLight.color = new Color(1.00f, 0.88f, 0.62f, 1f);
+                    mainLight.transform.rotation = Quaternion.Euler(43f, -38f, 0f);
                 }
             }
 
@@ -113,21 +113,15 @@ namespace Anemora.FastVS
 
             if (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza)
             {
-                RenderSettings.fog = isCentralPlaza;
-                RenderSettings.fogMode = FogMode.ExponentialSquared;
-                RenderSettings.fogColor = new Color(0.58f, 0.56f, 0.49f, 1f);
-                RenderSettings.fogDensity = isCentralPlaza ? 0.0105f : 0f;
+                RenderSettings.fog = false;
                 RenderSettings.ambientMode = AmbientMode.Flat;
             }
 
             if (isCentralPlaza)
             {
-                RenderSettings.ambientLight = new Color(0.024f, 0.028f, 0.030f, 1f);
+                RenderSettings.ambientLight = new Color(0.055f, 0.050f, 0.043f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
-                EnsureCycle128CameraGrade();
-                EnsureCycle131CameraPaint();
-                SetCycle128CameraGradeActive(true);
-                UpdateCycle128CameraGradeScale();
+                SetCycle128CameraGradeActive(false);
             }
             else
             {
@@ -258,6 +252,14 @@ namespace Anemora.FastVS
                    name.Contains("Current_CentralPlaza_Cycle124_") ||
                    name.Contains("Current_CentralPlaza_Cycle125_") ||
                    name.Contains("Current_CentralPlaza_Cycle126_") ||
+                   name.Contains("Current_CentralPlaza_Cycle129Painted") ||
+                   name.Contains("Current_CentralPlaza_Cycle130Reference") ||
+                   name.Contains("FastVS_Cycle128GradePlate") ||
+                   name.Contains("FastVS_Cycle128RayPlate") ||
+                   name.Contains("FastVS_Cycle131ShadowPaintPlate") ||
+                   name.Contains("FastVS_Cycle131SunPaintPlate") ||
+                   name.Contains("PaintedSoftShadow") ||
+                   name.Contains("PaintedLightFleck") ||
                    name.Contains("Sunbeam") ||
                    name.Contains("Sunbreak") ||
                    name.Contains("Sunlit") ||
