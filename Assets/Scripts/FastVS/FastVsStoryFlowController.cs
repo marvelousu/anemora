@@ -876,6 +876,16 @@ namespace Anemora.FastVS
                     return !retoEventComplete && IsRetoInteractionReady()
                         ? "E: レトと話す"
                         : "レトの机へ向かう。";
+                case FastVsHouseArea.MiaHouse:
+                    return "ミアの家の前へ進む。";
+                case FastVsHouseArea.AriaStreet:
+                    return "アリアの通りを進む。";
+                case FastVsHouseArea.KaiaFarm:
+                    return "カイアの畑へ向かう。";
+                case FastVsHouseArea.Ruins:
+                    return "谷の橋を渡る。";
+                case FastVsHouseArea.Chapter1End:
+                    return "東の端へ歩く。";
                 default:
                     return "進む。";
             }
