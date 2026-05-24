@@ -14,7 +14,7 @@ namespace Anemora.FastVS
 
         private const float UnifiedSunAzimuthDegrees = -38f;
         private const float UnifiedExteriorSunElevationDegrees = 52f;
-        private const float UnifiedCentralPlazaSunElevationDegrees = 52f;
+        private const float UnifiedCentralPlazaSunElevationDegrees = 38f;
         private const float UnifiedLibrarySunElevationDegrees = 56f;
         private const float UnifiedInteriorSunElevationDegrees = 48f;
 
@@ -371,23 +371,23 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.CentralPlaza:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 1.38f,
-                        mainLightShadowStrength = 0.90f,
-                        mainLightColor = new Color(1.00f, 0.86f, 0.62f, 1f),
+                        mainLightIntensity = 1.72f,
+                        mainLightShadowStrength = 1.00f,
+                        mainLightColor = new Color(1.00f, 0.78f, 0.48f, 1f),
                         mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza)),
-                        ambientLight = new Color(0.118f, 0.113f, 0.104f, 1f),
+                        ambientLight = new Color(0.074f, 0.066f, 0.054f, 1f),
                         fogEnabled = true,
-                        fogColor = new Color(0.205f, 0.180f, 0.150f, 1f),
-                        fogStartDistance = 14f,
-                        fogEndDistance = 72f,
-                        cameraBackgroundColor = new Color(0.188f, 0.166f, 0.136f, 1f),
+                        fogColor = new Color(0.245f, 0.200f, 0.148f, 1f),
+                        fogStartDistance = 8f,
+                        fogEndDistance = 44f,
+                        cameraBackgroundColor = new Color(0.215f, 0.184f, 0.136f, 1f),
                         warmFillPosition = new Vector3(20.80f, 1.25f, 17.30f),
-                        warmFillIntensity = 0.055f,
+                        warmFillIntensity = 0.025f,
                         warmFillRange = 9.8f,
-                        warmFillColor = new Color(1.00f, 0.70f, 0.44f, 1f),
+                        warmFillColor = new Color(1.00f, 0.62f, 0.34f, 1f),
                         coolRimRotation = Quaternion.Euler(28f, 152f, 0f),
-                        coolRimIntensity = 0.045f,
-                        coolRimColor = new Color(0.56f, 0.72f, 1.00f, 1f),
+                        coolRimIntensity = 0.025f,
+                        coolRimColor = new Color(0.46f, 0.58f, 0.92f, 1f),
                         libraryWindowEnabled = false,
                         libraryWindowPosition = new Vector3(28.55f, 3.05f, 23.15f),
                         libraryWindowRotation = Quaternion.Euler(58f, 36f, 0f),

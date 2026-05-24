@@ -156,11 +156,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(bloom.active, true, issues, "Bloom must be active.");
                 RequireBool(bloom.threshold.overrideState, true, issues, "Bloom threshold override must be enabled.");
-                RequireFloat(bloom.threshold.value, 0.80f, 0.05f, issues, "Bloom threshold must stay in the faded dusk range.");
+                RequireFloat(bloom.threshold.value, 0.72f, 0.05f, issues, "Bloom threshold must stay in the faded sun-shadow range.");
                 RequireBool(bloom.intensity.overrideState, true, issues, "Bloom intensity override must be enabled.");
-                RequireFloat(bloom.intensity.value, 0.10f, 0.03f, issues, "Bloom intensity must stay subtle for the faded dusk grade.");
+                RequireFloat(bloom.intensity.value, 0.18f, 0.04f, issues, "Bloom intensity must stay controlled for the faded sun-shadow grade.");
                 RequireBool(bloom.scatter.overrideState, true, issues, "Bloom scatter override must be enabled.");
-                RequireFloat(bloom.scatter.value, 0.50f, 0.05f, issues, "Bloom scatter must stay subtle for the faded dusk grade.");
+                RequireFloat(bloom.scatter.value, 0.60f, 0.06f, issues, "Bloom scatter must stay controlled for the faded sun-shadow grade.");
             }
 
             if (!volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
@@ -171,11 +171,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(colorAdjustments.active, true, issues, "ColorAdjustments must be active.");
                 RequireBool(colorAdjustments.postExposure.overrideState, true, issues, "ColorAdjustments post exposure override must be enabled.");
-                RequireFloat(colorAdjustments.postExposure.value, -0.21f, 0.035f, issues, "ColorAdjustments post exposure must stay in the faded dusk range.");
+                RequireFloat(colorAdjustments.postExposure.value, -0.16f, 0.035f, issues, "ColorAdjustments post exposure must stay in the faded sun-shadow range.");
                 RequireBool(colorAdjustments.contrast.overrideState, true, issues, "ColorAdjustments contrast override must be enabled.");
-                RequireFloat(colorAdjustments.contrast.value, 6f, 1.0f, issues, "ColorAdjustments contrast must keep readability.");
+                RequireFloat(colorAdjustments.contrast.value, 9f, 1.0f, issues, "ColorAdjustments contrast must support the stronger sun-shadow grade while keeping readability.");
                 RequireBool(colorAdjustments.saturation.overrideState, true, issues, "ColorAdjustments saturation override must be enabled.");
-                RequireFloat(colorAdjustments.saturation.value, -14f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded dusk range.");
+                RequireFloat(colorAdjustments.saturation.value, -22f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded sun-shadow range.");
             }
 
             if (!volumeProfile.TryGet<Vignette>(out var vignette))
@@ -186,9 +186,9 @@ namespace Anemora.EditorTools
             {
                 RequireBool(vignette.active, true, issues, "Vignette must be active.");
                 RequireBool(vignette.intensity.overrideState, true, issues, "Vignette intensity override must be enabled.");
-                if (vignette.intensity.value > 0.070f)
+                if (vignette.intensity.value > 0.120f)
                 {
-                    issues.Add("Vignette intensity must be at or below 0.070.");
+                    issues.Add("Vignette intensity must be at or below 0.120.");
                 }
             }
 
@@ -203,9 +203,21 @@ namespace Anemora.EditorTools
                 RequireEnumValue(tonemapping.mode.value, TonemappingMode.Neutral, issues, "Tonemapping must remain Neutral.");
             }
 
-            if (volumeProfile.TryGet<DepthOfField>(out var depthOfField) && depthOfField.active)
+            if (!volumeProfile.TryGet<DepthOfField>(out var depthOfField))
             {
-                issues.Add("DepthOfField must be disabled.");
+                issues.Add("DepthOfField component is missing.");
+            }
+            else
+            {
+                RequireBool(depthOfField.active, true, issues, "DepthOfField must be active for the HD-2D depth grade.");
+                RequireBool(depthOfField.mode.overrideState, true, issues, "DepthOfField mode override must be enabled.");
+                RequireEnumValue(depthOfField.mode.value, DepthOfFieldMode.Gaussian, issues, "DepthOfField mode must be Gaussian.");
+                RequireBool(depthOfField.gaussianStart.overrideState, true, issues, "DepthOfField gaussian start override must be enabled.");
+                RequireFloat(depthOfField.gaussianStart.value, 8f, 1.0f, issues, "DepthOfField gaussian start must stay near the review grade.");
+                RequireBool(depthOfField.gaussianEnd.overrideState, true, issues, "DepthOfField gaussian end override must be enabled.");
+                RequireFloat(depthOfField.gaussianEnd.value, 26f, 2.0f, issues, "DepthOfField gaussian end must stay near the review grade.");
+                RequireBool(depthOfField.gaussianMaxRadius.overrideState, true, issues, "DepthOfField gaussian max radius override must be enabled.");
+                RequireFloat(depthOfField.gaussianMaxRadius.value, 0.80f, 0.15f, issues, "DepthOfField gaussian max radius must stay controlled.");
             }
 
             if (volumeProfile.TryGet<FilmGrain>(out var filmGrain) && filmGrain.active)
@@ -266,7 +278,7 @@ namespace Anemora.EditorTools
             var builder = new StringBuilder();
             builder.AppendLine("# Fast VS HD2D Postprocess Grade Cycle 25 Report");
             builder.AppendLine();
-            builder.AppendLine("Foundation audit report for the already-applied URP, renderer, and volume HD-2D shading setup. It records the faded camera grade contract and confirms DepthOfField and FilmGrain remain disabled for the Fast VS baseline.");
+            builder.AppendLine("Foundation audit report for the already-applied URP, renderer, and volume HD-2D shading setup. It records the faded camera grade contract, keeps FilmGrain disabled, and verifies the controlled Gaussian DepthOfField used by the current Fast VS HD-2D grade.");
             builder.AppendLine();
             builder.AppendLine($"- Branch: `work/fast-vs-hd2d-shading-foundation-20260522`");
             builder.AppendLine($"- Worktree: `{GetAbsoluteProjectPath("")}`");

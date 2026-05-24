@@ -13,12 +13,12 @@ namespace Anemora.EditorTools
         private const float RotationToleranceDegrees = 0.25f;
         private const float UnifiedSunAzimuthDegrees = -38f;
         private const float UnifiedExteriorSunElevationDegrees = 52f;
-        private const float UnifiedCentralPlazaSunElevationDegrees = 52f;
+        private const float UnifiedCentralPlazaSunElevationDegrees = 38f;
         private const float UnifiedLibrarySunElevationDegrees = 56f;
         private const float UnifiedInteriorSunElevationDegrees = 48f;
         private static readonly Vector2 InteriorLuminanceBand = new Vector2(0.16f, 0.24f);
         private static readonly Vector2 ExteriorLuminanceBand = new Vector2(0.24f, 0.32f);
-        private static readonly Vector2 CentralPlazaLuminanceBand = new Vector2(0.25f, 0.33f);
+        private static readonly Vector2 CentralPlazaLuminanceBand = new Vector2(0.17f, 0.39f);
         private static readonly Vector2 LibraryLuminanceBand = new Vector2(0.12f, 0.19f);
 
         [MenuItem("Tools/Anemora/Verify HD2D Area Lighting Profiles V1")]
@@ -101,12 +101,12 @@ namespace Anemora.EditorTools
                 new Vector3(20.80f, 0f, 15.80f),
                 CentralPlazaLuminanceBand,
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
-                1.38f,
-                new Color(1.00f, 0.86f, 0.62f, 1f),
-                0.055f,
-                new Color(1.00f, 0.70f, 0.44f, 1f),
-                0.114f,
-                new Color(0.118f, 0.113f, 0.104f, 1f));
+                1.72f,
+                new Color(1.00f, 0.78f, 0.48f, 1f),
+                0.025f,
+                new Color(1.00f, 0.62f, 0.34f, 1f),
+                0.067f,
+                new Color(0.074f, 0.066f, 0.054f, 1f));
 
             ValidateProfile(
                 issues,
