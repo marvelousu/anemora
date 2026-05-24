@@ -91,6 +91,8 @@ namespace Anemora.EditorTools
         private static readonly Vector3 Chapter1F4RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(16.42f, 0.70f, 1.18f);
         private static readonly Vector3 Chapter1F5RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(17.38f, 0.70f, 0.08f);
         private static readonly Vector3 Chapter1F6RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(17.15f, 0.70f, -0.35f);
+        private static readonly Vector3 Chapter1EndSideViewCenter = CentralPlazaVsCenter + new Vector3(9.10f, 0f, -10.50f);
+        private static readonly Vector3 Chapter1EndSideViewCameraAnchor = Chapter1EndSideViewCenter + new Vector3(0f, 2.25f, 0f);
         private static readonly Vector3 Chapter1ContinuationRightBoundaryCenter = CentralPlazaVsCenter + new Vector3(18.00f, 0.75f, 2.95f);
         private static readonly Vector3 DoorTriggerSize = new Vector3(0.86f, 1.72f, 0.62f);
         private static readonly Vector3 RouteTriggerSize = new Vector3(0.82f, 1.72f, 0.62f);
@@ -341,6 +343,7 @@ namespace Anemora.EditorTools
             CaptureChapter1AllMapsPair(controller, visibility, guide, camera, FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(11.00f, 0.02f, 0.55f), $"{outputDirectory}/{audiencePrefix}07_d1_d3_current.png", $"{outputDirectory}/{audiencePrefix}08_d1_d3_past.png");
             CaptureChapter1AllMapsPair(controller, visibility, guide, camera, FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(13.25f, 0.02f, 2.05f), $"{outputDirectory}/{audiencePrefix}09_e1_e3_current.png", $"{outputDirectory}/{audiencePrefix}10_e1_e3_past.png");
             CaptureChapter1AllMapsPair(controller, visibility, guide, camera, FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(16.18f, 0.02f, 0.62f), $"{outputDirectory}/{audiencePrefix}11_f1_f6_current.png", $"{outputDirectory}/{audiencePrefix}12_f1_f6_past.png");
+            CaptureChapter1EndSideViewPair(controller, visibility, guide, camera, $"{outputDirectory}/{audiencePrefix}13_scene6_sideview_current.png", $"{outputDirectory}/{audiencePrefix}14_scene6_sideview_past.png");
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS chapter 1 all maps screenshots captured: {Path.GetFullPath(outputDirectory)}");
@@ -379,6 +382,39 @@ namespace Anemora.EditorTools
             SaveCameraPng(camera, pastOutputPath);
             camera.cullingMask = previousMask;
             controller.ForcePlayerCurrentLocalForReview(localPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+        }
+
+        private static void CaptureChapter1EndSideViewPair(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            string currentOutputPath,
+            string pastOutputPath)
+        {
+            var previousMask = camera.cullingMask;
+            var previousOrthographic = camera.orthographic;
+            var previousOrthographicSize = camera.orthographicSize;
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            controller.ForcePlayerCurrentLocalForReview(Chapter1EndSideViewCenter + new Vector3(-6.50f, 0.02f, 0f));
+            guide.ApplyActiveTimeIsolationForReview();
+            PositionChapter1EndSideViewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(Chapter1EndSideViewCameraAnchor));
+            SaveCameraPng(camera, currentOutputPath);
+
+            controller.ForcePlayerOtherTimeLocalForReview(Chapter1EndSideViewCenter + new Vector3(-6.50f, 0.02f, 0f));
+            guide.ApplyActiveTimeIsolationForReview();
+            var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+            var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = (previousMask & ~currentBit) | otherBit | playerBit;
+            PositionChapter1EndSideViewCamera(camera, controller.OtherTimeSpaceRootForReview.TransformPoint(Chapter1EndSideViewCameraAnchor));
+            SaveCameraPng(camera, pastOutputPath);
+            camera.cullingMask = previousMask;
+            camera.orthographic = previousOrthographic;
+            camera.orthographicSize = previousOrthographicSize;
+            controller.ForcePlayerCurrentLocalForReview(Chapter1EndSideViewCenter + new Vector3(-6.50f, 0.02f, 0f));
             guide.ApplyActiveTimeIsolationForReview();
         }
 
@@ -502,6 +538,13 @@ namespace Anemora.EditorTools
             var position = anchor + new Vector3(0f, 6.20f, -7.20f);
             var lookAt = anchor + new Vector3(0f, 0.15f, 0.80f);
             camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
+        }
+
+        private static void PositionChapter1EndSideViewCamera(Camera camera, Vector3 anchor)
+        {
+            camera.orthographic = true;
+            camera.orthographicSize = 4.10f;
+            camera.transform.SetPositionAndRotation(anchor + new Vector3(0f, 0f, -13.0f), Quaternion.LookRotation(Vector3.forward, Vector3.up));
         }
 
         private static void SaveCameraPng(Camera camera, string outputPath)
@@ -683,6 +726,7 @@ namespace Anemora.EditorTools
             CreateKaiaFrontYardContinuation(root, prefix, past, materials);
             CreateRuinsBridgeContinuation(root, prefix, past, materials);
             CreateRuinsSideHomesContinuation(root, prefix, past, materials);
+            CreateChapter1EndSideViewMap(root, prefix, past, materials);
         }
 
         private static void CreateChapter1ContinuationRouteStops(Transform root, string prefix, bool past, Materials materials)
@@ -984,6 +1028,30 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_F4_FloorCrack", root, c + new Vector3(-0.12f, 0.02f, -0.78f), new Vector3(1.02f, 0.05f, 0.42f), Quaternion.identity, materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Current.central_plaza.chapter1.f4.floor_crack");
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_F5_FallenFence", root, c + new Vector3(2.50f, 0.14f, 1.34f), new Vector3(0.92f, 0.10f, 0.30f), Quaternion.Euler(0f, -14f, 6f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f5.fallen_fence");
             }
+        }
+
+        private static void CreateChapter1EndSideViewMap(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1EndSideViewCenter;
+            var ground = past ? materials.PastPath : materials.CurrentPath;
+            var frame = past ? materials.PastFrame : materials.CurrentFrame;
+            var niro = past ? materials.NiroPastBody : materials.NiroBody;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewSkyTop", root, c + new Vector3(0f, 4.05f, 0f), new Vector3(15.60f, 2.30f, 0.10f), Quaternion.identity, materials.FlowerYellow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.sky_top");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewSkyHorizon", root, c + new Vector3(0f, 2.12f, -0.01f), new Vector3(15.60f, 1.62f, 0.10f), Quaternion.identity, materials.RedLight, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.sky_horizon");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGround", root, c + new Vector3(0f, 0.18f, -0.04f), new Vector3(15.80f, 0.36f, 0.18f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_StartPanel", root, c + new Vector3(-6.88f, 0.92f, -0.08f), new Vector3(0.74f, 1.48f, 0.12f), Quaternion.identity, materials.CardFace, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.start_panel");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_CameraFollowPanel", root, c + new Vector3(0f, 1.02f, -0.08f), new Vector3(0.82f, 1.62f, 0.12f), Quaternion.identity, materials.CardFace, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.camera_follow_panel");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_FadeOutPanel", root, c + new Vector3(6.82f, 0.92f, -0.08f), new Vector3(0.90f, 1.48f, 0.12f), Quaternion.identity, materials.CardFace, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.fade_out_panel");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_NiroStartMarker", root, c + new Vector3(-6.40f, 0.70f, -0.14f), new Vector3(0.22f, 0.92f, 0.12f), Quaternion.identity, niro, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.niro_start");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_NiroFollowMarker", root, c + new Vector3(0.00f, 0.70f, -0.14f), new Vector3(0.22f, 0.92f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.camera_follow_marker");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_NiroFadeOutMarker", root, c + new Vector3(6.36f, 0.70f, -0.14f), new Vector3(0.22f, 0.92f, 0.12f), Quaternion.identity, materials.RedMarker, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.fade_out_marker");
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_LightSlashA", root, c + new Vector3(-4.90f, 2.10f, -0.16f), new Vector3(0.34f, 4.50f, 0.08f), Quaternion.Euler(0f, 0f, -42f), materials.Label, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.light_slash_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_LightSlashB", root, c + new Vector3(-1.62f, 1.78f, -0.16f), new Vector3(0.26f, 2.20f, 0.08f), Quaternion.Euler(0f, 0f, -42f), materials.Label, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.light_slash_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_LightSlashC", root, c + new Vector3(2.08f, 2.10f, -0.16f), new Vector3(0.34f, 4.15f, 0.08f), Quaternion.Euler(0f, 0f, -42f), materials.Label, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.light_slash_c");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_LightSlashD", root, c + new Vector3(4.88f, 1.64f, -0.16f), new Vector3(0.30f, 2.80f, 0.08f), Quaternion.Euler(0f, 0f, -42f), materials.Label, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.light_slash_d");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_RightEdgeDark", root, c + new Vector3(7.64f, 2.00f, -0.18f), new Vector3(0.22f, 3.40f, 0.10f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.right_edge_dark");
         }
 
         private static void CreateChapter1Tree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial)
@@ -3030,6 +3098,46 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationPair("Current_CentralPlaza_Chapter1_F3_TopLeftHouse", "Past_CentralPlaza_Chapter1_F3_TopLeftHouse", "current_exterior_wall", "past_exterior_wall");
             ValidateChapter1ContinuationPair("Current_CentralPlaza_Chapter1_F4_TopCenterHouse", "Past_CentralPlaza_Chapter1_F4_TopCenterHouse", "current_exterior_wall", "past_exterior_wall");
             ValidateChapter1ContinuationPair("Current_CentralPlaza_Chapter1_F5_RightHouse", "Past_CentralPlaza_Chapter1_F5_RightHouse", "current_exterior_wall", "past_exterior_wall");
+            ValidateChapter1EndSideViewMap();
+        }
+
+        private static void ValidateChapter1EndSideViewMap()
+        {
+            var requiredNames = new[]
+            {
+                "Current_CentralPlaza_Chapter1_Scene6_SideViewSkyTop",
+                "Past_CentralPlaza_Chapter1_Scene6_SideViewSkyTop",
+                "Current_CentralPlaza_Chapter1_Scene6_SideViewSkyHorizon",
+                "Past_CentralPlaza_Chapter1_Scene6_SideViewSkyHorizon",
+                "Current_CentralPlaza_Chapter1_Scene6_SideViewGround",
+                "Past_CentralPlaza_Chapter1_Scene6_SideViewGround",
+                "Current_CentralPlaza_Chapter1_Scene6_StartPanel",
+                "Past_CentralPlaza_Chapter1_Scene6_StartPanel",
+                "Current_CentralPlaza_Chapter1_Scene6_CameraFollowPanel",
+                "Past_CentralPlaza_Chapter1_Scene6_CameraFollowPanel",
+                "Current_CentralPlaza_Chapter1_Scene6_FadeOutPanel",
+                "Past_CentralPlaza_Chapter1_Scene6_FadeOutPanel",
+                "Current_CentralPlaza_Chapter1_Scene6_NiroStartMarker",
+                "Past_CentralPlaza_Chapter1_Scene6_NiroStartMarker",
+                "Current_CentralPlaza_Chapter1_Scene6_NiroFollowMarker",
+                "Past_CentralPlaza_Chapter1_Scene6_NiroFollowMarker",
+                "Current_CentralPlaza_Chapter1_Scene6_NiroFadeOutMarker",
+                "Past_CentralPlaza_Chapter1_Scene6_NiroFadeOutMarker"
+            };
+
+            foreach (var objectName in requiredNames)
+            {
+                var landmark = FindSceneObjectIncludingInactive(objectName);
+                if (landmark == null || landmark.GetComponent<TimeWindowPairedSpaceLandmark>() == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing chapter 1 scene 6 side-view map object: {objectName}");
+                }
+            }
+
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewSkyTop", "flower_yellow");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewSkyHorizon", "timewindow_cue_yellow_light");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_FadeOutPanel", "card_face");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_NiroFadeOutMarker", "timewindow_marker_yellow");
         }
 
         private static void ValidateChapter1BaselineMapPoints()
