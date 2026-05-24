@@ -5351,6 +5351,7 @@ namespace Anemora.EditorTools
             CreateCentralPlazaLegacySunRibbonHardKillCycle121(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceSurfaceRemapCycle122(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceAerialLiftCycle123(plazaRoot, prefix, past, materials);
+            CreateCentralPlazaReferenceFocusShadowCycle124(plazaRoot, prefix, past, materials);
 
             return new HouseMapAreas(interiorRoot.gameObject, exteriorRoot.gameObject, plazaRoot.gameObject, libraryRoot.gameObject);
         }
@@ -15242,6 +15243,11 @@ namespace Anemora.EditorTools
         public static void CapturePlazaReferenceAerialLiftCycle123ScreenshotsBatch()
         {
             CapturePlazaReferenceSurfaceRemapCycle122ScreenshotsToDirectory(GetPlazaReferenceAerialLiftCycle123ScreenshotsDirectory());
+        }
+
+        public static void CapturePlazaReferenceFocusShadowCycle124ScreenshotsBatch()
+        {
+            CapturePlazaReferenceSurfaceRemapCycle122ScreenshotsToDirectory(GetPlazaReferenceFocusShadowCycle124ScreenshotsDirectory());
         }
 
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
@@ -35808,6 +35814,60 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaReferenceFocusShadowCycle124()
+        {
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_FocusStoneSunPlateA",
+                PlazaReferenceSurfaceSunCycle122MaterialPath,
+                PlazaReferenceSurfaceSunCycle122TexturePath,
+                FastVsHd2dOverlayKind.LightPool);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_BackOnlyAerialHazeA",
+                PlazaReferenceAirGradeCycle122MaterialPath,
+                PlazaReferenceAirGradeCycle122TexturePath,
+                FastVsHd2dOverlayKind.Atmosphere);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_PlayerReadableContactA",
+                PlazaReferenceSurfaceShadowCycle122MaterialPath,
+                PlazaReferenceSurfaceShadowCycle122TexturePath,
+                FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+            ValidatePlazaSolarResetProfileObject(
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_StepLipInkLineA",
+                PlazaReferenceSurfaceShadowCycle122MaterialPath,
+                PlazaReferenceSurfaceShadowCycle122TexturePath,
+                FastVsHd2dOverlayKind.StaticDirectionalCastShadow);
+
+            var currentCycle124Count = 0;
+            var pastCycle124Count = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate == null || !candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (candidate.name.StartsWith("Current_CentralPlaza_Cycle124_ReferenceFocusShadow_", StringComparison.Ordinal))
+                {
+                    currentCycle124Count++;
+                }
+
+                if (candidate.name.StartsWith("Past_CentralPlaza_Cycle124_ReferenceFocusShadow_", StringComparison.Ordinal))
+                {
+                    pastCycle124Count++;
+                }
+            }
+
+            if (currentCycle124Count != 8)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 124 must keep exactly 8 current plaza focus shadow overlays, found {currentCycle124Count}.");
+            }
+
+            if (pastCycle124Count != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 124 must stay current-world only, found {pastCycle124Count} past overlays.");
+            }
+        }
+
         private static void ValidateMaterialTintAlphaAtMost(string materialPath, float maxAlpha, string label)
         {
             var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
@@ -42830,6 +42890,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle123_plaza_reference_aerial_lift_parent_review_20260524_01";
         }
 
+        private static string GetPlazaReferenceFocusShadowCycle124ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle124_plaza_reference_focus_shadow_parent_review_20260524_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -46199,6 +46264,12 @@ namespace Anemora.EditorTools
         {
             ValidatePlazaReferenceSurfaceRemapCycle122Batch();
             ValidateHd2dPlazaReferenceAerialLiftCycle123();
+        }
+
+        public static void ValidatePlazaReferenceFocusShadowCycle124Batch()
+        {
+            ValidatePlazaReferenceAerialLiftCycle123Batch();
+            ValidateHd2dPlazaReferenceFocusShadowCycle124();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()
@@ -50936,6 +51007,90 @@ namespace Anemora.EditorTools
             Shadow("RightRoofHardCastA", new Vector3(3.55f, 0.181f, 4.65f), new Vector3(4.30f, 0.38f, 1f), Quaternion.Euler(90f, 0f, 13f), new Vector2(0.24f, 0.70f), new Color(0.026f, 0.020f, 0.014f, 0.64f));
             Shadow("DoorHardCoreRefineA", new Vector3(0.00f, 1.18f, 7.526f), new Vector3(1.54f, 1.48f, 1f), Quaternion.identity, new Vector2(0.30f, 0.78f), new Color(0.024f, 0.018f, 0.012f, 0.74f));
             Shadow("BackStepHardLineA", new Vector3(0.05f, 0.182f, 6.80f), new Vector3(7.35f, 0.22f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.24f, 0.66f), new Color(0.026f, 0.020f, 0.014f, 0.60f));
+
+            _ = materials;
+        }
+
+        private static void CreateCentralPlazaReferenceFocusShadowCycle124(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                _ = materials;
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var sunMaterial = EnsureHd2dPlazaReferenceSurfaceSunCycle122Material();
+            var shadowMaterial = EnsureHd2dPlazaReferenceSurfaceShadowCycle122Material();
+            var airMaterial = EnsureHd2dPlazaReferenceAirGradeCycle122Material();
+
+            void Suppress(string objectName)
+            {
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                if (sceneObject != null)
+                {
+                    sceneObject.SetActive(false);
+                }
+            }
+
+            void Sun(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle124_ReferenceFocusShadow_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle124.reference_focus_shadow.{suffix.ToLowerInvariant()}",
+                    sunMaterial,
+                    FastVsHd2dOverlayKind.LightPool,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            void Air(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle124_ReferenceFocusShadow_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle124.reference_focus_shadow.{suffix.ToLowerInvariant()}",
+                    airMaterial,
+                    FastVsHd2dOverlayKind.Atmosphere,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            void Shadow(string suffix, Vector3 position, Vector3 scale, Quaternion rotation, Vector2 opacityBand, Color intendedTint)
+            {
+                CreateHd2dPlazaSolarResetOverlayCycle116(
+                    $"Current_CentralPlaza_Cycle124_ReferenceFocusShadow_{suffix}",
+                    root,
+                    c + position,
+                    scale,
+                    rotation,
+                    $"{prefix}.central_plaza.cycle124.reference_focus_shadow.{suffix.ToLowerInvariant()}",
+                    shadowMaterial,
+                    FastVsHd2dOverlayKind.StaticDirectionalCastShadow,
+                    opacityBand,
+                    intendedTint);
+            }
+
+            Suppress("Current_CentralPlaza_Cycle123_ReferenceAerialLift_GroundAtmosphericWashA");
+            Suppress("Current_CentralPlaza_Cycle123_ReferenceAerialLift_PlayerLanePaleCatchA");
+
+            Sun("FocusStoneSunPlateA", new Vector3(-0.22f, 0.190f, 3.32f), new Vector3(9.20f, 1.62f, 1f), Quaternion.Euler(90f, 0f, -5f), new Vector2(0.06f, 0.26f), new Color(1.00f, 0.92f, 0.76f, 0.20f));
+            Sun("BackStepSunTrimA", new Vector3(0.02f, 0.192f, 6.18f), new Vector3(7.20f, 0.52f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.05f, 0.24f), new Color(1.00f, 0.92f, 0.76f, 0.18f));
+
+            Air("BackOnlyAerialHazeA", new Vector3(-0.30f, 0.194f, 5.58f), new Vector3(11.20f, 2.45f, 1f), Quaternion.Euler(90f, 0f, -4f), new Vector2(0.02f, 0.12f), new Color(0.96f, 0.88f, 0.72f, 0.10f));
+            Air("FacadeHighDepthAirA", new Vector3(0.00f, 2.24f, 7.544f), new Vector3(11.80f, 2.30f, 1f), Quaternion.identity, new Vector2(0.02f, 0.16f), new Color(0.96f, 0.88f, 0.72f, 0.12f));
+
+            Shadow("PlayerReadableContactA", new Vector3(-0.04f, 0.198f, 2.94f), new Vector3(1.20f, 0.22f, 1f), Quaternion.Euler(90f, 0f, -8f), new Vector2(0.24f, 0.58f), new Color(0.024f, 0.018f, 0.012f, 0.52f));
+            Shadow("LeftCanopyDappleHardA", new Vector3(-3.20f, 0.198f, 3.78f), new Vector3(3.72f, 0.28f, 1f), Quaternion.Euler(90f, 0f, -22f), new Vector2(0.18f, 0.48f), new Color(0.026f, 0.020f, 0.014f, 0.42f));
+            Shadow("RightCrateCastHardA", new Vector3(3.56f, 0.198f, 3.54f), new Vector3(3.36f, 0.25f, 1f), Quaternion.Euler(90f, 0f, 18f), new Vector2(0.18f, 0.48f), new Color(0.026f, 0.020f, 0.014f, 0.42f));
+            Shadow("StepLipInkLineA", new Vector3(0.04f, 0.199f, 6.34f), new Vector3(7.10f, 0.08f, 1f), Quaternion.Euler(90f, 0f, -2f), new Vector2(0.14f, 0.34f), new Color(0.026f, 0.020f, 0.014f, 0.30f));
 
             _ = materials;
         }

@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.93 fast VS HD2D plaza reference aerial lift index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.94 fast VS HD2D plaza reference focus shadow index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 471 files including INDEX.md and README.md.
-- Dated devlog records: 469 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1142 files.
+- Root-level Markdown coverage: 472 files including INDEX.md and README.md.
+- Dated devlog records: 470 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1146 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 33 |
+| 2026-05-24 | 34 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_reference_focus_shadow_cycle124.md](2026-05-24_fast_vs_hd2d_plaza_reference_focus_shadow_cycle124.md) | Fast VS / HD2D | feat(hd2d): restore plaza focus shadow clarity |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_aerial_lift_cycle123.md](2026-05-24_fast_vs_hd2d_plaza_reference_aerial_lift_cycle123.md) | Fast VS / HD2D | feat(hd2d): lift plaza aerial sun grade |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_surface_remap_cycle122.md](2026-05-24_fast_vs_hd2d_plaza_reference_surface_remap_cycle122.md) | Fast VS / HD2D | feat(hd2d): remap plaza surfaces to reference sun |
 | [2026-05-24_fast_vs_hd2d_plaza_legacy_sun_ribbon_mute_cycle121.md](2026-05-24_fast_vs_hd2d_plaza_legacy_sun_ribbon_mute_cycle121.md) | Fast VS / HD2D | feat(hd2d): mute plaza legacy sun ribbons and clean floor sun |
