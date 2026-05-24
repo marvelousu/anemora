@@ -524,7 +524,7 @@ namespace Anemora.FastVS
                     var radius = Mathf.Sqrt(dx * dx * 0.82f + dy * dy * 1.38f);
                     var edge = Mathf.SmoothStep(0.48f, 1.18f, radius);
                     var topWarm = Mathf.SmoothStep(0.52f, 1.00f, v);
-                    var baseAlpha = 0.045f + edge * 0.32f + topWarm * 0.055f;
+                    var baseAlpha = 0.018f + edge * 0.14f + topWarm * 0.024f;
                     var warm = Color.Lerp(new Color(0.82f, 0.58f, 0.30f, baseAlpha), new Color(0.11f, 0.070f, 0.035f, baseAlpha), edge);
                     cycle128GradeTexture.SetPixel(x, y, warm);
                 }
@@ -557,7 +557,7 @@ namespace Anemora.FastVS
                     var v = (y + 0.5f) / cycle128BeamTexture.height;
                     var rayA = Mathf.Abs((u - 0.05f) - (1f - v) * 0.58f);
                     var rayB = Mathf.Abs((u - 0.34f) - (1f - v) * 0.46f);
-                    var beam = Mathf.SmoothStep(0.11f, 0.010f, rayA) * 0.18f + Mathf.SmoothStep(0.09f, 0.010f, rayB) * 0.10f;
+                    var beam = Mathf.SmoothStep(0.11f, 0.010f, rayA) * 0.10f + Mathf.SmoothStep(0.09f, 0.010f, rayB) * 0.055f;
                     beam *= Mathf.SmoothStep(0.04f, 0.42f, v) * Mathf.SmoothStep(1.00f, 0.62f, v);
                     beam *= Mathf.SmoothStep(1.04f, 0.58f, u);
                     cycle128BeamTexture.SetPixel(x, y, new Color(1.00f, 0.83f, 0.48f, beam));
