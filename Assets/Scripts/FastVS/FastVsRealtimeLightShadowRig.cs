@@ -14,6 +14,9 @@ namespace Anemora.FastVS
         private const string OverlayGlowRole = "OverlayGlow";
         private const string ContactShadowRole = "ContactShadow";
         private const float ShadowPolicyRefreshSeconds = 0.35f;
+        private const int CentralPlazaSunCookieSize = 128;
+        private const float CentralPlazaSunCookieWorldSize = 9.25f;
+        private const string CentralPlazaSunCookieName = "FastVS_CentralPlazaRealtimeSunCookieCycle147";
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
         private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
         private static readonly int ShadowReceiveStrengthId = Shader.PropertyToID("_ShadowReceiveStrength");
@@ -46,6 +49,7 @@ namespace Anemora.FastVS
         private Texture2D cycle128BeamTexture;
         private Texture2D cycle131ShadowPaintTexture;
         private Texture2D cycle131SunPaintTexture;
+        private Texture2D centralPlazaSunCookieTexture;
 
         private void Awake()
         {
@@ -109,9 +113,15 @@ namespace Anemora.FastVS
 
                 if (isCentralPlaza)
                 {
-                    mainLight.intensity = 2.10f;
+                    mainLight.intensity = 2.45f;
                     mainLight.color = new Color(1.00f, 0.88f, 0.62f, 1f);
                     mainLight.transform.rotation = Quaternion.Euler(43f, -38f, 0f);
+                    mainLight.cookie = EnsureCentralPlazaSunCookieTexture();
+                    mainLight.cookieSize = CentralPlazaSunCookieWorldSize;
+                }
+                else if (mainLight.cookie != null && mainLight.cookie.name == CentralPlazaSunCookieName)
+                {
+                    mainLight.cookie = null;
                 }
             }
 
@@ -137,6 +147,72 @@ namespace Anemora.FastVS
             {
                 RenderSettings.reflectionIntensity = 1f;
                 SetCycle128CameraGradeActive(false);
+            }
+        }
+
+        private Texture2D EnsureCentralPlazaSunCookieTexture()
+        {
+            if (centralPlazaSunCookieTexture != null)
+            {
+                return centralPlazaSunCookieTexture;
+            }
+
+            centralPlazaSunCookieTexture = new Texture2D(
+                CentralPlazaSunCookieSize,
+                CentralPlazaSunCookieSize,
+                TextureFormat.RGBA32,
+                false,
+                true)
+            {
+                name = CentralPlazaSunCookieName,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                hideFlags = HideFlags.DontSave
+            };
+
+            var pixels = new Color[CentralPlazaSunCookieSize * CentralPlazaSunCookieSize];
+            for (var y = 0; y < CentralPlazaSunCookieSize; y++)
+            {
+                var v = y / (float)(CentralPlazaSunCookieSize - 1);
+                for (var x = 0; x < CentralPlazaSunCookieSize; x++)
+                {
+                    var u = x / (float)(CentralPlazaSunCookieSize - 1);
+                    var luma = SampleCentralPlazaSunCookieLuma(u, v);
+                    pixels[(y * CentralPlazaSunCookieSize) + x] = new Color(luma, luma, luma, 1f);
+                }
+            }
+
+            centralPlazaSunCookieTexture.SetPixels(pixels);
+            centralPlazaSunCookieTexture.Apply(false, true);
+            return centralPlazaSunCookieTexture;
+        }
+
+        private static float SampleCentralPlazaSunCookieLuma(float u, float v)
+        {
+            var diagonal = 1f - Mathf.Abs(((u * 0.88f) - (v * 0.58f)) - 0.11f) / 0.17f;
+            diagonal = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(diagonal));
+            var sideSlash = 1f - Mathf.Abs(((u * 0.72f) + (v * 0.94f)) - 0.86f) / 0.22f;
+            sideSlash = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(sideSlash));
+            var leafNoiseA = Hash01(Mathf.FloorToInt(u * 20f), Mathf.FloorToInt(v * 20f), 1471);
+            var leafNoiseB = Hash01(Mathf.FloorToInt((u + v) * 29f), Mathf.FloorToInt((v - u) * 29f), 1472);
+            var dapple = Mathf.SmoothStep(0.34f, 0.86f, (leafNoiseA * 0.62f) + (leafNoiseB * 0.38f));
+            var vignette = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((u * (1f - u) * v * (1f - v)) * 15.5f));
+            var sun = Mathf.Clamp01((diagonal * 0.72f) + (sideSlash * 0.28f));
+            var shadeBreak = Mathf.Lerp(0.58f, 1.0f, dapple);
+            return Mathf.Clamp01(Mathf.Lerp(0.48f, 0.98f, sun) * Mathf.Lerp(0.82f, 1.04f, vignette) * shadeBreak);
+        }
+
+        private static float Hash01(int x, int y, int seed)
+        {
+            unchecked
+            {
+                var hash = seed;
+                hash ^= x * 374761393;
+                hash = (hash << 13) ^ hash;
+                hash ^= y * 668265263;
+                hash *= 1274126177;
+                hash ^= hash >> 16;
+                return (hash & 0x7fffffff) / (float)int.MaxValue;
             }
         }
 
