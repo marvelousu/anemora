@@ -15447,6 +15447,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md");
         }
 
+        public static void CapturePlazaRealtimeCookieNoRibbonCycle152ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaRealtimeCookieNoRibbonCycle152ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_cookie_no_ribbon_cycle152.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38562,6 +38569,32 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaRealtimeCookieNoRibbonCycle152()
+        {
+            ValidateHd2dPlazaVsSkyCameraCycle151();
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (mainLight == null || mainLight.cookie == null || mainLight.cookie.name != "FastVS_CentralPlazaRealtimeSunCookieCycle147")
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 152 must keep the realtime central-plaza Directional Light cookie active.");
+            }
+
+            var realtimeRigPath = Path.Combine(Application.dataPath, "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var realtimeRigText = File.ReadAllText(realtimeRigPath);
+            if (realtimeRigText.Contains("sideSlash") ||
+                realtimeRigText.Contains("var diagonal =") ||
+                realtimeRigText.Contains("Mathf.Lerp(0.48f, 0.98f, sun)"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 152 realtime sun cookie must not use the previous broad painted diagonal/side ribbon bands.");
+            }
+
+            if (!realtimeRigText.Contains("softSunField") ||
+                !realtimeRigText.Contains("broadVariation"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 152 realtime sun cookie must use a soft realtime dapple field instead of painted sun ribbons.");
+            }
+        }
+
         private static bool IsCycle150VisibleCentralPlazaCaster(Renderer renderer)
         {
             var name = renderer.gameObject.name;
@@ -45834,6 +45867,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle151_plaza_vs_sky_camera_parent_review_20260525_01";
         }
 
+        private static string GetPlazaRealtimeCookieNoRibbonCycle152ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle152_plaza_realtime_cookie_no_ribbon_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49402,6 +49440,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaVsSkyCameraCycle151();
+        }
+
+        public static void ValidatePlazaRealtimeCookieNoRibbonCycle152Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaRealtimeCookieNoRibbonCycle152();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

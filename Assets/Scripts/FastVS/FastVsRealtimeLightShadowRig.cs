@@ -192,17 +192,14 @@ namespace Anemora.FastVS
 
         private static float SampleCentralPlazaSunCookieLuma(float u, float v)
         {
-            var diagonal = 1f - Mathf.Abs(((u * 0.88f) - (v * 0.58f)) - 0.11f) / 0.17f;
-            diagonal = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(diagonal));
-            var sideSlash = 1f - Mathf.Abs(((u * 0.72f) + (v * 0.94f)) - 0.86f) / 0.22f;
-            sideSlash = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(sideSlash));
             var leafNoiseA = Hash01(Mathf.FloorToInt(u * 20f), Mathf.FloorToInt(v * 20f), 1471);
             var leafNoiseB = Hash01(Mathf.FloorToInt((u + v) * 29f), Mathf.FloorToInt((v - u) * 29f), 1472);
-            var dapple = Mathf.SmoothStep(0.34f, 0.86f, (leafNoiseA * 0.62f) + (leafNoiseB * 0.38f));
+            var leafNoiseC = Hash01(Mathf.FloorToInt(u * 9f), Mathf.FloorToInt(v * 9f), 1473);
+            var dapple = Mathf.SmoothStep(0.36f, 0.84f, (leafNoiseA * 0.54f) + (leafNoiseB * 0.34f) + (leafNoiseC * 0.12f));
             var vignette = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((u * (1f - u) * v * (1f - v)) * 15.5f));
-            var sun = Mathf.Clamp01((diagonal * 0.72f) + (sideSlash * 0.28f));
-            var shadeBreak = Mathf.Lerp(0.58f, 1.0f, dapple);
-            return Mathf.Clamp01(Mathf.Lerp(0.48f, 0.98f, sun) * Mathf.Lerp(0.82f, 1.04f, vignette) * shadeBreak);
+            var softSunField = Mathf.Lerp(0.72f, 1.0f, dapple);
+            var broadVariation = Mathf.Lerp(0.92f, 1.03f, leafNoiseC);
+            return Mathf.Clamp01(softSunField * broadVariation * Mathf.Lerp(0.94f, 1.02f, vignette));
         }
 
         private static float Hash01(int x, int y, int seed)
