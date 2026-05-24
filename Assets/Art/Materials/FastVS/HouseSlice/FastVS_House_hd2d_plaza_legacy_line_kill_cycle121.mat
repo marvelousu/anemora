@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FastVS_House_hd2d_warm_light_pool
+  m_Name: FastVS_House_hd2d_plaza_legacy_line_kill_cycle121
   m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -17,9 +17,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 3009
+  m_CustomRenderQueue: 3105
   stringTagMap:
-    AnemoraFastVsHd2dRole: OverlayGlow
+    AnemoraFastVsHd2dRole: ContactShadow
     RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -30,11 +30,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 97afe9889f5e56f449c8468a1d0bfdf9, type: 2}
+        m_Texture: {fileID: 2800000, guid: 7b5058bc4b5fa8741b72029fc9b3e12c, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 97afe9889f5e56f449c8468a1d0bfdf9, type: 2}
+        m_Texture: {fileID: 2800000, guid: 7b5058bc4b5fa8741b72029fc9b3e12c, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -48,7 +48,7 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 10
     - _DstBlendAlpha: 10
-    - _QueueOffset: 9
+    - _QueueOffset: 105
     - _SampleGI: 0
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1
@@ -56,11 +56,11 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.72, b: 0.3, a: 0.045}
-    - _Color: {r: 1, g: 0.72, b: 0.3, a: 0.045}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &8917671423052178626
+--- !u!114 &6229032457442644376
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

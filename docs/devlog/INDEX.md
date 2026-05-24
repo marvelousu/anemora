@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v7.90 fast VS HD2D plaza reference light column index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v7.91 fast VS HD2D plaza legacy sun ribbon mute and clean floor sun index update (2026-05-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 468 files including INDEX.md and README.md.
-- Dated devlog records: 466 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1130 files.
+- Root-level Markdown coverage: 469 files including INDEX.md and README.md.
+- Dated devlog records: 467 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1134 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -34,7 +34,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-21 | 54 |
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
-| 2026-05-24 | 30 |
+| 2026-05-24 | 31 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -42,6 +42,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_legacy_sun_ribbon_mute_cycle121.md](2026-05-24_fast_vs_hd2d_plaza_legacy_sun_ribbon_mute_cycle121.md) | Fast VS / HD2D | feat(hd2d): mute plaza legacy sun ribbons and clean floor sun |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_light_column_cycle120.md](2026-05-24_fast_vs_hd2d_plaza_reference_light_column_cycle120.md) | Fast VS / HD2D | feat(hd2d): add plaza reference light column |
 | [2026-05-24_fast_vs_hd2d_plaza_reference_composite_cycle119.md](2026-05-24_fast_vs_hd2d_plaza_reference_composite_cycle119.md) | Fast VS / HD2D | feat(hd2d): repaint plaza reference composite |
 | [2026-05-24_fast_vs_hd2d_plaza_shadow_receiver_field_cycle118.md](2026-05-24_fast_vs_hd2d_plaza_shadow_receiver_field_cycle118.md) | Fast VS / HD2D | feat(hd2d): layer plaza shadow receiver field |
