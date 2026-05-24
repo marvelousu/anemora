@@ -15081,6 +15081,11 @@ namespace Anemora.EditorTools
             CapturePlazaCastShadowContrastCycle114ScreenshotsToDirectory(GetPlazaCastShadowContrastCycle114ScreenshotsDirectory());
         }
 
+        public static void CapturePlazaSunShadowGradeCycle115ScreenshotsBatch()
+        {
+            CapturePlazaSunShadowGradeCycle115ScreenshotsToDirectory(GetPlazaSunShadowGradeCycle115ScreenshotsDirectory());
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -15229,6 +15234,81 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS cycle 114 plaza cast shadow contrast screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CapturePlazaSunShadowGradeCycle115ScreenshotsToDirectory(string outputDirectory)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 115 plaza sun shadow grade screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var currentCentralPlazaOverviewFile = $"{audiencePrefix}01_current_central_plaza_sun_shadow_grade_overview.png";
+            var currentCentralPlazaCloseFile = $"{audiencePrefix}02_current_central_plaza_sun_shadow_grade_close.png";
+            var pastCentralPlazaGuardFile = $"{audiencePrefix}03_past_central_plaza_sun_shadow_grade_guard.png";
+            var currentLibraryGuardFile = $"{audiencePrefix}04_current_library_sun_shadow_grade_guard.png";
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.16f, 0.02f, 4.28f),
+                Path.Combine(outputDirectory, currentCentralPlazaOverviewFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentCentralPlazaOverviewFile);
+
+            CaptureCloseReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.18f, 0.02f, 3.96f),
+                CentralPlazaVsCenter + new Vector3(0.22f, 0.20f, 6.42f),
+                new Vector3(0.34f, 1.04f, -2.08f),
+                new Vector3(0.03f, 0.16f, 0.10f),
+                outputDirectory,
+                currentCentralPlazaCloseFile);
+            ValidateCloseReviewOutputExists(outputDirectory, currentCentralPlazaCloseFile);
+
+            CaptureOtherTimeReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-1.16f, 0.02f, 4.28f),
+                Path.Combine(outputDirectory, pastCentralPlazaGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, pastCentralPlazaGuardFile);
+
+            CaptureReviewScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f),
+                Path.Combine(outputDirectory, currentLibraryGuardFile));
+            ValidateScreenshotOutputExists(outputDirectory, currentLibraryGuardFile);
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 115 plaza sun shadow grade screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void CapturePlazaSunExposureBaseCycle112ScreenshotsToDirectory(string outputDirectory)
@@ -22778,12 +22858,12 @@ namespace Anemora.EditorTools
                 CentralPlazaVsCenter,
                 new Vector2(0.25f, 0.33f),
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
-                1.24f,
-                new Color(1.00f, 0.91f, 0.75f, 1f),
-                0.09f,
+                1.38f,
+                new Color(1.00f, 0.86f, 0.62f, 1f),
+                0.055f,
                 new Color(1.00f, 0.70f, 0.44f, 1f),
-                0.153f,
-                new Color(0.148f, 0.154f, 0.160f, 1f));
+                0.114f,
+                new Color(0.118f, 0.113f, 0.104f, 1f));
 
             CreateAreaLightingProfile(
                 currentAreas.Library.transform,
@@ -22897,21 +22977,21 @@ namespace Anemora.EditorTools
 
             colorAdjustments.active = true;
             colorAdjustments.postExposure.overrideState = true;
-            colorAdjustments.postExposure.value = -0.21f;
+            colorAdjustments.postExposure.value = -0.23f;
             colorAdjustments.contrast.overrideState = true;
             colorAdjustments.contrast.value = 6f;
             colorAdjustments.colorFilter.overrideState = true;
-            colorAdjustments.colorFilter.value = new Color(1.04f, 0.98f, 0.92f, 1f);
+            colorAdjustments.colorFilter.value = new Color(1.05f, 0.97f, 0.90f, 1f);
             colorAdjustments.hueShift.overrideState = true;
             colorAdjustments.hueShift.value = 0f;
             colorAdjustments.saturation.overrideState = true;
-            colorAdjustments.saturation.value = -14f;
+            colorAdjustments.saturation.value = -16f;
 
             bloom.active = true;
             bloom.threshold.overrideState = true;
             bloom.threshold.value = 0.80f;
             bloom.intensity.overrideState = true;
-            bloom.intensity.value = 0.10f;
+            bloom.intensity.value = 0.12f;
             bloom.scatter.overrideState = true;
             bloom.scatter.value = 0.50f;
             bloom.clamp.overrideState = true;
@@ -22935,7 +23015,7 @@ namespace Anemora.EditorTools
             vignette.center.overrideState = true;
             vignette.center.value = new Vector2(0.5f, 0.5f);
             vignette.intensity.overrideState = true;
-            vignette.intensity.value = 0.055f;
+            vignette.intensity.value = 0.065f;
             vignette.smoothness.overrideState = true;
             vignette.smoothness.value = 0.36f;
             vignette.rounded.overrideState = true;
@@ -26679,7 +26759,7 @@ namespace Anemora.EditorTools
             }
 
             var houseExteriorSky = new Color(0.234f, 0.221f, 0.198f, 1f);
-            var centralPlazaSky = new Color(0.227f, 0.213f, 0.189f, 1f);
+            var centralPlazaSky = new Color(0.188f, 0.166f, 0.136f, 1f);
             var indoorDark = new Color(0.060f, 0.056f, 0.055f, 1f);
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             ValidateColorApproximately(camera.backgroundColor, houseExteriorSky, "house exterior outdoor sky clear color");
@@ -29658,12 +29738,12 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Directional Light must use soft shadows.");
             }
 
-            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.82f)
+            if (directionalLight.shadowStrength < 0.40f || directionalLight.shadowStrength > 0.94f)
             {
                 throw new InvalidOperationException("House slice validation failed: Directional Light shadow strength must stay in the HD-2D decisive shadow balance range.");
             }
 
-            if (directionalLight.intensity < 0.70f || directionalLight.intensity > 1.25f)
+            if (directionalLight.intensity < 0.70f || directionalLight.intensity > 1.42f)
             {
                 throw new InvalidOperationException("House slice validation failed: Directional Light intensity must stay in the HD-2D balance range.");
             }
@@ -34341,6 +34421,184 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaSunShadowGradeCycle115()
+        {
+            var directorObject = FindSceneObjectIncludingInactive("FastVS_HD2D_LightingDirector");
+            var director = directorObject != null ? directorObject.GetComponent<FastVsHouseLightingDirector>() : null;
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var warmFill = FindSceneObjectIncludingInactive("FastVS_HD2D_WarmFillLight")?.GetComponent<Light>();
+            var coolRim = FindSceneObjectIncludingInactive("FastVS_HD2D_CoolRimLight")?.GetComponent<Light>();
+            var sceneCamera = Camera.main;
+            var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject != null ? volumeObject.GetComponent<Volume>() : null;
+            var profileObject = FindSceneObjectIncludingInactive("FastVS_HD2D_CentralPlazaLightingProfile");
+            var profile = profileObject != null ? profileObject.GetComponent<FastVsHd2dAreaLightingProfile>() : null;
+
+            if (director == null ||
+                !director.HasRequiredLightsForReview ||
+                mainLight == null ||
+                warmFill == null ||
+                coolRim == null ||
+                sceneCamera == null ||
+                volume == null ||
+                volume.sharedProfile == null ||
+                profile == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 plaza sun shadow grade needs the lighting director, key lights, camera, global volume, and central plaza profile.");
+            }
+
+            if (AssetDatabase.GetAssetPath(volume.sharedProfile) != "Assets/Settings/DefaultVolumeProfile.asset")
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 global volume must keep Assets/Settings/DefaultVolumeProfile.asset.");
+            }
+
+            if (profile.AreaIdForReview != FastVsHouseArea.CentralPlaza)
+            {
+                throw new InvalidOperationException("House slice validation failed: central plaza lighting profile must keep area id CentralPlaza.");
+            }
+
+            if (Mathf.Abs(profile.KeyLightIntensityForReview - 1.38f) > 0.002f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile key intensity must stay at 1.380, but was {profile.KeyLightIntensityForReview:0.000}.");
+            }
+
+            ValidateColorApproximately(profile.KeyLightTintForReview, new Color(1.00f, 0.86f, 0.62f, 1f), "cycle 115 central plaza key tint");
+
+            if (Mathf.Abs(profile.FillIntensityForReview - 0.055f) > 0.002f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile fill intensity must stay at 0.055, but was {profile.FillIntensityForReview:0.000}.");
+            }
+
+            ValidateColorApproximately(profile.FillTintForReview, new Color(1.00f, 0.70f, 0.44f, 1f), "cycle 115 central plaza fill tint");
+
+            if (Mathf.Abs(profile.AmbientIntensityForReview - 0.114f) > 0.002f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: central plaza lighting profile ambient intensity must stay at 0.114, but was {profile.AmbientIntensityForReview:0.000}.");
+            }
+
+            ValidateColorApproximately(profile.AmbientTintForReview, new Color(0.118f, 0.113f, 0.104f, 1f), "cycle 115 central plaza ambient tint");
+
+            director.ApplyAreaForReview(FastVsHouseArea.CentralPlaza);
+
+            if (director.LastAppliedAreaForReview != FastVsHouseArea.CentralPlaza || director.TargetAreaForReview != FastVsHouseArea.CentralPlaza || director.TransitionActiveForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 central plaza must apply immediately without leaving a transition active.");
+            }
+
+            if (mainLight.type != LightType.Directional || mainLight.shadows != LightShadows.Soft)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 main light must remain a soft directional light.");
+            }
+
+            if (Mathf.Abs(mainLight.intensity - 1.38f) > 0.04f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light intensity must stay within 1.34..1.42 after applying CentralPlaza, but was {mainLight.intensity:0.000}.");
+            }
+
+            if (Mathf.Abs(mainLight.shadowStrength - 0.90f) > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light shadow strength must stay within 0.88..0.94 after applying CentralPlaza, but was {mainLight.shadowStrength:0.000}.");
+            }
+
+            if (mainLight.color.r < mainLight.color.g || mainLight.color.g < mainLight.color.b || mainLight.color.b < 0.60f || mainLight.color.b > 0.66f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 main light color must stay warm and blue must remain around 0.60-0.66, but was ({mainLight.color.r:0.000}, {mainLight.color.g:0.000}, {mainLight.color.b:0.000}).");
+            }
+
+            if (Mathf.Max(RenderSettings.ambientLight.r, Mathf.Max(RenderSettings.ambientLight.g, RenderSettings.ambientLight.b)) > 0.125f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 ambient light must stay below 0.125 per channel, but was ({RenderSettings.ambientLight.r:0.000}, {RenderSettings.ambientLight.g:0.000}, {RenderSettings.ambientLight.b:0.000}).");
+            }
+
+            if (RenderSettings.ambientMode != AmbientMode.Flat)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 ambient mode must remain Flat.");
+            }
+
+            if (Mathf.Abs(warmFill.intensity - 0.055f) > 0.015f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 warm fill intensity must stay within 0.04..0.07, but was {warmFill.intensity:0.000}.");
+            }
+
+            if (Mathf.Abs(coolRim.intensity - 0.045f) > 0.010f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 cool rim intensity must stay within 0.035..0.055, but was {coolRim.intensity:0.000}.");
+            }
+
+            if (!RenderSettings.fog)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 fog must remain enabled.");
+            }
+
+            if (RenderSettings.fogMode != FogMode.Linear)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 fog mode must remain Linear.");
+            }
+
+            if (RenderSettings.fogStartDistance < 12f || RenderSettings.fogStartDistance > 18f || RenderSettings.fogEndDistance < 66f || RenderSettings.fogEndDistance > 78f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 fog distances must stay within 12-18 and 66-78, but were start={RenderSettings.fogStartDistance:0.000}, end={RenderSettings.fogEndDistance:0.000}.");
+            }
+
+            ValidateColorApproximately(RenderSettings.fogColor, new Color(0.205f, 0.180f, 0.150f, 1f), "cycle 115 fog color");
+
+            if (sceneCamera.backgroundColor.r >= 0.205f || sceneCamera.backgroundColor.b >= 0.150f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 camera background must stay below the reference fade thresholds, but was ({sceneCamera.backgroundColor.r:0.000}, {sceneCamera.backgroundColor.g:0.000}, {sceneCamera.backgroundColor.b:0.000}).");
+            }
+
+            ValidateColorApproximately(sceneCamera.backgroundColor, new Color(0.188f, 0.166f, 0.136f, 1f), "cycle 115 camera background");
+
+            if (!volume.sharedProfile.TryGet<ColorAdjustments>(out var colorAdjustments) ||
+                !volume.sharedProfile.TryGet<Bloom>(out var bloom) ||
+                !volume.sharedProfile.TryGet<Vignette>(out var vignette) ||
+                !volume.sharedProfile.TryGet<Tonemapping>(out var tonemapping) ||
+                !volume.sharedProfile.TryGet<FilmGrain>(out var filmGrain) ||
+                !volume.sharedProfile.TryGet<DepthOfField>(out var depthOfField))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 global volume profile must include ColorAdjustments, Bloom, Vignette, Tonemapping, FilmGrain, and DepthOfField.");
+            }
+
+            if (!colorAdjustments.active || !bloom.active || !vignette.active)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 color grade overrides must remain active.");
+            }
+
+            if (Mathf.Abs(colorAdjustments.postExposure.value - (-0.23f)) > 0.02f ||
+                Mathf.Abs(colorAdjustments.contrast.value - 6f) > 1f ||
+                Mathf.Abs(colorAdjustments.saturation.value - (-16f)) > 2f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 color adjustments must stay near postExposure=-0.23, contrast=6, saturation=-16, but were postExposure={colorAdjustments.postExposure.value:0.000}, contrast={colorAdjustments.contrast.value:0.000}, saturation={colorAdjustments.saturation.value:0.000}.");
+            }
+
+            ValidateColorApproximately(colorAdjustments.colorFilter.value, new Color(1.05f, 0.97f, 0.90f, 1f), "cycle 115 color filter");
+
+            if (Mathf.Abs(bloom.intensity.value - 0.12f) > 0.02f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 bloom intensity must stay near 0.12, but was {bloom.intensity.value:0.000}.");
+            }
+
+            if (Mathf.Abs(vignette.intensity.value - 0.065f) > 0.012f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 115 vignette intensity must stay near 0.065, but was {vignette.intensity.value:0.000}.");
+            }
+
+            if (!tonemapping.active)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 tonemapping must remain active.");
+            }
+
+            if (filmGrain.active || filmGrain.intensity.value > 0.001f)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 film grain must stay inactive or at zero intensity.");
+            }
+
+            if (depthOfField.active)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 115 depth of field must stay off.");
+            }
+        }
+
         private static void ValidateHd2dPlazaShadowMidtoneCycle107Object(string objectName, string expectedParentName, Vector3 expectedLocalPosition, Vector3 expectedLocalScale, float expectedYawDegrees)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -36850,14 +37108,14 @@ namespace Anemora.EditorTools
                 warmFill,
                 libraryWindow,
                 true,
-                new Vector3(0.14f, 0.14f, 0.14f),
-                new Vector3(0.17f, 0.18f, 0.18f),
-                1.22f,
-                1.26f,
-                0.78f,
-                0.82f,
+                new Vector3(0.11f, 0.11f, 0.10f),
+                new Vector3(0.13f, 0.13f, 0.12f),
+                1.34f,
+                1.42f,
+                0.88f,
+                0.94f,
+                0.04f,
                 0.07f,
-                0.11f,
                 false,
                 0f,
                 0f);
@@ -40959,6 +41217,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle114_plaza_cast_shadow_contrast_parent_review_20260524_01";
         }
 
+        private static string GetPlazaSunShadowGradeCycle115ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle115_plaza_sun_shadow_grade_parent_review_20260524_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -43948,14 +44211,14 @@ namespace Anemora.EditorTools
             ValidateAreaLighting(
                 FastVsHouseArea.CentralPlaza,
                 "FastVS_HD2D_CentralPlazaLightingProfile",
-                1.24f,
-                0.80f,
-                new Color(1.00f, 0.91f, 0.75f, 1f),
+                1.38f,
+                0.90f,
+                new Color(1.00f, 0.86f, 0.62f, 1f),
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
-                0.09f,
+                0.055f,
                 new Color(1.00f, 0.70f, 0.44f, 1f),
-                0.153f,
-                new Color(0.148f, 0.154f, 0.160f, 1f),
+                0.114f,
+                new Color(0.118f, 0.113f, 0.104f, 1f),
                 true);
 
             ValidateAreaLighting(
@@ -44273,6 +44536,12 @@ namespace Anemora.EditorTools
         {
             ValidatePlazaSunbeamShaftsCycle113Batch();
             ValidateHd2dPlazaCastShadowContrastCycle114();
+        }
+
+        public static void ValidatePlazaSunShadowGradeCycle115Batch()
+        {
+            ValidatePlazaCastShadowContrastCycle114Batch();
+            ValidateHd2dPlazaSunShadowGradeCycle115();
         }
 
         public static void ValidateGroundedShadowVisualGateBatch()

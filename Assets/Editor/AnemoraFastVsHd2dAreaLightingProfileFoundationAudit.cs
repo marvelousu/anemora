@@ -101,12 +101,12 @@ namespace Anemora.EditorTools
                 new Vector3(20.80f, 0f, 15.80f),
                 CentralPlazaLuminanceBand,
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza),
-                1.24f,
-                new Color(1.00f, 0.91f, 0.75f, 1f),
-                0.09f,
+                1.38f,
+                new Color(1.00f, 0.86f, 0.62f, 1f),
+                0.055f,
                 new Color(1.00f, 0.70f, 0.44f, 1f),
-                0.153f,
-                new Color(0.148f, 0.154f, 0.160f, 1f));
+                0.114f,
+                new Color(0.118f, 0.113f, 0.104f, 1f));
 
             ValidateProfile(
                 issues,
