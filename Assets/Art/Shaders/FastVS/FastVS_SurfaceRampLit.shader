@@ -124,14 +124,18 @@ Shader "Anemora/FastVS/SurfaceRampLit"
                     float3 shadowUp = abs(lightDirWS.y) > 0.88f ? float3(1.0f, 0.0f, 0.0f) : float3(0.0f, 1.0f, 0.0f);
                     float3 shadowTangent = normalize(cross(shadowUp, lightDirWS));
                     float3 shadowBitangent = normalize(cross(lightDirWS, shadowTangent));
-                    float shadowSoftRadius = lerp(0.04f, 0.24f, (float)shadowTextureStrength);
+                    float shadowSoftRadius = lerp(0.025f, 0.18f, (float)shadowTextureStrength);
                     half softShadowAttenuation = shadowAttenuation;
                     softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS + shadowTangent * shadowSoftRadius));
                     softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS - shadowTangent * shadowSoftRadius));
                     softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS + shadowBitangent * shadowSoftRadius * 0.72f));
                     softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS - shadowBitangent * shadowSoftRadius * 0.72f));
-                    softShadowAttenuation *= 0.2h;
-                    shadowAttenuation = lerp(shadowAttenuation, softShadowAttenuation, saturate(shadowTextureStrength * 1.55h));
+                    softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS + (shadowTangent + shadowBitangent * 0.55f) * shadowSoftRadius));
+                    softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS - (shadowTangent + shadowBitangent * 0.55f) * shadowSoftRadius));
+                    softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS + (shadowTangent - shadowBitangent * 0.55f) * shadowSoftRadius));
+                    softShadowAttenuation += (half)MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS - (shadowTangent - shadowBitangent * 0.55f) * shadowSoftRadius));
+                    softShadowAttenuation *= 0.111111h;
+                    shadowAttenuation = lerp(shadowAttenuation, softShadowAttenuation, saturate(shadowTextureStrength * 1.35h));
                 #endif
                 half shadowResponse = smoothstep(0.10h, 0.95h, saturate(shadowAttenuation + ((shadowNoise - 0.5h) * shadowTextureStrength * 0.24h)));
                 half shadowFloorLift = shadowTextureStrength * (0.52h + shadowNoise * 0.16h) * (1.0h - shadowResponse);

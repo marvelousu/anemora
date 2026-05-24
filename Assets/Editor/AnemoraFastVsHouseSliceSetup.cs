@@ -15461,6 +15461,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_desaturated_realtime_sun_cycle153.md");
         }
 
+        public static void CapturePlazaHighResRealtimeShadowCycle154ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaHighResRealtimeShadowCycle154ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_highres_realtime_shadow_cycle154.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38390,7 +38397,7 @@ namespace Anemora.EditorTools
             if (!shaderText.Contains("MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS + shadowTangent") ||
                 !shaderText.Contains("MainLightRealtimeShadow(TransformWorldToShadowCoord(input.positionWS - shadowTangent") ||
                 !shaderText.Contains("shadowSoftRadius") ||
-                !shaderText.Contains("softShadowAttenuation *= 0.2h"))
+                !shaderText.Contains("softShadowAttenuation *= 0.111111h"))
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 148 SurfaceRampLit must feather live realtime shadowmap samples, not painted map haze.");
             }
@@ -38659,6 +38666,27 @@ namespace Anemora.EditorTools
                 realtimeRigText.Contains("1.00f, 0.88f, 0.62f"))
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 153 must not restore the previous saturated yellow plaza sun grade.");
+            }
+        }
+
+        private static void ValidateHd2dPlazaHighResRealtimeShadowCycle154()
+        {
+            ValidateHd2dPlazaDesaturatedRealtimeSunCycle153();
+
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (mainLight == null || mainLight.shadowResolution != LightShadowResolution.VeryHigh)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 154 central-plaza Directional Light must use VeryHigh realtime shadow resolution, found {mainLight?.shadowResolution.ToString() ?? "missing light"}.");
+            }
+
+            var shaderPath = Path.Combine(Application.dataPath, "Art", "Shaders", "FastVS", "FastVS_SurfaceRampLit.shader");
+            var shaderText = File.ReadAllText(shaderPath);
+            if (!shaderText.Contains("lerp(0.025f, 0.18f") ||
+                !shaderText.Contains("shadowBitangent * 0.55f") ||
+                !shaderText.Contains("softShadowAttenuation *= 0.111111h") ||
+                !shaderText.Contains("shadowTextureStrength * 1.35h"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 154 SurfaceRampLit must use the 9-tap tighter realtime shadowmap filter.");
             }
         }
 
@@ -45944,6 +45972,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle153_plaza_desaturated_realtime_sun_parent_review_20260525_01";
         }
 
+        private static string GetPlazaHighResRealtimeShadowCycle154ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle154_plaza_highres_realtime_shadow_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49526,6 +49559,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaDesaturatedRealtimeSunCycle153();
+        }
+
+        public static void ValidatePlazaHighResRealtimeShadowCycle154Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaHighResRealtimeShadowCycle154();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

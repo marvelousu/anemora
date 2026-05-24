@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.23 fast VS HD2D plaza desaturated realtime sun index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.24 fast VS HD2D plaza highres realtime shadow index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 501 files including INDEX.md and README.md.
-- Dated devlog records: 499 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1279 files.
+- Root-level Markdown coverage: 502 files including INDEX.md and README.md.
+- Dated devlog records: 500 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1284 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 26 |
+| 2026-05-25 | 27 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_highres_realtime_shadow_cycle154.md](2026-05-25_fast_vs_hd2d_plaza_highres_realtime_shadow_cycle154.md) | Fast VS / HD2D | feat(hd2d): raise plaza realtime shadow quality |
 | [2026-05-25_fast_vs_hd2d_plaza_desaturated_realtime_sun_cycle153.md](2026-05-25_fast_vs_hd2d_plaza_desaturated_realtime_sun_cycle153.md) | Fast VS / HD2D | feat(hd2d): desaturate plaza realtime sun grade |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_cookie_no_ribbon_cycle152.md](2026-05-25_fast_vs_hd2d_plaza_realtime_cookie_no_ribbon_cycle152.md) | Fast VS / HD2D | feat(hd2d): remove plaza realtime sun ribbons |
 | [2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md](2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md) | Fast VS / HD2D | feat(hd2d): restore plaza VS sky camera |
@@ -657,6 +658,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.24 | 2026-05-25 | Added Fast VS HD2D plaza highres realtime shadow cycle record with VeryHigh Directional Light shadow resolution, tighter 9-tap receiver filtering, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.23 | 2026-05-25 | Added Fast VS HD2D plaza desaturated realtime sun cycle record with warm-neutral Directional Light color, lower-saturation central-plaza surface grade, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.22 | 2026-05-25 | Added Fast VS HD2D plaza realtime cookie no-ribbon cycle record with broad diagonal sun-ribbon removal, soft realtime dapple cookie preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.21 | 2026-05-25 | Added Fast VS HD2D plaza VS sky camera cycle record with central-plaza follow-anchor depth clamp, blue-gray clear-color restoration, realtime lighting preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
