@@ -15531,6 +15531,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_global_realtime_exterior_anchor_cycle163.md");
         }
 
+        public static void CaptureExteriorExitTreeClearanceCycle164ScreenshotsBatch()
+        {
+            CaptureExteriorExitTreeClearanceCycle164ScreenshotsToDirectory(
+                GetExteriorExitTreeClearanceCycle164ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_exterior_exit_tree_clearance_cycle164.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17400,6 +17407,72 @@ namespace Anemora.EditorTools
             WriteCycle137ReviewDirectory(outputDirectory, new[] { exteriorFile, plazaFile, libraryFile, exteriorShadowFile, libraryShadowFile }, reviewDevlogPath);
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS global realtime lighting screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureExteriorExitTreeClearanceCycle164ScreenshotsToDirectory(
+            string outputDirectory,
+            string reviewDevlogPath)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var interiorToExterior = GameObject.Find("FastVS_DoorTransition_Interior_To_Exterior")?.GetComponent<FastVsAreaDoorTransition>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || director == null || realtimeRig == null || interiorToExterior == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 164 exterior exit clearance screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var exitFile = $"{audiencePrefix}01_current_exterior_after_house_exit_playable_camera.png";
+            var movedFile = $"{audiencePrefix}02_current_exterior_after_exit_move_guard.png";
+            var roadFile = $"{audiencePrefix}03_current_exterior_road_follow_guard.png";
+            var exteriorProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Exterior);
+
+            void ApplyExterior()
+            {
+                camera.fieldOfView = exteriorProfile.FieldOfView;
+                guide.ApplyActiveTimeIsolationForReview();
+                director.ApplyAreaForReview(FastVsHouseArea.Exterior);
+                realtimeRig.ApplyNowForReview();
+                SuppressPortalReviewArtifactsForLightingCapture(controller, camera);
+                PositionCloseReviewCamera(camera, guide.ResolveActiveCameraAnchorForReview(), exteriorProfile.PositionOffset, exteriorProfile.LookOffset);
+                realtimeRig.ApplyNowForReview();
+                WarmUpCameraRender(camera);
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
+            controller.ForcePlayerCurrentLocalForReview(InteriorDoorTriggerCenter);
+            interiorToExterior.TriggerForReview();
+            ApplyExterior();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, exitFile));
+            ValidateScreenshotOutputExists(outputDirectory, exitFile);
+
+            controller.MovePlayerWorldForReview(controller.CurrentSpaceRootForReview.TransformVector(new Vector3(0.58f, 0f, 0.36f)));
+            ApplyExterior();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, movedFile));
+            ValidateScreenshotOutputExists(outputDirectory, movedFile);
+
+            controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter + new Vector3(4.92f, 0.02f, 0.84f));
+            ApplyExterior();
+            SaveCameraPng(camera, Path.Combine(outputDirectory, roadFile));
+            ValidateScreenshotOutputExists(outputDirectory, roadFile);
+
+            WriteCycle137ReviewDirectory(outputDirectory, new[] { exitFile, movedFile, roadFile }, reviewDevlogPath);
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 164 exterior exit clearance screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void WriteCycle137ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames, string reviewDevlogPath)
@@ -25952,6 +26025,7 @@ namespace Anemora.EditorTools
 
             ValidateMapTransitionClosesCurrentTimePortal(controller, visibility, exteriorToPlaza);
             ValidateDoorTriggerReachability(controller, visibility, interiorToExterior, exteriorToInterior, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza);
+            ValidateExteriorDoorExitCameraClearance(controller, visibility, interiorToExterior);
             ValidateDoorTransitionExecution(controller, visibility, interiorToExterior, exteriorToInterior, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza);
         }
 
@@ -26126,6 +26200,55 @@ namespace Anemora.EditorTools
 
             var plazaReturnLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
             ValidateVectorNear("library to plaza execution target", plazaReturnLocal, PlazaFromLibraryTarget);
+        }
+
+        private static void ValidateExteriorDoorExitCameraClearance(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsAreaDoorTransition interiorToExterior)
+        {
+            var player = UnityEngine.Object.FindFirstObjectByType<CharacterController>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            if (player == null || guide == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: exterior exit clearance requires player and guide.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
+            controller.ForcePlayerCurrentLocalForReview(InteriorDoorTriggerCenter);
+            interiorToExterior.TriggerForReview();
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.Exterior)
+            {
+                throw new InvalidOperationException("House slice validation failed: exterior exit clearance could not activate the exterior map.");
+            }
+
+            var exteriorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
+            ValidateVectorNear("exterior exit clearance warp target", exteriorLocal, ExteriorDoorExitTarget);
+
+            guide.ApplyActiveTimeIsolationForReview();
+            var anchorWorld = guide.ResolveActiveCameraAnchorForReview();
+            var anchorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(anchorWorld);
+            var exitDistance = new Vector2(anchorLocal.x - ExteriorDoorExitTarget.x, anchorLocal.z - ExteriorDoorExitTarget.z).magnitude;
+            if (exitDistance > 0.16f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: exterior follow camera must stay on the house-exit player, not jump to the tree/road anchor. local={anchorLocal}, exit={ExteriorDoorExitTarget}.");
+            }
+
+            var treeLocal = HouseExteriorCenter + new Vector3(3.35f, 0f, 2.85f);
+            var treeDistance = new Vector2(anchorLocal.x - treeLocal.x, anchorLocal.z - treeLocal.z).magnitude;
+            if (treeDistance < 5.20f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: exterior house-exit follow anchor is too close to the tree collision/sprite. distance={treeDistance:0.00}, anchor={anchorLocal}.");
+            }
+
+            var beforeMoveLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
+            controller.MovePlayerWorldForReview(controller.CurrentSpaceRootForReview.TransformVector(new Vector3(0.58f, 0f, 0.36f)));
+            var afterMoveLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
+            var movedDistance = new Vector2(afterMoveLocal.x - beforeMoveLocal.x, afterMoveLocal.z - beforeMoveLocal.z).magnitude;
+            if (movedDistance < 0.46f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: player cannot move freely after exiting the house. before={beforeMoveLocal}, after={afterMoveLocal}.");
+            }
         }
 
         private static void ValidateDoorTriggerReachability(
@@ -39417,14 +39540,29 @@ namespace Anemora.EditorTools
 
             var anchorWorld = guide.ResolveActiveCameraAnchorForReview();
             var anchorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(anchorWorld);
-            if (anchorLocal.x < 11.19f || anchorLocal.z < 10.19f)
+            if (anchorLocal.x < 7.04f || anchorLocal.z < 4.99f)
             {
-                throw new InvalidOperationException($"House slice validation failed: cycle 163 exterior follow anchor should clamp away from the roof-blocked house edge, found local={anchorLocal}.");
+                throw new InvalidOperationException($"House slice validation failed: cycle 163 exterior follow anchor should keep the exterior camera above the playable house-exit bounds, found local={anchorLocal}.");
             }
 
             var exteriorProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Exterior);
             ValidateVectorNear("cycle 163 exterior follow camera offset", exteriorProfile.PositionOffset, new Vector3(0.70f, 2.85f, -5.25f));
             ValidateVectorNear("cycle 163 exterior follow camera look", exteriorProfile.LookOffset, new Vector3(0.25f, 0.78f, 0.90f));
+        }
+
+        private static void ValidateHd2dExteriorExitTreeClearanceCycle164()
+        {
+            ValidateHd2dGlobalRealtimeCameraExposureCycle162();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var interiorToExterior = GameObject.Find("FastVS_DoorTransition_Interior_To_Exterior")?.GetComponent<FastVsAreaDoorTransition>();
+            if (controller == null || visibility == null || interiorToExterior == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 164 needs controller, visibility, and the interior-to-exterior door transition.");
+            }
+
+            ValidateExteriorDoorExitCameraClearance(controller, visibility, interiorToExterior);
         }
 
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
@@ -46781,6 +46919,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle163_global_realtime_exterior_anchor_parent_review_20260525_01";
         }
 
+        private static string GetExteriorExitTreeClearanceCycle164ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle164_exterior_exit_tree_clearance_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -50433,6 +50576,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dGlobalRealtimeExteriorAnchorCycle163();
+        }
+
+        public static void ValidateExteriorExitTreeClearanceCycle164Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dExteriorExitTreeClearanceCycle164();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

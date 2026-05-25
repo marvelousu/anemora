@@ -7,8 +7,8 @@ namespace Anemora.FastVS
     {
         private const float CameraModeFov = 38f;
         private const float CentralPlazaVsCameraMaxAnchorZ = 14.70f;
-        private const float ExteriorVsCameraMinAnchorX = 11.20f;
-        private const float ExteriorVsCameraMinAnchorZ = 10.20f;
+        private const float ExteriorVsCameraMinAnchorX = 7.05f;
+        private const float ExteriorVsCameraMinAnchorZ = 5.00f;
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;

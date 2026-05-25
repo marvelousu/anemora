@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.33 fast VS HD2D global realtime exterior anchor index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.34 fast VS exterior exit tree clearance index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 511 files including INDEX.md and README.md.
-- Dated devlog records: 509 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1329 files.
+- Root-level Markdown coverage: 512 files including INDEX.md and README.md.
+- Dated devlog records: 510 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1332 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 36 |
+| 2026-05-25 | 37 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_exterior_exit_tree_clearance_cycle164.md](2026-05-25_fast_vs_hd2d_exterior_exit_tree_clearance_cycle164.md) | Fast VS / HD2D | fix(fast-vs): keep exterior exit camera off tree |
 | [2026-05-25_fast_vs_hd2d_global_realtime_exterior_anchor_cycle163.md](2026-05-25_fast_vs_hd2d_global_realtime_exterior_anchor_cycle163.md) | Fast VS / HD2D | feat(hd2d): clamp exterior realtime camera anchor |
 | [2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md](2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md) | Fast VS / HD2D | feat(hd2d): tune global realtime camera exposure |
 | [2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md](2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md) | Fast VS / HD2D | feat(hd2d): globalize realtime light and shadow |
