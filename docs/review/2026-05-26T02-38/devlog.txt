@@ -1,0 +1,9 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle38.md
+Review set for Chapter 1 ruins bridge map content refine cycle38.
+
+Included files:
+- reference_slide07_ruins_current.png
+- reference_slide14_ruins_past.png
+- 11_f1_f6_current_cycle38.png
+- 12_f1_f6_past_cycle38.png
+
