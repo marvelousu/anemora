@@ -1336,6 +1336,7 @@ namespace Anemora.EditorTools
             CreateKaiaFarmFieldZoningRefinement(root, prefix, past, materials);
             CreateKaiaFarmRouteReadabilityDetails(root, prefix, past, materials);
             CreateKaiaFarmFieldMassReadabilityDetails(root, prefix, past, materials);
+            CreateKaiaFarmOrchardBandReadabilityDetails(root, prefix, past, materials);
 
             if (past)
             {
@@ -1459,6 +1460,34 @@ namespace Anemora.EditorTools
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_FieldMass", c + new Vector3(-7.92f, 0.20f, -4.86f), leaf, 0);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_FieldMass", c + new Vector3(-0.22f, 0.20f, -8.36f), leaf, 1);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_FieldMass", c + new Vector3(3.78f, 0.20f, -5.06f), leaf, 2);
+        }
+
+        private static void CreateKaiaFarmOrchardBandReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1KaiaFarmMapCenter;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var band = past ? materials.PastGrass : materials.CurrentGrass;
+            var nut = past ? materials.PastFurniture : materials.CurrentFurniture;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_UpperOrchardBandWest", root, c + new Vector3(5.40f, 0.083f, 6.20f), new Vector3(4.70f, 0.05f, 0.82f), Quaternion.Euler(0f, 3f, 0f), band, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.upper_orchard_band_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_UpperOrchardBandEast", root, c + new Vector3(10.72f, 0.084f, 6.02f), new Vector3(3.72f, 0.05f, 0.74f), Quaternion.Euler(0f, -4f, 0f), band, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.upper_orchard_band_east");
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardUpperTreeA", c + new Vector3(4.90f, 0.20f, 6.38f), wood, leaf, nut);
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardUpperTreeB", c + new Vector3(8.42f, 0.20f, 6.10f), wood, leaf, nut);
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardUpperTreeC", c + new Vector3(10.82f, 0.20f, 6.22f), wood, leaf, nut);
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_MidOrchardBandWest", root, c + new Vector3(8.70f, 0.083f, 3.34f), new Vector3(4.18f, 0.05f, 0.72f), Quaternion.Euler(0f, 4f, 0f), band, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.mid_orchard_band_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_MidOrchardBandEast", root, c + new Vector3(12.66f, 0.084f, 3.20f), new Vector3(2.62f, 0.05f, 0.66f), Quaternion.Euler(0f, -5f, 0f), band, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.mid_orchard_band_east");
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardMidTreeA", c + new Vector3(10.76f, 0.20f, 3.38f), wood, leaf, nut);
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardMidTreeB", c + new Vector3(12.48f, 0.20f, 3.18f), wood, leaf, nut);
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_LowerOrchardBand", root, c + new Vector3(9.76f, 0.083f, -3.14f), new Vector3(5.54f, 0.05f, 0.78f), Quaternion.Euler(0f, -2f, 0f), band, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.lower_orchard_band");
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardLowerTreeA", c + new Vector3(7.92f, 0.20f, -3.08f), wood, leaf, nut);
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardLowerTreeB", c + new Vector3(10.82f, 0.20f, -3.22f), wood, leaf, nut);
+            CreateFarmNutTree(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardLowerTreeC", c + new Vector3(12.18f, 0.20f, -3.02f), wood, leaf, nut);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardBand", c + new Vector3(6.60f, 0.20f, 5.68f), leaf, 0);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardBand", c + new Vector3(12.56f, 0.20f, 2.70f), leaf, 1);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_OrchardBand", c + new Vector3(9.32f, 0.20f, -2.68f), leaf, 2);
         }
 
         private static void CreateKaiaFarmRouteReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
