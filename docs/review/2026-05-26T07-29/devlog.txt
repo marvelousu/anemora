@@ -1,0 +1,3 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle58.md
+
+Cycle58 Kaia farm orchard/nut-tree separator clarity review captures.
