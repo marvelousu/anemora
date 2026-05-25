@@ -1,0 +1,3 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle49.md
+
+Cycle49 F1-F6 ruins current/past review captures.
