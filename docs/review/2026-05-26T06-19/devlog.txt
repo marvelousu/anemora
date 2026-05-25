@@ -1,0 +1,27 @@
+docs/devlog/INDEX.md
+
+Stage7p Portal Facade Brightness
+
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+Review: docs/review/2026-05-26T06-19/index.md
+Capture output: C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7_portal_facade_brightness
+Build: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+Launch whole folder: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+
+Changed the Stage7 portal/facade brightness balance by darkening portal frame materials, reducing warm/cool overlay tint alpha, and lowering the window-light emission baseline. Route and map move pads were preserved.
+
+Validation:
+- ValidateHd2dStage7PortalFacadeBrightnessBatch: passed
+- CaptureHd2dStage7PortalFacadeBrightnessReferenceScreenshotsBatch: passed
+- BuildAndValidateBatch: passed
+- Player smoke: no Exception/Error/Failed/NullReference/MissingReference/Assertion matches in Logs\stage7-portal-facade-brightness-smoke.log
+- PortalStencilFeature and paired-space central plaza objects remained present after build-side checks
+- tw_current_aperture.png was visually checked and is not black
+- Assets\Scenes\Anemora_Chapter1.unity is absent in this branch
+
+Visual gaps remain large:
+- Portal frame and window glare are lower, but the facade still reads as a flat technical overlay rather than integrated HD-2D composition.
+- A harsh white horizontal strip remains behind Niro in the current route close view.
+- Plaza still has oversized mechanical shadows, flat modular wall/floor construction, sparse detail, and little painterly material variation.
+- Library remains far below the night-camp reference in warm focal light, silhouette layering, volumetric depth, and prop density.
+- Home exterior still reads as assembled blockout geometry with weak weathering and depth.
