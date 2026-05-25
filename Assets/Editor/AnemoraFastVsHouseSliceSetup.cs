@@ -15503,6 +15503,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md");
         }
 
+        public static void CapturePlazaNeutralBaseColorCycle160ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaNeutralBaseColorCycle160ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_neutral_base_color_cycle160.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38946,6 +38953,71 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaNeutralBaseColorCycle160()
+        {
+            ValidateHd2dPlazaNeutralRealtimeShaderCycle159();
+
+            var neutralFloorCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null ||
+                    !renderer.gameObject.scene.IsValid() ||
+                    !renderer.enabled ||
+                    !renderer.receiveShadows ||
+                    !renderer.gameObject.name.Contains("Current_CentralPlaza"))
+                {
+                    continue;
+                }
+
+                var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
+                var isSurfaceFloor =
+                    surface != null &&
+                    (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Floor ||
+                     surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Ground ||
+                     surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Road);
+                var objectName = renderer.gameObject.name;
+                var isNamedFloor =
+                    objectName.Contains("Floor") ||
+                    objectName.Contains("Ground") ||
+                    objectName.Contains("Road") ||
+                    objectName.Contains("Path") ||
+                    objectName.Contains("Stone") ||
+                    objectName.Contains("Cobble") ||
+                    objectName.Contains("Pavement") ||
+                    objectName.Contains("Tile") ||
+                    objectName.Contains("Step") ||
+                    objectName.Contains("Terrace") ||
+                    objectName.Contains("Lane") ||
+                    objectName.Contains("Square");
+                if (!isSurfaceFloor && !isNamedFloor)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null || !material.HasProperty("_BaseColor"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                var baseColor = block.GetColor("_BaseColor");
+                if (baseColor.r <= 0.56f &&
+                    baseColor.g >= 0.55f &&
+                    baseColor.b >= 0.60f &&
+                    baseColor.b > baseColor.r)
+                {
+                    neutralFloorCount++;
+                }
+            }
+
+            if (neutralFloorCount < 4)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 160 expected neutral base-color property blocks on central-plaza floor receivers, found {neutralFloorCount}.");
+            }
+        }
+
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -46280,6 +46352,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle159_plaza_neutral_realtime_shader_parent_review_20260525_01";
         }
 
+        private static string GetPlazaNeutralBaseColorCycle160ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle160_plaza_neutral_base_color_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49904,6 +49981,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaNeutralRealtimeShaderCycle159();
+        }
+
+        public static void ValidatePlazaNeutralBaseColorCycle160Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaNeutralBaseColorCycle160();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

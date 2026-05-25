@@ -18,6 +18,7 @@ namespace Anemora.FastVS
         private const float CentralPlazaSunCookieWorldSize = 9.25f;
         private const string CentralPlazaSunCookieName = "FastVS_CentralPlazaRealtimeSunCookieCycle147";
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
+        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
         private static readonly int ShadowReceiveStrengthId = Shader.PropertyToID("_ShadowReceiveStrength");
         private static readonly int ShadowTextureStrengthId = Shader.PropertyToID("_ShadowTextureStrength");
@@ -651,6 +652,15 @@ namespace Anemora.FastVS
 
             var block = new MaterialPropertyBlock();
             renderer.GetPropertyBlock(block);
+            if (material.HasProperty(BaseColorId))
+            {
+                var baseColor = ResolveCentralPlazaBaseColor(renderer, surface, isFacadeReceiver);
+                if (baseColor.a > 0f)
+                {
+                    block.SetColor(BaseColorId, baseColor);
+                }
+            }
+
             if (material.HasProperty(SurfaceRampStrengthId))
             {
                 block.SetFloat(SurfaceRampStrengthId, 0.45f);
@@ -687,6 +697,64 @@ namespace Anemora.FastVS
             }
 
             renderer.SetPropertyBlock(block);
+        }
+
+        private static Color ResolveCentralPlazaBaseColor(Renderer renderer, FastVsHd2dSurfaceProfile surface, bool isFacadeReceiver)
+        {
+            if (surface != null)
+            {
+                switch (surface.SurfaceKindForReview)
+                {
+                    case FastVsHd2dSurfaceKind.Floor:
+                    case FastVsHd2dSurfaceKind.Ground:
+                    case FastVsHd2dSurfaceKind.Road:
+                        return new Color(0.54f, 0.56f, 0.62f, 1f);
+                    case FastVsHd2dSurfaceKind.Wall:
+                    case FastVsHd2dSurfaceKind.Door:
+                        return new Color(0.64f, 0.64f, 0.62f, 1f);
+                    case FastVsHd2dSurfaceKind.Roof:
+                        return new Color(0.60f, 0.58f, 0.54f, 1f);
+                }
+            }
+
+            var name = renderer != null ? renderer.gameObject.name : string.Empty;
+            if (IsCentralPlazaFloorReceiverName(name))
+            {
+                return new Color(0.54f, 0.56f, 0.62f, 1f);
+            }
+
+            if (isFacadeReceiver ||
+                name.Contains("Wall") ||
+                name.Contains("Facade") ||
+                name.Contains("Door") ||
+                name.Contains("Lintel") ||
+                name.Contains("Eave"))
+            {
+                return new Color(0.64f, 0.64f, 0.62f, 1f);
+            }
+
+            return new Color(0f, 0f, 0f, 0f);
+        }
+
+        private static bool IsCentralPlazaFloorReceiverName(string name)
+        {
+            if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
+            {
+                return false;
+            }
+
+            return name.Contains("Floor") ||
+                   name.Contains("Ground") ||
+                   name.Contains("Road") ||
+                   name.Contains("Path") ||
+                   name.Contains("Stone") ||
+                   name.Contains("Cobble") ||
+                   name.Contains("Pavement") ||
+                   name.Contains("Tile") ||
+                   name.Contains("Step") ||
+                   name.Contains("Terrace") ||
+                   name.Contains("Lane") ||
+                   name.Contains("Square");
         }
 
         private static void ApplySpriteRealtimeGrade(Renderer renderer, bool isCentralPlaza)
