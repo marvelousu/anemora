@@ -2268,6 +2268,7 @@ namespace Anemora.EditorTools
             CreateStreetCornerMarketAndRoadEdgeDetails(root, prefix, past, materials);
             CreateStreetCornerCycle40MarketRuinDetails(root, prefix, past, materials);
             CreateStreetCornerCycle44OrganicPlacementDetails(root, prefix, past, materials);
+            CreateStreetCornerCycle45ResidualReadabilityDetails(root, prefix, past, materials);
             CreateStreetCornerOrganicGrassEdgeDetails(root, prefix, past, materials);
             if (past)
             {
@@ -2368,6 +2369,52 @@ namespace Anemora.EditorTools
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_OrganicEdge", c + new Vector3(15.98f, 0.20f, -5.42f), leaf, 4);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_OrganicEdge", c + new Vector3(18.18f, 0.20f, 1.26f), leaf, 5);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_OrganicEdge", c + new Vector3(19.02f, 0.20f, -2.94f), leaf, 10);
+        }
+
+        private static void CreateStreetCornerCycle45ResidualReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                return;
+            }
+
+            var c = Chapter1AriaStreetMapCenter;
+            var path = materials.CurrentPath;
+            var ground = materials.CurrentGrass;
+            var stone = materials.CurrentStone;
+            var leaf = materials.CurrentLeaf;
+            var dust = materials.Dust;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinRoofBreakA", root, c + new Vector3(-18.58f, 2.20f, 4.20f), new Vector3(1.18f, 0.10f, 0.42f), Quaternion.Euler(8f, 0f, -20f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d1.cycle45.west_ruin.roof_break_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinRoofBreakB", root, c + new Vector3(-17.28f, 1.86f, 0.70f), new Vector3(0.92f, 0.10f, 0.30f), Quaternion.Euler(8f, 0f, 15f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d1.cycle45.west_ruin.roof_break_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinRubbleA", root, c + new Vector3(-18.04f, 0.12f, 3.86f), new Vector3(0.92f, 0.08f, 0.22f), Quaternion.Euler(0f, 12f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d1.cycle45.west_ruin.rubble_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinRubbleB", root, c + new Vector3(-17.12f, 0.12f, 0.34f), new Vector3(0.78f, 0.08f, 0.20f), Quaternion.Euler(0f, -10f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d1.cycle45.west_ruin.rubble_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinVineA", root, c + new Vector3(-18.10f, 0.16f, 4.10f), new Vector3(0.56f, 0.18f, 0.14f), Quaternion.Euler(0f, 18f, -8f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d1.cycle45.west_ruin.vine_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinVineB", root, c + new Vector3(-16.74f, 0.16f, 0.52f), new Vector3(0.48f, 0.16f, 0.14f), Quaternion.Euler(0f, -16f, 6f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d1.cycle45.west_ruin.vine_b");
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinClutter", c + new Vector3(-18.86f, 0.20f, 3.52f), leaf, 25);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinClutter", c + new Vector3(-17.34f, 0.20f, 4.36f), leaf, 26);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D1_Cycle45WestRuinClutter", c + new Vector3(-16.86f, 0.20f, 0.86f), leaf, 27);
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergePathPatchA", root, c + new Vector3(13.06f, 0.061f, -3.58f), new Vector3(0.72f, 0.05f, 0.26f), Quaternion.Euler(0f, -28f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_path_patch_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergePathPatchB", root, c + new Vector3(14.48f, 0.061f, -2.58f), new Vector3(0.78f, 0.05f, 0.24f), Quaternion.Euler(0f, -33f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_path_patch_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergeGroundPatchA", root, c + new Vector3(12.68f, 0.058f, -3.02f), new Vector3(0.54f, 0.05f, 0.20f), Quaternion.Euler(0f, -19f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_ground_patch_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergeGroundPatchB", root, c + new Vector3(15.32f, 0.058f, -1.90f), new Vector3(0.66f, 0.05f, 0.22f), Quaternion.Euler(0f, 11f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_ground_patch_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergeStoneA", root, c + new Vector3(13.28f, 0.12f, -3.10f), new Vector3(0.22f, 0.10f, 0.16f), Quaternion.Euler(0f, 16f, -3f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_stone_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergeStoneB", root, c + new Vector3(14.92f, 0.12f, -2.28f), new Vector3(0.24f, 0.10f, 0.16f), Quaternion.Euler(0f, -14f, 4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_stone_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D3_Cycle45MergeStoneC", root, c + new Vector3(16.06f, 0.12f, -1.12f), new Vector3(0.20f, 0.10f, 0.14f), Quaternion.Euler(0f, 9f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d3.cycle45.merge_stone_c");
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastGroundPatchA", root, c + new Vector3(13.96f, 0.060f, -6.06f), new Vector3(1.10f, 0.05f, 0.34f), Quaternion.Euler(0f, -10f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_ground_patch_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastGroundPatchB", root, c + new Vector3(16.42f, 0.060f, -5.48f), new Vector3(0.92f, 0.05f, 0.30f), Quaternion.Euler(0f, 13f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_ground_patch_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastBrushA", root, c + new Vector3(15.04f, 0.088f, -5.86f), new Vector3(0.52f, 0.06f, 0.24f), Quaternion.Euler(0f, -14f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_brush_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastBrushB", root, c + new Vector3(17.00f, 0.084f, -4.94f), new Vector3(0.48f, 0.06f, 0.22f), Quaternion.Euler(0f, 17f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_brush_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastBrushC", root, c + new Vector3(18.06f, 0.082f, -4.28f), new Vector3(0.44f, 0.06f, 0.20f), Quaternion.Euler(0f, -12f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_brush_c");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastStoneA", root, c + new Vector3(14.74f, 0.12f, -5.70f), new Vector3(0.28f, 0.10f, 0.18f), Quaternion.Euler(0f, 11f, -2f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_stone_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastStoneB", root, c + new Vector3(17.18f, 0.12f, -5.02f), new Vector3(0.24f, 0.10f, 0.16f), Quaternion.Euler(0f, -15f, 4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_stone_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastDustNib", root, c + new Vector3(16.22f, 0.058f, -4.62f), new Vector3(0.52f, 0.05f, 0.18f), Quaternion.Euler(0f, 8f, 0f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.cycle45.southeast_dust_nib");
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastClutter", c + new Vector3(14.22f, 0.20f, -6.34f), leaf, 28);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastClutter", c + new Vector3(15.86f, 0.20f, -5.68f), leaf, 29);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastClutter", c + new Vector3(17.46f, 0.20f, -4.86f), leaf, 30);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_D2_Cycle45SoutheastClutter", c + new Vector3(18.42f, 0.20f, -4.06f), leaf, 31);
         }
 
         private static void CreateStreetCornerStallRemnantContent(Transform root, string prefix, bool past, Materials materials)
