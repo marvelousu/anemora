@@ -5,6 +5,11 @@ namespace Anemora.FastVS
 {
     public sealed class FastVsVisualDirectionGuide : MonoBehaviour
     {
+        private const float Chapter1EndSideViewOrthographicSize = 2.80f;
+        private const float Chapter1EndSideViewCameraHeight = 1.45f;
+        private const float Chapter1EndSideViewCameraDistance = 13.0f;
+        private const float Chapter1EndSideViewLookAhead = 1.35f;
+
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;
@@ -117,20 +122,28 @@ namespace Anemora.FastVS
             Vector3 targetPosition;
             Vector3 lookAt;
 
-            if (cameraMode == 1 && portalController != null && ResolveActivePortalRoot() != null)
+            if (TryResolveChapter1EndSideViewCamera(out targetPosition, out lookAt))
             {
+                reviewCamera.orthographic = true;
+                reviewCamera.orthographicSize = Chapter1EndSideViewOrthographicSize;
+            }
+            else if (cameraMode == 1 && portalController != null && ResolveActivePortalRoot() != null)
+            {
+                reviewCamera.orthographic = false;
                 var portal = ResolveActivePortalRoot().transform;
                 targetPosition = portal.TransformPoint(new Vector3(0f, 1.15f, -3.25f));
                 lookAt = portal.TransformPoint(new Vector3(0f, 0.45f, 0.65f));
             }
             else if (cameraMode == 2)
             {
+                reviewCamera.orthographic = false;
                 var root = ResolveActiveSpaceRoot();
                 targetPosition = root != null ? root.TransformPoint(new Vector3(0f, 7.2f, -8.2f)) : new Vector3(0f, 7.2f, -8.2f);
                 lookAt = root != null ? root.TransformPoint(new Vector3(0f, 0.15f, 0.15f)) : new Vector3(0f, 0.15f, 0.15f);
             }
             else
             {
+                reviewCamera.orthographic = false;
                 var anchor = ResolveActiveSideCameraAnchor();
                 targetPosition = anchor + new Vector3(0f, 2.75f, -4.55f);
                 lookAt = anchor + new Vector3(0f, 0.72f, 0.45f);
@@ -181,6 +194,30 @@ namespace Anemora.FastVS
 
             var local = portalController.GetPlayerLocalCoordinateForReview();
             return root.TransformPoint(local);
+        }
+
+        private bool TryResolveChapter1EndSideViewCamera(out Vector3 targetPosition, out Vector3 lookAt)
+        {
+            targetPosition = Vector3.zero;
+            lookAt = Vector3.forward;
+            if (areaVisibility == null ||
+                areaVisibility.ActiveAreaForReview != FastVsHouseArea.Chapter1End ||
+                portalController == null)
+            {
+                return false;
+            }
+
+            var root = ResolveActiveSpaceRoot();
+            if (root == null)
+            {
+                return false;
+            }
+
+            var local = portalController.GetPlayerLocalCoordinateForReview();
+            var anchorLocal = new Vector3(local.x + Chapter1EndSideViewLookAhead, Chapter1EndSideViewCameraHeight, local.z);
+            targetPosition = root.TransformPoint(anchorLocal + new Vector3(0f, 0f, -Chapter1EndSideViewCameraDistance));
+            lookAt = root.TransformPoint(anchorLocal + Vector3.forward);
+            return true;
         }
 
         private Transform ResolveActiveSpaceRoot()
