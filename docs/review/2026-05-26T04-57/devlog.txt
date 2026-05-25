@@ -1,0 +1,39 @@
+Stage7n: Plaza Shadow Soft Balance
+
+Branch:
+work/fast-vs-hd2d-shading-foundation-20260522
+
+Changed:
+- Lowered Central Plaza Stage7j realtime shadow/receiver texture balance in FastVsRealtimeLightShadowRig.cs.
+- Added Stage7n validation/capture entry points in AnemoraFastVsHouseSliceSetup.cs.
+- Aligned stale cycle146/153/158/161/162 validation gates with Stage7n softened receiver property blocks.
+- Did not touch Chapter1 scene setup or route integrator.
+
+Build:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Launch:
+Use the full folder:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+
+Capture output:
+C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7_plaza_shadow_soft_balance
+
+Checks:
+- ValidateHd2dStage7PlazaShadowSoftBalanceBatch: exit 0.
+- CaptureHd2dStage7PlazaShadowSoftBalanceReferenceScreenshotsBatch: exit 0.
+- BuildAndValidateBatch: exit 0.
+- Smoke: 20 seconds, error-pattern count 0.
+- PortalStencilFeature active.
+- tw_current_aperture.png manually viewed; not black.
+- Assets/Scenes/Anemora_Chapter1.unity absent.
+
+Gap assessment:
+- Target HD-2D quality remains far above the current output.
+- The plaza still reads as a large planar test map with oversized shadow silhouettes.
+- The added facade/floor relief does not yet create Octopath-level layered depth.
+- Library and exterior still lack scene density, color separation, and authored light composition.
+- TimeWindow rendering is alive, but the aperture visual language is still raw and visually loud.
+
+Status:
+判定待ち。
