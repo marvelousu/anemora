@@ -1,0 +1,3 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle53.md
+
+Cycle53 F1-F6 lower-left settlement and route-frame readability review captures.

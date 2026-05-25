@@ -473,7 +473,7 @@ namespace Anemora.EditorTools
             CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.MiaHouse, Chapter1MiaHouseMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 17.90f, -25.20f), new Vector3(0.10f, 0.20f, 2.90f), $"{outputDirectory}/{audiencePrefix}05_c1_c3_current.png", $"{outputDirectory}/{audiencePrefix}06_c1_c3_past.png");
             CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.AriaStreet, Chapter1AriaStreetMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 20.35f, -27.80f), new Vector3(0.80f, 0.22f, 4.10f), $"{outputDirectory}/{audiencePrefix}07_d1_d3_current.png", $"{outputDirectory}/{audiencePrefix}08_d1_d3_past.png");
             CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.KaiaFarm, Chapter1KaiaFarmMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 20.95f, -28.90f), new Vector3(0.85f, 0.24f, 4.60f), $"{outputDirectory}/{audiencePrefix}09_e1_e3_current.png", $"{outputDirectory}/{audiencePrefix}10_e1_e3_past.png");
-            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.Ruins, Chapter1RuinsMapCenter + new Vector3(0f, 0.02f, -0.45f), new Vector3(0f, 25.15f, -39.90f), new Vector3(0.56f, 0.28f, 5.90f), $"{outputDirectory}/{audiencePrefix}11_f1_f6_current.png", $"{outputDirectory}/{audiencePrefix}12_f1_f6_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.Ruins, Chapter1RuinsMapCenter + new Vector3(0f, 0.02f, -0.45f), new Vector3(-0.08f, 25.35f, -40.30f), new Vector3(0.44f, 0.28f, 5.84f), $"{outputDirectory}/{audiencePrefix}11_f1_f6_current.png", $"{outputDirectory}/{audiencePrefix}12_f1_f6_past.png");
             CaptureChapter1EndSideViewPreview(controller, visibility, guide, camera, $"{outputDirectory}/{audiencePrefix}13_scene6_sideview_auto.png");
 
             AssetDatabase.Refresh();
@@ -3193,6 +3193,7 @@ namespace Anemora.EditorTools
             CreateRuinsSideHomesDetails(root, prefix, past, materials);
             CreateRuinsLeftSettlementReadabilityDetails(root, prefix, past, materials);
             CreateRuinsF2LowerHouseSeparationDetails(root, prefix, past, materials);
+            CreateRuinsCycle53LowerLeftFrameReadabilityDetails(root, prefix, past, materials);
             CreateRuinsSettlementContrastAndEdgeDetails(root, prefix, past, materials);
             CreateRuinsCycle43SettlementSpacingDetails(root, prefix, past, materials);
             CreateRuinsCycle49CurrentRuinRouteReadabilityDetails(root, prefix, past, materials);
@@ -3390,6 +3391,36 @@ namespace Anemora.EditorTools
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F2_LowerSettlementBrush", c + new Vector3(-16.02f, 0.20f, -4.14f), weed, 42);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F2_LowerSettlementBrush", c + new Vector3(-14.78f, 0.20f, -4.96f), weed, 43);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_LowerSettlementDustBreak", root, c + new Vector3(-18.86f, 0.056f, -4.86f), new Vector3(4.92f, 0.05f, 0.30f), Quaternion.Euler(0f, 2f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f2.lower_settlement_dust_break");
+        }
+
+        private static void CreateRuinsCycle53LowerLeftFrameReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1RuinsMapCenter;
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var ground = past ? materials.PastGrass : materials.CurrentGrass;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var plant = past ? materials.Leaf : materials.CurrentLeaf;
+            var rubble = past ? materials.PastPath : materials.Dust;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerLeftRoadLip", root, c + new Vector3(-20.82f, 0.082f, -4.84f), new Vector3(2.82f, 0.05f, 0.18f), Quaternion.Euler(0f, -2f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_left_road_lip");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerLeftPorchPad", root, c + new Vector3(-22.06f, 0.106f, -5.56f), new Vector3(1.02f, 0.08f, 0.24f), Quaternion.Euler(0f, -4f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_left_porch_pad");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerMidPorchPad", root, c + new Vector3(-18.00f, 0.106f, -5.50f), new Vector3(0.96f, 0.08f, 0.24f), Quaternion.Euler(0f, 3f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_mid_porch_pad");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerLeftShoulder", root, c + new Vector3(-21.62f, 0.076f, -4.60f), new Vector3(1.18f, 0.05f, 0.18f), Quaternion.Euler(0f, 6f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_left_shoulder");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerMidShoulder", root, c + new Vector3(-17.50f, 0.076f, -4.56f), new Vector3(1.10f, 0.05f, 0.18f), Quaternion.Euler(0f, -5f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_mid_shoulder");
+
+            if (past)
+            {
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerLeftCleanStoneCue", root, c + new Vector3(-22.10f, 0.122f, -4.92f), new Vector3(0.34f, 0.10f, 0.18f), Quaternion.Euler(0f, 12f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_left_clean_stone_cue");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerMidLeafCue", root, c + new Vector3(-19.06f, 0.126f, -4.70f), new Vector3(0.28f, 0.16f, 0.16f), Quaternion.Euler(0f, 0f, -8f), plant, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_mid_leaf_cue");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerRightLeafCue", root, c + new Vector3(-15.74f, 0.124f, -4.76f), new Vector3(0.26f, 0.14f, 0.16f), Quaternion.Euler(0f, 0f, 10f), plant, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_right_leaf_cue");
+            }
+            else
+            {
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerLeftDustCue", root, c + new Vector3(-22.10f, 0.110f, -4.92f), new Vector3(0.38f, 0.08f, 0.18f), Quaternion.Euler(0f, 10f, 0f), rubble, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_left_dust_cue");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerMidBrokenTrimCue", root, c + new Vector3(-19.08f, 0.132f, -4.70f), new Vector3(0.30f, 0.16f, 0.16f), Quaternion.Euler(0f, 0f, -10f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_mid_broken_trim_cue");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F2_Cycle53LowerRightStoneCue", root, c + new Vector3(-15.74f, 0.122f, -4.76f), new Vector3(0.28f, 0.10f, 0.16f), Quaternion.Euler(0f, 0f, 8f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f2.cycle53.lower_right_stone_cue");
+            }
         }
 
         private static void CreateRuinsCycle43SettlementSpacingDetails(Transform root, string prefix, bool past, Materials materials)
