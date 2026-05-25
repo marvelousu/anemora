@@ -1,0 +1,21 @@
+Stage7o Route Glow Subtlety
+
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+Review: docs/review/2026-05-26T05-37/index.md
+Capture output: C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7_route_glow_subtlety
+Build: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Changed current/past map-move and route-move glow pad alpha/scale downward while preserving the move point pads. Added a Stage7o validation/capture gate for route glow subtlety.
+
+Validation:
+- ValidateHd2dStage7RouteGlowSubtletyBatch: passed
+- CaptureHd2dStage7RouteGlowSubtletyReferenceScreenshotsBatch: passed
+- BuildAndValidateBatch: passed
+- Player smoke: no Exception/Error/Failed/NullReference/MissingReference/Assertion matches in Logs\stage7-route-glow-subtlety-smoke.log
+
+Visual gaps remain large:
+- Route glow pads are less dominant, but the current-route close view is still led by a harsh white horizontal strip and hard wall/floor geometry.
+- Plaza still reads as flat modular blockout with large mechanical shadow shapes instead of the reference's dense terrain, painterly local contrast, and atmospheric depth.
+- Library remains sparse and broad; it does not approach the night-camp reference's warm localized light, layered foliage, or volumetric color separation.
+- TimeWindow aperture is not black, but the orange frame and white window/vertical strip are still visually loud.
+- Home exterior still exposes roof/wall construction and lacks integrated HD-2D material depth.
