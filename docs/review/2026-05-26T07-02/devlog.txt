@@ -1,0 +1,3 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle55.md
+
+Cycle55 Kaia farm reference-structure review captures: long boundary fences, orchard bands, and far-right grass zones.
