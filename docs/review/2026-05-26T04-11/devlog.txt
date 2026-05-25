@@ -1,0 +1,27 @@
+Stage 7l: Surface Breakup Shader
+
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+Build: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+Launch: launch the whole C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice folder.
+
+Change:
+- Added bounded world-space coarse/fine surface breakup to FastVS_SurfaceRampLit.shader.
+- Kept realtime shadows, textured shadow tinting, cookies, emission, runtime camera, route pads, and TimeWindow setup intact.
+- Added Stage7l validate and capture editor batch methods.
+
+Validation:
+- ValidateHd2dStage7SurfaceBreakupShaderBatch: exit 0.
+- ValidateHouseSliceBatch: exit 0.
+- CaptureHd2dStage7SurfaceBreakupShaderReferenceScreenshotsBatch: exit 0.
+- Build: exit 0, exe timestamp 2026-05-26 04:07:49.
+- Build log included a non-fatal Unity caching client move_path failed line.
+- Smoke: killed after 20 seconds, error match count 0.
+- PortalStencilFeature active.
+- TimeWindow aperture PNG viewed; not black.
+- Scene grep before cleanup found Stage7 objects, APV current/past volumes, separate spaces, and TimeWindowPairedSpacePortalController.
+
+Gap:
+- Target standard is still largely insufficient.
+- Surface breakup is extremely subtle and does not materially break the flat tiled plaza read.
+- Large realtime shadow silhouettes remain dominant.
+- Geometry relief, painted material depth, baked bounce, and reference-level atmosphere are still missing.
