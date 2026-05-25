@@ -1,0 +1,8 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle36.md
+Review set for Chapter 1 Kaia farm map content refine cycle36.
+
+Included files:
+- reference_slide13_kaia_farm.png
+- 09_e1_e3_current_cycle36.png
+- 10_e1_e3_past_cycle36.png
+
