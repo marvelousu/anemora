@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.28 fast VS HD2D plaza realtime contrast index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.29 fast VS HD2D plaza neutral realtime shader index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 506 files including INDEX.md and README.md.
-- Dated devlog records: 504 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1304 files.
+- Root-level Markdown coverage: 507 files including INDEX.md and README.md.
+- Dated devlog records: 505 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1309 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 31 |
+| 2026-05-25 | 32 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md](2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md) | Fast VS / HD2D | feat(hd2d): neutralize plaza realtime shader |
 | [2026-05-25_fast_vs_hd2d_plaza_realtime_contrast_cycle158.md](2026-05-25_fast_vs_hd2d_plaza_realtime_contrast_cycle158.md) | Fast VS / HD2D | feat(hd2d): tighten plaza realtime contrast |
 | [2026-05-25_fast_vs_hd2d_plaza_skybox_horizon_cycle157.md](2026-05-25_fast_vs_hd2d_plaza_skybox_horizon_cycle157.md) | Fast VS / HD2D | feat(hd2d): fix plaza skybox horizon |
 | [2026-05-25_fast_vs_hd2d_plaza_sky_reveal_camera_cycle156.md](2026-05-25_fast_vs_hd2d_plaza_sky_reveal_camera_cycle156.md) | Fast VS / HD2D | feat(hd2d): restore plaza sky reveal camera |
@@ -662,6 +663,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.29 | 2026-05-25 | Added Fast VS HD2D plaza neutral realtime shader cycle record with neutral SurfaceRampLit sun/shadow tint constants, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.28 | 2026-05-25 | Added Fast VS HD2D plaza realtime contrast cycle record with lower ambient, stronger realtime shadow strength, neutral surface shade ramps, receiver shadow property blocks, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.27 | 2026-05-25 | Added Fast VS HD2D plaza skybox horizon cycle record with blue-gray runtime skybox horizon, wider sky-reveal central-plaza follow camera, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.26 | 2026-05-25 | Added Fast VS HD2D plaza sky reveal camera cycle record with runtime skybox, updated central-plaza follow framing, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |

@@ -15496,6 +15496,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_realtime_contrast_cycle158.md");
         }
 
+        public static void CapturePlazaNeutralRealtimeShaderCycle159ScreenshotsBatch()
+        {
+            CapturePlazaFollowRealtimeTrackingCycle137ScreenshotsToDirectory(
+                GetPlazaNeutralRealtimeShaderCycle159ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -38918,6 +38925,27 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dPlazaNeutralRealtimeShaderCycle159()
+        {
+            ValidateHd2dPlazaRealtimeContrastCycle158();
+
+            var shaderPath = Path.Combine(Application.dataPath, "Art", "Shaders", "FastVS", "FastVS_SurfaceRampLit.shader");
+            var shaderText = File.ReadAllText(shaderPath);
+            if (!shaderText.Contains("half3(0.92h, 0.90h, 0.84h)") ||
+                !shaderText.Contains("half3(0.54h, 0.55h, 0.52h)") ||
+                !shaderText.Contains("lerp(0.76h, 1.08h"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 159 SurfaceRampLit must use neutral realtime sun/shadow tints.");
+            }
+
+            if (shaderText.Contains("half3(0.92h, 0.84h, 0.72h)") ||
+                shaderText.Contains("half3(0.70h, 0.62h, 0.50h)") ||
+                shaderText.Contains("lerp(0.78h, 1.14h"))
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 159 must not restore the previous yellow/brown realtime shader tint.");
+            }
+        }
+
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -46247,6 +46275,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle158_plaza_realtime_contrast_parent_review_20260525_01";
         }
 
+        private static string GetPlazaNeutralRealtimeShaderCycle159ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle159_plaza_neutral_realtime_shader_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49864,6 +49897,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaRealtimeContrastCycle158();
+        }
+
+        public static void ValidatePlazaNeutralRealtimeShaderCycle159Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPlazaNeutralRealtimeShaderCycle159();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

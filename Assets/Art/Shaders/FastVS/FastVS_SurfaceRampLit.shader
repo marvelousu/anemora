@@ -143,13 +143,13 @@ Shader "Anemora/FastVS/SurfaceRampLit"
                 half3 mainLightColor = half3(mainLight.color.r, mainLight.color.g, mainLight.color.b);
                 half lightCookieLuma = dot(mainLightColor, half3(0.2126h, 0.7152h, 0.0722h));
                 half lightCookieResponse = smoothstep(0.36h, 0.88h, lightCookieLuma);
-                half cookieSunGrade = lerp(0.78h, 1.14h, lightCookieResponse);
+                half cookieSunGrade = lerp(0.76h, 1.08h, lightCookieResponse);
                 half cookieInfluence = saturate((half)_DirectionalLightStrength * litResponse);
                 lightGrade *= lerp(1.0h, cookieSunGrade, cookieInfluence);
                 shadowGrade *= lerp(0.93h, 1.04h, lightCookieResponse * cookieInfluence);
-                half3 sunTint = lerp(half3(0.92h, 0.84h, 0.72h), saturate(mainLightColor + half3(0.10h, 0.03h, -0.08h)), litResponse * saturate((half)_DirectionalLightStrength * 1.25h));
-                sunTint = lerp(sunTint * half3(0.82h, 0.74h, 0.64h), sunTint, saturate(lightCookieResponse * 0.92h + 0.08h));
-                half3 texturedShadowTint = half3(0.70h, 0.62h, 0.50h) * lerp(0.96h, 1.12h, shadowNoise * shadowTextureStrength + (1.0h - shadowTextureStrength) * 0.5h);
+                half3 sunTint = lerp(half3(0.92h, 0.90h, 0.84h), saturate(mainLightColor + half3(0.06h, 0.02h, -0.02h)), litResponse * saturate((half)_DirectionalLightStrength * 1.25h));
+                sunTint = lerp(sunTint * half3(0.76h, 0.76h, 0.72h), sunTint, saturate(lightCookieResponse * 0.92h + 0.08h));
+                half3 texturedShadowTint = half3(0.54h, 0.55h, 0.52h) * lerp(0.96h, 1.12h, shadowNoise * shadowTextureStrength + (1.0h - shadowTextureStrength) * 0.5h);
                 half3 shadowTint = lerp(texturedShadowTint, half3(1.0h, 1.0h, 1.0h), shadowResponse);
 
                 half3 rgb = baseSample.rgb * grade * lightGrade * shadowGrade * lerp(shadowTint, sunTint, litResponse);
