@@ -1,0 +1,8 @@
+docs/devlog/2026-05-25_chapter1_map_content_refine_cycle29.md
+
+Cycle29 review package for C1-C3 Mia exterior front-yard readability.
+
+Images:
+- 05_c1_c3_current.png
+- 06_c1_c3_past.png
+- reference_slide11.png
