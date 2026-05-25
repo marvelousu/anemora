@@ -1,0 +1,8 @@
+docs/devlog/2026-05-25_chapter1_map_content_refine_cycle30.md
+
+Cycle30 review package for F1-F6 ruins final exit mouth readability.
+
+Images:
+- 11_f1_f6_current.png
+- 12_f1_f6_past.png
+- reference_slide14.png
