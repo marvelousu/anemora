@@ -1,0 +1,8 @@
+docs/devlog/2026-05-25_chapter1_map_content_refine_cycle31.md
+
+Cycle31 review package for E2 Kaia farm house/front-yard boundary readability.
+
+Images:
+- 09_e1_e3_current.png
+- 10_e1_e3_past.png
+- reference_slide13.png

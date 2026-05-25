@@ -83,7 +83,7 @@ namespace Anemora.EditorTools
         private static readonly Vector3 Chapter1D2RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(29.95f, 0.70f, 0.95f);
         private static readonly Vector3 Chapter1D3RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(39.10f, 0.70f, -1.35f);
         private static readonly Vector3 Chapter1E1RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(19.00f, 0.70f, -8.00f);
-        private static readonly Vector3 Chapter1E2RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(27.20f, 0.70f, 0.85f);
+        private static readonly Vector3 Chapter1E2RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(23.95f, 0.70f, 1.07f);
         private static readonly Vector3 Chapter1E3RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(41.70f, 0.70f, -1.55f);
         private static readonly Vector3 Chapter1F1RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(21.00f, 0.70f, 0.15f);
         private static readonly Vector3 Chapter1F2RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(25.40f, 0.70f, -4.10f);
@@ -2085,6 +2085,7 @@ namespace Anemora.EditorTools
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2", c + new Vector3(2.18f, 0.20f, 1.88f), leaf, 3);
             CreateKaiaFarmFrontYardRightDoorDetails(root, prefix, past, materials, c);
             CreateKaiaFarmFrontYardContentDetails(root, prefix, past, materials, c);
+            CreateKaiaFarmE2BoundaryReadabilityDetails(root, prefix, past, materials, c);
             if (past)
             {
                 CreateFlowerPatch(root, $"{prefix}_CentralPlaza_Chapter1_E2", c + new Vector3(-2.36f, 0.20f, 1.06f), leaf, materials.FlowerRed, materials.FlowerYellow);
@@ -2166,6 +2167,23 @@ namespace Anemora.EditorTools
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2_YardContent", c + new Vector3(-3.10f, 0.20f, 2.28f), leaf, 0);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2_YardContent", c + new Vector3(1.30f, 0.20f, 1.18f), leaf, 1);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2_YardContent", c + new Vector3(0.36f, 0.20f, -1.46f), leaf, 2);
+        }
+
+        private static void CreateKaiaFarmE2BoundaryReadabilityDetails(Transform root, string prefix, bool past, Materials materials, Vector3 c)
+        {
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_HouseYardBoundaryPad", root, c + new Vector3(-4.04f, 0.078f, 0.12f), new Vector3(0.78f, 0.05f, 1.36f), Quaternion.Euler(0f, 0f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.house_yard_boundary_pad");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_DoorToYardWalk", root, c + new Vector3(-3.74f, 0.080f, 0.12f), new Vector3(1.16f, 0.05f, 0.50f), Quaternion.Euler(0f, 2f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.door_to_yard_walk");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_FrontYardReadableCore", root, c + new Vector3(-1.62f, 0.064f, 0.04f), new Vector3(2.38f, 0.05f, 2.18f), Quaternion.Euler(0f, -2f, 0f), past ? materials.PastGrass : materials.CurrentGrass, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.front_yard_readable_core");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_FrontYardRightLowEdge", root, c + new Vector3(0.98f, 0.30f, 0.05f), new Vector3(0.12f, 0.16f, 3.56f), Quaternion.Euler(0f, -2f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.front_yard_right_low_edge");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_FrontYardTopLowEdge", root, c + new Vector3(-1.44f, 0.30f, 2.18f), new Vector3(2.70f, 0.16f, 0.12f), Quaternion.Euler(0f, 4f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.front_yard_top_low_edge");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_FrontYardBottomLowEdge", root, c + new Vector3(-1.24f, 0.28f, -2.08f), new Vector3(2.18f, 0.14f, 0.12f), Quaternion.Euler(0f, -6f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.front_yard_bottom_low_edge");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_YardBoundaryStoneA", root, c + new Vector3(-4.10f, 0.12f, 0.92f), new Vector3(0.30f, 0.09f, 0.24f), Quaternion.Euler(0f, -14f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.yard_boundary_stone_a");
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2_Boundary", c + new Vector3(-4.08f, 0.20f, -0.98f), leaf, 0);
         }
 
         private static void CreateRuinsSideHomesContinuation(Transform root, string prefix, bool past, Materials materials)
