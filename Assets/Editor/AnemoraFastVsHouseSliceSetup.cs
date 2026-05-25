@@ -1445,6 +1445,7 @@ namespace Anemora.EditorTools
             CreateKaiaFarmEdgeAndFieldReadabilityDetails(root, prefix, past, materials);
             CreateKaiaFarmLowerFieldReferenceReadabilityDetails(root, prefix, past, materials);
             CreateKaiaFarmCycle37CleanupDetails(root, prefix, past, materials);
+            CreateKaiaFarmCycle42YardAndFenceDetails(root, prefix, past, materials);
 
             if (past)
             {
@@ -1695,6 +1696,40 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E3_Cycle37EastExitUpperShoulder", root, c + new Vector3(12.96f, 0.054f, 2.04f), new Vector3(10.10f, 0.05f, 0.52f), Quaternion.identity, ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e3.cycle37_east_exit_upper_shoulder");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E3_Cycle37EastExitLowerShoulder", root, c + new Vector3(12.86f, 0.054f, 0.04f), new Vector3(10.28f, 0.05f, 0.46f), Quaternion.identity, ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e3.cycle37_east_exit_lower_shoulder");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E3_Cycle37RightEdgeGrassCap", root, c + new Vector3(15.02f, 0.056f, 1.00f), new Vector3(1.14f, 0.05f, 5.44f), Quaternion.identity, ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e3.cycle37_right_edge_grass_cap");
+        }
+
+        private static void CreateKaiaFarmCycle42YardAndFenceDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1KaiaFarmMapCenter;
+            var e2 = CentralPlazaVsCenter + new Vector3(28.00f, 0f, 0.95f);
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var ground = past ? materials.PastGrass : materials.CurrentGrass;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var yardDetail = past ? materials.Leaf : materials.Dust;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42DoorThreshold", root, e2 + new Vector3(-4.34f, 0.12f, 0.12f), new Vector3(0.86f, 0.10f, 0.28f), Quaternion.Euler(0f, 1f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.cycle42.door_threshold");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42DoorApron", root, e2 + new Vector3(-3.52f, 0.08f, 0.12f), new Vector3(1.58f, 0.05f, 0.50f), Quaternion.Euler(0f, 1f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.cycle42.door_apron");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42DoorSidePlank", root, e2 + new Vector3(-4.46f, 0.20f, 0.52f), new Vector3(0.62f, 0.10f, 0.24f), Quaternion.Euler(0f, -4f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.cycle42.door_side_plank");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42OpenYardCore", root, e2 + new Vector3(-1.40f, 0.066f, 0.06f), new Vector3(3.62f, 0.05f, 2.14f), Quaternion.Euler(0f, -1f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.cycle42.open_yard_core");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42OpenYardUpperSweep", root, e2 + new Vector3(-1.28f, 0.062f, 1.28f), new Vector3(2.96f, 0.05f, 0.56f), Quaternion.Euler(0f, -3f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.cycle42.open_yard_upper_sweep");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42OpenYardLowerSweep", root, e2 + new Vector3(-1.58f, 0.062f, -1.02f), new Vector3(2.74f, 0.05f, 0.60f), Quaternion.Euler(0f, 3f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.cycle42.open_yard_lower_sweep");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42YardStoneNib", root, e2 + new Vector3(0.10f, 0.116f, 0.80f), new Vector3(0.30f, 0.10f, 0.22f), Quaternion.Euler(0f, -18f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.cycle42.yard_stone_nib");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42YardPlantClumpWest", root, e2 + new Vector3(-3.08f, 0.094f, 1.86f), new Vector3(0.58f, 0.05f, 0.24f), Quaternion.Euler(0f, 18f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.cycle42.yard_plant_clump_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42YardPlantClumpSouth", root, e2 + new Vector3(-0.14f, 0.090f, -1.54f), new Vector3(0.60f, 0.05f, 0.24f), Quaternion.Euler(0f, 10f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.cycle42.yard_plant_clump_south");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_Cycle42YardWeedPatchEast", root, e2 + new Vector3(0.84f, 0.084f, -1.34f), new Vector3(0.72f, 0.05f, 0.24f), Quaternion.Euler(0f, 15f, 0f), yardDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.cycle42.yard_weed_patch_east");
+
+            CreatePathBetween(root, Chapter1E1RouteTriggerCenter + new Vector3(-2.20f, -0.64f, -1.28f), Chapter1E1RouteTriggerCenter + new Vector3(0.10f, -0.64f, 0.12f), 1.04f, path, $"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoadApron", true);
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoadShoulderWest", root, Chapter1E1RouteTriggerCenter + new Vector3(-2.58f, -0.62f, -1.42f), new Vector3(0.78f, 0.05f, 1.18f), Quaternion.Euler(0f, -18f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e1.cycle42.southwest_road_shoulder_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoadShoulderEast", root, Chapter1E1RouteTriggerCenter + new Vector3(-1.00f, -0.60f, -0.84f), new Vector3(0.72f, 0.05f, 0.92f), Quaternion.Euler(0f, 16f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e1.cycle42.southwest_road_shoulder_east");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoadGuidePost", root, Chapter1E1RouteTriggerCenter + new Vector3(-1.42f, 0.34f, -1.94f), new Vector3(0.10f, 0.58f, 0.10f), Quaternion.Euler(0f, 0f, past ? 0f : -8f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.cycle42.southwest_road_guide_post");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoadFenceShard", root, Chapter1E1RouteTriggerCenter + new Vector3(-0.58f, 0.28f, -0.86f), new Vector3(0.82f, 0.12f, 0.16f), Quaternion.Euler(0f, 18f, past ? 0f : 7f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.cycle42.southwest_road_fence_shard");
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoad", Chapter1E1RouteTriggerCenter + new Vector3(-1.88f, 0.20f, -1.40f), leaf, 40);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoad", Chapter1E1RouteTriggerCenter + new Vector3(-0.96f, 0.20f, -0.66f), leaf, 41);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2_Cycle42Yard", e2 + new Vector3(-2.50f, 0.20f, 1.58f), leaf, 42);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E2_Cycle42Yard", e2 + new Vector3(0.92f, 0.20f, -0.88f), leaf, 43);
         }
 
         private static void CreateKaiaFarmEdgeAndFieldReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
