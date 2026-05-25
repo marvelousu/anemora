@@ -1316,6 +1316,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_RightSettlementGround", root, c + new Vector3(15.00f, 0.005f, -0.42f), new Vector3(20.20f, 0.08f, 12.20f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.right_settlement_ground");
             CreateRuinsGroundContinuityFill(root, prefix, past, materials);
             CreateRuinsBridgeChannelDetails(root, prefix, past, materials);
+            CreateRuinsGorgeIrregularEdgeCleanup(root, prefix, past, materials);
             CreatePathBetween(root, Chapter1E3RouteTriggerCenter + new Vector3(0.00f, -0.64f, 0.00f), Chapter1F1RouteTriggerCenter + new Vector3(0.10f, -0.64f, -0.04f), 1.24f, path, $"{prefix}_CentralPlaza_Chapter1_E3_To_F1_Path", true);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_ValleyFloor", root, c + new Vector3(0f, -0.38f, -0.25f), new Vector3(7.20f, 0.18f, 17.40f), Quaternion.identity, ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.valley");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_River", root, c + new Vector3(0f, -0.20f, -0.26f), new Vector3(4.10f, 0.04f, 15.00f), Quaternion.identity, riverMaterial, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.river");
@@ -1430,6 +1431,20 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_BridgeMouthStoneLeft", root, c + new Vector3(-2.10f, 0.03f, -0.68f), new Vector3(0.58f, 0.12f, 0.24f), Quaternion.Euler(0f, 11f, -4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.bridge_mouth_stone_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_BridgeMouthStoneRight", root, c + new Vector3(2.14f, 0.03f, 0.62f), new Vector3(0.58f, 0.12f, 0.24f), Quaternion.Euler(0f, -11f, 4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.bridge_mouth_stone_right");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_BridgeSpanCue", root, c + new Vector3(0.02f, -0.16f, -0.06f), new Vector3(2.12f, 0.04f, 0.28f), Quaternion.Euler(0f, 1f, 0f), past ? materials.Water : materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.bridge_span_cue");
+        }
+
+        private static void CreateRuinsGorgeIrregularEdgeCleanup(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1RuinsMapCenter;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var chipMaterial = past ? materials.PastStone : materials.Dust;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_GorgeEdgeChipUpperLeft", root, c + new Vector3(-2.32f, 0.04f, 4.10f), new Vector3(0.42f, 0.12f, 0.26f), Quaternion.Euler(0f, 18f, -8f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.gorge_edge_chip.upper_left");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_GorgeEdgeChipUpperRight", root, c + new Vector3(2.10f, 0.03f, 3.88f), new Vector3(0.46f, 0.11f, 0.24f), Quaternion.Euler(0f, -14f, 7f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.gorge_edge_chip.upper_right");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_GorgeEdgeChipLowerLeft", root, c + new Vector3(-2.18f, -0.05f, -4.42f), new Vector3(0.38f, 0.10f, 0.22f), Quaternion.Euler(0f, -10f, 6f), chipMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.gorge_edge_chip.lower_left");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_GorgeEdgeChipLowerRight", root, c + new Vector3(2.26f, -0.05f, -4.18f), new Vector3(0.40f, 0.10f, 0.24f), Quaternion.Euler(0f, 16f, -7f), chipMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.gorge_edge_chip.lower_right");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_GorgeEdgeChipMidLeft", root, c + new Vector3(-1.70f, 0.02f, 1.42f), new Vector3(0.30f, 0.09f, 0.18f), Quaternion.Euler(0f, -22f, 10f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.gorge_edge_chip.mid_left");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_GorgeEdgeChipMidRight", root, c + new Vector3(1.82f, 0.01f, -1.56f), new Vector3(0.34f, 0.09f, 0.20f), Quaternion.Euler(0f, 20f, -9f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.gorge_edge_chip.mid_right");
         }
 
         private static void CreateRuinsSideHomesDetails(Transform root, string prefix, bool past, Materials materials)
@@ -1558,9 +1573,9 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_FrontYard", root, c + new Vector3(-1.32f, 0.01f, 0.02f), new Vector3(5.26f, 0.08f, 5.10f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e2.front_yard");
             for (var i = 0; i < 4; i++)
             {
-                var furrowZ = -2.00f + i * 0.70f;
-                var furrowX = i == 3 ? -1.88f : -1.34f;
-                var furrowLength = i == 3 ? 2.10f : 3.20f;
+                var furrowZ = -2.14f + i * 0.74f;
+                var furrowX = i == 3 ? -2.16f : -1.56f;
+                var furrowLength = i == 3 ? 1.56f : 2.54f;
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E2_OrchardFurrow_{i}", root, c + new Vector3(furrowX, 0.076f, furrowZ), new Vector3(furrowLength, 0.035f, 0.08f), Quaternion.Euler(0f, 5f, 0f), past ? materials.PastPath : materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e2.orchard_furrow.{i}");
             }
             CreatePathBetween(root, c + new Vector3(-2.46f, 0.08f, -2.18f), c + new Vector3(4.70f, 0.08f, -1.68f), 1.18f, path, $"{prefix}_CentralPlaza_Chapter1_D3_To_E2_Path", true);
