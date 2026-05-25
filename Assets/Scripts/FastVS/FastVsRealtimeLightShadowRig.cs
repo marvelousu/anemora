@@ -36,11 +36,12 @@ namespace Anemora.FastVS
         [SerializeField] private Camera sceneCamera;
         [SerializeField] private Light mainLight;
         [SerializeField] private bool enforceRendererShadowPolicy = true;
-        [SerializeField] private Color exteriorSkyColor = new Color(0.48f, 0.50f, 0.46f, 1f);
+        [SerializeField] private Color exteriorSkyColor = new Color(0.30f, 0.38f, 0.43f, 1f);
         [SerializeField] private Color centralPlazaSkyColor = new Color(0.220f, 0.286f, 0.340f, 1f);
 
         private float nextShadowPolicyRefreshTime;
         private Material centralPlazaSkyboxMaterial;
+        private Material exteriorSkyboxMaterial;
         private GameObject cycle128GradeRoot;
         private MeshRenderer cycle128GradeRenderer;
         private MeshRenderer cycle128BeamRenderer;
@@ -138,8 +139,8 @@ namespace Anemora.FastVS
                 }
                 else if (area == FastVsHouseArea.Library)
                 {
-                    mainLight.intensity = 1.35f;
-                    mainLight.color = new Color(0.96f, 0.93f, 0.84f, 1f);
+                    mainLight.intensity = 1.70f;
+                    mainLight.color = new Color(0.98f, 0.94f, 0.84f, 1f);
                     mainLight.transform.rotation = Quaternion.Euler(44f, -34f, 0f);
                     if (mainLight.cookie != null && mainLight.cookie.name == CentralPlazaSunCookieName)
                     {
@@ -154,7 +155,7 @@ namespace Anemora.FastVS
 
             if (sceneCamera != null && (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza))
             {
-                if (area == FastVsHouseArea.CentralPlaza && TryApplyCentralPlazaSkybox())
+                if (TryApplyRuntimeOutdoorSkybox(area))
                 {
                     sceneCamera.clearFlags = CameraClearFlags.Skybox;
                 }
@@ -181,7 +182,7 @@ namespace Anemora.FastVS
             {
                 RenderSettings.ambientLight = area == FastVsHouseArea.Exterior
                     ? new Color(0.052f, 0.054f, 0.055f, 1f)
-                    : new Color(0.045f, 0.045f, 0.043f, 1f);
+                    : new Color(0.058f, 0.056f, 0.052f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
                 SetCycle128CameraGradeActive(false);
             }
@@ -199,6 +200,29 @@ namespace Anemora.FastVS
                    area == FastVsHouseArea.Library;
         }
 
+        private bool TryApplyRuntimeOutdoorSkybox(FastVsHouseArea area)
+        {
+            if (area == FastVsHouseArea.CentralPlaza)
+            {
+                return TryApplyCentralPlazaSkybox();
+            }
+
+            if (area != FastVsHouseArea.Exterior)
+            {
+                return false;
+            }
+
+            var skybox = EnsureExteriorSkyboxMaterial();
+            if (skybox == null)
+            {
+                return false;
+            }
+
+            RenderSettings.skybox = skybox;
+            sceneCamera.backgroundColor = exteriorSkyColor;
+            return true;
+        }
+
         private bool TryApplyCentralPlazaSkybox()
         {
             var skybox = EnsureCentralPlazaSkyboxMaterial();
@@ -210,6 +234,58 @@ namespace Anemora.FastVS
             RenderSettings.skybox = skybox;
             sceneCamera.backgroundColor = centralPlazaSkyColor;
             return true;
+        }
+
+        private Material EnsureExteriorSkyboxMaterial()
+        {
+            if (exteriorSkyboxMaterial != null)
+            {
+                return exteriorSkyboxMaterial;
+            }
+
+            var shader = Shader.Find("Skybox/Procedural");
+            if (shader == null)
+            {
+                return null;
+            }
+
+            exteriorSkyboxMaterial = new Material(shader)
+            {
+                name = "FastVS_ExteriorRuntimeSkyboxCycle162",
+                hideFlags = HideFlags.DontSave
+            };
+
+            if (exteriorSkyboxMaterial.HasProperty("_SkyTint"))
+            {
+                exteriorSkyboxMaterial.SetColor("_SkyTint", new Color(0.54f, 0.58f, 0.57f, 1f));
+            }
+
+            if (exteriorSkyboxMaterial.HasProperty("_GroundColor"))
+            {
+                exteriorSkyboxMaterial.SetColor("_GroundColor", new Color(0.40f, 0.43f, 0.39f, 1f));
+            }
+
+            if (exteriorSkyboxMaterial.HasProperty("_AtmosphereThickness"))
+            {
+                exteriorSkyboxMaterial.SetFloat("_AtmosphereThickness", 0.42f);
+            }
+
+            if (exteriorSkyboxMaterial.HasProperty("_Exposure"))
+            {
+                exteriorSkyboxMaterial.SetFloat("_Exposure", 0.68f);
+            }
+
+            if (exteriorSkyboxMaterial.HasProperty("_SunSize"))
+            {
+                exteriorSkyboxMaterial.SetFloat("_SunSize", 0.014f);
+            }
+
+            if (exteriorSkyboxMaterial.HasProperty("_SunSizeConvergence"))
+            {
+                exteriorSkyboxMaterial.SetFloat("_SunSizeConvergence", 4.8f);
+            }
+
+            return exteriorSkyboxMaterial;
         }
 
         private Material EnsureCentralPlazaSkyboxMaterial()
@@ -736,22 +812,22 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(SurfaceRampStrengthId))
             {
-                block.SetFloat(SurfaceRampStrengthId, 0.45f);
+                block.SetFloat(SurfaceRampStrengthId, 0.50f);
             }
 
             if (material.HasProperty(DirectionalLightStrengthId))
             {
-                block.SetFloat(DirectionalLightStrengthId, 0.80f);
+                block.SetFloat(DirectionalLightStrengthId, 0.92f);
             }
 
             if (material.HasProperty(ShadowReceiveStrengthId))
             {
-                block.SetFloat(ShadowReceiveStrengthId, 0.78f);
+                block.SetFloat(ShadowReceiveStrengthId, 0.82f);
             }
 
             if (material.HasProperty(ShadowTextureStrengthId))
             {
-                block.SetFloat(ShadowTextureStrengthId, isFacadeReceiver ? 0.58f : 0.46f);
+                block.SetFloat(ShadowTextureStrengthId, isFacadeReceiver ? 0.62f : 0.50f);
             }
 
             if (material.HasProperty(TopLightId))
@@ -855,7 +931,7 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(WorldLightStrengthId))
             {
-                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.18f : 0.10f);
+                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.22f : 0.10f);
             }
 
             if (material.HasProperty(WorldShadowReceiveStrengthId))

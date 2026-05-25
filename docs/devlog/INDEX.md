@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.31 fast VS HD2D global realtime lighting index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.32 fast VS HD2D global realtime camera exposure index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 509 files including INDEX.md and README.md.
-- Dated devlog records: 507 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1319 files.
+- Root-level Markdown coverage: 510 files including INDEX.md and README.md.
+- Dated devlog records: 508 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1324 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -35,7 +35,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-22 | 51 |
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
-| 2026-05-25 | 34 |
+| 2026-05-25 | 35 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -43,6 +43,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md](2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md) | Fast VS / HD2D | feat(hd2d): tune global realtime camera exposure |
 | [2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md](2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md) | Fast VS / HD2D | feat(hd2d): globalize realtime light and shadow |
 | [2026-05-25_fast_vs_hd2d_plaza_neutral_base_color_cycle160.md](2026-05-25_fast_vs_hd2d_plaza_neutral_base_color_cycle160.md) | Fast VS / HD2D | feat(hd2d): neutralize plaza realtime base color |
 | [2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md](2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md) | Fast VS / HD2D | feat(hd2d): neutralize plaza realtime shader |
@@ -665,6 +666,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.32 | 2026-05-25 | Added Fast VS HD2D global realtime camera/exposure cycle record with Exterior/Library VS camera profiles, exterior procedural skybox, stronger global receiver direct-light response, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.31 | 2026-05-25 | Added Fast VS HD2D global realtime lighting cycle record with Exterior, CentralPlaza, and Library receiver/caster lighting policy, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.30 | 2026-05-25 | Added Fast VS HD2D plaza neutral base-color cycle record with runtime BaseColor property blocks for central-plaza surface receivers, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.29 | 2026-05-25 | Added Fast VS HD2D plaza neutral realtime shader cycle record with neutral SurfaceRampLit sun/shadow tint constants, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |

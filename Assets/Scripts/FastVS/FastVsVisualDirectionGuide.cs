@@ -216,11 +216,11 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Interior:
                     return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
                 case FastVsHouseArea.Exterior:
-                    return new FollowCameraProfile(new Vector3(0.90f, 3.85f, -7.10f), new Vector3(0.42f, 0.70f, 1.12f), 38f);
+                    return new FollowCameraProfile(new Vector3(0.70f, 2.85f, -5.25f), new Vector3(0.25f, 0.78f, 0.90f), 39f);
                 case FastVsHouseArea.CentralPlaza:
                     return new FollowCameraProfile(new Vector3(0f, 3.55f, -6.50f), new Vector3(0f, 1.18f, 1.35f), 40f);
                 case FastVsHouseArea.Library:
-                    return new FollowCameraProfile(new Vector3(0f, 2.70f, -4.45f), new Vector3(0f, 0.70f, 0.42f), 38f);
+                    return new FollowCameraProfile(new Vector3(0.25f, 2.95f, -5.05f), new Vector3(0.10f, 0.84f, 0.74f), 39f);
                 default:
                     return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
             }

@@ -15517,6 +15517,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md");
         }
 
+        public static void CaptureGlobalRealtimeCameraExposureCycle162ScreenshotsBatch()
+        {
+            CaptureGlobalRealtimeLightingCycle161ScreenshotsToDirectory(
+                GetGlobalRealtimeCameraExposureCycle162ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17310,7 +17317,7 @@ namespace Anemora.EditorTools
             var camera = Camera.main;
             if (controller == null || visibility == null || guide == null || director == null || realtimeRig == null || camera == null)
             {
-                throw new InvalidOperationException("Fast VS cycle 161 global realtime lighting screenshot capture failed: scene review components are missing.");
+                throw new InvalidOperationException("Fast VS global realtime lighting screenshot capture failed: scene review components are missing.");
             }
 
             var audiencePrefix = string.Empty;
@@ -17337,12 +17344,9 @@ namespace Anemora.EditorTools
                 SuppressPortalReviewArtifactsForLightingCapture(controller, camera);
             }
 
-            ApplyCurrent(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f), 38f);
-            PositionCloseReviewCamera(
-                camera,
-                controller.CurrentSpaceRootForReview.TransformPoint(HouseExteriorCenter + new Vector3(3.42f, 1.92f, 2.92f)),
-                new Vector3(1.10f, 1.96f, -4.90f),
-                new Vector3(0.10f, 0.24f, 0.12f));
+            var exteriorProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Exterior);
+            ApplyCurrent(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f), exteriorProfile.FieldOfView);
+            PositionCloseReviewCamera(camera, guide.ResolveActiveCameraAnchorForReview(), exteriorProfile.PositionOffset, exteriorProfile.LookOffset);
             realtimeRig.ApplyNowForReview();
             WarmUpCameraRender(camera);
             SaveCameraPng(camera, Path.Combine(outputDirectory, exteriorFile));
@@ -17356,12 +17360,9 @@ namespace Anemora.EditorTools
             SaveCameraPng(camera, Path.Combine(outputDirectory, plazaFile));
             ValidateScreenshotOutputExists(outputDirectory, plazaFile);
 
-            ApplyCurrent(FastVsHouseArea.Library, LibraryVsCenter + new Vector3(0.92f, 0.02f, -1.82f), 38f);
-            PositionCloseReviewCamera(
-                camera,
-                controller.CurrentSpaceRootForReview.TransformPoint(LibraryVsCenter + new Vector3(1.08f, 0.36f, -1.48f)),
-                new Vector3(-1.02f, 1.16f, -2.02f),
-                new Vector3(0.04f, 0.14f, 0.02f));
+            var libraryProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Library);
+            ApplyCurrent(FastVsHouseArea.Library, LibraryVsCenter + new Vector3(0.92f, 0.02f, -1.82f), libraryProfile.FieldOfView);
+            PositionCloseReviewCamera(camera, guide.ResolveActiveCameraAnchorForReview(), libraryProfile.PositionOffset, libraryProfile.LookOffset);
             realtimeRig.ApplyNowForReview();
             WarmUpCameraRender(camera);
             SaveCameraPng(camera, Path.Combine(outputDirectory, libraryFile));
@@ -17391,7 +17392,7 @@ namespace Anemora.EditorTools
 
             WriteCycle137ReviewDirectory(outputDirectory, new[] { exteriorFile, plazaFile, libraryFile, exteriorShadowFile, libraryShadowFile }, reviewDevlogPath);
             AssetDatabase.Refresh();
-            Debug.Log($"Fast VS cycle 161 global realtime lighting screenshots captured: {Path.GetFullPath(outputDirectory)}");
+            Debug.Log($"Fast VS global realtime lighting screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void WriteCycle137ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames, string reviewDevlogPath)
@@ -39287,6 +39288,106 @@ namespace Anemora.EditorTools
                    name.Contains("Frame");
         }
 
+        private static void ValidateHd2dGlobalRealtimeCameraExposureCycle162()
+        {
+            ValidateHd2dGlobalRealtimeLightingCycle161();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (controller == null || visibility == null || director == null || guide == null || realtimeRig == null || camera == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 162 needs controller, visibility, lighting director, guide, realtime rig, camera, and directional light.");
+            }
+
+            var exteriorProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Exterior);
+            ValidateVectorNear("cycle 162 exterior VS camera offset", exteriorProfile.PositionOffset, new Vector3(0.70f, 2.85f, -5.25f));
+            ValidateVectorNear("cycle 162 exterior VS camera look", exteriorProfile.LookOffset, new Vector3(0.25f, 0.78f, 0.90f));
+            if (Mathf.Abs(exteriorProfile.FieldOfView - 39f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 162 exterior FOV must be 39, found {exteriorProfile.FieldOfView:0.0}.");
+            }
+
+            var libraryProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Library);
+            ValidateVectorNear("cycle 162 library VS camera offset", libraryProfile.PositionOffset, new Vector3(0.25f, 2.95f, -5.05f));
+            ValidateVectorNear("cycle 162 library VS camera look", libraryProfile.LookOffset, new Vector3(0.10f, 0.84f, 0.74f));
+            if (Mathf.Abs(libraryProfile.FieldOfView - 39f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 162 library FOV must be 39, found {libraryProfile.FieldOfView:0.0}.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
+            controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f));
+            guide.ApplyActiveTimeIsolationForReview();
+            director.ApplyAreaForReview(FastVsHouseArea.Exterior);
+            realtimeRig.ApplyNowForReview();
+            if (camera.clearFlags != CameraClearFlags.Skybox ||
+                RenderSettings.skybox == null ||
+                RenderSettings.skybox.name != "FastVS_ExteriorRuntimeSkyboxCycle162")
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 162 exterior must use the runtime procedural skybox instead of the flat gray background, found clear={camera.clearFlags}, skybox={RenderSettings.skybox}.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
+            controller.ForcePlayerCurrentLocalForReview(LibraryVsCenter + new Vector3(0.92f, 0.02f, -1.82f));
+            guide.ApplyActiveTimeIsolationForReview();
+            director.ApplyAreaForReview(FastVsHouseArea.Library);
+            realtimeRig.ApplyNowForReview();
+            if (mainLight.intensity < 1.65f ||
+                RenderSettings.ambientLight.r < 0.056f ||
+                RenderSettings.ambientLight.maxColorComponent > 0.060f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 162 library must be readable without painted haze, found intensity={mainLight.intensity:0.00}, ambient={RenderSettings.ambientLight}.");
+            }
+
+            ValidateCycle162DirectReceiverGrade(FastVsHouseArea.Exterior, 2);
+            ValidateCycle162DirectReceiverGrade(FastVsHouseArea.CentralPlaza, 4);
+            ValidateCycle162DirectReceiverGrade(FastVsHouseArea.Library, 2);
+        }
+
+        private static void ValidateCycle162DirectReceiverGrade(FastVsHouseArea area, int minReceiverCount)
+        {
+            var block = new MaterialPropertyBlock();
+            var receiverCount = 0;
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null ||
+                    !renderer.gameObject.scene.IsValid() ||
+                    !renderer.enabled ||
+                    !renderer.receiveShadows ||
+                    !IsCycle161RendererInArea(renderer, area))
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null ||
+                    !material.HasProperty("_DirectionalLightStrength") ||
+                    !material.HasProperty("_ShadowReceiveStrength") ||
+                    !material.HasProperty("_ShadowTextureStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_DirectionalLightStrength") >= 0.91f &&
+                    block.GetFloat("_ShadowReceiveStrength") >= 0.81f &&
+                    block.GetFloat("_ShadowTextureStrength") >= 0.49f)
+                {
+                    receiverCount++;
+                }
+            }
+
+            if (receiverCount < minReceiverCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 162 expected stronger realtime direct-light receiver grade in {area}, found {receiverCount}.");
+            }
+        }
+
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -46631,6 +46732,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle161_global_realtime_lighting_parent_review_20260525_01";
         }
 
+        private static string GetGlobalRealtimeCameraExposureCycle162ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle162_global_realtime_camera_exposure_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -50271,6 +50377,13 @@ namespace Anemora.EditorTools
             ValidateHd2dGlobalRealtimeLightingCycle161();
         }
 
+        public static void ValidateGlobalRealtimeCameraExposureCycle162Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dGlobalRealtimeCameraExposureCycle162();
+        }
+
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -51316,19 +51429,19 @@ namespace Anemora.EditorTools
                 new Vector3(0.30f, 1.82f, 0.10f));
 
             var exteriorFollowProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Exterior);
-            ValidateVectorNear("exterior follow camera position offset", exteriorFollowProfile.PositionOffset, new Vector3(0.90f, 3.85f, -7.10f));
-            ValidateVectorNear("exterior follow camera look offset", exteriorFollowProfile.LookOffset, new Vector3(0.42f, 0.70f, 1.12f));
-            if (Mathf.Abs(exteriorFollowProfile.FieldOfView - 38f) > 0.001f)
+            ValidateVectorNear("exterior follow camera position offset", exteriorFollowProfile.PositionOffset, new Vector3(0.70f, 2.85f, -5.25f));
+            ValidateVectorNear("exterior follow camera look offset", exteriorFollowProfile.LookOffset, new Vector3(0.25f, 0.78f, 0.90f));
+            if (Mathf.Abs(exteriorFollowProfile.FieldOfView - 39f) > 0.001f)
             {
-                throw new InvalidOperationException($"House slice validation failed: exterior follow camera FOV expected 38, but got {exteriorFollowProfile.FieldOfView}.");
+                throw new InvalidOperationException($"House slice validation failed: exterior follow camera FOV expected 39, but got {exteriorFollowProfile.FieldOfView}.");
             }
 
             var snapshotProfile = AnemoraFastVsHd2dVisualSnapshotAudit.GetHouseExteriorSnapshotCameraProfileForReview();
-            ValidateVectorNear("exterior snapshot camera offset", snapshotProfile.CameraOffset, new Vector3(0.90f, 3.85f, -7.10f));
-            ValidateVectorNear("exterior snapshot look offset", snapshotProfile.LookOffset, new Vector3(0.42f, 0.70f, 1.12f));
-            if (Mathf.Abs(snapshotProfile.TargetFov - 38f) > 0.001f)
+            ValidateVectorNear("exterior snapshot camera offset", snapshotProfile.CameraOffset, new Vector3(0.70f, 2.85f, -5.25f));
+            ValidateVectorNear("exterior snapshot look offset", snapshotProfile.LookOffset, new Vector3(0.25f, 0.78f, 0.90f));
+            if (Mathf.Abs(snapshotProfile.TargetFov - 39f) > 0.001f)
             {
-                throw new InvalidOperationException($"House slice validation failed: exterior snapshot FOV expected 38, but got {snapshotProfile.TargetFov}.");
+                throw new InvalidOperationException($"House slice validation failed: exterior snapshot FOV expected 39, but got {snapshotProfile.TargetFov}.");
             }
         }
 
