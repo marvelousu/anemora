@@ -1,0 +1,3 @@
+docs/devlog/2026-05-26_chapter1_map_content_refine_cycle56.md
+
+Cycle56 Kaia farm E2 yard, orchard-row alignment, and right grass-zone separation review captures.
