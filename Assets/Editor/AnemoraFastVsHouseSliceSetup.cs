@@ -15524,6 +15524,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md");
         }
 
+        public static void CaptureGlobalRealtimeExteriorAnchorCycle163ScreenshotsBatch()
+        {
+            CaptureGlobalRealtimeLightingCycle161ScreenshotsToDirectory(
+                GetGlobalRealtimeExteriorAnchorCycle163ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_global_realtime_exterior_anchor_cycle163.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17368,12 +17375,12 @@ namespace Anemora.EditorTools
             SaveCameraPng(camera, Path.Combine(outputDirectory, libraryFile));
             ValidateScreenshotOutputExists(outputDirectory, libraryFile);
 
-            ApplyCurrent(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(2.82f, 0.02f, 0.92f), 34f);
+            ApplyCurrent(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(4.92f, 0.02f, 0.84f), 34f);
             PositionCloseReviewCamera(
                 camera,
-                controller.CurrentSpaceRootForReview.TransformPoint(HouseExteriorCenter + new Vector3(3.42f, 2.02f, 2.84f)),
-                new Vector3(0.72f, 1.08f, -2.20f),
-                new Vector3(0.10f, 0.18f, 0.12f));
+                controller.CurrentSpaceRootForReview.TransformPoint(HouseExteriorCenter + new Vector3(5.05f, 0.10f, 1.55f)),
+                new Vector3(0.72f, 1.20f, -2.60f),
+                new Vector3(0.02f, 0.16f, 0.40f));
             realtimeRig.ApplyNowForReview();
             WarmUpCameraRender(camera);
             SaveCameraPng(camera, Path.Combine(outputDirectory, exteriorShadowFile));
@@ -39388,6 +39395,38 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dGlobalRealtimeExteriorAnchorCycle163()
+        {
+            ValidateHd2dGlobalRealtimeCameraExposureCycle162();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            if (controller == null || visibility == null || director == null || guide == null || realtimeRig == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 163 needs controller, visibility, lighting director, guide, and realtime rig.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
+            controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f));
+            guide.ApplyActiveTimeIsolationForReview();
+            director.ApplyAreaForReview(FastVsHouseArea.Exterior);
+            realtimeRig.ApplyNowForReview();
+
+            var anchorWorld = guide.ResolveActiveCameraAnchorForReview();
+            var anchorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(anchorWorld);
+            if (anchorLocal.x < 11.19f || anchorLocal.z < 10.19f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: cycle 163 exterior follow anchor should clamp away from the roof-blocked house edge, found local={anchorLocal}.");
+            }
+
+            var exteriorProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.Exterior);
+            ValidateVectorNear("cycle 163 exterior follow camera offset", exteriorProfile.PositionOffset, new Vector3(0.70f, 2.85f, -5.25f));
+            ValidateVectorNear("cycle 163 exterior follow camera look", exteriorProfile.LookOffset, new Vector3(0.25f, 0.78f, 0.90f));
+        }
+
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -46737,6 +46776,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle162_global_realtime_camera_exposure_parent_review_20260525_01";
         }
 
+        private static string GetGlobalRealtimeExteriorAnchorCycle163ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle163_global_realtime_exterior_anchor_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -50382,6 +50426,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dGlobalRealtimeCameraExposureCycle162();
+        }
+
+        public static void ValidateGlobalRealtimeExteriorAnchorCycle163Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dGlobalRealtimeExteriorAnchorCycle163();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

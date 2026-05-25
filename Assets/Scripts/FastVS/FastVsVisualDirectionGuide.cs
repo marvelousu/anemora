@@ -7,6 +7,8 @@ namespace Anemora.FastVS
     {
         private const float CameraModeFov = 38f;
         private const float CentralPlazaVsCameraMaxAnchorZ = 14.70f;
+        private const float ExteriorVsCameraMinAnchorX = 11.20f;
+        private const float ExteriorVsCameraMinAnchorZ = 10.20f;
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;
@@ -192,6 +194,11 @@ namespace Anemora.FastVS
             if (areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.CentralPlaza)
             {
                 local.z = Mathf.Min(local.z, CentralPlazaVsCameraMaxAnchorZ);
+            }
+            else if (areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.Exterior)
+            {
+                local.x = Mathf.Max(local.x, ExteriorVsCameraMinAnchorX);
+                local.z = Mathf.Max(local.z, ExteriorVsCameraMinAnchorZ);
             }
 
             return root.TransformPoint(local);
