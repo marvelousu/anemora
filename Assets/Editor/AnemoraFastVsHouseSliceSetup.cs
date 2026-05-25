@@ -15510,6 +15510,13 @@ namespace Anemora.EditorTools
                 "docs/devlog/2026-05-25_fast_vs_hd2d_plaza_neutral_base_color_cycle160.md");
         }
 
+        public static void CaptureGlobalRealtimeLightingCycle161ScreenshotsBatch()
+        {
+            CaptureGlobalRealtimeLightingCycle161ScreenshotsToDirectory(
+                GetGlobalRealtimeLightingCycle161ScreenshotsDirectory(),
+                "docs/devlog/2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md");
+        }
+
         private static void CapturePlazaSunbeamShaftsCycle113ScreenshotsToDirectory(string outputDirectory)
         {
             CreateHouseSliceScene();
@@ -17285,6 +17292,106 @@ namespace Anemora.EditorTools
             WriteCycle137ReviewDirectory(outputDirectory, new[] { followStartFile, followForwardFile, floorFile, facadeFile, libraryGuardFile }, reviewDevlogPath);
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS cycle 137 realtime follow screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureGlobalRealtimeLightingCycle161ScreenshotsToDirectory(
+            string outputDirectory,
+            string reviewDevlogPath)
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || director == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 161 global realtime lighting screenshot capture failed: scene review components are missing.");
+            }
+
+            var audiencePrefix = string.Empty;
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (!string.IsNullOrEmpty(cycleAudience))
+            {
+                audiencePrefix = cycleAudience + "_";
+            }
+
+            var exteriorFile = $"{audiencePrefix}01_current_exterior_realtime_light.png";
+            var plazaFile = $"{audiencePrefix}02_current_central_plaza_realtime_light.png";
+            var libraryFile = $"{audiencePrefix}03_current_library_realtime_light.png";
+            var exteriorShadowFile = $"{audiencePrefix}04_current_exterior_realtime_shadow_receiver.png";
+            var libraryShadowFile = $"{audiencePrefix}05_current_library_realtime_shadow_receiver.png";
+
+            void ApplyCurrent(FastVsHouseArea area, Vector3 playerLocalPosition, float fieldOfView)
+            {
+                camera.fieldOfView = fieldOfView;
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                director.ApplyAreaForReview(area);
+                realtimeRig.ApplyNowForReview();
+                SuppressPortalReviewArtifactsForLightingCapture(controller, camera);
+            }
+
+            ApplyCurrent(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f), 38f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(HouseExteriorCenter + new Vector3(3.42f, 1.92f, 2.92f)),
+                new Vector3(1.10f, 1.96f, -4.90f),
+                new Vector3(0.10f, 0.24f, 0.12f));
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, exteriorFile));
+            ValidateScreenshotOutputExists(outputDirectory, exteriorFile);
+
+            ApplyCurrent(FastVsHouseArea.CentralPlaza, PlazaFromLibraryTarget, 40f);
+            var plazaProfile = FastVsVisualDirectionGuide.GetFollowCameraProfileForReview(FastVsHouseArea.CentralPlaza);
+            PositionCloseReviewCamera(camera, guide.ResolveActiveCameraAnchorForReview(), plazaProfile.PositionOffset, plazaProfile.LookOffset);
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, plazaFile));
+            ValidateScreenshotOutputExists(outputDirectory, plazaFile);
+
+            ApplyCurrent(FastVsHouseArea.Library, LibraryVsCenter + new Vector3(0.92f, 0.02f, -1.82f), 38f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(LibraryVsCenter + new Vector3(1.08f, 0.36f, -1.48f)),
+                new Vector3(-1.02f, 1.16f, -2.02f),
+                new Vector3(0.04f, 0.14f, 0.02f));
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, libraryFile));
+            ValidateScreenshotOutputExists(outputDirectory, libraryFile);
+
+            ApplyCurrent(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(2.82f, 0.02f, 0.92f), 34f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(HouseExteriorCenter + new Vector3(3.42f, 2.02f, 2.84f)),
+                new Vector3(0.72f, 1.08f, -2.20f),
+                new Vector3(0.10f, 0.18f, 0.12f));
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, exteriorShadowFile));
+            ValidateScreenshotOutputExists(outputDirectory, exteriorShadowFile);
+
+            ApplyCurrent(FastVsHouseArea.Library, LibraryVsCenter + new Vector3(-4.05f, 0.02f, 1.02f), 34f);
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(LibraryVsCenter + new Vector3(-3.88f, 0.42f, 1.12f)),
+                new Vector3(0.86f, 1.08f, -2.10f),
+                new Vector3(-0.02f, 0.16f, 0.05f));
+            realtimeRig.ApplyNowForReview();
+            WarmUpCameraRender(camera);
+            SaveCameraPng(camera, Path.Combine(outputDirectory, libraryShadowFile));
+            ValidateScreenshotOutputExists(outputDirectory, libraryShadowFile);
+
+            WriteCycle137ReviewDirectory(outputDirectory, new[] { exteriorFile, plazaFile, libraryFile, exteriorShadowFile, libraryShadowFile }, reviewDevlogPath);
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 161 global realtime lighting screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static void WriteCycle137ReviewDirectory(string outputDirectory, IEnumerable<string> fileNames, string reviewDevlogPath)
@@ -39003,9 +39110,9 @@ namespace Anemora.EditorTools
 
                 renderer.GetPropertyBlock(block);
                 var baseColor = block.GetColor("_BaseColor");
-                if (baseColor.r <= 0.56f &&
-                    baseColor.g >= 0.55f &&
-                    baseColor.b >= 0.60f &&
+                if (baseColor.r <= 0.68f &&
+                    baseColor.g >= 0.66f &&
+                    baseColor.b >= 0.72f &&
                     baseColor.b > baseColor.r)
                 {
                     neutralFloorCount++;
@@ -39016,6 +39123,168 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 160 expected neutral base-color property blocks on central-plaza floor receivers, found {neutralFloorCount}.");
             }
+        }
+
+        private static void ValidateHd2dGlobalRealtimeLightingCycle161()
+        {
+            ValidateHd2dPlazaNeutralBaseColorCycle160();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (controller == null || visibility == null || director == null || guide == null || realtimeRig == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle 161 needs controller, visibility, lighting director, guide, realtime rig, and directional light.");
+            }
+
+            var block = new MaterialPropertyBlock();
+
+            void ValidateArea(FastVsHouseArea area, Vector3 playerLocalPosition, int minReceiverCount, int minCasterCount, float minShadowStrength)
+            {
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                director.ApplyAreaForReview(area);
+                realtimeRig.ApplyNowForReview();
+
+                if (mainLight.type != LightType.Directional ||
+                    mainLight.shadows != LightShadows.Soft ||
+                    mainLight.shadowResolution != LightShadowResolution.VeryHigh ||
+                    mainLight.shadowStrength < minShadowStrength ||
+                    mainLight.shadowBias > 0.014f ||
+                    mainLight.shadowNormalBias > 0.11f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must use high-resolution realtime Directional Light shadows, found type={mainLight.type}, shadows={mainLight.shadows}, resolution={mainLight.shadowResolution}, strength={mainLight.shadowStrength:0.000}, bias={mainLight.shadowBias:0.000}, normalBias={mainLight.shadowNormalBias:0.000}.");
+                }
+
+                if (area == FastVsHouseArea.CentralPlaza)
+                {
+                    if (mainLight.cookie == null || mainLight.cookie.name != "FastVS_CentralPlazaRealtimeSunCookieCycle147")
+                    {
+                        throw new InvalidOperationException("House slice validation failed: cycle 161 central plaza must keep the realtime sun cookie.");
+                    }
+                }
+                else if (mainLight.cookie != null && mainLight.cookie.name == "FastVS_CentralPlazaRealtimeSunCookieCycle147")
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must not borrow the central-plaza cookie.");
+                }
+
+                if (RenderSettings.fog || RenderSettings.ambientLight.maxColorComponent > 0.060f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must use non-painted low ambient realtime lighting, found fog={RenderSettings.fog}, ambient={RenderSettings.ambientLight}.");
+                }
+
+                var receiverCount = 0;
+                var casterCount = 0;
+                foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    if (renderer == null ||
+                        !renderer.gameObject.scene.IsValid() ||
+                        !renderer.enabled ||
+                        !renderer.gameObject.activeInHierarchy ||
+                        !IsCycle161RendererInArea(renderer, area))
+                    {
+                        continue;
+                    }
+
+                    var material = renderer.sharedMaterial;
+                    if (renderer.receiveShadows &&
+                        material != null &&
+                        material.HasProperty("_DirectionalLightStrength") &&
+                        material.HasProperty("_ShadowReceiveStrength"))
+                    {
+                        renderer.GetPropertyBlock(block);
+                        var baseColor = material.HasProperty("_BaseColor") ? block.GetColor("_BaseColor") : Color.clear;
+                        if (block.GetFloat("_DirectionalLightStrength") >= 0.79f &&
+                            block.GetFloat("_ShadowReceiveStrength") >= 0.76f &&
+                            (baseColor.a <= 0f || baseColor.b >= baseColor.r))
+                        {
+                            receiverCount++;
+                        }
+                    }
+
+                    if ((renderer.shadowCastingMode == ShadowCastingMode.On ||
+                         renderer.shadowCastingMode == ShadowCastingMode.ShadowsOnly) &&
+                        IsCycle161LikelyRealtimeCaster(renderer.gameObject.name))
+                    {
+                        casterCount++;
+                    }
+                }
+
+                if (receiverCount < minReceiverCount)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 161 expected global realtime receiver grade in {area}, found {receiverCount}.");
+                }
+
+                if (casterCount < minCasterCount)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle 161 expected visible realtime casters in {area}, found {casterCount}.");
+                }
+            }
+
+            ValidateArea(FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(1.18f, 0.02f, 1.00f), 2, 1, 0.92f);
+            ValidateArea(FastVsHouseArea.CentralPlaza, PlazaFromLibraryTarget, 4, 4, 0.98f);
+            ValidateArea(FastVsHouseArea.Library, LibraryVsCenter + new Vector3(0.92f, 0.02f, -1.82f), 2, 1, 0.92f);
+        }
+
+        private static bool IsCycle161RendererInArea(Renderer renderer, FastVsHouseArea area)
+        {
+            var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
+            if (surface != null)
+            {
+                return surface.IsCurrentWorldForReview && surface.AreaIdForReview == area;
+            }
+
+            var name = renderer.gameObject.name;
+            if (area == FastVsHouseArea.Exterior)
+            {
+                return name.Contains("Current_HouseExterior");
+            }
+
+            if (area == FastVsHouseArea.CentralPlaza)
+            {
+                return name.Contains("Current_CentralPlaza");
+            }
+
+            return area == FastVsHouseArea.Library && name.Contains("Current_Library");
+        }
+
+        private static bool IsCycle161LikelyRealtimeCaster(string name)
+        {
+            if (string.IsNullOrEmpty(name) ||
+                name.Contains("Shadow") ||
+                name.Contains("Light") ||
+                name.Contains("Sun") ||
+                name.Contains("Haze") ||
+                name.Contains("Veil") ||
+                name.Contains("Wash") ||
+                name.Contains("Sky") ||
+                name.Contains("Backdrop") ||
+                name.Contains("Painted") ||
+                name.Contains("Reference"))
+            {
+                return false;
+            }
+
+            return name.Contains("Tree") ||
+                   name.Contains("Fountain") ||
+                   name.Contains("Market") ||
+                   name.Contains("Crate") ||
+                   name.Contains("Board") ||
+                   name.Contains("Post") ||
+                   name.Contains("Barrel") ||
+                   name.Contains("Fence") ||
+                   name.Contains("Shelf") ||
+                   name.Contains("Book") ||
+                   name.Contains("Table") ||
+                   name.Contains("Chair") ||
+                   name.Contains("Door") ||
+                   name.Contains("Window") ||
+                   name.Contains("Trim") ||
+                   name.Contains("Frame");
         }
 
         private static void ValidateCycle155CasterMeshBounds(string objectName, float maxX, float maxZ)
@@ -46357,6 +46626,11 @@ namespace Anemora.EditorTools
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle160_plaza_neutral_base_color_parent_review_20260525_01";
         }
 
+        private static string GetGlobalRealtimeLightingCycle161ScreenshotsDirectory()
+        {
+            return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle161_global_realtime_lighting_parent_review_20260525_01";
+        }
+
         private static string GetOutdoorSunSlashHighlightsCycle106ScreenshotsDirectory()
         {
             return @"C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\docs\devlog\screenshots\fast_vs_hd2d_cycle106_outdoor_sun_slash_highlights_parent_review_20260524_01";
@@ -49988,6 +50262,13 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dPlazaNeutralBaseColorCycle160();
+        }
+
+        public static void ValidateGlobalRealtimeLightingCycle161Batch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dGlobalRealtimeLightingCycle161();
         }
 
         private static void CapturePlazaReferenceShadowRebalanceCycle133ScreenshotsToDirectory(string outputDirectory)

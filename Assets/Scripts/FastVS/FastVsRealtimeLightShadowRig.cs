@@ -105,16 +105,17 @@ namespace Anemora.FastVS
         {
             var area = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
             var isCentralPlaza = area == FastVsHouseArea.CentralPlaza;
+            var isRealtimeOutdoor = IsRealtimeOutdoorArea(area);
 
             if (mainLight != null)
             {
                 mainLight.enabled = true;
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
-                mainLight.shadowResolution = isCentralPlaza ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
-                mainLight.shadowStrength = isCentralPlaza ? 0.985f : Mathf.Max(mainLight.shadowStrength, 0.82f);
-                mainLight.shadowBias = isCentralPlaza ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
-                mainLight.shadowNormalBias = isCentralPlaza ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
+                mainLight.shadowResolution = isRealtimeOutdoor ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
+                mainLight.shadowStrength = isCentralPlaza ? 0.985f : isRealtimeOutdoor ? 0.94f : Mathf.Max(mainLight.shadowStrength, 0.82f);
+                mainLight.shadowBias = isRealtimeOutdoor ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
+                mainLight.shadowNormalBias = isRealtimeOutdoor ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
 
                 if (isCentralPlaza)
@@ -124,6 +125,26 @@ namespace Anemora.FastVS
                     mainLight.transform.rotation = Quaternion.Euler(43f, -38f, 0f);
                     mainLight.cookie = EnsureCentralPlazaSunCookieTexture();
                     mainLight.cookieSize = CentralPlazaSunCookieWorldSize;
+                }
+                else if (area == FastVsHouseArea.Exterior)
+                {
+                    mainLight.intensity = 1.70f;
+                    mainLight.color = new Color(0.98f, 0.96f, 0.88f, 1f);
+                    mainLight.transform.rotation = Quaternion.Euler(42f, -42f, 0f);
+                    if (mainLight.cookie != null && mainLight.cookie.name == CentralPlazaSunCookieName)
+                    {
+                        mainLight.cookie = null;
+                    }
+                }
+                else if (area == FastVsHouseArea.Library)
+                {
+                    mainLight.intensity = 1.35f;
+                    mainLight.color = new Color(0.96f, 0.93f, 0.84f, 1f);
+                    mainLight.transform.rotation = Quaternion.Euler(44f, -34f, 0f);
+                    if (mainLight.cookie != null && mainLight.cookie.name == CentralPlazaSunCookieName)
+                    {
+                        mainLight.cookie = null;
+                    }
                 }
                 else if (mainLight.cookie != null && mainLight.cookie.name == CentralPlazaSunCookieName)
                 {
@@ -144,7 +165,7 @@ namespace Anemora.FastVS
                 }
             }
 
-            if (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza)
+            if (isRealtimeOutdoor)
             {
                 RenderSettings.fog = false;
                 RenderSettings.ambientMode = AmbientMode.Flat;
@@ -156,11 +177,26 @@ namespace Anemora.FastVS
                 RenderSettings.reflectionIntensity = 0f;
                 SetCycle128CameraGradeActive(false);
             }
+            else if (isRealtimeOutdoor)
+            {
+                RenderSettings.ambientLight = area == FastVsHouseArea.Exterior
+                    ? new Color(0.052f, 0.054f, 0.055f, 1f)
+                    : new Color(0.045f, 0.045f, 0.043f, 1f);
+                RenderSettings.reflectionIntensity = 0f;
+                SetCycle128CameraGradeActive(false);
+            }
             else
             {
                 RenderSettings.reflectionIntensity = 1f;
                 SetCycle128CameraGradeActive(false);
             }
+        }
+
+        private static bool IsRealtimeOutdoorArea(FastVsHouseArea area)
+        {
+            return area == FastVsHouseArea.Exterior ||
+                   area == FastVsHouseArea.CentralPlaza ||
+                   area == FastVsHouseArea.Library;
         }
 
         private bool TryApplyCentralPlazaSkybox()
@@ -293,7 +329,8 @@ namespace Anemora.FastVS
 
         private void ApplyRendererShadowPolicy()
         {
-            var isCentralPlaza = areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.CentralPlaza;
+            var activeArea = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
+            var isRealtimeOutdoor = IsRealtimeOutdoorArea(activeArea);
             foreach (var renderer in FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (renderer == null || !renderer.gameObject.scene.IsValid())
@@ -322,9 +359,9 @@ namespace Anemora.FastVS
                     renderer.enabled = true;
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
                     renderer.receiveShadows = true;
-                    if (isCentralPlaza)
+                    if (isRealtimeOutdoor)
                     {
-                        ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
+                        ApplyRealtimeSurfaceGrade(renderer, activeArea);
                     }
                     continue;
                 }
@@ -332,17 +369,17 @@ namespace Anemora.FastVS
                 var role = GetMaterialRole(renderer.sharedMaterial);
                 if (role == SurfaceLitRole)
                 {
-                    ApplySurfaceShadowPolicy(renderer, isCentralPlaza);
-                    if (isCentralPlaza)
+                    ApplySurfaceShadowPolicy(renderer, isRealtimeOutdoor, activeArea);
+                    if (isRealtimeOutdoor)
                     {
-                        ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
+                        ApplyRealtimeSurfaceGrade(renderer, activeArea);
                     }
                 }
                 else if (role == SpriteCardRole || role == PaperCardRole)
                 {
                     renderer.shadowCastingMode = ShadowCastingMode.On;
                     renderer.receiveShadows = true;
-                    ApplySpriteRealtimeGrade(renderer, isCentralPlaza);
+                    ApplySpriteRealtimeGrade(renderer, isRealtimeOutdoor);
                 }
                 else if (role == PortalWindowRole)
                 {
@@ -352,7 +389,7 @@ namespace Anemora.FastVS
             }
         }
 
-        private static void ApplySurfaceShadowPolicy(Renderer renderer, bool isCentralPlaza)
+        private static void ApplySurfaceShadowPolicy(Renderer renderer, bool isRealtimeOutdoor, FastVsHouseArea activeArea)
         {
             renderer.enabled = true;
             if (ShouldReceiveRealtimeSurfaceShadow(renderer))
@@ -362,11 +399,11 @@ namespace Anemora.FastVS
                 return;
             }
 
-            if (isCentralPlaza && ShouldCastVisibleCentralPlazaRealtimeShadow(renderer))
+            if (isRealtimeOutdoor && ShouldCastVisibleRealtimeShadow(renderer, activeArea))
             {
                 renderer.shadowCastingMode = ShadowCastingMode.On;
                 renderer.receiveShadows = true;
-                ApplyCentralPlazaSurfaceRealtimeGrade(renderer);
+                ApplyRealtimeSurfaceGrade(renderer, activeArea);
                 return;
             }
 
@@ -474,20 +511,20 @@ namespace Anemora.FastVS
         {
             var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
             if (surface != null &&
+                surface.IsCurrentWorldForReview &&
+                IsRealtimeOutdoorArea(surface.AreaIdForReview) &&
                 (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Floor ||
                  surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Ground ||
                  surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Road ||
-                 (surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
-                  surface.IsCurrentWorldForReview &&
-                  (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
-                   surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door ||
-                   surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Roof))))
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door ||
+                 surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Roof))
             {
                 return true;
             }
 
             var name = renderer.gameObject.name;
-            if (IsCurrentCentralPlazaRealtimeFacadeReceiverName(name))
+            if (IsCurrentRealtimeFacadeReceiverName(name))
             {
                 return true;
             }
@@ -544,12 +581,13 @@ namespace Anemora.FastVS
                    name.Contains("FountainDryBasinInnerFloor");
         }
 
-        private static bool ShouldCastVisibleCentralPlazaRealtimeShadow(Renderer renderer)
+        private static bool ShouldCastVisibleRealtimeShadow(Renderer renderer, FastVsHouseArea activeArea)
         {
             var name = renderer.gameObject.name;
             var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
             if (surface != null &&
-                surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                surface.AreaIdForReview == activeArea &&
+                IsRealtimeOutdoorArea(surface.AreaIdForReview) &&
                 surface.IsCurrentWorldForReview &&
                 (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Furniture ||
                  surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Prop ||
@@ -559,7 +597,40 @@ namespace Anemora.FastVS
                 return !IsSuppressedCentralPlazaVisibleCasterName(name);
             }
 
-            return IsCurrentCentralPlazaVisibleCasterName(name);
+            return IsCurrentRealtimeVisibleCasterName(name);
+        }
+
+        private static bool IsCurrentRealtimeVisibleCasterName(string name)
+        {
+            if (string.IsNullOrEmpty(name) ||
+                !name.Contains("Current_") ||
+                IsSuppressedCentralPlazaVisibleCasterName(name))
+            {
+                return false;
+            }
+
+            if (!name.Contains("CentralPlaza") &&
+                !name.Contains("HouseExterior") &&
+                !name.Contains("Library"))
+            {
+                return false;
+            }
+
+            return IsCurrentCentralPlazaVisibleCasterName(name) ||
+                   name.Contains("Tree") ||
+                   name.Contains("Crate") ||
+                   name.Contains("Board") ||
+                   name.Contains("Post") ||
+                   name.Contains("Barrel") ||
+                   name.Contains("Fence") ||
+                   name.Contains("Shelf") ||
+                   name.Contains("Book") ||
+                   name.Contains("Table") ||
+                   name.Contains("Chair") ||
+                   name.Contains("Door") ||
+                   name.Contains("Window") ||
+                   name.Contains("Trim") ||
+                   name.Contains("Frame");
         }
 
         private static bool IsCurrentCentralPlazaVisibleCasterName(string name)
@@ -622,17 +693,19 @@ namespace Anemora.FastVS
                    name.Contains("LightComposition");
         }
 
-        private static void ApplyCentralPlazaSurfaceRealtimeGrade(Renderer renderer)
+        private static void ApplyRealtimeSurfaceGrade(Renderer renderer, FastVsHouseArea activeArea)
         {
             var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
             var objectName = renderer.gameObject.name;
-            var isCentralSurface =
+            var isRealtimeSurface =
                 surface != null &&
-                surface.AreaIdForReview == FastVsHouseArea.CentralPlaza &&
+                surface.AreaIdForReview == activeArea &&
+                IsRealtimeOutdoorArea(surface.AreaIdForReview) &&
                 surface.IsCurrentWorldForReview;
-            var isNamedFacadeReceiver = IsCurrentCentralPlazaRealtimeFacadeReceiverName(objectName);
-            var isNamedVisibleCaster = IsCurrentCentralPlazaVisibleCasterName(objectName);
-            if (!isCentralSurface && !isNamedFacadeReceiver && !isNamedVisibleCaster)
+            var isNamedFacadeReceiver = IsCurrentRealtimeFacadeReceiverName(objectName);
+            var isNamedFloorReceiver = IsRealtimeFloorReceiverName(objectName);
+            var isNamedVisibleCaster = IsCurrentRealtimeVisibleCasterName(objectName);
+            if (!isRealtimeSurface && !isNamedFacadeReceiver && !isNamedFloorReceiver && !isNamedVisibleCaster)
             {
                 return;
             }
@@ -654,7 +727,7 @@ namespace Anemora.FastVS
             renderer.GetPropertyBlock(block);
             if (material.HasProperty(BaseColorId))
             {
-                var baseColor = ResolveCentralPlazaBaseColor(renderer, surface, isFacadeReceiver);
+                var baseColor = ResolveRealtimeBaseColor(renderer, surface, isFacadeReceiver);
                 if (baseColor.a > 0f)
                 {
                     block.SetColor(BaseColorId, baseColor);
@@ -668,7 +741,7 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(DirectionalLightStrengthId))
             {
-                block.SetFloat(DirectionalLightStrengthId, 0.70f);
+                block.SetFloat(DirectionalLightStrengthId, 0.80f);
             }
 
             if (material.HasProperty(ShadowReceiveStrengthId))
@@ -699,7 +772,7 @@ namespace Anemora.FastVS
             renderer.SetPropertyBlock(block);
         }
 
-        private static Color ResolveCentralPlazaBaseColor(Renderer renderer, FastVsHd2dSurfaceProfile surface, bool isFacadeReceiver)
+        private static Color ResolveRealtimeBaseColor(Renderer renderer, FastVsHd2dSurfaceProfile surface, bool isFacadeReceiver)
         {
             if (surface != null)
             {
@@ -708,19 +781,19 @@ namespace Anemora.FastVS
                     case FastVsHd2dSurfaceKind.Floor:
                     case FastVsHd2dSurfaceKind.Ground:
                     case FastVsHd2dSurfaceKind.Road:
-                        return new Color(0.54f, 0.56f, 0.62f, 1f);
+                        return new Color(0.66f, 0.68f, 0.74f, 1f);
                     case FastVsHd2dSurfaceKind.Wall:
                     case FastVsHd2dSurfaceKind.Door:
-                        return new Color(0.64f, 0.64f, 0.62f, 1f);
+                        return new Color(0.70f, 0.70f, 0.68f, 1f);
                     case FastVsHd2dSurfaceKind.Roof:
-                        return new Color(0.60f, 0.58f, 0.54f, 1f);
+                        return new Color(0.66f, 0.64f, 0.60f, 1f);
                 }
             }
 
             var name = renderer != null ? renderer.gameObject.name : string.Empty;
-            if (IsCentralPlazaFloorReceiverName(name))
+            if (IsRealtimeFloorReceiverName(name))
             {
-                return new Color(0.54f, 0.56f, 0.62f, 1f);
+                return new Color(0.66f, 0.68f, 0.74f, 1f);
             }
 
             if (isFacadeReceiver ||
@@ -730,15 +803,22 @@ namespace Anemora.FastVS
                 name.Contains("Lintel") ||
                 name.Contains("Eave"))
             {
-                return new Color(0.64f, 0.64f, 0.62f, 1f);
+                return new Color(0.70f, 0.70f, 0.68f, 1f);
             }
 
             return new Color(0f, 0f, 0f, 0f);
         }
 
-        private static bool IsCentralPlazaFloorReceiverName(string name)
+        private static bool IsRealtimeFloorReceiverName(string name)
         {
-            if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
+            if (string.IsNullOrEmpty(name) || !name.Contains("Current_"))
+            {
+                return false;
+            }
+
+            if (!name.Contains("CentralPlaza") &&
+                !name.Contains("HouseExterior") &&
+                !name.Contains("Library"))
             {
                 return false;
             }
@@ -757,7 +837,7 @@ namespace Anemora.FastVS
                    name.Contains("Square");
         }
 
-        private static void ApplySpriteRealtimeGrade(Renderer renderer, bool isCentralPlaza)
+        private static void ApplySpriteRealtimeGrade(Renderer renderer, bool isRealtimeOutdoor)
         {
             var material = renderer.sharedMaterial;
             if (material == null)
@@ -770,25 +850,32 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(RampStrengthId))
             {
-                block.SetFloat(RampStrengthId, isCentralPlaza ? 0.24f : 0.18f);
+                block.SetFloat(RampStrengthId, isRealtimeOutdoor ? 0.24f : 0.18f);
             }
 
             if (material.HasProperty(WorldLightStrengthId))
             {
-                block.SetFloat(WorldLightStrengthId, isCentralPlaza ? 0.18f : 0.10f);
+                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.18f : 0.10f);
             }
 
             if (material.HasProperty(WorldShadowReceiveStrengthId))
             {
-                block.SetFloat(WorldShadowReceiveStrengthId, isCentralPlaza ? 0.17f : 0.11f);
+                block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.17f : 0.11f);
             }
 
             renderer.SetPropertyBlock(block);
         }
 
-        private static bool IsCurrentCentralPlazaRealtimeFacadeReceiverName(string name)
+        private static bool IsCurrentRealtimeFacadeReceiverName(string name)
         {
-            if (string.IsNullOrEmpty(name) || !name.Contains("Current_CentralPlaza"))
+            if (string.IsNullOrEmpty(name) || !name.Contains("Current_"))
+            {
+                return false;
+            }
+
+            if (!name.Contains("CentralPlaza") &&
+                !name.Contains("HouseExterior") &&
+                !name.Contains("Library"))
             {
                 return false;
             }
