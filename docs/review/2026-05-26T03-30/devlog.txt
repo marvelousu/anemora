@@ -1,0 +1,26 @@
+Stage 7j: Plaza Receiver Rebalance
+
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+Build: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+Launch: launch the whole C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice folder.
+
+Change:
+- Lowered CentralPlaza runtime realtime shadow strength to 0.92.
+- Reduced CentralPlaza receiver shadow response and texture response while keeping realtime shadows.
+- Added Stage7j validate and capture editor batch methods.
+
+Validation:
+- ValidateHd2dStage7PlazaReceiverRebalanceBatch: exit 0.
+- ValidateHouseSliceBatch: exit 0.
+- CaptureHd2dStage7PlazaReceiverRebalanceReferenceScreenshotsBatch: exit 0.
+- Build: exit 0, exe timestamp 2026-05-26 03:28:03.
+- Smoke: killed after 20 seconds, error match count 0.
+- PortalStencilFeature active.
+- TimeWindow aperture PNG viewed; not black.
+- Scene grep before cleanup found Stage7 objects, APV current/past volumes, separate spaces, and TimeWindowPairedSpacePortalController.
+
+Gap:
+- Target standard is still largely insufficient.
+- Shadows are less crushed, but broad silhouettes remain too large.
+- Facade and floor still read flat and tiled.
+- Composition and material depth are still far from the reference.
