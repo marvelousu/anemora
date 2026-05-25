@@ -1,0 +1,8 @@
+docs/devlog/2026-05-25_chapter1_map_content_refine_cycle28.md
+
+Cycle28 review package for D1-D3 street-corner booth separation and D3 branch readability.
+
+Images:
+- 07_d1_d3_current.png
+- 08_d1_d3_past.png
+- reference_slide12.png
