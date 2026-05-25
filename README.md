@@ -4,6 +4,8 @@
 
 > 2026-05-18 時点の Fast VS 公開ベースラインは `vs-public-2026-05-18` です。Chapter 1 のニロの家、外、広場、図書館、時の窓、レトの本イベントまでを確認できます。
 
+> 進行中の作業（各 work branch の screenshots / docs / Markdown）を外出中でもブラウズできる iPhone / PC 対応ビューア: <https://anemora-viewer.pages.dev/> 。検索エンジンには非掲載。詳細は [`docs/review/README.md`](docs/review/README.md)。
+
 ## Fast VS を遊ぶ（Windows）
 
 最新のプレイ可能ビルドは GitHub の Releases から入手できます。
