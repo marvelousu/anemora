@@ -1,0 +1,1 @@
+docs/devlog/2026-05-25_chapter1_non_vs_maps_compact_scale.md
