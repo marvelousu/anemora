@@ -111,6 +111,7 @@ namespace Anemora.TimeManagement
         public bool CloseRejectedBecausePlayerInOtherTimeForReview => closeRejectedBecausePlayerInOtherTime;
         public bool UsesRenderSurfaceOnlyForReview => false;
         public bool SpawnsGeneratedInteriorVolumeForReview => false;
+        public Vector2 RegionSizeForReview => regionSize;
         public Vector3 PortalLocalCenterForReview => portalLocalCenter;
         public Vector2 PortalSizeForReview => portalSize;
         public float PortalBottomLocalYForReview => portalLocalCenter.y - portalSize.y * 0.5f;

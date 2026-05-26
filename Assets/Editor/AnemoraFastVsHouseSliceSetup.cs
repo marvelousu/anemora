@@ -142,6 +142,9 @@ namespace Anemora.EditorTools
         private static readonly Vector3 PastLibraryReadingTableCleanColliderSize = new Vector3(2.10f, 1.14f, 0.70f);
         private static readonly Vector3 CurrentLibraryRuinBookPileScale = new Vector3(0.50f, 0.16f, 0.28f);
         private static readonly Vector2 RegionSize = new Vector2(78f, 58f);
+        // The visible coordinate field stays compact, while Time Window placement must reach the full continuation route.
+        private static readonly Vector2 TimeWindowRegionSize = new Vector2(196f, RegionSize.y);
+        private const float TimeWindowMaxPortalHalfWidthForValidation = 1.90f;
         private static readonly Vector2 DragStart = new Vector2(380f, 215f);
         private static readonly Vector2 DragEnd = new Vector2(850f, 600f);
         private static readonly string[] ForbiddenReferenceTokens =
@@ -6861,7 +6864,7 @@ namespace Anemora.EditorTools
             var controller = controllerObject.AddComponent<TimeWindowPairedSpacePortalController>();
             SerializedSet(controller, "currentSpaceRoot", currentRoot);
             SerializedSet(controller, "otherTimeSpaceRoot", pastRoot);
-            SerializedSet(controller, "regionSize", RegionSize);
+            SerializedSet(controller, "regionSize", TimeWindowRegionSize);
             SerializedSet(controller, "portalLocalZ", HouseInteriorCenter.z - 0.65f);
             SerializedSet(controller, "placePortalFromGroundProjection", true);
             SerializedSet(controller, "anchorPortalBottomToGround", true);
@@ -7526,8 +7529,14 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: current/past roots must share the same world coordinate for V24 same-coordinate camera behavior.");
             }
 
-            if (Mathf.Abs(LibraryVsCenter.x) + 5.2f > RegionSize.x * 0.5f ||
-                Mathf.Abs(LibraryVsCenter.z) + 3.8f > RegionSize.y * 0.5f)
+            if ((controller.RegionSizeForReview - TimeWindowRegionSize).sqrMagnitude > 0.001f)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: Time Window controller region size is {controller.RegionSizeForReview}, expected {TimeWindowRegionSize}.");
+            }
+
+            if (Mathf.Abs(LibraryVsCenter.x) + 5.2f > TimeWindowRegionSize.x * 0.5f ||
+                Mathf.Abs(LibraryVsCenter.z) + 3.8f > TimeWindowRegionSize.y * 0.5f)
             {
                 throw new InvalidOperationException("House slice validation failed: Time Window region no longer contains the Chapter 1 library route map.");
             }
@@ -8728,6 +8737,7 @@ namespace Anemora.EditorTools
         {
             ValidateChapter1BaselineMapPoints();
             ValidateChapter1ContinuationRouteSpans();
+            ValidateChapter1ContinuationTimeWindowRegion();
 
             var padNames = new[]
             {
@@ -8847,6 +8857,19 @@ namespace Anemora.EditorTools
             ValidateSeparatedOnGroundPlane("chapter 1 E route span", Chapter1E1RouteTriggerCenter, Chapter1E3RouteTriggerCenter, Chapter1ContinuationMinimumESpan);
             ValidateSeparatedOnGroundPlane("chapter 1 F route span", Chapter1F1RouteTriggerCenter, Chapter1F6RouteTriggerCenter, Chapter1ContinuationMinimumFSpan);
             ValidateSeparatedOnGroundPlane("chapter 1 F settlement span", Chapter1F2RouteTriggerCenter, Chapter1F5RouteTriggerCenter, 9.50f);
+        }
+
+        private static void ValidateChapter1ContinuationTimeWindowRegion()
+        {
+            var rightmostContinuationRouteX = Mathf.Max(
+                Mathf.Max(Chapter1D3RouteTriggerCenter.x, Chapter1E3RouteTriggerCenter.x),
+                Mathf.Max(Chapter1F5RouteTriggerCenter.x, Chapter1F6RouteTriggerCenter.x));
+            var requiredHalfWidth = rightmostContinuationRouteX + TimeWindowMaxPortalHalfWidthForValidation + 4.00f;
+            if (TimeWindowRegionSize.x * 0.5f < requiredHalfWidth)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: Time Window region no longer reaches the right-side Chapter 1 continuation route; required half-width {requiredHalfWidth:0.00}, actual {TimeWindowRegionSize.x * 0.5f:0.00}.");
+            }
         }
 
         private static void ValidateChapter1EndSideViewMap()
