@@ -124,6 +124,8 @@ namespace Anemora.EditorTools
         private const float Stage7LibraryWarmAnchorLightIntensity = 0.038f;
         private const float Stage7LibraryWarmAnchorLightRange = 1.45f;
         private const int Stage7LibraryWarmAnchorWarmMotesMaxParticles = 10;
+        private const int Stage7AtmosphericLayeringRibbonMaxParticles = 12;
+        private const int Stage7AtmosphericLayeringFloatersMaxParticles = 10;
         private static readonly Vector3 Stage7LibraryWarmAnchorCaptureCameraOffset = new Vector3(0.72f, 1.02f, -1.95f);
         private static readonly Vector3 Stage7LibraryWarmAnchorCaptureLookOffset = new Vector3(0.08f, 0.14f, 0.08f);
         private static readonly Color Stage7CurrentMapMoveGlowColor = new Color(0.90f, 0.56f, 0.28f, 0.28f);
@@ -686,6 +688,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7BokehFocus();
             ValidateHd2dStage7Outline();
             ValidateHd2dStage7VfxParticles();
+            ValidateHd2dStage7AtmosphericLayering();
             ValidateHd2dStage7ApvFoundation();
             ValidateHd2dStage7ApvBakedGi();
             ValidateHd2dStage7LibraryWarmAnchor();
@@ -1184,6 +1187,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7VfxParticles();
         }
 
+        public static void ValidateHd2dStage7AtmosphericLayeringBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage7AtmosphericLayering();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1195,6 +1205,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260525_stage7_vfx");
             CaptureHd2dStage7VfxReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage7AtmosphericLayeringReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage7w_atmospheric_layering");
+            CaptureHd2dStage7AtmosphericLayeringReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3566,6 +3589,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 7 VFX particle reference screenshots captured");
         }
 
+        private static void CaptureHd2dStage7AtmosphericLayeringReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage7w_atmospheric_layering.md",
+                "Fast VS Stage 7 atmospheric layering reference screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4537,6 +4568,7 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage6_painted_god_rays", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage7_library_warm_anchor", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage7_library_local_light", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage7w_atmospheric_layering", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage7_route_glow_subtlety", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
@@ -4685,6 +4717,12 @@ namespace Anemora.EditorTools
             SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_LibraryWarmAnchor_PastWarmMotes");
             SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_CurrentPlaza_SunMotes");
             SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_PastPlaza_AmberMotes");
+            SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_CurrentLibrary_ShelfDustRibbon");
+            SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_CurrentLibrary_DeskAmberFloaters");
+            SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_CurrentPlaza_FacadeDustRibbon");
+            SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_CurrentPlaza_SunbreakFloaters");
+            SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_PastLibrary_MemoryDustRibbon");
+            SimulateStage7VfxParticleSystem("FastVS_HD2D_Stage7_PastPlaza_AmberMemoryRibbon");
         }
 
         private static void SimulateStage7VfxParticleSystem(string objectName)
@@ -28382,6 +28420,139 @@ namespace Anemora.EditorTools
                 0.072f,
                 ParticleSystemSimulationSpace.World,
                 material);
+
+            CreateHd2dStage7AtmosphericLayering(currentRoot, pastRoot, material);
+        }
+
+        private static void CreateHd2dStage7AtmosphericLayering(Transform currentRoot, Transform pastRoot, Material material)
+        {
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentLibrary_ShelfDustRibbon",
+                LibraryVsCenter + new Vector3(-0.78f, 1.72f, 2.02f),
+                new Vector3(2.9f, 0.36f, 1.55f),
+                new Color(0.94f, 0.90f, 0.76f, 0.18f),
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                14f,
+                10f,
+                1.25f,
+                0.045f,
+                0.065f,
+                ParticleSystemSimulationSpace.World,
+                material);
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentLibrary_DeskAmberFloaters",
+                LibraryVsCenter + new Vector3(0.58f, 1.18f, 0.72f),
+                new Vector3(1.85f, 0.44f, 1.10f),
+                new Color(1.00f, 0.78f, 0.42f, 0.22f),
+                Stage7AtmosphericLayeringFloatersMaxParticles,
+                13f,
+                9f,
+                0.95f,
+                0.040f,
+                0.070f,
+                ParticleSystemSimulationSpace.World,
+                material);
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentPlaza_FacadeDustRibbon",
+                CentralPlazaVsCenter + new Vector3(-0.18f, 1.58f, 5.28f),
+                new Vector3(3.6f, 0.42f, 1.30f),
+                new Color(0.96f, 0.86f, 0.68f, 0.14f),
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                15f,
+                10f,
+                1.15f,
+                0.050f,
+                0.062f,
+                ParticleSystemSimulationSpace.World,
+                material);
+            CreateAtmosphereParticleSystem(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentPlaza_SunbreakFloaters",
+                CentralPlazaVsCenter + new Vector3(1.15f, 1.24f, 3.92f),
+                new Vector3(2.1f, 0.50f, 1.25f),
+                new Color(1.00f, 0.92f, 0.66f, 0.20f),
+                Stage7AtmosphericLayeringFloatersMaxParticles,
+                12f,
+                8.5f,
+                0.90f,
+                0.045f,
+                0.068f,
+                ParticleSystemSimulationSpace.World,
+                material);
+            CreateAtmosphereParticleSystem(
+                pastRoot,
+                "FastVS_HD2D_Stage7_PastLibrary_MemoryDustRibbon",
+                LibraryVsCenter + new Vector3(-0.52f, 1.64f, 2.38f),
+                new Vector3(2.7f, 0.36f, 1.55f),
+                new Color(1.00f, 0.78f, 0.48f, 0.18f),
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                14f,
+                10f,
+                1.20f,
+                0.045f,
+                0.065f,
+                ParticleSystemSimulationSpace.World,
+                material);
+            CreateAtmosphereParticleSystem(
+                pastRoot,
+                "FastVS_HD2D_Stage7_PastPlaza_AmberMemoryRibbon",
+                CentralPlazaVsCenter + new Vector3(0.34f, 1.58f, 5.06f),
+                new Vector3(3.4f, 0.42f, 1.30f),
+                new Color(1.00f, 0.72f, 0.44f, 0.17f),
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                15f,
+                10f,
+                1.15f,
+                0.050f,
+                0.062f,
+                ParticleSystemSimulationSpace.World,
+                material);
+
+            CreateStage7VfxAtmosphereCard(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentLibrary_ShelfDustVeil",
+                LibraryVsCenter + new Vector3(-1.02f, 1.58f, 1.18f),
+                new Vector3(0.30f, 0.12f, 1f),
+                new Color(0.94f, 0.88f, 0.66f, 0.16f),
+                material);
+            CreateStage7VfxAtmosphereCard(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentLibrary_TableFloatVeil",
+                LibraryVsCenter + new Vector3(0.54f, 1.05f, 0.30f),
+                new Vector3(0.20f, 0.10f, 1f),
+                new Color(1.00f, 0.76f, 0.44f, 0.20f),
+                material);
+            CreateStage7VfxAtmosphereCard(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentPlaza_FacadeAirVeil",
+                CentralPlazaVsCenter + new Vector3(-0.98f, 1.38f, 4.94f),
+                new Vector3(0.28f, 0.12f, 1f),
+                new Color(0.98f, 0.86f, 0.58f, 0.13f),
+                material);
+            CreateStage7VfxAtmosphereCard(
+                currentRoot,
+                "FastVS_HD2D_Stage7_CurrentPlaza_SunbreakAirVeil",
+                CentralPlazaVsCenter + new Vector3(1.24f, 1.08f, 3.66f),
+                new Vector3(0.20f, 0.10f, 1f),
+                new Color(1.00f, 0.94f, 0.66f, 0.18f),
+                material);
+            CreateStage7VfxAtmosphereCard(
+                pastRoot,
+                "FastVS_HD2D_Stage7_PastLibrary_MemoryVeil",
+                LibraryVsCenter + new Vector3(-0.88f, 1.52f, 1.36f),
+                new Vector3(0.28f, 0.12f, 1f),
+                new Color(1.00f, 0.74f, 0.42f, 0.18f),
+                material);
+            CreateStage7VfxAtmosphereCard(
+                pastRoot,
+                "FastVS_HD2D_Stage7_PastPlaza_AmberAirVeil",
+                CentralPlazaVsCenter + new Vector3(0.82f, 1.32f, 4.66f),
+                new Vector3(0.26f, 0.12f, 1f),
+                new Color(1.00f, 0.70f, 0.40f, 0.16f),
+                material);
         }
 
         private static void CreateHd2dStage7ApvVolumes(Transform currentRoot, Transform pastRoot)
@@ -28902,6 +29073,20 @@ namespace Anemora.EditorTools
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
             renderer.sortingOrder = 4;
+
+            var block = new MaterialPropertyBlock();
+            block.SetColor("_BaseColor", tint);
+            block.SetColor("_Color", tint);
+            renderer.SetPropertyBlock(block);
+        }
+
+        private static void CreateStage7VfxAtmosphereCard(Transform parent, string name, Vector3 localPosition, Vector3 localScale, Color tint, Material material)
+        {
+            var card = CreateQuad(name, parent, localPosition, localScale, material);
+            var renderer = card.GetComponent<MeshRenderer>();
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.sortingOrder = 3;
 
             var block = new MaterialPropertyBlock();
             block.SetColor("_BaseColor", tint);
@@ -32731,6 +32916,72 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7VfxMoteCard("FastVS_HD2D_Stage7_CurrentLibrary_MoteCardA", CurrentSpaceRenderLayer, atmosphereMaterial, 0.13f);
         }
 
+        private static void ValidateHd2dStage7AtmosphericLayering()
+        {
+            var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
+            ValidateHd2dStage7AtmosphericLayeringParticleSystem(
+                "FastVS_HD2D_Stage7_CurrentLibrary_ShelfDustRibbon",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                1.30f,
+                0.05f,
+                0.070f,
+                new Vector3(3.0f, 0.42f, 1.65f));
+            ValidateHd2dStage7AtmosphericLayeringParticleSystem(
+                "FastVS_HD2D_Stage7_CurrentLibrary_DeskAmberFloaters",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                Stage7AtmosphericLayeringFloatersMaxParticles,
+                1.00f,
+                0.05f,
+                0.075f,
+                new Vector3(1.95f, 0.50f, 1.20f));
+            ValidateHd2dStage7AtmosphericLayeringParticleSystem(
+                "FastVS_HD2D_Stage7_CurrentPlaza_FacadeDustRibbon",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                1.20f,
+                0.055f,
+                0.067f,
+                new Vector3(3.7f, 0.48f, 1.40f));
+            ValidateHd2dStage7AtmosphericLayeringParticleSystem(
+                "FastVS_HD2D_Stage7_CurrentPlaza_SunbreakFloaters",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                Stage7AtmosphericLayeringFloatersMaxParticles,
+                0.95f,
+                0.05f,
+                0.073f,
+                new Vector3(2.2f, 0.56f, 1.35f));
+            ValidateHd2dStage7AtmosphericLayeringParticleSystem(
+                "FastVS_HD2D_Stage7_PastLibrary_MemoryDustRibbon",
+                OtherTimeSpaceRenderLayer,
+                atmosphereMaterial,
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                1.25f,
+                0.05f,
+                0.070f,
+                new Vector3(2.8f, 0.42f, 1.65f));
+            ValidateHd2dStage7AtmosphericLayeringParticleSystem(
+                "FastVS_HD2D_Stage7_PastPlaza_AmberMemoryRibbon",
+                OtherTimeSpaceRenderLayer,
+                atmosphereMaterial,
+                Stage7AtmosphericLayeringRibbonMaxParticles,
+                1.20f,
+                0.055f,
+                0.067f,
+                new Vector3(3.5f, 0.48f, 1.40f));
+
+            ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_CurrentLibrary_ShelfDustVeil", CurrentSpaceRenderLayer, atmosphereMaterial, new Vector3(0.32f, 0.14f, 1f));
+            ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_CurrentLibrary_TableFloatVeil", CurrentSpaceRenderLayer, atmosphereMaterial, new Vector3(0.22f, 0.12f, 1f));
+            ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_CurrentPlaza_FacadeAirVeil", CurrentSpaceRenderLayer, atmosphereMaterial, new Vector3(0.30f, 0.14f, 1f));
+            ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_CurrentPlaza_SunbreakAirVeil", CurrentSpaceRenderLayer, atmosphereMaterial, new Vector3(0.22f, 0.12f, 1f));
+            ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_PastLibrary_MemoryVeil", OtherTimeSpaceRenderLayer, atmosphereMaterial, new Vector3(0.30f, 0.14f, 1f));
+            ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_PastPlaza_AmberAirVeil", OtherTimeSpaceRenderLayer, atmosphereMaterial, new Vector3(0.28f, 0.14f, 1f));
+        }
+
         private static void ValidateHd2dStage7ApvFoundation()
         {
             ValidateHd2dStage7ApvVolume(Stage7ApvCurrentVolumeName, "Current", CurrentSpaceRenderLayer);
@@ -33871,6 +34122,31 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateHd2dStage7AtmosphericLayeringParticleSystem(string objectName, int expectedLayer, Material expectedMaterial, int maxParticlesLimit, float maxEmissionRateLimit, float maxSpeedLimit, float maxSizeLimit, Vector3 maxBoxSize)
+        {
+            ValidateHd2dStage7VfxParticleSystem(objectName, expectedLayer, expectedMaterial, maxParticlesLimit, maxEmissionRateLimit, maxSpeedLimit, maxSizeLimit);
+
+            var atmosphere = FindSceneObjectIncludingInactive(objectName);
+            var system = atmosphere != null ? atmosphere.GetComponent<ParticleSystem>() : null;
+            if (system == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 7 atmospheric layering particle system {objectName}.");
+            }
+
+            var main = system.main;
+            var shape = system.shape;
+            var shapeScale = shape.scale;
+            if (main.simulationSpace != ParticleSystemSimulationSpace.World ||
+                !shape.enabled ||
+                shape.shapeType != ParticleSystemShapeType.Box ||
+                shapeScale.x > maxBoxSize.x + 0.0001f ||
+                shapeScale.y > maxBoxSize.y + 0.0001f ||
+                shapeScale.z > maxBoxSize.z + 0.0001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay a small world-space box-emitter atmospheric layer.");
+            }
+        }
+
         private static void ValidateHd2dStage7VfxMoteCard(string objectName, int expectedLayer, Material expectedMaterial, float maxSize)
         {
             var mote = FindSceneObjectIncludingInactive(objectName);
@@ -33896,6 +34172,31 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException(
                     $"House slice validation failed: {objectName} must stay a small transparent billboard mote using the shared atmosphere material. " +
                     $"enabled={enabled}, material={materialName}, expected={expectedName}, shadowCasting={shadowCastingMode}, receiveShadows={receiveShadows}, localScale={mote.transform.localScale}, maxSize={maxSize:0.000}.");
+            }
+        }
+
+        private static void ValidateHd2dStage7AtmosphereCard(string objectName, int expectedLayer, Material expectedMaterial, Vector3 maxScale)
+        {
+            var card = FindSceneObjectIncludingInactive(objectName);
+            if (card == null || card.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 7 atmospheric layer card {objectName} on the expected layer.");
+            }
+
+            var renderer = card.GetComponent<MeshRenderer>();
+            var scale = card.transform.localScale;
+            if (renderer == null ||
+                !renderer.enabled ||
+                renderer.sharedMaterial != expectedMaterial ||
+                renderer.shadowCastingMode != ShadowCastingMode.Off ||
+                renderer.receiveShadows ||
+                scale.x > maxScale.x + 0.0001f ||
+                scale.y > maxScale.y + 0.0001f ||
+                scale.z > maxScale.z + 0.0001f)
+            {
+                var materialName = renderer != null && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "<none>";
+                var expectedName = expectedMaterial != null ? expectedMaterial.name : "<none>";
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay a small non-shadowing transparent atmosphere card. material={materialName}, expected={expectedName}, scale={scale}, maxScale={maxScale}.");
             }
         }
 
