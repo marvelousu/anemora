@@ -1,0 +1,3 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle97.md
+
+Cycle97 review set for Kaia farm organic planting, past cleanup, and Scene6 guide rectangle removal.
