@@ -3819,6 +3819,7 @@ namespace Anemora.EditorTools
             CreateRuinsCycle72SeparatedF5RightHouseDetails(root, prefix, past, materials);
             CreateRuinsCycle73CurrentF5RightHouseShapeDetails(root, prefix, past, materials);
             CreateRuinsCycle74CurrentF5HouseScaleAndExitClarityDetails(root, prefix, past, materials);
+            CreateRuinsCycle75CurrentF5EdgeAndF6BandNaturalizeDetails(root, prefix, past, materials);
 
             if (past)
             {
@@ -4319,6 +4320,30 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle74F5RightHouseRoofShardLeft", root, c + new Vector3(13.90f, 1.20f, 3.04f), new Vector3(0.84f, 0.10f, 0.24f), Quaternion.Euler(7f, 0f, -18f), roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle74.f5_right_house_roof_shard_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle74F5RightHouseRoofShardRight", root, c + new Vector3(14.78f, 1.18f, 3.06f), new Vector3(0.76f, 0.10f, 0.22f), Quaternion.Euler(7f, 0f, 14f), roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle74.f5_right_house_roof_shard_right");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle74F6ExitTravelBand", root, c + new Vector3(17.72f, 0.074f, -0.92f), new Vector3(3.12f, 0.05f, 0.24f), Quaternion.Euler(0f, 2f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle74.f6_exit_travel_band");
+        }
+
+        private static void CreateRuinsCycle75CurrentF5EdgeAndF6BandNaturalizeDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                return;
+            }
+
+            var c = Chapter1RuinsMapCenter;
+            var ground = materials.CurrentGrass;
+            var wall = materials.CurrentExteriorWall;
+            var roof = materials.CurrentRoof;
+            var stone = materials.CurrentStone;
+            var wood = materials.CurrentFurniture;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F5RightHouseRoofEdgeTieback", root, c + new Vector3(14.86f, 1.14f, 3.18f), new Vector3(0.66f, 0.08f, 0.18f), Quaternion.Euler(7f, 0f, -12f), roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle75.f5_right_house_roof_edge_tieback");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F5RightHouseBoardReturn", root, c + new Vector3(15.02f, 0.98f, 3.00f), new Vector3(0.34f, 0.10f, 0.12f), Quaternion.Euler(0f, 6f, 9f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle75.f5_right_house_board_return");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F5RightHouseDepthSideEdge", root, c + new Vector3(15.12f, 0.72f, 2.88f), new Vector3(0.14f, 0.90f, 0.34f), Quaternion.Euler(0f, 4f, 4f), wall, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.f.cycle75.f5_right_house_depth_side_edge");
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F6TravelBandCornerGrassWest", root, c + new Vector3(16.22f, 0.074f, -0.62f), new Vector3(0.46f, 0.05f, 0.16f), Quaternion.Euler(0f, -10f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle75.f6_travel_band_corner_grass_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F6TravelBandCornerStoneSouthWest", root, c + new Vector3(16.42f, 0.104f, -1.18f), new Vector3(0.20f, 0.08f, 0.16f), Quaternion.Euler(0f, 16f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle75.f6_travel_band_corner_stone_south_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F6TravelBandCornerGrassEast", root, c + new Vector3(18.98f, 0.072f, -0.66f), new Vector3(0.40f, 0.05f, 0.14f), Quaternion.Euler(0f, 12f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle75.f6_travel_band_corner_grass_east");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle75F6TravelBandCornerStoneSouthEast", root, c + new Vector3(19.04f, 0.104f, -1.16f), new Vector3(0.22f, 0.08f, 0.16f), Quaternion.Euler(0f, -14f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle75.f6_travel_band_corner_stone_south_east");
         }
 
         private static void CreateRuinsLeftSettlementReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
