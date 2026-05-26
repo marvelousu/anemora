@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle108.md
+
+Cycle 108 review notes:
+- Focus images: `05_c1_c3_current.png` and `06_c1_c3_past.png`.
+- Confirm the generated past C1-C3 lower verge reads cleaner and less like current-side scattered stone/log debris.
+- Confirm current C1-C3 debris, route pads, roads, yard, and house did not regress.

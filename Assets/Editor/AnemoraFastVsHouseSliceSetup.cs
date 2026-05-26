@@ -802,6 +802,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle93MiaTreeBlockContrastDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle100MiaTreePanelSpreadDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle101MiaLowerPlantBandScatterDetails(miaHouseRoot, prefix, past, materials);
+            CreateChapter1Cycle108MiaPastLowerVergeCleanupDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle90AriaLowerVergeDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle105AriaPastCleanVergeDetails(ariaStreetRoot, prefix, past, materials);
             CreateHouseDoorMarkers(interiorRoot, exteriorRoot, prefix, past, materials);
@@ -6721,6 +6722,39 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1Cycle108MiaPastLowerVergeCleanupDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1MiaHouseMapCenter;
+            var ground = materials.PastGrass;
+            var path = materials.PastPath;
+            var leaf = materials.Leaf;
+            var trim = materials.PastFence;
+
+            var cleanupNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_C1_LowerPlantStoneEast",
+                "Past_CentralPlaza_Chapter1_C1_GardenStoneCluster"
+            };
+            foreach (var objectName in cleanupNames)
+            {
+                HideChildIfPresent(root, objectName);
+            }
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeCleanSweepWest", root, c + new Vector3(-7.26f, 0.118f, -6.18f), new Vector3(1.84f, 0.034f, 0.22f), Quaternion.Euler(0f, 12f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.c1.cycle108.lower_verge.clean_sweep_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeCleanSweepMid", root, c + new Vector3(-1.22f, 0.118f, -6.28f), new Vector3(1.70f, 0.034f, 0.20f), Quaternion.Euler(0f, -9f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.c1.cycle108.lower_verge.clean_sweep_mid");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeCleanSweepEast", root, c + new Vector3(6.42f, 0.118f, -6.04f), new Vector3(1.66f, 0.034f, 0.20f), Quaternion.Euler(0f, 10f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.c1.cycle108.lower_verge.clean_sweep_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeTrimWest", root, c + new Vector3(-8.42f, 0.132f, -5.54f), new Vector3(0.94f, 0.030f, 0.08f), Quaternion.Euler(0f, -8f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.c1.cycle108.lower_verge.trim_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeTrimEast", root, c + new Vector3(7.16f, 0.132f, -5.46f), new Vector3(0.90f, 0.030f, 0.08f), Quaternion.Euler(0f, 8f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.c1.cycle108.lower_verge.trim_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeLowRailMid", root, c + new Vector3(0.62f, 0.208f, -5.32f), new Vector3(0.86f, 0.070f, 0.08f), Quaternion.Euler(0f, 7f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.c1.cycle108.lower_verge.low_rail_mid");
+            CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_C1_Cycle108LowerBloomWest", c + new Vector3(-6.66f, 0.236f, -5.86f), leaf, materials.FlowerBlue, materials.FlowerYellow);
+            CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_C1_Cycle108LowerBloomEast", c + new Vector3(6.10f, 0.236f, -5.72f), leaf, materials.FlowerRed, materials.FlowerYellow);
+        }
+
         private static void CreateChapter1Cycle90AriaLowerVergeDetails(Transform root, string prefix, bool past, Materials materials)
         {
             var c = Chapter1AriaStreetMapCenter;
@@ -9712,6 +9746,7 @@ namespace Anemora.EditorTools
             ValidateInvisibleDropGuard("Past_CentralPlaza_Chapter1_F1_LowerGorgeNoStepCollider");
             ValidateChapter1MiaCycle100TreePanelCleanup();
             ValidateChapter1MiaCycle101LowerPlantCleanup();
+            ValidateChapter1MiaCycle108PastLowerVergeCleanup();
             ValidateChapter1PlazaCycle102SideStripCleanup();
             ValidateChapter1HouseExteriorCycle103PlantPanelCleanup();
             ValidateChapter1AriaCycle105PastVergeCleanup();
@@ -9869,6 +9904,24 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_C1_Cycle101LowerDustFan", "dust");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle101CleanRailWest", "past_fence");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle101CleanRailEast", "past_fence");
+        }
+
+        private static void ValidateChapter1MiaCycle108PastLowerVergeCleanup()
+        {
+            var hiddenNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_C1_LowerPlantStoneEast",
+                "Past_CentralPlaza_Chapter1_C1_GardenStoneCluster"
+            };
+
+            foreach (var objectName in hiddenNames)
+            {
+                ValidateInactiveOrMissing(objectName);
+            }
+
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeCleanSweepWest", "past_grass");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeTrimWest", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeLowRailMid", "past_fence");
         }
 
         private static void ValidateChapter1PlazaCycle102SideStripCleanup()
