@@ -27,7 +27,9 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 5881961369050309807}
   - {fileID: 7728037277843947302}
-  m_RendererFeatureMap: af64d080b3eca051267fdd94f5803f6b
+  - {fileID: 3390581824547954834}
+  - {fileID: 8844436198139456221}
+  m_RendererFeatureMap: af64d080b3eca051267fdd94f5803f6b92a0139234c40d2fdd6ab5c4dcbfbd7a
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   m_AssetVersion: 3
@@ -55,6 +57,26 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &3390581824547954834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FastVS HD2D Stage7 TiltShift
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Active: 1
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: 4
+  passMaterial: {fileID: 2100000, guid: 7d7f44e2e75ae7849aee301a5595430a, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &5881961369050309807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,3 +123,23 @@ MonoBehaviour:
     BlurQuality: 0
     Falloff: 80
     SampleCount: -1
+--- !u!114 &8844436198139456221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FastVS HD2D Stage7 Outline
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
+  m_Active: 1
+  injectionPoint: 600
+  fetchColorBuffer: 1
+  requirements: 5
+  passMaterial: {fileID: 2100000, guid: 7b1b8bfa762734843b89f67153f86275, type: 2}
+  passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1

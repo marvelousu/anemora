@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Anemora.TimeManagement.Portal;
 using UnityEditor;
 using UnityEngine;
@@ -14,8 +15,32 @@ namespace Anemora.EditorTools
         private const string PipelineAssetPath = SettingsDirectory + "/UniversalRenderPipeline.asset";
         private const string RendererDataPath = SettingsDirectory + "/UniversalRenderPipeline_Renderer.asset";
         private const string VolumeProfilePath = SettingsDirectory + "/DefaultVolumeProfile.asset";
+        private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
+        private const string Stage5LutDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const string Stage5DaylightLutPath = Stage5LutDirectory + "/LUT_Daylight_Plaza.png";
+        private const string Stage5IndoorWarmLutPath = Stage5LutDirectory + "/LUT_Indoor_Warm.png";
+        private const string Stage5PastLutPath = Stage5LutDirectory + "/LUT_TimeWindow_Past.png";
+        private const int Stage5LutSize = 32;
+        private const int Stage5LutWidth = Stage5LutSize * Stage5LutSize;
+        private const int Stage5LutHeight = Stage5LutSize;
         private const string PortalStencilFeatureName = "PortalStencilFeature";
         private const string Hd2dSsaoFeatureName = "FastVS HD2D Soft Contact Occlusion";
+        private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
+        private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
+        private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
+        private const float Stage7TiltShiftIntensity = 0.68f;
+        private const float Stage7TiltShiftRadius = 2.25f;
+        private const float Stage7TiltShiftSharpCenter = 0.50f;
+        private const float Stage7TiltShiftSharpWidth = 0.18f;
+        private const float Stage7TiltShiftFeather = 0.34f;
+        private const string Stage7OutlineFeatureName = "FastVS HD2D Stage7 Outline";
+        private const string Stage7OutlineShaderName = "Anemora/FastVS/OutlineFullscreen";
+        private const string Stage7OutlineMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_outline.mat";
+        private const float Stage7OutlineIntensity = 0.18f;
+        private const float Stage7OutlineThreshold = 0.115f;
+        private const float Stage7OutlineRadius = 1.25f;
+        private const float Stage7OutlineDepthWeight = 0.35f;
+        private const float Stage7OutlineColorWeight = 0.65f;
 
         public static void ApplyShadingFoundationV1()
         {
@@ -39,7 +64,7 @@ namespace Anemora.EditorTools
             Debug.Log(
                 "Shading Foundation v1 applied: " +
                 "shadowDistance=35, mainShadowmap=4096, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
-                "volumeProfile=reference Bloom/ColorAdjustments/Vignette/DepthOfField with Neutral tonemapping.");
+                "volumeProfile=reference Bloom/ColorAdjustments/Vignette/DepthOfField with ACES tonemapping.");
         }
 
         public static void ApplyFastVsHd2dRenderAssets()
@@ -60,8 +85,18 @@ namespace Anemora.EditorTools
             TrySetBool(serialized, "m_RequireOpaqueTexture", true, "requireOpaqueTexture");
             TrySetBool(serialized, "m_SoftShadowsSupported", true, "softShadowsSupported");
             TrySetInt(serialized, "m_SoftShadowQuality", 3, "softShadowQuality");
-            TrySetInt(serialized, "m_ShadowCascadeCount", 2, "shadowCascadeCount");
-            TrySetFloat(serialized, "m_Cascade2Split", 0.35f, "cascade2Split");
+            TrySetInt(serialized, "m_ShadowCascadeCount", 4, "shadowCascadeCount");
+            TrySetVector3(serialized, "m_Cascade4Split", new Vector3(0.10f, 0.30f, 0.60f), "cascade4Split");
+            TrySetFloat(serialized, "m_ShadowDepthBias", 1f, "shadowDepthBias");
+            TrySetFloat(serialized, "m_ShadowNormalBias", 1.5f, "shadowNormalBias");
+            TrySetEnumByPreferredNames(serialized, "m_LightProbeSystem", new[] { "ProbeVolumes" }, "lightProbeSystem");
+            TrySetEnumByPreferredNames(serialized, "m_ProbeVolumeMemoryBudget", new[] { "MemoryBudgetMedium" }, "probeVolumeMemoryBudget");
+            TrySetEnumByPreferredNames(serialized, "m_ProbeVolumeBlendingMemoryBudget", new[] { "MemoryBudgetMedium" }, "probeVolumeBlendingMemoryBudget");
+            TrySetBool(serialized, "m_SupportProbeVolumeGPUStreaming", false, "supportProbeVolumeGPUStreaming");
+            TrySetBool(serialized, "m_SupportProbeVolumeDiskStreaming", false, "supportProbeVolumeDiskStreaming");
+            TrySetBool(serialized, "m_SupportProbeVolumeScenarios", false, "supportProbeVolumeScenarios");
+            TrySetBool(serialized, "m_SupportProbeVolumeScenarioBlending", false, "supportProbeVolumeScenarioBlending");
+            TrySetEnumByPreferredNames(serialized, "m_ProbeVolumeSHBands", new[] { "SphericalHarmonicsL1" }, "probeVolumeSHBands");
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
@@ -93,9 +128,49 @@ namespace Anemora.EditorTools
             ssaoFeature.Create();
             EditorUtility.SetDirty(ssaoFeature);
 
-            var orderedFeatures = new List<ScriptableRendererFeature>(rendererData.rendererFeatures.Count + 1);
+            var tiltShiftFeature = FindNamedFullScreenFeature(rendererData, Stage7TiltShiftFeatureName);
+            if (tiltShiftFeature == null)
+            {
+                tiltShiftFeature = ScriptableObject.CreateInstance<FullScreenPassRendererFeature>();
+                tiltShiftFeature.name = Stage7TiltShiftFeatureName;
+                AssetDatabase.AddObjectToAsset(tiltShiftFeature, rendererData);
+            }
+
+            tiltShiftFeature.name = Stage7TiltShiftFeatureName;
+            tiltShiftFeature.SetActive(true);
+            tiltShiftFeature.injectionPoint = FullScreenPassRendererFeature.InjectionPoint.AfterRenderingPostProcessing;
+            tiltShiftFeature.fetchColorBuffer = true;
+            tiltShiftFeature.requirements = ScriptableRenderPassInput.Color;
+            tiltShiftFeature.passMaterial = EnsureStage7TiltShiftMaterial();
+            tiltShiftFeature.passIndex = 0;
+            tiltShiftFeature.bindDepthStencilAttachment = false;
+            tiltShiftFeature.Create();
+            EditorUtility.SetDirty(tiltShiftFeature);
+
+            var outlineFeature = FindNamedFullScreenFeature(rendererData, Stage7OutlineFeatureName);
+            if (outlineFeature == null)
+            {
+                outlineFeature = ScriptableObject.CreateInstance<FullScreenPassRendererFeature>();
+                outlineFeature.name = Stage7OutlineFeatureName;
+                AssetDatabase.AddObjectToAsset(outlineFeature, rendererData);
+            }
+
+            outlineFeature.name = Stage7OutlineFeatureName;
+            outlineFeature.SetActive(true);
+            outlineFeature.injectionPoint = FullScreenPassRendererFeature.InjectionPoint.AfterRenderingPostProcessing;
+            outlineFeature.fetchColorBuffer = true;
+            outlineFeature.requirements = ScriptableRenderPassInput.Color | ScriptableRenderPassInput.Depth;
+            outlineFeature.passMaterial = EnsureStage7OutlineMaterial();
+            outlineFeature.passIndex = 0;
+            outlineFeature.bindDepthStencilAttachment = false;
+            outlineFeature.Create();
+            EditorUtility.SetDirty(outlineFeature);
+
+            var orderedFeatures = new List<ScriptableRendererFeature>(rendererData.rendererFeatures.Count + 2);
             var portalAdded = false;
             var ssaoAdded = false;
+            var tiltShiftAdded = false;
+            var outlineAdded = false;
 
             for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
             {
@@ -127,6 +202,28 @@ namespace Anemora.EditorTools
                     continue;
                 }
 
+                if (feature == tiltShiftFeature || feature is FullScreenPassRendererFeature && feature.name == Stage7TiltShiftFeatureName)
+                {
+                    if (!tiltShiftAdded)
+                    {
+                        orderedFeatures.Add(tiltShiftFeature);
+                        tiltShiftAdded = true;
+                    }
+
+                    continue;
+                }
+
+                if (feature == outlineFeature || feature is FullScreenPassRendererFeature && feature.name == Stage7OutlineFeatureName)
+                {
+                    if (!outlineAdded)
+                    {
+                        orderedFeatures.Add(outlineFeature);
+                        outlineAdded = true;
+                    }
+
+                    continue;
+                }
+
                 orderedFeatures.Add(feature);
             }
 
@@ -148,6 +245,21 @@ namespace Anemora.EditorTools
                 }
             }
 
+            if (!tiltShiftAdded)
+            {
+                var insertIndex = Mathf.Min(orderedFeatures.Count, portalAdded && ssaoAdded ? 2 : orderedFeatures.Count);
+                orderedFeatures.Insert(insertIndex, tiltShiftFeature);
+                tiltShiftAdded = true;
+            }
+
+            if (!outlineAdded)
+            {
+                var insertIndex = tiltShiftAdded
+                    ? Mathf.Min(orderedFeatures.Count, orderedFeatures.IndexOf(tiltShiftFeature) + 1)
+                    : orderedFeatures.Count;
+                orderedFeatures.Insert(insertIndex, outlineFeature);
+            }
+
             var serialized = new SerializedObject(rendererData);
             var featureList = serialized.FindProperty("m_RendererFeatures");
             var featureMap = serialized.FindProperty("m_RendererFeatureMap");
@@ -167,6 +279,72 @@ namespace Anemora.EditorTools
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(rendererData);
+        }
+
+        private static Material EnsureStage7TiltShiftMaterial()
+        {
+            EnsureFolder(MaterialDirectory);
+
+            var shader = Shader.Find(Stage7TiltShiftShaderName);
+            if (shader == null)
+            {
+                throw new InvalidOperationException($"Stage 7 tilt-shift shader not found: {Stage7TiltShiftShaderName}");
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(Stage7TiltShiftMaterialPath);
+            if (material == null)
+            {
+                material = new Material(shader)
+                {
+                    name = "FastVS_House_hd2d_stage7_tilt_shift"
+                };
+                AssetDatabase.CreateAsset(material, Stage7TiltShiftMaterialPath);
+            }
+            else if (material.shader != shader)
+            {
+                material.shader = shader;
+            }
+
+            material.SetFloat("_Intensity", Stage7TiltShiftIntensity);
+            material.SetFloat("_Radius", Stage7TiltShiftRadius);
+            material.SetFloat("_SharpCenter", Stage7TiltShiftSharpCenter);
+            material.SetFloat("_SharpWidth", Stage7TiltShiftSharpWidth);
+            material.SetFloat("_Feather", Stage7TiltShiftFeather);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureStage7OutlineMaterial()
+        {
+            EnsureFolder(MaterialDirectory);
+
+            var shader = Shader.Find(Stage7OutlineShaderName);
+            if (shader == null)
+            {
+                throw new InvalidOperationException($"Stage 7 outline shader not found: {Stage7OutlineShaderName}");
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(Stage7OutlineMaterialPath);
+            if (material == null)
+            {
+                material = new Material(shader)
+                {
+                    name = "FastVS_House_hd2d_stage7_outline"
+                };
+                AssetDatabase.CreateAsset(material, Stage7OutlineMaterialPath);
+            }
+            else if (material.shader != shader)
+            {
+                material.shader = shader;
+            }
+
+            material.SetFloat("_Intensity", Stage7OutlineIntensity);
+            material.SetFloat("_Threshold", Stage7OutlineThreshold);
+            material.SetFloat("_Radius", Stage7OutlineRadius);
+            material.SetFloat("_DepthWeight", Stage7OutlineDepthWeight);
+            material.SetFloat("_ColorWeight", Stage7OutlineColorWeight);
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static void ApplySsaoSettings(ScreenSpaceAmbientOcclusion ssaoFeature)
@@ -192,45 +370,61 @@ namespace Anemora.EditorTools
             var bloom = EnsureVolumeComponent<Bloom>(volumeProfile);
             bloom.active = true;
             bloom.threshold.overrideState = true;
-            bloom.threshold.value = 0.62f;
+            bloom.threshold.value = 0.85f;
             bloom.intensity.overrideState = true;
-            bloom.intensity.value = 0.30f;
+            bloom.intensity.value = 0.80f;
             bloom.scatter.overrideState = true;
             bloom.scatter.value = 0.72f;
+            bloom.highQualityFiltering.overrideState = true;
+            bloom.highQualityFiltering.value = true;
 
             var colorAdjustments = EnsureVolumeComponent<ColorAdjustments>(volumeProfile);
             colorAdjustments.active = true;
             colorAdjustments.postExposure.overrideState = true;
-            colorAdjustments.postExposure.value = -0.02f;
+            colorAdjustments.postExposure.value = 0f;
             colorAdjustments.contrast.overrideState = true;
             colorAdjustments.contrast.value = 14f;
             colorAdjustments.saturation.overrideState = true;
-            colorAdjustments.saturation.value = -12f;
+            colorAdjustments.saturation.value = 0f;
 
             var vignette = EnsureVolumeComponent<Vignette>(volumeProfile);
             vignette.active = true;
             vignette.intensity.overrideState = true;
-            vignette.intensity.value = 0.22f;
+            vignette.intensity.value = 0.30f;
             vignette.smoothness.overrideState = true;
-            vignette.smoothness.value = 0.55f;
+            vignette.smoothness.value = 0.40f;
 
             var tonemapping = EnsureVolumeComponent<Tonemapping>(volumeProfile);
             tonemapping.active = true;
             tonemapping.mode.overrideState = true;
-            tonemapping.mode.value = TonemappingMode.Neutral;
+            tonemapping.mode.value = TonemappingMode.ACES;
 
+            var whiteBalance = EnsureVolumeComponent<WhiteBalance>(volumeProfile);
+            whiteBalance.active = true;
+            whiteBalance.temperature.overrideState = true;
+            whiteBalance.temperature.value = 8f;
+            whiteBalance.tint.overrideState = true;
+            whiteBalance.tint.value = 0f;
+
+            ApplyStage5ColorLookup(volumeProfile);
             ApplyOptionalColorGrade(volumeProfile);
 
             var depthOfField = EnsureVolumeComponent<DepthOfField>(volumeProfile);
             depthOfField.active = true;
             depthOfField.mode.overrideState = true;
-            depthOfField.mode.value = DepthOfFieldMode.Gaussian;
-            depthOfField.gaussianStart.overrideState = true;
-            depthOfField.gaussianStart.value = 5.5f;
-            depthOfField.gaussianEnd.overrideState = true;
-            depthOfField.gaussianEnd.value = 16.5f;
-            depthOfField.gaussianMaxRadius.overrideState = true;
-            depthOfField.gaussianMaxRadius.value = 1.25f;
+            depthOfField.mode.value = DepthOfFieldMode.Bokeh;
+            depthOfField.focusDistance.overrideState = true;
+            depthOfField.focusDistance.value = 5.4f;
+            depthOfField.aperture.overrideState = true;
+            depthOfField.aperture.value = 2.4f;
+            depthOfField.focalLength.overrideState = true;
+            depthOfField.focalLength.value = 85f;
+            depthOfField.bladeCount.overrideState = true;
+            depthOfField.bladeCount.value = 6;
+            depthOfField.bladeCurvature.overrideState = true;
+            depthOfField.bladeCurvature.value = 0.85f;
+            depthOfField.bladeRotation.overrideState = true;
+            depthOfField.bladeRotation.value = 0f;
             depthOfField.highQualitySampling.overrideState = true;
             depthOfField.highQualitySampling.value = true;
 
@@ -243,7 +437,20 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(colorAdjustments);
             EditorUtility.SetDirty(vignette);
             EditorUtility.SetDirty(tonemapping);
+            EditorUtility.SetDirty(whiteBalance);
             EditorUtility.SetDirty(depthOfField);
+        }
+
+        private static void ApplyStage5ColorLookup(VolumeProfile volumeProfile)
+        {
+            var colorLookup = EnsureVolumeComponent<ColorLookup>(volumeProfile);
+            colorLookup.active = true;
+            colorLookup.texture.overrideState = true;
+            colorLookup.texture.value = EnsureStage5LutTextures();
+            colorLookup.contribution.overrideState = true;
+            colorLookup.contribution.value = 0.60f;
+
+            EditorUtility.SetDirty(colorLookup);
         }
 
         private static T EnsureVolumeComponent<T>(VolumeProfile volumeProfile) where T : VolumeComponent
@@ -279,6 +486,244 @@ namespace Anemora.EditorTools
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(component);
+        }
+
+        private static Texture2D EnsureStage5LutTextures()
+        {
+            EnsureFolder(Stage5LutDirectory);
+            EnsureStage5LutTexture(Stage5DaylightLutPath, ApplyStage5DaylightGrade);
+            EnsureStage5LutTexture(Stage5IndoorWarmLutPath, ApplyStage5IndoorWarmGrade);
+            EnsureStage5LutTexture(Stage5PastLutPath, ApplyStage5PastGrade);
+            return LoadRequiredAsset<Texture2D>(Stage5DaylightLutPath);
+        }
+
+        private static Texture2D EnsureStage5LutTexture(string assetPath, Func<Color, Color> gradeFunction)
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+            if (!IsStage5LutTextureValid(texture))
+            {
+                CreateStage5LutPng(assetPath, gradeFunction);
+                AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate);
+                texture = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+            }
+
+            ConfigureStage5LutImporter(assetPath);
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+        }
+
+        private static bool IsStage5LutTextureValid(Texture2D texture)
+        {
+            return texture != null && texture.width == Stage5LutWidth && texture.height == Stage5LutHeight;
+        }
+
+        private static void CreateStage5LutPng(string assetPath, Func<Color, Color> gradeFunction)
+        {
+            var texture = new Texture2D(Stage5LutWidth, Stage5LutHeight, TextureFormat.RGBA32, false);
+            texture.name = Path.GetFileNameWithoutExtension(assetPath);
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.filterMode = FilterMode.Bilinear;
+
+            var pixels = new Color32[Stage5LutWidth * Stage5LutHeight];
+            for (var blue = 0; blue < Stage5LutSize; blue++)
+            {
+                var blueValue = blue / (Stage5LutSize - 1f);
+                for (var green = 0; green < Stage5LutSize; green++)
+                {
+                    var greenValue = green / (Stage5LutSize - 1f);
+                    for (var red = 0; red < Stage5LutSize; red++)
+                    {
+                        var redValue = red / (Stage5LutSize - 1f);
+                        var graded = gradeFunction(new Color(redValue, greenValue, blueValue, 1f));
+                        var pixelIndex = (green * Stage5LutWidth) + red + (blue * Stage5LutSize);
+                        pixels[pixelIndex] = ToColor32(graded);
+                    }
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, false);
+
+            var fullPath = GetAssetFullPath(assetPath);
+            File.WriteAllBytes(fullPath, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+        }
+
+        private static void ConfigureStage5LutImporter(string assetPath)
+        {
+            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (importer == null)
+            {
+                throw new InvalidOperationException($"Missing texture importer for {assetPath}.");
+            }
+
+            var needsReimport = false;
+
+            if (importer.textureType != TextureImporterType.Default)
+            {
+                importer.textureType = TextureImporterType.Default;
+                needsReimport = true;
+            }
+
+            if (importer.sRGBTexture)
+            {
+                importer.sRGBTexture = false;
+                needsReimport = true;
+            }
+
+            if (importer.mipmapEnabled)
+            {
+                importer.mipmapEnabled = false;
+                needsReimport = true;
+            }
+
+            if (importer.wrapMode != TextureWrapMode.Clamp)
+            {
+                importer.wrapMode = TextureWrapMode.Clamp;
+                needsReimport = true;
+            }
+
+            if (importer.filterMode != FilterMode.Bilinear)
+            {
+                importer.filterMode = FilterMode.Bilinear;
+                needsReimport = true;
+            }
+
+            if (importer.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                needsReimport = true;
+            }
+
+            if (importer.npotScale != TextureImporterNPOTScale.None)
+            {
+                importer.npotScale = TextureImporterNPOTScale.None;
+                needsReimport = true;
+            }
+
+            if (importer.isReadable)
+            {
+                importer.isReadable = false;
+                needsReimport = true;
+            }
+
+            if (importer.alphaSource != TextureImporterAlphaSource.FromInput)
+            {
+                importer.alphaSource = TextureImporterAlphaSource.FromInput;
+                needsReimport = true;
+            }
+
+            if (needsReimport)
+            {
+                importer.SaveAndReimport();
+            }
+        }
+
+        private static string GetAssetFullPath(string assetPath)
+        {
+            var projectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            return Path.GetFullPath(Path.Combine(projectRoot, assetPath));
+        }
+
+        private static Color32 ToColor32(Color color)
+        {
+            return new Color32(
+                (byte)Mathf.Clamp(Mathf.RoundToInt(Mathf.Clamp01(color.r) * 255f), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(Mathf.Clamp01(color.g) * 255f), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(Mathf.Clamp01(color.b) * 255f), 0, 255),
+                (byte)Mathf.Clamp(Mathf.RoundToInt(Mathf.Clamp01(color.a) * 255f), 0, 255));
+        }
+
+        private static Color ApplyStage5DaylightGrade(Color color)
+        {
+            var luma = Stage5Luminance(color);
+            color = Stage5ApplyContrast(color, 1.04f);
+            color = Stage5ApplySaturation(color, 0.93f);
+            color = Stage5Blend(color, new Color(0.90f, 0.96f, 1.06f, 1f), Stage5ShadowMask(luma) * 0.22f);
+            color = Stage5Blend(color, new Color(1.08f, 1.01f, 0.90f, 1f), Stage5MidtoneMask(luma) * 0.18f);
+            color = Stage5Blend(color, new Color(1.03f, 1.01f, 0.96f, 1f), Stage5HighlightMask(luma) * 0.08f);
+            return Stage5Clamp(color);
+        }
+
+        private static Color ApplyStage5IndoorWarmGrade(Color color)
+        {
+            var luma = Stage5Luminance(color);
+            color = Stage5ApplyContrast(color, 0.97f);
+            color = Stage5ApplySaturation(color, 0.96f);
+            color = Stage5Blend(color, new Color(1.10f, 0.98f, 1.04f, 1f), Stage5MidtoneMask(luma) * 0.18f);
+            color = Stage5Blend(color, new Color(1.08f, 1.00f, 0.91f, 1f), Stage5MidtoneMask(luma) * 0.20f);
+            color = Stage5Blend(color, new Color(0.96f, 0.91f, 1.02f, 1f), Stage5ShadowMask(luma) * 0.12f);
+            return Stage5Clamp(color);
+        }
+
+        private static Color ApplyStage5PastGrade(Color color)
+        {
+            var luma = Stage5Luminance(color);
+            color = Stage5ApplyContrast(color, 0.99f);
+            color = Stage5ApplySaturation(color, 0.84f);
+            color = Stage5Blend(color, new Color(0.88f, 0.96f, 1.08f, 1f), Stage5ShadowMask(luma) * 0.18f);
+            color = Stage5Blend(color, new Color(1.12f, 1.00f, 0.83f, 1f), Stage5HighlightMask(luma) * 0.28f);
+            color = Stage5Blend(color, new Color(1.06f, 0.98f, 0.90f, 1f), Stage5MidtoneMask(luma) * 0.14f);
+            return Stage5Clamp(color);
+        }
+
+        private static float Stage5Luminance(Color color)
+        {
+            return (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f);
+        }
+
+        private static float Stage5ShadowMask(float luma)
+        {
+            return 1f - Mathf.SmoothStep(0.18f, 0.64f, luma);
+        }
+
+        private static float Stage5MidtoneMask(float luma)
+        {
+            var centered = 1f - Mathf.Abs(luma - 0.5f) * 2f;
+            return Mathf.Clamp01(centered);
+        }
+
+        private static float Stage5HighlightMask(float luma)
+        {
+            return Mathf.SmoothStep(0.42f, 0.94f, luma);
+        }
+
+        private static Color Stage5ApplySaturation(Color color, float saturation)
+        {
+            var luma = Stage5Luminance(color);
+            return new Color(
+                luma + ((color.r - luma) * saturation),
+                luma + ((color.g - luma) * saturation),
+                luma + ((color.b - luma) * saturation),
+                color.a);
+        }
+
+        private static Color Stage5ApplyContrast(Color color, float contrast)
+        {
+            const float pivot = 0.5f;
+            return new Color(
+                ((color.r - pivot) * contrast) + pivot,
+                ((color.g - pivot) * contrast) + pivot,
+                ((color.b - pivot) * contrast) + pivot,
+                color.a);
+        }
+
+        private static Color Stage5Blend(Color source, Color target, float amount)
+        {
+            amount = Mathf.Clamp01(amount);
+            return new Color(
+                Mathf.Lerp(source.r, target.r, amount),
+                Mathf.Lerp(source.g, target.g, amount),
+                Mathf.Lerp(source.b, target.b, amount),
+                source.a);
+        }
+
+        private static Color Stage5Clamp(Color color)
+        {
+            return new Color(
+                Mathf.Clamp01(color.r),
+                Mathf.Clamp01(color.g),
+                Mathf.Clamp01(color.b),
+                Mathf.Clamp01(color.a));
         }
 
         private static void ApplyOptionalColorGrade(VolumeProfile volumeProfile)
@@ -331,6 +776,21 @@ namespace Anemora.EditorTools
                 if (feature != null && feature.GetType() == featureType)
                 {
                     return feature;
+                }
+            }
+
+            return null;
+        }
+
+        private static FullScreenPassRendererFeature FindNamedFullScreenFeature(UniversalRendererData rendererData, string featureName)
+        {
+            for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
+            {
+                var feature = rendererData.rendererFeatures[i];
+                if (feature is FullScreenPassRendererFeature fullScreenFeature &&
+                    string.Equals(fullScreenFeature.name, featureName, StringComparison.Ordinal))
+                {
+                    return fullScreenFeature;
                 }
             }
 
@@ -458,6 +918,17 @@ namespace Anemora.EditorTools
             return true;
         }
 
+        private static bool TrySetVector3(SerializedObject serialized, string fieldName, Vector3 value, params string[] fallbackNames)
+        {
+            if (!TryFindProperty(serialized, fieldName, out var property, fallbackNames))
+            {
+                return false;
+            }
+
+            property.vector3Value = value;
+            return true;
+        }
+
         private static bool TrySetEnumByPreferredNames(SerializedProperty parent, string fieldName, string[] preferredEnumNames, params string[] fallbackNames)
         {
             if (preferredEnumNames == null || preferredEnumNames.Length == 0)
@@ -466,6 +937,34 @@ namespace Anemora.EditorTools
             }
 
             if (!TryFindPropertyRelative(parent, fieldName, out var property, fallbackNames))
+            {
+                return false;
+            }
+
+            for (var i = 0; i < preferredEnumNames.Length; i++)
+            {
+                var candidateName = preferredEnumNames[i];
+                for (var j = 0; j < property.enumNames.Length; j++)
+                {
+                    if (string.Equals(property.enumNames[j], candidateName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        property.enumValueIndex = j;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TrySetEnumByPreferredNames(SerializedObject serialized, string fieldName, string[] preferredEnumNames, params string[] fallbackNames)
+        {
+            if (preferredEnumNames == null || preferredEnumNames.Length == 0)
+            {
+                return false;
+            }
+
+            if (!TryFindProperty(serialized, fieldName, out var property, fallbackNames))
             {
                 return false;
             }

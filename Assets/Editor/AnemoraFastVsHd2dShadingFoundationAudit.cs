@@ -17,6 +17,11 @@ namespace Anemora.EditorTools
         private const string PipelineAssetPath = SettingsDirectory + "/UniversalRenderPipeline.asset";
         private const string RendererDataPath = SettingsDirectory + "/UniversalRenderPipeline_Renderer.asset";
         private const string VolumeProfilePath = SettingsDirectory + "/DefaultVolumeProfile.asset";
+        private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const string Stage5LutDaylightPlazaTexturePath = TextureDirectory + "/LUT_Daylight_Plaza.png";
+        private const string Stage5LutIndoorWarmTexturePath = TextureDirectory + "/LUT_Indoor_Warm.png";
+        private const string Stage5LutTimeWindowPastTexturePath = TextureDirectory + "/LUT_TimeWindow_Past.png";
+        private const float Stage5LutContribution = 0.60f;
         private const string Cycle25OutputDirectory = "docs/devlog/screenshots/fast_vs_hd2d_postprocess_grade_cycle25_20260522";
         private const string Cycle25ReportFileName = "postprocess_grade_cycle25_20260522.md";
         private const string Cycle25ReportRelativePath = Cycle25OutputDirectory + "/" + Cycle25ReportFileName;
@@ -65,9 +70,19 @@ namespace Anemora.EditorTools
             RequireBool(serialized, "m_RequireOpaqueTexture", true, issues, "Opaque texture must be required.", "requireOpaqueTexture");
             RequireBool(serialized, "m_SoftShadowsSupported", true, issues, "Soft shadows must be enabled.", "softShadowsSupported");
             RequireInt(serialized, "m_SoftShadowQuality", 3, issues, "Soft shadow quality must be high.", "softShadowQuality");
-            RequireInt(serialized, "m_ShadowCascadeCount", 2, issues, "Shadow cascade count must be 2.", "shadowCascadeCount");
-            RequireFloat(serialized, "m_Cascade2Split", 0.35f, 0.03f, issues, "Cascade 2 split must be near 0.35.", "cascade2Split");
+            RequireInt(serialized, "m_ShadowCascadeCount", 4, issues, "Shadow cascade count must be 4.", "shadowCascadeCount");
+            RequireVector3(serialized, "m_Cascade4Split", new Vector3(0.10f, 0.30f, 0.60f), 0.01f, issues, "Cascade 4 split must be near 0.10 / 0.30 / 0.60.", "cascade4Split");
+            RequireFloat(serialized, "m_ShadowDepthBias", 1f, 0.01f, issues, "Shadow depth bias must stay at 1.", "shadowDepthBias");
+            RequireFloat(serialized, "m_ShadowNormalBias", 1.5f, 0.01f, issues, "Shadow normal bias must stay at 1.5.", "shadowNormalBias");
             RequireBool(serialized, "m_SupportsHDR", true, issues, "HDR must remain enabled.", "supportsHDR");
+            RequireInt(serialized, "m_LightProbeSystem", 1, issues, "Adaptive Probe Volumes must be selected as the light probe system.", "lightProbeSystem");
+            RequireInt(serialized, "m_ProbeVolumeMemoryBudget", 1024, issues, "APV memory budget must remain medium.", "probeVolumeMemoryBudget");
+            RequireInt(serialized, "m_ProbeVolumeBlendingMemoryBudget", 256, issues, "APV blending memory budget must remain medium.", "probeVolumeBlendingMemoryBudget");
+            RequireBool(serialized, "m_SupportProbeVolumeGPUStreaming", false, issues, "APV GPU streaming must remain disabled for the house-slice build.", "supportProbeVolumeGPUStreaming");
+            RequireBool(serialized, "m_SupportProbeVolumeDiskStreaming", false, issues, "APV disk streaming must remain disabled for the house-slice build.", "supportProbeVolumeDiskStreaming");
+            RequireBool(serialized, "m_SupportProbeVolumeScenarios", false, issues, "APV lighting scenarios must remain disabled for this pass.", "supportProbeVolumeScenarios");
+            RequireBool(serialized, "m_SupportProbeVolumeScenarioBlending", false, issues, "APV scenario blending must remain disabled for this pass.", "supportProbeVolumeScenarioBlending");
+            RequireInt(serialized, "m_ProbeVolumeSHBands", 1, issues, "APV must use L1 SH bands for this bounded pass.", "probeVolumeSHBands");
         }
 
         private static void ValidateRenderer(UniversalRendererData rendererData, List<string> issues)
@@ -156,11 +171,13 @@ namespace Anemora.EditorTools
             {
                 RequireBool(bloom.active, true, issues, "Bloom must be active.");
                 RequireBool(bloom.threshold.overrideState, true, issues, "Bloom threshold override must be enabled.");
-                RequireFloat(bloom.threshold.value, 0.62f, 0.05f, issues, "Bloom threshold must stay in the reference sun-shadow range.");
+                RequireFloat(bloom.threshold.value, 0.85f, 0.03f, issues, "Bloom threshold must use the Stage 1 high-threshold HD-2D grade.");
                 RequireBool(bloom.intensity.overrideState, true, issues, "Bloom intensity override must be enabled.");
-                RequireFloat(bloom.intensity.value, 0.30f, 0.05f, issues, "Bloom intensity must stay controlled for the reference sun-shadow grade.");
+                RequireFloat(bloom.intensity.value, 0.80f, 0.05f, issues, "Bloom intensity must use the Stage 1 HD-2D lift.");
                 RequireBool(bloom.scatter.overrideState, true, issues, "Bloom scatter override must be enabled.");
                 RequireFloat(bloom.scatter.value, 0.72f, 0.06f, issues, "Bloom scatter must stay controlled for the reference sun-shadow grade.");
+                RequireBool(bloom.highQualityFiltering.overrideState, true, issues, "Bloom high quality filtering override must be enabled.");
+                RequireBool(bloom.highQualityFiltering.value, true, issues, "Bloom high quality filtering must be enabled.");
             }
 
             if (!volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
@@ -171,11 +188,11 @@ namespace Anemora.EditorTools
             {
                 RequireBool(colorAdjustments.active, true, issues, "ColorAdjustments must be active.");
                 RequireBool(colorAdjustments.postExposure.overrideState, true, issues, "ColorAdjustments post exposure override must be enabled.");
-                RequireFloat(colorAdjustments.postExposure.value, -0.02f, 0.035f, issues, "ColorAdjustments post exposure must keep the brighter reference sun-shadow range.");
+                RequireFloat(colorAdjustments.postExposure.value, 0f, 0.02f, issues, "ColorAdjustments post exposure must return to the Stage 1 neutral exposure.");
                 RequireBool(colorAdjustments.contrast.overrideState, true, issues, "ColorAdjustments contrast override must be enabled.");
                 RequireFloat(colorAdjustments.contrast.value, 14f, 1.0f, issues, "ColorAdjustments contrast must support the stronger sun-shadow grade while keeping readability.");
                 RequireBool(colorAdjustments.saturation.overrideState, true, issues, "ColorAdjustments saturation override must be enabled.");
-                RequireFloat(colorAdjustments.saturation.value, -12f, 4.0f, issues, "ColorAdjustments saturation must stay in the faded sun-shadow range without flattening sunlit stone.");
+                RequireFloat(colorAdjustments.saturation.value, 0f, 0.5f, issues, "ColorAdjustments saturation must use the Stage 1 neutral saturation reset.");
             }
 
             if (!volumeProfile.TryGet<Vignette>(out var vignette))
@@ -186,10 +203,9 @@ namespace Anemora.EditorTools
             {
                 RequireBool(vignette.active, true, issues, "Vignette must be active.");
                 RequireBool(vignette.intensity.overrideState, true, issues, "Vignette intensity override must be enabled.");
-                if (vignette.intensity.value > 0.260f)
-                {
-                    issues.Add("Vignette intensity must be at or below 0.260 for the stronger reference shadow frame.");
-                }
+                RequireFloat(vignette.intensity.value, 0.30f, 0.02f, issues, "Vignette intensity must use the Stage 1 shadow frame.");
+                RequireBool(vignette.smoothness.overrideState, true, issues, "Vignette smoothness override must be enabled.");
+                RequireFloat(vignette.smoothness.value, 0.40f, 0.02f, issues, "Vignette smoothness must use the Stage 1 tighter frame.");
             }
 
             if (!volumeProfile.TryGet<Tonemapping>(out var tonemapping))
@@ -200,7 +216,27 @@ namespace Anemora.EditorTools
             {
                 RequireBool(tonemapping.active, true, issues, "Tonemapping must be active.");
                 RequireBool(tonemapping.mode.overrideState, true, issues, "Tonemapping mode override must be enabled.");
-                RequireEnumValue(tonemapping.mode.value, TonemappingMode.Neutral, issues, "Tonemapping must remain Neutral.");
+                RequireEnumValue(tonemapping.mode.value, TonemappingMode.ACES, issues, "Tonemapping must use Stage 1 ACES.");
+            }
+
+            if (!volumeProfile.TryGet<WhiteBalance>(out var whiteBalance))
+            {
+                issues.Add("WhiteBalance component is missing.");
+            }
+            else
+            {
+                RequireBool(whiteBalance.active, true, issues, "WhiteBalance must be active.");
+                RequireBool(whiteBalance.temperature.overrideState, true, issues, "WhiteBalance temperature override must be enabled.");
+                RequireFloat(whiteBalance.temperature.value, 8f, 0.5f, issues, "WhiteBalance temperature must use the Stage 1 +8 warm lift.");
+            }
+
+            if (!volumeProfile.TryGet<ColorLookup>(out var colorLookup))
+            {
+                issues.Add("ColorLookup component is missing.");
+            }
+            else
+            {
+                ValidateStage5ColorLookup(colorLookup, issues);
             }
 
             if (!volumeProfile.TryGet<DepthOfField>(out var depthOfField))
@@ -211,13 +247,17 @@ namespace Anemora.EditorTools
             {
                 RequireBool(depthOfField.active, true, issues, "DepthOfField must be active for the HD-2D depth grade.");
                 RequireBool(depthOfField.mode.overrideState, true, issues, "DepthOfField mode override must be enabled.");
-                RequireEnumValue(depthOfField.mode.value, DepthOfFieldMode.Gaussian, issues, "DepthOfField mode must be Gaussian.");
-                RequireBool(depthOfField.gaussianStart.overrideState, true, issues, "DepthOfField gaussian start override must be enabled.");
-                RequireFloat(depthOfField.gaussianStart.value, 5.5f, 0.8f, issues, "DepthOfField gaussian start must stay near the reference review grade.");
-                RequireBool(depthOfField.gaussianEnd.overrideState, true, issues, "DepthOfField gaussian end override must be enabled.");
-                RequireFloat(depthOfField.gaussianEnd.value, 16.5f, 1.5f, issues, "DepthOfField gaussian end must stay near the reference review grade.");
-                RequireBool(depthOfField.gaussianMaxRadius.overrideState, true, issues, "DepthOfField gaussian max radius override must be enabled.");
-                RequireFloat(depthOfField.gaussianMaxRadius.value, 1.25f, 0.18f, issues, "DepthOfField gaussian max radius must stay controlled.");
+                RequireEnumValue(depthOfField.mode.value, DepthOfFieldMode.Bokeh, issues, "DepthOfField mode must use the Stage 7 Bokeh profile.");
+                RequireBool(depthOfField.focusDistance.overrideState, true, issues, "DepthOfField focus distance override must be enabled.");
+                RequireFloat(depthOfField.focusDistance.value, 5.4f, 0.8f, issues, "DepthOfField focus distance must stay near the Stage 7 review baseline.");
+                RequireBool(depthOfField.aperture.overrideState, true, issues, "DepthOfField aperture override must be enabled.");
+                RequireFloat(depthOfField.aperture.value, 2.4f, 0.2f, issues, "DepthOfField aperture must stay near the Stage 7 shallow-focus baseline.");
+                RequireBool(depthOfField.focalLength.overrideState, true, issues, "DepthOfField focal length override must be enabled.");
+                RequireFloat(depthOfField.focalLength.value, 85f, 4.0f, issues, "DepthOfField focal length must stay near the Stage 7 tilt-shift baseline.");
+                RequireBool(depthOfField.bladeCount.overrideState, true, issues, "DepthOfField blade count override must be enabled.");
+                RequireFloat(depthOfField.bladeCount.value, 6f, 0.1f, issues, "DepthOfField blade count must stay at 6.");
+                RequireBool(depthOfField.bladeCurvature.overrideState, true, issues, "DepthOfField blade curvature override must be enabled.");
+                RequireFloat(depthOfField.bladeCurvature.value, 0.85f, 0.08f, issues, "DepthOfField blade curvature must stay near 0.85.");
             }
 
             if (volumeProfile.TryGet<FilmGrain>(out var filmGrain) && filmGrain.active)
@@ -232,6 +272,73 @@ namespace Anemora.EditorTools
             else if (volumeProfile.TryGet<LiftGammaGain>(out var liftGammaGain))
             {
                 ValidateLiftGammaGain(liftGammaGain, issues);
+            }
+        }
+
+        private static void ValidateStage5ColorLookup(ColorLookup colorLookup, List<string> issues)
+        {
+            ValidateStage5LutTexture(Stage5LutDaylightPlazaTexturePath, "daylight plaza LUT", issues);
+            ValidateStage5LutTexture(Stage5LutIndoorWarmTexturePath, "indoor warm LUT", issues);
+            ValidateStage5LutTexture(Stage5LutTimeWindowPastTexturePath, "TimeWindow past LUT", issues);
+
+            RequireBool(colorLookup.active, true, issues, "ColorLookup must be active.");
+            RequireBool(colorLookup.texture.overrideState, true, issues, "ColorLookup texture override must be enabled.");
+            RequireBool(colorLookup.contribution.overrideState, true, issues, "ColorLookup contribution override must be enabled.");
+            RequireFloat(colorLookup.contribution.value, Stage5LutContribution, 0.001f, issues, "ColorLookup contribution must use the Stage 5 LUT blend.");
+
+            var texture = colorLookup.texture.value as Texture2D;
+            if (texture == null)
+            {
+                issues.Add("ColorLookup texture must reference a Texture2D LUT.");
+                return;
+            }
+
+            var texturePath = AssetDatabase.GetAssetPath(texture);
+            if (!string.Equals(texturePath, Stage5LutDaylightPlazaTexturePath, StringComparison.Ordinal))
+            {
+                issues.Add($"ColorLookup texture must use {Stage5LutDaylightPlazaTexturePath}. (found {texturePath})");
+            }
+        }
+
+        private static void ValidateStage5LutTexture(string path, string label, List<string> issues)
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                issues.Add($"Stage 5 {label} is missing at {path}.");
+                return;
+            }
+
+            if (texture.width != 1024 || texture.height != 32)
+            {
+                issues.Add($"Stage 5 {label} must be 1024x32 for a 32^3 LUT. (found {texture.width}x{texture.height})");
+            }
+
+            if (texture.filterMode != FilterMode.Bilinear || texture.wrapMode != TextureWrapMode.Clamp)
+            {
+                issues.Add($"Stage 5 {label} must use bilinear filtering and clamp wrapping.");
+            }
+
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+            {
+                issues.Add($"Stage 5 {label} must have TextureImporter settings.");
+                return;
+            }
+
+            if (importer.mipmapEnabled)
+            {
+                issues.Add($"Stage 5 {label} must disable mipmaps.");
+            }
+
+            if (importer.sRGBTexture)
+            {
+                issues.Add($"Stage 5 {label} must disable sRGB import.");
+            }
+
+            if (importer.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                issues.Add($"Stage 5 {label} must use uncompressed import.");
             }
         }
 
@@ -278,7 +385,7 @@ namespace Anemora.EditorTools
             var builder = new StringBuilder();
             builder.AppendLine("# Fast VS HD2D Postprocess Grade Cycle 25 Report");
             builder.AppendLine();
-            builder.AppendLine("Foundation audit report for the already-applied URP, renderer, and volume HD-2D shading setup. It records the faded camera grade contract, keeps FilmGrain disabled, and verifies the controlled Gaussian DepthOfField used by the current Fast VS HD-2D grade.");
+            builder.AppendLine("Foundation audit report for the already-applied URP, renderer, and volume HD-2D shading setup. It records the faded camera grade contract, keeps FilmGrain disabled, and verifies the Stage 7 Bokeh DepthOfField baseline used by the current Fast VS HD-2D grade.");
             builder.AppendLine();
             builder.AppendLine($"- Branch: `work/fast-vs-hd2d-shading-foundation-20260522`");
             builder.AppendLine($"- Worktree: `{GetAbsoluteProjectPath("")}`");
@@ -302,7 +409,9 @@ namespace Anemora.EditorTools
             builder.AppendLine($"| Soft shadows | {FormatBool(FindBool(pipeline, "m_SoftShadowsSupported", "softShadowsSupported"))} |");
             builder.AppendLine($"| Soft shadow quality | {FormatInt(FindInt(pipeline, "m_SoftShadowQuality", "softShadowQuality"))} |");
             builder.AppendLine($"| Cascade count | {FormatInt(FindInt(pipeline, "m_ShadowCascadeCount", "shadowCascadeCount"))} |");
-            builder.AppendLine($"| Cascade split | {FormatFloat(FindFloat(pipeline, "m_Cascade2Split", "cascade2Split"))} |");
+            builder.AppendLine($"| Cascade 4 split | {FormatVector3(FindVector3(pipeline, "m_Cascade4Split", "cascade4Split"))} |");
+            builder.AppendLine($"| Shadow depth bias | {FormatFloat(FindFloat(pipeline, "m_ShadowDepthBias", "shadowDepthBias"))} |");
+            builder.AppendLine($"| Shadow normal bias | {FormatFloat(FindFloat(pipeline, "m_ShadowNormalBias", "shadowNormalBias"))} |");
             builder.AppendLine($"| HDR | {FormatBool(FindBool(pipeline, "m_SupportsHDR", "supportsHDR"))} |");
             builder.AppendLine();
             builder.AppendLine("## Renderer");
@@ -384,6 +493,7 @@ namespace Anemora.EditorTools
                 builder.AppendLine($"| Bloom threshold | {FormatVolumeFloat(bloom.threshold)} |");
                 builder.AppendLine($"| Bloom intensity | {FormatVolumeFloat(bloom.intensity)} |");
                 builder.AppendLine($"| Bloom scatter | {FormatVolumeFloat(bloom.scatter)} |");
+                builder.AppendLine($"| Bloom high quality filtering | {FormatVolumeBool(bloom.highQualityFiltering)} |");
             }
             else
             {
@@ -391,6 +501,7 @@ namespace Anemora.EditorTools
                 builder.AppendLine("| Bloom threshold | n/a |");
                 builder.AppendLine("| Bloom intensity | n/a |");
                 builder.AppendLine("| Bloom scatter | n/a |");
+                builder.AppendLine("| Bloom high quality filtering | n/a |");
             }
 
             if (volumeProfile.TryGet<ColorAdjustments>(out var colorAdjustments))
@@ -412,11 +523,13 @@ namespace Anemora.EditorTools
             {
                 builder.AppendLine($"| Vignette active | {FormatBool(vignette.active)} |");
                 builder.AppendLine($"| Vignette intensity | {FormatVolumeFloat(vignette.intensity)} |");
+                builder.AppendLine($"| Vignette smoothness | {FormatVolumeFloat(vignette.smoothness)} |");
             }
             else
             {
                 builder.AppendLine("| Vignette active | n/a |");
                 builder.AppendLine("| Vignette intensity | n/a |");
+                builder.AppendLine("| Vignette smoothness | n/a |");
             }
 
             if (volumeProfile.TryGet<Tonemapping>(out var tonemapping))
@@ -428,6 +541,19 @@ namespace Anemora.EditorTools
             {
                 builder.AppendLine("| Tonemapping active | n/a |");
                 builder.AppendLine("| Tonemapping mode | n/a |");
+            }
+
+            if (volumeProfile.TryGet<ColorLookup>(out var colorLookup))
+            {
+                builder.AppendLine($"| ColorLookup active | {FormatBool(colorLookup.active)} |");
+                builder.AppendLine($"| ColorLookup texture | {FormatVolumeTexture(colorLookup.texture)} |");
+                builder.AppendLine($"| ColorLookup contribution | {FormatVolumeFloat(colorLookup.contribution)} |");
+            }
+            else
+            {
+                builder.AppendLine("| ColorLookup active | n/a |");
+                builder.AppendLine("| ColorLookup texture | n/a |");
+                builder.AppendLine("| ColorLookup contribution | n/a |");
             }
 
             if (volumeProfile.TryGet<ShadowsMidtonesHighlights>(out var shadowsMidtonesHighlights))
@@ -533,6 +659,27 @@ namespace Anemora.EditorTools
             return FormatFloat(parameter.value);
         }
 
+        private static string FormatVolumeBool(VolumeParameter<bool> parameter)
+        {
+            if (parameter == null || !parameter.overrideState)
+            {
+                return "n/a";
+            }
+
+            return FormatBool(parameter.value);
+        }
+
+        private static string FormatVolumeTexture(VolumeParameter<Texture> parameter)
+        {
+            if (parameter == null || !parameter.overrideState || parameter.value == null)
+            {
+                return "n/a";
+            }
+
+            var path = AssetDatabase.GetAssetPath(parameter.value);
+            return string.IsNullOrEmpty(path) ? parameter.value.name : path;
+        }
+
         private static string FormatVector4(Vector4 value)
         {
             return string.Format(
@@ -542,6 +689,21 @@ namespace Anemora.EditorTools
                 value.y,
                 value.z,
                 value.w);
+        }
+
+        private static string FormatVector3(Vector3? value)
+        {
+            if (!value.HasValue)
+            {
+                return "n/a";
+            }
+
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "({0:0.###}, {1:0.###}, {2:0.###})",
+                value.Value.x,
+                value.Value.y,
+                value.Value.z);
         }
 
         private static string FormatFloat(float? value)
@@ -577,6 +739,16 @@ namespace Anemora.EditorTools
         private static float? FindFloat(SerializedProperty parent, string fieldName, params string[] fallbackNames)
         {
             if (!TryGetFloat(parent, fieldName, out var value, fallbackNames))
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        private static Vector3? FindVector3(SerializedObject serialized, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetVector3(serialized, fieldName, out var value, fallbackNames))
             {
                 return null;
             }
@@ -690,6 +862,22 @@ namespace Anemora.EditorTools
             }
 
             if (Mathf.Abs(actual - expected) > tolerance)
+            {
+                issues.Add(message + $" (found {actual} on '{fieldName}').");
+            }
+        }
+
+        private static void RequireVector3(SerializedObject serialized, string fieldName, Vector3 expected, float tolerance, List<string> issues, string message, params string[] fallbackNames)
+        {
+            if (!TryGetVector3(serialized, fieldName, out var actual, fallbackNames))
+            {
+                issues.Add(message + $" (missing property '{fieldName}').");
+                return;
+            }
+
+            if (Mathf.Abs(actual.x - expected.x) > tolerance ||
+                Mathf.Abs(actual.y - expected.y) > tolerance ||
+                Mathf.Abs(actual.z - expected.z) > tolerance)
             {
                 issues.Add(message + $" (found {actual} on '{fieldName}').");
             }
@@ -821,6 +1009,18 @@ namespace Anemora.EditorTools
             }
 
             value = property.floatValue;
+            return true;
+        }
+
+        private static bool TryGetVector3(SerializedObject serialized, string fieldName, out Vector3 value, params string[] fallbackNames)
+        {
+            value = default;
+            if (!TryFindProperty(serialized, fieldName, out var property, fallbackNames))
+            {
+                return false;
+            }
+
+            value = property.vector3Value;
             return true;
         }
 

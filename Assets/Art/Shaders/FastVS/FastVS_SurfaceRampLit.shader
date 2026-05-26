@@ -13,8 +13,11 @@ Shader "Anemora/FastVS/SurfaceRampLit"
         _Smoothness("Smoothness", Range(0, 1)) = 0.16
         _SpecularHighlights("Specular Highlights", Float) = 0
         _DirectionalLightStrength("Directional Light Strength", Range(0, 0.8)) = 0.12
-        _ShadowReceiveStrength("Shadow Receive Strength", Range(0, 0.70)) = 0.18
+        _ShadowReceiveStrength("Shadow Receive Strength", Range(0, 0.70)) = 0.35
         _ShadowTextureStrength("Shadow Texture Strength", Range(0, 0.5)) = 0
+        [NoScaleOffset] _EmissionMap("Emission Map", 2D) = "black" {}
+        [HDR] _EmissionColor("Emission Color", Color) = (0, 0, 0, 0)
+        _EmissionIntensity("Emission Intensity", Range(0, 20)) = 0
     }
 
     SubShader
@@ -55,6 +58,9 @@ Shader "Anemora/FastVS/SurfaceRampLit"
             SAMPLER(sampler_MainTex);
             float4 _MainTex_ST;
 
+            TEXTURE2D(_EmissionMap);
+            SAMPLER(sampler_EmissionMap);
+
             CBUFFER_START(UnityPerMaterial)
             float4 _BaseColor;
             float _SurfaceRampStrength;
@@ -67,6 +73,8 @@ Shader "Anemora/FastVS/SurfaceRampLit"
             float _DirectionalLightStrength;
             float _ShadowReceiveStrength;
             float _ShadowTextureStrength;
+            float4 _EmissionColor;
+            float _EmissionIntensity;
             CBUFFER_END
 
             struct Attributes
@@ -99,6 +107,19 @@ Shader "Anemora/FastVS/SurfaceRampLit"
                 float2 uv = input.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
                 half4 baseSample = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, uv) * _BaseColor;
                 half3 normalWS = SafeNormalize(input.normalWS);
+                float3 surfaceBreakupWorld = input.positionWS;
+                half floorBreakupWeight = saturate(-normalWS.y);
+                half wallBreakupWeight = saturate(1.0h - abs(normalWS.y));
+                float wallBreakupAxisWeight = saturate(abs(normalWS.x) / max(abs(normalWS.x) + abs(normalWS.z), 0.0001f));
+                float2 wallBreakupUv = lerp(surfaceBreakupWorld.xy, surfaceBreakupWorld.zy, wallBreakupAxisWeight);
+                float2 surfaceBreakupUv = lerp(surfaceBreakupWorld.xz, wallBreakupUv, wallBreakupWeight);
+                float2 surfaceBreakupCoarseCell = floor(surfaceBreakupUv * 0.74f + float2(17.23f, 41.67f));
+                float surfaceBreakupCoarse = frac(sin(dot(surfaceBreakupCoarseCell, float2(12.9898f, 78.233f))) * 43758.5453f);
+                float2 surfaceBreakupFineCell = floor(surfaceBreakupUv * 2.63f + float2(63.31f, 7.19f));
+                float surfaceBreakupFine = frac(sin(dot(surfaceBreakupFineCell, float2(39.3468f, 11.1351f))) * 24634.6345f);
+                float surfaceMaterialNoise = lerp(lerp(0.96f, 1.04f, surfaceBreakupCoarse), lerp(0.985f, 1.015f, surfaceBreakupFine), 0.35f);
+                half surfaceBreakupGrade = lerp(1.0h, (half)surfaceMaterialNoise, saturate(0.18h + floorBreakupWeight * 0.08h + wallBreakupWeight * 0.05h));
+                baseSample.rgb *= surfaceBreakupGrade;
                 half surfaceRampStrength = saturate((half)_SurfaceRampStrength);
                 half topWeight = saturate(normalWS.y);
                 half sideWeight = saturate(1.0h - abs(normalWS.y));
@@ -149,10 +170,13 @@ Shader "Anemora/FastVS/SurfaceRampLit"
                 shadowGrade *= lerp(0.93h, 1.04h, lightCookieResponse * cookieInfluence);
                 half3 sunTint = lerp(half3(0.92h, 0.90h, 0.84h), saturate(mainLightColor + half3(0.06h, 0.02h, -0.02h)), litResponse * saturate((half)_DirectionalLightStrength * 1.25h));
                 sunTint = lerp(sunTint * half3(0.76h, 0.76h, 0.72h), sunTint, saturate(lightCookieResponse * 0.92h + 0.08h));
-                half3 texturedShadowTint = half3(0.54h, 0.55h, 0.52h) * lerp(0.96h, 1.12h, shadowNoise * shadowTextureStrength + (1.0h - shadowTextureStrength) * 0.5h);
+                half3 texturedShadowTint = half3(0.42h, 0.46h, 0.55h) * lerp(0.92h, 1.10h, shadowNoise * shadowTextureStrength + (1.0h - shadowTextureStrength) * 0.5h);
                 half3 shadowTint = lerp(texturedShadowTint, half3(1.0h, 1.0h, 1.0h), shadowResponse);
 
                 half3 rgb = baseSample.rgb * grade * lightGrade * shadowGrade * lerp(shadowTint, sunTint, litResponse);
+                half3 emissionColor = half3(_EmissionColor.r, _EmissionColor.g, _EmissionColor.b);
+                half3 emission = SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, uv).rgb * emissionColor * (half)_EmissionIntensity;
+                rgb += emission;
                 return half4(rgb, baseSample.a);
             }
             ENDHLSL

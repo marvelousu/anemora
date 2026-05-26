@@ -5,6 +5,9 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
         [MainTexture]_BaseMap("Base Map", 2D) = "white" {}
         [MainColor]_BaseColor("Base Color", Color) = (1, 1, 1, 1)
         _MainTex("Main Tex", 2D) = "white" {}
+        [NoScaleOffset]_EmissionMap("Emission Map", 2D) = "black" {}
+        [HDR]_EmissionColor("Emission Color", Color) = (0, 0, 0, 0)
+        _EmissionIntensity("Emission Intensity", Range(0, 20)) = 0
         _RampStrength("Ramp Strength", Range(0, 0.5)) = 0.18
         _TopLight("Top Light", Color) = (1.08, 1.03, 0.96, 1)
         _SideShade("Side Shade", Color) = (0.94, 0.97, 1.03, 1)
@@ -56,7 +59,12 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             SAMPLER(sampler_MainTex);
             float4 _MainTex_ST;
 
+            TEXTURE2D(_EmissionMap);
+            SAMPLER(sampler_EmissionMap);
+
             float4 _BaseColor;
+            float4 _EmissionColor;
+            half _EmissionIntensity;
             half _RampStrength;
             float4 _TopLight;
             float4 _SideShade;
@@ -161,6 +169,9 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
                 shadowGrade *= lerp(0.92h, 1.06h, lightCookieResponse * worldLightStrength);
 
                 half3 rgb = baseSample.rgb * grade * mainTint * shadowGrade;
+                half3 emissionSample = SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, uv).rgb;
+                half3 emissionColor = half3(_EmissionColor.r, _EmissionColor.g, _EmissionColor.b);
+                rgb += emissionSample * emissionColor * (half)_EmissionIntensity * baseSample.a;
                 return half4(rgb, baseSample.a);
             }
             ENDHLSL

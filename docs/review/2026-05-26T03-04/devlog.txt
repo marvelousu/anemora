@@ -1,3 +1,5 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7i_plaza_shadow_lift.md
+
 Stage 7i: Plaza Shadow Lift
 
 Branch: work/fast-vs-hd2d-shading-foundation-20260522

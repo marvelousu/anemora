@@ -17,6 +17,8 @@ namespace Anemora.FastVS
         private const float UnifiedCentralPlazaSunElevationDegrees = 38f;
         private const float UnifiedLibrarySunElevationDegrees = 56f;
         private const float UnifiedInteriorSunElevationDegrees = 48f;
+        private const int LibraryWindowCookieSize = 128;
+        private const string LibraryWindowCookieName = "FastVS_LibraryWindowCookieStage3";
 
         private FastVsHouseArea lastArea = (FastVsHouseArea)(-1);
         private FastVsHouseArea targetArea = (FastVsHouseArea)(-1);
@@ -26,6 +28,7 @@ namespace Anemora.FastVS
         private LightingProfile currentProfile;
         private LightingProfile transitionStartProfile;
         private LightingProfile transitionTargetProfile;
+        private Texture2D libraryWindowCookieTexture;
 
         public FastVsHouseArea LastAppliedAreaForReview => lastArea;
         public FastVsHouseArea TargetAreaForReview => targetArea;
@@ -334,6 +337,79 @@ namespace Anemora.FastVS
             libraryWindowLight.spotAngle = spotAngle;
             libraryWindowLight.color = color;
             libraryWindowLight.shadows = LightShadows.None;
+            libraryWindowLight.cookie = enabled ? EnsureLibraryWindowCookieTexture() : null;
+        }
+
+        private Texture2D EnsureLibraryWindowCookieTexture()
+        {
+            if (libraryWindowCookieTexture != null)
+            {
+                return libraryWindowCookieTexture;
+            }
+
+            libraryWindowCookieTexture = new Texture2D(
+                LibraryWindowCookieSize,
+                LibraryWindowCookieSize,
+                TextureFormat.RGBA32,
+                false,
+                true)
+            {
+                name = LibraryWindowCookieName,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                hideFlags = HideFlags.DontSave
+            };
+
+            var pixels = new Color[LibraryWindowCookieSize * LibraryWindowCookieSize];
+            for (var y = 0; y < LibraryWindowCookieSize; y++)
+            {
+                var v = y / (float)(LibraryWindowCookieSize - 1);
+                for (var x = 0; x < LibraryWindowCookieSize; x++)
+                {
+                    var u = x / (float)(LibraryWindowCookieSize - 1);
+                    var luma = SampleLibraryWindowCookieLuma(u, v);
+                    pixels[(y * LibraryWindowCookieSize) + x] = new Color(luma, luma, luma, 1f);
+                }
+            }
+
+            libraryWindowCookieTexture.SetPixels(pixels);
+            libraryWindowCookieTexture.Apply(false, false);
+            return libraryWindowCookieTexture;
+        }
+
+        private static float SampleLibraryWindowCookieLuma(float u, float v)
+        {
+            var mullion = Mathf.Max(
+                SmoothBand(0.012f, 0.040f, Mathf.Abs(u - 0.50f)),
+                Mathf.Max(
+                    SmoothBand(0.010f, 0.032f, Mathf.Abs(v - 0.50f)),
+                    Mathf.Max(
+                        SmoothBand(0.008f, 0.030f, Mathf.Abs(v - 0.25f)),
+                        SmoothBand(0.008f, 0.030f, Mathf.Abs(v - 0.75f)))));
+            var edgeSoftness = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((u * (1f - u) * v * (1f - v)) * 20f));
+            var glassNoise = Hash01(Mathf.FloorToInt(u * 16f), Mathf.FloorToInt(v * 16f), 3301);
+            var paneLuma = Mathf.Lerp(0.86f, 1.0f, glassNoise);
+            var luma = Mathf.Lerp(paneLuma, 0.34f, mullion);
+            return Mathf.Clamp01(Mathf.Lerp(0.50f, luma, edgeSoftness));
+        }
+
+        private static float SmoothBand(float innerRadius, float outerRadius, float distance)
+        {
+            return 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(innerRadius, outerRadius, distance));
+        }
+
+        private static float Hash01(int x, int y, int seed)
+        {
+            unchecked
+            {
+                var hash = seed;
+                hash ^= x * 374761393;
+                hash = (hash << 13) ^ hash;
+                hash ^= y * 668265263;
+                hash *= 1274126177;
+                hash ^= hash >> 16;
+                return (hash & 0x7fffffff) / (float)int.MaxValue;
+            }
         }
 
         private static LightingProfile CreateProfile(FastVsHouseArea area)
@@ -343,7 +419,7 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Exterior:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 1.18f,
+                        mainLightIntensity = 1.80f,
                         mainLightShadowStrength = 0.80f,
                         mainLightColor = new Color(1.00f, 0.92f, 0.76f, 1f),
                         mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Exterior)),
@@ -354,11 +430,11 @@ namespace Anemora.FastVS
                         fogEndDistance = 82f,
                         cameraBackgroundColor = new Color(0.234f, 0.221f, 0.198f, 1f),
                         warmFillPosition = new Vector3(7.10f, 1.50f, 6.75f),
-                        warmFillIntensity = 0.11f,
+                        warmFillIntensity = 0.40f,
                         warmFillRange = 7.8f,
                         warmFillColor = new Color(1.00f, 0.72f, 0.46f, 1f),
                         coolRimRotation = Quaternion.Euler(32f, 146f, 0f),
-                        coolRimIntensity = 0.060f,
+                        coolRimIntensity = 0.25f,
                         coolRimColor = new Color(0.58f, 0.72f, 1.00f, 1f),
                         libraryWindowEnabled = false,
                         libraryWindowPosition = new Vector3(28.55f, 3.05f, 23.15f),
@@ -382,11 +458,11 @@ namespace Anemora.FastVS
                         fogEndDistance = 40f,
                         cameraBackgroundColor = new Color(0.220f, 0.286f, 0.340f, 1f),
                         warmFillPosition = new Vector3(20.80f, 1.25f, 17.30f),
-                        warmFillIntensity = 0.020f,
+                        warmFillIntensity = 0.30f,
                         warmFillRange = 9.8f,
                         warmFillColor = new Color(1.00f, 0.64f, 0.34f, 1f),
                         coolRimRotation = Quaternion.Euler(28f, 152f, 0f),
-                        coolRimIntensity = 0.030f,
+                        coolRimIntensity = 0.35f,
                         coolRimColor = new Color(0.46f, 0.58f, 0.92f, 1f),
                         libraryWindowEnabled = false,
                         libraryWindowPosition = new Vector3(28.55f, 3.05f, 23.15f),
@@ -399,7 +475,7 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Library:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 0.82f,
+                        mainLightIntensity = 1.70f,
                         mainLightShadowStrength = 0.66f,
                         mainLightColor = new Color(1.00f, 0.83f, 0.62f, 1f),
                         mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Library)),
@@ -410,16 +486,16 @@ namespace Anemora.FastVS
                         fogEndDistance = 38f,
                         cameraBackgroundColor = new Color(0.046f, 0.042f, 0.040f, 1f),
                         warmFillPosition = new Vector3(31.00f, 1.45f, 18.65f),
-                        warmFillIntensity = 0.18f,
+                        warmFillIntensity = 0.50f,
                         warmFillRange = 7.3f,
                         warmFillColor = new Color(1.00f, 0.68f, 0.42f, 1f),
                         coolRimRotation = Quaternion.Euler(22f, 148f, 0f),
-                        coolRimIntensity = 0.030f,
+                        coolRimIntensity = 0.25f,
                         coolRimColor = new Color(0.52f, 0.62f, 0.96f, 1f),
                         libraryWindowEnabled = true,
                         libraryWindowPosition = new Vector3(28.55f, 3.05f, 23.15f),
                         libraryWindowRotation = Quaternion.Euler(58f, 36f, 0f),
-                        libraryWindowIntensity = 0.62f,
+                        libraryWindowIntensity = 1.50f,
                         libraryWindowRange = 8.5f,
                         libraryWindowSpotAngle = 48f,
                         libraryWindowColor = new Color(1.00f, 0.74f, 0.44f, 1f)
@@ -427,7 +503,7 @@ namespace Anemora.FastVS
                 default:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 0.88f,
+                        mainLightIntensity = 1.20f,
                         mainLightShadowStrength = 0.68f,
                         mainLightColor = new Color(1.00f, 0.85f, 0.64f, 1f),
                         mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior)),
@@ -438,11 +514,11 @@ namespace Anemora.FastVS
                         fogEndDistance = 42f,
                         cameraBackgroundColor = new Color(0.060f, 0.056f, 0.055f, 1f),
                         warmFillPosition = new Vector3(-7.25f, 1.65f, -9.10f),
-                        warmFillIntensity = 0.24f,
+                        warmFillIntensity = 0.60f,
                         warmFillRange = 5.8f,
                         warmFillColor = new Color(1.00f, 0.70f, 0.44f, 1f),
                         coolRimRotation = Quaternion.Euler(25f, 132f, 0f),
-                        coolRimIntensity = 0.040f,
+                        coolRimIntensity = 0.15f,
                         coolRimColor = new Color(0.58f, 0.70f, 1.00f, 1f),
                         libraryWindowEnabled = false,
                         libraryWindowPosition = new Vector3(28.55f, 3.05f, 23.15f),

@@ -1,3 +1,5 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7m_plaza_facade_floor_relief.md
+
 Stage 7m: Plaza Facade/Floor Relief
 
 Branch: work/fast-vs-hd2d-shading-foundation-20260522

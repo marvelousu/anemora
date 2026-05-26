@@ -6,9 +6,10 @@ namespace Anemora.FastVS
     public sealed class FastVsVisualDirectionGuide : MonoBehaviour
     {
         private const float CameraModeFov = 38f;
-        private const float CentralPlazaVsCameraMaxAnchorZ = 14.70f;
-        private const float ExteriorVsCameraMinAnchorX = 7.05f;
-        private const float ExteriorVsCameraMinAnchorZ = 5.00f;
+        private static readonly FollowCameraProfile SharedFollowCameraProfile = new FollowCameraProfile(
+            new Vector3(0f, 2.75f, -4.55f),
+            new Vector3(0f, 0.72f, 0.45f),
+            38f);
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;
@@ -190,18 +191,7 @@ namespace Anemora.FastVS
                 return player != null ? player.position : Vector3.zero;
             }
 
-            var local = portalController.GetPlayerLocalCoordinateForReview();
-            if (areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.CentralPlaza)
-            {
-                local.z = Mathf.Min(local.z, CentralPlazaVsCameraMaxAnchorZ);
-            }
-            else if (areaVisibility != null && areaVisibility.ActiveAreaForReview == FastVsHouseArea.Exterior)
-            {
-                local.x = Mathf.Max(local.x, ExteriorVsCameraMinAnchorX);
-                local.z = Mathf.Max(local.z, ExteriorVsCameraMinAnchorZ);
-            }
-
-            return root.TransformPoint(local);
+            return root.TransformPoint(portalController.GetPlayerLocalCoordinateForReview());
         }
 
         private Transform ResolveActiveSpaceRoot()
@@ -218,19 +208,7 @@ namespace Anemora.FastVS
 
         private static FollowCameraProfile GetFollowCameraProfile(FastVsHouseArea area)
         {
-            switch (area)
-            {
-                case FastVsHouseArea.Interior:
-                    return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
-                case FastVsHouseArea.Exterior:
-                    return new FollowCameraProfile(new Vector3(0.70f, 2.85f, -5.25f), new Vector3(0.25f, 0.78f, 0.90f), 39f);
-                case FastVsHouseArea.CentralPlaza:
-                    return new FollowCameraProfile(new Vector3(0f, 3.55f, -6.50f), new Vector3(0f, 1.18f, 1.35f), 40f);
-                case FastVsHouseArea.Library:
-                    return new FollowCameraProfile(new Vector3(0.25f, 2.95f, -5.05f), new Vector3(0.10f, 0.84f, 0.74f), 39f);
-                default:
-                    return new FollowCameraProfile(new Vector3(0f, 2.75f, -4.55f), new Vector3(0f, 0.72f, 0.45f), 38f);
-            }
+            return SharedFollowCameraProfile;
         }
 
         public static (Vector3 PositionOffset, Vector3 LookOffset, float FieldOfView) GetFollowCameraProfileForReview(FastVsHouseArea area)

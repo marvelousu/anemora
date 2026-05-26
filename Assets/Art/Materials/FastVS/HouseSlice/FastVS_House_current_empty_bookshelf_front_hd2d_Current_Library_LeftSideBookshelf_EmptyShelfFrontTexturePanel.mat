@@ -43,6 +43,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: c7b7c87a38b110945a25e10da7fc0353, type: 2}
         m_Scale: {x: 4.017544, y: 1.6136364}
         m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: c7b7c87a38b110945a25e10da7fc0353, type: 2}
         m_Scale: {x: 4.017544, y: 1.6136364}
@@ -59,6 +63,7 @@ Material:
     - _DirectionalLightStrength: 0.42
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _EmissionIntensity: 0
     - _Metallic: 0
     - _QueueOffset: 0
     - _SampleGI: 0
@@ -75,6 +80,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.92, g: 0.89, b: 0.83, a: 1}
     - _Color: {r: 0.92, g: 0.89, b: 0.83, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _FloorShade: {r: 0.62, g: 0.56, b: 0.48, a: 1}
     - _SideShade: {r: 0.7, g: 0.64, b: 0.54, a: 1}
     - _TopLight: {r: 1.18, g: 1.06, b: 0.84, a: 1}

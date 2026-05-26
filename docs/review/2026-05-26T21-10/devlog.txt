@@ -1,3 +1,5 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7r_route_close_cleanup.md
+
 Stage7r route-close artifact cleanup review
 
 Branch:

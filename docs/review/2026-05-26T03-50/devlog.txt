@@ -1,3 +1,5 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7k_plaza_caster_silhouette_trim.md
+
 Stage 7k: Plaza Caster Silhouette Trim
 
 Branch: work/fast-vs-hd2d-shading-foundation-20260522

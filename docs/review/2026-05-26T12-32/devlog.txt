@@ -1,3 +1,5 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7q_route_pad_silhouette.md
+
 Stage7q route pad / entry strip silhouette review
 
 Branch:

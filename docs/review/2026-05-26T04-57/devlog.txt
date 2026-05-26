@@ -1,3 +1,5 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7n_plaza_shadow_soft_balance.md
+
 Stage7n: Plaza Shadow Soft Balance
 
 Branch:
