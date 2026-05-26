@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle101.md
+
+Cycle 101 review notes:
+- Focus images: `05_c1_c3_current.png`, `06_c1_c3_past.png`.
+- Check that the lower C1 plant band no longer reads as one literal rectangular plant strip.
+- Current should remain ruined/debris-like; past should stay cleaner without current-side dust/debris clutter.
+- Roads, route pads, house, yard, and C3 transition readability should not regress.
