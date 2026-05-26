@@ -9649,9 +9649,13 @@ namespace Anemora.EditorTools
             var rightSideDragEnd = new Vector2(1180f, 610f);
             var samples = new[]
             {
-                (Label: "Aria D3 right-side Time Window", Area: FastVsHouseArea.AriaStreet, Local: GroundedRouteLocal(Chapter1D3RouteTriggerCenter)),
-                (Label: "Kaia E3 right-side Time Window", Area: FastVsHouseArea.KaiaFarm, Local: GroundedRouteLocal(Chapter1E3RouteTriggerCenter)),
-                (Label: "Ruins F6 right-side Time Window", Area: FastVsHouseArea.Ruins, Local: GroundedRouteLocal(Chapter1F6RouteTriggerCenter))
+                (Label: "Aria D1 entry right-side Time Window", Area: FastVsHouseArea.AriaStreet, Local: Chapter1D1FromC3Target),
+                (Label: "Aria D3 exit right-side Time Window", Area: FastVsHouseArea.AriaStreet, Local: GroundedRouteLocal(Chapter1D3RouteTriggerCenter)),
+                (Label: "Kaia E1 entry right-side Time Window", Area: FastVsHouseArea.KaiaFarm, Local: Chapter1E1FromD3Target),
+                (Label: "Kaia E3 exit right-side Time Window", Area: FastVsHouseArea.KaiaFarm, Local: GroundedRouteLocal(Chapter1E3RouteTriggerCenter)),
+                (Label: "Ruins F1 entry right-side Time Window", Area: FastVsHouseArea.Ruins, Local: Chapter1F1FromE3Target),
+                (Label: "Ruins F5 mid-route right-side Time Window", Area: FastVsHouseArea.Ruins, Local: GroundedRouteLocal(Chapter1F5RouteTriggerCenter)),
+                (Label: "Ruins F6 exit right-side Time Window", Area: FastVsHouseArea.Ruins, Local: GroundedRouteLocal(Chapter1F6RouteTriggerCenter))
             };
 
             foreach (var sample in samples)
@@ -9663,13 +9667,13 @@ namespace Anemora.EditorTools
 
                 if (!controller.TryOpenPortalForTests(rightSideDragStart, rightSideDragEnd) || !controller.HasPortalPair)
                 {
-                    throw new InvalidOperationException($"House slice validation failed: {sample.Label} drag-open was rejected.");
+                    throw new InvalidOperationException($"House slice validation failed: {sample.Label} drag-open was rejected. regionSize={controller.RegionSizeForReview} playerX={sample.Local.x:0.00}.");
                 }
 
                 var portalLocal = controller.PortalLocalCenterForReview;
                 if (portalLocal.x < sample.Local.x + 0.75f)
                 {
-                    throw new InvalidOperationException($"House slice validation failed: {sample.Label} was clamped left of the intended right-side placement. playerX={sample.Local.x:0.00}, portalX={portalLocal.x:0.00}.");
+                    throw new InvalidOperationException($"House slice validation failed: {sample.Label} was clamped left of the intended right-side placement. regionSize={controller.RegionSizeForReview} playerX={sample.Local.x:0.00}, portalX={portalLocal.x:0.00}.");
                 }
             }
 
