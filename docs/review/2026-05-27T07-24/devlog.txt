@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle110.md
+
+Cycle 110 review notes:
+- Focus images: `07_d1_d3_current.png` and `08_d1_d3_past.png`.
+- Confirm generated past D1-D3 lower verge is cleaner and does not read as current-side scattered debris.
+- Confirm current D1-D3, route pads, roads, stalls, stage, and D3 turn did not regress.
