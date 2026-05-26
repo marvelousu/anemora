@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle109.md
+
+Cycle 109 review notes:
+- Focus images: `09_e1_e3_current.png` and `10_e1_e3_past.png`.
+- Confirm the generated current E1 orchard reads as sparse, spread-out tree/plant area cues rather than literal rectangular vegetation panels.
+- Confirm past E1-E3, route pads, roads, yard, and main path did not regress.
