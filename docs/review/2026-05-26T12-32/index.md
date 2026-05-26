@@ -20,8 +20,6 @@ Stage 7q: 広場から図書館へ向かうルートパッドと入口段差ま�
 
 Review 用には同 capture 出力を `docs/review/2026-05-26T12-32/` へ RGB PNG として再保存した。
 
-![comparison](comparison.png)
-
 ## Verification
 
 - `Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.ValidateHd2dStage7RoutePadSilhouetteBatch`: exit 0.
@@ -35,17 +33,9 @@ Review 用には同 capture 出力を `docs/review/2026-05-26T12-32/` へ RGB PN
 
 ## Images
 
-![target_reference_01](target_reference_01.png)
-
 ![plaza_01](plaza_01.png)
 
-![target_reference_02](target_reference_02.png)
-
 ![library](library.png)
-
-![current route close](01_current_plaza_to_library_route_glow_close.png)
-
-![past route close](02_past_plaza_to_library_route_glow_close.png)
 
 ![Home_outside](Home_outside.png)
 

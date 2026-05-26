@@ -18,8 +18,6 @@ Stage7j reduces CentralPlaza realtime shadow darkness without removing realtime 
 
 ## Images
 
-![reference comparison](stage7_plaza_receiver_rebalance_reference_comparison.png)
-
 - [home.png](home.png)
 - [Home_outside.png](Home_outside.png)
 - [plaza_01.png](plaza_01.png)

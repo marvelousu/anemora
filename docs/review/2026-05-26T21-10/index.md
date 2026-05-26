@@ -22,8 +22,6 @@ This review copy is stored under:
 
 `docs/review/2026-05-26T21-10/`
 
-![comparison](comparison.png)
-
 ## Verification
 
 - `Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.ValidateHd2dStage7RoutePadSilhouetteBatch`: exit 0.
@@ -37,17 +35,9 @@ This review copy is stored under:
 
 ## Images
 
-![target_reference_01](target_reference_01.png)
-
 ![plaza_01](plaza_01.png)
 
-![current route close](01_current_plaza_to_library_route_glow_close.png)
-
-![target_reference_02](target_reference_02.png)
-
 ![library](library.png)
-
-![past route close](02_past_plaza_to_library_route_glow_close.png)
 
 ![Home_outside](Home_outside.png)
 

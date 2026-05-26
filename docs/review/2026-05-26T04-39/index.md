@@ -17,8 +17,6 @@ Stage7m adds restrained CentralPlaza library facade/floor relief in the generate
 
 ## Images
 
-![reference comparison](stage7_plaza_facade_relief_reference_comparison.png)
-
 - [home.png](home.png)
 - [Home_outside.png](Home_outside.png)
 - [plaza_01.png](plaza_01.png)

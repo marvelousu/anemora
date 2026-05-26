@@ -22,8 +22,6 @@ Capture output:
 
 Review images in this folder were re-saved as RGB PNGs so the branch viewer does not expose capture alpha artifacts.
 
-![comparison](comparison.png)
-
 ## Verification
 
 - `Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.ValidateHd2dStage7PortalFacadeBrightnessBatch`: passed.
@@ -38,17 +36,9 @@ Review images in this folder were re-saved as RGB PNGs so the branch viewer does
 
 ## Images
 
-![target_reference_01](target_reference_01.png)
-
 ![plaza_01](plaza_01.png)
 
-![target_reference_02](target_reference_02.png)
-
 ![library](library.png)
-
-![current route close](01_current_plaza_to_library_route_glow_close.png)
-
-![past route close](02_past_plaza_to_library_route_glow_close.png)
 
 ![Home_outside](Home_outside.png)
 

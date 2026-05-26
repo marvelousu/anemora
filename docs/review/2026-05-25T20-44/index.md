@@ -6,10 +6,6 @@ Build: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\Fast
 
 Launch the whole `Builds\FastVS_HouseSlice` folder, not the exe alone.
 
-## Comparison
-
-![Stage 6a comparison](stage6_painted_rays_reference_comparison.png)
-
 ## Captures
 
 ![home](home.png)

@@ -12,7 +12,6 @@ Tom 撮影依頼: 5 エリアスクショは `C:\Users\maro6\OneDrive\work\proje
 
 ## Images
 
-- [comparison](stage7n_plaza_shadow_soft_balance_comparison.png)
 - [home](home.png)
 - [Home_outside](Home_outside.png)
 - [plaza_01](plaza_01.png)
@@ -20,8 +19,6 @@ Tom 撮影依頼: 5 エリアスクショは `C:\Users\maro6\OneDrive\work\proje
 - [library](library.png)
 - [plaza_shadow_soft_balance_close](plaza_shadow_soft_balance_close.png)
 - [tw_current_aperture](tw_current_aperture.png)
-- [target_reference_01](target_reference_01.png)
-- [target_reference_02](target_reference_02.png)
 
 ## Verification
 
@@ -35,8 +32,7 @@ Tom 撮影依頼: 5 エリアスクショは `C:\Users\maro6\OneDrive\work\proje
 
 ## Current Gap
 
-- Reference 01 has layered terrain, water, atmospheric depth, and varied sun/shadow material response; Stage7n plaza is still a flat wall/floor composition with large mechanical shadow shapes.
-- Reference 02 has localized warm emissive pools, dense foliage silhouettes, and strong color separation; Stage7n library/exterior remain sparse, planar, and low in set dressing.
+- Internal target references still show much stronger terrain layering, atmospheric depth, localized warm emissive pools, foliage silhouettes, and sun/shadow material response than this public Stage7n capture set.
 - Plaza facade relief is visible but shallow. The surface reads as tiled primitives rather than carved architecture or hand-authored HD-2D geometry.
 - Route/glow pads and white strips still draw more attention than intended material highlights.
 - TimeWindow aperture is functional, but the orange frame, white window panels, and vertical light strip are still far from the reference look.

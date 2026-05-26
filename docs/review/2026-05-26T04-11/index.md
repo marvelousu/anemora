@@ -17,8 +17,6 @@ Stage7l adds a bounded world-space surface breakup multiplier inside `FastVS_Sur
 
 ## Images
 
-![reference comparison](stage7_surface_breakup_shader_reference_comparison.png)
-
 - [home.png](home.png)
 - [Home_outside.png](Home_outside.png)
 - [plaza_01.png](plaza_01.png)
