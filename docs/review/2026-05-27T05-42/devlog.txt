@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle104.md
+
+Cycle 104 review notes:
+- Focus image: `13_scene6_sideview_auto.png`.
+- Check that the final side-view no longer reads as a literal implementation of a Niro position/ruler sketch.
+- The endpoint may retain a minimal stone footpad under Niro, but should not read as a full-width measured map strip.
+- Also review code for Time Window placement: D3/E3/F6 right-side screen drags should now validate and should not be clamped back left.

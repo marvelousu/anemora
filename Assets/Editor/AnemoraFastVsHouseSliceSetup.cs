@@ -143,7 +143,7 @@ namespace Anemora.EditorTools
         private static readonly Vector3 CurrentLibraryRuinBookPileScale = new Vector3(0.50f, 0.16f, 0.28f);
         private static readonly Vector2 RegionSize = new Vector2(78f, 58f);
         // The visible coordinate field stays compact, while Time Window placement must reach the full continuation route.
-        private static readonly Vector2 TimeWindowRegionSize = new Vector2(196f, RegionSize.y);
+        private static readonly Vector2 TimeWindowRegionSize = new Vector2(240f, RegionSize.y);
         private const float TimeWindowMaxPortalHalfWidthForValidation = 1.90f;
         private static readonly Vector2 DragStart = new Vector2(380f, 215f);
         private static readonly Vector2 DragEnd = new Vector2(850f, 600f);
@@ -225,6 +225,7 @@ namespace Anemora.EditorTools
             ValidatePlayerSpritePresentation();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
+            ValidateChapter1ContinuationTimeWindowRightSidePlacement(controller);
 
             controller.ClosePortal();
             ValidateDoorWarp(controller);
@@ -5967,18 +5968,16 @@ namespace Anemora.EditorTools
             }
 
             var c = Chapter1EndSideViewCenter;
-            var ground = materials.CurrentPath;
-            var frame = materials.CurrentFrame;
+            var ground = materials.CurrentStone;
+            var frame = materials.CurrentStone;
             var wood = materials.CurrentFurniture;
             var dust = materials.Dust;
 
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGround", root, c + new Vector3(1.70f, -0.14f, -0.02f), new Vector3(26.20f, 0.32f, 0.24f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine", root, c + new Vector3(1.70f, 0.045f, -0.09f), new Vector3(26.20f, 0.055f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground_top_line");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGround", root, c + new Vector3(-4.50f, -0.12f, -0.02f), new Vector3(6.20f, 0.24f, 0.22f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine", root, c + new Vector3(-2.42f, 0.025f, -0.09f), new Vector3(0.62f, 0.035f, 0.10f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground_top_line");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle99_StartFloorScuff", root, c + new Vector3(-7.28f, 0.074f, -0.18f), new Vector3(0.82f, 0.035f, 0.08f), Quaternion.Euler(0f, 0f, -4f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle99.start_floor_scuff");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle99_StartLooseBoard", root, c + new Vector3(-6.62f, 0.118f, -0.18f), new Vector3(0.58f, 0.055f, 0.08f), Quaternion.Euler(0f, 0f, 6f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle99.start_loose_board");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_FadeOutGate", root, c + new Vector3(12.35f, 0.92f, -0.16f), new Vector3(0.28f, 1.82f, 0.10f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.fade_out_gate");
-            CreateChapter1Cycle87EndSideViewDetails(root, prefix, materials);
-            CreateChapter1Cycle95EndSideViewFloorCueDetails(root, prefix, materials);
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_FadeOutGate", root, c + new Vector3(4.34f, 0.88f, -0.16f), new Vector3(0.26f, 1.70f, 0.10f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.fade_out_gate");
         }
 
         private static void CreateChapter1Cycle87EndSideViewDetails(Transform root, string prefix, Materials materials)
@@ -9245,6 +9244,53 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateChapter1ContinuationTimeWindowRightSidePlacement(TimeWindowPairedSpacePortalController controller)
+        {
+            var camera = Camera.main;
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            if (camera == null || visibility == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: missing camera or visibility controller for continuation Time Window placement.");
+            }
+
+            var rightSideDragStart = new Vector2(850f, 230f);
+            var rightSideDragEnd = new Vector2(1180f, 610f);
+            var samples = new[]
+            {
+                (Label: "Aria D3 right-side Time Window", Area: FastVsHouseArea.AriaStreet, Local: GroundedRouteLocal(Chapter1D3RouteTriggerCenter)),
+                (Label: "Kaia E3 right-side Time Window", Area: FastVsHouseArea.KaiaFarm, Local: GroundedRouteLocal(Chapter1E3RouteTriggerCenter)),
+                (Label: "Ruins F6 right-side Time Window", Area: FastVsHouseArea.Ruins, Local: GroundedRouteLocal(Chapter1F6RouteTriggerCenter))
+            };
+
+            foreach (var sample in samples)
+            {
+                controller.ClosePortal();
+                visibility.SetActiveAreaForReview(sample.Area);
+                controller.ForcePlayerCurrentLocalForReview(sample.Local);
+                PositionReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(sample.Local));
+
+                if (!controller.TryOpenPortalForTests(rightSideDragStart, rightSideDragEnd) || !controller.HasPortalPair)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {sample.Label} drag-open was rejected.");
+                }
+
+                var portalLocal = controller.PortalLocalCenterForReview;
+                if (portalLocal.x < sample.Local.x + 0.75f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {sample.Label} was clamped left of the intended right-side placement. playerX={sample.Local.x:0.00}, portalX={portalLocal.x:0.00}.");
+                }
+            }
+
+            controller.ClosePortal();
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
+            controller.ForcePlayerCurrentLocalForReview(HouseInteriorPlayerStart);
+        }
+
+        private static Vector3 GroundedRouteLocal(Vector3 routeTriggerCenter)
+        {
+            return new Vector3(routeTriggerCenter.x, 0.02f, routeTriggerCenter.z);
+        }
+
         private static void ValidateInitialCurrentOnlyCulling(TimeWindowPairedSpacePortalController controller)
         {
             var camera = Camera.main;
@@ -9520,7 +9566,7 @@ namespace Anemora.EditorTools
             var rightmostContinuationRouteX = Mathf.Max(
                 Mathf.Max(Chapter1D3RouteTriggerCenter.x, Chapter1E3RouteTriggerCenter.x),
                 Mathf.Max(Chapter1F5RouteTriggerCenter.x, Chapter1F6RouteTriggerCenter.x));
-            var requiredHalfWidth = rightmostContinuationRouteX + TimeWindowMaxPortalHalfWidthForValidation + 4.00f;
+            var requiredHalfWidth = rightmostContinuationRouteX + TimeWindowMaxPortalHalfWidthForValidation + 12.00f;
             if (TimeWindowRegionSize.x * 0.5f < requiredHalfWidth)
             {
                 throw new InvalidOperationException(
@@ -9548,8 +9594,8 @@ namespace Anemora.EditorTools
                 }
             }
 
-            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewGround", "current_path");
-            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine", "current_frame");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewGround", "current_stone");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine", "current_stone");
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_FadeOutGate", "doorway_dark");
 
             var forbiddenNames = new[]
@@ -9570,11 +9616,23 @@ namespace Anemora.EditorTools
                 "Past_CentralPlaza_Chapter1_Scene6_NiroStartMarker",
                 "Past_CentralPlaza_Chapter1_Scene6_NiroFollowMarker",
                 "Past_CentralPlaza_Chapter1_Scene6_NiroFadeOutMarker",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_FarPierLeft",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_FarPierMid",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_LeftFloorScar",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_MidBrokenPlank",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_RightFloorScar",
                 "Current_CentralPlaza_Chapter1_Scene6_Cycle87_ExitFrameLeft",
                 "Current_CentralPlaza_Chapter1_Scene6_Cycle87_ExitFrameRight",
                 "Current_CentralPlaza_Chapter1_Scene6_Cycle87_ExitFrameTop",
                 "Current_CentralPlaza_Chapter1_Scene6_Cycle87_ExitDarkGap",
-                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_TinyExitLamp"
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle87_TinyExitLamp",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_LeftFloorDustBreak",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_LeftLoosePlank",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_ExitApproachScuff",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_RightFloorChipA",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_RightFloorChipB",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_RightDustTail",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle95_ThinCrack"
             };
 
             foreach (var objectName in forbiddenNames)
