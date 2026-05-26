@@ -703,6 +703,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8CLibraryLightHierarchy();
             ValidateHd2dStage8DLibraryFloorContrast();
             ValidateHd2dStage8ELibraryLampBloom();
+            ValidateHd2dStage8FLibraryUpperAtmosphere();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1261,6 +1262,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8ELibraryLampBloom();
         }
 
+        public static void ValidateHd2dStage8FLibraryUpperAtmosphereBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8FLibraryUpperAtmosphere();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1389,6 +1397,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8e_library_lamp_bloom");
             CaptureHd2dStage8ELibraryLampBloomReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8FLibraryUpperAtmosphereReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8f_library_upper_atmosphere");
+            CaptureHd2dStage8FLibraryUpperAtmosphereReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3832,6 +3853,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8e library lamp bloom screenshots captured");
         }
 
+        private static void CaptureHd2dStage8FLibraryUpperAtmosphereReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8f_library_upper_atmosphere.md",
+                "Fast VS Stage 8f library upper atmosphere screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4811,7 +4840,8 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8b_library_shelf_density", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8c_library_light_hierarchy", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8d_library_floor_contrast", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8e_library_lamp_bloom", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8e_library_lamp_bloom", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8f_library_upper_atmosphere", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -15948,6 +15978,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryLightHierarchyStage8c(root, c);
                 CreateCurrentLibraryFloorContrastStage8d(root, c, materials);
                 CreateCurrentLibraryLampBloomStage8e(root, c, materials);
+                CreateCurrentLibraryUpperAtmosphereStage8f(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -24091,6 +24122,45 @@ namespace Anemora.EditorTools
             SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
             SerializedSet(landmark, "countsForArrival", false);
             return light;
+        }
+
+        private static void CreateCurrentLibraryUpperAtmosphereStage8f(Transform root, Vector3 c, Materials materials)
+        {
+            var windowLight = EnsureHd2dLibraryWindowLightMaterial();
+            var warmPool = EnsureHd2dWarmLightPoolMaterial();
+
+            CreateStage8FLibraryAtmospherePlane(root, c + new Vector3(0.10f, 1.30f, 6.88f), Quaternion.identity, new Vector3(3.60f, 1.16f, 1f), windowLight, "Current_Library_Stage8f_BackShelfWarmShaftCenterA", "Current.library.stage8f.back_shelf.warm_shaft.center_a");
+            CreateStage8FLibraryAtmospherePlane(root, c + new Vector3(2.88f, 1.24f, 6.88f), Quaternion.identity, new Vector3(1.42f, 1.02f, 1f), windowLight, "Current_Library_Stage8f_BackShelfWarmShaftRightA", "Current.library.stage8f.back_shelf.warm_shaft.right_a");
+            CreateStage8FLibraryAtmospherePlane(root, c + new Vector3(-4.98f, 1.50f, -0.72f), Quaternion.Euler(0f, 90f, -9f), new Vector3(2.20f, 1.12f, 1f), windowLight, "Current_Library_Stage8f_LeftUpperCoolShaftA", "Current.library.stage8f.left_upper.cool_shaft.a");
+            CreateStage8FLibraryAtmospherePlane(root, c + new Vector3(4.98f, 1.50f, -0.72f), Quaternion.Euler(0f, -90f, 9f), new Vector3(2.20f, 1.12f, 1f), windowLight, "Current_Library_Stage8f_RightUpperCoolShaftA", "Current.library.stage8f.right_upper.cool_shaft.a");
+
+            CreateStage8FLibraryUpperAtmosphereAccent(root, c + new Vector3(0.00f, 2.46f, 6.98f), Quaternion.identity, new Vector3(7.80f, 0.018f, 0.070f), warmPool, "Current_Library_Stage8f_BackRailWarmRimA", "Current.library.stage8f.back_rail.warm_rim.a");
+            CreateStage8FLibraryUpperAtmosphereAccent(root, c + new Vector3(-4.18f, 2.02f, -0.20f), Quaternion.identity, new Vector3(1.28f, 0.024f, 7.25f), materials.Dust, "Current_Library_Stage8f_LeftGalleryUndersideDustA", "Current.library.stage8f.left_gallery.underside_dust.a");
+            CreateStage8FLibraryUpperAtmosphereAccent(root, c + new Vector3(4.18f, 2.02f, -0.20f), Quaternion.identity, new Vector3(1.28f, 0.024f, 7.25f), materials.Dust, "Current_Library_Stage8f_RightGalleryUndersideDustA", "Current.library.stage8f.right_gallery.underside_dust.a");
+            CreateStage8FLibraryUpperAtmosphereAccent(root, c + new Vector3(0.00f, 2.03f, 6.08f), Quaternion.identity, new Vector3(7.70f, 0.024f, 0.070f), materials.Dust, "Current_Library_Stage8f_BackGalleryUndersideDustA", "Current.library.stage8f.back_gallery.underside_dust.a");
+        }
+
+        private static GameObject CreateStage8FLibraryAtmospherePlane(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            var plane = CreateQuad(objectName, root, localPosition, localScale, material);
+            plane.transform.localRotation = localRotation;
+            var renderer = plane.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = plane.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            return plane;
+        }
+
+        private static GameObject CreateStage8FLibraryUpperAtmosphereAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
         }
 
         private static GameObject CreateReadableBookProp(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material cover, Material pages, Material spine, bool openPages, string landmarkId)
@@ -34599,6 +34669,125 @@ namespace Anemora.EditorTools
                 !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8e library lamp bloom source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8FLibraryUpperAtmosphere()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8f_BackShelfWarmShaftCenterA",
+                "Current_Library_Stage8f_BackShelfWarmShaftRightA",
+                "Current_Library_Stage8f_LeftUpperCoolShaftA",
+                "Current_Library_Stage8f_RightUpperCoolShaftA"
+            })
+            {
+                ValidateStage8FLibraryUpperAtmosphereObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    "library_window_light",
+                    new Vector3(-5.20f, 1.00f, -1.05f),
+                    new Vector3(5.20f, 1.95f, 7.05f),
+                    new Vector3(3.85f, 1.30f, 1.05f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8f_BackRailWarmRimA"
+            })
+            {
+                ValidateStage8FLibraryUpperAtmosphereObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    "warm_light_pool",
+                    new Vector3(-0.10f, 2.40f, 6.90f),
+                    new Vector3(0.10f, 2.52f, 7.05f),
+                    new Vector3(8.10f, 0.030f, 0.090f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8f_LeftGalleryUndersideDustA",
+                "Current_Library_Stage8f_RightGalleryUndersideDustA",
+                "Current_Library_Stage8f_BackGalleryUndersideDustA"
+            })
+            {
+                ValidateStage8FLibraryUpperAtmosphereObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    "dust",
+                    new Vector3(-4.35f, 1.95f, -0.35f),
+                    new Vector3(4.35f, 2.08f, 6.20f),
+                    new Vector3(8.00f, 0.035f, 7.50f));
+            }
+
+            ValidateHd2dStage8FLibraryUpperAtmosphereSourceText();
+        }
+
+        private static void ValidateStage8FLibraryUpperAtmosphereObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8f library upper atmosphere object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only upper atmosphere does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken}, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateHd2dStage8FLibraryUpperAtmosphereSourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8f_library_upper_atmosphere\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryUpperAtmosphereStage8f(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("Current_Library_Stage8f_BackShelfWarmShaftCenterA", StringComparison.Ordinal) ||
+                !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8f library upper atmosphere source guards are missing.");
             }
         }
 
