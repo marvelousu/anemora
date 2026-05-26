@@ -1,0 +1,36 @@
+Stage7q route pad / entry strip silhouette review
+
+Branch:
+work/fast-vs-hd2d-shading-foundation-20260522
+
+Build:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Launch:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+フォルダごと起動
+
+Capture:
+C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7_route_pad_silhouette
+
+Changes:
+- Route move glow pads are smaller, dimmer, and use dedicated current/past soft pad materials.
+- Current plaza-to-library entry step, facade base, and route approach materials were pushed toward dust/shadow.
+- A Stage7RoutePadSilhouette strip shadow clamp was added and exempted from the realtime light/shadow disable policy.
+- Close review screenshots now re-apply Stage7 bokeh focus after moving the close review camera.
+
+Validation:
+- ValidateHd2dStage7RoutePadSilhouetteBatch: exit 0.
+- CaptureHd2dStage7RoutePadSilhouetteReferenceScreenshotsBatch: exit 0.
+- BuildAndValidateBatch: exit 0.
+- Smoke log stage7-route-pad-silhouette-smoke-final.log: no Exception/Error/Failed/NullReference/MissingReference/Assertion matches.
+- PortalStencilFeature and Stage7 renderer features active.
+- Paired-space objects and route pads present in Anemora_FastVS_HouseSlice.unity.
+- tw_current_aperture.png visually checked: aperture content is present, not black.
+
+Open gaps:
+- The white/gray horizontal and diagonal strip behind Niro in current route close is still visible.
+- The close-shot sprite scale/blur and background striping still read as artifacts.
+- The plaza, library, and home exterior remain materially and compositionally far below the Octopath reference target.
+
+判定待ち。停止指示まで作業継続。
