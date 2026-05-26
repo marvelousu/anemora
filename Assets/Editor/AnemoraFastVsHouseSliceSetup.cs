@@ -3817,6 +3817,7 @@ namespace Anemora.EditorTools
             CreateRuinsCycle70RoadBandsAndF5RightHouseDetails(root, prefix, past, materials);
             CreateRuinsCycle71F5TwinHouseAndOrganicEdgesDetails(root, prefix, past, materials);
             CreateRuinsCycle72SeparatedF5RightHouseDetails(root, prefix, past, materials);
+            CreateRuinsCycle73CurrentF5RightHouseShapeDetails(root, prefix, past, materials);
 
             if (past)
             {
@@ -4265,6 +4266,32 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle72SeparatedF5RightHouseWindowVoid", root, c + new Vector3(14.50f, 0.78f, 2.96f), new Vector3(0.30f, 0.24f, 0.08f), Quaternion.Euler(0f, 4f, 0f), door, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle72.separated_f5_right_house_window_void");
                 CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F_Cycle72SeparatedF5RightHouseCurrentBrush", c + new Vector3(15.02f, 0.20f, 3.48f), weed, 84);
             }
+        }
+
+        private static void CreateRuinsCycle73CurrentF5RightHouseShapeDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                return;
+            }
+
+            var c = Chapter1RuinsMapCenter;
+            var ground = materials.CurrentGrass;
+            var wall = materials.CurrentExteriorWall;
+            var roof = materials.CurrentRoof;
+            var stone = materials.CurrentStone;
+            var door = materials.DoorwayDark;
+            var weed = materials.CurrentLeaf;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5GapAlleyWest", root, c + new Vector3(11.58f, 0.080f, 2.66f), new Vector3(0.62f, 0.05f, 0.30f), Quaternion.Euler(0f, -2f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_gap_alley_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5GapAlleyCenter", root, c + new Vector3(11.90f, 0.082f, 2.82f), new Vector3(0.98f, 0.05f, 0.34f), Quaternion.Euler(0f, 1f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_gap_alley_center");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5GapAlleyEast", root, c + new Vector3(12.10f, 0.080f, 2.98f), new Vector3(0.46f, 0.05f, 0.28f), Quaternion.Euler(0f, 2f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_gap_alley_east");
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5GapAlleyBrush", c + new Vector3(11.84f, 0.20f, 2.56f), weed, 85);
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5RightHouseFoundationFace", root, c + new Vector3(14.04f, 0.18f, 2.92f), new Vector3(1.46f, 0.10f, 0.20f), Quaternion.Euler(0f, 4f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_right_house_foundation_face");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5RightHouseLowWallFace", root, c + new Vector3(14.06f, 0.80f, 3.00f), new Vector3(1.58f, 0.86f, 0.18f), Quaternion.Euler(0f, 4f, -2f), wall, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_right_house_low_wall_face");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5RightHouseDoorVoid", root, c + new Vector3(13.98f, 0.56f, 2.82f), new Vector3(0.36f, 0.70f, 0.08f), Quaternion.Euler(0f, 4f, 0f), door, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_right_house_door_void");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle73F5RightHouseRoofFragmentClose", root, c + new Vector3(14.00f, 1.18f, 2.96f), new Vector3(0.78f, 0.10f, 0.22f), Quaternion.Euler(7f, 0f, -14f), roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle73.f5_right_house_roof_fragment_close");
         }
 
         private static void CreateRuinsLeftSettlementReadabilityDetails(Transform root, string prefix, bool past, Materials materials)
