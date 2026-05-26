@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle98.md
+
+Cycle 98 review target:
+- F1-F6 current lower-right field should retain ruined debris and dust without turning into a literal vegetation panel.
+- F1-F6 past lower-right field should be clean, sparse, and maintained rather than debris-strewn.
+- User-drawn vegetation/position rectangles must be treated only as approximate area hints.
+- Bridge, road, route pads, F6 exit, and house layout should not regress.
