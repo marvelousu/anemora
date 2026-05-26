@@ -785,6 +785,7 @@ namespace Anemora.EditorTools
             CreateChapter1EndSideViewMap(chapter1EndRoot, prefix, past, materials);
             CreateChapter1Cycle79EarlyMapContentDetails(exteriorRoot, plazaRoot, miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle80PlazaMiaReadabilityDetails(plazaRoot, miaHouseRoot, prefix, past, materials);
+            CreateChapter1Cycle81RuinsBridgeHierarchyDetails(ruinsRoot, prefix, past, materials);
             CreateHouseDoorMarkers(interiorRoot, exteriorRoot, prefix, past, materials);
             CreateRouteMoveMarkers(exteriorRoot, plazaRoot, libraryRoot, prefix, past, materials);
             CreateChapter1BaselineMapPointMarkers(exteriorRoot, plazaRoot, libraryRoot, prefix, past, materials);
@@ -2910,6 +2911,46 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F5_Debris", root, Chapter1F5RouteTriggerCenter + new Vector3(-0.04f, 0.03f, 1.00f), new Vector3(0.82f, 0.10f, 0.26f), Quaternion.Euler(0f, 14f, -6f), debris, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f5.debris");
             }
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F5", Chapter1F5RouteTriggerCenter + new Vector3(0.96f, 0.20f, -0.92f), shrub, 42);
+        }
+
+        private static void CreateChapter1Cycle81RuinsBridgeHierarchyDetails(Transform ruinsRoot, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1RuinsMapCenter;
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var brush = past ? materials.Leaf : materials.CurrentLeaf;
+            var channel = past ? materials.Water : materials.Dust;
+            var deepShadow = materials.Shadow;
+
+            if (!past)
+            {
+                HideChildIfPresent(ruinsRoot, $"{prefix}_CentralPlaza_Chapter1_F_Cycle43NorthNarrowWater");
+                HideChildIfPresent(ruinsRoot, $"{prefix}_CentralPlaza_Chapter1_F_Cycle43SouthNarrowWater");
+            }
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeDeckLane", ruinsRoot, c + new Vector3(0.00f, 0.528f, -0.02f), new Vector3(10.42f, 0.028f, 0.30f), Quaternion.identity, path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle81.bridge_deck_lane");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeDeckSideBeamNorth", ruinsRoot, c + new Vector3(0.00f, 0.612f, 0.66f), new Vector3(12.28f, 0.052f, 0.10f), Quaternion.Euler(0f, 0f, 0.8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.bridge_deck_side_beam_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeDeckSideBeamSouth", ruinsRoot, c + new Vector3(0.00f, 0.612f, -0.66f), new Vector3(12.28f, 0.052f, 0.10f), Quaternion.Euler(0f, 0f, -0.8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.bridge_deck_side_beam_south");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeWestAbutmentBlock", ruinsRoot, c + new Vector3(-6.10f, 0.340f, 0.00f), new Vector3(0.34f, 0.16f, 1.18f), Quaternion.Euler(0f, 2f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.bridge_west_abutment_block");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeEastAbutmentBlock", ruinsRoot, c + new Vector3(6.10f, 0.340f, 0.00f), new Vector3(0.34f, 0.16f, 1.18f), Quaternion.Euler(0f, -2f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.bridge_east_abutment_block");
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81GorgeNorthRun", ruinsRoot, c + new Vector3(0.00f, 0.128f, 3.68f), new Vector3(1.64f, 0.035f, 3.20f), Quaternion.Euler(0f, -1f, 0f), channel, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle81.gorge_north_run");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81GorgeSouthRun", ruinsRoot, c + new Vector3(0.02f, 0.126f, -3.74f), new Vector3(1.70f, 0.035f, 3.34f), Quaternion.Euler(0f, 1f, 0f), channel, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle81.gorge_south_run");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeUndersideDarkGap", ruinsRoot, c + new Vector3(0.00f, 0.166f, -0.02f), new Vector3(2.28f, 0.028f, 0.42f), Quaternion.identity, deepShadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.bridge_underside_dark_gap");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81NorthBankStone", ruinsRoot, c + new Vector3(-2.16f, 0.168f, 3.28f), new Vector3(0.42f, 0.12f, 1.06f), Quaternion.Euler(0f, 6f, -4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.north_bank_stone");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle81SouthBankStone", ruinsRoot, c + new Vector3(2.12f, 0.164f, -3.42f), new Vector3(0.40f, 0.12f, 1.12f), Quaternion.Euler(0f, -6f, 4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle81.south_bank_stone");
+            CreateGrassTuft(ruinsRoot, $"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeBrush", c + new Vector3(-3.34f, 0.20f, 3.12f), brush, 0);
+            CreateGrassTuft(ruinsRoot, $"{prefix}_CentralPlaza_Chapter1_F_Cycle81BridgeBrush", c + new Vector3(3.18f, 0.20f, -3.06f), brush, 1);
+        }
+
+        private static void HideChildIfPresent(Transform root, string childName)
+        {
+            var child = root.Find(childName);
+            if (child != null)
+            {
+                child.gameObject.SetActive(false);
+            }
         }
 
         private static void CreateMiaFrontYardContinuation(Transform root, string prefix, bool past, Materials materials)
