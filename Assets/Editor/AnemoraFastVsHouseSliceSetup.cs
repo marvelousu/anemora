@@ -149,6 +149,9 @@ namespace Anemora.EditorTools
         private static readonly Color Stage8eLibraryLampLightColor = new Color(1.00f, 0.66f, 0.34f, 1f);
         private const float Stage8eLibraryLampLightIntensity = 0.14f;
         private const float Stage8eLibraryLampLightRange = 2.35f;
+        private static readonly Color Stage8gLibraryHeroLightColor = new Color(1.00f, 0.70f, 0.38f, 1f);
+        private const float Stage8gLibraryHeroLightIntensity = 0.46f;
+        private const float Stage8gLibraryHeroLightRange = 4.20f;
         private const string TimewriterBrushIconTexturePath = TextureDirectory + "/FastVS_House_timewriter_brush_icon_v01.png";
         private const string MusicClipPath = "Assets/Audio/Music/Zone1_Ambient.ogg";
         private const string WindClipPath = "Assets/Audio/SFX/env/sfx_env_wind_loop_01.ogg";
@@ -704,6 +707,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8DLibraryFloorContrast();
             ValidateHd2dStage8ELibraryLampBloom();
             ValidateHd2dStage8FLibraryUpperAtmosphere();
+            ValidateHd2dStage8GLibraryHeroLighting();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1269,6 +1273,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8FLibraryUpperAtmosphere();
         }
 
+        public static void ValidateHd2dStage8GLibraryHeroLightingBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8GLibraryHeroLighting();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1410,6 +1421,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8f_library_upper_atmosphere");
             CaptureHd2dStage8FLibraryUpperAtmosphereReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8GLibraryHeroLightingReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8g_library_hero_lighting");
+            CaptureHd2dStage8GLibraryHeroLightingReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3861,6 +3885,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8f library upper atmosphere screenshots captured");
         }
 
+        private static void CaptureHd2dStage8GLibraryHeroLightingReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8g_library_hero_lighting.md",
+                "Fast VS Stage 8g library hero lighting screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4841,7 +4873,8 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8c_library_light_hierarchy", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8d_library_floor_contrast", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8e_library_lamp_bloom", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8f_library_upper_atmosphere", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8f_library_upper_atmosphere", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8g_library_hero_lighting", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -15979,6 +16012,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryFloorContrastStage8d(root, c, materials);
                 CreateCurrentLibraryLampBloomStage8e(root, c, materials);
                 CreateCurrentLibraryUpperAtmosphereStage8f(root, c, materials);
+                CreateCurrentLibraryHeroLightingStage8g(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -24161,6 +24195,74 @@ namespace Anemora.EditorTools
         private static GameObject CreateStage8FLibraryUpperAtmosphereAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
         {
             return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static void CreateCurrentLibraryHeroLightingStage8g(Transform root, Vector3 c, Materials materials)
+        {
+            var warmPool = EnsureHd2dWarmLightPoolMaterial();
+            var windowLight = EnsureHd2dLibraryWindowLightMaterial();
+
+            CreateStage8GLibraryHeroLightingPlane(root, c + new Vector3(0.82f, 0.096f, -0.44f), Quaternion.Euler(90f, 4f, 0f), new Vector3(3.40f, 1.42f, 1f), warmPool, "Current_Library_Stage8g_HeroFloorWarmPoolWideA", "Current.library.stage8g.hero_floor.warm_pool_wide_a");
+            CreateStage8GLibraryHeroLightingAccent(root, c + new Vector3(0.82f, 0.472f, -0.44f), Quaternion.Euler(0f, 4f, 0f), new Vector3(1.84f, 0.026f, 0.62f), materials.Lamp, "Current_Library_Stage8g_HeroTableWarmCoreA", "Current.library.stage8g.hero_table.warm_core_a");
+            CreateStage8GLibraryHeroLightingAccent(root, c + new Vector3(1.82f, 0.462f, -1.28f), Quaternion.Euler(0f, -12f, 0f), new Vector3(1.28f, 0.024f, 0.48f), materials.Lamp, "Current_Library_Stage8g_HeroTableWarmLeadA", "Current.library.stage8g.hero_table.warm_lead_a");
+
+            CreateStage8GLibraryHeroLightingPlane(root, c + new Vector3(0.00f, 1.34f, 6.74f), Quaternion.identity, new Vector3(6.80f, 1.42f, 1f), warmPool, "Current_Library_Stage8g_BackShelfWarmWallWashA", "Current.library.stage8g.back_shelf.warm_wall_wash_a");
+            CreateStage8GLibraryHeroLightingAccent(root, c + new Vector3(-1.92f, 1.52f, 6.72f), Quaternion.identity, new Vector3(2.10f, 0.070f, 0.060f), materials.Lamp, "Current_Library_Stage8g_BackShelfWarmBandLeftA", "Current.library.stage8g.back_shelf.warm_band_left_a");
+            CreateStage8GLibraryHeroLightingAccent(root, c + new Vector3(1.78f, 1.50f, 6.72f), Quaternion.identity, new Vector3(2.24f, 0.070f, 0.060f), materials.Lamp, "Current_Library_Stage8g_BackShelfWarmBandRightA", "Current.library.stage8g.back_shelf.warm_band_right_a");
+            CreateStage8GLibraryHeroLightingAccent(root, c + new Vector3(0.00f, 2.42f, 6.78f), Quaternion.identity, new Vector3(8.10f, 0.034f, 0.072f), materials.Lamp, "Current_Library_Stage8g_BackRailWarmHighlightA", "Current.library.stage8g.back_rail.warm_highlight_a");
+
+            CreateStage8GLibraryHeroLightingPlane(root, c + new Vector3(-4.86f, 1.16f, -0.62f), Quaternion.Euler(0f, 90f, -7f), new Vector3(3.18f, 1.58f, 1f), windowLight, "Current_Library_Stage8g_LeftCoolSideSeparationA", "Current.library.stage8g.left_cool.side_separation_a");
+            CreateStage8GLibraryHeroLightingPlane(root, c + new Vector3(4.86f, 1.16f, -0.62f), Quaternion.Euler(0f, -90f, 7f), new Vector3(3.18f, 1.58f, 1f), windowLight, "Current_Library_Stage8g_RightCoolSideSeparationA", "Current.library.stage8g.right_cool.side_separation_a");
+
+            CreateStage8GLibraryHeroLightingPointLight(root, c + new Vector3(0.82f, 0.88f, -0.44f), "Current_Library_Stage8g_HeroTablePointA", "Current.library.stage8g.hero_table.point_a");
+            CreateStage8GLibraryHeroLightingPointLight(root, c + new Vector3(0.00f, 1.82f, 5.78f), "Current_Library_Stage8g_BackShelfPointA", "Current.library.stage8g.back_shelf.point_a");
+        }
+
+        private static GameObject CreateStage8GLibraryHeroLightingPlane(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            var plane = CreateQuad(objectName, root, localPosition, localScale, material);
+            plane.transform.localRotation = localRotation;
+            var renderer = plane.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = plane.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            return plane;
+        }
+
+        private static GameObject CreateStage8GLibraryHeroLightingAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static Light CreateStage8GLibraryHeroLightingPointLight(Transform root, Vector3 localPosition, string objectName, string landmarkId)
+        {
+            var lightObject = new GameObject(objectName, typeof(Light));
+            lightObject.transform.SetParent(root, false);
+            lightObject.transform.localPosition = localPosition;
+            lightObject.transform.localRotation = Quaternion.identity;
+            lightObject.transform.localScale = Vector3.one;
+            lightObject.layer = CurrentSpaceRenderLayer;
+
+            var light = lightObject.GetComponent<Light>();
+            light.type = LightType.Point;
+            light.color = Stage8gLibraryHeroLightColor;
+            light.intensity = Stage8gLibraryHeroLightIntensity;
+            light.range = Stage8gLibraryHeroLightRange;
+            light.shadows = LightShadows.None;
+            light.cullingMask = 1 << CurrentSpaceRenderLayer;
+
+            var landmark = lightObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            return light;
         }
 
         private static GameObject CreateReadableBookProp(Transform root, string objectName, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material cover, Material pages, Material spine, bool openPages, string landmarkId)
@@ -34788,6 +34890,204 @@ namespace Anemora.EditorTools
                 !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8f library upper atmosphere source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8GLibraryHeroLighting()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8g_HeroFloorWarmPoolWideA",
+                "Current_Library_Stage8g_BackShelfWarmWallWashA"
+            })
+            {
+                ValidateStage8GLibraryHeroLightingObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    "warm_light_pool",
+                    new Vector3(-0.20f, 0.040f, -1.00f),
+                    new Vector3(1.15f, 1.80f, 7.10f),
+                    new Vector3(7.00f, 1.55f, 1.05f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8g_HeroTableWarmCoreA",
+                "Current_Library_Stage8g_HeroTableWarmLeadA",
+                "Current_Library_Stage8g_BackShelfWarmBandLeftA",
+                "Current_Library_Stage8g_BackShelfWarmBandRightA",
+                "Current_Library_Stage8g_BackRailWarmHighlightA"
+            })
+            {
+                ValidateStage8GLibraryHeroLightingObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    "lamp",
+                    new Vector3(-2.20f, 0.080f, -1.45f),
+                    new Vector3(2.20f, 2.48f, 7.04f),
+                    new Vector3(8.30f, 0.080f, 0.75f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8g_LeftCoolSideSeparationA",
+                "Current_Library_Stage8g_RightCoolSideSeparationA"
+            })
+            {
+                ValidateStage8GLibraryHeroLightingObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    "library_window_light",
+                    new Vector3(-5.05f, 0.95f, -0.85f),
+                    new Vector3(5.05f, 1.45f, -0.35f),
+                    new Vector3(3.35f, 1.75f, 1.05f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Past_Library_Stage8g_HeroFloorWarmPoolWideA",
+                "Past_Library_Stage8g_HeroTableWarmCoreA",
+                "Past_Library_Stage8g_BackShelfWarmWallWashA",
+                "Past_Library_Stage8g_BackRailWarmHighlightA"
+            })
+            {
+                if (FindSceneObjectIncludingInactive(objectName) != null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Stage 8g library hero lighting must remain current-space-only: {objectName}.");
+                }
+            }
+
+            ValidateStage8GLibraryHeroLightingPointLight(
+                "Current_Library_Stage8g_HeroTablePointA",
+                new Vector3(0.70f, 0.78f, -0.55f),
+                new Vector3(0.95f, 0.98f, -0.32f));
+            ValidateStage8GLibraryHeroLightingPointLight(
+                "Current_Library_Stage8g_BackShelfPointA",
+                new Vector3(-0.12f, 1.70f, 5.60f),
+                new Vector3(0.12f, 1.95f, 5.95f));
+
+            ValidateHd2dStage8GLibraryHeroLightingSourceText();
+        }
+
+        private static void ValidateStage8GLibraryHeroLightingObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8g library hero lighting object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only hero lighting does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken}, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateStage8GLibraryHeroLightingPointLight(string objectName, Vector3 minLocalOffset, Vector3 maxLocalOffset)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8g library hero point light {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != "Current_LibraryMap_SeparateSpace")
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under Current_LibraryMap_SeparateSpace.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only hero lighting does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+
+            var light = sceneObject.GetComponent<Light>();
+            if (light == null ||
+                light.type != LightType.Point ||
+                light.shadows != LightShadows.None ||
+                light.cullingMask != (1 << CurrentSpaceRenderLayer) ||
+                Mathf.Abs(light.intensity - Stage8gLibraryHeroLightIntensity) > 0.0001f ||
+                Mathf.Abs(light.range - Stage8gLibraryHeroLightRange) > 0.0001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep the Stage 8g hero point-light settings.");
+            }
+
+            ValidateColorNear($"{objectName} light color", light.color, Stage8gLibraryHeroLightColor, 0.0001f);
+        }
+
+        private static void ValidateHd2dStage8GLibraryHeroLightingSourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8g_library_hero_lighting\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryHeroLightingStage8g(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("Current_Library_Stage8g_HeroFloorWarmPoolWideA", StringComparison.Ordinal) ||
+                !source.Contains("private const float Stage8gLibraryHeroLightIntensity = 0.46f;", StringComparison.Ordinal) ||
+                !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8g library hero lighting source guards are missing.");
             }
         }
 
