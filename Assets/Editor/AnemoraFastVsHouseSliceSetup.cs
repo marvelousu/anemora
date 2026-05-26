@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Anemora.FastVS;
 using Anemora.TimeManagement;
 using TMPro;
@@ -102,6 +103,14 @@ namespace Anemora.EditorTools
         private const float Stage7jCentralPlazaFloorShadeMin = 0.36f;
         private const string Stage7ApvCurrentVolumeName = "FastVS_HD2D_Stage7_APV_CurrentLocalVolume";
         private const string Stage7ApvPastVolumeName = "FastVS_HD2D_Stage7_APV_PastLocalVolume";
+        private const string Stage7ApvBakingSetAssetName = "FastVS_HouseSlice_Stage7_APV_BakingSet";
+        private const string Stage7ApvBakingSetAssetPath = "Assets/Settings/FastVS_HouseSlice_Stage7_APV_BakingSet.asset";
+        private const int Stage7ApvBakingSetPlacementSimplificationLevels = 3;
+        private const float Stage7ApvBakingSetPlacementMinDistanceBetweenProbes = 1.0f;
+        private const float Stage7ApvBakingSetPlacementMinRendererVolumeSize = 0.1f;
+        private const string Stage7ApvDefaultScenarioName = "Default";
+        private const int Stage7ApvBakeTimeoutSeconds = 420;
+        private static readonly Vector3 Stage7ApvBakingSetProbeOffset = new Vector3(0.50f, 0f, 0.50f);
         private static readonly Vector3 Stage7ApvVolumeLocalPosition = new Vector3(11f, 0f, 6f);
         private static readonly Vector3 Stage7ApvVolumeSize = new Vector3(60f, 30f, 44f);
         private const int Stage7ApvSubdivisionOverride = 0;
@@ -410,6 +419,7 @@ namespace Anemora.EditorTools
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
+            EnsureHd2dStage7ApvBakingSet(scene);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS house slice scene created: {ScenePath}");
@@ -677,6 +687,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7Outline();
             ValidateHd2dStage7VfxParticles();
             ValidateHd2dStage7ApvFoundation();
+            ValidateHd2dStage7ApvBakedGi();
             ValidateHd2dStage7LibraryWarmAnchor();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
@@ -967,6 +978,21 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7ApvFoundation();
         }
 
+        public static void ValidateHd2dStage7ApvBakedGiBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            BakeHd2dStage7ApvBakedGi();
+            ValidateHd2dStage7ApvBakedGi(requireBakedData: true);
+        }
+
+        public static void BakeHd2dStage7ApvBakedGiBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            BakeHd2dStage7ApvBakedGi();
+        }
+
         public static void ValidateHd2dStage7LibraryWarmAnchorBatch()
         {
             CreateHouseSliceScene();
@@ -992,6 +1018,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260525_stage7_apv");
             CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage7ApvBakedGiReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage7v_apv_baked_gi");
+            CaptureHd2dStage7ApertureFrameBlendReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dStage7LibraryWarmAnchorReferenceScreenshotsBatch()
@@ -28456,8 +28495,404 @@ namespace Anemora.EditorTools
             probeVolume.overridesSubdivLevels = true;
             probeVolume.lowestSubdivLevelOverride = Stage7ApvSubdivisionOverride;
             probeVolume.highestSubdivLevelOverride = Stage7ApvSubdivisionOverride;
-            probeVolume.fillEmptySpaces = false;
+            probeVolume.fillEmptySpaces = true;
             EditorUtility.SetDirty(probeVolume);
+        }
+
+        private static ProbeVolumeBakingSet EnsureHd2dStage7ApvBakingSet(Scene scene)
+        {
+            EnsureHd2dStage7ProbeReferenceVolumeReady();
+
+            var bakingSet = AssetDatabase.LoadAssetAtPath<ProbeVolumeBakingSet>(Stage7ApvBakingSetAssetPath);
+            if (bakingSet == null)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(Stage7ApvBakingSetAssetPath));
+                bakingSet = ScriptableObject.CreateInstance<ProbeVolumeBakingSet>();
+                bakingSet.name = Stage7ApvBakingSetAssetName;
+                InvokeStage7ApvInternalNoArgs(bakingSet, "SetDefaults");
+                AssetDatabase.CreateAsset(bakingSet, Stage7ApvBakingSetAssetPath);
+            }
+
+            bakingSet.name = Stage7ApvBakingSetAssetName;
+            bakingSet.probeOffset = Stage7ApvBakingSetProbeOffset;
+            bakingSet.simplificationLevels = Stage7ApvBakingSetPlacementSimplificationLevels;
+            bakingSet.minDistanceBetweenProbes = Stage7ApvBakingSetPlacementMinDistanceBetweenProbes;
+            bakingSet.minRendererVolumeSize = Stage7ApvBakingSetPlacementMinRendererVolumeSize;
+            bakingSet.renderersLayerMask = (1 << CurrentSpaceRenderLayer) | (1 << OtherTimeSpaceRenderLayer);
+            bakingSet.skyOcclusion = false;
+            bakingSet.TryAddScenario(Stage7ApvDefaultScenarioName);
+            SetStage7ApvSerializedProperty(bakingSet, "singleSceneMode", true);
+            SetStage7ApvSerializedProperty(bakingSet, "lightingScenario", Stage7ApvDefaultScenarioName);
+
+            var sceneGuid = AssetDatabase.AssetPathToGUID(ScenePath);
+            if (string.IsNullOrEmpty(sceneGuid))
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: could not resolve scene GUID for {ScenePath}.");
+            }
+
+            if (!Stage7ApvBakingSetContainsScene(bakingSet, sceneGuid) && !bakingSet.TryAddScene(sceneGuid))
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: {ScenePath} is already assigned to a different ProbeVolumeBakingSet.");
+            }
+
+            bakingSet.SetSceneBaking(sceneGuid, true);
+            SyncStage7ApvBakingSetRegistry();
+            InvokeStage7ApvStaticInternalNoArgs(typeof(ProbeVolumeBakingSet), "OnSceneSaving", scene, null);
+            EnsureHd2dStage7ApvPerSceneData(scene, bakingSet, sceneGuid);
+
+            ProbeReferenceVolume.instance.SetActiveBakingSet(bakingSet);
+            EditorUtility.SetDirty(bakingSet);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            return bakingSet;
+        }
+
+        private static void EnsureHd2dStage7ProbeReferenceVolumeReady()
+        {
+            var pipelineAsset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(UniversalRenderPipelineAssetPath);
+            if (pipelineAsset == null)
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: missing URP asset at {UniversalRenderPipelineAssetPath}.");
+            }
+
+            if (pipelineAsset.lightProbeSystem != LightProbeSystem.ProbeVolumes)
+            {
+                throw new InvalidOperationException("Stage 7 APV baked GI setup failed: URP must keep lightProbeSystem set to ProbeVolumes before APV baking.");
+            }
+
+            if (!ProbeReferenceVolume.instance.isInitialized)
+            {
+                PrepareStage7ApvRenderPipeline(pipelineAsset);
+            }
+
+            if (!ProbeReferenceVolume.instance.isInitialized)
+            {
+                // Batchmode can reach APV baking before URP has created its pipeline; keep a fallback so
+                // the baked-GI validation remains deterministic even if Unity changes the warmup path.
+                ProbeReferenceVolume.instance.Initialize(new ProbeVolumeSystemParameters
+                {
+                    memoryBudget = pipelineAsset.probeVolumeMemoryBudget,
+                    blendingMemoryBudget = pipelineAsset.probeVolumeBlendingMemoryBudget,
+                    shBands = pipelineAsset.probeVolumeSHBands,
+                    supportGPUStreaming = pipelineAsset.supportProbeVolumeGPUStreaming,
+                    supportDiskStreaming = pipelineAsset.supportProbeVolumeDiskStreaming,
+                    supportScenarios = pipelineAsset.supportProbeVolumeScenarios,
+                    supportScenarioBlending = pipelineAsset.supportProbeVolumeScenarioBlending,
+                });
+            }
+
+            ProbeReferenceVolume.instance.SetEnableStateFromSRP(true);
+        }
+
+        private static void PrepareStage7ApvRenderPipeline(UniversalRenderPipelineAsset pipelineAsset)
+        {
+            var method = typeof(RenderPipelineManager).GetMethod(
+                "TryPrepareRenderPipeline",
+                BindingFlags.Static | BindingFlags.NonPublic,
+                null,
+                new[] { typeof(RenderPipelineAsset) },
+                null);
+            if (method == null)
+            {
+                return;
+            }
+
+            try
+            {
+                method.Invoke(null, new object[] { pipelineAsset });
+                EditorApplication.QueuePlayerLoopUpdate();
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        private static void EnsureHd2dStage7ApvPerSceneData(Scene scene, ProbeVolumeBakingSet bakingSet, string sceneGuid)
+        {
+            var perSceneData = FindHd2dStage7ApvPerSceneData(scene, sceneGuid);
+            if (perSceneData == null)
+            {
+                var perSceneObject = new GameObject("ProbeVolumePerSceneData");
+                perSceneObject.hideFlags |= HideFlags.HideInHierarchy;
+                SceneManager.MoveGameObjectToScene(perSceneObject, scene);
+                perSceneData = perSceneObject.AddComponent<ProbeVolumePerSceneData>();
+            }
+
+            var serialized = new SerializedObject(perSceneData);
+            var serializedBakingSet = serialized.FindProperty("serializedBakingSet");
+            var serializedSceneGuid = serialized.FindProperty("sceneGUID");
+            if (serializedBakingSet == null || serializedSceneGuid == null)
+            {
+                throw new InvalidOperationException("Stage 7 APV baked GI setup failed: ProbeVolumePerSceneData serialized fields changed.");
+            }
+
+            serializedBakingSet.objectReferenceValue = bakingSet;
+            serializedSceneGuid.stringValue = sceneGuid;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(perSceneData);
+        }
+
+        private static ProbeVolumePerSceneData FindHd2dStage7ApvPerSceneData(Scene scene, string sceneGuid)
+        {
+            var perSceneData = UnityEngine.Object.FindObjectsByType<ProbeVolumePerSceneData>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+            for (var i = 0; i < perSceneData.Length; i++)
+            {
+                var candidate = perSceneData[i];
+                if (candidate != null && candidate.gameObject.scene == scene)
+                {
+                    var serialized = new SerializedObject(candidate);
+                    var candidateGuid = serialized.FindProperty("sceneGUID");
+                    if (candidateGuid == null ||
+                        string.IsNullOrEmpty(candidateGuid.stringValue) ||
+                        string.Equals(candidateGuid.stringValue, sceneGuid, StringComparison.Ordinal))
+                    {
+                        return candidate;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static bool Stage7ApvBakingSetContainsScene(ProbeVolumeBakingSet bakingSet, string sceneGuid)
+        {
+            var sceneGuids = bakingSet.sceneGUIDs;
+            for (var i = 0; i < sceneGuids.Count; i++)
+            {
+                if (string.Equals(sceneGuids[i], sceneGuid, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void SetStage7ApvSerializedProperty(UnityEngine.Object target, string propertyName, bool value)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(propertyName);
+            if (property == null)
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: missing serialized property {propertyName} on {target.name}.");
+            }
+
+            property.boolValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
+        }
+
+        private static void SetStage7ApvSerializedProperty(UnityEngine.Object target, string propertyName, string value)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(propertyName);
+            if (property == null)
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: missing serialized property {propertyName} on {target.name}.");
+            }
+
+            property.stringValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
+        }
+
+        private static void SyncStage7ApvBakingSetRegistry()
+        {
+            InvokeStage7ApvStaticInternalNoArgs(typeof(ProbeVolumeBakingSet), "SyncBakingSets");
+        }
+
+        private static void BakeHd2dStage7ApvBakedGi()
+        {
+            ValidateHd2dStage7ApvFoundation();
+            var scene = EditorSceneManager.GetActiveScene();
+            var bakingSet = EnsureHd2dStage7ApvBakingSet(scene);
+            ValidateHd2dStage7ApvBakedGi(requireBakedData: false);
+
+            if (Lightmapping.isRunning)
+            {
+                throw new InvalidOperationException("Stage 7 APV baked GI bake failed: Unity Lightmapping is already running.");
+            }
+
+            if (AdaptiveProbeVolumes.isRunning)
+            {
+                AdaptiveProbeVolumes.Cancel();
+            }
+
+            var callback = typeof(AdaptiveProbeVolumes).GetMethod("AsyncBakeCallback", BindingFlags.Static | BindingFlags.NonPublic);
+            if (callback == null)
+            {
+                throw new InvalidOperationException("Stage 7 APV baked GI bake failed: could not find AdaptiveProbeVolumes.AsyncBakeCallback.");
+            }
+
+            if (!AdaptiveProbeVolumes.BakeAsync())
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI bake failed: AdaptiveProbeVolumes.BakeAsync() did not start. {BuildStage7ApvBakeDiagnostics(bakingSet)}");
+            }
+
+            var startedAt = DateTime.UtcNow;
+            try
+            {
+                while (AdaptiveProbeVolumes.isRunning)
+                {
+                    InvokeStage7ApvCallback(callback);
+                    EditorApplication.QueuePlayerLoopUpdate();
+                    System.Threading.Thread.Sleep(25);
+
+                    if ((DateTime.UtcNow - startedAt).TotalSeconds > Stage7ApvBakeTimeoutSeconds)
+                    {
+                        AdaptiveProbeVolumes.Cancel();
+                        throw new TimeoutException($"Stage 7 APV baked GI bake timed out after {Stage7ApvBakeTimeoutSeconds} seconds.");
+                    }
+                }
+            }
+            catch
+            {
+                if (AdaptiveProbeVolumes.isRunning)
+                {
+                    AdaptiveProbeVolumes.Cancel();
+                }
+
+                throw;
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            ValidateHd2dStage7ApvBakedGi(requireBakedData: true);
+            Debug.Log($"Fast VS Stage 7 APV baked GI completed with {GetStage7ApvCellDescriptorCount(bakingSet)} baked cells in {AssetDatabase.GetAssetPath(bakingSet)}.");
+        }
+
+        private static void InvokeStage7ApvCallback(MethodInfo callback)
+        {
+            try
+            {
+                callback.Invoke(null, null);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        private static void InvokeStage7ApvInternalNoArgs(object target, string methodName)
+        {
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            if (method == null)
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: missing internal method {target.GetType().Name}.{methodName}.");
+            }
+
+            try
+            {
+                method.Invoke(target, null);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        private static bool InvokeStage7ApvInternalBool(object target, string methodName)
+        {
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            if (method == null || method.ReturnType != typeof(bool))
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI validation failed: missing internal bool method {target.GetType().Name}.{methodName}.");
+            }
+
+            try
+            {
+                return (bool)method.Invoke(target, null);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        private static int GetStage7ApvCellDescriptorCount(ProbeVolumeBakingSet bakingSet)
+        {
+            var field = typeof(ProbeVolumeBakingSet).GetField("cellDescs", BindingFlags.Instance | BindingFlags.NonPublic);
+            var descriptors = field != null ? field.GetValue(bakingSet) : null;
+            if (descriptors is System.Collections.ICollection collection)
+            {
+                return collection.Count;
+            }
+
+            var countProperty = descriptors?.GetType().GetProperty("Count", BindingFlags.Instance | BindingFlags.Public);
+            if (countProperty != null && countProperty.PropertyType == typeof(int))
+            {
+                return (int)countProperty.GetValue(descriptors);
+            }
+
+            throw new InvalidOperationException("Stage 7 APV baked GI validation failed: could not inspect ProbeVolumeBakingSet.cellDescs.");
+        }
+
+        private static string BuildStage7ApvBakeDiagnostics(ProbeVolumeBakingSet bakingSet)
+        {
+            var sceneGuid = AssetDatabase.AssetPathToGUID(ScenePath);
+            var probeVolumes = UnityEngine.Object.FindObjectsByType<ProbeVolume>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+            var perSceneDataCount = GetStage7ApvPerSceneDataCount();
+            var enabledBySrp = GetStage7ApvInternalBoolProperty(ProbeReferenceVolume.instance, "enabledBySRP");
+            var sceneHasProbeVolumes = InvokeStage7ApvStaticInternalBool(typeof(ProbeVolumeBakingSet), "SceneHasProbeVolumes", sceneGuid);
+            var activeSet = ProbeReferenceVolume.instance.currentBakingSet == bakingSet;
+            return $"Diagnostics: initialized={ProbeReferenceVolume.instance.isInitialized}, enabledBySRP={enabledBySrp}, activeSet={activeSet}, probeVolumes={probeVolumes.Length}, perSceneData={perSceneDataCount}, sceneHasProbeVolumes={sceneHasProbeVolumes}, cells={GetStage7ApvCellDescriptorCount(bakingSet)}, sceneGuid={sceneGuid}.";
+        }
+
+        private static int GetStage7ApvPerSceneDataCount()
+        {
+            var property = typeof(ProbeReferenceVolume).GetProperty("perSceneDataList", BindingFlags.Instance | BindingFlags.NonPublic);
+            var value = property != null ? property.GetValue(ProbeReferenceVolume.instance) : null;
+            return value is System.Collections.ICollection collection ? collection.Count : -1;
+        }
+
+        private static bool GetStage7ApvInternalBoolProperty(object target, string propertyName)
+        {
+            var property = target.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic);
+            if (property == null || property.PropertyType != typeof(bool))
+            {
+                return false;
+            }
+
+            return (bool)property.GetValue(target);
+        }
+
+        private static bool InvokeStage7ApvStaticInternalBool(Type type, string methodName, params object[] arguments)
+        {
+            var method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic);
+            if (method == null || method.ReturnType != typeof(bool))
+            {
+                return false;
+            }
+
+            try
+            {
+                return (bool)method.Invoke(null, arguments);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        private static void InvokeStage7ApvStaticInternalNoArgs(Type type, string methodName, params object[] arguments)
+        {
+            var method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.NonPublic);
+            if (method == null)
+            {
+                throw new InvalidOperationException($"Stage 7 APV baked GI setup failed: missing internal method {type.Name}.{methodName}.");
+            }
+
+            try
+            {
+                method.Invoke(null, arguments);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
         }
 
         private static void CreateStage7VfxMoteCard(Transform parent, string name, Vector3 localPosition, float size, Color tint, Material material)
@@ -32303,6 +32738,56 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7ApvRenderPipelineAsset();
         }
 
+        private static void ValidateHd2dStage7ApvBakedGi()
+        {
+            EnsureHd2dStage7ApvBakingSet(EditorSceneManager.GetActiveScene());
+            ValidateHd2dStage7ApvBakedGi(requireBakedData: false);
+        }
+
+        private static void ValidateHd2dStage7ApvBakedGi(bool requireBakedData)
+        {
+            ValidateHd2dStage7ApvFoundation();
+
+            var sceneGuid = AssetDatabase.AssetPathToGUID(ScenePath);
+            var bakingSet = AssetDatabase.LoadAssetAtPath<ProbeVolumeBakingSet>(Stage7ApvBakingSetAssetPath);
+            if (bakingSet == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 7 APV baking set asset at {Stage7ApvBakingSetAssetPath}.");
+            }
+
+            if (!string.Equals(bakingSet.name, Stage7ApvBakingSetAssetName, StringComparison.Ordinal) ||
+                !Stage7ApvBakingSetContainsScene(bakingSet, sceneGuid) ||
+                bakingSet.simplificationLevels != Stage7ApvBakingSetPlacementSimplificationLevels ||
+                Mathf.Abs(bakingSet.minDistanceBetweenProbes - Stage7ApvBakingSetPlacementMinDistanceBetweenProbes) > 0.0001f ||
+                Mathf.Abs(bakingSet.minRendererVolumeSize - Stage7ApvBakingSetPlacementMinRendererVolumeSize) > 0.0001f ||
+                bakingSet.renderersLayerMask.value != ((1 << CurrentSpaceRenderLayer) | (1 << OtherTimeSpaceRenderLayer)) ||
+                bakingSet.skyOcclusion ||
+                Vector3.Distance(bakingSet.probeOffset, Stage7ApvBakingSetProbeOffset) > 0.0001f)
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 APV baking set must stay bound to the house slice scene with conservative placement settings and current/past renderer layers.");
+            }
+
+            var scene = EditorSceneManager.GetActiveScene();
+            var perSceneData = FindHd2dStage7ApvPerSceneData(scene, sceneGuid);
+            if (perSceneData == null || perSceneData.bakingSet != bakingSet)
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 APV baked GI requires a ProbeVolumePerSceneData object bound to the Stage 7 baking set.");
+            }
+
+            if (!requireBakedData)
+            {
+                return;
+            }
+
+            var cellCount = GetStage7ApvCellDescriptorCount(bakingSet);
+            var hasSharedData = InvokeStage7ApvInternalBool(bakingSet, "HasValidSharedData");
+            var hasSupportData = InvokeStage7ApvInternalBool(bakingSet, "HasSupportData");
+            if (cellCount <= 0 || !hasSharedData || !hasSupportData)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 APV baked GI must have baked cell data, shared data, and support data. cells={cellCount}, shared={hasSharedData}, support={hasSupportData}.");
+            }
+        }
+
         private static void ValidateHd2dStage7LibraryWarmAnchor()
         {
             var warmPool = EnsureHd2dWarmLightPoolMaterial();
@@ -33179,9 +33664,9 @@ namespace Anemora.EditorTools
                 !probeVolume.overridesSubdivLevels ||
                 probeVolume.lowestSubdivLevelOverride != Stage7ApvSubdivisionOverride ||
                 probeVolume.highestSubdivLevelOverride != Stage7ApvSubdivisionOverride ||
-                probeVolume.fillEmptySpaces)
+                !probeVolume.fillEmptySpaces)
             {
-                throw new InvalidOperationException($"House slice validation failed: Stage 7 APV volume {objectName} must be a local probe volume sized {Stage7ApvVolumeSize} on layer {expectedLayer} with conservative subdivision overrides.");
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 APV volume {objectName} must be a local probe volume sized {Stage7ApvVolumeSize} on layer {expectedLayer} with conservative subdivision overrides and empty-space fill enabled for baked placement.");
             }
         }
 
