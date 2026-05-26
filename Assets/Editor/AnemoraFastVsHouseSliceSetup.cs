@@ -691,6 +691,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7AtmosphericLayering();
             ValidateHd2dStage7PublicReviewShadowLegibility();
             ValidateHd2dStage7ExteriorLibraryPublicLegibility();
+            ValidateHd2dStage7PublicReviewCameraClarity();
             ValidateHd2dStage7ApvFoundation();
             ValidateHd2dStage7ApvBakedGi();
             ValidateHd2dStage7LibraryWarmAnchor();
@@ -1210,6 +1211,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7ExteriorLibraryPublicLegibility();
         }
 
+        public static void ValidateHd2dStage7PublicReviewCameraClarityBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage7PublicReviewCameraClarity();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1260,6 +1268,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage7y_exterior_library_public_legibility");
             CaptureHd2dStage7ExteriorLibraryPublicLegibilityReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage7PublicReviewCameraClarityReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage7z_public_review_camera_clarity");
+            CaptureHd2dStage7PublicReviewCameraClarityReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3655,6 +3676,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 7 exterior/library public legibility screenshots captured");
         }
 
+        private static void CaptureHd2dStage7PublicReviewCameraClarityReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage7z_public_review_camera_clarity.md",
+                "Fast VS Stage 7 public review camera clarity screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4628,6 +4657,8 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage7_library_local_light", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage7w_atmospheric_layering", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage7_route_glow_subtlety", StringComparison.Ordinal);
+            var stage7PublicReviewCameraClarity =
+                reviewDevlogPath.Contains("stage7z_public_review_camera_clarity", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -4669,13 +4700,20 @@ namespace Anemora.EditorTools
                 14f,
                 "home.png");
 
+            var exteriorCameraOffset = stage7PublicReviewCameraClarity
+                ? new Vector3(1.25f, 1.85f, -8.05f)
+                : new Vector3(0.70f, 2.85f, -5.25f);
+            var exteriorLookOffset = stage7PublicReviewCameraClarity
+                ? new Vector3(0.10f, 0.72f, 0.38f)
+                : new Vector3(0.25f, 0.78f, 0.90f);
+            var exteriorFov = stage7PublicReviewCameraClarity ? 30f : 39f;
             Capture(
                 FastVsHouseArea.Exterior,
                 HouseExteriorCenter,
                 HouseExteriorCenter,
-                new Vector3(0.70f, 2.85f, -5.25f),
-                new Vector3(0.25f, 0.78f, 0.90f),
-                39f,
+                exteriorCameraOffset,
+                exteriorLookOffset,
+                exteriorFov,
                 "Home_outside.png");
 
             var plaza01Local = CentralPlazaVsCenter + new Vector3(0.20f, 0.02f, 4.40f);
@@ -33158,6 +33196,42 @@ namespace Anemora.EditorTools
             ValidateStage7ExteriorLibraryPublicLegibilitySourceText();
         }
 
+        private static void ValidateHd2dStage7PublicReviewCameraClarity()
+        {
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || director == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 public review camera clarity needs controller, visibility, guide, director, realtime rig, and main camera.");
+            }
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
+            controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter);
+            guide.ApplyActiveTimeIsolationForReview();
+            director.ApplyAreaForReview(FastVsHouseArea.Exterior);
+            realtimeRig.ApplyNowForReview();
+            camera.fieldOfView = 30f;
+            PositionCloseReviewCamera(
+                camera,
+                controller.CurrentSpaceRootForReview.TransformPoint(HouseExteriorCenter),
+                new Vector3(1.25f, 1.85f, -8.05f),
+                new Vector3(0.10f, 0.72f, 0.38f));
+
+            var localPosition = controller.CurrentSpaceRootForReview.InverseTransformPoint(camera.transform.position) - HouseExteriorCenter;
+            if (Mathf.Abs(localPosition.z + 8.05f) > 0.05f ||
+                Mathf.Abs(localPosition.y - 1.85f) > 0.05f ||
+                Mathf.Abs(camera.fieldOfView - 30f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 public review exterior camera was not set to the low pulled-back clarity frame. offset={localPosition}, fov={camera.fieldOfView:0.00}");
+            }
+
+            ValidateStage7PublicReviewCameraClaritySourceText();
+        }
+
         private static void ValidateStage7PublicReviewAreaLight(string label, Light mainLight, float shadowMin, float shadowMax, float ambientMin, float ambientMax)
         {
             if (mainLight.type != LightType.Directional ||
@@ -33282,6 +33356,19 @@ namespace Anemora.EditorTools
                 !source.Contains("block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.03f : 0.11f)", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 7 exterior/library public legibility source guards are missing.");
+            }
+        }
+
+        private static void ValidateStage7PublicReviewCameraClaritySourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("stage7z_public_review_camera_clarity", StringComparison.Ordinal) ||
+                !source.Contains("new Vector3(1.25f, 1.85f, -8.05f)", StringComparison.Ordinal) ||
+                !source.Contains("new Vector3(0.10f, 0.72f, 0.38f)", StringComparison.Ordinal) ||
+                !source.Contains("stage7PublicReviewCameraClarity ? 30f : 39f", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 public review camera clarity source guards are missing.");
             }
         }
 
