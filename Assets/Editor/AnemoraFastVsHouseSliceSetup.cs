@@ -709,6 +709,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8FLibraryUpperAtmosphere();
             ValidateHd2dStage8GLibraryHeroLighting();
             ValidateHd2dStage8HLibraryMaterialReadability();
+            ValidateHd2dStage8ILibraryReviewComposition();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1288,6 +1289,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8HLibraryMaterialReadability();
         }
 
+        public static void ValidateHd2dStage8ILibraryReviewCompositionBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8ILibraryReviewComposition();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1455,6 +1463,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8h_library_material_readability");
             CaptureHd2dStage8HLibraryMaterialReadabilityReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8ILibraryReviewCompositionReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8i_library_review_composition");
+            CaptureHd2dStage8ILibraryReviewCompositionReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3922,6 +3943,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8h library material readability screenshots captured");
         }
 
+        private static void CaptureHd2dStage8ILibraryReviewCompositionReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8i_library_review_composition.md",
+                "Fast VS Stage 8i library review composition screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4904,7 +4933,10 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8e_library_lamp_bloom", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8f_library_upper_atmosphere", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8g_library_hero_lighting", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8h_library_material_readability", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8h_library_material_readability", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal);
+            var stage8iLibraryReviewComposition =
+                reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -4982,14 +5014,26 @@ namespace Anemora.EditorTools
                 35f,
                 "plaza_02_niro_in_shadow.png");
 
-            var libraryLocal = LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f);
+            var libraryLocal = stage8iLibraryReviewComposition
+                ? LibraryVsCenter + new Vector3(0.58f, 0.02f, -0.92f)
+                : LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f);
+            var libraryAnchor = stage8iLibraryReviewComposition
+                ? LibraryVsCenter + new Vector3(1.12f, 0.30f, -0.72f)
+                : libraryLocal;
+            var libraryCameraOffset = stage8iLibraryReviewComposition
+                ? new Vector3(0.54f, 2.62f, -4.35f)
+                : RuntimeVsFollowCameraOffset;
+            var libraryLookOffset = stage8iLibraryReviewComposition
+                ? new Vector3(0.02f, 0.34f, 0.55f)
+                : RuntimeVsFollowLookOffset;
+            var libraryFov = stage8iLibraryReviewComposition ? 31f : RuntimeVsFollowCameraFov;
             Capture(
                 FastVsHouseArea.Library,
                 libraryLocal,
-                libraryLocal,
-                RuntimeVsFollowCameraOffset,
-                RuntimeVsFollowLookOffset,
-                RuntimeVsFollowCameraFov,
+                libraryAnchor,
+                libraryCameraOffset,
+                libraryLookOffset,
+                libraryFov,
                 "library.png");
 
             CaptureCurrentTimeWindowApertureToDirectory(outputDirectory, controller, visibility, guide, realtimeRig, camera);
@@ -35256,6 +35300,21 @@ namespace Anemora.EditorTools
                 !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8h library material readability source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8ILibraryReviewComposition()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8i_library_review_composition\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("var stage8iLibraryReviewComposition =", StringComparison.Ordinal) ||
+                !source.Contains("new Vector3(0.54f, 2.62f, -4.35f)", StringComparison.Ordinal) ||
+                !source.Contains("stage8iLibraryReviewComposition ? 31f : RuntimeVsFollowCameraFov", StringComparison.Ordinal) ||
+                !source.Contains("20260527_stage8i_library_review_composition", StringComparison.Ordinal) ||
+                !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8i library review composition source guards are missing.");
             }
         }
 
