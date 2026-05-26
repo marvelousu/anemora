@@ -35,17 +35,17 @@ namespace Anemora.FastVS
         private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
         private static readonly int EmissionIntensityId = Shader.PropertyToID("_EmissionIntensity");
         private static readonly Color CentralPlazaTopLight = new Color(1.06f, 1.04f, 0.94f, 1f);
-        private static readonly Color RealtimeOutdoorSideShade = new Color(0.56f, 0.57f, 0.55f, 1f);
-        private static readonly Color RealtimeOutdoorFloorShade = new Color(0.52f, 0.53f, 0.50f, 1f);
-        private const float ExteriorReviewShadowStrength = 0.54f;
-        private const float LibraryReviewShadowStrength = 0.42f;
+        private static readonly Color RealtimeOutdoorSideShade = new Color(0.68f, 0.69f, 0.66f, 1f);
+        private static readonly Color RealtimeOutdoorFloorShade = new Color(0.64f, 0.65f, 0.61f, 1f);
+        private const float ExteriorReviewShadowStrength = 0.42f;
+        private const float LibraryReviewShadowStrength = 0.30f;
         private const float CentralPlazaStage7jShadowStrength = 0.52f;
         private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;
         private const float CentralPlazaStage7jFacadeShadowTextureStrength = 0.20f;
         private const float CentralPlazaStage7jFloorShadowTextureStrength = 0.18f;
-        private const float RealtimeOutdoorShadowReceiveStrength = 0.44f;
-        private const float RealtimeOutdoorFacadeShadowTextureStrength = 0.22f;
-        private const float RealtimeOutdoorFloorShadowTextureStrength = 0.19f;
+        private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;
+        private const float RealtimeOutdoorFacadeShadowTextureStrength = 0.12f;
+        private const float RealtimeOutdoorFloorShadowTextureStrength = 0.10f;
         private static readonly Color CentralPlazaStage7jSideShade = new Color(0.62f, 0.63f, 0.60f, 1f);
         private static readonly Color CentralPlazaStage7jFloorShade = new Color(0.58f, 0.59f, 0.55f, 1f);
 
@@ -147,16 +147,16 @@ namespace Anemora.FastVS
                 }
                 else if (area == FastVsHouseArea.Exterior)
                 {
-                    mainLight.intensity = 1.80f;
-                    mainLight.color = new Color(0.98f, 0.96f, 0.88f, 1f);
+                    mainLight.intensity = 2.05f;
+                    mainLight.color = new Color(1.00f, 0.98f, 0.90f, 1f);
                     mainLight.transform.rotation = Quaternion.Euler(42f, -42f, 0f);
                     mainLight.cookie = EnsureExteriorSunCookieTexture();
                     mainLight.cookieSize = ExteriorSunCookieWorldSize;
                 }
                 else if (area == FastVsHouseArea.Library)
                 {
-                    mainLight.intensity = 1.70f;
-                    mainLight.color = new Color(0.98f, 0.94f, 0.84f, 1f);
+                    mainLight.intensity = 1.95f;
+                    mainLight.color = new Color(1.00f, 0.96f, 0.86f, 1f);
                     mainLight.transform.rotation = Quaternion.Euler(44f, -34f, 0f);
                     if (IsRuntimeDirectionalCookie(mainLight.cookie))
                     {
@@ -196,8 +196,8 @@ namespace Anemora.FastVS
             else if (isRealtimeOutdoor)
             {
                 RenderSettings.ambientLight = area == FastVsHouseArea.Exterior
-                    ? new Color(0.145f, 0.145f, 0.135f, 1f)
-                    : new Color(0.165f, 0.150f, 0.132f, 1f);
+                    ? new Color(0.200f, 0.198f, 0.184f, 1f)
+                    : new Color(0.220f, 0.204f, 0.184f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
             }
             else
@@ -978,6 +978,17 @@ namespace Anemora.FastVS
                         return new Color(0.70f, 0.70f, 0.68f, 1f);
                     case FastVsHd2dSurfaceKind.Roof:
                         return new Color(0.66f, 0.64f, 0.60f, 1f);
+                    case FastVsHd2dSurfaceKind.Bookshelf when surface.AreaIdForReview == FastVsHouseArea.Library:
+                        return new Color(0.48f, 0.42f, 0.35f, 1f);
+                    case FastVsHd2dSurfaceKind.Furniture when surface.AreaIdForReview == FastVsHouseArea.Library:
+                    case FastVsHd2dSurfaceKind.Prop when surface.AreaIdForReview == FastVsHouseArea.Library:
+                        return new Color(0.58f, 0.51f, 0.42f, 1f);
+                    case FastVsHd2dSurfaceKind.Window when surface.AreaIdForReview == FastVsHouseArea.Library:
+                        return new Color(0.40f, 0.45f, 0.46f, 1f);
+                    case FastVsHd2dSurfaceKind.Furniture when surface.AreaIdForReview == FastVsHouseArea.Exterior:
+                    case FastVsHd2dSurfaceKind.Prop when surface.AreaIdForReview == FastVsHouseArea.Exterior:
+                    case FastVsHd2dSurfaceKind.Window when surface.AreaIdForReview == FastVsHouseArea.Exterior:
+                        return new Color(0.56f, 0.52f, 0.45f, 1f);
                 }
             }
 
@@ -1046,12 +1057,12 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(WorldLightStrengthId))
             {
-                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.32f : 0.10f);
+                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.42f : 0.10f);
             }
 
             if (material.HasProperty(WorldShadowReceiveStrengthId))
             {
-                block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.06f : 0.11f);
+                block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.03f : 0.11f);
             }
 
             CopyMaterialEmissionToPropertyBlock(material, block);

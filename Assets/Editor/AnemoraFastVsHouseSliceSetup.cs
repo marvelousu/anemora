@@ -690,6 +690,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7VfxParticles();
             ValidateHd2dStage7AtmosphericLayering();
             ValidateHd2dStage7PublicReviewShadowLegibility();
+            ValidateHd2dStage7ExteriorLibraryPublicLegibility();
             ValidateHd2dStage7ApvFoundation();
             ValidateHd2dStage7ApvBakedGi();
             ValidateHd2dStage7LibraryWarmAnchor();
@@ -1202,6 +1203,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7PublicReviewShadowLegibility();
         }
 
+        public static void ValidateHd2dStage7ExteriorLibraryPublicLegibilityBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage7ExteriorLibraryPublicLegibility();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1239,6 +1247,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage7x_public_review_shadow_legibility");
             CaptureHd2dStage7PublicReviewShadowLegibilityReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage7ExteriorLibraryPublicLegibilityReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage7y_exterior_library_public_legibility");
+            CaptureHd2dStage7ExteriorLibraryPublicLegibilityReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3624,6 +3645,14 @@ namespace Anemora.EditorTools
                 outputDirectory,
                 "docs/devlog/2026-05-27_fast_vs_hd2d_stage7x_public_review_shadow_legibility.md",
                 "Fast VS Stage 7 public review shadow legibility screenshots captured");
+        }
+
+        private static void CaptureHd2dStage7ExteriorLibraryPublicLegibilityReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage7y_exterior_library_public_legibility.md",
+                "Fast VS Stage 7 exterior/library public legibility screenshots captured");
         }
 
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
@@ -8201,6 +8230,8 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"Fast VS close-review screenshot capture failed: missing output file {outputPath}");
             }
+
+            ValidateScreenshotOpaqueAlpha(outputPath);
         }
 
         private static void ValidateScreenshotOutputExists(string outputDirectory, string fileName)
@@ -8210,6 +8241,8 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"Fast VS screenshot capture failed: missing output file {outputPath}");
             }
+
+            ValidateScreenshotOpaqueAlpha(outputPath);
         }
 
         private static void PositionReviewCamera(Camera camera, Vector3 anchor)
@@ -8233,6 +8266,7 @@ namespace Anemora.EditorTools
                 camera.Render();
                 texture.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
                 texture.Apply(false, false);
+                ForceOpaqueAlpha(texture);
                 File.WriteAllBytes(outputPath, texture.EncodeToPNG());
             }
             finally
@@ -8241,6 +8275,48 @@ namespace Anemora.EditorTools
                 RenderTexture.active = previousActive;
                 renderTexture.Release();
                 UnityEngine.Object.DestroyImmediate(renderTexture);
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+        }
+
+        private static void ForceOpaqueAlpha(Texture2D texture)
+        {
+            var pixels = texture.GetPixels32();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i].a = 255;
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, false);
+        }
+
+        private static void ValidateScreenshotOpaqueAlpha(string outputPath)
+        {
+            if (!string.Equals(Path.GetExtension(outputPath), ".png", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                if (!ImageConversion.LoadImage(texture, File.ReadAllBytes(outputPath)))
+                {
+                    throw new InvalidOperationException($"Fast VS screenshot capture failed: could not decode output file {outputPath}");
+                }
+
+                var pixels = texture.GetPixels32();
+                for (var i = 0; i < pixels.Length; i++)
+                {
+                    if (pixels[i].a != 255)
+                    {
+                        throw new InvalidOperationException($"Fast VS screenshot capture failed: output file {outputPath} has transparent alpha at pixel {i}.");
+                    }
+                }
+            }
+            finally
+            {
                 UnityEngine.Object.DestroyImmediate(texture);
             }
         }
@@ -32163,7 +32239,7 @@ namespace Anemora.EditorTools
             }
 
             Apply(FastVsHouseArea.Exterior, HouseExteriorCenter);
-            ValidateStage3LightValue(mainLight.intensity, 1.80f, 0.03f, "Stage 3 exterior realtime main light");
+            ValidateStage3LightValue(mainLight.intensity, 2.05f, 0.03f, "Stage 3 exterior public-legibility realtime main light");
             ValidateStage3LightValue(warmFill.intensity, 0.40f, 0.01f, "Stage 3 exterior warm fill");
             ValidateStage3LightValue(coolRim.intensity, 0.25f, 0.01f, "Stage 3 exterior cool rim");
             if (mainLight.cookie == null ||
@@ -32188,7 +32264,7 @@ namespace Anemora.EditorTools
             }
 
             Apply(FastVsHouseArea.Library, LibraryVsCenter);
-            ValidateStage3LightValue(mainLight.intensity, 1.70f, 0.03f, "Stage 3 library realtime main light");
+            ValidateStage3LightValue(mainLight.intensity, 1.95f, 0.03f, "Stage 3 library public-legibility realtime main light");
             ValidateStage3LightValue(warmFill.intensity, 0.50f, 0.01f, "Stage 3 library warm fill");
             ValidateStage3LightValue(coolRim.intensity, 0.25f, 0.01f, "Stage 3 library cool rim");
             ValidateStage3LightValue(libraryWindow.intensity, 1.50f, 0.01f, "Stage 3 library window light");
@@ -33042,12 +33118,44 @@ namespace Anemora.EditorTools
             ValidateStage7PublicReviewCentralReceivers();
 
             Apply(FastVsHouseArea.Exterior, HouseExteriorCenter);
-            ValidateStage7PublicReviewAreaLight("Stage 7 public review exterior", mainLight, 0.52f, 0.56f, 0.132f, 0.150f);
+            ValidateStage7PublicReviewAreaLight("Stage 7 public review exterior", mainLight, 0.40f, 0.44f, 0.188f, 0.202f);
 
             Apply(FastVsHouseArea.Library, LibraryVsCenter);
-            ValidateStage7PublicReviewAreaLight("Stage 7 public review library", mainLight, 0.40f, 0.44f, 0.140f, 0.160f);
+            ValidateStage7PublicReviewAreaLight("Stage 7 public review library", mainLight, 0.28f, 0.32f, 0.194f, 0.212f);
 
             ValidateStage7PublicReviewShadowLegibilitySourceText();
+        }
+
+        private static void ValidateHd2dStage7ExteriorLibraryPublicLegibility()
+        {
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (controller == null || visibility == null || guide == null || director == null || realtimeRig == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 exterior/library public legibility needs controller, visibility, guide, director, realtime rig, and main light.");
+            }
+
+            void Apply(FastVsHouseArea area, Vector3 playerLocal)
+            {
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocal);
+                guide.ApplyActiveTimeIsolationForReview();
+                director.ApplyAreaForReview(area);
+                realtimeRig.ApplyNowForReview();
+            }
+
+            Apply(FastVsHouseArea.Exterior, HouseExteriorCenter);
+            ValidateStage7PublicReviewAreaLight("Stage 7 exterior public legibility", mainLight, 0.40f, 0.44f, 0.188f, 0.202f);
+            ValidateStage7PublicReviewAreaReceivers(FastVsHouseArea.Exterior, 2);
+
+            Apply(FastVsHouseArea.Library, LibraryVsCenter);
+            ValidateStage7PublicReviewAreaLight("Stage 7 library public legibility", mainLight, 0.28f, 0.32f, 0.194f, 0.212f);
+            ValidateStage7PublicReviewAreaReceivers(FastVsHouseArea.Library, 2);
+            ValidateStage7ExteriorLibraryPublicLegibilitySourceText();
         }
 
         private static void ValidateStage7PublicReviewAreaLight(string label, Light mainLight, float shadowMin, float shadowMax, float ambientMin, float ambientMax)
@@ -33100,14 +33208,56 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateStage7PublicReviewAreaReceivers(FastVsHouseArea area, int minReceiverCount)
+        {
+            var receiverCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null ||
+                    !renderer.gameObject.scene.IsValid() ||
+                    !renderer.enabled ||
+                    !renderer.receiveShadows ||
+                    !IsCycle161RendererInArea(renderer, area))
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                if (material == null ||
+                    !material.HasProperty("_DirectionalLightStrength") ||
+                    !material.HasProperty("_ShadowReceiveStrength") ||
+                    !material.HasProperty("_ShadowTextureStrength"))
+                {
+                    continue;
+                }
+
+                renderer.GetPropertyBlock(block);
+                if (block.GetFloat("_DirectionalLightStrength") >= 0.90f &&
+                    block.GetFloat("_ShadowReceiveStrength") > 0f &&
+                    block.GetFloat("_ShadowReceiveStrength") <= 0.32f &&
+                    block.GetFloat("_ShadowTextureStrength") <= 0.13f)
+                {
+                    receiverCount++;
+                }
+            }
+
+            if (receiverCount < minReceiverCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 public legibility expected lifted realtime receiver property blocks in {area}, found {receiverCount}.");
+            }
+        }
+
         private static void ValidateStage7PublicReviewShadowLegibilitySourceText()
         {
             var sourcePath = Path.Combine(Application.dataPath, "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
             var source = File.ReadAllText(sourcePath);
             if (!source.Contains("ResolveReviewShadowStrength(area)", StringComparison.Ordinal) ||
-                !source.Contains("private const float LibraryReviewShadowStrength = 0.42f;", StringComparison.Ordinal) ||
+                !source.Contains("private const float ExteriorReviewShadowStrength = 0.42f;", StringComparison.Ordinal) ||
+                !source.Contains("private const float LibraryReviewShadowStrength = 0.30f;", StringComparison.Ordinal) ||
                 !source.Contains("private const float CentralPlazaStage7jShadowStrength = 0.52f;", StringComparison.Ordinal) ||
                 !source.Contains("private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;", StringComparison.Ordinal) ||
+                !source.Contains("private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;", StringComparison.Ordinal) ||
                 !source.Contains("Mathf.Min(alpha, 0.10f)", StringComparison.Ordinal) ||
                 !source.Contains("Mathf.Min(alpha, 0.11f)", StringComparison.Ordinal))
             {
@@ -33119,6 +33269,19 @@ namespace Anemora.EditorTools
                 source.Contains("new Color(0.012f, 0.014f, 0.012f", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 7 public review shadow legibility must not restore the previous black review overlay or 0.94 outdoor shadow strength.");
+            }
+        }
+
+        private static void ValidateStage7ExteriorLibraryPublicLegibilitySourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("new Color(0.200f, 0.198f, 0.184f, 1f)", StringComparison.Ordinal) ||
+                !source.Contains("new Color(0.220f, 0.204f, 0.184f, 1f)", StringComparison.Ordinal) ||
+                !source.Contains("new Color(0.48f, 0.42f, 0.35f, 1f)", StringComparison.Ordinal) ||
+                !source.Contains("block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.03f : 0.11f)", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 exterior/library public legibility source guards are missing.");
             }
         }
 
@@ -45124,8 +45287,8 @@ namespace Anemora.EditorTools
                 renderer.GetPropertyBlock(block);
                 var worldShadowReceiveStrength = block.GetFloat("_WorldShadowReceiveStrength");
                 if (block.GetFloat("_WorldLightStrength") >= 0.17f &&
-                    worldShadowReceiveStrength >= 0.05f &&
-                    worldShadowReceiveStrength <= 0.08f)
+                    worldShadowReceiveStrength >= 0.02f &&
+                    worldShadowReceiveStrength <= 0.04f)
                 {
                     trackedSpriteCount++;
                 }
@@ -45704,7 +45867,7 @@ namespace Anemora.EditorTools
 
                 var ambientMax = area == FastVsHouseArea.CentralPlaza
                     ? 0.060f
-                    : area == FastVsHouseArea.Exterior ? 0.150f : 0.170f;
+                    : area == FastVsHouseArea.Exterior ? 0.205f : 0.225f;
                 if (RenderSettings.fog || RenderSettings.ambientLight.maxColorComponent > ambientMax)
                 {
                     throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must use bounded review ambient realtime lighting, found fog={RenderSettings.fog}, ambient={RenderSettings.ambientLight}.");
@@ -45875,8 +46038,8 @@ namespace Anemora.EditorTools
             director.ApplyAreaForReview(FastVsHouseArea.Library);
             realtimeRig.ApplyNowForReview();
             if (mainLight.intensity < 1.65f ||
-                RenderSettings.ambientLight.r < 0.140f ||
-                RenderSettings.ambientLight.maxColorComponent > 0.170f)
+                RenderSettings.ambientLight.r < 0.200f ||
+                RenderSettings.ambientLight.maxColorComponent > 0.225f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 162 library must be readable without painted haze, found intensity={mainLight.intensity:0.00}, ambient={RenderSettings.ambientLight}.");
             }
