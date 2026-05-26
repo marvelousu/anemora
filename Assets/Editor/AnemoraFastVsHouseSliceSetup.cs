@@ -696,6 +696,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7ApvBakedGi();
             ValidateHd2dStage7LibraryWarmAnchor();
             ValidateHd2dStage8ALibraryShelfWarmth();
+            ValidateHd2dStage8BLibraryShelfDensity();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1226,6 +1227,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8ALibraryShelfWarmth();
         }
 
+        public static void ValidateHd2dStage8BLibraryShelfDensityBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8BLibraryShelfDensity();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1302,6 +1310,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8a_library_shelf_warmth");
             CaptureHd2dStage8ALibraryShelfWarmthReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8BLibraryShelfDensityReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8b_library_shelf_density");
+            CaptureHd2dStage8BLibraryShelfDensityReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3713,6 +3734,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8a library shelf warmth screenshots captured");
         }
 
+        private static void CaptureHd2dStage8BLibraryShelfDensityReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8b_library_shelf_density.md",
+                "Fast VS Stage 8b library shelf density screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4688,7 +4717,8 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage7_route_glow_subtlety", StringComparison.Ordinal);
             var stage7PublicReviewCameraClarity =
                 reviewDevlogPath.Contains("stage7z_public_review_camera_clarity", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8a_library_shelf_warmth", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8a_library_shelf_warmth", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8b_library_shelf_density", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -15821,6 +15851,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibrarySideBookshelfSilhouette(root, "Right", c + new Vector3(4.78f, 0.18f, 0.60f), Quaternion.Euler(0f, -90f, 0f), materials);
                 CreateCurrentLibraryWallShelfDepthPolish(root, c, materials, wood, trim);
                 CreateCurrentLibraryShelfWarmthStage8a(root, c, materials);
+                CreateCurrentLibraryShelfDensityStage8b(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -23734,6 +23765,34 @@ namespace Anemora.EditorTools
         }
 
         private static GameObject CreateStage8ALibraryShelfWarmthAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static void CreateCurrentLibraryShelfDensityStage8b(Transform root, Vector3 c, Materials materials)
+        {
+            var warmPool = EnsureHd2dWarmLightPoolMaterial();
+
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-3.06f, 1.48f, 6.955f), Quaternion.identity, new Vector3(1.76f, 0.30f, 0.050f), materials.Book, "Current_Library_Stage8b_BackShelfUpper_BookClusterLeft", "Current.library.stage8b.back_shelf.upper.book_cluster_left");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-0.18f, 1.50f, 6.955f), Quaternion.identity, new Vector3(1.56f, 0.28f, 0.050f), materials.SignPaint, "Current_Library_Stage8b_BackShelfUpper_PageClusterCenter", "Current.library.stage8b.back_shelf.upper.page_cluster_center");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(2.92f, 1.46f, 6.955f), Quaternion.identity, new Vector3(1.86f, 0.32f, 0.050f), materials.Book, "Current_Library_Stage8b_BackShelfUpper_BookClusterRight", "Current.library.stage8b.back_shelf.upper.book_cluster_right");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-2.18f, 1.04f, 6.955f), Quaternion.identity, new Vector3(2.12f, 0.28f, 0.050f), materials.Book, "Current_Library_Stage8b_BackShelfMiddle_BookClusterLeft", "Current.library.stage8b.back_shelf.middle.book_cluster_left");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(1.82f, 1.02f, 6.955f), Quaternion.identity, new Vector3(2.02f, 0.26f, 0.050f), materials.CurrentFence, "Current_Library_Stage8b_BackShelfMiddle_WoodPageClusterRight", "Current.library.stage8b.back_shelf.middle.wood_page_cluster_right");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-0.64f, 0.58f, 6.955f), Quaternion.identity, new Vector3(2.24f, 0.24f, 0.050f), materials.Book, "Current_Library_Stage8b_BackShelfLower_BookClusterCenter", "Current.library.stage8b.back_shelf.lower.book_cluster_center");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(3.22f, 0.60f, 6.955f), Quaternion.identity, new Vector3(1.40f, 0.22f, 0.050f), warmPool, "Current_Library_Stage8b_BackShelfLower_WarmClusterRight", "Current.library.stage8b.back_shelf.lower.warm_cluster_right");
+
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-4.60f, 1.38f, -0.94f), Quaternion.Euler(0f, 90f, 0f), new Vector3(2.80f, 0.11f, 0.050f), materials.Book, "Current_Library_Stage8b_LeftSideShelf_BookBandUpper", "Current.library.stage8b.left_side_shelf.book_band_upper");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-4.60f, 1.02f, 0.22f), Quaternion.Euler(0f, 90f, 0f), new Vector3(2.34f, 0.10f, 0.050f), materials.SignPaint, "Current_Library_Stage8b_LeftSideShelf_PageBandMiddle", "Current.library.stage8b.left_side_shelf.page_band_middle");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-4.60f, 0.66f, 1.34f), Quaternion.Euler(0f, 90f, 0f), new Vector3(2.04f, 0.095f, 0.050f), materials.Book, "Current_Library_Stage8b_LeftSideShelf_BookBandLower", "Current.library.stage8b.left_side_shelf.book_band_lower");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(4.60f, 1.32f, -0.74f), Quaternion.Euler(0f, -90f, 0f), new Vector3(2.54f, 0.105f, 0.050f), materials.Book, "Current_Library_Stage8b_RightSideShelf_BookBandUpper", "Current.library.stage8b.right_side_shelf.book_band_upper");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(4.60f, 0.92f, 0.72f), Quaternion.Euler(0f, -90f, 0f), new Vector3(2.18f, 0.095f, 0.050f), warmPool, "Current_Library_Stage8b_RightSideShelf_WarmBandMiddle", "Current.library.stage8b.right_side_shelf.warm_band_middle");
+
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(-1.26f, 0.43f, 1.03f), Quaternion.Euler(0f, -18f, 0f), new Vector3(0.42f, 0.040f, 0.18f), materials.Book, "Current_Library_Stage8b_TableSideA_ColorStackA", "Current.library.stage8b.table_side_a.color_stack_a");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(1.76f, 0.43f, 0.18f), Quaternion.Euler(0f, 16f, 0f), new Vector3(0.46f, 0.036f, 0.16f), materials.SignPaint, "Current_Library_Stage8b_TableLong_PageStackA", "Current.library.stage8b.table_long.page_stack_a");
+            CreateStage8BLibraryShelfDensityAccent(root, c + new Vector3(2.46f, 0.43f, -1.32f), Quaternion.Euler(0f, 22f, 0f), new Vector3(0.34f, 0.034f, 0.14f), materials.Book, "Current_Library_Stage8b_TableSideB_ColorStackA", "Current.library.stage8b.table_side_b.color_stack_a");
+        }
+
+        private static GameObject CreateStage8BLibraryShelfDensityAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
         {
             return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
         }
@@ -33737,6 +33796,131 @@ namespace Anemora.EditorTools
                 !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8a library shelf warmth source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8BLibraryShelfDensity()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8b_BackShelfUpper_BookClusterLeft",
+                "Current_Library_Stage8b_BackShelfUpper_PageClusterCenter",
+                "Current_Library_Stage8b_BackShelfUpper_BookClusterRight",
+                "Current_Library_Stage8b_BackShelfMiddle_BookClusterLeft",
+                "Current_Library_Stage8b_BackShelfMiddle_WoodPageClusterRight",
+                "Current_Library_Stage8b_BackShelfLower_BookClusterCenter",
+                "Current_Library_Stage8b_BackShelfLower_WarmClusterRight"
+            })
+            {
+                ValidateStage8BLibraryShelfDensityObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    new Vector3(-4.20f, 0.45f, 6.90f),
+                    new Vector3(4.20f, 1.68f, 7.04f),
+                    new Vector3(2.30f, 0.36f, 0.08f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8b_LeftSideShelf_BookBandUpper",
+                "Current_Library_Stage8b_LeftSideShelf_PageBandMiddle",
+                "Current_Library_Stage8b_LeftSideShelf_BookBandLower",
+                "Current_Library_Stage8b_RightSideShelf_BookBandUpper",
+                "Current_Library_Stage8b_RightSideShelf_WarmBandMiddle"
+            })
+            {
+                ValidateStage8BLibraryShelfDensityObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    new Vector3(-4.72f, 0.54f, -1.20f),
+                    new Vector3(4.72f, 1.48f, 1.56f),
+                    new Vector3(2.90f, 0.13f, 0.08f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8b_TableSideA_ColorStackA",
+                "Current_Library_Stage8b_TableLong_PageStackA",
+                "Current_Library_Stage8b_TableSideB_ColorStackA"
+            })
+            {
+                ValidateStage8BLibraryShelfDensityObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    new Vector3(-1.50f, 0.38f, -1.46f),
+                    new Vector3(2.70f, 0.48f, 1.18f),
+                    new Vector3(0.50f, 0.06f, 0.20f));
+            }
+
+            ValidateHd2dStage8BLibraryShelfDensitySourceText();
+        }
+
+        private static void ValidateStage8BLibraryShelfDensityObject(string objectName, string expectedParentName, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8b library shelf density object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only shelf density does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("book", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("sign_paint", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("current", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("warm_light_pool", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use one of the existing book/page/wood/warm materials, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateHd2dStage8BLibraryShelfDensitySourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8b_library_shelf_density\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryShelfDensityStage8b(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8b library shelf density source guards are missing.");
             }
         }
 
