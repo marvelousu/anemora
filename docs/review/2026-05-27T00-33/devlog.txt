@@ -1,0 +1,38 @@
+docs/devlog/2026-05-27_fast_vs_hd2d_stage7u_sprite_card_cutout_depth.md
+
+Stage7u sprite card cutout depth review
+
+Branch:
+work/fast-vs-hd2d-shading-foundation-20260522
+
+Build:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Launch folder:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+フォルダごと起動
+
+Capture:
+C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7u_sprite_card_cutout_depth
+
+Changes:
+- Added Anemora/FastVS/SpriteCardRampLit as an AlphaTest / TransparentCutout shader with alpha clip, ZWrite, ShadowCaster, URP main-light shadows, and cookie support.
+- Routed generated Niro, Reto, Aria, hedge, and tree sprite-card materials through the lit cutout/depth-writing path.
+- Updated Stage7u validation and sprite-card audits to require the cutout/depth-writing shader contract.
+
+Validation:
+- ValidateHd2dStage7SpriteCardCutoutDepthBatch: exit 0, Logs\stage7u_sprite_card_cutout_validate.log.
+- ValidateHouseSliceBatch: exit 0, Logs\stage7u_sprite_card_cutout_validate_house.log.
+- CaptureHd2dStage7SpriteCardCutoutDepthReferenceScreenshotsBatch: exit 0 with graphics enabled, Logs\stage7u_sprite_card_cutout_capture.log.
+- BuildAndValidateBatch: Build Finished, Result: Success, Logs\stage7u_sprite_card_cutout_build.log.
+- Player smoke: stopped after 24 seconds, Logs\stage7u_sprite_card_cutout_smoke.log; no exception or missing-reference matches.
+- Candidate public images were checked for central obstruction; route-close diagnostic images were not copied into this review.
+
+Public review curation:
+- No external target reference images are included.
+- No comparison board is included.
+- No obstructed route-close diagnostic images are included.
+
+Open gaps:
+- Sprite-card cutout depth is a technical rendering checkpoint, not final visual approval.
+- The scene remains substantially below the HD-2D target in integrated depth staging, material richness, atmospheric layering, and composition.

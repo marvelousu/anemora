@@ -21,6 +21,7 @@ namespace Anemora.EditorTools
         public const string BuildExePath = BuildDirectory + "/Anemora_FastVS_HouseSlice.exe";
         private const string MaterialRoleTagName = "AnemoraFastVsHd2dRole";
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
+        private const string SpriteCardRampLitShaderName = "Anemora/FastVS/SpriteCardRampLit";
         private const string SurfaceRampLitShaderName = "Anemora/FastVS/SurfaceRampLit";
         private const string URPUnlitShaderName = "Universal Render Pipeline/Unlit";
         private const string URPLitShaderName = "Universal Render Pipeline/Lit";
@@ -30,6 +31,8 @@ namespace Anemora.EditorTools
         private const float SpriteCardPaperLowerShadeStrength = 0.08f;
         private const float SpriteCardWorldLightStrength = 0.10f;
         private const float SpriteCardWorldShadowReceiveStrength = 0.11f;
+        private const float SpriteCardAlphaCutoff = 0.15f;
+        private const int SpriteCardCutoutRenderQueue = 2450;
         private const string LibraryWindowLightCookieTextureId = "hd2d_library_window_light_cookie_soft";
         private const int LibraryWindowLightCookieSize = 128;
         private const float LibraryWindowLightCookieAverageMin = 0.58f;
@@ -685,6 +688,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7RouteGlowSubtlety();
             ValidateHd2dStage7PortalFacadeBrightness();
             ValidateHd2dStage7ApertureFrameBlend();
+            ValidateHd2dStage7SpriteCardCutoutDepth();
             ValidateHd2dStage7RoutePadSilhouette();
             Debug.Log("Fast VS house slice validation passed.");
         }
@@ -1112,6 +1116,26 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260525_stage7_plaza_shadow_soft_balance");
             CaptureHd2dStage7PlazaShadowSoftBalanceReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void ValidateHd2dStage7SpriteCardCutoutDepthBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage7SpriteCardCutoutDepth();
+        }
+
+        public static void CaptureHd2dStage7SpriteCardCutoutDepthReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260525_stage7u_sprite_card_cutout_depth");
+            CaptureHd2dStage7ApertureFrameBlendReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void ValidateHd2dStage7VfxParticlesBatch()
@@ -31911,6 +31935,142 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7ApertureFrameBlendMaterial("threshold", Stage7pThresholdColor, 0.16f, 0.40f, 0.36f);
         }
 
+        private static void ValidateHd2dStage7SpriteCardCutoutDepth()
+        {
+            var shader = Shader.Find(SpriteCardRampLitShaderName);
+            if (shader == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 7 sprite card cutout shader {SpriteCardRampLitShaderName}.");
+            }
+
+            var shaderPath = Path.Combine(Application.dataPath, "Art", "Shaders", "FastVS", "FastVS_SpriteCardRampLit.shader");
+            var shaderText = File.ReadAllText(shaderPath);
+            if (!shaderText.Contains("\"Queue\" = \"AlphaTest\"", StringComparison.Ordinal) ||
+                !shaderText.Contains("\"RenderType\" = \"TransparentCutout\"", StringComparison.Ordinal) ||
+                !shaderText.Contains("ZWrite [_ZWrite]", StringComparison.Ordinal) ||
+                !shaderText.Contains("clip(baseSample.a - _Cutoff)", StringComparison.Ordinal) ||
+                !shaderText.Contains("_LIGHT_COOKIES", StringComparison.Ordinal) ||
+                !shaderText.Contains("GetMainLight(shadowCoord, input.positionWS", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 SpriteCardRampLit must be AlphaTest/TransparentCutout, ZWrite-enabled, clipped, and still sample realtime light cookies.");
+            }
+
+            var materialIds = new[]
+            {
+                "niro_front_sprite",
+                "niro_back_sprite",
+                "niro_left_sprite",
+                "niro_right_sprite",
+                "niro_walk_front_sprite",
+                "niro_walk_back_sprite",
+                "niro_walk_left_sprite",
+                "niro_walk_right_sprite",
+                "niro_past_front_sprite",
+                "niro_past_back_sprite",
+                "niro_past_left_sprite",
+                "niro_past_right_sprite",
+                "niro_past_walk_front_sprite",
+                "niro_past_walk_back_sprite",
+                "niro_past_walk_left_sprite",
+                "niro_past_walk_right_sprite",
+                "reto_v02_writing_loop_sprite",
+                "reto_v02_lower_arms_sprite",
+                "reto_v02_talk_loop_sprite",
+                "reto_v02_raise_arms_sprite",
+                "aria_v46_normal_loop_breath_sprite",
+                "current_house_exterior_tree3_sprite_cc0",
+                "past_house_exterior_tree3_sprite_cc0",
+                "current_house_exterior_north_hedge_sprite_a_cc0",
+                "current_house_exterior_north_hedge_sprite_b_cc0",
+                "past_house_exterior_north_hedge_sprite_a_cc0",
+                "past_house_exterior_north_hedge_sprite_b_cc0",
+                "current_central_plaza_north_tree_line_sprite_a_cc0",
+                "current_central_plaza_north_tree_line_sprite_b_cc0",
+                "past_central_plaza_north_tree_line_sprite_a_cc0",
+                "past_central_plaza_north_tree_line_sprite_b_cc0"
+            };
+
+            foreach (var materialId in materialIds)
+            {
+                ValidateStage7SpriteCardCutoutMaterial(materialId);
+            }
+
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            realtimeRig?.ApplyNowForReview();
+
+            var playerSprite = FindSceneObjectIncludingInactive("Niro_Sprite64x96");
+
+            var renderer = playerSprite != null ? playerSprite.GetComponent<Renderer>() : null;
+            if (renderer == null || renderer.sharedMaterial == null || renderer.sharedMaterial.shader == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 sprite card cutout validation could not find the Niro sprite renderer.");
+            }
+
+            if (!string.Equals(renderer.sharedMaterial.shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal) ||
+                renderer.shadowCastingMode != ShadowCastingMode.On ||
+                !renderer.receiveShadows)
+            {
+                throw new InvalidOperationException("House slice validation failed: Niro sprite renderer must use SpriteCardRampLit and participate in realtime depth/shadow sorting.");
+            }
+        }
+
+        private static void ValidateStage7SpriteCardCutoutMaterial(string materialId)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 7 sprite card material at {materialPath}.");
+            }
+
+            if (material.shader == null || !string.Equals(material.shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must use {SpriteCardRampLitShaderName}.");
+            }
+
+            if (!string.Equals(material.GetTag(MaterialRoleTagName, false, string.Empty), FastVsHd2dMaterialRole.SpriteCard.ToString(), StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must stay tagged as SpriteCard.");
+            }
+
+            if (!string.Equals(material.GetTag("RenderType", false, string.Empty), "TransparentCutout", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must use RenderType TransparentCutout.");
+            }
+
+            if (material.renderQueue < SpriteCardCutoutRenderQueue - 5 || material.renderQueue > SpriteCardCutoutRenderQueue + 5)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must use AlphaTest renderQueue near {SpriteCardCutoutRenderQueue}, found {material.renderQueue}.");
+            }
+
+            if (!material.HasProperty("_Cutoff") ||
+                Mathf.Abs(material.GetFloat("_Cutoff") - SpriteCardAlphaCutoff) > 0.005f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep _Cutoff at {SpriteCardAlphaCutoff:0.00}.");
+            }
+
+            if (material.HasProperty("_AlphaClip") && Mathf.Abs(material.GetFloat("_AlphaClip") - 1f) > 0.001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must enable _AlphaClip.");
+            }
+
+            if (material.HasProperty("_ZWrite") && Mathf.Abs(material.GetFloat("_ZWrite") - 1f) > 0.001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must enable _ZWrite.");
+            }
+
+            if (material.GetShaderPassEnabled("SHADOWCASTER") == false &&
+                material.GetShaderPassEnabled("ShadowCaster") == false)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must keep ShadowCaster enabled.");
+            }
+
+            if (material.GetShaderPassEnabled("DepthOnly"))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {materialPath} must not advertise a missing DepthOnly pass.");
+            }
+        }
+
         private static void ValidateHd2dStage7RoutePadSilhouette()
         {
             ValidateHd2dStage7RouteGlowSubtlety();
@@ -37008,9 +37168,9 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: Niro sprite material and texture are missing.");
             }
 
-            if (!string.Equals(spriteMaterial.shader.name, SpriteCardRampShaderName, StringComparison.Ordinal))
+            if (!string.Equals(spriteMaterial.shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal))
             {
-                throw new InvalidOperationException("House slice validation failed: Niro body shading must use the sprite-card ramp shader foundation.");
+                throw new InvalidOperationException("House slice validation failed: Niro body shading must use the sprite-card cutout ramp shader foundation.");
             }
 
             var spriteTexturePath = AssetDatabase.GetAssetPath(spriteTexture);
@@ -42912,7 +43072,8 @@ namespace Anemora.EditorTools
                 !playerSprite.receiveShadows ||
                 playerSprite.sharedMaterial == null ||
                 playerSprite.sharedMaterial.shader == null ||
-                !string.Equals(playerSprite.sharedMaterial.shader.name, SpriteCardRampShaderName, StringComparison.Ordinal))
+                (!string.Equals(playerSprite.sharedMaterial.shader.name, SpriteCardRampShaderName, StringComparison.Ordinal) &&
+                 !string.Equals(playerSprite.sharedMaterial.shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal)))
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 127 player sprite must use the sprite-card shader and cast/receive realtime shadows.");
             }
@@ -68753,7 +68914,7 @@ namespace Anemora.EditorTools
         {
             var path = $"{MaterialDirectory}/FastVS_House_{id}.mat";
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
-            var shader = Shader.Find(SpriteCardRampShaderName) ?? Shader.Find(URPUnlitShaderName);
+            var shader = Shader.Find(SpriteCardRampLitShaderName) ?? Shader.Find(SpriteCardRampShaderName) ?? Shader.Find(URPUnlitShaderName);
             if (shader == null)
             {
                 throw new InvalidOperationException($"Required sprite card shader not found: {id}");
@@ -68765,7 +68926,15 @@ namespace Anemora.EditorTools
                 AssetDatabase.CreateAsset(material, path);
             }
 
-            ConfigureTransparentMaterial(material, renderQueue, SpriteCardRampShaderName, URPUnlitShaderName);
+            if (string.Equals(shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal))
+            {
+                ConfigureSpriteCardCutoutMaterial(material, SpriteCardCutoutRenderQueue);
+            }
+            else
+            {
+                ConfigureTransparentMaterial(material, renderQueue, SpriteCardRampShaderName, URPUnlitShaderName);
+            }
+
             material.doubleSidedGI = true;
 
             if (material.HasProperty("_BaseColor"))
@@ -68823,8 +68992,80 @@ namespace Anemora.EditorTools
                 material.SetFloat("_WorldShadowReceiveStrength", SpriteCardWorldShadowReceiveStrength);
             }
 
+            ApplyStage2EmissionDefaults(material);
             ApplyMaterialRole(material, id, FastVsHd2dMaterialRole.SpriteCard);
             return material;
+        }
+
+        private static void ConfigureSpriteCardCutoutMaterial(Material material, int renderQueue)
+        {
+            var shader = Shader.Find(SpriteCardRampLitShaderName);
+            if (shader == null)
+            {
+                throw new InvalidOperationException($"Required sprite card cutout shader not found: {SpriteCardRampLitShaderName}");
+            }
+
+            material.shader = shader;
+            material.doubleSidedGI = true;
+
+            if (material.HasProperty("_Surface"))
+            {
+                material.SetFloat("_Surface", 0f);
+            }
+
+            if (material.HasProperty("_AlphaClip"))
+            {
+                material.SetFloat("_AlphaClip", 1f);
+            }
+
+            if (material.HasProperty("_Cutoff"))
+            {
+                material.SetFloat("_Cutoff", SpriteCardAlphaCutoff);
+            }
+
+            if (material.HasProperty("_Blend"))
+            {
+                material.SetFloat("_Blend", 0f);
+            }
+
+            if (material.HasProperty("_SrcBlend"))
+            {
+                material.SetFloat("_SrcBlend", 1f);
+            }
+
+            if (material.HasProperty("_DstBlend"))
+            {
+                material.SetFloat("_DstBlend", 0f);
+            }
+
+            if (material.HasProperty("_ZWrite"))
+            {
+                material.SetFloat("_ZWrite", 1f);
+            }
+
+            if (material.HasProperty("_Cull"))
+            {
+                material.SetFloat("_Cull", 0f);
+            }
+
+            if (material.HasProperty("_QueueControl"))
+            {
+                material.SetFloat("_QueueControl", 1f);
+            }
+
+            if (material.HasProperty("_QueueOffset"))
+            {
+                material.SetFloat("_QueueOffset", renderQueue - 2450f);
+            }
+
+            material.SetOverrideTag("RenderType", "TransparentCutout");
+            material.SetShaderPassEnabled("DepthOnly", false);
+            material.SetShaderPassEnabled("SHADOWCASTER", true);
+            material.SetShaderPassEnabled("ShadowCaster", true);
+            material.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            material.EnableKeyword("_ALPHATEST_ON");
+            material.renderQueue = renderQueue;
+            EditorUtility.SetDirty(material);
         }
 
         private static void ApplyStage2EmissionDefaults(Material material)

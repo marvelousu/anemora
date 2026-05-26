@@ -13,6 +13,7 @@ namespace Anemora.EditorTools
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
+        private const string SpriteCardRampLitShaderName = "Anemora/FastVS/SpriteCardRampLit";
         private const float TransparentThreshold = 0.01f;
         private const float OpaqueThreshold = 0.12f;
         private const float SpriteCardRampStrengthMin = 0.14f;
@@ -27,8 +28,9 @@ namespace Anemora.EditorTools
         private const float SpriteCardWorldLightStrengthMax = 0.12f;
         private const float SpriteCardWorldShadowReceiveStrengthMin = 0.025f;
         private const float SpriteCardWorldShadowReceiveStrengthMax = 0.13f;
-        private const int SpriteCardRenderQueueMin = 3000;
-        private const int SpriteCardRenderQueueMax = 3015;
+        private const float SpriteCardAlphaCutoff = 0.15f;
+        private const int SpriteCardRenderQueueMin = 2445;
+        private const int SpriteCardRenderQueueMax = 2455;
         private const string Cycle23ReportFileName = "sprite_card_edge_rim_cycle23_20260522.md";
         private const string Cycle24ReportFileName = "sprite_card_world_light_bridge_cycle24_20260522.md";
         private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
@@ -267,14 +269,41 @@ namespace Anemora.EditorTools
                 return;
             }
 
-            if (material.shader == null || !string.Equals(material.shader.name, SpriteCardRampShaderName, StringComparison.Ordinal))
+            if (material.shader == null || !string.Equals(material.shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal))
             {
-                issues.Add($"Sprite card material must use {SpriteCardRampShaderName}: {path}");
+                issues.Add($"Sprite card material must use {SpriteCardRampLitShaderName}: {path}");
             }
 
             if (material.renderQueue < SpriteCardRenderQueueMin || material.renderQueue > SpriteCardRenderQueueMax)
             {
                 issues.Add($"Sprite card material renderQueue is out of range: {path} ({material.renderQueue}).");
+            }
+
+            if (!string.Equals(material.GetTag("RenderType", false, string.Empty), "TransparentCutout", StringComparison.Ordinal))
+            {
+                issues.Add($"Sprite card material must use RenderType TransparentCutout: {path}");
+            }
+
+            if (!material.HasProperty("_Cutoff") ||
+                Mathf.Abs(material.GetFloat("_Cutoff") - SpriteCardAlphaCutoff) > 0.005f)
+            {
+                issues.Add($"Sprite card material must keep _Cutoff at {SpriteCardAlphaCutoff:0.00}: {path}");
+            }
+
+            if (material.HasProperty("_AlphaClip") && Mathf.Abs(material.GetFloat("_AlphaClip") - 1f) > 0.001f)
+            {
+                issues.Add($"Sprite card material must enable _AlphaClip: {path}");
+            }
+
+            if (material.HasProperty("_ZWrite") && Mathf.Abs(material.GetFloat("_ZWrite") - 1f) > 0.001f)
+            {
+                issues.Add($"Sprite card material must enable _ZWrite: {path}");
+            }
+
+            if (material.GetShaderPassEnabled("SHADOWCASTER") == false &&
+                material.GetShaderPassEnabled("ShadowCaster") == false)
+            {
+                issues.Add($"Sprite card material must keep ShadowCaster enabled: {path}");
             }
 
             var texture = material.GetTexture("_BaseMap") as Texture2D ?? material.GetTexture("_MainTex") as Texture2D;
@@ -466,7 +495,7 @@ namespace Anemora.EditorTools
             builder.AppendLine();
             builder.AppendLine($"- Project root: `{ProjectRoot}`");
             builder.AppendLine($"- Report file: `{Cycle23ReportPath}`");
-            builder.AppendLine($"- Shader: `{SpriteCardRampShaderName}`");
+            builder.AppendLine($"- Shader: `{SpriteCardRampLitShaderName}`");
             builder.AppendLine($"- Result: {report.Result}");
             builder.AppendLine();
             builder.AppendLine("## Representative Materials");
@@ -511,7 +540,7 @@ namespace Anemora.EditorTools
             builder.AppendLine();
             builder.AppendLine($"- Project root: `{ProjectRoot}`");
             builder.AppendLine($"- Report file: `{Cycle24ReportPath}`");
-            builder.AppendLine($"- Shader: `{SpriteCardRampShaderName}`");
+            builder.AppendLine($"- Shader: `{SpriteCardRampLitShaderName}`");
             builder.AppendLine($"- Result: {report.Result}");
             builder.AppendLine();
             builder.AppendLine("## Representative Materials");

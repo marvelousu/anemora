@@ -10,7 +10,10 @@ namespace Anemora.EditorTools
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string RoleTagName = "AnemoraFastVsHd2dRole";
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
+        private const string SpriteCardRampLitShaderName = "Anemora/FastVS/SpriteCardRampLit";
         private const string SurfaceRampLitShaderName = "Anemora/FastVS/SurfaceRampLit";
+        private const float SpriteCardAlphaCutoff = 0.15f;
+        private const int SpriteCardCutoutRenderQueue = 2450;
 
         [MenuItem("Tools/Anemora/Verify HD2D Material Roles V1")]
         public static void VerifyMaterialRolesV1()
@@ -210,7 +213,66 @@ namespace Anemora.EditorTools
                 "past_central_plaza_north_tree_line_sprite_b_cc0"
             })
             {
-                ValidateMaterialAsset(issues, materialId, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SpriteCard, requireUnlitShader: true, requireTransparent: true, minRenderQueue: 3000, maxRenderQueue: 3015);
+                ValidateSpriteCardCutoutMaterial(issues, materialId);
+            }
+        }
+
+        private static void ValidateSpriteCardCutoutMaterial(List<string> issues, string materialId)
+        {
+            var path = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                issues.Add($"Missing sprite card material asset: {path}");
+                return;
+            }
+
+            var tag = material.GetTag(RoleTagName, false, string.Empty);
+            if (!string.Equals(tag, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SpriteCard.ToString(), StringComparison.Ordinal))
+            {
+                issues.Add($"Material {path} must carry role tag 'SpriteCard', but had '{tag}'.");
+            }
+
+            if (material.shader == null || !string.Equals(material.shader.name, SpriteCardRampLitShaderName, StringComparison.Ordinal))
+            {
+                issues.Add($"Material {path} must use the cutout sprite-card shader {SpriteCardRampLitShaderName}.");
+            }
+
+            if (!string.Equals(material.GetTag("RenderType", false, string.Empty), "TransparentCutout", StringComparison.Ordinal))
+            {
+                issues.Add($"Material {path} must use RenderType TransparentCutout.");
+            }
+
+            if (material.renderQueue < SpriteCardCutoutRenderQueue - 5 || material.renderQueue > SpriteCardCutoutRenderQueue + 5)
+            {
+                issues.Add($"Material {path} must use AlphaTest renderQueue near {SpriteCardCutoutRenderQueue}, but was {material.renderQueue}.");
+            }
+
+            if (!material.HasProperty("_Cutoff") ||
+                Mathf.Abs(material.GetFloat("_Cutoff") - SpriteCardAlphaCutoff) > 0.005f)
+            {
+                issues.Add($"Material {path} must keep _Cutoff at {SpriteCardAlphaCutoff:0.00}.");
+            }
+
+            if (material.HasProperty("_AlphaClip") && Mathf.Abs(material.GetFloat("_AlphaClip") - 1f) > 0.001f)
+            {
+                issues.Add($"Material {path} must enable _AlphaClip.");
+            }
+
+            if (material.HasProperty("_ZWrite") && Mathf.Abs(material.GetFloat("_ZWrite") - 1f) > 0.001f)
+            {
+                issues.Add($"Material {path} must enable _ZWrite.");
+            }
+
+            if (material.GetShaderPassEnabled("SHADOWCASTER") == false &&
+                material.GetShaderPassEnabled("ShadowCaster") == false)
+            {
+                issues.Add($"Material {path} must keep ShadowCaster enabled for cutout depth sorting.");
+            }
+
+            if (material.GetShaderPassEnabled("DepthOnly"))
+            {
+                issues.Add($"Material {path} must not enable a missing DepthOnly pass.");
             }
         }
 
