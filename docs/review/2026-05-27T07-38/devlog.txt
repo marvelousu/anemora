@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle111.md
+
+Cycle 111 review notes:
+- Focus image: `13_scene6_sideview_auto.png`.
+- Confirm generated final side-view has a clearer endpoint floor direction without reintroducing Niro position-measure marks, side-view map panels, or sketch-like rectangles.
+- Confirm no top-down map content appears in the final side-view.

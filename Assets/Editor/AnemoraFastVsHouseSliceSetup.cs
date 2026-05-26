@@ -787,6 +787,7 @@ namespace Anemora.EditorTools
             CreateKaiaFarmChapter1Map(kaiaFarmRoot, prefix, past, materials);
             CreateRuinsChapter1Map(ruinsRoot, prefix, past, materials);
             CreateChapter1EndSideViewMap(chapter1EndRoot, prefix, past, materials);
+            CreateChapter1Cycle111EndSideViewEndpointDetails(chapter1EndRoot, prefix, past, materials);
             CreateChapter1Cycle79EarlyMapContentDetails(exteriorRoot, plazaRoot, miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle80PlazaMiaReadabilityDetails(plazaRoot, miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle81RuinsBridgeHierarchyDetails(ruinsRoot, prefix, past, materials);
@@ -6166,6 +6167,28 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_FadeOutGate", root, c + new Vector3(4.34f, 0.88f, -0.16f), new Vector3(0.26f, 1.70f, 0.10f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.fade_out_gate");
         }
 
+        private static void CreateChapter1Cycle111EndSideViewEndpointDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (past)
+            {
+                return;
+            }
+
+            var c = Chapter1EndSideViewCenter;
+            var stone = materials.CurrentStone;
+            var wood = materials.CurrentFurniture;
+            var dust = materials.Dust;
+            var dark = materials.DoorwayDark;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_RightFloorStepA", root, c + new Vector3(-1.02f, 0.004f, -0.12f), new Vector3(0.96f, 0.075f, 0.10f), Quaternion.Euler(0f, 0f, -2f), stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.cycle111.right_floor_step_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_RightFloorStepB", root, c + new Vector3(-0.10f, 0.012f, -0.12f), new Vector3(0.62f, 0.060f, 0.10f), Quaternion.Euler(0f, 0f, 4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.cycle111.right_floor_step_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_RightFloorStepC", root, c + new Vector3(0.74f, 0.004f, -0.12f), new Vector3(0.46f, 0.055f, 0.09f), Quaternion.Euler(0f, 0f, -5f), stone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.cycle111.right_floor_step_c");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointDustScuff", root, c + new Vector3(1.42f, 0.064f, -0.17f), new Vector3(0.78f, 0.030f, 0.07f), Quaternion.Euler(0f, 0f, 3f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle111.endpoint_dust_scuff");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointLoosePlank", root, c + new Vector3(1.96f, 0.104f, -0.17f), new Vector3(0.58f, 0.050f, 0.08f), Quaternion.Euler(0f, 0f, -7f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle111.endpoint_loose_plank");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointShadowSliver", root, c + new Vector3(2.54f, 0.060f, -0.17f), new Vector3(0.54f, 0.030f, 0.07f), Quaternion.Euler(0f, 0f, -4f), dark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle111.endpoint_shadow_sliver");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointBrokenPost", root, c + new Vector3(2.82f, 0.252f, -0.17f), new Vector3(0.08f, 0.34f, 0.07f), Quaternion.Euler(0f, 0f, -8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle111.endpoint_broken_post");
+        }
+
         private static void CreateChapter1Cycle87EndSideViewDetails(Transform root, string prefix, Materials materials)
         {
             var c = Chapter1EndSideViewCenter;
@@ -9897,7 +9920,11 @@ namespace Anemora.EditorTools
                 "Current_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine",
                 "Current_CentralPlaza_Chapter1_Scene6_Cycle99_StartFloorScuff",
                 "Current_CentralPlaza_Chapter1_Scene6_Cycle99_StartLooseBoard",
-                "Current_CentralPlaza_Chapter1_Scene6_FadeOutGate"
+                "Current_CentralPlaza_Chapter1_Scene6_FadeOutGate",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle111_RightFloorStepA",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointDustScuff",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointShadowSliver",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointBrokenPost"
             };
 
             foreach (var objectName in requiredNames)
@@ -9912,6 +9939,10 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewGround", "current_stone");
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine", "current_stone");
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_FadeOutGate", "doorway_dark");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_Cycle111_RightFloorStepA", "current_stone");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointDustScuff", "dust");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointShadowSliver", "doorway_dark");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_Scene6_Cycle111_EndpointBrokenPost", "current_furniture");
 
             var forbiddenNames = new[]
             {
