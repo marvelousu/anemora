@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle102.md
+
+Cycle 102 review notes:
+- Focus images: `03_b1_b3_current.png`, `04_b1_b3_past.png`.
+- Check that B1/B3 left/right side planting no longer reads as literal green rectangular panels with trees placed on top.
+- Current may keep dry branches and scattered debris; past should read cleaner and should not inherit the current-side debris clutter.
+- Plaza paving, route pads, library facade, fountain, bench, and B1/B3 transition readability should not regress.

@@ -795,6 +795,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle94HouseExteriorRoadVergeDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle88PlazaFountainPavingDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle92PlazaSideLawnEdgeDetails(plazaRoot, prefix, past, materials);
+            CreateChapter1Cycle102PlazaSideStripScatterDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle89MiaLowerGardenDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle93MiaTreeBlockContrastDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle100MiaTreePanelSpreadDetails(miaHouseRoot, prefix, past, materials);
@@ -6229,6 +6230,93 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1Cycle102PlazaSideStripScatterDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = CentralPlazaVsCenter;
+            var patch = past ? materials.PastGrass : materials.Dust;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+
+            var hiddenPanelSuffixes = new[]
+            {
+                "B_LeftTreeBand",
+                "B_LeftGrassBand",
+                "B_RightTreeBand",
+                "B_RightGrassBand",
+                "B_Cycle39_LeftPlantMargin",
+                "B_Cycle39_RightPlantMargin",
+                "Cycle79_LeftSideGrassStrip",
+                "Cycle79_RightSideGrassStrip",
+                "Cycle92_LeftMidLawnSoftBed",
+                "Cycle92_RightMidLawnSoftBed",
+                "Cycle92_LeftLawnInnerEdge",
+                "Cycle92_RightLawnInnerEdge",
+                "Cycle92_LeftSideFlowerBed",
+                "Cycle92_RightSideFlowerBed"
+            };
+
+            foreach (var suffix in hiddenPanelSuffixes)
+            {
+                HideChildIfPresent(root, $"{prefix}_CentralPlaza_Chapter1_{suffix}");
+            }
+
+            var softenedTreeNames = new[]
+            {
+                "B_Cycle39_LeftTopTreeB",
+                "B_Cycle39_RightTopTreeB",
+                "Cycle79_LeftFootprintTree",
+                "Cycle79_RightFootprintTree"
+            };
+
+            foreach (var treeName in softenedTreeNames)
+            {
+                HideChildIfPresent(root, $"{prefix}_CentralPlaza_Chapter1_{treeName}_LowerCanopy");
+            }
+
+            if (!past)
+            {
+                foreach (var treeName in softenedTreeNames)
+                {
+                    HideChildIfPresent(root, $"Current_CentralPlaza_Chapter1_{treeName}_Crown");
+                }
+            }
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_B_Cycle102LeftSidePocketNorth", root, c + new Vector3(-8.28f, 0.136f, 4.92f), new Vector3(0.94f, 0.035f, 0.28f), Quaternion.Euler(0f, -19f, 0f), patch, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.b.cycle102.left_side.pocket_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_B_Cycle102LeftSidePocketMid", root, c + new Vector3(-7.54f, 0.136f, 1.22f), new Vector3(0.76f, 0.035f, 0.24f), Quaternion.Euler(0f, 14f, 0f), patch, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.b.cycle102.left_side.pocket_mid");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_B_Cycle102LeftSidePocketLower", root, c + new Vector3(-7.74f, 0.136f, -1.86f), new Vector3(0.86f, 0.035f, 0.26f), Quaternion.Euler(0f, -12f, 0f), patch, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.b.cycle102.left_side.pocket_lower");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_B_Cycle102RightSidePocketNorth", root, c + new Vector3(8.18f, 0.136f, 4.78f), new Vector3(0.92f, 0.035f, 0.28f), Quaternion.Euler(0f, 18f, 0f), patch, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.b.cycle102.right_side.pocket_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_B_Cycle102RightSidePocketMid", root, c + new Vector3(7.42f, 0.136f, 1.04f), new Vector3(0.78f, 0.035f, 0.24f), Quaternion.Euler(0f, -13f, 0f), patch, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.b.cycle102.right_side.pocket_mid");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_B_Cycle102RightSidePocketLower", root, c + new Vector3(7.82f, 0.136f, -1.76f), new Vector3(0.84f, 0.035f, 0.25f), Quaternion.Euler(0f, 13f, 0f), patch, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.b.cycle102.right_side.pocket_lower");
+
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_B_Cycle102SideScatter", c + new Vector3(-8.78f, 0.20f, 3.34f), leaf, 1020);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_B_Cycle102SideScatter", c + new Vector3(-6.72f, 0.20f, -0.22f), leaf, 1021);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_B_Cycle102SideScatter", c + new Vector3(8.72f, 0.20f, 3.12f), leaf, 1022);
+            CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_B_Cycle102SideScatter", c + new Vector3(6.82f, 0.20f, -0.36f), leaf, 1023);
+
+            if (past)
+            {
+                HideChildIfPresent(root, "Past_CentralPlaza_Chapter1_Cycle92_LeftLowerLawnPebble");
+                HideChildIfPresent(root, "Past_CentralPlaza_Chapter1_Cycle92_RightLowerLawnPebble");
+                HideChildIfPresent(root, "Past_CentralPlaza_Chapter1_Cycle92_LeftLowRail");
+                HideChildIfPresent(root, "Past_CentralPlaza_Chapter1_Cycle92_RightLowRail");
+                CreateLandmarkCube("Past_CentralPlaza_Chapter1_B_Cycle102LeftCleanEdgeNorth", root, c + new Vector3(-7.40f, 0.232f, 3.32f), new Vector3(0.96f, 0.070f, 0.10f), Quaternion.Euler(0f, -12f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.b.cycle102.left_clean_edge_north");
+                CreateLandmarkCube("Past_CentralPlaza_Chapter1_B_Cycle102RightCleanEdgeNorth", root, c + new Vector3(7.50f, 0.232f, 3.12f), new Vector3(0.96f, 0.070f, 0.10f), Quaternion.Euler(0f, 13f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.b.cycle102.right_clean_edge_north");
+                CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_B_Cycle102LeftBloom", c + new Vector3(-8.10f, 0.244f, 1.34f), leaf, materials.FlowerBlue, materials.FlowerYellow);
+                CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_B_Cycle102RightBloom", c + new Vector3(8.02f, 0.244f, 1.18f), leaf, materials.FlowerRed, materials.FlowerYellow);
+            }
+            else
+            {
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_B_Cycle102LeftDryBranch", root, c + new Vector3(-7.72f, 0.246f, 3.42f), new Vector3(0.94f, 0.080f, 0.12f), Quaternion.Euler(0f, -25f, 7f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.b.cycle102.left_dry_branch");
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_B_Cycle102RightDryBranch", root, c + new Vector3(7.88f, 0.246f, 3.22f), new Vector3(0.90f, 0.080f, 0.12f), Quaternion.Euler(0f, 25f, -7f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.b.cycle102.right_dry_branch");
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_B_Cycle102LeftBrokenStake", root, c + new Vector3(-7.38f, 0.258f, -0.76f), new Vector3(0.60f, 0.075f, 0.12f), Quaternion.Euler(0f, -28f, 8f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.b.cycle102.left_broken_stake");
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_B_Cycle102RightBrokenStake", root, c + new Vector3(7.38f, 0.258f, -0.74f), new Vector3(0.58f, 0.075f, 0.12f), Quaternion.Euler(0f, 24f, -8f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.b.cycle102.right_broken_stake");
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_B_Cycle102LeftSmallStone", root, c + new Vector3(-8.30f, 0.176f, -2.26f), new Vector3(0.34f, 0.10f, 0.18f), Quaternion.Euler(0f, -16f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.b.cycle102.left_small_stone");
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_B_Cycle102RightSmallStone", root, c + new Vector3(8.34f, 0.176f, -2.18f), new Vector3(0.34f, 0.10f, 0.18f), Quaternion.Euler(0f, 15f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.b.cycle102.right_small_stone");
+            }
+        }
+
         private static void CreateChapter1Cycle89MiaLowerGardenDetails(Transform root, string prefix, bool past, Materials materials)
         {
             var c = Chapter1MiaHouseMapCenter;
@@ -9308,6 +9396,7 @@ namespace Anemora.EditorTools
             ValidateInvisibleDropGuard("Past_CentralPlaza_Chapter1_F1_LowerGorgeNoStepCollider");
             ValidateChapter1MiaCycle100TreePanelCleanup();
             ValidateChapter1MiaCycle101LowerPlantCleanup();
+            ValidateChapter1PlazaCycle102SideStripCleanup();
             ValidateChapter1KaiaFarmVisualFeedbackCleanup();
             ValidateChapter1RuinsCycle98RightFieldCleanup();
             ValidateChapter1EndSideViewMap();
@@ -9448,6 +9537,46 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_C1_Cycle101LowerDustFan", "dust");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle101CleanRailWest", "past_fence");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle101CleanRailEast", "past_fence");
+        }
+
+        private static void ValidateChapter1PlazaCycle102SideStripCleanup()
+        {
+            var hiddenSuffixes = new[]
+            {
+                "B_LeftTreeBand",
+                "B_LeftGrassBand",
+                "B_RightTreeBand",
+                "B_RightGrassBand",
+                "B_Cycle39_LeftPlantMargin",
+                "B_Cycle39_RightPlantMargin",
+                "Cycle79_LeftSideGrassStrip",
+                "Cycle79_RightSideGrassStrip",
+                "Cycle92_LeftMidLawnSoftBed",
+                "Cycle92_RightMidLawnSoftBed",
+                "Cycle92_LeftLawnInnerEdge",
+                "Cycle92_RightLawnInnerEdge",
+                "Cycle92_LeftSideFlowerBed",
+                "Cycle92_RightSideFlowerBed"
+            };
+
+            foreach (var prefix in new[] { "Current", "Past" })
+            {
+                foreach (var suffix in hiddenSuffixes)
+                {
+                    ValidateInactiveOrMissing($"{prefix}_CentralPlaza_Chapter1_{suffix}");
+                }
+            }
+
+            ValidateInactiveOrMissing("Past_CentralPlaza_Chapter1_Cycle92_LeftLowerLawnPebble");
+            ValidateInactiveOrMissing("Past_CentralPlaza_Chapter1_Cycle92_RightLowerLawnPebble");
+            ValidateInactiveOrMissing("Past_CentralPlaza_Chapter1_Cycle92_LeftLowRail");
+            ValidateInactiveOrMissing("Past_CentralPlaza_Chapter1_Cycle92_RightLowRail");
+            ValidateInactiveOrMissing("Current_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeB_Crown");
+            ValidateInactiveOrMissing("Current_CentralPlaza_Chapter1_B_Cycle39_RightTopTreeB_Crown");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_B_Cycle102LeftDryBranch", "current_furniture");
+            ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_B_Cycle102LeftBrokenStake", "current_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle102LeftCleanEdgeNorth", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle102RightCleanEdgeNorth", "past_fence");
         }
 
         private static void ValidateChapter1KaiaFarmVisualFeedbackCleanup()
