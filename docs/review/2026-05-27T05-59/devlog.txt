@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle105.md
+
+Cycle 105 review notes:
+- Focus images: `07_d1_d3_current.png` and `08_d1_d3_past.png`.
+- Confirm the past D1-D3 lower verge/right D3 turn reads cleaner and less like current-side scattered debris.
+- Confirm current-side street-corner debris and D1/D2/D3 route pads/roads/buildings did not regress.
