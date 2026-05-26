@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle107.md
+
+Cycle 107 review notes:
+- Focus images: `09_e1_e3_current.png` and `10_e1_e3_past.png`.
+- Confirm the generated current E1-E3 lower field no longer reads as large literal rectangular panels under plant/field marks.
+- Confirm the past E1-E3 cultivated field remains clean and unchanged, and E route pads/roads/house/yard did not regress.
