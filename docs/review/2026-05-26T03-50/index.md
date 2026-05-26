@@ -17,10 +17,8 @@ Stage7k trims oversized CentralPlaza realtime shadow caster silhouettes without 
 ## Images
 
 - [home.png](home.png)
-- [Home_outside.png](Home_outside.png)
 - [plaza_01.png](plaza_01.png)
 - [plaza_02_niro_in_shadow.png](plaza_02_niro_in_shadow.png)
-- [plaza_caster_trim_close.png](plaza_caster_trim_close.png)
 - [library.png](library.png)
 - [tw_current_aperture.png](tw_current_aperture.png)
 

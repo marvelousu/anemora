@@ -40,7 +40,6 @@ This public review copy intentionally excludes external target reference images,
 
 ![home](home.png)
 
-![Home_outside](Home_outside.png)
 
 ![plaza_02_niro_in_shadow](plaza_02_niro_in_shadow.png)
 

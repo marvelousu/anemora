@@ -95,12 +95,12 @@ namespace Anemora.EditorTools
         private const string Stage7OutlineShaderName = "Anemora/FastVS/OutlineFullscreen";
         private const string Stage7OutlineMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_outline.mat";
         private const string UniversalRenderPipelineAssetPath = "Assets/Settings/UniversalRenderPipeline.asset";
-        private const float Stage7jCentralPlazaShadowStrengthMin = 0.85f;
-        private const float Stage7jCentralPlazaShadowStrengthMax = 0.87f;
-        private const float Stage7jCentralPlazaShadowReceiveStrengthMax = 0.79f;
-        private const float Stage7jCentralPlazaShadowTextureStrengthMax = 0.42f;
-        private const float Stage7jCentralPlazaSideShadeMin = 0.42f;
-        private const float Stage7jCentralPlazaFloorShadeMin = 0.36f;
+        private const float Stage7jCentralPlazaShadowStrengthMin = 0.48f;
+        private const float Stage7jCentralPlazaShadowStrengthMax = 0.56f;
+        private const float Stage7jCentralPlazaShadowReceiveStrengthMax = 0.46f;
+        private const float Stage7jCentralPlazaShadowTextureStrengthMax = 0.22f;
+        private const float Stage7jCentralPlazaSideShadeMin = 0.60f;
+        private const float Stage7jCentralPlazaFloorShadeMin = 0.56f;
         private const string Stage7ApvCurrentVolumeName = "FastVS_HD2D_Stage7_APV_CurrentLocalVolume";
         private const string Stage7ApvPastVolumeName = "FastVS_HD2D_Stage7_APV_PastLocalVolume";
         private const string Stage7ApvBakingSetAssetName = "FastVS_HouseSlice_Stage7_APV_BakingSet";
@@ -689,6 +689,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7Outline();
             ValidateHd2dStage7VfxParticles();
             ValidateHd2dStage7AtmosphericLayering();
+            ValidateHd2dStage7PublicReviewShadowLegibility();
             ValidateHd2dStage7ApvFoundation();
             ValidateHd2dStage7ApvBakedGi();
             ValidateHd2dStage7LibraryWarmAnchor();
@@ -1194,6 +1195,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7AtmosphericLayering();
         }
 
+        public static void ValidateHd2dStage7PublicReviewShadowLegibilityBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage7PublicReviewShadowLegibility();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1218,6 +1226,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage7w_atmospheric_layering");
             CaptureHd2dStage7AtmosphericLayeringReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage7PublicReviewShadowLegibilityReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage7x_public_review_shadow_legibility");
+            CaptureHd2dStage7PublicReviewShadowLegibilityReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3595,6 +3616,14 @@ namespace Anemora.EditorTools
                 outputDirectory,
                 "docs/devlog/2026-05-27_fast_vs_hd2d_stage7w_atmospheric_layering.md",
                 "Fast VS Stage 7 atmospheric layering reference screenshots captured");
+        }
+
+        private static void CaptureHd2dStage7PublicReviewShadowLegibilityReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage7x_public_review_shadow_legibility.md",
+                "Fast VS Stage 7 public review shadow legibility screenshots captured");
         }
 
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
@@ -32317,10 +32346,10 @@ namespace Anemora.EditorTools
             var sourceText = File.ReadAllText(sourcePath);
             if (!sourceText.Contains("ApplyCycle131CameraPaintOverlay(isRealtimeOutdoor)", StringComparison.Ordinal) ||
                 !sourceText.Contains("SetCycle128CameraGradeActive(active)", StringComparison.Ordinal) ||
-                !sourceText.Contains("Mathf.Min(alpha, 0.22f)", StringComparison.Ordinal) ||
-                !sourceText.Contains("Mathf.Min(alpha, 0.23f)", StringComparison.Ordinal))
+                !sourceText.Contains("Mathf.Min(alpha, 0.10f)", StringComparison.Ordinal) ||
+                !sourceText.Contains("Mathf.Min(alpha, 0.11f)", StringComparison.Ordinal))
             {
-                throw new InvalidOperationException("House slice validation failed: Stage 4 runtime rig must keep outdoor-only painted overlay activation and conservative alpha clamps.");
+                throw new InvalidOperationException("House slice validation failed: Stage 4 runtime rig must keep outdoor-only painted overlay activation and public-review legibility alpha clamps.");
             }
         }
 
@@ -32982,6 +33011,117 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7AtmosphereCard("FastVS_HD2D_Stage7_PastPlaza_AmberAirVeil", OtherTimeSpaceRenderLayer, atmosphereMaterial, new Vector3(0.28f, 0.14f, 1f));
         }
 
+        private static void ValidateHd2dStage7PublicReviewShadowLegibility()
+        {
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            var volume = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume")?.GetComponent<Volume>();
+            var mainLight = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            if (controller == null || visibility == null || guide == null || director == null || realtimeRig == null ||
+                camera == null || volume == null || volume.sharedProfile == null || mainLight == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 public review shadow legibility needs controller, visibility, guide, director, realtime rig, camera, global volume, and main light.");
+            }
+
+            void Apply(FastVsHouseArea area, Vector3 playerLocal)
+            {
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocal);
+                guide.ApplyActiveTimeIsolationForReview();
+                director.ApplyAreaForReview(area);
+                realtimeRig.ApplyNowForReview();
+            }
+
+            Apply(FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter);
+            ValidateStage7PublicReviewAreaLight("Stage 7 public review central plaza", mainLight, 0.48f, 0.56f, 0.036f, 0.042f);
+            ValidateCentralPlazaRuntimeSkyForReview(camera, "Stage 7 public review shadow legibility");
+            ValidateStage7PublicReviewCentralReceivers();
+
+            Apply(FastVsHouseArea.Exterior, HouseExteriorCenter);
+            ValidateStage7PublicReviewAreaLight("Stage 7 public review exterior", mainLight, 0.52f, 0.56f, 0.132f, 0.150f);
+
+            Apply(FastVsHouseArea.Library, LibraryVsCenter);
+            ValidateStage7PublicReviewAreaLight("Stage 7 public review library", mainLight, 0.40f, 0.44f, 0.140f, 0.160f);
+
+            ValidateStage7PublicReviewShadowLegibilitySourceText();
+        }
+
+        private static void ValidateStage7PublicReviewAreaLight(string label, Light mainLight, float shadowMin, float shadowMax, float ambientMin, float ambientMax)
+        {
+            if (mainLight.type != LightType.Directional ||
+                mainLight.shadows != LightShadows.Soft ||
+                mainLight.shadowStrength < shadowMin ||
+                mainLight.shadowStrength > shadowMax)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} needs readable soft-shadow strength {shadowMin:0.00}..{shadowMax:0.00}, found type={mainLight.type}, shadows={mainLight.shadows}, strength={mainLight.shadowStrength:0.000}.");
+            }
+
+            if (RenderSettings.ambientMode != AmbientMode.Flat)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} must use flat review ambient lighting.");
+            }
+
+            var ambient = RenderSettings.ambientLight;
+            var ambientAverage = (ambient.r + ambient.g + ambient.b) / 3f;
+            if (ambientAverage < ambientMin || ambientAverage > ambientMax)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} needs review ambient average {ambientMin:0.000}..{ambientMax:0.000}, found {ambient}.");
+            }
+        }
+
+        private static void ValidateStage7PublicReviewCentralReceivers()
+        {
+            var receiverCount = 0;
+            var block = new MaterialPropertyBlock();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (renderer == null ||
+                    !renderer.gameObject.scene.IsValid() ||
+                    !renderer.enabled ||
+                    !renderer.receiveShadows ||
+                    !renderer.gameObject.name.Contains("Current_CentralPlaza", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (IsStage7PlazaSoftBalanceReceiver(renderer, block))
+                {
+                    receiverCount++;
+                }
+            }
+
+            if (receiverCount < 12)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 public review shadow legibility expected at least 12 lifted central-plaza receiver property blocks, found {receiverCount}.");
+            }
+        }
+
+        private static void ValidateStage7PublicReviewShadowLegibilitySourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("ResolveReviewShadowStrength(area)", StringComparison.Ordinal) ||
+                !source.Contains("private const float LibraryReviewShadowStrength = 0.42f;", StringComparison.Ordinal) ||
+                !source.Contains("private const float CentralPlazaStage7jShadowStrength = 0.52f;", StringComparison.Ordinal) ||
+                !source.Contains("private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;", StringComparison.Ordinal) ||
+                !source.Contains("Mathf.Min(alpha, 0.10f)", StringComparison.Ordinal) ||
+                !source.Contains("Mathf.Min(alpha, 0.11f)", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 public review shadow legibility source guards are missing.");
+            }
+
+            if (source.Contains("isRealtimeOutdoor ? 0.94f", StringComparison.Ordinal) ||
+                source.Contains("new Color(0.010f, 0.012f, 0.010f", StringComparison.Ordinal) ||
+                source.Contains("new Color(0.012f, 0.014f, 0.012f", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 7 public review shadow legibility must not restore the previous black review overlay or 0.94 outdoor shadow strength.");
+            }
+        }
+
         private static void ValidateHd2dStage7ApvFoundation()
         {
             ValidateHd2dStage7ApvVolume(Stage7ApvCurrentVolumeName, "Current", CurrentSpaceRenderLayer);
@@ -33254,7 +33394,7 @@ namespace Anemora.EditorTools
             if (mainLight.shadowStrength < Stage7jCentralPlazaShadowStrengthMin ||
                 mainLight.shadowStrength > Stage7jCentralPlazaShadowStrengthMax)
             {
-                throw new InvalidOperationException($"House slice validation failed: Stage 7 plaza shadow soft balance expected central-plaza shadowStrength around 0.86, found {mainLight.shadowStrength:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 plaza shadow soft balance expected central-plaza readable shadowStrength around 0.52, found {mainLight.shadowStrength:0.000}.");
             }
 
             if (mainLight.cookie == null || !mainLight.cookie.name.Contains("FastVS_CentralPlazaRealtimeSunCookie", StringComparison.Ordinal))
@@ -33658,7 +33798,7 @@ namespace Anemora.EditorTools
             if (mainLight.shadowStrength < Stage7jCentralPlazaShadowStrengthMin ||
                 mainLight.shadowStrength > Stage7jCentralPlazaShadowStrengthMax)
             {
-                throw new InvalidOperationException($"House slice validation failed: Stage 7 plaza receiver rebalance expected central-plaza shadowStrength around 0.86, found {mainLight.shadowStrength:0.000}.");
+                throw new InvalidOperationException($"House slice validation failed: Stage 7 plaza receiver rebalance expected central-plaza readable shadowStrength around 0.52, found {mainLight.shadowStrength:0.000}.");
             }
 
             if (mainLight.cookie == null || !mainLight.cookie.name.Contains("FastVS_CentralPlazaRealtimeSunCookie", StringComparison.Ordinal))
@@ -44483,7 +44623,7 @@ namespace Anemora.EditorTools
 
                 renderer.GetPropertyBlock(block);
                 if (block.GetFloat("_DirectionalLightStrength") >= 0.54f &&
-                    block.GetFloat("_ShadowReceiveStrength") >= 0.64f &&
+                    block.GetFloat("_ShadowReceiveStrength") <= Stage7jCentralPlazaShadowReceiveStrengthMax &&
                     block.GetFloat("_SurfaceRampStrength") >= 0.41f)
                 {
                     gradedReceiverCount++;
@@ -44596,7 +44736,8 @@ namespace Anemora.EditorTools
                 }
 
                 renderer.GetPropertyBlock(block);
-                if (block.GetFloat("_ShadowTextureStrength") >= 0.26f)
+                var shadowTextureStrength = block.GetFloat("_ShadowTextureStrength");
+                if (shadowTextureStrength <= Stage7jCentralPlazaShadowTextureStrengthMax)
                 {
                     texturedReceiverCount++;
                 }
@@ -44628,7 +44769,8 @@ namespace Anemora.EditorTools
                 }
 
                 renderer.GetPropertyBlock(block);
-                if (block.GetFloat("_ShadowTextureStrength") >= 0.34f)
+                var shadowTextureStrength = block.GetFloat("_ShadowTextureStrength");
+                if (shadowTextureStrength <= Stage7jCentralPlazaShadowTextureStrengthMax)
                 {
                     liftedReceiverCount++;
                 }
@@ -44921,7 +45063,7 @@ namespace Anemora.EditorTools
                 }
 
                 renderer.GetPropertyBlock(block);
-                if (block.GetFloat("_ShadowTextureStrength") >= 0.34f)
+                if (block.GetFloat("_ShadowTextureStrength") <= Stage7jCentralPlazaShadowTextureStrengthMax)
                 {
                     softenedReceiverCount++;
                 }
@@ -44980,8 +45122,10 @@ namespace Anemora.EditorTools
                 }
 
                 renderer.GetPropertyBlock(block);
+                var worldShadowReceiveStrength = block.GetFloat("_WorldShadowReceiveStrength");
                 if (block.GetFloat("_WorldLightStrength") >= 0.17f &&
-                    block.GetFloat("_WorldShadowReceiveStrength") >= 0.16f)
+                    worldShadowReceiveStrength >= 0.05f &&
+                    worldShadowReceiveStrength <= 0.08f)
                 {
                     trackedSpriteCount++;
                 }
@@ -45030,7 +45174,9 @@ namespace Anemora.EditorTools
                 if (material != null && material.HasProperty("_ShadowReceiveStrength"))
                 {
                     renderer.GetPropertyBlock(block);
-                    if (block.GetFloat("_ShadowReceiveStrength") < 0.64f)
+                    var shadowReceiveStrength = block.GetFloat("_ShadowReceiveStrength");
+                    if (shadowReceiveStrength <= 0f ||
+                        shadowReceiveStrength > Stage7jCentralPlazaShadowReceiveStrengthMax)
                     {
                         continue;
                     }
@@ -45556,9 +45702,12 @@ namespace Anemora.EditorTools
                     throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must not borrow the exterior Stage 3 cookie.");
                 }
 
-                if (RenderSettings.fog || RenderSettings.ambientLight.maxColorComponent > 0.060f)
+                var ambientMax = area == FastVsHouseArea.CentralPlaza
+                    ? 0.060f
+                    : area == FastVsHouseArea.Exterior ? 0.150f : 0.170f;
+                if (RenderSettings.fog || RenderSettings.ambientLight.maxColorComponent > ambientMax)
                 {
-                    throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must use non-painted low ambient realtime lighting, found fog={RenderSettings.fog}, ambient={RenderSettings.ambientLight}.");
+                    throw new InvalidOperationException($"House slice validation failed: cycle 161 {area} must use bounded review ambient realtime lighting, found fog={RenderSettings.fog}, ambient={RenderSettings.ambientLight}.");
                 }
 
                 var receiverCount = 0;
@@ -45585,8 +45734,9 @@ namespace Anemora.EditorTools
                         var isCentralPlaza = area == FastVsHouseArea.CentralPlaza;
                         var isReceiverGrade = isCentralPlaza
                             ? IsStage7PlazaSoftBalanceReceiver(renderer, block)
-                            : block.GetFloat("_DirectionalLightStrength") >= 0.79f &&
-                              block.GetFloat("_ShadowReceiveStrength") >= 0.76f;
+                            : block.GetFloat("_DirectionalLightStrength") >= 0.90f &&
+                              block.GetFloat("_ShadowReceiveStrength") > 0f &&
+                              block.GetFloat("_ShadowReceiveStrength") <= Stage7jCentralPlazaShadowReceiveStrengthMax;
                         if (isReceiverGrade &&
                             (baseColor.a <= 0f || baseColor.b >= baseColor.r))
                         {
@@ -45725,8 +45875,8 @@ namespace Anemora.EditorTools
             director.ApplyAreaForReview(FastVsHouseArea.Library);
             realtimeRig.ApplyNowForReview();
             if (mainLight.intensity < 1.65f ||
-                RenderSettings.ambientLight.r < 0.056f ||
-                RenderSettings.ambientLight.maxColorComponent > 0.060f)
+                RenderSettings.ambientLight.r < 0.140f ||
+                RenderSettings.ambientLight.maxColorComponent > 0.170f)
             {
                 throw new InvalidOperationException($"House slice validation failed: cycle 162 library must be readable without painted haze, found intensity={mainLight.intensity:0.00}, ambient={RenderSettings.ambientLight}.");
             }
@@ -45764,9 +45914,10 @@ namespace Anemora.EditorTools
                 var isCentralPlaza = area == FastVsHouseArea.CentralPlaza;
                 if (isCentralPlaza
                         ? IsStage7PlazaSoftBalanceReceiver(renderer, block)
-                        : block.GetFloat("_DirectionalLightStrength") >= 0.91f &&
-                          block.GetFloat("_ShadowReceiveStrength") >= 0.81f &&
-                          block.GetFloat("_ShadowTextureStrength") >= 0.49f)
+                        : block.GetFloat("_DirectionalLightStrength") >= 0.90f &&
+                          block.GetFloat("_ShadowReceiveStrength") > 0f &&
+                          block.GetFloat("_ShadowReceiveStrength") <= Stage7jCentralPlazaShadowReceiveStrengthMax &&
+                          block.GetFloat("_ShadowTextureStrength") <= Stage7jCentralPlazaShadowTextureStrengthMax)
                 {
                     receiverCount++;
                 }

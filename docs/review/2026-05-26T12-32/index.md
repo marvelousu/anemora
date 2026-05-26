@@ -37,7 +37,6 @@ Review 用には同 capture 出力を `docs/review/2026-05-26T12-32/` へ RGB PN
 
 ![library](library.png)
 
-![Home_outside](Home_outside.png)
 
 ![tw_current_aperture](tw_current_aperture.png)
 

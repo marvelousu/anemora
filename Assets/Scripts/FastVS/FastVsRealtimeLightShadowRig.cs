@@ -35,14 +35,19 @@ namespace Anemora.FastVS
         private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
         private static readonly int EmissionIntensityId = Shader.PropertyToID("_EmissionIntensity");
         private static readonly Color CentralPlazaTopLight = new Color(1.06f, 1.04f, 0.94f, 1f);
-        private static readonly Color CentralPlazaSideShade = new Color(0.38f, 0.40f, 0.40f, 1f);
-        private static readonly Color CentralPlazaFloorShade = new Color(0.34f, 0.36f, 0.35f, 1f);
-        private const float CentralPlazaStage7jShadowStrength = 0.86f;
-        private const float CentralPlazaStage7jShadowReceiveStrength = 0.78f;
-        private const float CentralPlazaStage7jFacadeShadowTextureStrength = 0.42f;
-        private const float CentralPlazaStage7jFloorShadowTextureStrength = 0.36f;
-        private static readonly Color CentralPlazaStage7jSideShade = new Color(0.43f, 0.45f, 0.45f, 1f);
-        private static readonly Color CentralPlazaStage7jFloorShade = new Color(0.37f, 0.39f, 0.38f, 1f);
+        private static readonly Color RealtimeOutdoorSideShade = new Color(0.56f, 0.57f, 0.55f, 1f);
+        private static readonly Color RealtimeOutdoorFloorShade = new Color(0.52f, 0.53f, 0.50f, 1f);
+        private const float ExteriorReviewShadowStrength = 0.54f;
+        private const float LibraryReviewShadowStrength = 0.42f;
+        private const float CentralPlazaStage7jShadowStrength = 0.52f;
+        private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;
+        private const float CentralPlazaStage7jFacadeShadowTextureStrength = 0.20f;
+        private const float CentralPlazaStage7jFloorShadowTextureStrength = 0.18f;
+        private const float RealtimeOutdoorShadowReceiveStrength = 0.44f;
+        private const float RealtimeOutdoorFacadeShadowTextureStrength = 0.22f;
+        private const float RealtimeOutdoorFloorShadowTextureStrength = 0.19f;
+        private static readonly Color CentralPlazaStage7jSideShade = new Color(0.62f, 0.63f, 0.60f, 1f);
+        private static readonly Color CentralPlazaStage7jFloorShade = new Color(0.58f, 0.59f, 0.55f, 1f);
 
         [SerializeField] private FastVsHouseAreaVisibility areaVisibility;
         [SerializeField] private Camera sceneCamera;
@@ -127,7 +132,7 @@ namespace Anemora.FastVS
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
                 mainLight.shadowResolution = isRealtimeOutdoor ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
-                mainLight.shadowStrength = isCentralPlaza ? CentralPlazaStage7jShadowStrength : isRealtimeOutdoor ? 0.94f : Mathf.Max(mainLight.shadowStrength, 0.82f);
+                mainLight.shadowStrength = isRealtimeOutdoor ? ResolveReviewShadowStrength(area) : Mathf.Max(mainLight.shadowStrength, 0.82f);
                 mainLight.shadowBias = isRealtimeOutdoor ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
                 mainLight.shadowNormalBias = isRealtimeOutdoor ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
@@ -191,8 +196,8 @@ namespace Anemora.FastVS
             else if (isRealtimeOutdoor)
             {
                 RenderSettings.ambientLight = area == FastVsHouseArea.Exterior
-                    ? new Color(0.052f, 0.054f, 0.055f, 1f)
-                    : new Color(0.058f, 0.056f, 0.052f, 1f);
+                    ? new Color(0.145f, 0.145f, 0.135f, 1f)
+                    : new Color(0.165f, 0.150f, 0.132f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
             }
             else
@@ -208,6 +213,21 @@ namespace Anemora.FastVS
             return area == FastVsHouseArea.Exterior ||
                    area == FastVsHouseArea.CentralPlaza ||
                    area == FastVsHouseArea.Library;
+        }
+
+        private static float ResolveReviewShadowStrength(FastVsHouseArea area)
+        {
+            if (area == FastVsHouseArea.CentralPlaza)
+            {
+                return CentralPlazaStage7jShadowStrength;
+            }
+
+            if (area == FastVsHouseArea.Library)
+            {
+                return LibraryReviewShadowStrength;
+            }
+
+            return ExteriorReviewShadowStrength;
         }
 
         private bool TryApplyRuntimeOutdoorSkybox(FastVsHouseArea area)
@@ -912,7 +932,7 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(ShadowReceiveStrengthId))
             {
-                block.SetFloat(ShadowReceiveStrengthId, isCentralPlaza ? CentralPlazaStage7jShadowReceiveStrength : 0.92f);
+                block.SetFloat(ShadowReceiveStrengthId, isCentralPlaza ? CentralPlazaStage7jShadowReceiveStrength : RealtimeOutdoorShadowReceiveStrength);
             }
 
             if (material.HasProperty(ShadowTextureStrengthId))
@@ -921,7 +941,7 @@ namespace Anemora.FastVS
                     ShadowTextureStrengthId,
                     isCentralPlaza
                         ? (isFacadeReceiver ? CentralPlazaStage7jFacadeShadowTextureStrength : CentralPlazaStage7jFloorShadowTextureStrength)
-                        : isFacadeReceiver ? 0.62f : 0.50f);
+                        : isFacadeReceiver ? RealtimeOutdoorFacadeShadowTextureStrength : RealtimeOutdoorFloorShadowTextureStrength);
             }
 
             if (material.HasProperty(TopLightId))
@@ -931,12 +951,12 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(SideShadeId))
             {
-                block.SetColor(SideShadeId, isCentralPlaza ? CentralPlazaStage7jSideShade : CentralPlazaSideShade);
+                block.SetColor(SideShadeId, isCentralPlaza ? CentralPlazaStage7jSideShade : RealtimeOutdoorSideShade);
             }
 
             if (material.HasProperty(FloorShadeId))
             {
-                block.SetColor(FloorShadeId, isCentralPlaza ? CentralPlazaStage7jFloorShade : CentralPlazaFloorShade);
+                block.SetColor(FloorShadeId, isCentralPlaza ? CentralPlazaStage7jFloorShade : RealtimeOutdoorFloorShade);
             }
 
             CopyMaterialEmissionToPropertyBlock(material, block);
@@ -1026,12 +1046,12 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(WorldLightStrengthId))
             {
-                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.22f : 0.10f);
+                block.SetFloat(WorldLightStrengthId, isRealtimeOutdoor ? 0.32f : 0.10f);
             }
 
             if (material.HasProperty(WorldShadowReceiveStrengthId))
             {
-                block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.17f : 0.11f);
+                block.SetFloat(WorldShadowReceiveStrengthId, isRealtimeOutdoor ? 0.06f : 0.11f);
             }
 
             CopyMaterialEmissionToPropertyBlock(material, block);
@@ -1330,18 +1350,18 @@ namespace Anemora.FastVS
                     var dx = (u - 0.50f) * 2f;
                     var dy = (v - 0.48f) * 2f;
                     var radius = Mathf.Sqrt(dx * dx * 0.90f + dy * dy * 1.18f);
-                    var edge = Mathf.SmoothStep(0.42f, 1.05f, radius) * 0.16f;
-                    var lowerShade = Mathf.SmoothStep(0.38f, 0.92f, v) * 0.13f;
-                    var topOcclusion = Mathf.SmoothStep(0.86f, 0.18f, v) * 0.06f;
-                    var diagonalA = Mathf.SmoothStep(0.22f, 0.012f, Mathf.Abs((v - 0.35f) - (u - 0.50f) * -0.28f)) * 0.18f;
-                    var diagonalB = Mathf.SmoothStep(0.18f, 0.014f, Mathf.Abs((v - 0.61f) - (u - 0.42f) * -0.38f)) * 0.14f;
+                    var edge = Mathf.SmoothStep(0.42f, 1.05f, radius) * 0.085f;
+                    var lowerShade = Mathf.SmoothStep(0.38f, 0.92f, v) * 0.060f;
+                    var topOcclusion = Mathf.SmoothStep(0.86f, 0.18f, v) * 0.025f;
+                    var diagonalA = Mathf.SmoothStep(0.22f, 0.012f, Mathf.Abs((v - 0.35f) - (u - 0.50f) * -0.28f)) * 0.070f;
+                    var diagonalB = Mathf.SmoothStep(0.18f, 0.014f, Mathf.Abs((v - 0.61f) - (u - 0.42f) * -0.38f)) * 0.055f;
                     var canopyNoise = Mathf.PerlinNoise((u * 8.8f) + 14.2f, (v * 7.1f) + 3.4f);
                     var fineNoise = Mathf.PerlinNoise((u * 29.0f) + 1.2f, (v * 24.0f) + 9.7f);
-                    var dapple = Mathf.SmoothStep(0.58f, 0.86f, (canopyNoise * 0.72f) + (fineNoise * 0.28f)) * 0.055f;
+                    var dapple = Mathf.SmoothStep(0.58f, 0.86f, (canopyNoise * 0.72f) + (fineNoise * 0.28f)) * 0.025f;
                     var playerClear = SoftEllipseCycle131(u, v, 0.50f, 0.42f, 0.15f, 0.16f, 0f, 0.13f);
                     var alpha = Mathf.Clamp01(edge + lowerShade + topOcclusion + diagonalA + diagonalB + dapple - playerClear);
                     alpha = ShapeCycle128GradeAlpha(alpha, u, v);
-                    cycle128GradeTexture.SetPixel(x, y, new Color(0.012f, 0.014f, 0.012f, Mathf.Min(alpha, 0.22f)));
+                    cycle128GradeTexture.SetPixel(x, y, new Color(0.055f, 0.052f, 0.045f, Mathf.Min(alpha, 0.10f)));
                 }
             }
 
@@ -1405,15 +1425,15 @@ namespace Anemora.FastVS
                 {
                     var u = (x + 0.5f) / cycle131ShadowPaintTexture.width;
                     var v = (y + 0.5f) / cycle131ShadowPaintTexture.height;
-                    var diagonalA = Mathf.SmoothStep(0.24f, 0.012f, Mathf.Abs((v - 0.35f) - (u - 0.50f) * -0.30f)) * 0.24f;
-                    var diagonalB = Mathf.SmoothStep(0.19f, 0.014f, Mathf.Abs((v - 0.60f) - (u - 0.45f) * -0.42f)) * 0.20f;
-                    var lowerContact = Mathf.SmoothStep(0.50f, 0.10f, v) * 0.16f;
-                    var sideVignette = Mathf.SmoothStep(0.58f, 1.06f, Mathf.Abs(u - 0.50f) * 2f) * 0.12f;
+                    var diagonalA = Mathf.SmoothStep(0.24f, 0.012f, Mathf.Abs((v - 0.35f) - (u - 0.50f) * -0.30f)) * 0.090f;
+                    var diagonalB = Mathf.SmoothStep(0.19f, 0.014f, Mathf.Abs((v - 0.60f) - (u - 0.45f) * -0.42f)) * 0.075f;
+                    var lowerContact = Mathf.SmoothStep(0.50f, 0.10f, v) * 0.065f;
+                    var sideVignette = Mathf.SmoothStep(0.58f, 1.06f, Mathf.Abs(u - 0.50f) * 2f) * 0.050f;
                     var dappleNoise = Mathf.PerlinNoise((u * 17.0f) + 5.1f, (v * 14.0f) + 8.7f);
-                    var dapple = Mathf.SmoothStep(0.58f, 0.86f, dappleNoise) * 0.060f;
+                    var dapple = Mathf.SmoothStep(0.58f, 0.86f, dappleNoise) * 0.025f;
                     var alpha = Mathf.Clamp01(diagonalA + diagonalB + lowerContact + sideVignette + dapple);
                     alpha = ShapeCycle131ShadowPaintAlpha(alpha, u, v);
-                    cycle131ShadowPaintTexture.SetPixel(x, y, new Color(0.010f, 0.012f, 0.010f, Mathf.Min(alpha, 0.23f)));
+                    cycle131ShadowPaintTexture.SetPixel(x, y, new Color(0.044f, 0.042f, 0.036f, Mathf.Min(alpha, 0.11f)));
                 }
             }
 
@@ -1488,20 +1508,20 @@ namespace Anemora.FastVS
         {
             var centerBias = Mathf.SmoothStep(0.10f, 0.88f, 1f - Mathf.Clamp01((Mathf.Abs(u - 0.50f) * 1.8f) + (Mathf.Abs(v - 0.47f) * 1.2f)));
             var upperBias = Mathf.SmoothStep(0.20f, 0.82f, 1f - v);
-            var localizedLift = Mathf.Lerp(0.34f, 0.74f, centerBias * 0.70f + upperBias * 0.30f);
+            var localizedLift = Mathf.Lerp(0.22f, 0.50f, centerBias * 0.70f + upperBias * 0.30f);
             alpha *= localizedLift;
-            alpha = Mathf.SmoothStep(0f, 0.18f, alpha);
-            return Mathf.Min(alpha, 0.22f);
+            alpha = Mathf.SmoothStep(0f, 0.14f, alpha);
+            return Mathf.Min(alpha, 0.10f);
         }
 
         private static float ShapeCycle131ShadowPaintAlpha(float alpha, float u, float v)
         {
             var centerBias = Mathf.SmoothStep(0.16f, 0.90f, 1f - Mathf.Clamp01((Mathf.Abs(u - 0.50f) * 1.6f) + (Mathf.Abs(v - 0.50f) * 1.0f)));
             var diagonalBias = Mathf.SmoothStep(0.14f, 0.82f, 1f - Mathf.Abs((v - 0.48f) - (u - 0.48f) * -0.12f) * 2.0f);
-            var localizedLift = Mathf.Lerp(0.30f, 0.68f, centerBias * 0.62f + diagonalBias * 0.38f);
+            var localizedLift = Mathf.Lerp(0.20f, 0.48f, centerBias * 0.62f + diagonalBias * 0.38f);
             alpha *= localizedLift;
-            alpha = Mathf.SmoothStep(0f, 0.16f, alpha);
-            return Mathf.Min(alpha, 0.23f);
+            alpha = Mathf.SmoothStep(0f, 0.14f, alpha);
+            return Mathf.Min(alpha, 0.11f);
         }
 
         private static float SoftEllipseCycle131(float u, float v, float centerU, float centerV, float radiusU, float radiusV, float rotationDegrees, float strength)

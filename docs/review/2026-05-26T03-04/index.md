@@ -19,10 +19,7 @@ The change intentionally reuses existing plaza sun exposure / shadow midtone mat
 ## Images
 
 - [home.png](home.png)
-- [Home_outside.png](Home_outside.png)
 - [plaza_01.png](plaza_01.png)
-- [plaza_02_niro_in_shadow.png](plaza_02_niro_in_shadow.png)
-- [plaza_shadow_lift_close.png](plaza_shadow_lift_close.png)
 - [library.png](library.png)
 - [tw_current_aperture.png](tw_current_aperture.png)
 

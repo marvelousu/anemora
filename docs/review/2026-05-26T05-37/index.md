@@ -39,7 +39,6 @@ Review images in this folder were re-saved as RGB PNGs so the branch viewer does
 
 ![home](home.png)
 
-![Home_outside](Home_outside.png)
 
 ![plaza_02_niro_in_shadow](plaza_02_niro_in_shadow.png)
 

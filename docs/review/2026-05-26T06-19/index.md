@@ -40,7 +40,6 @@ Review images in this folder were re-saved as RGB PNGs so the branch viewer does
 
 ![library](library.png)
 
-![Home_outside](Home_outside.png)
 
 ![tw_current_aperture](tw_current_aperture.png)
 

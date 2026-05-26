@@ -12,13 +12,9 @@ Launch the whole `Builds\FastVS_HouseSlice` folder, not the exe alone.
 
 ![home](home.png)
 
-![Home_outside](Home_outside.png)
 
 ![plaza_01](plaza_01.png)
 
-![plaza_02_niro_in_shadow](plaza_02_niro_in_shadow.png)
-
-![plaza_depth_bands_close](plaza_depth_bands_close.png)
 
 ![library](library.png)
 

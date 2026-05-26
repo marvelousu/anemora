@@ -13,11 +13,9 @@ Tom 撮影依頼: 5 エリアスクショは `C:\Users\maro6\OneDrive\work\proje
 ## Images
 
 - [home](home.png)
-- [Home_outside](Home_outside.png)
 - [plaza_01](plaza_01.png)
 - [plaza_02_niro_in_shadow](plaza_02_niro_in_shadow.png)
 - [library](library.png)
-- [plaza_shadow_soft_balance_close](plaza_shadow_soft_balance_close.png)
 - [tw_current_aperture](tw_current_aperture.png)
 
 ## Verification

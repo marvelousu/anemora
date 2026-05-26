@@ -39,7 +39,6 @@ This review copy is stored under:
 
 ![library](library.png)
 
-![Home_outside](Home_outside.png)
 
 ![tw_current_aperture](tw_current_aperture.png)
 

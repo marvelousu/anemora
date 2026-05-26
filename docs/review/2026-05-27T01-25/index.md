@@ -32,7 +32,6 @@ This public review copy intentionally excludes external target reference images,
 
 ![home](home.png)
 
-![Home_outside](Home_outside.png)
 
 ![plaza_01](plaza_01.png)
 
