@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle100.md
+
+Cycle 100 review notes:
+- Focus images: `05_c1_c3_current.png`, `06_c1_c3_past.png`.
+- Check that the old top-left / top-right tree rectangles no longer read as literal green panels.
+- Current should be sparser and more ruined; past should be cleaner in the same tree zone.
+- Roads, route pads, house, yard, and C3 transition readability should not regress.
