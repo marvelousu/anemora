@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle103.md
+
+Cycle 103 review notes:
+- Focus images: `01_a1_a2_current.png`, `02_a1_a2_past.png`.
+- Check that A1/A2 tree and plant hint areas no longer read as literal rectangular green panels with trees placed on top.
+- Current should keep dry branches and scattered debris; past should read cleaner and should not inherit stone/log/crate clutter from the current side.
+- House, porch, roads, A1/A2 route markers, route pads, front road, right continuation ground, and transitions should not regress.
