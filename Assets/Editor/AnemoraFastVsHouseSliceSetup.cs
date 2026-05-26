@@ -789,6 +789,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle85RuinsChannelExitDetails(ruinsRoot, prefix, past, materials);
             CreateChapter1Cycle91RuinsSettlementThresholdDetails(ruinsRoot, prefix, past, materials);
             CreateChapter1Cycle86HouseExteriorYardDetails(exteriorRoot, prefix, past, materials);
+            CreateChapter1Cycle94HouseExteriorRoadVergeDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle88PlazaFountainPavingDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle92PlazaSideLawnEdgeDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle89MiaLowerGardenDetails(miaHouseRoot, prefix, past, materials);
@@ -5712,6 +5713,39 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_HouseExterior_Chapter1_Cycle86_FallenGardenRail", root, c + new Vector3(-3.38f, 0.178f, -3.58f), new Vector3(0.96f, 0.08f, 0.12f), Quaternion.Euler(0f, -22f, -5f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.house_exterior.chapter1.cycle86.fallen_garden_rail");
                 CreateLandmarkCube("Current_HouseExterior_Chapter1_Cycle86_DroppedClothDust", root, c + new Vector3(-3.18f, 0.086f, 2.10f), new Vector3(0.74f, 0.04f, 0.34f), Quaternion.Euler(0f, -12f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.house_exterior.chapter1.cycle86.dropped_cloth_dust");
                 CreateGrassTuft(root, "Current_HouseExterior_Chapter1_Cycle86_SparseYardWeed", c + new Vector3(4.82f, 0.20f, -3.18f), yardLife, 86);
+            }
+        }
+
+        private static void CreateChapter1Cycle94HouseExteriorRoadVergeDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var verge = past ? materials.PastGrass : materials.Dust;
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+
+            CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadLowerVergePatch", root, c + new Vector3(5.92f, 0.108f, -2.94f), new Vector3(1.42f, 0.040f, 0.30f), Quaternion.Euler(0f, -12f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.cycle94.right_road_lower_verge_patch");
+            CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadMidVergePatch", root, c + new Vector3(7.82f, 0.108f, 0.78f), new Vector3(1.36f, 0.040f, 0.32f), Quaternion.Euler(0f, 18f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.cycle94.right_road_mid_verge_patch");
+            CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_A2ApproachOuterScuff", root, c + new Vector3(9.10f, 0.126f, 3.86f), new Vector3(1.08f, 0.035f, 0.18f), Quaternion.Euler(0f, -18f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_exterior.chapter1.cycle94.a2_approach_outer_scuff");
+            CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadSmallStone", root, c + new Vector3(7.06f, 0.156f, -0.72f), new Vector3(0.36f, 0.10f, 0.18f), Quaternion.Euler(0f, 15f, -3f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.cycle94.right_road_small_stone");
+
+            if (past)
+            {
+                CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle94_RightRoadLowRailLower", root, c + new Vector3(5.72f, 0.210f, -2.56f), new Vector3(1.10f, 0.10f, 0.10f), Quaternion.Euler(0f, -12f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle94.right_road_low_rail_lower");
+                CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle94_RightRoadLowRailMid", root, c + new Vector3(7.98f, 0.210f, 0.42f), new Vector3(1.02f, 0.10f, 0.10f), Quaternion.Euler(0f, 18f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle94.right_road_low_rail_mid");
+                CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle94_PathsideCrate", root, c + new Vector3(8.52f, 0.236f, 2.86f), new Vector3(0.40f, 0.24f, 0.30f), Quaternion.Euler(0f, -15f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle94.pathside_crate");
+                CreateFlowerPatch(root, "Past_HouseExterior_Chapter1_Cycle94_RightRoadFlowersLower", c + new Vector3(6.08f, 0.240f, -2.96f), leaf, materials.FlowerBlue, materials.FlowerYellow);
+                CreateFlowerPatch(root, "Past_HouseExterior_Chapter1_Cycle94_RightRoadFlowersMid", c + new Vector3(7.70f, 0.240f, 0.84f), leaf, materials.FlowerRed, materials.FlowerYellow);
+            }
+            else
+            {
+                CreateLandmarkCube("Current_HouseExterior_Chapter1_Cycle94_RightRoadBrokenRailLower", root, c + new Vector3(5.78f, 0.190f, -2.54f), new Vector3(0.92f, 0.08f, 0.12f), Quaternion.Euler(0f, -28f, 7f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.house_exterior.chapter1.cycle94.right_road_broken_rail_lower");
+                CreateLandmarkCube("Current_HouseExterior_Chapter1_Cycle94_RightRoadBranchMid", root, c + new Vector3(7.92f, 0.208f, 0.38f), new Vector3(0.96f, 0.09f, 0.12f), Quaternion.Euler(0f, 23f, -8f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.house_exterior.chapter1.cycle94.right_road_branch_mid");
+                CreateLandmarkCube("Current_HouseExterior_Chapter1_Cycle94_PathsideDustFan", root, c + new Vector3(8.46f, 0.118f, 2.88f), new Vector3(0.78f, 0.035f, 0.22f), Quaternion.Euler(0f, -18f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.house_exterior.chapter1.cycle94.pathside_dust_fan");
+                CreateGrassTuft(root, "Current_HouseExterior_Chapter1_Cycle94_RightRoadSparseWeed", c + new Vector3(6.58f, 0.20f, -1.64f), leaf, 94);
+                CreateGrassTuft(root, "Current_HouseExterior_Chapter1_Cycle94_RightRoadSparseWeed", c + new Vector3(8.82f, 0.20f, 1.72f), leaf, 95);
             }
         }
 
