@@ -1,0 +1,7 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle99.md
+
+Cycle 99 review notes:
+- Focus image: `13_scene6_sideview_auto.png`.
+- The old `StartWalkPlatform` rectangle should be gone.
+- Replacement should read as small floor wear / loose board, not as a Niro-position measurement rectangle.
+- Niro, fade-out gate, side-view ground, and route readability should remain stable.

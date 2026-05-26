@@ -5965,10 +5965,13 @@ namespace Anemora.EditorTools
             var c = Chapter1EndSideViewCenter;
             var ground = materials.CurrentPath;
             var frame = materials.CurrentFrame;
+            var wood = materials.CurrentFurniture;
+            var dust = materials.Dust;
 
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGround", root, c + new Vector3(1.70f, -0.14f, -0.02f), new Vector3(26.20f, 0.32f, 0.24f), Quaternion.identity, ground, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine", root, c + new Vector3(1.70f, 0.045f, -0.09f), new Vector3(26.20f, 0.055f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.scene6.ground_top_line");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_StartWalkPlatform", root, c + new Vector3(-7.20f, 0.075f, -0.12f), new Vector3(2.70f, 0.07f, 0.12f), Quaternion.identity, frame, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.start_walk_platform");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle99_StartFloorScuff", root, c + new Vector3(-7.28f, 0.074f, -0.18f), new Vector3(0.82f, 0.035f, 0.08f), Quaternion.Euler(0f, 0f, -4f), dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle99.start_floor_scuff");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_Cycle99_StartLooseBoard", root, c + new Vector3(-6.62f, 0.118f, -0.18f), new Vector3(0.58f, 0.055f, 0.08f), Quaternion.Euler(0f, 0f, 6f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.cycle99.start_loose_board");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Scene6_FadeOutGate", root, c + new Vector3(12.35f, 0.92f, -0.16f), new Vector3(0.28f, 1.82f, 0.10f), Quaternion.identity, materials.DoorwayDark, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.scene6.fade_out_gate");
             CreateChapter1Cycle87EndSideViewDetails(root, prefix, materials);
             CreateChapter1Cycle95EndSideViewFloorCueDetails(root, prefix, materials);
@@ -9233,7 +9236,8 @@ namespace Anemora.EditorTools
             {
                 "Current_CentralPlaza_Chapter1_Scene6_SideViewGround",
                 "Current_CentralPlaza_Chapter1_Scene6_SideViewGroundTopLine",
-                "Current_CentralPlaza_Chapter1_Scene6_StartWalkPlatform",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle99_StartFloorScuff",
+                "Current_CentralPlaza_Chapter1_Scene6_Cycle99_StartLooseBoard",
                 "Current_CentralPlaza_Chapter1_Scene6_FadeOutGate"
             };
 
@@ -9261,6 +9265,7 @@ namespace Anemora.EditorTools
                 "Current_CentralPlaza_Chapter1_Scene6_LightSlashC",
                 "Current_CentralPlaza_Chapter1_Scene6_LightSlashD",
                 "Current_CentralPlaza_Chapter1_Scene6_RightEdgeDark",
+                "Current_CentralPlaza_Chapter1_Scene6_StartWalkPlatform",
                 "Current_CentralPlaza_Chapter1_Scene6_NiroStartMarker",
                 "Current_CentralPlaza_Chapter1_Scene6_NiroFollowMarker",
                 "Current_CentralPlaza_Chapter1_Scene6_NiroFadeOutMarker",
