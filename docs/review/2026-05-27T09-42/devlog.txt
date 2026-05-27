@@ -1,0 +1,5 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle117.md
+
+# Review notes
+- Cycle 117 targets B1-B3 past-side front lawn texture only.
+- Current-side debris, plaza paving, route pads, route markers, B1/B3 entry paths, and buildings are intended to remain unchanged.

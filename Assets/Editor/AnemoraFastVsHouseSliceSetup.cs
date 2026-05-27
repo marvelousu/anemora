@@ -801,6 +801,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle92PlazaSideLawnEdgeDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle102PlazaSideStripScatterDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle112PlazaSideVegetationScatterDetails(plazaRoot, prefix, past, materials);
+            CreateChapter1Cycle117PlazaPastFrontLawnTextureDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle89MiaLowerGardenDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle93MiaTreeBlockContrastDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle100MiaTreePanelSpreadDetails(miaHouseRoot, prefix, past, materials);
@@ -6797,6 +6798,26 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1Cycle117PlazaPastFrontLawnTextureDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = CentralPlazaVsCenter;
+            var path = materials.PastPath;
+            var trim = materials.PastFence;
+            var leaf = materials.Leaf;
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnPathChipWest", root, c + new Vector3(-3.74f, 0.140f, -4.38f), new Vector3(0.62f, 0.024f, 0.08f), Quaternion.Euler(0f, -18f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.b.cycle117.front_lawn_path_chip_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnPathChipEast", root, c + new Vector3(3.16f, 0.140f, -4.18f), new Vector3(0.58f, 0.024f, 0.08f), Quaternion.Euler(0f, 16f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.b.cycle117.front_lawn_path_chip_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnShortRail", root, c + new Vector3(1.02f, 0.214f, -5.44f), new Vector3(0.70f, 0.052f, 0.08f), Quaternion.Euler(0f, 9f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.b.cycle117.front_lawn_short_rail");
+            CreateGrassTuft(root, "Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnTuft", c + new Vector3(-1.76f, 0.205f, -5.48f), leaf, 1170);
+            CreateGrassTuft(root, "Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnTuft", c + new Vector3(2.44f, 0.205f, -5.76f), leaf, 1171);
+            CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnSmallBloom", c + new Vector3(-0.22f, 0.238f, -4.78f), leaf, materials.FlowerBlue, materials.FlowerYellow);
+        }
+
         private static void CreateChapter1Cycle89MiaLowerGardenDetails(Transform root, string prefix, bool past, Materials materials)
         {
             var c = Chapter1MiaHouseMapCenter;
@@ -10080,6 +10101,7 @@ namespace Anemora.EditorTools
             ValidateChapter1MiaCycle108PastLowerVergeCleanup();
             ValidateChapter1PlazaCycle102SideStripCleanup();
             ValidateChapter1PlazaCycle112SideVegetationScatter();
+            ValidateChapter1PlazaCycle117PastFrontLawnTexture();
             ValidateChapter1HouseExteriorCycle103PlantPanelCleanup();
             ValidateChapter1HouseExteriorCycle116PastKitchenGardenDegrid();
             ValidateChapter1AriaCycle105PastVergeCleanup();
@@ -10335,6 +10357,15 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle112LeftSparseGrassChipNorth", "past_grass");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle112LeftCleanEdgeShortNorth", "past_fence");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle112LeftCleanPathHairline", "past_path");
+        }
+
+        private static void ValidateChapter1PlazaCycle117PastFrontLawnTexture()
+        {
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnPathChipWest", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnPathChipEast", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnShortRail", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnTuft_HouseExterior_GrassTuft1170_A", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_B_Cycle117FrontLawnTuft_HouseExterior_GrassTuft1171_A", "leaf");
         }
 
         private static void ValidateChapter1HouseExteriorCycle103PlantPanelCleanup()
