@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle121.md
+
+# Review notes
+- Cycle 121 targets only the F1-F6 past-side river/gorge depth read.
+- Past-side raised river/channel overlays are intentionally hidden and replaced by lower water, deep shadow, stone walls, and drop-face cues.
+- Current-side F1-F6 debris, bridge, route pads, roads, main path, and drop colliders are intended to remain stable.
