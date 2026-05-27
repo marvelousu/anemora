@@ -1,0 +1,6 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle120.md
+
+# Review notes
+- Cycle 120 targets only the D1-D3 past-side market stall row.
+- Past-side cycle78/cycle83 stall fragments are intentionally inactive so the restored stalls read as intact.
+- Current-side D1-D3 debris, route pads, roads, and D3 turn geometry are intended to remain unchanged.
