@@ -712,6 +712,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8ILibraryReviewComposition();
             ValidateHd2dStage8JLibraryTableLightDepth();
             ValidateHd2dStage8KLibraryChairShelfDepth();
+            ValidateHd2dStage8LLibraryFloorBounceGrounding();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1312,6 +1313,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8KLibraryChairShelfDepth();
         }
 
+        public static void ValidateHd2dStage8LLibraryFloorBounceGroundingBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8LLibraryFloorBounceGrounding();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1518,6 +1526,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8k_library_chair_shelf_depth");
             CaptureHd2dStage8KLibraryChairShelfDepthReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8LLibraryFloorBounceGroundingReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8l_library_floor_bounce_grounding");
+            CaptureHd2dStage8LLibraryFloorBounceGroundingReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -4009,6 +4030,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8k library chair shelf depth screenshots captured");
         }
 
+        private static void CaptureHd2dStage8LLibraryFloorBounceGroundingReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8l_library_floor_bounce_grounding.md",
+                "Fast VS Stage 8l library floor bounce grounding screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4994,11 +5023,13 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8h_library_material_readability", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal);
             var stage8iLibraryReviewComposition =
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -16152,6 +16183,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryMaterialReadabilityStage8h(root, c, materials);
                 CreateCurrentLibraryTableLightDepthStage8j(root, c, materials);
                 CreateCurrentLibraryChairShelfDepthStage8k(root, c, materials);
+                CreateCurrentLibraryFloorBounceGroundingStage8l(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -24521,6 +24553,50 @@ namespace Anemora.EditorTools
         }
 
         private static GameObject CreateStage8KLibraryChairShelfDepthAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static void CreateCurrentLibraryFloorBounceGroundingStage8l(Transform root, Vector3 c, Materials materials)
+        {
+            var warmPool = EnsureHd2dWarmLightPoolMaterial();
+            var windowLight = EnsureHd2dLibraryWindowLightMaterial();
+
+            CreateStage8LLibraryFloorBounceGroundingPlane(root, c + new Vector3(-0.40f, 0.121f, -1.56f), Quaternion.Euler(90f, -12f, 0f), new Vector3(3.40f, 0.30f, 1f), windowLight, "Current_Library_Stage8l_FloorCoolWindowSkimMidA", "Current.library.stage8l.floor_cool_window_skim.mid_a");
+            CreateStage8LLibraryFloorBounceGroundingPlane(root, c + new Vector3(0.42f, 0.119f, -0.88f), Quaternion.Euler(90f, 5f, 0f), new Vector3(2.30f, 0.24f, 1f), warmPool, "Current_Library_Stage8l_FloorWarmBounceNearReaderA", "Current.library.stage8l.floor_warm_bounce.near_reader_a");
+
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(0.12f, 0.106f, -0.72f), Quaternion.Euler(0f, 4f, 0f), new Vector3(0.10f, 0.010f, 0.46f), materials.Shadow, "Current_Library_Stage8l_LongTableLegShadowLeftA", "Current.library.stage8l.long_table.leg_shadow_left_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(1.42f, 0.106f, -0.58f), Quaternion.Euler(0f, 7f, 0f), new Vector3(0.10f, 0.010f, 0.42f), materials.Shadow, "Current_Library_Stage8l_LongTableLegShadowRightA", "Current.library.stage8l.long_table.leg_shadow_right_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(0.30f, 0.126f, -1.34f), Quaternion.Euler(0f, -5f, 0f), new Vector3(2.60f, 0.012f, 0.035f), materials.Lamp, "Current_Library_Stage8l_LongTablePlankCatchlightA", "Current.library.stage8l.long_table.plank_catchlight_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(-0.52f, 0.124f, -1.74f), Quaternion.Euler(0f, -8f, 0f), new Vector3(3.10f, 0.010f, 0.036f), materials.Dust, "Current_Library_Stage8l_MidFloorPlankCoolEdgeA", "Current.library.stage8l.mid_floor.plank_cool_edge_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(0.54f, 0.103f, -1.66f), Quaternion.Euler(0f, -6f, 0f), new Vector3(2.75f, 0.010f, 0.065f), materials.Shadow, "Current_Library_Stage8l_MidFloorShadowBreakA", "Current.library.stage8l.mid_floor.shadow_break_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(0.84f, 0.127f, -1.02f), Quaternion.Euler(0f, 5f, 0f), new Vector3(2.10f, 0.012f, 0.055f), materials.Lamp, "Current_Library_Stage8l_NearFloorWarmPlankStepA", "Current.library.stage8l.near_floor.warm_plank_step_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(-1.46f, 0.123f, -1.22f), Quaternion.Euler(0f, -4f, 0f), new Vector3(1.46f, 0.012f, 0.050f), materials.Dust, "Current_Library_Stage8l_LeftFloorDustScrapeA", "Current.library.stage8l.left_floor.dust_scrape_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(1.02f, 0.104f, -0.30f), Quaternion.Euler(0f, 8f, 0f), new Vector3(0.72f, 0.010f, 0.16f), materials.Shadow, "Current_Library_Stage8l_ReaderFootContactShadowA", "Current.library.stage8l.reader.foot_contact_shadow_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(-2.20f, 0.105f, 0.02f), Quaternion.Euler(0f, 5f, 0f), new Vector3(1.38f, 0.010f, 0.17f), materials.Shadow, "Current_Library_Stage8l_LeftDeskFloorShadowA", "Current.library.stage8l.left_desk.floor_shadow_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(2.70f, 0.104f, -1.02f), Quaternion.Euler(0f, -7f, 0f), new Vector3(1.22f, 0.010f, 0.13f), materials.Shadow, "Current_Library_Stage8l_RightFloorTableShadowA", "Current.library.stage8l.right_floor.table_shadow_a");
+            CreateStage8LLibraryFloorBounceGroundingAccent(root, c + new Vector3(3.05f, 0.124f, -1.36f), Quaternion.Euler(0f, -7f, 0f), new Vector3(1.28f, 0.012f, 0.050f), materials.Lamp, "Current_Library_Stage8l_RightDeskFloorWarmEdgeA", "Current.library.stage8l.right_desk.floor_warm_edge_a");
+        }
+
+        private static GameObject CreateStage8LLibraryFloorBounceGroundingPlane(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            var plane = CreateQuad(objectName, root, localPosition, localScale, material);
+            plane.transform.localRotation = localRotation;
+            var renderer = plane.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = plane.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            return plane;
+        }
+
+        private static GameObject CreateStage8LLibraryFloorBounceGroundingAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
         {
             return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
         }
@@ -35777,6 +35853,140 @@ namespace Anemora.EditorTools
                 !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8k_library_chair_shelf_depth.md", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8k library chair shelf depth source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8LLibraryFloorBounceGrounding()
+        {
+            ValidateStage8LLibraryFloorBounceGroundingObject(
+                "Current_Library_Stage8l_FloorCoolWindowSkimMidA",
+                "Current_LibraryMap_SeparateSpace",
+                "library_window_light",
+                new Vector3(-0.64f, 0.105f, -1.76f),
+                new Vector3(-0.16f, 0.140f, -1.36f),
+                new Vector3(3.60f, 0.36f, 1.05f));
+            ValidateStage8LLibraryFloorBounceGroundingObject(
+                "Current_Library_Stage8l_FloorWarmBounceNearReaderA",
+                "Current_LibraryMap_SeparateSpace",
+                "warm_light_pool",
+                new Vector3(0.18f, 0.105f, -1.04f),
+                new Vector3(0.70f, 0.140f, -0.72f),
+                new Vector3(2.50f, 0.30f, 1.05f));
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8l_LongTableLegShadowLeftA",
+                "Current_Library_Stage8l_LongTableLegShadowRightA",
+                "Current_Library_Stage8l_LongTablePlankCatchlightA",
+                "Current_Library_Stage8l_MidFloorPlankCoolEdgeA",
+                "Current_Library_Stage8l_MidFloorShadowBreakA",
+                "Current_Library_Stage8l_NearFloorWarmPlankStepA",
+                "Current_Library_Stage8l_LeftFloorDustScrapeA",
+                "Current_Library_Stage8l_ReaderFootContactShadowA",
+                "Current_Library_Stage8l_LeftDeskFloorShadowA",
+                "Current_Library_Stage8l_RightFloorTableShadowA",
+                "Current_Library_Stage8l_RightDeskFloorWarmEdgeA"
+            })
+            {
+                ValidateStage8LLibraryFloorBounceGroundingObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    string.Empty,
+                    new Vector3(-2.50f, 0.095f, -1.84f),
+                    new Vector3(3.30f, 0.135f, 0.14f),
+                    new Vector3(3.20f, 0.030f, 0.50f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Past_Library_Stage8l_FloorCoolWindowSkimMidA",
+                "Past_Library_Stage8l_LongTableLegShadowLeftA",
+                "Past_Library_Stage8l_RightDeskFloorWarmEdgeA"
+            })
+            {
+                if (FindSceneObjectIncludingInactive(objectName) != null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Stage 8l library floor bounce grounding must remain current-space-only: {objectName}.");
+                }
+            }
+
+            ValidateHd2dStage8LLibraryFloorBounceGroundingSourceText();
+        }
+
+        private static void ValidateStage8LLibraryFloorBounceGroundingObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8l library floor bounce grounding object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only floor bounce grounding does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (!string.IsNullOrEmpty(expectedMaterialToken) &&
+                materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken}, but used {materialName}.");
+            }
+
+            if (string.IsNullOrEmpty(expectedMaterialToken) &&
+                materialName.IndexOf("lamp", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("shadow", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("dust", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use floor bounce/rim/shadow material, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateHd2dStage8LLibraryFloorBounceGroundingSourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8l_library_floor_bounce_grounding\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryFloorBounceGroundingStage8l(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("Current_Library_Stage8l_FloorCoolWindowSkimMidA", StringComparison.Ordinal) ||
+                !source.Contains("20260527_stage8l_library_floor_bounce_grounding", StringComparison.Ordinal) ||
+                !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8l_library_floor_bounce_grounding.md", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8l library floor bounce grounding source guards are missing.");
             }
         }
 
