@@ -1119,6 +1119,7 @@ namespace Anemora.EditorTools
             CreateRuinsCycle141PastRightFarmStallFinishDetails(root, prefix, past, materials);
             CreateRuinsCycle142PastRightHouseRowFinishDetails(root, prefix, past, materials);
             CreateRuinsCycle143PastUpperLeftHouseRowFinishDetails(root, prefix, past, materials);
+            CreateRuinsCycle144PastUpperLeftMarketStallFinishDetails(root, prefix, past, materials);
             CreateRuinsCycle139PastLowerLeftHouseFinishDetails(root, prefix, past, materials);
             CreateChapter1MapBoundary(root, prefix, "Ruins", Chapter1RuinsMapCenter);
         }
@@ -7667,6 +7668,78 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateRuinsCycle144PastUpperLeftMarketStallFinishDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1RuinsMapCenter;
+            var trim = materials.PastFence;
+            var wood = materials.PastFurniture;
+            var cloth = materials.LaundryAccent;
+            var brightCloth = materials.LaundryBright;
+            var stone = materials.PastStone;
+            var path = materials.PastPath;
+            var leaf = materials.Leaf;
+            var sign = materials.SignPaint;
+            var lamp = materials.Lamp;
+            var shadow = materials.Shadow;
+
+            var stalls = new[]
+            {
+                new { Name = "West", X = -23.18f, Z = 4.36f, Yaw = -5f, Accent = materials.FlowerYellow },
+                new { Name = "Mid", X = -18.92f, Z = 4.30f, Yaw = 4f, Accent = materials.FlowerBlue }
+            };
+
+            foreach (var stall in stalls)
+            {
+                var yaw = Quaternion.Euler(0f, stall.Yaw, 0f);
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}CleanApronStone", root, c + new Vector3(stall.X, 0.118f, stall.Z - 0.62f), new Vector3(2.20f, 0.050f, 0.38f), yaw, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.clean_apron_stone");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}PathTuck", root, c + new Vector3(stall.X + 0.22f, 0.092f, stall.Z - 0.92f), new Vector3(1.36f, 0.032f, 0.18f), yaw, path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.path_tuck");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}CounterFrontFace", root, c + new Vector3(stall.X, 0.46f, stall.Z - 0.22f), new Vector3(1.92f, 0.36f, 0.090f), yaw, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.counter_front_face");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}CounterTopBoard", root, c + new Vector3(stall.X - 0.02f, 0.68f, stall.Z), new Vector3(1.98f, 0.060f, 0.54f), yaw, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.counter_top_board");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}CounterFrontTrim", root, c + new Vector3(stall.X, 0.66f, stall.Z - 0.30f), new Vector3(2.06f, 0.065f, 0.070f), yaw, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.counter_front_trim");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}FrontPostLeft", root, c + new Vector3(stall.X - 0.94f, 0.82f, stall.Z - 0.36f), new Vector3(0.090f, 1.22f, 0.090f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.front_post_left");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}FrontPostRight", root, c + new Vector3(stall.X + 0.94f, 0.82f, stall.Z - 0.36f), new Vector3(0.090f, 1.22f, 0.090f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.front_post_right");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}BackPostLeft", root, c + new Vector3(stall.X - 0.84f, 0.78f, stall.Z + 0.36f), new Vector3(0.080f, 1.04f, 0.080f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.back_post_left");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}BackPostRight", root, c + new Vector3(stall.X + 0.84f, 0.78f, stall.Z + 0.36f), new Vector3(0.080f, 1.04f, 0.080f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.back_post_right");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}RoofClothFull", root, c + new Vector3(stall.X, 1.42f, stall.Z + 0.02f), new Vector3(2.38f, 0.105f, 1.08f), yaw, cloth, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.roof_cloth_full");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}RoofFrontValanceBright", root, c + new Vector3(stall.X, 1.24f, stall.Z - 0.52f), new Vector3(2.44f, 0.170f, 0.085f), yaw, brightCloth, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.roof_front_valance_bright");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}RoofBackBand", root, c + new Vector3(stall.X, 1.20f, stall.Z + 0.52f), new Vector3(2.10f, 0.105f, 0.080f), yaw, brightCloth, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.roof_back_band");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}FrontCrossBeam", root, c + new Vector3(stall.X, 1.08f, stall.Z - 0.46f), new Vector3(2.16f, 0.075f, 0.080f), yaw, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.front_cross_beam");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}UnderAwningShadow", root, c + new Vector3(stall.X, 1.02f, stall.Z - 0.02f), new Vector3(1.94f, 0.035f, 0.62f), yaw, shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.under_awning_shadow");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}ProduceLeafStack", root, c + new Vector3(stall.X - 0.48f, 0.78f, stall.Z - 0.08f), new Vector3(0.46f, 0.080f, 0.18f), Quaternion.Euler(0f, stall.Yaw - 8f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.produce_leaf_stack");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}ProduceBloomStack", root, c + new Vector3(stall.X + 0.10f, 0.790f, stall.Z - 0.10f), new Vector3(0.36f, 0.070f, 0.16f), Quaternion.Euler(0f, stall.Yaw + 3f, 0f), stall.Accent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.produce_bloom_stack");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}GroundBasket", root, c + new Vector3(stall.X + 0.78f, 0.230f, stall.Z - 0.72f), new Vector3(0.42f, 0.24f, 0.30f), Quaternion.Euler(0f, stall.Yaw + 12f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.ground_basket");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stall.Name}BasketFill", root, c + new Vector3(stall.X + 0.78f, 0.400f, stall.Z - 0.72f), new Vector3(0.30f, 0.060f, 0.18f), Quaternion.Euler(0f, stall.Yaw + 10f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.{stall.Name.ToLowerInvariant()}.basket_fill");
+            }
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedHangingSignPlate", root, c + new Vector3(-20.98f, 1.12f, 3.64f), new Vector3(0.62f, 0.28f, 0.070f), Quaternion.Euler(0f, 2f, 0f), sign, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.shared_hanging_sign_plate");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedSignPaintLine", root, c + new Vector3(-20.98f, 1.13f, 3.60f), new Vector3(0.46f, 0.055f, 0.078f), Quaternion.Euler(0f, 2f, 0f), materials.FlowerYellow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.shared_sign_paint_line");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedLanternWest", root, c + new Vector3(-24.22f, 1.02f, 3.74f), new Vector3(0.130f, 0.175f, 0.080f), Quaternion.identity, lamp, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.shared_lantern_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedLanternMid", root, c + new Vector3(-18.02f, 1.02f, 3.76f), new Vector3(0.130f, 0.175f, 0.080f), Quaternion.identity, lamp, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.shared_lantern_mid");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketTinyFlowerPotWest", root, c + new Vector3(-24.62f, 0.245f, 3.46f), new Vector3(0.32f, 0.16f, 0.22f), Quaternion.Euler(0f, -8f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.tiny_flower_pot_west");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketTinyFlowerPotBloom", root, c + new Vector3(-24.62f, 0.375f, 3.46f), new Vector3(0.22f, 0.052f, 0.14f), Quaternion.Euler(0f, -8f, 0f), materials.FlowerBlue, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle144.past_upper_left_market.tiny_flower_pot_bloom");
+
+            DisableChapter1Cycle144UpperLeftMarketRendererShadows(root);
+        }
+
+        private static void DisableChapter1Cycle144UpperLeftMarketRendererShadows(Transform root)
+        {
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (!renderer.gameObject.name.StartsWith("Past_CentralPlaza_Chapter1_F_Cycle144Past", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateRuinsCycle139PastLowerLeftHouseFinishDetails(Transform root, string prefix, bool past, Materials materials)
         {
             if (!past)
@@ -11843,6 +11916,7 @@ namespace Anemora.EditorTools
             ValidateChapter1RuinsCycle141PastRightFarmStallFinish();
             ValidateChapter1RuinsCycle142PastRightHouseRowFinish();
             ValidateChapter1RuinsCycle143PastUpperLeftHouseRowFinish();
+            ValidateChapter1RuinsCycle144PastUpperLeftMarketStallFinish();
             ValidateChapter1RuinsCycle139PastLowerLeftHouseFinish();
             ValidateChapter1RuinsCycle121PastDeepGorge();
             ValidateChapter1RuinsCycle126PastDeepGorgeRead();
@@ -13417,6 +13491,67 @@ namespace Anemora.EditorTools
             if (found < 58)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle143 upper-left house overlay shadow validation found too few objects.");
+            }
+        }
+
+        private static void ValidateChapter1RuinsCycle144PastUpperLeftMarketStallFinish()
+        {
+            var stallNames = new[] { "West", "Mid" };
+            foreach (var stallName in stallNames)
+            {
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}CleanApronStone", "past_stone");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}PathTuck", "past_path");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}CounterFrontFace", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}CounterTopBoard", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}CounterFrontTrim", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}FrontPostLeft", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}FrontPostRight", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}BackPostLeft", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}BackPostRight", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}RoofClothFull", "laundry_accent");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}RoofFrontValanceBright", "laundry_bright");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}RoofBackBand", "laundry_bright");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}FrontCrossBeam", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}UnderAwningShadow", "shadow");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}ProduceLeafStack", "leaf");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}ProduceBloomStack", stallName == "West" ? "flower_yellow" : "flower_blue");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}GroundBasket", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarket{stallName}BasketFill", "leaf");
+            }
+
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedHangingSignPlate", "sign_paint");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedSignPaintLine", "flower_yellow");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedLanternWest", "lamp");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketSharedLanternMid", "lamp");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketTinyFlowerPotWest", "past_furniture");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle144PastUpperLeftMarketTinyFlowerPotBloom", "flower_blue");
+            ValidateChapter1Cycle144UpperLeftMarketRendererShadows();
+        }
+
+        private static void ValidateChapter1Cycle144UpperLeftMarketRendererShadows()
+        {
+            var found = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (!candidate.scene.IsValid() ||
+                    !candidate.name.StartsWith("Past_CentralPlaza_Chapter1_F_Cycle144Past", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                found++;
+                var renderer = candidate.GetComponent<Renderer>();
+                if (renderer == null ||
+                    renderer.shadowCastingMode != UnityEngine.Rendering.ShadowCastingMode.Off ||
+                    renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle144 upper-left market overlays must not cast or receive shadows: {candidate.name}");
+                }
+            }
+
+            if (found < 40)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle144 upper-left market overlay shadow validation found too few objects.");
             }
         }
 
