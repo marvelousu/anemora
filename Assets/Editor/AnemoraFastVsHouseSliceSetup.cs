@@ -714,6 +714,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8KLibraryChairShelfDepth();
             ValidateHd2dStage8LLibraryFloorBounceGrounding();
             ValidateHd2dStage8MLibraryBackShelfVolume();
+            ValidateHd2dStage8NLibraryLoosePageClusters();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1328,6 +1329,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8MLibraryBackShelfVolume();
         }
 
+        public static void ValidateHd2dStage8NLibraryLoosePageClustersBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8NLibraryLoosePageClusters();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1560,6 +1568,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8m_library_back_shelf_volume");
             CaptureHd2dStage8MLibraryBackShelfVolumeReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8NLibraryLoosePageClustersReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8n_library_loose_page_clusters");
+            CaptureHd2dStage8NLibraryLoosePageClustersReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -4067,6 +4088,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8m library back shelf volume screenshots captured");
         }
 
+        private static void CaptureHd2dStage8NLibraryLoosePageClustersReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8n_library_loose_page_clusters.md",
+                "Fast VS Stage 8n library loose page clusters screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -5054,13 +5083,15 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8m_library_back_shelf_volume", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8m_library_back_shelf_volume", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8n_library_loose_page_clusters", StringComparison.Ordinal);
             var stage8iLibraryReviewComposition =
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8m_library_back_shelf_volume", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8m_library_back_shelf_volume", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8n_library_loose_page_clusters", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -16216,6 +16247,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryChairShelfDepthStage8k(root, c, materials);
                 CreateCurrentLibraryFloorBounceGroundingStage8l(root, c, materials);
                 CreateCurrentLibraryBackShelfVolumeStage8m(root, c, materials);
+                CreateCurrentLibraryLoosePageClustersStage8n(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -24678,6 +24710,24 @@ namespace Anemora.EditorTools
         }
 
         private static GameObject CreateStage8MLibraryBackShelfVolumeAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static void CreateCurrentLibraryLoosePageClustersStage8n(Transform root, Vector3 c, Materials materials)
+        {
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(0.18f, 0.612f, -0.48f), Quaternion.Euler(0f, -11f, 0f), new Vector3(0.42f, 0.012f, 0.055f), materials.SignPaint, "Current_Library_Stage8n_LongTableBookmarkSlipA", "Current.library.stage8n.long_table.bookmark_slip_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.08f, 0.608f, -0.34f), Quaternion.Euler(0f, 7f, 0f), new Vector3(0.62f, 0.012f, 0.18f), materials.SignPaint, "Current_Library_Stage8n_LongTableLoosePagePairA", "Current.library.stage8n.long_table.loose_page_pair_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(0.02f, 0.586f, -0.34f), Quaternion.Euler(0f, 7f, 0f), new Vector3(0.72f, 0.008f, 0.20f), materials.Shadow, "Current_Library_Stage8n_LongTableLoosePageShadowA", "Current.library.stage8n.long_table.loose_page_shadow_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.82f, 0.126f, -1.20f), Quaternion.Euler(0f, -13f, 0f), new Vector3(0.58f, 0.010f, 0.24f), materials.SignPaint, "Current_Library_Stage8n_FloorLoosePageA", "Current.library.stage8n.floor.loose_page_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.82f, 0.104f, -1.20f), Quaternion.Euler(0f, -13f, 0f), new Vector3(0.66f, 0.008f, 0.28f), materials.Shadow, "Current_Library_Stage8n_FloorLoosePageShadowA", "Current.library.stage8n.floor.loose_page_shadow_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(2.36f, 0.608f, -1.18f), Quaternion.Euler(0f, 8f, 0f), new Vector3(0.54f, 0.012f, 0.18f), materials.SignPaint, "Current_Library_Stage8n_RightDeskStackPageA", "Current.library.stage8n.right_desk.stack_page_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(2.82f, 0.612f, -1.02f), Quaternion.Euler(0f, -9f, 0f), new Vector3(0.64f, 0.042f, 0.18f), materials.Book, "Current_Library_Stage8n_RightDeskStackBookA", "Current.library.stage8n.right_desk.stack_book_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(1.70f, 0.128f, -1.36f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.46f, 0.040f, 0.22f), materials.Book, "Current_Library_Stage8n_FloorClosedBookA", "Current.library.stage8n.floor.closed_book_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(1.70f, 0.104f, -1.36f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.56f, 0.008f, 0.28f), materials.Shadow, "Current_Library_Stage8n_FloorClosedBookShadowA", "Current.library.stage8n.floor.closed_book_shadow_a");
+        }
+
+        private static GameObject CreateStage8NLibraryLoosePageClusterAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
         {
             return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
         }
@@ -36230,6 +36280,115 @@ namespace Anemora.EditorTools
                 !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8m_library_back_shelf_volume.md", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8m library back shelf volume source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8NLibraryLoosePageClusters()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8n_LongTableBookmarkSlipA",
+                "Current_Library_Stage8n_LongTableLoosePagePairA",
+                "Current_Library_Stage8n_LongTableLoosePageShadowA",
+                "Current_Library_Stage8n_FloorLoosePageA",
+                "Current_Library_Stage8n_FloorLoosePageShadowA",
+                "Current_Library_Stage8n_RightDeskStackPageA",
+                "Current_Library_Stage8n_RightDeskStackBookA",
+                "Current_Library_Stage8n_FloorClosedBookA",
+                "Current_Library_Stage8n_FloorClosedBookShadowA"
+            })
+            {
+                ValidateStage8NLibraryLoosePageClusterObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    new Vector3(-1.10f, 0.095f, -1.55f),
+                    new Vector3(3.10f, 0.65f, -0.25f),
+                    new Vector3(0.85f, 0.07f, 0.32f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Past_Library_Stage8n_LongTableBookmarkSlipA",
+                "Past_Library_Stage8n_FloorLoosePageA",
+                "Past_Library_Stage8n_RightDeskStackBookA"
+            })
+            {
+                if (FindSceneObjectIncludingInactive(objectName) != null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Stage 8n library loose page clusters must remain current-space-only: {objectName}.");
+                }
+            }
+
+            ValidateHd2dStage8NLibraryLoosePageClustersSourceText();
+        }
+
+        private static void ValidateStage8NLibraryLoosePageClusterObject(string objectName, string expectedParentName, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8n library loose page cluster object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only loose page clusters do not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("sign_paint", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("book", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("shadow", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use page/book/shadow material, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateHd2dStage8NLibraryLoosePageClustersSourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8n_library_loose_page_clusters\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryLoosePageClustersStage8n(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("Current_Library_Stage8n_LongTableBookmarkSlipA", StringComparison.Ordinal) ||
+                !source.Contains("20260527_stage8n_library_loose_page_clusters", StringComparison.Ordinal) ||
+                !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8n_library_loose_page_clusters.md", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8n library loose page clusters source guards are missing.");
             }
         }
 
