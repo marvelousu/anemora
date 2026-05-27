@@ -1075,6 +1075,7 @@ namespace Anemora.EditorTools
         {
             CreateKaiaFarmContinuation(root, prefix, past, materials);
             CreateKaiaFrontYardContinuation(root, prefix, past, materials);
+            CreateKaiaFarmCycle122PastDebrisCleanupDetails(root, prefix, past, materials);
             var padMaterial = CreateChapter1RoutePadMaterial(past);
             var markerMaterial = materials.SignPaint;
             CreateChapter1RouteStop(root, $"{prefix}_CentralPlaza_Chapter1_E1_MapMoveGlowPad", Chapter1E1RouteTriggerCenter, padMaterial, $"{prefix}_CentralPlaza_Chapter1_E1_RouteMarker", markerMaterial, $"{prefix}.central_plaza.chapter1.e1");
@@ -2644,6 +2645,113 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_Cycle109CurrentOrchardBareStemEast", root, c + new Vector3(13.06f, 0.61f, -3.28f), new Vector3(0.08f, 0.32f, 0.08f), Quaternion.Euler(0f, 0f, 9f), soil, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.cycle109.current_orchard.bare_stem_east");
         }
 
+        private static void CreateKaiaFarmCycle122PastDebrisCleanupDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1KaiaFarmMapCenter;
+            var e2 = Chapter1E2RouteTriggerCenter;
+            var soil = materials.PastPath;
+            var crop = materials.Leaf;
+            var grass = materials.PastGrass;
+            var fence = materials.PastFence;
+            var wood = materials.PastFurniture;
+
+            var debrisSuffixes = new[]
+            {
+                "E1_FieldFenceBackFarRightFragment",
+                "E1_FieldFenceBottomRightLooseRail",
+                "E1_FieldFenceRightUpperLoosePost",
+                "E1_FieldFenceRightLowerGapPost",
+                "E1_Cycle42SouthwestRoadFenceShard",
+                "E1_Cycle46PastRightFenceShardUpper",
+                "E1_Cycle46PastRightFenceShardLower",
+                "E1_Cycle47LowerFieldLeftEdgeBreak",
+                "E1_Cycle47LowerFieldCenterDebrisHint",
+                "E1_Cycle54TopFenceLoosePost",
+                "E1_Cycle55BottomFenceLooseEnd",
+                "E1_Cycle65OrchardEdgeFenceBroken",
+                "E1_Cycle77SouthwestEntryBrokenRail",
+                "E1_Cycle77SouthwestEntryLoosePost",
+                "E1_Cycle77CentralRoadBrokenPost",
+                "E1_Cycle82SouthwestArrivalFenceShardA",
+                "E1_Cycle82SouthwestArrivalFenceShardB",
+                "E1_RightBrokenFenceUpperA",
+                "E1_RightBrokenFenceLowerA",
+                "E1_EntranceFieldLoosePost",
+                "E1_E3BoundaryFenceShard",
+                "E1_RightGrassEdgeBreakA",
+                "E1_RightGrassEdgeBreakB",
+                "E1_Cycle54PastFenceRepairStone",
+                "E2_Cycle62YardOuterFenceFragment",
+                "E2_Cycle65RightWallFenceFragment",
+                "E2_Cycle77YardFenceBrokenNorth",
+                "E2_Cycle77YardFenceBrokenSouth",
+                "E2_YardFenceBrokenUpperA",
+                "E2_YardFenceBrokenUpperB",
+                "E2_YardFenceBrokenLowerA",
+                "E2_Cycle47FrontYardStoneNib",
+                "E2_YardStoneNearEntry",
+                "E2_YardStoneNearCenter",
+                "E2_YardBoundaryStoneA",
+                "E3_Cycle77RightExitBrokenRail",
+                "E3_Cycle77ReviewExitUpperFenceFragment",
+                "E3_Cycle77ReviewExitLowerFenceFragment",
+                "E3_Cycle82RightFenceFragmentUpper",
+                "E3_Cycle82RightFenceFragmentLower",
+                "E3_Cycle55RightUpperGrassOuterEdge",
+                "E3_Cycle55RightLowerGrassOuterEdge",
+                "E3_Cycle84RightUpperGrassOuterSeparator",
+                "E3_Cycle84RightLowerGrassOuterSeparator",
+                "E3_ExitStoneEdge",
+                "E3_ExitGrassBreak"
+            };
+            foreach (var suffix in debrisSuffixes)
+            {
+                var objectName = $"{prefix}_CentralPlaza_Chapter1_{suffix}";
+                HideChildIfPresent(root, objectName);
+                HideSceneObjectsIfPresent(objectName);
+            }
+
+            var clutterStoneSuffixes = new[]
+            {
+                "E1_LowerFieldStonePile",
+                "E1_LowerRightFieldStone",
+                "E1_FieldFlatStoneNearRows",
+                "E1_EntranceFieldShoulderStone"
+            };
+            foreach (var suffix in clutterStoneSuffixes)
+            {
+                var objectName = $"{prefix}_CentralPlaza_Chapter1_{suffix}";
+                HideChildIfPresent(root, objectName);
+                HideSceneObjectsIfPresent(objectName);
+            }
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCleanSoilWest", root, c + new Vector3(-8.10f, 0.540f, -8.18f), new Vector3(5.86f, 0.024f, 0.18f), Quaternion.Euler(0f, -4f, 0f), soil, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.clean_soil_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCleanSoilMid", root, c + new Vector3(-1.82f, 0.540f, -7.42f), new Vector3(6.78f, 0.024f, 0.18f), Quaternion.Euler(0f, 2f, 0f), soil, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.clean_soil_mid");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCleanSoilEast", root, c + new Vector3(5.28f, 0.540f, -8.00f), new Vector3(4.42f, 0.024f, 0.16f), Quaternion.Euler(0f, -2f, 0f), soil, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.clean_soil_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCropWest", root, c + new Vector3(-7.62f, 0.566f, -7.84f), new Vector3(5.36f, 0.026f, 0.13f), Quaternion.Euler(0f, -2f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.crop_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCropMid", root, c + new Vector3(-1.24f, 0.566f, -7.06f), new Vector3(6.12f, 0.026f, 0.13f), Quaternion.Euler(0f, 2f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.crop_mid");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCropEast", root, c + new Vector3(5.84f, 0.566f, -7.62f), new Vector3(3.92f, 0.026f, 0.13f), Quaternion.Euler(0f, -1f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.crop_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldEdgeCleanRailWest", root, c + new Vector3(-7.18f, 0.610f, -9.28f), new Vector3(2.16f, 0.10f, 0.08f), Quaternion.Euler(0f, 2f, 0f), fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.edge_clean_rail_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldEdgeCleanRailEast", root, c + new Vector3(4.86f, 0.610f, -9.18f), new Vector3(2.42f, 0.10f, 0.08f), Quaternion.Euler(0f, -2f, 0f), fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.edge_clean_rail_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldHarvestBasket", root, c + new Vector3(2.86f, 0.550f, -8.72f), new Vector3(0.44f, 0.22f, 0.30f), Quaternion.Euler(0f, 12f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.lower_field.harvest_basket");
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122RightFenceCleanUpper", root, c + new Vector3(14.78f, 0.570f, 4.86f), new Vector3(0.12f, 0.18f, 3.16f), Quaternion.Euler(0f, 1f, 0f), fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.right_fence.clean_upper");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E1_Cycle122RightFenceCleanLower", root, c + new Vector3(14.68f, 0.570f, -3.44f), new Vector3(0.12f, 0.18f, 3.06f), Quaternion.Euler(0f, -1f, 0f), fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e1.cycle122.right_fence.clean_lower");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanNorthRail", root, e2 + new Vector3(-1.12f, 0.520f, 2.38f), new Vector3(2.62f, 0.14f, 0.10f), Quaternion.Euler(0f, -2f, 0f), fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e2.cycle122.yard.clean_north_rail");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanSouthRail", root, e2 + new Vector3(-1.04f, 0.500f, -2.08f), new Vector3(2.34f, 0.14f, 0.10f), Quaternion.Euler(0f, 2f, 0f), fence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e2.cycle122.yard.clean_south_rail");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanGrassNorth", root, e2 + new Vector3(-0.38f, 0.470f, 1.42f), new Vector3(1.18f, 0.024f, 0.26f), Quaternion.Euler(0f, -6f, 0f), grass, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.e2.cycle122.yard.clean_grass_north");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanGrassSouth", root, e2 + new Vector3(0.22f, 0.470f, -1.34f), new Vector3(1.06f, 0.024f, 0.24f), Quaternion.Euler(0f, 7f, 0f), grass, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.e2.cycle122.yard.clean_grass_south");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E3_Cycle122ExitGrassCleanUpper", root, c + new Vector3(15.32f, 0.466f, 4.48f), new Vector3(0.86f, 0.024f, 1.12f), Quaternion.Euler(0f, -3f, 0f), grass, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.e3.cycle122.exit_grass.clean_upper");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E3_Cycle122ExitGrassCleanLower", root, c + new Vector3(15.28f, 0.466f, -4.28f), new Vector3(0.82f, 0.024f, 1.06f), Quaternion.Euler(0f, 3f, 0f), grass, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.e3.cycle122.exit_grass.clean_lower");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E3_Cycle122ExitPlantBandUpper", root, c + new Vector3(14.84f, 0.494f, 5.52f), new Vector3(0.62f, 0.026f, 0.16f), Quaternion.Euler(0f, -9f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e3.cycle122.exit_plant_band.upper");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_E3_Cycle122ExitPlantBandLower", root, c + new Vector3(14.78f, 0.494f, -5.26f), new Vector3(0.58f, 0.026f, 0.16f), Quaternion.Euler(0f, 8f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.e3.cycle122.exit_plant_band.lower");
+        }
+
         private static void CreateKaiaFarmChapter1ReferenceFrame(Transform root, string prefix, bool past, Materials materials)
         {
             var c = Chapter1KaiaFarmMapCenter;
@@ -3740,6 +3848,17 @@ namespace Anemora.EditorTools
             if (child != null)
             {
                 child.gameObject.SetActive(false);
+            }
+        }
+
+        private static void HideSceneObjectsIfPresent(string objectName)
+        {
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate.name == objectName && candidate.scene.IsValid())
+                {
+                    candidate.SetActive(false);
+                }
             }
         }
 
@@ -10279,6 +10398,7 @@ namespace Anemora.EditorTools
             ValidateChapter1KaiaFarmCycle119PastLowerLeftFieldOffset();
             ValidateChapter1KaiaFarmCycle107CurrentLowerFieldPanelBreakup();
             ValidateChapter1KaiaFarmCycle109CurrentOrchardScatter();
+            ValidateChapter1KaiaFarmCycle122PastDebrisCleanup();
             ValidateChapter1RuinsCycle98RightFieldCleanup();
             ValidateChapter1RuinsCycle106PastRightSettlementCleanup();
             ValidateChapter1RuinsCycle114PastLeftSettlementCleanup();
@@ -10813,6 +10933,87 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_E1_Cycle109CurrentOrchardDustScuff_0", "dust");
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_E1_Cycle109CurrentOrchardCutStumpFarWest", "current_furniture");
             ValidateChapter1ContinuationLandmark("Current_CentralPlaza_Chapter1_E1_Cycle109CurrentOrchardFallenBranchUpper", "current_fence");
+        }
+
+        private static void ValidateChapter1KaiaFarmCycle122PastDebrisCleanup()
+        {
+            var hiddenDebrisNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_E1_FieldFenceBackFarRightFragment",
+                "Past_CentralPlaza_Chapter1_E1_FieldFenceBottomRightLooseRail",
+                "Past_CentralPlaza_Chapter1_E1_FieldFenceRightUpperLoosePost",
+                "Past_CentralPlaza_Chapter1_E1_FieldFenceRightLowerGapPost",
+                "Past_CentralPlaza_Chapter1_E1_Cycle42SouthwestRoadFenceShard",
+                "Past_CentralPlaza_Chapter1_E1_Cycle46PastRightFenceShardUpper",
+                "Past_CentralPlaza_Chapter1_E1_Cycle46PastRightFenceShardLower",
+                "Past_CentralPlaza_Chapter1_E1_Cycle47LowerFieldLeftEdgeBreak",
+                "Past_CentralPlaza_Chapter1_E1_Cycle47LowerFieldCenterDebrisHint",
+                "Past_CentralPlaza_Chapter1_E1_Cycle54TopFenceLoosePost",
+                "Past_CentralPlaza_Chapter1_E1_Cycle55BottomFenceLooseEnd",
+                "Past_CentralPlaza_Chapter1_E1_Cycle65OrchardEdgeFenceBroken",
+                "Past_CentralPlaza_Chapter1_E1_Cycle77SouthwestEntryBrokenRail",
+                "Past_CentralPlaza_Chapter1_E1_Cycle77SouthwestEntryLoosePost",
+                "Past_CentralPlaza_Chapter1_E1_Cycle77CentralRoadBrokenPost",
+                "Past_CentralPlaza_Chapter1_E1_Cycle82SouthwestArrivalFenceShardA",
+                "Past_CentralPlaza_Chapter1_E1_Cycle82SouthwestArrivalFenceShardB",
+                "Past_CentralPlaza_Chapter1_E1_RightBrokenFenceUpperA",
+                "Past_CentralPlaza_Chapter1_E1_RightBrokenFenceLowerA",
+                "Past_CentralPlaza_Chapter1_E1_EntranceFieldLoosePost",
+                "Past_CentralPlaza_Chapter1_E1_E3BoundaryFenceShard",
+                "Past_CentralPlaza_Chapter1_E1_RightGrassEdgeBreakA",
+                "Past_CentralPlaza_Chapter1_E1_RightGrassEdgeBreakB",
+                "Past_CentralPlaza_Chapter1_E1_Cycle54PastFenceRepairStone",
+                "Past_CentralPlaza_Chapter1_E2_Cycle62YardOuterFenceFragment",
+                "Past_CentralPlaza_Chapter1_E2_Cycle65RightWallFenceFragment",
+                "Past_CentralPlaza_Chapter1_E2_Cycle77YardFenceBrokenNorth",
+                "Past_CentralPlaza_Chapter1_E2_Cycle77YardFenceBrokenSouth",
+                "Past_CentralPlaza_Chapter1_E2_YardFenceBrokenUpperA",
+                "Past_CentralPlaza_Chapter1_E2_YardFenceBrokenUpperB",
+                "Past_CentralPlaza_Chapter1_E2_YardFenceBrokenLowerA",
+                "Past_CentralPlaza_Chapter1_E2_Cycle47FrontYardStoneNib",
+                "Past_CentralPlaza_Chapter1_E2_YardStoneNearEntry",
+                "Past_CentralPlaza_Chapter1_E2_YardStoneNearCenter",
+                "Past_CentralPlaza_Chapter1_E2_YardBoundaryStoneA",
+                "Past_CentralPlaza_Chapter1_E3_Cycle77RightExitBrokenRail",
+                "Past_CentralPlaza_Chapter1_E3_Cycle77ReviewExitUpperFenceFragment",
+                "Past_CentralPlaza_Chapter1_E3_Cycle77ReviewExitLowerFenceFragment",
+                "Past_CentralPlaza_Chapter1_E3_Cycle82RightFenceFragmentUpper",
+                "Past_CentralPlaza_Chapter1_E3_Cycle82RightFenceFragmentLower",
+                "Past_CentralPlaza_Chapter1_E3_Cycle55RightUpperGrassOuterEdge",
+                "Past_CentralPlaza_Chapter1_E3_Cycle55RightLowerGrassOuterEdge",
+                "Past_CentralPlaza_Chapter1_E3_Cycle84RightUpperGrassOuterSeparator",
+                "Past_CentralPlaza_Chapter1_E3_Cycle84RightLowerGrassOuterSeparator",
+                "Past_CentralPlaza_Chapter1_E3_ExitStoneEdge",
+                "Past_CentralPlaza_Chapter1_E3_ExitGrassBreak",
+                "Past_CentralPlaza_Chapter1_E1_LowerFieldStonePile",
+                "Past_CentralPlaza_Chapter1_E1_LowerRightFieldStone",
+                "Past_CentralPlaza_Chapter1_E1_FieldFlatStoneNearRows",
+                "Past_CentralPlaza_Chapter1_E1_EntranceFieldShoulderStone"
+            };
+            foreach (var objectName in hiddenDebrisNames)
+            {
+                ValidateInactiveOrMissing(objectName);
+            }
+
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCleanSoilWest", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCleanSoilMid", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCleanSoilEast", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCropWest", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCropMid", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldCropEast", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldEdgeCleanRailWest", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldEdgeCleanRailEast", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122LowerFieldHarvestBasket", "past_furniture");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122RightFenceCleanUpper", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E1_Cycle122RightFenceCleanLower", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanNorthRail", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanSouthRail", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanGrassNorth", "past_grass");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E2_Cycle122YardCleanGrassSouth", "past_grass");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E3_Cycle122ExitGrassCleanUpper", "past_grass");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E3_Cycle122ExitGrassCleanLower", "past_grass");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E3_Cycle122ExitPlantBandUpper", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_E3_Cycle122ExitPlantBandLower", "leaf");
         }
 
         private static void ValidateChapter1RuinsCycle98RightFieldCleanup()
