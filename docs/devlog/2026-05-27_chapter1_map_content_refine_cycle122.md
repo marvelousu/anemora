@@ -11,7 +11,7 @@
 - `CaptureChapter1AllMapsCycle05ScreenshotsBatch`: passed (`Logs/chapter1_cycle122_capture.log`)
 - Gallery regenerated at `Logs/review_gallery_2026-05-27T22-52/index.html`; Playwright image-src check passed with 5 `img[src]` elements, 4 unique review images, and 0 broken; console warnings/errors were 0.
 - Reviewer subagent Feynman: ACCEPT.
-- `BuildAndValidateBatch`: passed (`Logs/chapter1_cycle122_build.log`)
+- `BuildAndValidateBatch`: r2 passed (`Logs/chapter1_cycle122_build_r2.log`); r1 hit a Unity Editor native crash after `CreateHouseSliceScene` (`Logs/chapter1_cycle122_build.log`)
 - Player smoke: passed with 0 error-like matches (`Logs/chapter1_cycle122_player_smoke.log`)
 - `python .github\scripts\validate-review-dirs.py`: passed
 - Review target exe: `C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-sample\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`
