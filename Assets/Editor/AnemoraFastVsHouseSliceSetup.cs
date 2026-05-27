@@ -711,6 +711,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8HLibraryMaterialReadability();
             ValidateHd2dStage8ILibraryReviewComposition();
             ValidateHd2dStage8JLibraryTableLightDepth();
+            ValidateHd2dStage8KLibraryChairShelfDepth();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1304,6 +1305,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8JLibraryTableLightDepth();
         }
 
+        public static void ValidateHd2dStage8KLibraryChairShelfDepthBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8KLibraryChairShelfDepth();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1497,6 +1505,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8j_library_table_light_depth");
             CaptureHd2dStage8JLibraryTableLightDepthReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8KLibraryChairShelfDepthReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8k_library_chair_shelf_depth");
+            CaptureHd2dStage8KLibraryChairShelfDepthReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -3980,6 +4001,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8j library table light depth screenshots captured");
         }
 
+        private static void CaptureHd2dStage8KLibraryChairShelfDepthReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8k_library_chair_shelf_depth.md",
+                "Fast VS Stage 8k library chair shelf depth screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -4964,10 +4993,12 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8g_library_hero_lighting", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8h_library_material_readability", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal);
             var stage8iLibraryReviewComposition =
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -16120,6 +16151,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryHeroLightingStage8g(root, c, materials);
                 CreateCurrentLibraryMaterialReadabilityStage8h(root, c, materials);
                 CreateCurrentLibraryTableLightDepthStage8j(root, c, materials);
+                CreateCurrentLibraryChairShelfDepthStage8k(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -24446,6 +24478,49 @@ namespace Anemora.EditorTools
         }
 
         private static GameObject CreateStage8JLibraryTableLightDepthAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static void CreateCurrentLibraryChairShelfDepthStage8k(Transform root, Vector3 c, Materials materials)
+        {
+            var warmPool = EnsureHd2dWarmLightPoolMaterial();
+            var windowLight = EnsureHd2dLibraryWindowLightMaterial();
+
+            CreateStage8KLibraryChairShelfDepthPlane(root, c + new Vector3(1.82f, 0.120f, -0.92f), Quaternion.Euler(90f, -10f, 0f), new Vector3(1.42f, 0.32f, 1f), windowLight, "Current_Library_Stage8k_FloorCoolSpillBehindChairA", "Current.library.stage8k.floor_cool_spill.behind_chair_a");
+            CreateStage8KLibraryChairShelfDepthPlane(root, c + new Vector3(1.55f, 0.118f, -0.68f), Quaternion.Euler(90f, 7f, 0f), new Vector3(0.94f, 0.26f, 1f), warmPool, "Current_Library_Stage8k_FloorWarmKickUnderChairA", "Current.library.stage8k.floor_warm_kick.under_chair_a");
+
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(1.68f, 0.468f, -0.72f), Quaternion.Euler(0f, -6f, 0f), new Vector3(0.70f, 0.035f, 0.18f), materials.CurrentFence, "Current_Library_Stage8k_NearChairSeatDarkWoodA", "Current.library.stage8k.near_chair.seat_dark_wood_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(1.63f, 0.498f, -0.64f), Quaternion.Euler(0f, -5f, 0f), new Vector3(0.56f, 0.014f, 0.050f), materials.Lamp, "Current_Library_Stage8k_NearChairSeatWarmLipA", "Current.library.stage8k.near_chair.seat_warm_lip_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(1.92f, 0.840f, -0.94f), Quaternion.Euler(0f, -7f, 0f), new Vector3(0.66f, 0.070f, 0.052f), materials.Dust, "Current_Library_Stage8k_NearChairBackDustCutA", "Current.library.stage8k.near_chair.back_dust_cut_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(1.48f, 0.286f, -0.62f), Quaternion.Euler(0f, -5f, 0f), new Vector3(0.055f, 0.420f, 0.050f), materials.CurrentFence, "Current_Library_Stage8k_NearChairFrontLegA", "Current.library.stage8k.near_chair.front_leg_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(1.98f, 0.284f, -0.94f), Quaternion.Euler(0f, -7f, 0f), new Vector3(0.050f, 0.400f, 0.050f), materials.CurrentFence, "Current_Library_Stage8k_NearChairRearLegA", "Current.library.stage8k.near_chair.rear_leg_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(1.74f, 0.104f, -0.78f), Quaternion.Euler(0f, -8f, 0f), new Vector3(0.90f, 0.010f, 0.20f), materials.Shadow, "Current_Library_Stage8k_NearChairCastShadowA", "Current.library.stage8k.near_chair.cast_shadow_a");
+
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(-0.72f, 1.02f, 6.70f), Quaternion.identity, new Vector3(1.34f, 0.052f, 0.052f), materials.Lamp, "Current_Library_Stage8k_BackShelfLowerWarmRimA", "Current.library.stage8k.back_shelf.lower_warm_rim_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(0.62f, 0.88f, 6.70f), Quaternion.identity, new Vector3(1.08f, 0.062f, 0.052f), materials.Shadow, "Current_Library_Stage8k_BackShelfPocketShadowA", "Current.library.stage8k.back_shelf.pocket_shadow_a");
+            CreateStage8KLibraryChairShelfDepthAccent(root, c + new Vector3(0.18f, 1.28f, 6.70f), Quaternion.identity, new Vector3(0.82f, 0.044f, 0.050f), materials.SignPaint, "Current_Library_Stage8k_BackShelfPageGlintA", "Current.library.stage8k.back_shelf.page_glint_a");
+        }
+
+        private static GameObject CreateStage8KLibraryChairShelfDepthPlane(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            var plane = CreateQuad(objectName, root, localPosition, localScale, material);
+            plane.transform.localRotation = localRotation;
+            var renderer = plane.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = plane.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            return plane;
+        }
+
+        private static GameObject CreateStage8KLibraryChairShelfDepthAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
         {
             return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
         }
@@ -35554,6 +35629,154 @@ namespace Anemora.EditorTools
                 !source.Contains("ForceOpaqueAlpha(texture);", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8j library table light depth source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8KLibraryChairShelfDepth()
+        {
+            ValidateStage8KLibraryChairShelfDepthObject(
+                "Current_Library_Stage8k_FloorCoolSpillBehindChairA",
+                "Current_LibraryMap_SeparateSpace",
+                "library_window_light",
+                new Vector3(1.65f, 0.105f, -1.08f),
+                new Vector3(1.99f, 0.140f, -0.76f),
+                new Vector3(1.60f, 0.40f, 1.05f));
+            ValidateStage8KLibraryChairShelfDepthObject(
+                "Current_Library_Stage8k_FloorWarmKickUnderChairA",
+                "Current_LibraryMap_SeparateSpace",
+                "warm_light_pool",
+                new Vector3(1.36f, 0.105f, -0.82f),
+                new Vector3(1.75f, 0.140f, -0.54f),
+                new Vector3(1.05f, 0.32f, 1.05f));
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8k_NearChairSeatDarkWoodA",
+                "Current_Library_Stage8k_NearChairSeatWarmLipA",
+                "Current_Library_Stage8k_NearChairBackDustCutA",
+                "Current_Library_Stage8k_NearChairFrontLegA",
+                "Current_Library_Stage8k_NearChairRearLegA",
+                "Current_Library_Stage8k_NearChairCastShadowA"
+            })
+            {
+                ValidateStage8KLibraryChairShelfDepthObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    string.Empty,
+                    new Vector3(1.38f, 0.090f, -1.04f),
+                    new Vector3(2.08f, 0.900f, -0.56f),
+                    new Vector3(0.95f, 0.46f, 0.22f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8k_BackShelfLowerWarmRimA",
+                "Current_Library_Stage8k_BackShelfPocketShadowA",
+                "Current_Library_Stage8k_BackShelfPageGlintA"
+            })
+            {
+                ValidateStage8KLibraryChairShelfDepthObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    string.Empty,
+                    new Vector3(-0.90f, 0.80f, 6.64f),
+                    new Vector3(0.78f, 1.34f, 6.76f),
+                    new Vector3(1.42f, 0.08f, 0.08f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Past_Library_Stage8k_NearChairSeatDarkWoodA",
+                "Past_Library_Stage8k_BackShelfLowerWarmRimA",
+                "Past_Library_Stage8k_FloorCoolSpillBehindChairA"
+            })
+            {
+                if (FindSceneObjectIncludingInactive(objectName) != null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Stage 8k library chair shelf depth must remain current-space-only: {objectName}.");
+                }
+            }
+
+            ValidateHd2dStage8KLibraryChairShelfDepthSourceText();
+        }
+
+        private static void ValidateStage8KLibraryChairShelfDepthObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8k library chair shelf depth object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only chair and shelf depth does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (!string.IsNullOrEmpty(expectedMaterialToken) &&
+                materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken}, but used {materialName}.");
+            }
+
+            if (string.IsNullOrEmpty(expectedMaterialToken) &&
+                materialName.IndexOf("current_fence", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("lamp", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("sign_paint", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("shadow", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("dust", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("book", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use chair/shelf rim/shadow material, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateHd2dStage8KLibraryChairShelfDepthSourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8k_library_chair_shelf_depth\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryChairShelfDepthStage8k(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("Current_Library_Stage8k_NearChairSeatDarkWoodA", StringComparison.Ordinal) ||
+                !source.Contains("20260527_stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
+                !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8k_library_chair_shelf_depth.md", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8k library chair shelf depth source guards are missing.");
             }
         }
 
