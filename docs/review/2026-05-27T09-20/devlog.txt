@@ -1,0 +1,5 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle116.md
+
+# Review notes
+- Cycle 116 targets A1-A2 past-side lower kitchen garden only.
+- Current-side yard debris, route pads, route markers, roads, and house architecture are intended to remain unchanged.

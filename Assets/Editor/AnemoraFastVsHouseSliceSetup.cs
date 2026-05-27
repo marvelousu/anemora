@@ -796,6 +796,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle86HouseExteriorYardDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle94HouseExteriorRoadVergeDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle103HouseExteriorPlantPanelScatterDetails(exteriorRoot, prefix, past, materials);
+            CreateChapter1Cycle116HouseExteriorPastKitchenGardenDegridDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle88PlazaFountainPavingDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle92PlazaSideLawnEdgeDetails(plazaRoot, prefix, past, materials);
             CreateChapter1Cycle102PlazaSideStripScatterDetails(plazaRoot, prefix, past, materials);
@@ -6531,6 +6532,49 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1Cycle116HouseExteriorPastKitchenGardenDegridDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = HouseExteriorCenter;
+            var soil = materials.PastPath;
+            var crop = materials.Leaf;
+            var trim = materials.PastFence;
+            var grass = materials.PastGrass;
+
+            var hiddenNames = new[]
+            {
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenSoil",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowA",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowB",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowC",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerGardenSoftWestEdge",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerGardenSoftSouthEdge"
+            };
+
+            foreach (var objectName in hiddenNames)
+            {
+                HideChildIfPresent(root, objectName);
+            }
+
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenGardenSoilChipWest", root, c + new Vector3(-5.22f, 0.118f, -3.96f), new Vector3(0.92f, 0.032f, 0.26f), Quaternion.Euler(0f, -8f, 0f), soil, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.house_exterior.chapter1.cycle116.kitchen_garden_soil_chip_west");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenGardenSoilChipMid", root, c + new Vector3(-4.38f, 0.120f, -4.28f), new Vector3(1.10f, 0.032f, 0.24f), Quaternion.Euler(0f, 7f, 0f), soil, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.house_exterior.chapter1.cycle116.kitchen_garden_soil_chip_mid");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenGardenSoilChipEast", root, c + new Vector3(-3.42f, 0.118f, -4.52f), new Vector3(0.78f, 0.032f, 0.22f), Quaternion.Euler(0f, 18f, 0f), soil, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.house_exterior.chapter1.cycle116.kitchen_garden_soil_chip_east");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenGardenGrassPocketSouth", root, c + new Vector3(-4.90f, 0.112f, -4.66f), new Vector3(0.70f, 0.030f, 0.18f), Quaternion.Euler(0f, -14f, 0f), grass, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_garden_grass_pocket_south");
+
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenCropSprigWest", root, c + new Vector3(-5.30f, 0.154f, -3.90f), new Vector3(0.54f, 0.035f, 0.085f), Quaternion.Euler(0f, -10f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_crop_sprig_west");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenCropSprigMidA", root, c + new Vector3(-4.58f, 0.156f, -4.22f), new Vector3(0.62f, 0.035f, 0.085f), Quaternion.Euler(0f, 5f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_crop_sprig_mid_a");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenCropSprigMidB", root, c + new Vector3(-4.00f, 0.156f, -4.36f), new Vector3(0.46f, 0.035f, 0.075f), Quaternion.Euler(0f, 14f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_crop_sprig_mid_b");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenCropSprigEast", root, c + new Vector3(-3.42f, 0.154f, -4.50f), new Vector3(0.50f, 0.035f, 0.080f), Quaternion.Euler(0f, 19f, 0f), crop, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_crop_sprig_east");
+
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenGardenShortRailWest", root, c + new Vector3(-5.86f, 0.206f, -4.38f), new Vector3(0.56f, 0.070f, 0.10f), Quaternion.Euler(0f, -15f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_garden_short_rail_west");
+            CreateLandmarkCube("Past_HouseExterior_Chapter1_Cycle116KitchenGardenShortRailSouth", root, c + new Vector3(-4.18f, 0.206f, -4.78f), new Vector3(0.72f, 0.070f, 0.10f), Quaternion.Euler(0f, 8f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.house_exterior.chapter1.cycle116.kitchen_garden_short_rail_south");
+            CreateFlowerPatch(root, "Past_HouseExterior_Chapter1_Cycle116KitchenGardenEdgeBloom", c + new Vector3(-3.20f, 0.244f, -4.16f), crop, materials.FlowerRed, materials.FlowerYellow);
+        }
+
         private static void CreateChapter1Cycle88PlazaFountainPavingDetails(Transform root, string prefix, bool past, Materials materials)
         {
             var c = CentralPlazaVsCenter;
@@ -10037,6 +10081,7 @@ namespace Anemora.EditorTools
             ValidateChapter1PlazaCycle102SideStripCleanup();
             ValidateChapter1PlazaCycle112SideVegetationScatter();
             ValidateChapter1HouseExteriorCycle103PlantPanelCleanup();
+            ValidateChapter1HouseExteriorCycle116PastKitchenGardenDegrid();
             ValidateChapter1AriaCycle105PastVergeCleanup();
             ValidateChapter1AriaCycle110PastLowerScatterCleanup();
             ValidateChapter1AriaCycle115PastLowerVergeDePanel();
@@ -10363,6 +10408,32 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Current_HouseExterior_Chapter1_Cycle103LowerDustPocket", "dust");
             ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle103CleanTopRail", "past_fence");
             ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle103CleanRightRail", "past_fence");
+        }
+
+        private static void ValidateChapter1HouseExteriorCycle116PastKitchenGardenDegrid()
+        {
+            var hiddenNames = new[]
+            {
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenSoil",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowA",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowB",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowC",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerGardenSoftWestEdge",
+                "Past_HouseExterior_Chapter1_Cycle86_LowerGardenSoftSouthEdge"
+            };
+
+            foreach (var objectName in hiddenNames)
+            {
+                ValidateInactiveOrMissing(objectName);
+            }
+
+            ValidateChapter1ContinuationLandmark("Current_HouseExterior_Chapter1_Cycle86_LowerKitchenGardenRowA", "dust");
+            ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle116KitchenGardenSoilChipWest", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle116KitchenGardenSoilChipMid", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle116KitchenCropSprigWest", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle116KitchenCropSprigEast", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle116KitchenGardenShortRailWest", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_HouseExterior_Chapter1_Cycle116KitchenGardenGrassPocketSouth", "past_grass");
         }
 
         private static void ValidateChapter1AriaCycle105PastVergeCleanup()
