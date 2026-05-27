@@ -1,0 +1,7 @@
+﻿Cycle 140 review pixel-diff gate
+changed_pixels=4858 diff_bbox=595,343,669,527 current_hash_match=true
+past_hash_changed=true lower_left_house_region_changed_pixels=0
+baseline images are from HEAD before cycle140; generated images are from cycle140 r2 capture.
+baseline_11_f1_f6_current.png == generated_11_f1_f6_current.png
+baseline_12_f1_f6_past.png != generated_12_f1_f6_past.png
+r2_note=Cycle140 gorge renderers cast/receive no shadows to keep the pass localized.
