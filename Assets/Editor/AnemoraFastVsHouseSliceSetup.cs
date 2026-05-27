@@ -713,6 +713,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8JLibraryTableLightDepth();
             ValidateHd2dStage8KLibraryChairShelfDepth();
             ValidateHd2dStage8LLibraryFloorBounceGrounding();
+            ValidateHd2dStage8MLibraryBackShelfVolume();
             ValidateHd2dStage7PlazaDepthBands();
             ValidateHd2dStage7PlazaShadowLift();
             ValidateHd2dStage7PlazaReceiverRebalance();
@@ -1320,6 +1321,13 @@ namespace Anemora.EditorTools
             ValidateHd2dStage8LLibraryFloorBounceGrounding();
         }
 
+        public static void ValidateHd2dStage8MLibraryBackShelfVolumeBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dStage8MLibraryBackShelfVolume();
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -1539,6 +1547,19 @@ namespace Anemora.EditorTools
                 "reference",
                 "20260527_stage8l_library_floor_bounce_grounding");
             CaptureHd2dStage8LLibraryFloorBounceGroundingReferenceScreenshotsToDirectory(outputDirectory);
+        }
+
+        public static void CaptureHd2dStage8MLibraryBackShelfVolumeReferenceScreenshotsBatch()
+        {
+            var outputDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "OneDrive",
+                "work",
+                "projects",
+                "anemora_reference",
+                "reference",
+                "20260527_stage8m_library_back_shelf_volume");
+            CaptureHd2dStage8MLibraryBackShelfVolumeReferenceScreenshotsToDirectory(outputDirectory);
         }
 
         public static void CaptureHd2dLocalShapeScreenshotsBatch()
@@ -4038,6 +4059,14 @@ namespace Anemora.EditorTools
                 "Fast VS Stage 8l library floor bounce grounding screenshots captured");
         }
 
+        private static void CaptureHd2dStage8MLibraryBackShelfVolumeReferenceScreenshotsToDirectory(string outputDirectory)
+        {
+            CaptureHd2dReferenceScreenshotsToDirectory(
+                outputDirectory,
+                "docs/devlog/2026-05-27_fast_vs_hd2d_stage8m_library_back_shelf_volume.md",
+                "Fast VS Stage 8m library back shelf volume screenshots captured");
+        }
+
         private static void CaptureHd2dStage7ApvReferenceScreenshotsToDirectory(string outputDirectory)
         {
             CaptureHd2dReferenceScreenshotsToDirectory(
@@ -5024,12 +5053,14 @@ namespace Anemora.EditorTools
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8m_library_back_shelf_volume", StringComparison.Ordinal);
             var stage8iLibraryReviewComposition =
                 reviewDevlogPath.Contains("stage8i_library_review_composition", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8j_library_table_light_depth", StringComparison.Ordinal) ||
                 reviewDevlogPath.Contains("stage8k_library_chair_shelf_depth", StringComparison.Ordinal) ||
-                reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal);
+                reviewDevlogPath.Contains("stage8l_library_floor_bounce_grounding", StringComparison.Ordinal) ||
+                reviewDevlogPath.Contains("stage8m_library_back_shelf_volume", StringComparison.Ordinal);
 
             var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
             var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
@@ -16184,6 +16215,7 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryTableLightDepthStage8j(root, c, materials);
                 CreateCurrentLibraryChairShelfDepthStage8k(root, c, materials);
                 CreateCurrentLibraryFloorBounceGroundingStage8l(root, c, materials);
+                CreateCurrentLibraryBackShelfVolumeStage8m(root, c, materials);
             }
             CreateLibraryWallPlaneDressing(root, prefix, past, materials, c, wood, trim);
             if (past)
@@ -24597,6 +24629,55 @@ namespace Anemora.EditorTools
         }
 
         private static GameObject CreateStage8LLibraryFloorBounceGroundingAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
+        }
+
+        private static void CreateCurrentLibraryBackShelfVolumeStage8m(Transform root, Vector3 c, Materials materials)
+        {
+            var windowLight = EnsureHd2dLibraryWindowLightMaterial();
+
+            CreateStage8MLibraryBackShelfVolumePlane(root, c + new Vector3(0.20f, 1.48f, 6.66f), Quaternion.identity, new Vector3(2.80f, 0.48f, 1f), windowLight, "Current_Library_Stage8m_BackWallCoolVeilCenterA", "Current.library.stage8m.back_wall.cool_veil_center_a");
+
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(-0.10f, 1.55f, 6.70f), Quaternion.identity, new Vector3(4.20f, 0.055f, 0.052f), materials.Shadow, "Current_Library_Stage8m_BackShelfUndersideShadowA", "Current.library.stage8m.back_shelf.underside_shadow_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(-1.84f, 1.34f, 6.69f), Quaternion.identity, new Vector3(0.96f, 0.045f, 0.052f), materials.SignPaint, "Current_Library_Stage8m_BackShelfPageGlintLeftA", "Current.library.stage8m.back_shelf.page_glint_left_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(1.62f, 1.36f, 6.69f), Quaternion.identity, new Vector3(1.10f, 0.045f, 0.052f), materials.Book, "Current_Library_Stage8m_BackShelfBookColorBreakA", "Current.library.stage8m.back_shelf.book_color_break_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(-3.10f, 1.72f, 6.69f), Quaternion.identity, new Vector3(0.80f, 0.045f, 0.052f), materials.Lamp, "Current_Library_Stage8m_BackShelfUpperWarmRimLeftA", "Current.library.stage8m.back_shelf.upper_warm_rim_left_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(2.80f, 1.72f, 6.69f), Quaternion.identity, new Vector3(0.92f, 0.045f, 0.052f), materials.Lamp, "Current_Library_Stage8m_BackShelfUpperWarmRimRightA", "Current.library.stage8m.back_shelf.upper_warm_rim_right_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(-2.55f, 1.12f, 6.69f), Quaternion.identity, new Vector3(0.055f, 0.70f, 0.045f), materials.Dust, "Current_Library_Stage8m_BackShelfVerticalDustSeparatorLeftA", "Current.library.stage8m.back_shelf.vertical_dust_separator_left_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(2.45f, 1.12f, 6.69f), Quaternion.identity, new Vector3(0.055f, 0.70f, 0.045f), materials.Dust, "Current_Library_Stage8m_BackShelfVerticalDustSeparatorRightA", "Current.library.stage8m.back_shelf.vertical_dust_separator_right_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(0.12f, 0.78f, 6.69f), Quaternion.identity, new Vector3(1.86f, 0.070f, 0.050f), materials.Shadow, "Current_Library_Stage8m_BackShelfLowerPocketShadowA", "Current.library.stage8m.back_shelf.lower_pocket_shadow_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(0.85f, 1.88f, 6.69f), Quaternion.identity, new Vector3(0.70f, 0.035f, 0.050f), materials.SignPaint, "Current_Library_Stage8m_BackShelfTopPagePinA", "Current.library.stage8m.back_shelf.top_page_pin_a");
+
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(4.50f, 1.22f, 0.10f), Quaternion.identity, new Vector3(0.052f, 0.060f, 1.20f), materials.Lamp, "Current_Library_Stage8m_RightSideShelfInnerWarmRimA", "Current.library.stage8m.right_side_shelf.inner_warm_rim_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(4.51f, 0.86f, 0.46f), Quaternion.identity, new Vector3(0.052f, 0.085f, 1.34f), materials.Shadow, "Current_Library_Stage8m_RightSideShelfPocketShadowA", "Current.library.stage8m.right_side_shelf.pocket_shadow_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(4.49f, 1.52f, 0.72f), Quaternion.identity, new Vector3(0.052f, 0.050f, 0.82f), materials.Book, "Current_Library_Stage8m_RightSideShelfBookColorBreakA", "Current.library.stage8m.right_side_shelf.book_color_break_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(4.48f, 1.02f, -0.18f), Quaternion.identity, new Vector3(0.050f, 0.052f, 0.66f), materials.Dust, "Current_Library_Stage8m_RightSideShelfDustFrontEdgeA", "Current.library.stage8m.right_side_shelf.dust_front_edge_a");
+
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(2.88f, 0.570f, -1.06f), Quaternion.Euler(0f, -8f, 0f), new Vector3(0.82f, 0.055f, 0.20f), materials.Book, "Current_Library_Stage8m_RightDeskShelfEchoBookA", "Current.library.stage8m.right_desk_shelf_echo.book_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(2.55f, 0.604f, -1.22f), Quaternion.Euler(0f, 7f, 0f), new Vector3(0.58f, 0.014f, 0.18f), materials.SignPaint, "Current_Library_Stage8m_RightDeskShelfEchoPageA", "Current.library.stage8m.right_desk_shelf_echo.page_a");
+            CreateStage8MLibraryBackShelfVolumeAccent(root, c + new Vector3(2.74f, 0.542f, -1.08f), Quaternion.Euler(0f, -6f, 0f), new Vector3(1.02f, 0.010f, 0.22f), materials.Shadow, "Current_Library_Stage8m_RightDeskShelfEchoShadowA", "Current.library.stage8m.right_desk_shelf_echo.shadow_a");
+        }
+
+        private static GameObject CreateStage8MLibraryBackShelfVolumePlane(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
+        {
+            var plane = CreateQuad(objectName, root, localPosition, localScale, material);
+            plane.transform.localRotation = localRotation;
+            var renderer = plane.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = plane.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+            return plane;
+        }
+
+        private static GameObject CreateStage8MLibraryBackShelfVolumeAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
         {
             return CreateNonArrivalLandmarkCubeShadowSafe(objectName, root, localPosition, localScale, localRotation, material, landmarkId);
         }
@@ -35987,6 +36068,168 @@ namespace Anemora.EditorTools
                 !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8l_library_floor_bounce_grounding.md", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("House slice validation failed: Stage 8l library floor bounce grounding source guards are missing.");
+            }
+        }
+
+        private static void ValidateHd2dStage8MLibraryBackShelfVolume()
+        {
+            ValidateStage8MLibraryBackShelfVolumeObject(
+                "Current_Library_Stage8m_BackWallCoolVeilCenterA",
+                "Current_LibraryMap_SeparateSpace",
+                "library_window_light",
+                new Vector3(-0.02f, 1.30f, 6.60f),
+                new Vector3(0.42f, 1.64f, 6.72f),
+                new Vector3(3.00f, 0.60f, 1.05f));
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8m_BackShelfUndersideShadowA",
+                "Current_Library_Stage8m_BackShelfPageGlintLeftA",
+                "Current_Library_Stage8m_BackShelfBookColorBreakA",
+                "Current_Library_Stage8m_BackShelfUpperWarmRimLeftA",
+                "Current_Library_Stage8m_BackShelfUpperWarmRimRightA",
+                "Current_Library_Stage8m_BackShelfVerticalDustSeparatorLeftA",
+                "Current_Library_Stage8m_BackShelfVerticalDustSeparatorRightA",
+                "Current_Library_Stage8m_BackShelfLowerPocketShadowA",
+                "Current_Library_Stage8m_BackShelfTopPagePinA"
+            })
+            {
+                ValidateStage8MLibraryBackShelfVolumeObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    string.Empty,
+                    new Vector3(-3.30f, 0.70f, 6.62f),
+                    new Vector3(3.00f, 1.94f, 6.76f),
+                    new Vector3(4.40f, 0.75f, 0.08f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8m_RightSideShelfInnerWarmRimA",
+                "Current_Library_Stage8m_RightSideShelfPocketShadowA",
+                "Current_Library_Stage8m_RightSideShelfBookColorBreakA",
+                "Current_Library_Stage8m_RightSideShelfDustFrontEdgeA"
+            })
+            {
+                ValidateStage8MLibraryBackShelfVolumeObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    string.Empty,
+                    new Vector3(4.34f, 0.72f, -0.34f),
+                    new Vector3(4.62f, 1.62f, 1.20f),
+                    new Vector3(0.08f, 0.12f, 1.50f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_Stage8m_RightDeskShelfEchoBookA",
+                "Current_Library_Stage8m_RightDeskShelfEchoPageA",
+                "Current_Library_Stage8m_RightDeskShelfEchoShadowA"
+            })
+            {
+                ValidateStage8MLibraryBackShelfVolumeObject(
+                    objectName,
+                    "Current_LibraryMap_SeparateSpace",
+                    string.Empty,
+                    new Vector3(2.30f, 0.50f, -1.35f),
+                    new Vector3(3.10f, 0.64f, -0.95f),
+                    new Vector3(1.10f, 0.08f, 0.24f));
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Past_Library_Stage8m_BackWallCoolVeilCenterA",
+                "Past_Library_Stage8m_BackShelfUndersideShadowA",
+                "Past_Library_Stage8m_BackShelfBookColorBreakA",
+                "Past_Library_Stage8m_RightSideShelfInnerWarmRimA",
+                "Past_Library_Stage8m_RightDeskShelfEchoBookA"
+            })
+            {
+                if (FindSceneObjectIncludingInactive(objectName) != null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Stage 8m library back shelf volume must remain current-space-only: {objectName}.");
+                }
+            }
+
+            ValidateHd2dStage8MLibraryBackShelfVolumeSourceText();
+        }
+
+        private static void ValidateStage8MLibraryBackShelfVolumeObject(string objectName, string expectedParentName, string expectedMaterialToken, Vector3 minLocalOffset, Vector3 maxLocalOffset, Vector3 maxLocalScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Stage 8m library back shelf volume object {objectName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a renderer with a material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.layer != CurrentSpaceRenderLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain on the current-space render layer.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a non-arrival TimeWindow paired-space landmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var countsForArrivalProperty = landmarkSerialized.FindProperty("countsForArrival");
+            if (countsForArrivalProperty == null ||
+                countsForArrivalProperty.propertyType != SerializedPropertyType.Boolean ||
+                countsForArrivalProperty.boolValue)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay non-arrival so current-only back shelf volume does not affect TimeWindow pairing.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local offset", sceneObject.transform.localPosition - LibraryVsCenter, minLocalOffset, maxLocalOffset);
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, Vector3.zero, maxLocalScale);
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (!string.IsNullOrEmpty(expectedMaterialToken) &&
+                materialName.IndexOf(expectedMaterialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a material containing {expectedMaterialToken}, but used {materialName}.");
+            }
+
+            if (string.IsNullOrEmpty(expectedMaterialToken) &&
+                materialName.IndexOf("shadow", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("sign_paint", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("book", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("lamp", StringComparison.OrdinalIgnoreCase) < 0 &&
+                materialName.IndexOf("dust", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use back shelf rim/page/book/shadow material, but used {materialName}.");
+            }
+        }
+
+        private static void ValidateHd2dStage8MLibraryBackShelfVolumeSourceText()
+        {
+            var sourcePath = Path.Combine(Application.dataPath, "Editor", "AnemoraFastVsHouseSliceSetup.cs");
+            var source = File.ReadAllText(sourcePath);
+            if (!source.Contains("reviewDevlogPath.Contains(\"stage8m_library_back_shelf_volume\", StringComparison.Ordinal)", StringComparison.Ordinal) ||
+                !source.Contains("CreateCurrentLibraryBackShelfVolumeStage8m(root, c, materials);", StringComparison.Ordinal) ||
+                !source.Contains("Current_Library_Stage8m_BackWallCoolVeilCenterA", StringComparison.Ordinal) ||
+                !source.Contains("20260527_stage8m_library_back_shelf_volume", StringComparison.Ordinal) ||
+                !source.Contains("docs/devlog/2026-05-27_fast_vs_hd2d_stage8m_library_back_shelf_volume.md", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("House slice validation failed: Stage 8m library back shelf volume source guards are missing.");
             }
         }
 
