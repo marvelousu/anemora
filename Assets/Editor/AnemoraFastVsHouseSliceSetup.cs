@@ -807,6 +807,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle100MiaTreePanelSpreadDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle101MiaLowerPlantBandScatterDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle108MiaPastLowerVergeCleanupDetails(miaHouseRoot, prefix, past, materials);
+            CreateChapter1Cycle118MiaPastLowerGardenOffsetDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle90AriaLowerVergeDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle105AriaPastCleanVergeDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle110AriaPastLowerScatterCleanupDetails(ariaStreetRoot, prefix, past, materials);
@@ -7026,6 +7027,26 @@ namespace Anemora.EditorTools
             CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_C1_Cycle108LowerBloomEast", c + new Vector3(6.10f, 0.236f, -5.72f), leaf, materials.FlowerRed, materials.FlowerYellow);
         }
 
+        private static void CreateChapter1Cycle118MiaPastLowerGardenOffsetDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1MiaHouseMapCenter;
+            var path = materials.PastPath;
+            var leaf = materials.Leaf;
+            var trim = materials.PastFence;
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenPathChipWest", root, c + new Vector3(-5.24f, 0.136f, -6.74f), new Vector3(0.62f, 0.026f, 0.08f), Quaternion.Euler(0f, -17f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.c1.cycle118.lower_garden.path_chip_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenPathChipEast", root, c + new Vector3(4.96f, 0.136f, -6.34f), new Vector3(0.52f, 0.026f, 0.08f), Quaternion.Euler(0f, -12f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.c1.cycle118.lower_garden.path_chip_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenOffsetRail", root, c + new Vector3(1.72f, 0.214f, -6.70f), new Vector3(0.58f, 0.052f, 0.08f), Quaternion.Euler(0f, 12f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.c1.cycle118.lower_garden.offset_rail");
+            CreateGrassTuft(root, "Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenTuft", c + new Vector3(-3.74f, 0.205f, -6.52f), leaf, 1180);
+            CreateGrassTuft(root, "Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenTuft", c + new Vector3(3.26f, 0.205f, -6.92f), leaf, 1181);
+            CreateFlowerPatch(root, "Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenBloom", c + new Vector3(-2.42f, 0.236f, -6.92f), leaf, materials.FlowerBlue, materials.FlowerYellow);
+        }
+
         private static void CreateChapter1Cycle90AriaLowerVergeDetails(Transform root, string prefix, bool past, Materials materials)
         {
             var c = Chapter1AriaStreetMapCenter;
@@ -10099,6 +10120,7 @@ namespace Anemora.EditorTools
             ValidateChapter1MiaCycle100TreePanelCleanup();
             ValidateChapter1MiaCycle101LowerPlantCleanup();
             ValidateChapter1MiaCycle108PastLowerVergeCleanup();
+            ValidateChapter1MiaCycle118PastLowerGardenOffset();
             ValidateChapter1PlazaCycle102SideStripCleanup();
             ValidateChapter1PlazaCycle112SideVegetationScatter();
             ValidateChapter1PlazaCycle117PastFrontLawnTexture();
@@ -10289,6 +10311,15 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeCleanSweepWest", "past_grass");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeTrimWest", "past_path");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle108LowerVergeLowRailMid", "past_fence");
+        }
+
+        private static void ValidateChapter1MiaCycle118PastLowerGardenOffset()
+        {
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenPathChipWest", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenPathChipEast", "past_path");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenOffsetRail", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenTuft_HouseExterior_GrassTuft1180_A", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_C1_Cycle118LowerGardenTuft_HouseExterior_GrassTuft1181_A", "leaf");
         }
 
         private static void ValidateChapter1PlazaCycle102SideStripCleanup()
