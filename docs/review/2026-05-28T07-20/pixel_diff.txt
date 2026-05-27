@@ -1,0 +1,8 @@
+current_hash_match=True
+current_changed_pixels=0
+current_diff_bbox=None
+past_changed_pixels=3467
+past_diff_bbox=111,316,367,370
+past_upper_left_house_row_region=90,300,390,390
+past_upper_left_house_row_region_changed_pixels=3467
+past_outside_upper_left_house_row_region_changed_pixels=0

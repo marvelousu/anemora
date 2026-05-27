@@ -1118,6 +1118,7 @@ namespace Anemora.EditorTools
             CreateRuinsCycle136PastRightFieldDewoodDetails(root, prefix, past, materials);
             CreateRuinsCycle141PastRightFarmStallFinishDetails(root, prefix, past, materials);
             CreateRuinsCycle142PastRightHouseRowFinishDetails(root, prefix, past, materials);
+            CreateRuinsCycle143PastUpperLeftHouseRowFinishDetails(root, prefix, past, materials);
             CreateRuinsCycle139PastLowerLeftHouseFinishDetails(root, prefix, past, materials);
             CreateChapter1MapBoundary(root, prefix, "Ruins", Chapter1RuinsMapCenter);
         }
@@ -7590,6 +7591,82 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateRuinsCycle143PastUpperLeftHouseRowFinishDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1RuinsMapCenter;
+            var wall = materials.PastExteriorWall;
+            var roof = materials.PastRoof;
+            var trim = materials.PastFence;
+            var wood = materials.PastFurniture;
+            var light = materials.WindowLight;
+            var stone = materials.PastStone;
+            var leaf = materials.Leaf;
+            var lamp = materials.Lamp;
+
+            var houses = new[]
+            {
+                new { Name = "TopFar", X = -23.55f, FrontZ = 5.84f, Width = 3.50f, RoofY = 1.96f, DoorX = -23.55f, StepZ = 5.44f, WindowX = -24.36f, WindowY = 1.04f, GardenX = -22.56f, Rotation = Quaternion.Euler(0f, -3f, 0f), Bloom = materials.FlowerYellow },
+                new { Name = "TopMid", X = -19.35f, FrontZ = 5.84f, Width = 3.72f, RoofY = 2.16f, DoorX = -19.35f, StepZ = 5.44f, WindowX = -18.50f, WindowY = 1.08f, GardenX = -20.28f, Rotation = Quaternion.Euler(0f, 4f, 0f), Bloom = materials.FlowerBlue },
+                new { Name = "TopRight", X = -15.20f, FrontZ = 5.84f, Width = 3.34f, RoofY = 2.12f, DoorX = -15.20f, StepZ = 5.44f, WindowX = -14.42f, WindowY = 1.06f, GardenX = -16.04f, Rotation = Quaternion.identity, Bloom = materials.FlowerYellow }
+            };
+
+            foreach (var house in houses)
+            {
+                var leftX = house.X - house.Width * 0.47f;
+                var rightX = house.X + house.Width * 0.47f;
+                var frontFaceZ = house.FrontZ - 0.060f;
+
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}WallCleanPlane", root, c + new Vector3(house.X, 0.94f, frontFaceZ), new Vector3(house.Width * 0.90f, 1.06f, 0.070f), house.Rotation, wall, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.wall_clean_plane");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}LowerWallBelt", root, c + new Vector3(house.X, 0.50f, frontFaceZ - 0.014f), new Vector3(house.Width * 0.78f, 0.060f, 0.078f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.lower_wall_belt");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}UpperWallTrim", root, c + new Vector3(house.X, 1.36f, frontFaceZ - 0.018f), new Vector3(house.Width * 0.82f, 0.060f, 0.078f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.upper_wall_trim");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}RoofFullPlaneClean", root, c + new Vector3(house.X, house.RoofY + 0.09f, house.FrontZ + 0.18f), new Vector3(house.Width + 0.70f, 0.105f, 0.76f), house.Rotation, roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.roof_full_plane_clean");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}RoofFrontBrightTileLine", root, c + new Vector3(house.X, house.RoofY - 0.015f, house.FrontZ - 0.030f), new Vector3(house.Width + 0.78f, 0.060f, 0.085f), house.Rotation, materials.LaundryBright, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.roof_front_bright_tile_line");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}RoofLeftEndCap", root, c + new Vector3(leftX - 0.10f, house.RoofY + 0.020f, house.FrontZ + 0.12f), new Vector3(0.105f, 0.120f, 0.58f), house.Rotation, roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.roof_left_end_cap");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}RoofRightEndCap", root, c + new Vector3(rightX + 0.10f, house.RoofY + 0.020f, house.FrontZ + 0.12f), new Vector3(0.105f, 0.120f, 0.58f), house.Rotation, roof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.roof_right_end_cap");
+
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}DoorWarmPanel", root, c + new Vector3(house.DoorX, 0.66f, frontFaceZ - 0.030f), new Vector3(0.50f, 0.66f, 0.078f), house.Rotation, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.door_warm_panel");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}DoorLintel", root, c + new Vector3(house.DoorX, 1.06f, frontFaceZ - 0.038f), new Vector3(0.84f, 0.070f, 0.082f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.door_lintel");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}DoorLanternWarm", root, c + new Vector3(house.DoorX + 0.48f, 1.02f, frontFaceZ - 0.052f), new Vector3(0.130f, 0.175f, 0.080f), house.Rotation, lamp, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.door_lantern_warm");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}PorchStoneSlab", root, c + new Vector3(house.DoorX, 0.166f, house.StepZ - 0.050f), new Vector3(1.14f, 0.078f, 0.32f), house.Rotation, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.porch_stone_slab");
+
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}WindowWarmPaneWide", root, c + new Vector3(house.WindowX, house.WindowY, frontFaceZ - 0.044f), new Vector3(0.48f, 0.34f, 0.082f), house.Rotation, light, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.window_warm_pane_wide");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}WindowLeftShutter", root, c + new Vector3(house.WindowX - 0.36f, house.WindowY, frontFaceZ - 0.054f), new Vector3(0.090f, 0.40f, 0.076f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.window_left_shutter");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}WindowRightShutter", root, c + new Vector3(house.WindowX + 0.36f, house.WindowY, frontFaceZ - 0.054f), new Vector3(0.090f, 0.40f, 0.076f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.window_right_shutter");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}FlowerBoxLeaf", root, c + new Vector3(house.WindowX, house.WindowY - 0.300f, frontFaceZ - 0.058f), new Vector3(0.60f, 0.080f, 0.104f), house.Rotation, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.flower_box_leaf");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}FlowerBoxBloom", root, c + new Vector3(house.WindowX + 0.04f, house.WindowY - 0.230f, frontFaceZ - 0.066f), new Vector3(0.38f, 0.052f, 0.110f), house.Rotation, house.Bloom, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.flower_box_bloom");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}FrontGardenLeafPatch", root, c + new Vector3(house.GardenX, 0.170f, house.StepZ - 0.42f), new Vector3(0.66f, 0.050f, 0.16f), house.Rotation, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.front_garden_leaf_patch");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{house.Name}FrontGardenBloomPatch", root, c + new Vector3(house.GardenX + 0.28f, 0.186f, house.StepZ - 0.50f), new Vector3(0.36f, 0.050f, 0.14f), house.Rotation, house.Bloom, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house.{house.Name.ToLowerInvariant()}.front_garden_bloom_patch");
+            }
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryCord", root, c + new Vector3(-17.18f, 1.42f, 5.46f), new Vector3(2.28f, 0.035f, 0.040f), Quaternion.Euler(0f, 2f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house_row.laundry_cord");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryClothBrightA", root, c + new Vector3(-17.78f, 1.17f, 5.42f), new Vector3(0.34f, 0.42f, 0.050f), Quaternion.Euler(0f, 2f, 0f), materials.LaundryBright, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house_row.laundry_cloth_bright_a");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryClothAccentB", root, c + new Vector3(-17.14f, 1.13f, 5.44f), new Vector3(0.40f, 0.48f, 0.050f), Quaternion.Euler(0f, -1f, 0f), materials.LaundryAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house_row.laundry_cloth_accent_b");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryClothBrightC", root, c + new Vector3(-16.50f, 1.18f, 5.46f), new Vector3(0.32f, 0.38f, 0.050f), Quaternion.Euler(0f, 3f, 0f), materials.LaundryBright, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house_row.laundry_cloth_bright_c");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowFlowerPlanterLeaf", root, c + new Vector3(-21.08f, 0.235f, 4.92f), new Vector3(0.72f, 0.070f, 0.18f), Quaternion.Euler(0f, -6f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house_row.flower_planter_leaf");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowFlowerPlanterBloom", root, c + new Vector3(-20.92f, 0.292f, 4.88f), new Vector3(0.42f, 0.055f, 0.14f), Quaternion.Euler(0f, -6f, 0f), materials.FlowerBlue, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle143.past_upper_left_house_row.flower_planter_bloom");
+
+            DisableChapter1Cycle143UpperLeftHouseRendererShadows(root);
+        }
+
+        private static void DisableChapter1Cycle143UpperLeftHouseRendererShadows(Transform root)
+        {
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (!renderer.gameObject.name.StartsWith("Past_CentralPlaza_Chapter1_F_Cycle143Past", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateRuinsCycle139PastLowerLeftHouseFinishDetails(Transform root, string prefix, bool past, Materials materials)
         {
             if (!past)
@@ -11765,6 +11842,7 @@ namespace Anemora.EditorTools
             ValidateChapter1RuinsCycle136PastRightFieldDewood();
             ValidateChapter1RuinsCycle141PastRightFarmStallFinish();
             ValidateChapter1RuinsCycle142PastRightHouseRowFinish();
+            ValidateChapter1RuinsCycle143PastUpperLeftHouseRowFinish();
             ValidateChapter1RuinsCycle139PastLowerLeftHouseFinish();
             ValidateChapter1RuinsCycle121PastDeepGorge();
             ValidateChapter1RuinsCycle126PastDeepGorgeRead();
@@ -13277,6 +13355,68 @@ namespace Anemora.EditorTools
             if (found < 50)
             {
                 throw new InvalidOperationException("House slice validation failed: cycle142 right house overlay shadow validation found too few objects.");
+            }
+        }
+
+        private static void ValidateChapter1RuinsCycle143PastUpperLeftHouseRowFinish()
+        {
+            var houseNames = new[] { "TopFar", "TopMid", "TopRight" };
+
+            foreach (var houseName in houseNames)
+            {
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}WallCleanPlane", "past_exterior_wall");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}LowerWallBelt", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}UpperWallTrim", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}RoofFullPlaneClean", "past_roof");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}RoofFrontBrightTileLine", "laundry_bright");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}RoofLeftEndCap", "past_roof");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}RoofRightEndCap", "past_roof");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}DoorWarmPanel", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}DoorLintel", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}DoorLanternWarm", "lamp");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}PorchStoneSlab", "past_stone");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}WindowWarmPaneWide", "window_light");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}WindowLeftShutter", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}WindowRightShutter", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}FlowerBoxLeaf", "leaf");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}FlowerBoxBloom", houseName == "TopMid" ? "flower_blue" : "flower_yellow");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}FrontGardenLeafPatch", "leaf");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouse{houseName}FrontGardenBloomPatch", houseName == "TopMid" ? "flower_blue" : "flower_yellow");
+            }
+
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryCord", "past_fence");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryClothBrightA", "laundry_bright");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryClothAccentB", "laundry_accent");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowLaundryClothBrightC", "laundry_bright");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowFlowerPlanterLeaf", "leaf");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle143PastUpperLeftHouseRowFlowerPlanterBloom", "flower_blue");
+            ValidateChapter1Cycle143UpperLeftHouseRendererShadows();
+        }
+
+        private static void ValidateChapter1Cycle143UpperLeftHouseRendererShadows()
+        {
+            var found = 0;
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (!candidate.scene.IsValid() ||
+                    !candidate.name.StartsWith("Past_CentralPlaza_Chapter1_F_Cycle143Past", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                found++;
+                var renderer = candidate.GetComponent<Renderer>();
+                if (renderer == null ||
+                    renderer.shadowCastingMode != UnityEngine.Rendering.ShadowCastingMode.Off ||
+                    renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: cycle143 upper-left house overlays must not cast or receive shadows: {candidate.name}");
+                }
+            }
+
+            if (found < 58)
+            {
+                throw new InvalidOperationException("House slice validation failed: cycle143 upper-left house overlay shadow validation found too few objects.");
             }
         }
 
