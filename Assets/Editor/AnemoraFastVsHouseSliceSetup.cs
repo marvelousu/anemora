@@ -818,6 +818,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle115AriaPastLowerVergeDePanelDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle120AriaPastMarketStallRepairDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle124AriaPastMarketTidyDetails(ariaStreetRoot, prefix, past, materials);
+            CreateChapter1Cycle138AriaPastMarketStallSilhouetteDetails(ariaStreetRoot, prefix, past, materials);
             CreateHouseDoorMarkers(interiorRoot, exteriorRoot, prefix, past, materials);
             CreateRouteMoveMarkers(exteriorRoot, plazaRoot, libraryRoot, prefix, past, materials);
             CreateChapter1BaselineMapPointMarkers(exteriorRoot, plazaRoot, libraryRoot, prefix, past, materials);
@@ -8438,6 +8439,56 @@ namespace Anemora.EditorTools
             CreateLandmarkCube("Past_CentralPlaza_Chapter1_D_Cycle124LowerGrassBlendMid", root, c + new Vector3(-1.94f, 0.146f, -7.06f), new Vector3(0.76f, 0.024f, 0.12f), Quaternion.Euler(0f, -8f, 0f), grass, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.d.cycle124.lower_grass_blend_mid");
         }
 
+        private static void CreateChapter1Cycle138AriaPastMarketStallSilhouetteDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1AriaStreetMapCenter;
+            var wood = materials.PastFurniture;
+            var trim = materials.PastFence;
+            var leaf = materials.Leaf;
+            var clothMain = materials.LaundryBright;
+            var clothAccent = materials.LaundryAccent;
+
+            var stallXs = new[] { -12.20f, -6.65f, -1.10f, 4.45f };
+            for (var i = 0; i < stallXs.Length; i++)
+            {
+                var x = stallXs[i];
+                var z = 5.72f + (i % 2 == 0 ? 0.05f : -0.08f);
+                var yaw = i % 2 == 0 ? -1.5f : 1.5f;
+                var rotation = Quaternion.Euler(0f, yaw, 0f);
+                var leftX = x - 1.58f;
+                var rightX = x + 1.58f;
+
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCanopyRearBand_{i}", root, c + new Vector3(x, 1.08f, z + 0.52f), new Vector3(3.24f, 0.12f, 0.10f), rotation, clothAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.canopy_rear_band.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCanopyLeftDrop_{i}", root, c + new Vector3(leftX, 1.03f, z + 0.02f), new Vector3(0.10f, 0.30f, 0.78f), rotation, clothAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.canopy_left_drop.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCanopyRightDrop_{i}", root, c + new Vector3(rightX, 1.03f, z + 0.02f), new Vector3(0.10f, 0.30f, 0.78f), rotation, clothAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.canopy_right_drop.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallUnderCanopyShadow_{i}", root, c + new Vector3(x, 0.94f, z + 0.02f), new Vector3(2.92f, 0.05f, 0.66f), rotation, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.under_canopy_shadow.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallFrontValanceWide_{i}", root, c + new Vector3(x, 0.98f, z - 0.56f), new Vector3(3.14f, 0.22f, 0.07f), rotation, clothAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.front_valance_wide.{i}");
+
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBackClothPanel_{i}", root, c + new Vector3(x, 0.68f, z + 0.42f), new Vector3(2.76f, 0.36f, 0.06f), rotation, clothMain, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.back_cloth_panel.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallFrontCrossBeam_{i}", root, c + new Vector3(x, 0.90f, z - 0.47f), new Vector3(2.92f, 0.09f, 0.08f), rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.front_crossbeam.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterFrontFace_{i}", root, c + new Vector3(x, 0.46f, z - 0.52f), new Vector3(2.78f, 0.28f, 0.08f), rotation, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.counter_front_face.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterTopCloth_{i}", root, c + new Vector3(x - 0.28f, 0.66f, z - 0.28f), new Vector3(2.24f, 0.06f, 0.36f), rotation, i % 2 == 0 ? clothMain : clothAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.counter_top_cloth.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterSideLeft_{i}", root, c + new Vector3(leftX + 0.16f, 0.45f, z - 0.18f), new Vector3(0.08f, 0.26f, 0.48f), rotation, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.counter_side_left.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterSideRight_{i}", root, c + new Vector3(rightX - 0.16f, 0.45f, z - 0.18f), new Vector3(0.08f, 0.26f, 0.48f), rotation, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.counter_side_right.{i}");
+
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBackShelfTop_{i}", root, c + new Vector3(x, 0.76f, z + 0.32f), new Vector3(2.52f, 0.06f, 0.08f), rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.back_shelf_top.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBackShelfLower_{i}", root, c + new Vector3(x, 0.58f, z + 0.30f), new Vector3(2.38f, 0.05f, 0.08f), rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.back_shelf_lower.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallLeafStackLeft_{i}", root, c + new Vector3(x - 0.82f, 0.68f, z - 0.42f), new Vector3(0.34f, 0.10f, 0.20f), Quaternion.Euler(0f, yaw - 6f, 0f), leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.leaf_stack_left.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallFlowerStackCenter_{i}", root, c + new Vector3(x - 0.06f, 0.70f, z - 0.42f), new Vector3(0.22f, 0.10f, 0.18f), Quaternion.Euler(0f, yaw + 3f, 0f), i % 2 == 0 ? materials.FlowerYellow : materials.FlowerBlue, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.flower_stack_center.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCrateStackRight_{i}", root, c + new Vector3(x + 0.76f, 0.68f, z - 0.40f), new Vector3(0.36f, 0.16f, 0.22f), Quaternion.Euler(0f, yaw + 7f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.crate_stack_right.{i}");
+                CreateLandmarkCube($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBrightProduceDot_{i}", root, c + new Vector3(x + 0.32f, 0.73f, z - 0.42f), new Vector3(0.16f, 0.10f, 0.14f), Quaternion.Euler(0f, yaw - 2f, 0f), i % 2 == 0 ? materials.FlowerBlue : materials.FlowerYellow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"Past.central_plaza.chapter1.d1.cycle138.market_stall.bright_produce_dot.{i}");
+            }
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallHangingSignWest", root, c + new Vector3(-9.42f, 0.98f, 5.16f), new Vector3(0.54f, 0.22f, 0.06f), Quaternion.Euler(0f, -5f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.d1.cycle138.market_stall.hanging_sign_west");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallHangingSignEast", root, c + new Vector3(1.72f, 0.98f, 5.10f), new Vector3(0.50f, 0.22f, 0.06f), Quaternion.Euler(0f, 6f, 0f), materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.d1.cycle138.market_stall.hanging_sign_east");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallAisleClothFold", root, c + new Vector3(-3.74f, 0.66f, 4.70f), new Vector3(0.64f, 0.08f, 0.18f), Quaternion.Euler(0f, 10f, 0f), clothAccent, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.d1.cycle138.market_stall.aisle_cloth_fold");
+        }
+
         private static void HideChapter1Cycle124PastMarketDebris(Transform root)
         {
             var hiddenNames = new[]
@@ -11398,6 +11449,7 @@ namespace Anemora.EditorTools
             ValidateChapter1AriaCycle115PastLowerVergeDePanel();
             ValidateChapter1AriaCycle120PastMarketStallRepair();
             ValidateChapter1AriaCycle124PastMarketTidy();
+            ValidateChapter1AriaCycle138PastMarketStallSilhouette();
             ValidateChapter1KaiaFarmVisualFeedbackCleanup();
             ValidateChapter1KaiaFarmCycle119PastLowerLeftFieldOffset();
             ValidateChapter1KaiaFarmCycle107CurrentLowerFieldPanelBreakup();
@@ -11912,6 +11964,34 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_D_Cycle124LowerCleanRailWest", "leaf");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_D_Cycle124LowerSmallFlowerWest", "flower_blue");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_D_Cycle124LowerGrassBlendMid", "past_grass");
+        }
+
+        private static void ValidateChapter1AriaCycle138PastMarketStallSilhouette()
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCanopyRearBand_{i}", "laundry_accent");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCanopyLeftDrop_{i}", "laundry_accent");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCanopyRightDrop_{i}", "laundry_accent");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallUnderCanopyShadow_{i}", "shadow");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallFrontValanceWide_{i}", "laundry_accent");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBackClothPanel_{i}", "laundry_bright");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallFrontCrossBeam_{i}", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterFrontFace_{i}", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterTopCloth_{i}", i % 2 == 0 ? "laundry_bright" : "laundry_accent");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterSideLeft_{i}", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCounterSideRight_{i}", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBackShelfTop_{i}", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBackShelfLower_{i}", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallLeafStackLeft_{i}", "leaf");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallFlowerStackCenter_{i}", i % 2 == 0 ? "flower_yellow" : "flower_blue");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallCrateStackRight_{i}", "past_furniture");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallBrightProduceDot_{i}", i % 2 == 0 ? "flower_blue" : "flower_yellow");
+            }
+
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallHangingSignWest", "sign_paint");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallHangingSignEast", "sign_paint");
+            ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_D1_Cycle138MarketStallAisleClothFold", "laundry_accent");
         }
 
         private static void ValidateChapter1KaiaFarmVisualFeedbackCleanup()
