@@ -1,0 +1,4 @@
+﻿Cycle 139 review pixel-diff gate
+changed_pixels=4695 diff_bbox=0,462,298,499 current_hash_match=true
+baseline_11_f1_f6_current.png == generated_11_f1_f6_current.png
+baseline_12_f1_f6_past.png != generated_12_f1_f6_past.png
