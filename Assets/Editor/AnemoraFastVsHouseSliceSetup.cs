@@ -1107,6 +1107,7 @@ namespace Anemora.EditorTools
             CreateRuinsCycle123PastHouseAndStallQualityDetails(root, prefix, past, materials);
             CreateRuinsCycle127PastFieldStallAndHouseSolidifyDetails(root, prefix, past, materials);
             CreateRuinsCycle130PastFieldStallFinishDetails(root, prefix, past, materials);
+            CreateRuinsCycle131PastLeftHouseFinishDetails(root, prefix, past, materials);
             CreateChapter1MapBoundary(root, prefix, "Ruins", Chapter1RuinsMapCenter);
         }
 
@@ -6908,6 +6909,42 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle130PastFieldStallBackFootRight", root, c + new Vector3(12.66f, 0.18f, -3.88f), new Vector3(0.17f, 0.11f, 0.17f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle130.past.field_stall.back_foot_right");
         }
 
+        private static void CreateRuinsCycle131PastLeftHouseFinishDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1RuinsMapCenter;
+            var trim = materials.PastFence;
+            var stone = materials.PastStone;
+            var shadow = materials.Shadow;
+
+            var houses = new[]
+            {
+                new { Name = "TopFar", X = -23.55f, FrontZ = 5.84f, StepZ = 5.44f, Width = 3.50f, EaveY = 1.54f, StepWidth = 0.84f, Rotation = Quaternion.Euler(0f, -3f, 0f), WindowX = -24.36f, WindowY = 0.89f },
+                new { Name = "TopMid", X = -19.35f, FrontZ = 5.84f, StepZ = 5.44f, Width = 3.72f, EaveY = 1.74f, StepWidth = 0.88f, Rotation = Quaternion.Euler(0f, 4f, 0f), WindowX = -18.50f, WindowY = 0.95f },
+                new { Name = "TopRight", X = -15.20f, FrontZ = 5.84f, StepZ = 5.44f, Width = 3.34f, EaveY = 1.72f, StepWidth = 0.82f, Rotation = Quaternion.identity, WindowX = -14.42f, WindowY = 0.93f },
+                new { Name = "BottomLeft", X = -23.35f, FrontZ = -6.84f, StepZ = -6.46f, Width = 3.04f, EaveY = 1.40f, StepWidth = 0.78f, Rotation = Quaternion.Euler(0f, 2f, 0f), WindowX = -24.08f, WindowY = 0.76f },
+                new { Name = "BottomMid", X = -19.15f, FrontZ = -6.84f, StepZ = -6.46f, Width = 2.98f, EaveY = 1.40f, StepWidth = 0.80f, Rotation = Quaternion.Euler(0f, -2f, 0f), WindowX = -18.42f, WindowY = 0.76f },
+                new { Name = "BottomRight", X = -15.05f, FrontZ = -6.84f, StepZ = -6.46f, Width = 2.94f, EaveY = 1.40f, StepWidth = 0.78f, Rotation = Quaternion.Euler(0f, 3f, 0f), WindowX = -14.32f, WindowY = 0.76f }
+            };
+
+            foreach (var house in houses)
+            {
+                var leftX = house.X - house.Width * 0.5f + 0.18f;
+                var rightX = house.X + house.Width * 0.5f - 0.18f;
+                var sign = house.FrontZ > 0f ? -1f : 1f;
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{house.Name}EaveShadow", root, c + new Vector3(house.X, house.EaveY, house.FrontZ + sign * 0.06f), new Vector3(house.Width * 0.88f, 0.050f, 0.070f), house.Rotation, shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle131.past_left_house.{house.Name.ToLowerInvariant()}.eave_shadow");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{house.Name}LeftCornerPost", root, c + new Vector3(leftX, 0.72f, house.FrontZ), new Vector3(0.060f, 0.98f, 0.070f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle131.past_left_house.{house.Name.ToLowerInvariant()}.left_corner_post");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{house.Name}RightCornerPost", root, c + new Vector3(rightX, 0.72f, house.FrontZ), new Vector3(0.060f, 0.98f, 0.070f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle131.past_left_house.{house.Name.ToLowerInvariant()}.right_corner_post");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{house.Name}DoorStepStone", root, c + new Vector3(house.X, 0.150f, house.StepZ), new Vector3(house.StepWidth, 0.080f, 0.24f), house.Rotation, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle131.past_left_house.{house.Name.ToLowerInvariant()}.door_step_stone");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{house.Name}WindowSill", root, c + new Vector3(house.WindowX, house.WindowY - 0.24f, house.FrontZ), new Vector3(0.56f, 0.045f, 0.070f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle131.past_left_house.{house.Name.ToLowerInvariant()}.window_sill");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{house.Name}WindowCrossbar", root, c + new Vector3(house.WindowX, house.WindowY, house.FrontZ - sign * 0.010f), new Vector3(0.050f, 0.30f, 0.075f), house.Rotation, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.cycle131.past_left_house.{house.Name.ToLowerInvariant()}.window_crossbar");
+            }
+        }
+
         private static void CreateChapter1EndSideViewMap(Transform root, string prefix, bool past, Materials materials)
         {
             if (past)
@@ -10974,6 +11011,7 @@ namespace Anemora.EditorTools
             ValidateChapter1RuinsCycle123PastHouseAndStallQuality();
             ValidateChapter1RuinsCycle127PastFieldStallAndHouseSolidify();
             ValidateChapter1RuinsCycle130PastFieldStallFinish();
+            ValidateChapter1RuinsCycle131PastLeftHouseFinish();
             ValidateChapter1RuinsCycle121PastDeepGorge();
             ValidateChapter1RuinsCycle126PastDeepGorgeRead();
             ValidateChapter1RuinsCycle129PastGorgeDepthCue();
@@ -12009,6 +12047,29 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle130PastFieldStallProduceStackCenter", "flower_yellow");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle130PastFieldStallProduceStackRight", "leaf");
             ValidateChapter1ContinuationLandmark("Past_CentralPlaza_Chapter1_F_Cycle130PastFieldStallSideSignBoard", "sign_paint");
+        }
+
+        private static void ValidateChapter1RuinsCycle131PastLeftHouseFinish()
+        {
+            var houseNames = new[]
+            {
+                "TopFar",
+                "TopMid",
+                "TopRight",
+                "BottomLeft",
+                "BottomMid",
+                "BottomRight"
+            };
+
+            foreach (var houseName in houseNames)
+            {
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{houseName}EaveShadow", "shadow");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{houseName}DoorStepStone", "past_stone");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{houseName}LeftCornerPost", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{houseName}RightCornerPost", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{houseName}WindowSill", "past_fence");
+                ValidateChapter1ContinuationLandmark($"Past_CentralPlaza_Chapter1_F_Cycle131PastLeftHouse{houseName}WindowCrossbar", "past_fence");
+            }
         }
 
         private static void ValidateChapter1RuinsCycle121PastDeepGorge()
