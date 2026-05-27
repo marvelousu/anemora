@@ -794,6 +794,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle85RuinsChannelExitDetails(ruinsRoot, prefix, past, materials);
             CreateChapter1Cycle91RuinsSettlementThresholdDetails(ruinsRoot, prefix, past, materials);
             CreateChapter1Cycle121RuinsPastDeepGorgeDetails(ruinsRoot, prefix, past, materials);
+            CreateChapter1Cycle126RuinsPastDeepGorgeReadDetails(ruinsRoot, prefix, past, materials);
             CreateChapter1Cycle86HouseExteriorYardDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle94HouseExteriorRoadVergeDetails(exteriorRoot, prefix, past, materials);
             CreateChapter1Cycle103HouseExteriorPlantPanelScatterDetails(exteriorRoot, prefix, past, materials);
@@ -3870,6 +3871,44 @@ namespace Anemora.EditorTools
 
             CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeNorthMouthDropFace", ruinsRoot, c + new Vector3(0.00f, 0.190f, 1.02f), new Vector3(3.46f, 0.18f, 0.16f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle121.deep_gorge.north_mouth_drop_face");
             CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeSouthMouthDropFace", ruinsRoot, c + new Vector3(0.00f, 0.190f, -1.06f), new Vector3(3.46f, 0.18f, 0.16f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle121.deep_gorge.south_mouth_drop_face");
+        }
+
+        private static void CreateChapter1Cycle126RuinsPastDeepGorgeReadDetails(Transform ruinsRoot, string prefix, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            var c = Chapter1RuinsMapCenter;
+            HideChapter1Cycle126PastRaisedGorgeWater(ruinsRoot);
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthLowWater", ruinsRoot, c + new Vector3(0.00f, 0.047f, 4.54f), new Vector3(0.58f, 0.014f, 5.06f), Quaternion.Euler(0f, -1.5f, 0f), materials.Water, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.north_low_water");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthLowWater", ruinsRoot, c + new Vector3(0.02f, 0.047f, -4.86f), new Vector3(0.60f, 0.014f, 5.22f), Quaternion.Euler(0f, 1.5f, 0f), materials.Water, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.south_low_water");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeBridgeLowWater", ruinsRoot, c + new Vector3(0.00f, 0.048f, -0.02f), new Vector3(0.52f, 0.014f, 0.52f), Quaternion.identity, materials.Water, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.bridge_low_water");
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthLeftDepthShadow", ruinsRoot, c + new Vector3(-0.58f, 0.058f, 4.52f), new Vector3(0.22f, 0.018f, 5.18f), Quaternion.Euler(0f, 2f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.north_left_depth_shadow");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthRightDepthShadow", ruinsRoot, c + new Vector3(0.60f, 0.058f, 4.46f), new Vector3(0.22f, 0.018f, 5.10f), Quaternion.Euler(0f, -2f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.north_right_depth_shadow");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthLeftDepthShadow", ruinsRoot, c + new Vector3(-0.60f, 0.058f, -4.88f), new Vector3(0.22f, 0.018f, 5.34f), Quaternion.Euler(0f, -2f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.south_left_depth_shadow");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthRightDepthShadow", ruinsRoot, c + new Vector3(0.62f, 0.058f, -4.82f), new Vector3(0.22f, 0.018f, 5.26f), Quaternion.Euler(0f, 2f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.south_right_depth_shadow");
+
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthBridgeMouthShadow", ruinsRoot, c + new Vector3(0.00f, 0.060f, 0.66f), new Vector3(1.42f, 0.018f, 0.16f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.north_bridge_mouth_shadow");
+            CreateLandmarkCube("Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthBridgeMouthShadow", ruinsRoot, c + new Vector3(0.00f, 0.060f, -0.70f), new Vector3(1.42f, 0.018f, 0.16f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f.cycle126.deep_gorge.south_bridge_mouth_shadow");
+        }
+
+        private static void HideChapter1Cycle126PastRaisedGorgeWater(Transform ruinsRoot)
+        {
+            var raisedWaterNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeNorthWater",
+                "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeSouthWater",
+                "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeBridgeWater"
+            };
+
+            foreach (var name in raisedWaterNames)
+            {
+                HideChildIfPresent(ruinsRoot, name);
+            }
         }
 
         private static void HideChapter1Cycle121PastRaisedRiverSurfaces(Transform ruinsRoot)
@@ -10663,6 +10702,7 @@ namespace Anemora.EditorTools
             ValidateChapter1RuinsCycle114PastLeftSettlementCleanup();
             ValidateChapter1RuinsCycle123PastHouseAndStallQuality();
             ValidateChapter1RuinsCycle121PastDeepGorge();
+            ValidateChapter1RuinsCycle126PastDeepGorgeRead();
             ValidateChapter1EndSideViewMap();
         }
 
@@ -11526,24 +11566,15 @@ namespace Anemora.EditorTools
                 "Past_CentralPlaza_Chapter1_F_Cycle85PastNorthWaterCenterGlint",
                 "Past_CentralPlaza_Chapter1_F_Cycle85PastSouthWaterCenterGlint",
                 "Past_CentralPlaza_Chapter1_F_Cycle59RiverNorthAxis",
-                "Past_CentralPlaza_Chapter1_F_Cycle59RiverSouthAxis"
-            };
-
-            foreach (var objectName in hiddenRaisedRiverNames)
-            {
-                ValidateInactiveOrMissing(objectName);
-            }
-
-            var waterNames = new[]
-            {
+                "Past_CentralPlaza_Chapter1_F_Cycle59RiverSouthAxis",
                 "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeNorthWater",
                 "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeSouthWater",
                 "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeBridgeWater"
             };
 
-            foreach (var objectName in waterNames)
+            foreach (var objectName in hiddenRaisedRiverNames)
             {
-                ValidateChapter1ContinuationLandmark(objectName, "water");
+                ValidateInactiveOrMissing(objectName);
             }
 
             var stoneNames = new[]
@@ -11570,6 +11601,48 @@ namespace Anemora.EditorTools
                 "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeSouthRightInnerShadow",
                 "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeNorthMouthDropFace",
                 "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeSouthMouthDropFace"
+            };
+
+            foreach (var objectName in shadowNames)
+            {
+                ValidateChapter1ContinuationLandmark(objectName, "shadow");
+            }
+        }
+
+        private static void ValidateChapter1RuinsCycle126PastDeepGorgeRead()
+        {
+            var replacedWaterNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeNorthWater",
+                "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeSouthWater",
+                "Past_CentralPlaza_Chapter1_F_Cycle121DeepGorgeBridgeWater"
+            };
+
+            foreach (var objectName in replacedWaterNames)
+            {
+                ValidateInactiveOrMissing(objectName);
+            }
+
+            var waterNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthLowWater",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthLowWater",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeBridgeLowWater"
+            };
+
+            foreach (var objectName in waterNames)
+            {
+                ValidateChapter1ContinuationLandmark(objectName, "water");
+            }
+
+            var shadowNames = new[]
+            {
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthLeftDepthShadow",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthRightDepthShadow",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthLeftDepthShadow",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthRightDepthShadow",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeNorthBridgeMouthShadow",
+                "Past_CentralPlaza_Chapter1_F_Cycle126DeepGorgeSouthBridgeMouthShadow"
             };
 
             foreach (var objectName in shadowNames)
