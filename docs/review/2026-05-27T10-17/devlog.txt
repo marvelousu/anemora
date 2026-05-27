@@ -1,0 +1,5 @@
+docs/devlog/2026-05-27_chapter1_map_content_refine_cycle119.md
+
+# Review notes
+- Cycle 119 targets only the E1-E3 past-side lower-left farm field edge.
+- Current-side debris, route pads, roads, main paths, house yard, orchard readability, and right-side exits are intended to remain unchanged.
