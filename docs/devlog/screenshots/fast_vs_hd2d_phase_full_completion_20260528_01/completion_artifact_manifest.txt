@@ -1,0 +1,15 @@
+HD-2D full completion artifact manifest
+
+Repo artifact:
+- docs/devlog/screenshots/fast_vs_hd2d_phase_full_completion_20260528_01/timewindow_phase_comparison.png
+
+Private/local reference comparison boards (not placed in docs/review):
+- OneDrive/work/projects/anemora_reference/hd2d_phase_full_completion_20260528/phase_a_vs_reference_01.png
+- OneDrive/work/projects/anemora_reference/hd2d_phase_full_completion_20260528/phase_b_alpha_vs_reference_01.png
+- OneDrive/work/projects/anemora_reference/hd2d_phase_full_completion_20260528/phase_b_beta_vs_reference_01.png
+- OneDrive/work/projects/anemora_reference/hd2d_phase_full_completion_20260528/phase_c_alpha_vs_reference_02.png
+- OneDrive/work/projects/anemora_reference/hd2d_phase_full_completion_20260528/phase_c_beta_vs_reference_02.png
+
+Build exe path:
+- Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe
+- Launch from the full Builds/FastVS_HouseSlice/ folder.
