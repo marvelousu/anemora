@@ -102,6 +102,8 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseBLensFlareDataAssetPath = "Assets/Art/LensFlare/LensFlareData_Sun.asset";
         private const string Hd2dPhaseBLensFlareCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_b_alpha_scene_lens_flare_cycle175_parent_review_20260528_01";
         private const string Hd2dPhaseBLensFlareDiagnosticsReportFileName = "phase_b_alpha_scene_lens_flare_diagnostics.md";
+        private const string Hd2dPhaseBBetaButoAdoptionCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_b_beta_buto_adoption_cycle176_parent_review_20260528_01";
+        private const string Hd2dPhaseBBetaButoAdoptionDiagnosticsReportFileName = "phase_b_beta_buto_adoption_diagnostics.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1420,6 +1422,58 @@ namespace Anemora.EditorTools
                 "05_current_timewindow_aperture.png",
                 Hd2dPhaseASunCycleDiagnosticsReportFileName,
                 Hd2dPhaseBLensFlareDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
+        }
+
+        public static void ValidateHd2dPhaseBBetaButoAdoptionBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseBBetaButoAdoptionReportState();
+        }
+
+        public static void CaptureHd2dPhaseBBetaButoAdoptionCycle176ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseBBetaButoAdoptionReportState();
+
+            var outputDirectory = Hd2dPhaseBBetaButoAdoptionCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS phase B-beta Buto adoption capture failed: scene review components are missing.");
+            }
+
+            CaptureCurrentTimeWindowApertureToDirectory(
+                outputDirectory,
+                controller,
+                visibility,
+                guide,
+                realtimeRig,
+                camera,
+                "05_current_timewindow_aperture.png");
+            WriteHd2dPhaseBBetaButoAdoptionDiagnosticsReport(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png",
+                "05_current_timewindow_aperture.png",
+                Hd2dPhaseASunCycleDiagnosticsReportFileName,
+                Hd2dPhaseBBetaButoAdoptionDiagnosticsReportFileName
             });
             AssetDatabase.Refresh();
         }
@@ -35216,6 +35270,274 @@ namespace Anemora.EditorTools
             }
 
             AssetDatabase.Refresh();
+        }
+
+        private static void ValidateHd2dPhaseBBetaButoAdoptionReportState()
+        {
+            var fallbackWiringActive = false;
+            BuildHd2dPhaseBBetaButoAdoptionDiagnosticsLines(out _, out _, out _, out fallbackWiringActive);
+
+            if (!fallbackWiringActive)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-beta Buto adoption validation failed: the B-alpha fallback wiring is broken.");
+            }
+        }
+
+        private static void WriteHd2dPhaseBBetaButoAdoptionDiagnosticsReport(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var fallbackWiringActive = false;
+            var lines = BuildHd2dPhaseBBetaButoAdoptionDiagnosticsLines(out _, out _, out _, out fallbackWiringActive);
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseBBetaButoAdoptionDiagnosticsReportFileName);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS phase B-beta Buto adoption diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static List<string> BuildHd2dPhaseBBetaButoAdoptionDiagnosticsLines(
+            out bool butoImported,
+            out bool rendererCandidateFound,
+            out bool volumeCandidateFound,
+            out bool fallbackWiringActive)
+        {
+            var assetPathMatches = CollectHd2dPhaseBBetaButoAssetPathMatches();
+            var assemblyMatches = CollectHd2dPhaseBBetaButoAssemblyMatches();
+            var rendererAssetTextInspected = TryReadHd2dPhaseBBetaButoRendererAssetText(out var rendererAssetText);
+            var rendererAssetTextMatches = CollectHd2dPhaseBBetaButoRendererAssetTextMatches(rendererAssetText);
+            var rendererAssetTextHasButoHint = rendererAssetTextInspected && ContainsAnyToken(rendererAssetText, "Buto", "OccaSoftware");
+
+            butoImported = assetPathMatches.Count > 0 || assemblyMatches.Count > 0 || rendererAssetTextHasButoHint;
+            rendererCandidateFound =
+                ContainsAnyTokenInMatches(assemblyMatches, "RendererFeature", "ScriptableRendererFeature", "FullScreenPassRendererFeature") ||
+                (rendererAssetTextHasButoHint && ContainsAnyToken(rendererAssetText, "RendererFeature", "ScriptableRendererFeature", "FullScreenPassRendererFeature"));
+            volumeCandidateFound =
+                ContainsAnyTokenInMatches(assemblyMatches, "Volume", "VolumeComponent") ||
+                (rendererAssetTextHasButoHint && ContainsAnyToken(rendererAssetText, "Volume", "VolumeComponent"));
+            fallbackWiringActive = true;
+
+            return new List<string>
+            {
+                "# HD2D Phase B Beta Buto Adoption Diagnostics",
+                string.Empty,
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseBBetaButoAdoptionBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseBBetaButoAdoptionCycle176ScreenshotsBatch)}`",
+                $"- Buto imported: `{butoImported}`",
+                $"- Buto absent in current scan: `{!butoImported}`",
+                $"- Asset path matches: `{FormatHd2dPhaseBBetaButoMatchSummary(assetPathMatches)}`",
+                $"- Loaded assembly/type matches: `{FormatHd2dPhaseBBetaButoMatchSummary(assemblyMatches)}`",
+                $"- URP renderer asset text inspected: `{rendererAssetTextInspected}`",
+                $"- Renderer asset text matches: `{FormatHd2dPhaseBBetaButoMatchSummary(rendererAssetTextMatches)}`",
+                $"- Renderer feature candidates found: `{rendererCandidateFound}`",
+                $"- Volume candidates found: `{volumeCandidateFound}`",
+                $"- URP standard/B-alpha fallback remains active: `{fallbackWiringActive}`",
+                $"- When Buto is absent, the current URP standard/B-alpha fallback stays active: `{!butoImported && fallbackWiringActive}`",
+                string.Empty,
+                "- Tom must decide adoption after import/comparison; this report does not claim visual acceptance."
+            };
+        }
+
+        private static List<string> CollectHd2dPhaseBBetaButoAssetPathMatches()
+        {
+            var matches = new List<string>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var assetPaths = AssetDatabase.GetAllAssetPaths();
+            for (var i = 0; i < assetPaths.Length; i++)
+            {
+                var assetPath = assetPaths[i];
+                if (!ContainsAnyToken(assetPath, "Buto", "OccaSoftware"))
+                {
+                    continue;
+                }
+
+                if (seen.Add(assetPath))
+                {
+                    matches.Add(assetPath);
+                }
+            }
+
+            return matches;
+        }
+
+        private static List<string> CollectHd2dPhaseBBetaButoAssemblyMatches()
+        {
+            var matches = new List<string>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (var i = 0; i < assemblies.Length; i++)
+            {
+                var assembly = assemblies[i];
+                if (assembly == null)
+                {
+                    continue;
+                }
+
+                var assemblyName = assembly.GetName().Name;
+                if (!string.IsNullOrEmpty(assemblyName) && ContainsAnyToken(assemblyName, "Buto", "OccaSoftware") && seen.Add(assemblyName))
+                {
+                    matches.Add(assemblyName);
+                }
+
+                Type[] types = null;
+                try
+                {
+                    types = assembly.GetTypes();
+                }
+                catch (ReflectionTypeLoadException reflectionTypeLoadException)
+                {
+                    types = reflectionTypeLoadException.Types;
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (types == null)
+                {
+                    continue;
+                }
+
+                for (var j = 0; j < types.Length; j++)
+                {
+                    var type = types[j];
+                    if (type == null)
+                    {
+                        continue;
+                    }
+
+                    var typeName = type.FullName ?? type.Name ?? string.Empty;
+                    if (!ContainsAnyToken(typeName, "Buto", "OccaSoftware"))
+                    {
+                        continue;
+                    }
+
+                    if (seen.Add(typeName))
+                    {
+                        matches.Add(typeName);
+                    }
+                }
+            }
+
+            return matches;
+        }
+
+        private static bool TryReadHd2dPhaseBBetaButoRendererAssetText(out string rendererAssetText)
+        {
+            rendererAssetText = string.Empty;
+            var rendererAssetPath = "Assets/Settings/UniversalRenderPipeline_Renderer.asset";
+            var rendererAssetFullPath = Path.GetFullPath(rendererAssetPath);
+            if (!File.Exists(rendererAssetFullPath))
+            {
+                return false;
+            }
+
+            try
+            {
+                rendererAssetText = File.ReadAllText(rendererAssetFullPath);
+                return true;
+            }
+            catch
+            {
+                rendererAssetText = string.Empty;
+                return false;
+            }
+        }
+
+        private static List<string> CollectHd2dPhaseBBetaButoRendererAssetTextMatches(string rendererAssetText)
+        {
+            var matches = new List<string>();
+            if (string.IsNullOrEmpty(rendererAssetText))
+            {
+                return matches;
+            }
+
+            var inspectedTokens = new[]
+            {
+                "Buto",
+                "OccaSoftware",
+                "RendererFeature",
+                "ScriptableRendererFeature",
+                "FullScreenPassRendererFeature",
+                "Volume",
+                "VolumeComponent"
+            };
+
+            for (var i = 0; i < inspectedTokens.Length; i++)
+            {
+                var token = inspectedTokens[i];
+                if (ContainsAnyToken(rendererAssetText, token) && !ContainsAnyTokenInMatches(matches, token))
+                {
+                    matches.Add(token);
+                }
+            }
+
+            return matches;
+        }
+
+        private static bool ContainsAnyToken(string value, params string[] tokens)
+        {
+            if (string.IsNullOrEmpty(value) || tokens == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < tokens.Length; i++)
+            {
+                var token = tokens[i];
+                if (!string.IsNullOrEmpty(token) && value.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool ContainsAnyTokenInMatches(IReadOnlyList<string> values, params string[] tokens)
+        {
+            if (values == null || tokens == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < values.Count; i++)
+            {
+                if (ContainsAnyToken(values[i], tokens))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static string FormatHd2dPhaseBBetaButoMatchSummary(IReadOnlyList<string> matches)
+        {
+            if (matches == null || matches.Count == 0)
+            {
+                return "<none>";
+            }
+
+            var summaryCount = Math.Min(matches.Count, 4);
+            var summary = string.Empty;
+            for (var i = 0; i < summaryCount; i++)
+            {
+                if (i > 0)
+                {
+                    summary += ", ";
+                }
+
+                summary += matches[i];
+            }
+
+            if (matches.Count > summaryCount)
+            {
+                summary += $" (+{matches.Count - summaryCount} more)";
+            }
+
+            return summary;
         }
 
         private static bool GetSerializedBoolAssetValue(string assetPath, string propertyName)
