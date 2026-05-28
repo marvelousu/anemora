@@ -99,6 +99,9 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseAGateAuditPublicReviewDirectory = "docs/review/2026-05-28T14-59";
         private const string Hd2dPhaseAGateAuditPublicReviewDevlogPath = "docs/devlog/2026-05-28_fast_vs_hd2d_phase_a_gate_review_v2.md";
         private const string Hd2dPhaseAGateAuditDevlogPath = "docs/devlog/2026-05-28_fast_vs_hd2d_phase_a_gate_audit_cycle173.md";
+        private const string Hd2dPhaseBLensFlareDataAssetPath = "Assets/Art/LensFlare/LensFlareData_Sun.asset";
+        private const string Hd2dPhaseBLensFlareCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_b_alpha_scene_lens_flare_cycle175_parent_review_20260528_01";
+        private const string Hd2dPhaseBLensFlareDiagnosticsReportFileName = "phase_b_alpha_scene_lens_flare_diagnostics.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1356,6 +1359,15 @@ namespace Anemora.EditorTools
             ValidateHd2dPhaseASunCycleSceneWiring();
         }
 
+        public static void ValidateHd2dPhaseBAlphaSceneLensFlareBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            WriteHd2dPhaseBLensFlareDiagnosticsReport(Hd2dPhaseBLensFlareCaptureDirectory);
+        }
+
         public static void CaptureHd2dPhaseASunCycleSceneWiringCycle166ScreenshotsBatch()
         {
             CreateHouseSliceScene();
@@ -1368,6 +1380,48 @@ namespace Anemora.EditorTools
                 "screenshots",
                 "fast_vs_hd2d_phase_a_sun_cycle_scene_wiring_cycle166");
             CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+        }
+
+        public static void CaptureHd2dPhaseBAlphaSceneLensFlareCycle175ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+
+            var outputDirectory = Hd2dPhaseBLensFlareCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS phase B-alpha lens flare capture failed: scene review components are missing.");
+            }
+
+            CaptureCurrentTimeWindowApertureToDirectory(
+                outputDirectory,
+                controller,
+                visibility,
+                guide,
+                realtimeRig,
+                camera,
+                "05_current_timewindow_aperture.png");
+            WriteHd2dPhaseBLensFlareDiagnosticsReport(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png",
+                "05_current_timewindow_aperture.png",
+                Hd2dPhaseASunCycleDiagnosticsReportFileName,
+                Hd2dPhaseBLensFlareDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
         }
 
         public static void ValidateHd2dPhaseAMainDirectionalHandoffBatch()
@@ -29298,6 +29352,7 @@ namespace Anemora.EditorTools
             light.shadowStrength = 0.80f;
             light.color = new Color(1.00f, 0.88f, 0.68f, 1f);
             lightObject.transform.rotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior));
+            ApplyHd2dPhaseBLensFlareToDirectionalLight(light);
             var warmFillObject = new GameObject("FastVS_HD2D_WarmFillLight", typeof(Light));
             var warmFill = warmFillObject.GetComponent<Light>();
             warmFill.type = LightType.Point;
@@ -29631,6 +29686,84 @@ namespace Anemora.EditorTools
             ValidateHd2dPhaseASunCycleAnchors();
             ValidateHd2dPhaseASunCycleTransition(driver);
             ValidateHd2dPhaseASunCycleSceneYaml();
+        }
+
+        private static void ValidateHd2dPhaseBAlphaSceneLensFlareSetup()
+        {
+            var directionalSunObject = FindSceneObjectIncludingInactive("Directional Light");
+            var directionalSun = directionalSunObject != null ? directionalSunObject.GetComponent<Light>() : null;
+            if (directionalSun == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: phase B-alpha directional lens flare setup is missing the Directional Light.");
+            }
+
+            var lensFlare = directionalSunObject.GetComponent<LensFlareComponentSRP>();
+            if (lensFlare == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: phase B-alpha directional lens flare setup is missing LensFlareComponentSRP.");
+            }
+
+            var lensFlareDataPath = AssetDatabase.GetAssetPath(lensFlare.lensFlareData);
+            if (!string.Equals(lensFlareDataPath, Hd2dPhaseBLensFlareDataAssetPath, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: phase B-alpha directional lens flare must reference {Hd2dPhaseBLensFlareDataAssetPath}, found {lensFlareDataPath}.");
+            }
+
+            if (lensFlare.intensity < 0.25f || lensFlare.intensity > 0.80f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: phase B-alpha directional lens flare intensity must remain in the SunPreset-driven range, found {lensFlare.intensity:0.000}.");
+            }
+
+            if (lensFlare.lensFlareData == null || lensFlare.lensFlareData.elements == null || lensFlare.lensFlareData.elements.Length < 6)
+            {
+                throw new InvalidOperationException("House slice validation failed: phase B-alpha directional lens flare data asset must contain at least 6 procedural elements.");
+            }
+
+            var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject != null ? volumeObject.GetComponent<Volume>() : null;
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            if (volume == null || volume.sharedProfile == null || AssetDatabase.GetAssetPath(volume.sharedProfile) != profilePath)
+            {
+                throw new InvalidOperationException("House slice validation failed: phase B-alpha global volume must keep Assets/Settings/DefaultVolumeProfile.asset.");
+            }
+
+            var profile = volume.sharedProfile;
+            if (!profile.TryGet<ScreenSpaceLensFlare>(out var screenSpaceLensFlare))
+            {
+                throw new InvalidOperationException("House slice validation failed: phase B-alpha default volume profile is missing ScreenSpaceLensFlare.");
+            }
+
+            if (!screenSpaceLensFlare.active ||
+                Mathf.Abs(screenSpaceLensFlare.intensity.value - 0.4f) > 0.001f ||
+                screenSpaceLensFlare.samples.value > 1 ||
+                screenSpaceLensFlare.resolution.value != ScreenSpaceLensFlareResolution.Quarter)
+            {
+                throw new InvalidOperationException($"House slice validation failed: phase B-alpha ScreenSpaceLensFlare must stay active with intensity 0.4 and low samples, found active={screenSpaceLensFlare.active}, intensity={screenSpaceLensFlare.intensity.value:0.000}, samples={screenSpaceLensFlare.samples.value}, resolution={screenSpaceLensFlare.resolution.value}.");
+            }
+
+            ValidateHd2dPhaseBAlphaRenderPipelineLensFlareSupport();
+        }
+
+        private static void ValidateHd2dPhaseBAlphaRenderPipelineLensFlareSupport()
+        {
+            var pipelineAsset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(UniversalRenderPipelineAssetPath);
+            if (pipelineAsset == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing URP asset at {UniversalRenderPipelineAssetPath}.");
+            }
+
+            var serialized = new SerializedObject(pipelineAsset);
+            var supportDataDrivenLensFlare = serialized.FindProperty("m_SupportDataDrivenLensFlare");
+            var supportScreenSpaceLensFlare = serialized.FindProperty("m_SupportScreenSpaceLensFlare");
+            if (supportDataDrivenLensFlare == null || supportScreenSpaceLensFlare == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: URP asset must expose data-driven and screen-space lens flare support serialized properties.");
+            }
+
+            if (!supportDataDrivenLensFlare.boolValue || !supportScreenSpaceLensFlare.boolValue)
+            {
+                throw new InvalidOperationException("House slice validation failed: URP lens flare support flags must remain enabled.");
+            }
         }
 
         private static void ValidateHd2dPhaseASunCycleDriverDefaults(AnemoraSunCycleDriver driver)
@@ -30908,6 +31041,8 @@ namespace Anemora.EditorTools
             depthOfField.bladeRotation.overrideState = true;
             depthOfField.bladeRotation.value = 0f;
 
+            ApplyHd2dPhaseBAlphaScreenSpaceLensFlare(profile);
+            EnsureHd2dPhaseBAlphaRenderPipelineLensFlareSupport();
             EditorUtility.SetDirty(profile);
         }
 
@@ -34735,6 +34870,370 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException("House slice validation failed: cycle 92 depth of field must stay on as the Stage 7 Bokeh HD-2D depth grade.");
             }
+
+            ApplyHd2dPhaseBAlphaScreenSpaceLensFlare(profile);
+            EnsureHd2dPhaseBAlphaRenderPipelineLensFlareSupport();
+        }
+
+        private static void ApplyHd2dPhaseBLensFlareToDirectionalLight(Light directionalLight)
+        {
+            if (directionalLight == null)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-alpha lens flare setup failed: directional light is missing.");
+            }
+
+            var lensFlare = directionalLight.GetComponent<LensFlareComponentSRP>();
+            if (lensFlare == null)
+            {
+                lensFlare = directionalLight.gameObject.AddComponent<LensFlareComponentSRP>();
+            }
+
+            lensFlare.lensFlareData = EnsureHd2dPhaseBLensFlareDataAsset();
+            lensFlare.intensity = 1.10f;
+            lensFlare.scale = 1.0f;
+            lensFlare.attenuationByLightShape = true;
+            lensFlare.maxAttenuationDistance = 1000f;
+            lensFlare.maxAttenuationScale = 1000f;
+            lensFlare.distanceAttenuationCurve = new AnimationCurve(new Keyframe(0f, 1f), new Keyframe(1f, 1f));
+            lensFlare.scaleByDistanceCurve = new AnimationCurve(new Keyframe(0f, 1f), new Keyframe(1f, 1f));
+            lensFlare.radialScreenAttenuationCurve = new AnimationCurve(new Keyframe(0f, 1f), new Keyframe(1f, 1f));
+            lensFlare.useOcclusion = false;
+            lensFlare.environmentOcclusion = false;
+            lensFlare.allowOffScreen = true;
+            lensFlare.sampleCount = 4;
+            lensFlare.occlusionRadius = 0.1f;
+            lensFlare.occlusionOffset = 0.05f;
+            EditorUtility.SetDirty(lensFlare);
+        }
+
+        private static LensFlareDataSRP EnsureHd2dPhaseBLensFlareDataAsset()
+        {
+            EnsureFolder("Assets/Art/LensFlare");
+
+            var asset = AssetDatabase.LoadAssetAtPath<LensFlareDataSRP>(Hd2dPhaseBLensFlareDataAssetPath);
+            if (asset == null)
+            {
+                asset = ScriptableObject.CreateInstance<LensFlareDataSRP>();
+                AssetDatabase.CreateAsset(asset, Hd2dPhaseBLensFlareDataAssetPath);
+            }
+
+            ConfigureHd2dPhaseBLensFlareDataAsset(asset);
+            EditorUtility.SetDirty(asset);
+            return asset;
+        }
+
+        private static void ConfigureHd2dPhaseBLensFlareDataAsset(LensFlareDataSRP asset)
+        {
+            if (asset == null)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-alpha lens flare data asset is missing.");
+            }
+
+            var elements = new[]
+            {
+                CreateHd2dPhaseBLensFlareElement(
+                    position: 0f,
+                    localIntensity: 0.40f,
+                    uniformScale: 18f,
+                    tint: new Color(1.00f, 0.92f, 0.76f, 0.55f),
+                    blendMode: SRPLensFlareBlendMode.Screen,
+                    flareType: SRPLensFlareType.Circle,
+                    allowMultipleElement: false,
+                    count: 1,
+                    preserveAspectRatio: false,
+                    ringThickness: 0.22f,
+                    sideCount: 6,
+                    sdfRoundness: 0.08f),
+                CreateHd2dPhaseBLensFlareElement(
+                    position: 0.18f,
+                    localIntensity: 0.18f,
+                    uniformScale: 7.5f,
+                    tint: new Color(1.00f, 0.78f, 0.48f, 0.38f),
+                    blendMode: SRPLensFlareBlendMode.Additive,
+                    flareType: SRPLensFlareType.Ring,
+                    allowMultipleElement: false,
+                    count: 1,
+                    preserveAspectRatio: false,
+                    ringThickness: 0.34f,
+                    sideCount: 6,
+                    sdfRoundness: 0.05f),
+                CreateHd2dPhaseBLensFlareElement(
+                    position: -0.14f,
+                    localIntensity: 0.14f,
+                    uniformScale: 5.25f,
+                    tint: new Color(1.00f, 0.88f, 0.62f, 0.35f),
+                    blendMode: SRPLensFlareBlendMode.Additive,
+                    flareType: SRPLensFlareType.Polygon,
+                    allowMultipleElement: false,
+                    count: 1,
+                    preserveAspectRatio: false,
+                    ringThickness: 0.18f,
+                    sideCount: 6,
+                    sdfRoundness: 0.22f),
+                CreateHd2dPhaseBLensFlareElement(
+                    position: 0.34f,
+                    localIntensity: 0.11f,
+                    uniformScale: 2.10f,
+                    tint: new Color(1.00f, 0.80f, 0.52f, 0.30f),
+                    blendMode: SRPLensFlareBlendMode.Screen,
+                    flareType: SRPLensFlareType.Circle,
+                    allowMultipleElement: true,
+                    count: 3,
+                    preserveAspectRatio: false,
+                    ringThickness: 0.10f,
+                    sideCount: 6,
+                    sdfRoundness: 0.12f),
+                CreateHd2dPhaseBLensFlareElement(
+                    position: -0.32f,
+                    localIntensity: 0.09f,
+                    uniformScale: 1.35f,
+                    tint: new Color(1.00f, 0.70f, 0.42f, 0.24f),
+                    blendMode: SRPLensFlareBlendMode.Additive,
+                    flareType: SRPLensFlareType.Circle,
+                    allowMultipleElement: true,
+                    count: 2,
+                    preserveAspectRatio: false,
+                    ringThickness: 0.08f,
+                    sideCount: 6,
+                    sdfRoundness: 0.10f),
+                CreateHd2dPhaseBLensFlareElement(
+                    position: 0.56f,
+                    localIntensity: 0.08f,
+                    uniformScale: 1.80f,
+                    tint: new Color(1.00f, 0.95f, 0.82f, 0.20f),
+                    blendMode: SRPLensFlareBlendMode.Screen,
+                    flareType: SRPLensFlareType.Polygon,
+                    allowMultipleElement: false,
+                    count: 1,
+                    preserveAspectRatio: false,
+                    ringThickness: 0.12f,
+                    sideCount: 5,
+                    sdfRoundness: 0.12f)
+            };
+
+            asset.elements = elements;
+        }
+
+        private static LensFlareDataElementSRP CreateHd2dPhaseBLensFlareElement(
+            float position,
+            float localIntensity,
+            float uniformScale,
+            Color tint,
+            SRPLensFlareBlendMode blendMode,
+            SRPLensFlareType flareType,
+            bool allowMultipleElement,
+            int count,
+            bool preserveAspectRatio,
+            float ringThickness,
+            int sideCount,
+            float sdfRoundness)
+        {
+            var element = new LensFlareDataElementSRP
+            {
+                visible = true,
+                position = position,
+                positionOffset = Vector2.zero,
+                angularOffset = 0f,
+                translationScale = Vector2.one,
+                localIntensity = localIntensity,
+                lensFlareTexture = null,
+                uniformScale = uniformScale,
+                sizeXY = Vector2.one,
+                allowMultipleElement = allowMultipleElement,
+                count = count,
+                preserveAspectRatio = preserveAspectRatio,
+                rotation = 0f,
+                tintColorType = SRPLensFlareColorType.Constant,
+                tint = tint,
+                tintGradient = new TextureGradient(
+                    new GradientColorKey[] { new GradientColorKey(Color.black, 0f), new GradientColorKey(Color.white, 1f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 1f) }),
+                blendMode = blendMode,
+                autoRotate = false,
+                flareType = flareType,
+                modulateByLightColor = true,
+                distribution = SRPLensFlareDistribution.Uniform,
+                lengthSpread = 1f,
+                positionCurve = new AnimationCurve(new Keyframe(0f, 0f, 1f, 1f), new Keyframe(1f, 1f, 1f, -1f)),
+                scaleCurve = new AnimationCurve(new Keyframe(0f, 1f), new Keyframe(1f, 1f)),
+                seed = 0,
+                intensityVariation = 0f,
+                positionVariation = Vector2.zero,
+                scaleVariation = 0f,
+                rotationVariation = 0f,
+                enableRadialDistortion = false,
+                targetSizeDistortion = Vector2.one,
+                distortionCurve = new AnimationCurve(new Keyframe(0f, 0f, 1f, 1f), new Keyframe(1f, 1f, 1f, -1f)),
+                distortionRelativeToCenter = false,
+                fallOff = 0.5f,
+                edgeOffset = 1f,
+                sideCount = sideCount,
+                sdfRoundness = sdfRoundness,
+                inverseSDF = false,
+                uniformAngle = 0f,
+                uniformAngleCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, 0f)),
+                ringThickness = ringThickness,
+                hoopFactor = 1f,
+                noiseAmplitude = 1f,
+                noiseFrequency = 1,
+                noiseSpeed = 0f,
+                shapeCutOffSpeed = 0f,
+                shapeCutOffRadius = 10f
+            };
+
+            element.colorGradient = new Gradient();
+            element.colorGradient.SetKeys(
+                new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) });
+            return element;
+        }
+
+        private static void ApplyHd2dPhaseBAlphaScreenSpaceLensFlare(VolumeProfile profile)
+        {
+            if (profile == null)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-alpha screen-space lens flare setup failed: volume profile is missing.");
+            }
+
+            if (!profile.TryGet<ScreenSpaceLensFlare>(out var screenSpaceLensFlare))
+            {
+                screenSpaceLensFlare = profile.Add<ScreenSpaceLensFlare>(true);
+            }
+
+            screenSpaceLensFlare.active = true;
+            screenSpaceLensFlare.intensity.overrideState = true;
+            screenSpaceLensFlare.intensity.value = 0.4f;
+            screenSpaceLensFlare.tintColor.overrideState = true;
+            screenSpaceLensFlare.tintColor.value = new Color(1.00f, 0.95f, 0.88f, 1f);
+            screenSpaceLensFlare.bloomMip.overrideState = true;
+            screenSpaceLensFlare.bloomMip.value = 1;
+            screenSpaceLensFlare.firstFlareIntensity.overrideState = true;
+            screenSpaceLensFlare.firstFlareIntensity.value = 0.75f;
+            screenSpaceLensFlare.secondaryFlareIntensity.overrideState = true;
+            screenSpaceLensFlare.secondaryFlareIntensity.value = 0.32f;
+            screenSpaceLensFlare.warpedFlareIntensity.overrideState = true;
+            screenSpaceLensFlare.warpedFlareIntensity.value = 0.18f;
+            screenSpaceLensFlare.warpedFlareScale.overrideState = true;
+            screenSpaceLensFlare.warpedFlareScale.value = new Vector2(1f, 1f);
+            screenSpaceLensFlare.samples.overrideState = true;
+            screenSpaceLensFlare.samples.value = 1;
+            screenSpaceLensFlare.sampleDimmer.overrideState = true;
+            screenSpaceLensFlare.sampleDimmer.value = 0.65f;
+            screenSpaceLensFlare.vignetteEffect.overrideState = true;
+            screenSpaceLensFlare.vignetteEffect.value = 0.90f;
+            screenSpaceLensFlare.startingPosition.overrideState = true;
+            screenSpaceLensFlare.startingPosition.value = 1.20f;
+            screenSpaceLensFlare.scale.overrideState = true;
+            screenSpaceLensFlare.scale.value = 1.15f;
+            screenSpaceLensFlare.streaksIntensity.overrideState = true;
+            screenSpaceLensFlare.streaksIntensity.value = 0f;
+            screenSpaceLensFlare.streaksLength.overrideState = true;
+            screenSpaceLensFlare.streaksLength.value = 0.25f;
+            screenSpaceLensFlare.streaksOrientation.overrideState = true;
+            screenSpaceLensFlare.streaksOrientation.value = 0f;
+            screenSpaceLensFlare.streaksThreshold.overrideState = true;
+            screenSpaceLensFlare.streaksThreshold.value = 0.40f;
+            screenSpaceLensFlare.resolution.overrideState = true;
+            screenSpaceLensFlare.resolution.value = ScreenSpaceLensFlareResolution.Quarter;
+            screenSpaceLensFlare.chromaticAbberationIntensity.overrideState = true;
+            screenSpaceLensFlare.chromaticAbberationIntensity.value = 0.12f;
+            EditorUtility.SetDirty(profile);
+            EditorUtility.SetDirty(screenSpaceLensFlare);
+        }
+
+        private static bool EnsureHd2dPhaseBAlphaRenderPipelineLensFlareSupport()
+        {
+            var pipelineAsset = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(UniversalRenderPipelineAssetPath);
+            if (pipelineAsset == null)
+            {
+                throw new InvalidOperationException($"Fast VS HD-2D phase B-alpha lens flare setup failed: missing URP asset at {UniversalRenderPipelineAssetPath}.");
+            }
+
+            var serialized = new SerializedObject(pipelineAsset);
+            var supportDataDrivenLensFlare = serialized.FindProperty("m_SupportDataDrivenLensFlare");
+            var supportScreenSpaceLensFlare = serialized.FindProperty("m_SupportScreenSpaceLensFlare");
+            if (supportDataDrivenLensFlare == null || supportScreenSpaceLensFlare == null)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-alpha lens flare setup failed: URP asset is missing lens flare support serialized properties.");
+            }
+
+            supportDataDrivenLensFlare.boolValue = true;
+            supportScreenSpaceLensFlare.boolValue = true;
+
+            var volumetricFogEnabled = serialized.FindProperty("m_VolumetricFogEnabled");
+            var hasVolumetricFogEnabled = volumetricFogEnabled != null;
+            if (hasVolumetricFogEnabled)
+            {
+                volumetricFogEnabled.boolValue = true;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(pipelineAsset);
+            return hasVolumetricFogEnabled;
+        }
+
+        private static void WriteHd2dPhaseBLensFlareDiagnosticsReport(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var directionalSunObject = FindSceneObjectIncludingInactive("Directional Light");
+            var directionalSun = directionalSunObject != null ? directionalSunObject.GetComponent<Light>() : null;
+            var lensFlare = directionalSunObject != null ? directionalSunObject.GetComponent<LensFlareComponentSRP>() : null;
+            var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
+            var volume = volumeObject != null ? volumeObject.GetComponent<Volume>() : null;
+            var profile = volume != null ? volume.sharedProfile : null;
+            ScreenSpaceLensFlare screenSpaceLensFlare = null;
+            if (profile != null)
+            {
+                profile.TryGet<ScreenSpaceLensFlare>(out screenSpaceLensFlare);
+            }
+            var volumetricFogPropertyPresent = EnsureHd2dPhaseBAlphaRenderPipelineLensFlareSupport();
+            var dataDrivenSupport = GetSerializedBoolAssetValue(UniversalRenderPipelineAssetPath, "m_SupportDataDrivenLensFlare");
+            var screenSpaceSupport = GetSerializedBoolAssetValue(UniversalRenderPipelineAssetPath, "m_SupportScreenSpaceLensFlare");
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseBLensFlareDiagnosticsReportFileName);
+            var lines = new List<string>
+            {
+                "# HD2D Phase B Alpha Scene Lens Flare Diagnostics",
+                string.Empty,
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseBAlphaSceneLensFlareBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseBAlphaSceneLensFlareCycle175ScreenshotsBatch)}`",
+                $"- Directional light: `{(directionalSun != null ? directionalSun.name : "<missing>")}`",
+                $"- Lens flare asset: `{Hd2dPhaseBLensFlareDataAssetPath}`",
+                $"- Lens flare intensity: `{(lensFlare != null ? lensFlare.intensity : 0f):0.000}`",
+                $"- Screen-space lens flare active: `{(screenSpaceLensFlare != null && screenSpaceLensFlare.active)}`",
+                $"- Screen-space lens flare intensity: `{(screenSpaceLensFlare != null ? screenSpaceLensFlare.intensity.value : 0f):0.000}`",
+                $"- Screen-space lens flare samples: `{(screenSpaceLensFlare != null ? screenSpaceLensFlare.samples.value : 0)}`",
+                $"- URP support flags: data-driven=`{dataDrivenSupport}`, screen-space=`{screenSpaceSupport}`",
+                $"- URP serialized volumetric fog property exposed locally: `{volumetricFogPropertyPresent}`",
+                string.Empty,
+                "- Visual state is recorded for Tom's PNG review; this report does not claim visual sign-off."
+            };
+
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS phase B-alpha lens flare diagnostics report failed: missing output file {reportPath}");
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        private static bool GetSerializedBoolAssetValue(string assetPath, string propertyName)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            if (asset == null)
+            {
+                throw new InvalidOperationException($"Fast VS HD-2D phase B-alpha diagnostics failed: missing asset at {assetPath}.");
+            }
+
+            var serialized = new SerializedObject(asset);
+            var property = serialized.FindProperty(propertyName);
+            if (property == null || property.propertyType != SerializedPropertyType.Boolean)
+            {
+                throw new InvalidOperationException($"Fast VS HD-2D phase B-alpha diagnostics failed: asset at {assetPath} is missing serialized bool property {propertyName}.");
+            }
+
+            return property.boolValue;
         }
 
         private static void ValidateStage5LutColorLookup(ColorLookup colorLookup, string context)
