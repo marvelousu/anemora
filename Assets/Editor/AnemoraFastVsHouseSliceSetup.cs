@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Anemora.FastVS;
+using Anemora.FastVS.SunCycle;
 using Anemora.TimeManagement;
 using TMPro;
 using UnityEditor;
@@ -414,6 +415,7 @@ namespace Anemora.EditorTools
             CreateLighting(camera, areaVisibility);
             CreateAreaLightingProfiles(currentAreas);
             CreateHd2dGlobalVolume();
+            CreateHd2dPhaseASunCycleSceneWiring(currentAreas);
             CreateHd2dAtmosphere(currentRoot, pastRoot);
             CreateHd2dStage7ApvVolumes(currentRoot, pastRoot);
             CreateHd2dStage7LibraryWarmAnchor(currentRoot, pastRoot, materials);
@@ -1334,6 +1336,27 @@ namespace Anemora.EditorTools
             CreateHouseSliceScene();
             EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             ValidateHd2dStage8NLibraryLoosePageClusters();
+        }
+
+        public static void ValidateHd2dPhaseASunCycleSceneWiringBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+        }
+
+        public static void CaptureHd2dPhaseASunCycleSceneWiringCycle166ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+
+            var outputDirectory = Path.Combine(
+                "docs",
+                "devlog",
+                "screenshots",
+                "fast_vs_hd2d_phase_a_sun_cycle_scene_wiring_cycle166");
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
         }
 
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
@@ -29260,6 +29283,545 @@ namespace Anemora.EditorTools
 
             ApplyCycle92FadedDuskCameraGrade(profile);
             volume.sharedProfile = profile;
+        }
+
+        private const string Hd2dPhaseASunCycleRootName = "FastVS_HD2D_SunCycle";
+        private const string Hd2dPhaseASunCycleDiagnosticsReportFileName = "sun_cycle_scene_wiring_diagnostics.md";
+
+        private static void CreateHd2dPhaseASunCycleSceneWiring(HouseMapAreas currentAreas)
+        {
+            var directionalSun = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var globalVolume = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume")?.GetComponent<Volume>();
+            if (directionalSun == null || globalVolume == null)
+            {
+                throw new InvalidOperationException("Phase A SunCycle scene wiring failed: Directional Light or FastVS_HD2D_GlobalVolume is missing.");
+            }
+
+            var sunCycleRoot = new GameObject(Hd2dPhaseASunCycleRootName);
+            sunCycleRoot.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            sunCycleRoot.transform.localScale = Vector3.one;
+
+            var driver = sunCycleRoot.AddComponent<AnemoraSunCycleDriver>();
+            SerializedSet(driver, "directionalSunLight", directionalSun);
+            SerializedSet(driver, "globalVolume", globalVolume);
+            SerializedSetObjectReferenceArray(driver, "presets", LoadHd2dPhaseASunPresetAssets());
+            SerializedSet(driver, "defaultPreset", SunPreset.Noon);
+            SerializedSet(driver, "transitionDuration", 1.8f);
+
+            CreateHd2dPhaseAMapSunAnchor(currentAreas.Interior.transform, "FastVS_HD2D_MapSunAnchor_Interior_Morning", SunPreset.Morning, false, 0);
+            CreateHd2dPhaseAMapSunAnchor(currentAreas.Exterior.transform, "FastVS_HD2D_MapSunAnchor_Exterior_Morning", SunPreset.Morning, false, 0);
+            CreateHd2dPhaseAMapSunAnchor(currentAreas.CentralPlaza.transform, "FastVS_HD2D_MapSunAnchor_CentralPlaza_Noon", SunPreset.Noon, true, 0);
+            CreateHd2dPhaseAMapSunAnchor(currentAreas.Library.transform, "FastVS_HD2D_MapSunAnchor_Library_Evening", SunPreset.Evening, true, 0);
+
+            driver.ApplyPreset(SunPreset.Morning, true);
+            EditorUtility.SetDirty(driver);
+        }
+
+        private static void CreateHd2dPhaseAMapSunAnchor(Transform parent, string objectName, SunPreset preset, bool transitionFromPrevious, int priority)
+        {
+            if (parent == null)
+            {
+                throw new InvalidOperationException($"Phase A SunCycle scene wiring failed: missing parent for {objectName}.");
+            }
+
+            var anchorObject = new GameObject(objectName);
+            anchorObject.transform.SetParent(parent, false);
+            anchorObject.transform.localPosition = Vector3.zero;
+            anchorObject.transform.localRotation = Quaternion.identity;
+            anchorObject.transform.localScale = Vector3.one;
+
+            var anchor = anchorObject.AddComponent<MapSunAnchor>();
+            SerializedSet(anchor, "sunPreset", preset);
+            SerializedSet(anchor, "priority", priority);
+            SerializedSet(anchor, "transitionFromPrevious", transitionFromPrevious);
+            EditorUtility.SetDirty(anchor);
+        }
+
+        private static SunPresetData[] LoadHd2dPhaseASunPresetAssets()
+        {
+            return new[]
+            {
+                LoadHd2dPhaseASunPresetAsset(SunPreset.Morning, GetHd2dPhaseASunPresetAssetPath(SunPreset.Morning)),
+                LoadHd2dPhaseASunPresetAsset(SunPreset.Noon, GetHd2dPhaseASunPresetAssetPath(SunPreset.Noon)),
+                LoadHd2dPhaseASunPresetAsset(SunPreset.Evening, GetHd2dPhaseASunPresetAssetPath(SunPreset.Evening)),
+                LoadHd2dPhaseASunPresetAsset(SunPreset.Night, GetHd2dPhaseASunPresetAssetPath(SunPreset.Night))
+            };
+        }
+
+        private static string GetHd2dPhaseASunPresetAssetPath(SunPreset preset)
+        {
+            return $"Assets/Settings/SunCycle/SunPreset_{preset}.asset";
+        }
+
+        private static SunPresetData LoadHd2dPhaseASunPresetAsset(SunPreset preset, string path)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<SunPresetData>(path);
+            if (asset == null)
+            {
+                throw new InvalidOperationException($"Phase A SunCycle scene wiring failed: missing {preset} preset asset at {path}.");
+            }
+
+            if (asset.preset != preset)
+            {
+                throw new InvalidOperationException($"Phase A SunCycle scene wiring failed: {path} stores {asset.preset}, expected {preset}.");
+            }
+
+            return asset;
+        }
+
+        private static void ValidateHd2dPhaseASunCycleSceneWiring()
+        {
+            var root = FindSceneObjectIncludingInactive(Hd2dPhaseASunCycleRootName);
+            var driver = root != null ? root.GetComponent<AnemoraSunCycleDriver>() : null;
+            var directionalSun = FindSceneObjectIncludingInactive("Directional Light")?.GetComponent<Light>();
+            var globalVolume = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume")?.GetComponent<Volume>();
+            if (root == null || driver == null || directionalSun == null || globalVolume == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Phase A SunCycle needs its root, driver, Directional Light, and global volume.");
+            }
+
+            ValidateSerializedObjectReference(driver, "directionalSunLight", directionalSun, "Phase A SunCycle directional sun");
+            ValidateSerializedObjectReference(driver, "globalVolume", globalVolume, "Phase A SunCycle global volume");
+            ValidateHd2dPhaseASunCycleDriverDefaults(driver);
+            ValidateHd2dPhaseASunCycleDriverPresets(driver);
+            ValidateHd2dPhaseASunCycleAnchors();
+            ValidateHd2dPhaseASunCycleTransition(driver);
+            ValidateHd2dPhaseASunCycleSceneYaml();
+        }
+
+        private static void ValidateHd2dPhaseASunCycleDriverDefaults(AnemoraSunCycleDriver driver)
+        {
+            var defaultPresetIndex = GetSerializedEnumIndex(driver, "defaultPreset");
+            if (defaultPresetIndex != (int)SunPreset.Noon)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle default preset must be Noon, found {(SunPreset)defaultPresetIndex}.");
+            }
+
+            var transitionDuration = GetSerializedFloat(driver, "transitionDuration");
+            if (Mathf.Abs(transitionDuration - 1.8f) > 0.001f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle transition duration must be 1.8, found {transitionDuration:0.###}.");
+            }
+        }
+
+        private static void ValidateHd2dPhaseASunCycleDriverPresets(AnemoraSunCycleDriver driver)
+        {
+            var expectedAssets = LoadHd2dPhaseASunPresetAssets();
+            var serialized = new SerializedObject(driver);
+            var presetsProperty = serialized.FindProperty("presets");
+            if (presetsProperty == null || !presetsProperty.isArray)
+            {
+                throw new InvalidOperationException("House slice validation failed: Phase A SunCycle driver presets array is missing.");
+            }
+
+            if (presetsProperty.arraySize != expectedAssets.Length)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle driver needs {expectedAssets.Length} presets, found {presetsProperty.arraySize}.");
+            }
+
+            for (var index = 0; index < expectedAssets.Length; index++)
+            {
+                var expectedAsset = expectedAssets[index];
+                var referencedAsset = presetsProperty.GetArrayElementAtIndex(index).objectReferenceValue as SunPresetData;
+                if (referencedAsset != expectedAsset)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle preset index {index} must reference {AssetDatabase.GetAssetPath(expectedAsset)}.");
+                }
+
+                if (driver.GetPresetData(expectedAsset.preset) != expectedAsset)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle driver lookup did not resolve {expectedAsset.preset}.");
+                }
+            }
+        }
+
+        private static void ValidateHd2dPhaseASunCycleAnchors()
+        {
+            ValidateHd2dPhaseASunCycleAnchor(
+                "FastVS_HD2D_MapSunAnchor_Interior_Morning",
+                "Current_HouseInteriorMap_SeparateSpace",
+                SunPreset.Morning,
+                false,
+                0);
+            ValidateHd2dPhaseASunCycleAnchor(
+                "FastVS_HD2D_MapSunAnchor_Exterior_Morning",
+                "Current_HouseExteriorMap_SeparateSpace",
+                SunPreset.Morning,
+                false,
+                0);
+            ValidateHd2dPhaseASunCycleAnchor(
+                "FastVS_HD2D_MapSunAnchor_CentralPlaza_Noon",
+                "Current_CentralPlazaMap_SeparateSpace",
+                SunPreset.Noon,
+                true,
+                0);
+            ValidateHd2dPhaseASunCycleAnchor(
+                "FastVS_HD2D_MapSunAnchor_Library_Evening",
+                "Current_LibraryMap_SeparateSpace",
+                SunPreset.Evening,
+                true,
+                0);
+
+            var anchors = UnityEngine.Object.FindObjectsByType<MapSunAnchor>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+            if (anchors.Length != 4)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle expected exactly 4 map sun anchors, found {anchors.Length}.");
+            }
+        }
+
+        private static void ValidateHd2dPhaseASunCycleAnchor(
+            string objectName,
+            string expectedParentName,
+            SunPreset expectedPreset,
+            bool expectedTransitionFromPrevious,
+            int expectedPriority)
+        {
+            var anchorObject = FindSceneObjectIncludingInactive(objectName);
+            if (anchorObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase A SunCycle anchor object {objectName}.");
+            }
+
+            var anchor = anchorObject.GetComponent<MapSunAnchor>();
+            if (anchor == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} is missing the MapSunAnchor component.");
+            }
+
+            var parentName = anchorObject.transform.parent != null ? anchorObject.transform.parent.name : string.Empty;
+            if (!string.Equals(parentName, expectedParentName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}, found {parentName}.");
+            }
+
+            if (anchor.SunPreset != expectedPreset ||
+                anchor.TransitionFromPrevious != expectedTransitionFromPrevious ||
+                anchor.Priority != expectedPriority)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: {objectName} has preset={anchor.SunPreset}, transition={anchor.TransitionFromPrevious}, priority={anchor.Priority}; " +
+                    $"expected preset={expectedPreset}, transition={expectedTransitionFromPrevious}, priority={expectedPriority}.");
+            }
+
+            if (GetSerializedEnumIndex(anchor, "sunPreset") != (int)expectedPreset ||
+                GetSerializedInt(anchor, "priority") != expectedPriority ||
+                GetSerializedBool(anchor, "transitionFromPrevious") != expectedTransitionFromPrevious)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} serialized anchor fields do not match the public runtime contract.");
+            }
+        }
+
+        private static void ValidateHd2dPhaseASunCycleTransition(AnemoraSunCycleDriver driver)
+        {
+            driver.ApplyPreset(SunPreset.Morning, true);
+            if (driver.CurrentPreset != SunPreset.Morning || driver.TargetPreset != SunPreset.Morning || driver.IsTransitioning)
+            {
+                throw new InvalidOperationException("House slice validation failed: Phase A SunCycle instant morning application did not settle immediately.");
+            }
+
+            driver.ApplyPreset(SunPreset.Evening, false);
+            if (!driver.IsTransitioning || driver.CurrentPreset != SunPreset.Morning || driver.TargetPreset != SunPreset.Evening)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: Phase A SunCycle non-instant transition did not start from Morning to Evening. " +
+                    $"current={driver.CurrentPreset}, target={driver.TargetPreset}, transitioning={driver.IsTransitioning}.");
+            }
+
+            driver.ApplyPreset(SunPreset.Noon, true);
+            if (driver.IsTransitioning || driver.CurrentPreset != SunPreset.Noon || driver.TargetPreset != SunPreset.Noon)
+            {
+                throw new InvalidOperationException("House slice validation failed: Phase A SunCycle instant noon cleanup did not settle immediately.");
+            }
+        }
+
+        private static void ValidateHd2dPhaseASunCycleSceneYaml()
+        {
+            var sceneText = File.ReadAllText(ScenePath);
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, Hd2dPhaseASunCycleRootName);
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "FastVS_HD2D_MapSunAnchor_Interior_Morning");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "FastVS_HD2D_MapSunAnchor_Exterior_Morning");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "FastVS_HD2D_MapSunAnchor_CentralPlaza_Noon");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "FastVS_HD2D_MapSunAnchor_Library_Evening");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "directionalSunLight:");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "globalVolume:");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "presets:");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "defaultPreset: 1");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "transitionDuration: 1.8");
+            ValidateHd2dPhaseASunCycleYamlToken(sceneText, "transitionFromPrevious: 1");
+
+            for (var presetIndex = 0; presetIndex < 4; presetIndex++)
+            {
+                var preset = (SunPreset)presetIndex;
+                var guid = AssetDatabase.AssetPathToGUID(GetHd2dPhaseASunPresetAssetPath(preset));
+                if (string.IsNullOrEmpty(guid))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: missing GUID for Phase A SunCycle preset {preset}.");
+                }
+
+                ValidateHd2dPhaseASunCycleYamlToken(sceneText, guid);
+            }
+        }
+
+        private static void ValidateHd2dPhaseASunCycleYamlToken(string sceneText, string token)
+        {
+            if (sceneText.IndexOf(token, StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle scene YAML is missing `{token}`.");
+            }
+        }
+
+        private static void CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            var root = FindSceneObjectIncludingInactive(Hd2dPhaseASunCycleRootName);
+            var driver = root != null ? root.GetComponent<AnemoraSunCycleDriver>() : null;
+            if (controller == null || visibility == null || guide == null || camera == null || driver == null)
+            {
+                throw new InvalidOperationException("Fast VS Phase A SunCycle scene wiring capture failed: scene review components or SunCycle driver are missing.");
+            }
+
+            var files = new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png"
+            };
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.Interior,
+                HouseInteriorPlayerStart,
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[0]));
+            ValidateScreenshotOutputExists(outputDirectory, files[0]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter,
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[1]));
+            ValidateScreenshotOutputExists(outputDirectory, files[1]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-0.34f, 0.02f, 3.26f),
+                SunPreset.Noon,
+                Path.Combine(outputDirectory, files[2]));
+            ValidateScreenshotOutputExists(outputDirectory, files[2]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.90f, 0.02f, -0.60f),
+                SunPreset.Evening,
+                Path.Combine(outputDirectory, files[3]));
+            ValidateScreenshotOutputExists(outputDirectory, files[3]);
+
+            WriteHd2dPhaseASunCycleSceneWiringDiagnosticsReport(outputDirectory, files);
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS Phase A SunCycle scene wiring diagnostics captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            AnemoraSunCycleDriver driver,
+            FastVsHouseArea area,
+            Vector3 playerLocalPosition,
+            SunPreset preset,
+            string outputPath)
+        {
+            camera.fieldOfView = 37f;
+            visibility.SetActiveAreaForReview(area);
+            controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+            guide.ApplyActiveTimeIsolationForReview();
+            driver.ApplyPreset(preset, true);
+            PositionReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(playerLocalPosition));
+            SaveCameraPng(camera, outputPath);
+        }
+
+        private static void WriteHd2dPhaseASunCycleSceneWiringDiagnosticsReport(string outputDirectory, IReadOnlyList<string> screenshotFiles)
+        {
+            var root = FindSceneObjectIncludingInactive(Hd2dPhaseASunCycleRootName);
+            var driver = root != null ? root.GetComponent<AnemoraSunCycleDriver>() : null;
+            if (driver == null)
+            {
+                throw new InvalidOperationException("Fast VS Phase A SunCycle diagnostics report failed: driver is missing.");
+            }
+
+            var lines = new List<string>
+            {
+                "# HD2D Phase A Sun Cycle Scene Wiring Diagnostics",
+                string.Empty,
+                $"- Scene: `{ScenePath}`",
+                $"- Root: `{Hd2dPhaseASunCycleRootName}`",
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseASunCycleSceneWiringBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseASunCycleSceneWiringCycle166ScreenshotsBatch)}`",
+                $"- Default preset: `{(SunPreset)GetSerializedEnumIndex(driver, "defaultPreset")}`",
+                $"- Transition duration: `{GetSerializedFloat(driver, "transitionDuration"):0.###}`",
+                string.Empty,
+                "| Preset | Asset |",
+                "|---|---|"
+            };
+
+            for (var presetIndex = 0; presetIndex < 4; presetIndex++)
+            {
+                var preset = (SunPreset)presetIndex;
+                lines.Add($"| {preset} | `{GetHd2dPhaseASunPresetAssetPath(preset)}` |");
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("| Anchor | Parent | Preset | Transition | Priority |");
+            lines.Add("|---|---|---:|---:|---:|");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_Interior_Morning");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_Exterior_Morning");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_CentralPlaza_Noon");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_Library_Evening");
+
+            lines.Add(string.Empty);
+            lines.Add("| Screenshot |");
+            lines.Add("|---|");
+            for (var i = 0; i < screenshotFiles.Count; i++)
+            {
+                lines.Add($"| `{screenshotFiles[i]}` |");
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("- YAML grep: passed for root, anchors, driver references, preset GUIDs, default preset, and transition duration.");
+
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseASunCycleDiagnosticsReportFileName);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS Phase A SunCycle diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static void AddHd2dPhaseASunCycleAnchorReportLine(List<string> lines, string objectName)
+        {
+            var anchorObject = FindSceneObjectIncludingInactive(objectName);
+            var anchor = anchorObject != null ? anchorObject.GetComponent<MapSunAnchor>() : null;
+            if (anchorObject == null || anchor == null)
+            {
+                lines.Add($"| `{objectName}` | missing | missing | missing | missing |");
+                return;
+            }
+
+            var parentName = anchorObject.transform.parent != null ? anchorObject.transform.parent.name : string.Empty;
+            lines.Add($"| `{objectName}` | `{parentName}` | {anchor.SunPreset} | {anchor.TransitionFromPrevious} | {anchor.Priority} |");
+        }
+
+        private static void ValidateSerializedObjectReference(UnityEngine.Object target, string fieldName, UnityEngine.Object expected, string label)
+        {
+            var actual = GetSerializedObjectReference(target, fieldName);
+            if (actual != expected)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} must reference {expected.name}.");
+            }
+        }
+
+        private static UnityEngine.Object GetSerializedObjectReference(UnityEngine.Object target, string fieldName)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || property.propertyType != SerializedPropertyType.ObjectReference)
+            {
+                throw new InvalidOperationException($"Serialized object reference field not found: {target.GetType().Name}.{fieldName}");
+            }
+
+            return property.objectReferenceValue;
+        }
+
+        private static int GetSerializedEnumIndex(UnityEngine.Object target, string fieldName)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || property.propertyType != SerializedPropertyType.Enum)
+            {
+                throw new InvalidOperationException($"Serialized enum field not found: {target.GetType().Name}.{fieldName}");
+            }
+
+            return property.enumValueIndex;
+        }
+
+        private static float GetSerializedFloat(UnityEngine.Object target, string fieldName)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || property.propertyType != SerializedPropertyType.Float)
+            {
+                throw new InvalidOperationException($"Serialized float field not found: {target.GetType().Name}.{fieldName}");
+            }
+
+            return property.floatValue;
+        }
+
+        private static int GetSerializedInt(UnityEngine.Object target, string fieldName)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || property.propertyType != SerializedPropertyType.Integer)
+            {
+                throw new InvalidOperationException($"Serialized integer field not found: {target.GetType().Name}.{fieldName}");
+            }
+
+            return property.intValue;
+        }
+
+        private static bool GetSerializedBool(UnityEngine.Object target, string fieldName)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || property.propertyType != SerializedPropertyType.Boolean)
+            {
+                throw new InvalidOperationException($"Serialized bool field not found: {target.GetType().Name}.{fieldName}");
+            }
+
+            return property.boolValue;
+        }
+
+        private static void SerializedSetObjectReferenceArray(UnityEngine.Object target, string fieldName, UnityEngine.Object[] values)
+        {
+            var serialized = new SerializedObject(target);
+            var property = serialized.FindProperty(fieldName);
+            if (property == null || !property.isArray)
+            {
+                throw new InvalidOperationException($"Serialized object reference array field not found: {target.GetType().Name}.{fieldName}");
+            }
+
+            property.arraySize = values.Length;
+            for (var index = 0; index < values.Length; index++)
+            {
+                property.GetArrayElementAtIndex(index).objectReferenceValue = values[index];
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void ApplyCycle92FadedDuskCameraGrade(VolumeProfile profile)
