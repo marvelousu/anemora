@@ -71,6 +71,8 @@ namespace Anemora.FastVS
             {
                 ApplyCameraClearColor();
             }
+
+            NotifyRealtimeShadowPolicyAreaTransition();
         }
 
         private void ApplyCameraClearColor()
@@ -104,6 +106,15 @@ namespace Anemora.FastVS
             }
 
             return false;
+        }
+
+        private void NotifyRealtimeShadowPolicyAreaTransition()
+        {
+            var realtimeRig = FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            if (realtimeRig != null)
+            {
+                realtimeRig.ApplyRendererShadowPolicyForAreaTransitionForReview(activeArea);
+            }
         }
 
         private static void SetActive(GameObject target, bool active)

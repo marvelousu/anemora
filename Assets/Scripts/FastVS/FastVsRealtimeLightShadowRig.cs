@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 namespace Anemora.FastVS
 {
@@ -13,7 +14,6 @@ namespace Anemora.FastVS
         private const string PortalWindowRole = "PortalWindow";
         private const string OverlayGlowRole = "OverlayGlow";
         private const string ContactShadowRole = "ContactShadow";
-        private const float ShadowPolicyRefreshSeconds = 0.35f;
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
@@ -47,7 +47,6 @@ namespace Anemora.FastVS
         [SerializeField] private Color exteriorSkyColor = new Color(0.30f, 0.38f, 0.43f, 1f);
         [SerializeField] private Color centralPlazaSkyColor = new Color(0.220f, 0.286f, 0.340f, 1f);
 
-        private float nextShadowPolicyRefreshTime;
         private Material centralPlazaSkyboxMaterial;
         private Material exteriorSkyboxMaterial;
 
@@ -57,24 +56,33 @@ namespace Anemora.FastVS
             ApplyNowForReview();
         }
 
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += HandleSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= HandleSceneLoaded;
+        }
+
         private void LateUpdate()
         {
             ResolveReferences();
             ApplyLightAndSky();
-
-            if (enforceRendererShadowPolicy && Time.unscaledTime >= nextShadowPolicyRefreshTime)
-            {
-                ApplyRendererShadowPolicy();
-                nextShadowPolicyRefreshTime = Time.unscaledTime + ShadowPolicyRefreshSeconds;
-            }
         }
 
         public void ApplyNowForReview()
         {
             ResolveReferences();
             ApplyLightAndSky();
-            ApplyRendererShadowPolicy();
-            nextShadowPolicyRefreshTime = Time.unscaledTime + ShadowPolicyRefreshSeconds;
+            ApplyRendererShadowPolicyForCurrentArea();
+        }
+
+        private void HandleSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            ResolveReferences();
+            ApplyRendererShadowPolicyForCurrentArea();
         }
 
         private void ResolveReferences()
@@ -133,6 +141,27 @@ namespace Anemora.FastVS
             {
                 RenderSettings.reflectionIntensity = 1f;
             }
+        }
+
+        private FastVsHouseArea GetActiveAreaForRendererShadowPolicy()
+        {
+            return areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
+        }
+
+        public void ApplyRendererShadowPolicyForAreaTransitionForReview(FastVsHouseArea area)
+        {
+            if (!enforceRendererShadowPolicy)
+            {
+                return;
+            }
+
+            ResolveReferences();
+            ApplyRendererShadowPolicy(area);
+        }
+
+        private void ApplyRendererShadowPolicyForCurrentArea()
+        {
+            ApplyRendererShadowPolicy(GetActiveAreaForRendererShadowPolicy());
         }
 
         private static bool IsRealtimeOutdoorArea(FastVsHouseArea area)
@@ -282,9 +311,8 @@ namespace Anemora.FastVS
             return centralPlazaSkyboxMaterial;
         }
 
-        private void ApplyRendererShadowPolicy()
+        private void ApplyRendererShadowPolicy(FastVsHouseArea activeArea)
         {
-            var activeArea = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
             var isRealtimeOutdoor = IsRealtimeOutdoorArea(activeArea);
             foreach (var renderer in FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {

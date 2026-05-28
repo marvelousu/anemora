@@ -89,6 +89,8 @@ namespace Anemora.EditorTools
         private const string Stage4RayPlateName = "FastVS_Cycle128RayPlate";
         private const string Stage4ShadowPaintPlateName = "FastVS_Cycle131ShadowPaintPlate";
         private const string Stage4SunPaintPlateName = "FastVS_Cycle131SunPaintPlate";
+        private const string Hd2dPhaseAShadowPolicyEventDrivenDiagnosticsReportFileName = "shadow_policy_event_driven_diagnostics.md";
+        private const string Hd2dPhaseAShadowPolicyEventDrivenCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_cycle170_shadow_policy_event_driven_parent_review_20260528_01";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1433,6 +1435,43 @@ namespace Anemora.EditorTools
                 "fast_vs_hd2d_phase_a_painted_overlay_removal_cycle169");
             CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
             WriteHd2dPhaseAPaintedOverlayRemovalSourceReport(outputDirectory);
+        }
+
+        public static void ValidateHd2dPhaseAShadowPolicyEventDrivenBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+            ValidateHd2dPhaseAPaintedOverlayRemovalSource();
+            ValidateHd2dPhaseAShadowPolicyEventDrivenSource();
+        }
+
+        public static void CaptureHd2dPhaseAShadowPolicyEventDrivenCycle170ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+            ValidateHd2dPhaseAPaintedOverlayRemovalSource();
+            ValidateHd2dPhaseAShadowPolicyEventDrivenSource();
+
+            var outputDirectory = Hd2dPhaseAShadowPolicyEventDrivenCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            WriteHd2dPhaseAShadowPolicyEventDrivenSourceReport(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png",
+                Hd2dPhaseASunCycleDiagnosticsReportFileName,
+                Hd2dPhaseAShadowPolicyEventDrivenDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
         }
 
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
@@ -29759,9 +29798,7 @@ namespace Anemora.EditorTools
                 "EnsureCycle128",
                 "EnsureCycle131",
                 "SetCycle128CameraGradeActive",
-                "ShouldSuppressCentralPlazaReferenceOverlay",
                 "Current_CentralPlaza_Cycle129Painted",
-                "Current_CentralPlaza_Cycle130Reference",
                 "FastVS_Cycle128",
                 "FastVS_Cycle131"
             };
@@ -29772,6 +29809,117 @@ namespace Anemora.EditorTools
                 {
                     throw new InvalidOperationException($"House slice validation failed: painted overlay removal source still contains `{forbiddenTokens[i]}`.");
                 }
+            }
+        }
+
+        private static void ValidateHd2dPhaseAShadowPolicyEventDrivenSource()
+        {
+            var rigSourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var rigSource = File.ReadAllText(rigSourcePath);
+            var requiredRigTokens = new[]
+            {
+                "SceneManager.sceneLoaded += HandleSceneLoaded;",
+                "SceneManager.sceneLoaded -= HandleSceneLoaded;",
+                "ApplyRendererShadowPolicyForCurrentArea();",
+                "ApplyRendererShadowPolicyForAreaTransitionForReview(FastVsHouseArea area)",
+                "GetActiveAreaForRendererShadowPolicy()",
+                "ApplyRendererShadowPolicy(FastVsHouseArea activeArea)"
+            };
+            var forbiddenRigTokens = new[]
+            {
+                "ShadowPolicyRefreshSeconds",
+                "nextShadowPolicyRefreshTime",
+                "ApplyRendererShadowPolicyForCurrentArea(force: false);",
+                "Time.unscaledTime >=",
+                "Time.unscaledTime +"
+            };
+
+            for (var i = 0; i < requiredRigTokens.Length; i++)
+            {
+                if (rigSource.IndexOf(requiredRigTokens[i], StringComparison.Ordinal) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: shadow policy rig source is missing `{requiredRigTokens[i]}`.");
+                }
+            }
+
+            for (var i = 0; i < forbiddenRigTokens.Length; i++)
+            {
+                if (rigSource.IndexOf(forbiddenRigTokens[i], StringComparison.Ordinal) >= 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: shadow policy rig source still contains `{forbiddenRigTokens[i]}`.");
+                }
+            }
+
+            var areaVisibilitySourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsHouseAreaVisibility.cs");
+            var areaVisibilitySource = File.ReadAllText(areaVisibilitySourcePath);
+            var requiredAreaVisibilityTokens = new[]
+            {
+                "NotifyRealtimeShadowPolicyAreaTransition();",
+                "ApplyRendererShadowPolicyForAreaTransitionForReview(activeArea);"
+            };
+            for (var i = 0; i < requiredAreaVisibilityTokens.Length; i++)
+            {
+                if (areaVisibilitySource.IndexOf(requiredAreaVisibilityTokens[i], StringComparison.Ordinal) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: shadow policy area visibility source is missing `{requiredAreaVisibilityTokens[i]}`.");
+                }
+            }
+        }
+
+        private static void WriteHd2dPhaseAShadowPolicyEventDrivenSourceReport(string outputDirectory)
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var areaVisibilitySourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsHouseAreaVisibility.cs");
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseAShadowPolicyEventDrivenDiagnosticsReportFileName);
+            var lines = new[]
+            {
+                "# HD2D Phase A Shadow Policy Event-Driven Diagnostics",
+                string.Empty,
+                $"- Source: `{sourcePath}`",
+                $"- Area transition source: `{areaVisibilitySourcePath}`",
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseAShadowPolicyEventDrivenBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseAShadowPolicyEventDrivenCycle170ScreenshotsBatch)}`",
+                "- Grep: Rig source contains sceneLoaded subscription/unsubscription, area transition shadow policy method, and force-path review pass.",
+                "- Grep: Area visibility source calls the rig's area transition shadow policy method from `ApplyVisibility`.",
+                "- Grep: Rig source no longer contains `ShadowPolicyRefreshSeconds`, `nextShadowPolicyRefreshTime`, or `Time.unscaledTime >=` refresh-loop tokens.",
+                "- Remaining ownership: `LateUpdate` still resolves references and applies light/sky; renderer shadow policy now runs on scene load, area transition, or explicit review force."
+            };
+
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS Phase A shadow policy diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static string GetCycleAudiencePrefix()
+        {
+            var cycleAudience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            return string.IsNullOrEmpty(cycleAudience) ? string.Empty : cycleAudience + "_";
+        }
+
+        private static void PrefixHd2dPhaseACaptureOutputsIfNeeded(string outputDirectory, string audiencePrefix, IReadOnlyList<string> fileNames)
+        {
+            if (string.IsNullOrEmpty(audiencePrefix))
+            {
+                return;
+            }
+
+            for (var i = 0; i < fileNames.Count; i++)
+            {
+                var sourcePath = Path.Combine(outputDirectory, fileNames[i]);
+                var targetPath = Path.Combine(outputDirectory, audiencePrefix + fileNames[i]);
+                if (!File.Exists(sourcePath))
+                {
+                    throw new InvalidOperationException($"Fast VS Phase A capture output rename failed: missing source file {sourcePath}");
+                }
+
+                if (File.Exists(targetPath))
+                {
+                    File.Delete(targetPath);
+                }
+
+                File.Move(sourcePath, targetPath);
             }
         }
 
