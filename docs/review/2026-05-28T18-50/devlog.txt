@@ -1,0 +1,23 @@
+HD-2D Phase C-beta Artistic Tilt Shift review (cycle 178)
+
+Commit:
+- 857e59d8 feat(hd2d): add phase c beta artistic tilt shift adoption fallback
+
+Validation:
+- Validate: passed
+- Capture: passed
+- Build: passed
+- Smoke: built exe launched for 24 seconds with pattern count 0
+
+Applied changes:
+- Added C-beta package/import diagnostics for Artistic: Tilt Shift.
+- Captured five review images, including TimeWindow aperture.
+- Kept the existing `FastVS HD2D Stage7 TiltShift` Full Screen Pass renderer feature active because the Fronkon/Artistic package was not detected.
+
+Current gap against references:
+- Artistic: Tilt Shift is absent, so the requested commercial screen-space Y-mask comparison could not be produced in this workspace.
+- Current visuals remain the existing self-made fallback and remain substantially below the reference target.
+
+Build exe path:
+- `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- Launch note: start the build from the full `Builds/FastVS_HouseSlice/` folder.
