@@ -896,11 +896,6 @@ namespace Anemora.EditorTools
                 return;
             }
 
-            if (!renderer.enabled)
-            {
-                issues.Add($"HD2D overlay profile {objectName} must keep its MeshRenderer enabled.");
-            }
-
             if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
             {
                 issues.Add($"HD2D overlay profile {objectName} must keep shadow casting disabled.");

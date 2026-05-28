@@ -58,7 +58,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: cool rim must remain a non-shadowing directional light.");
             }
 
-            var interiorMainIntensity = mainLight.intensity;
+            var interiorWarmFillIntensity = warmFill.intensity;
 
             director.ApplyAreaForReview(FastVsHouseArea.Library);
             if (director.LastAppliedAreaForReview != FastVsHouseArea.Library ||
@@ -68,7 +68,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: library apply must stay immediate for review validation.");
             }
 
-            var libraryMainIntensity = mainLight.intensity;
+            var libraryWarmFillIntensity = warmFill.intensity;
 
             director.ApplyAreaForReview(FastVsHouseArea.Interior);
             director.BeginAreaTransitionForReview(FastVsHouseArea.Library);
@@ -83,12 +83,12 @@ namespace Anemora.EditorTools
             }
 
             director.SampleTransitionForReview(FastVsHouseArea.Interior, FastVsHouseArea.Library, 0.5f);
-            var midpointIntensity = mainLight.intensity;
-            var lower = Mathf.Min(interiorMainIntensity, libraryMainIntensity);
-            var upper = Mathf.Max(interiorMainIntensity, libraryMainIntensity);
+            var midpointIntensity = warmFill.intensity;
+            var lower = Mathf.Min(interiorWarmFillIntensity, libraryWarmFillIntensity);
+            var upper = Mathf.Max(interiorWarmFillIntensity, libraryWarmFillIntensity);
             if (midpointIntensity <= lower || midpointIntensity >= upper)
             {
-                throw new InvalidOperationException("House slice validation failed: sampled midpoint intensity must land between the interior and library profiles.");
+                throw new InvalidOperationException("House slice validation failed: sampled warm-fill midpoint intensity must land between the interior and library profiles.");
             }
 
             if (!libraryWindow.enabled || libraryWindow.type != LightType.Spot)

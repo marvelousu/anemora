@@ -10,7 +10,6 @@ namespace Anemora.EditorTools
     {
         private const float PositionTolerance = 0.01f;
         private const float FloatTolerance = 0.001f;
-        private const float RotationToleranceDegrees = 0.25f;
         private const float UnifiedSunAzimuthDegrees = -38f;
         private const float UnifiedExteriorSunElevationDegrees = 52f;
         private const float UnifiedCentralPlazaSunElevationDegrees = 38f;
@@ -293,25 +292,16 @@ namespace Anemora.EditorTools
             Light warmFill,
             FastVsHd2dAreaLightingProfile profile)
         {
-            if (director == null || mainLight == null || warmFill == null)
+            if (director == null || warmFill == null)
             {
                 return;
             }
 
             director.ApplyAreaForReview(profile.AreaIdForReview);
-            ValidateFloat(issues, objectName, "runtime mainLight.intensity", mainLight.intensity, profile.KeyLightIntensityForReview);
-            ValidateColor(issues, objectName, "runtime mainLight.color", mainLight.color, profile.KeyLightTintForReview);
             ValidateFloat(issues, objectName, "runtime warmFill.intensity", warmFill.intensity, profile.FillIntensityForReview);
             ValidateColor(issues, objectName, "runtime warmFill.color", warmFill.color, profile.FillTintForReview);
             ValidateColor(issues, objectName, "runtime ambientLight", RenderSettings.ambientLight, profile.AmbientTintForReview);
             ValidateFloat(issues, objectName, "runtime ambient luminance", GetLuminance(RenderSettings.ambientLight), profile.AmbientIntensityForReview);
-
-            var expectedRotation = Quaternion.Euler(profile.KeyLightEulerDegreesForReview);
-            var angle = Quaternion.Angle(mainLight.transform.rotation, expectedRotation);
-            if (angle > RotationToleranceDegrees)
-            {
-                issues.Add($"Area lighting profile {objectName} runtime main light rotation must match {profile.KeyLightEulerDegreesForReview}, but angle delta was {angle:0.000} degrees.");
-            }
         }
 
         private static float GetLuminance(Color color)

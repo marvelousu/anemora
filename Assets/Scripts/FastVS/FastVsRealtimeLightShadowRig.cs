@@ -1,3 +1,4 @@
+using Anemora.TimeManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -337,10 +338,34 @@ namespace Anemora.FastVS
                     continue;
                 }
 
+                if (ShouldSuppressLegacyCameraPlate(renderer))
+                {
+                    renderer.enabled = false;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                    continue;
+                }
+
                 if (renderer.gameObject.name.Contains("RealtimeShadowCasterCycle"))
                 {
                     renderer.enabled = true;
                     renderer.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                    renderer.receiveShadows = false;
+                    continue;
+                }
+
+                if (IsHd2dOverlayProfileRenderer(renderer))
+                {
+                    renderer.enabled = true;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                    continue;
+                }
+
+                if (IsRealtimeShadowSafeDetailName(renderer.gameObject.name))
+                {
+                    renderer.enabled = true;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
                     renderer.receiveShadows = false;
                     continue;
                 }
@@ -409,78 +434,47 @@ namespace Anemora.FastVS
                 return false;
             }
 
+            if (IsStructuralBackdropRenderer(renderer))
+            {
+                return false;
+            }
+
             if (renderer is ParticleSystemRenderer)
             {
                 return true;
             }
 
             var name = renderer.gameObject.name;
+            if (name.Contains("TreeBillboardLikeTrunk") ||
+                name.Contains("TreePixelCrown"))
+            {
+                return true;
+            }
+
+            if (name.Contains("DirectionalCastShadow"))
+            {
+                return false;
+            }
+
+            if (name.Contains("ContactShadow") ||
+                name.Contains("FootContact") ||
+                name.Contains("GroundBounce"))
+            {
+                return false;
+            }
+
             if (name.Contains("MapMoveGlowPad"))
             {
                 return false;
             }
 
-            if (renderer.GetComponentInParent<FastVsHd2dOverlayProfile>(true) != null)
-            {
-                return true;
-            }
+            return false;
+        }
 
-            var role = GetMaterialRole(renderer.sharedMaterial);
-            if (role == OverlayGlowRole || role == ContactShadowRole)
-            {
-                return true;
-            }
-
-            return name.Contains("Sky") ||
-                   name.Contains("Backdrop") ||
-                   name.Contains("SunDisc") ||
-                   name.Contains("SkyVeil") ||
-                   name.Contains("HouseSkyBarMask") ||
-                   name.Contains("OutdoorVoidBackground") ||
-                   name.Contains("ScenicBackdrop") ||
-                   name.Contains("Current_CentralPlaza_Cycle103_") ||
-                   name.Contains("Current_CentralPlaza_Cycle104_") ||
-                   name.Contains("Current_CentralPlaza_Cycle106_") ||
-                   name.Contains("Current_CentralPlaza_Cycle107_") ||
-                   name.Contains("Current_CentralPlaza_Cycle108_") ||
-                   name.Contains("Current_CentralPlaza_Cycle109_") ||
-                   name.Contains("Current_CentralPlaza_Cycle111_") ||
-                   name.Contains("Current_CentralPlaza_Cycle112_") ||
-                   name.Contains("Current_CentralPlaza_Cycle113_") ||
-                   name.Contains("Current_CentralPlaza_Cycle114_") ||
-                   name.Contains("Current_CentralPlaza_Cycle116_") ||
-                   name.Contains("Current_CentralPlaza_Cycle117_") ||
-                   name.Contains("Current_CentralPlaza_Cycle118_") ||
-                   name.Contains("Current_CentralPlaza_Cycle119_") ||
-                   name.Contains("Current_CentralPlaza_Cycle120_") ||
-                   name.Contains("Current_CentralPlaza_Cycle121_") ||
-                   name.Contains("Current_CentralPlaza_Cycle122_") ||
-                   name.Contains("Current_CentralPlaza_Cycle123_") ||
-                   name.Contains("Current_CentralPlaza_Cycle124_") ||
-                   name.Contains("Current_CentralPlaza_Cycle125_") ||
-                   name.Contains("Current_CentralPlaza_Cycle126_") ||
-                   name.Contains("Sunbeam") ||
-                   name.Contains("Sunbreak") ||
-                   name.Contains("Sunlit") ||
-                   name.Contains("SunSlash") ||
-                   name.Contains("SolarReset") ||
-                   name.Contains("LightColumn") ||
-                   name.Contains("LightComposition") ||
-                   name.Contains("FramedLight") ||
-                   name.Contains("ShadowReceiverField") ||
-                   name.Contains("ShadowPenumbra") ||
-                   name.Contains("ShadowMidtoneLift") ||
-                   name.Contains("CastShadowContrast") ||
-                   name.Contains("ReferenceComposite") ||
-                   name.Contains("ReferenceSurfaceRemap") ||
-                   name.Contains("ReferenceFocusShadow") ||
-                   name.Contains("ReferenceDioramaShadow") ||
-                   name.Contains("CloseShadowBarMute") ||
-                   name.Contains("AerialHaze") ||
-                   name.Contains("AirVeil") ||
-                   name.Contains("AirFacade") ||
-                   name.Contains("AirForeground") ||
-                   name.Contains("SkyWash");
+        private static bool IsHd2dOverlayProfileRenderer(Renderer renderer)
+        {
+            return renderer != null &&
+                   renderer.GetComponentInParent<FastVsHd2dOverlayProfile>(true) != null;
         }
 
         private static bool IsStage7VfxRenderer(Renderer renderer)
@@ -488,8 +482,54 @@ namespace Anemora.FastVS
             return renderer != null && renderer.gameObject.name.Contains("FastVS_HD2D_Stage7_");
         }
 
+        private static bool ShouldSuppressLegacyCameraPlate(Renderer renderer)
+        {
+            var landmark = renderer != null ? renderer.GetComponent<TimeWindowPairedSpaceLandmark>() : null;
+            var landmarkId = landmark != null ? landmark.LandmarkId : string.Empty;
+            if (!string.IsNullOrEmpty(landmarkId) &&
+                (landmarkId.Contains(".cycle129.") ||
+                 landmarkId.Contains(".cycle130.reference_")))
+            {
+                return true;
+            }
+
+            var name = renderer != null ? renderer.gameObject.name : string.Empty;
+            return name.Contains("Current_CentralPlaza") &&
+                   (name.Contains("SkyWash") ||
+                    name.Contains("SkyVeil") ||
+                    name.Contains("Backdrop") ||
+                    name.Contains("Haze") ||
+                    name.Contains("Veil") ||
+                    name.Contains("AirForeground") ||
+                    name.Contains("AirFacade"));
+        }
+
+        private static bool IsStructuralBackdropRenderer(Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return false;
+            }
+
+            var name = renderer.gameObject.name;
+            return name.Contains("OutdoorVoidBackground") ||
+                   name.Contains("ScenicBackdrop") ||
+                   name.Contains("HouseSkyBarMask") ||
+                   name.Contains("SkyBarMask") ||
+                   name.Contains("BackdropFoundation") ||
+                   name.Contains("CompositionSkyBackdrop") ||
+                   name.Contains("FacadeBackdropReadability") ||
+                   name.Contains("BackdropOcclusionFoundation");
+        }
+
         private static bool ShouldReceiveRealtimeSurfaceShadow(Renderer renderer)
         {
+            var name = renderer.gameObject.name;
+            if (IsRealtimeShadowSafeDetailName(name))
+            {
+                return false;
+            }
+
             var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
             if (surface != null &&
                 surface.IsCurrentWorldForReview &&
@@ -504,7 +544,6 @@ namespace Anemora.FastVS
                 return true;
             }
 
-            var name = renderer.gameObject.name;
             if (IsCurrentRealtimeFacadeReceiverName(name))
             {
                 return true;
@@ -565,6 +604,11 @@ namespace Anemora.FastVS
         private static bool ShouldCastVisibleRealtimeShadow(Renderer renderer, FastVsHouseArea activeArea)
         {
             var name = renderer.gameObject.name;
+            if (IsRealtimeShadowSafeDetailName(name))
+            {
+                return false;
+            }
+
             var surface = renderer.GetComponent<FastVsHd2dSurfaceProfile>();
             if (surface != null &&
                 surface.AreaIdForReview == activeArea &&
@@ -585,6 +629,7 @@ namespace Anemora.FastVS
         {
             if (string.IsNullOrEmpty(name) ||
                 !name.Contains("Current_") ||
+                IsRealtimeShadowSafeDetailName(name) ||
                 IsSuppressedCentralPlazaVisibleCasterName(name))
             {
                 return false;
@@ -898,6 +943,11 @@ namespace Anemora.FastVS
                 return false;
             }
 
+            if (IsRealtimeShadowSafeDetailName(name))
+            {
+                return false;
+            }
+
             if (!name.Contains("CentralPlaza") &&
                 !name.Contains("HouseExterior") &&
                 !name.Contains("Library"))
@@ -928,6 +978,63 @@ namespace Anemora.FastVS
                    name.Contains("Eave") ||
                    name.Contains("Post") ||
                    name.Contains("Board");
+        }
+
+        private static bool IsRealtimeShadowSafeDetailName(string name)
+        {
+            return !string.IsNullOrEmpty(name) &&
+                   (name.Contains("FacadeLeakClosure") ||
+                    name.Contains("FacadeOpaqueClosure") ||
+                    name.Contains("FacadeNaturalization") ||
+                    name.Contains("FacadeArtifactConsolidation") ||
+                    name.Contains("FacadeComposition") ||
+                    name.Contains("ArchitecturalClosure") ||
+                    name.Contains("FacadeBackdropReadability") ||
+                    name.Contains("FacadeMicrodepth") ||
+                    name.Contains("OcclusionReadability") ||
+                    name.Contains("OcclusionShell") ||
+                    name.Contains("HeroReadability") ||
+                    name.Contains("PathPorch") ||
+                    name.Contains("PorchDoorGrounding") ||
+                    name.Contains("ProportionCleanup") ||
+                    name.Contains("ArchitectureSurfaceDepth") ||
+                    name.Contains("HorizonDepthCleanup") ||
+                    name.Contains("OutdoorSkyWash") ||
+                    name.Contains("OutdoorSkyDetail") ||
+                    name.Contains("OutdoorSkyBackdrop") ||
+                    name.Contains("OutdoorBackgroundSkyDepth") ||
+                    name.Contains("OutdoorWorldEnvelope") ||
+                    name.Contains("ScenicHorizonGrounding") ||
+                    name.Contains("LibraryFacadeCloseDetail") ||
+                    name.Contains("LibraryFacadeArchitecture") ||
+                    name.Contains("LibraryFacadeLandmark") ||
+                    name.Contains("LibraryFacadeSurfaceBreakup") ||
+                    name.Contains("LibraryExteriorDepth") ||
+                    name.Contains("LibraryEntryDepth") ||
+                    name.Contains("LibraryFrontDepth") ||
+                    name.Contains("LibraryOcclusionReadability") ||
+                    name.Contains("LibraryRearVolume") ||
+                    name.Contains("LibraryRearRoofConnection") ||
+                    name.Contains("LibraryBackwardVolume") ||
+                    name.Contains("LibraryRoofSideDepth") ||
+                    name.Contains("LibrarySideSurfaceBreakup") ||
+                    name.Contains("LibrarySideWallMasonryRelief") ||
+                    name.Contains("LibrarySideWallSurface") ||
+                    name.Contains("LibrarySideRecess") ||
+                    name.Contains("LibraryDeepExteriorVolume") ||
+                    name.Contains("LibraryBrightAccentCleanup") ||
+                    name.Contains("LibraryLowerFacade") ||
+                    name.Contains("LibraryWindowReveal") ||
+                    name.Contains("LibraryDoorRelief") ||
+                    name.Contains("DepthPool") ||
+                    IsLegacyCycleVisualDetailName(name));
+        }
+
+        private static bool IsLegacyCycleVisualDetailName(string name)
+        {
+            return !string.IsNullOrEmpty(name) &&
+                   name.Contains("Cycle") &&
+                   !name.Contains("RealtimeShadowCasterCycle");
         }
 
         private static string GetMaterialRole(Material material)
