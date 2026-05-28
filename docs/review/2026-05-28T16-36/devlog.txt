@@ -1,0 +1,1 @@
+docs/devlog/2026-05-28_fast_vs_hd2d_phase_b_alpha_runtime_cycle174.md
