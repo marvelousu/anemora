@@ -57,6 +57,15 @@ Local diagnostic output:
 - `docs/devlog/screenshots/fast_vs_hd2d_phase_a_sun_cycle_scene_wiring_cycle166/parent_review_04_current_library_sun_cycle_evening.png`
 - `docs/devlog/screenshots/fast_vs_hd2d_phase_a_sun_cycle_scene_wiring_cycle166/sun_cycle_scene_wiring_diagnostics.md`
 
+Public curated review set:
+
+- `docs/review/2026-05-28T09-30/01_house_interior_sun_cycle_morning.png`
+- `docs/review/2026-05-28T09-30/02_house_exterior_sun_cycle_morning.png`
+- `docs/review/2026-05-28T09-30/03_central_plaza_sun_cycle_noon.png`
+- `docs/review/2026-05-28T09-30/04_library_sun_cycle_evening.png`
+- `docs/review/2026-05-28T09-30/index.md`
+- `docs/review/2026-05-28T09-30/devlog.txt`
+
 This diagnostic capture is not a Tom visual sign-off gate for Phase A. The Phase A gate remains the later 5-area build screenshots plus TimeWindow aperture check after existing light handoff, Painted Overlay removal, renderer-policy change, and shader lightening.
 
 ## Build Artifact For Tom
@@ -69,4 +78,4 @@ Build exe path for review:
 
 ## Gate Note
 
-変更を適用しました。参考画像とのギャップは、まだ scene wiring 段階のため、god rays / 太陽盤 / 暖寒対比 / エミッシブ表現は未実装です。Tom 判定は Phase A の 5 エリア capture 完了時にお願いします。
+変更を適用しました。参考画像とのギャップは、まだ scene wiring 段階のため、god rays / 太陽盤 / 暖寒対比 / エミッシブ表現が未実装である点です。Tom 判定は Phase A の 5 エリア capture 完了時にお願いします。

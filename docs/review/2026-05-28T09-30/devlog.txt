@@ -1,0 +1,4 @@
+Cycle166 Phase A sun-cycle scene wiring.
+
+Build exe: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+起動時は Builds\FastVS_HouseSlice\ をフォルダごと起動対象として扱う。
