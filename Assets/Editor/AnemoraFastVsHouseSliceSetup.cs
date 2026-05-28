@@ -94,6 +94,11 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseAShadowPolicyEventDrivenCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_cycle170_shadow_policy_event_driven_parent_review_20260528_01";
         private const string Hd2dPhaseASurfaceRampShaderLighteningDiagnosticsReportFileName = "surface_ramp_shader_lightening_diagnostics.md";
         private const string Hd2dPhaseASurfaceRampShaderLighteningCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_cycle171_surface_ramp_shader_lightening_parent_review_20260528_01";
+        private const string Hd2dPhaseAGateAuditDiagnosticsReportFileName = "phase_a_gate_audit_diagnostics.md";
+        private const string Hd2dPhaseAGateAuditCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_a_gate_audit_cycle173_parent_review_20260528_01";
+        private const string Hd2dPhaseAGateAuditPublicReviewDirectory = "docs/review/2026-05-28T14-59";
+        private const string Hd2dPhaseAGateAuditPublicReviewDevlogPath = "docs/devlog/2026-05-28_fast_vs_hd2d_phase_a_gate_review_v2.md";
+        private const string Hd2dPhaseAGateAuditDevlogPath = "docs/devlog/2026-05-28_fast_vs_hd2d_phase_a_gate_audit_cycle173.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1514,6 +1519,27 @@ namespace Anemora.EditorTools
                 Hd2dPhaseASunCycleDiagnosticsReportFileName,
                 Hd2dPhaseASurfaceRampShaderLighteningDiagnosticsReportFileName
             });
+            AssetDatabase.Refresh();
+        }
+
+        public static void ValidateHd2dPhaseAGateAuditBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseAGateAudit();
+        }
+
+        public static void CaptureHd2dPhaseAGateAuditCycle173ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseAGateAudit();
+
+            var outputDirectory = Hd2dPhaseAGateAuditCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseAGateAuditEvidence(outputDirectory);
+            ValidateHd2dPhaseAGateAudit();
+            WriteHd2dPhaseAGateAuditReport(outputDirectory);
             AssetDatabase.Refresh();
         }
 
@@ -30093,6 +30119,299 @@ namespace Anemora.EditorTools
             if (!File.Exists(reportPath))
             {
                 throw new InvalidOperationException($"Fast VS Phase A shader lightening diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static void CaptureHd2dPhaseAGateAuditEvidence(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            var sunCycleRoot = FindSceneObjectIncludingInactive(Hd2dPhaseASunCycleRootName);
+            var driver = sunCycleRoot != null ? sunCycleRoot.GetComponent<AnemoraSunCycleDriver>() : null;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null || driver == null)
+            {
+                throw new InvalidOperationException("Fast VS Phase A gate audit capture failed: scene review components or SunCycle driver are missing.");
+            }
+
+            void CaptureCurrent(FastVsHouseArea area, Vector3 playerLocal, Vector3 anchorLocal, Vector3 cameraOffset, Vector3 lookOffset, float fov, SunPreset preset, string fileName)
+            {
+                controller.ClosePortal();
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(playerLocal);
+                guide.ApplyActiveTimeIsolationForReview();
+                driver.ApplyPreset(preset, true);
+                realtimeRig.ApplyNowForReview();
+                camera.fieldOfView = fov;
+                PositionCloseReviewCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(anchorLocal), cameraOffset, lookOffset);
+                ApplyStage7BokehFocusForReview(camera);
+                realtimeRig.ApplyNowForReview();
+                WarmUpCameraRender(camera);
+                SaveCameraPng(camera, Path.Combine(outputDirectory, fileName));
+                ValidateScreenshotOutputExists(outputDirectory, fileName);
+            }
+
+            var interiorLocal = HouseInteriorCenter + new Vector3(-0.36f, 0.02f, 0.12f);
+            CaptureCurrent(
+                FastVsHouseArea.Interior,
+                interiorLocal,
+                interiorLocal,
+                new Vector3(0f, 4.25f, -7.20f),
+                new Vector3(0f, 1.10f, 0.90f),
+                14f,
+                SunPreset.Morning,
+                "01_home.png");
+
+            CaptureCurrent(
+                FastVsHouseArea.Exterior,
+                HouseExteriorCenter,
+                HouseExteriorCenter,
+                new Vector3(1.25f, 1.85f, -8.05f),
+                new Vector3(0.10f, 0.72f, 0.38f),
+                30f,
+                SunPreset.Morning,
+                "02_home_outside.png");
+
+            var plaza01Local = CentralPlazaVsCenter + new Vector3(0.20f, 0.02f, 4.40f);
+            CaptureCurrent(
+                FastVsHouseArea.CentralPlaza,
+                plaza01Local,
+                plaza01Local,
+                RuntimeVsFollowCameraOffset,
+                RuntimeVsFollowLookOffset,
+                RuntimeVsFollowCameraFov,
+                SunPreset.Noon,
+                "03_plaza.png");
+
+            var plaza02Local = CentralPlazaVsCenter + new Vector3(-0.42f, 0.02f, 3.70f);
+            CaptureCurrent(
+                FastVsHouseArea.CentralPlaza,
+                plaza02Local,
+                CentralPlazaVsCenter + new Vector3(0.08f, 0.24f, 5.40f),
+                new Vector3(0.72f, 2.20f, -4.55f),
+                new Vector3(0.04f, 0.28f, 0.94f),
+                35f,
+                SunPreset.Noon,
+                "04_plaza_niro_in_shadow.png");
+
+            var libraryLocal = LibraryVsCenter + new Vector3(0.58f, 0.02f, -0.92f);
+            var libraryAnchor = LibraryVsCenter + new Vector3(1.12f, 0.30f, -0.72f);
+            CaptureCurrent(
+                FastVsHouseArea.Library,
+                libraryLocal,
+                libraryAnchor,
+                new Vector3(0.54f, 2.62f, -4.35f),
+                new Vector3(0.02f, 0.34f, 0.55f),
+                31f,
+                SunPreset.Evening,
+                "05_library.png");
+
+            driver.ApplyPreset(SunPreset.Noon, true);
+            CaptureCurrentTimeWindowApertureToDirectory(
+                outputDirectory,
+                controller,
+                visibility,
+                guide,
+                realtimeRig,
+                camera,
+                "06_timewindow_aperture.png");
+            ValidateHd2dPhaseAGateAuditCaptureOutputs(outputDirectory);
+
+            Debug.Log($"Fast VS Phase A gate audit evidence captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void ValidateHd2dPhaseAGateAudit()
+        {
+            ValidateHd2dPhaseACompletedValidatorSet();
+            ValidateHd2dPhaseAGateRuntimeApiSource();
+            ValidateHd2dPhaseAGatePublicReviewArtifacts();
+        }
+
+        private static void ValidateHd2dPhaseACompletedValidatorSet()
+        {
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+            ValidateHd2dPhaseAPaintedOverlayRemovalSource();
+            ValidateHd2dPhaseAShadowPolicyEventDrivenSource();
+            ValidateHd2dPhaseASurfaceRampShaderLighteningSource();
+        }
+
+        private static void ValidateHd2dPhaseAGateRuntimeApiSource()
+        {
+            var mapSunAnchorPath = Path.Combine("Assets", "Scripts", "FastVS", "SunCycle", "MapSunAnchor.cs");
+            var driverPath = Path.Combine("Assets", "Scripts", "FastVS", "SunCycle", "AnemoraSunCycleDriver.cs");
+            var mapSunAnchorSource = File.ReadAllText(mapSunAnchorPath);
+            var driverSource = File.ReadAllText(driverPath);
+
+            ValidateSourceToken(mapSunAnchorSource, "public void SetPresetAtRuntime(SunPreset newPreset, bool instant = false)", mapSunAnchorPath);
+            ValidateSourceToken(mapSunAnchorSource, "driver.ApplyPreset(sunPreset, instant);", mapSunAnchorPath);
+            ValidateSourceToken(driverSource, "[SerializeField, Range(MinTransitionDuration, 10f)] private float transitionDuration = 1.8f;", driverPath);
+            ValidateSourceToken(driverSource, "transitionElapsed += Time.deltaTime;", driverPath);
+            ValidateSourceToken(driverSource, "transitionElapsed / transitionDuration", driverPath);
+            ValidateSourceToken(driverSource, "SunRuntimeValues.Lerp(", driverPath);
+            ValidateSourceToken(driverSource, "Quaternion.Slerp", driverPath);
+        }
+
+        private static void ValidateHd2dPhaseAGatePublicReviewArtifacts()
+        {
+            if (!Directory.Exists(Hd2dPhaseAGateAuditPublicReviewDirectory))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A gate public review directory is missing: {Hd2dPhaseAGateAuditPublicReviewDirectory}");
+            }
+
+            var requiredFiles = new List<string>
+            {
+                "devlog.txt",
+                "index.md"
+            };
+            requiredFiles.AddRange(GetHd2dPhaseAGateAuditEvidenceFiles());
+
+            for (var i = 0; i < requiredFiles.Count; i++)
+            {
+                var filePath = Path.Combine(Hd2dPhaseAGateAuditPublicReviewDirectory, requiredFiles[i]);
+                if (!File.Exists(filePath))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Phase A gate public review file is missing: {filePath}");
+                }
+
+                if (new FileInfo(filePath).Length <= 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Phase A gate public review file is empty: {filePath}");
+                }
+            }
+
+            var devlogPath = Path.Combine(Hd2dPhaseAGateAuditPublicReviewDirectory, "devlog.txt");
+            var firstLine = GetFirstNonEmptyLine(devlogPath);
+            if (string.IsNullOrEmpty(firstLine) ||
+                !string.Equals(firstLine, Hd2dPhaseAGateAuditPublicReviewDevlogPath, StringComparison.Ordinal) ||
+                !File.Exists(firstLine))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase A gate review devlog link is invalid: `{firstLine}`.");
+            }
+        }
+
+        private static string[] GetHd2dPhaseAGateAuditEvidenceFiles()
+        {
+            return new[]
+            {
+                "01_home.png",
+                "02_home_outside.png",
+                "03_plaza.png",
+                "04_plaza_niro_in_shadow.png",
+                "05_library.png",
+                "06_timewindow_aperture.png"
+            };
+        }
+
+        private static void ValidateHd2dPhaseAGateAuditCaptureOutputs(string outputDirectory)
+        {
+            var evidenceFiles = GetHd2dPhaseAGateAuditEvidenceFiles();
+            for (var i = 0; i < evidenceFiles.Length; i++)
+            {
+                ValidateScreenshotOutputExists(outputDirectory, evidenceFiles[i]);
+            }
+        }
+
+        private static void ValidateSourceToken(string source, string token, string sourcePath)
+        {
+            if (source.IndexOf(token, StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: `{sourcePath}` is missing `{token}`.");
+            }
+        }
+
+        private static string GetFirstNonEmptyLine(string path)
+        {
+            foreach (var line in File.ReadLines(path))
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    return line.Trim();
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static void WriteHd2dPhaseAGateAuditReport(string outputDirectory)
+        {
+            ValidateHd2dPhaseAGateAudit();
+
+            var mapSunAnchorPath = Path.Combine("Assets", "Scripts", "FastVS", "SunCycle", "MapSunAnchor.cs");
+            var driverPath = Path.Combine("Assets", "Scripts", "FastVS", "SunCycle", "AnemoraSunCycleDriver.cs");
+            var mapSunAnchorSource = File.ReadAllText(mapSunAnchorPath);
+            var driverSource = File.ReadAllText(driverPath);
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseAGateAuditDiagnosticsReportFileName);
+            var evidenceFiles = GetHd2dPhaseAGateAuditEvidenceFiles();
+            var publicReviewDevlogFirstLine = GetFirstNonEmptyLine(Path.Combine(Hd2dPhaseAGateAuditPublicReviewDirectory, "devlog.txt"));
+            ValidateHd2dPhaseAGateAuditCaptureOutputs(outputDirectory);
+
+            var lines = new List<string>
+            {
+                "# HD2D Phase A Gate Audit Diagnostics",
+                string.Empty,
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseAGateAuditBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseAGateAuditCycle173ScreenshotsBatch)}`",
+                $"- Public review directory: `{Hd2dPhaseAGateAuditPublicReviewDirectory}`",
+                $"- Public review devlog: `{publicReviewDevlogFirstLine}`",
+                $"- Cycle audit devlog: `{Hd2dPhaseAGateAuditDevlogPath}`",
+                $"- Build exe path: `{BuildExePath}`",
+                "- Run note: `Builds/FastVS_HouseSlice/` フォルダごと起動",
+                "- This report records source and artifact evidence only; Tom's visual review remains separate.",
+                string.Empty,
+                "## Phase A Source Evidence",
+                string.Empty,
+                "- SunCycle scene wiring validator passed.",
+                "- Main Directional Light handoff validator passed.",
+                "- Realtime rig sun handoff validator passed.",
+                "- Painted overlay removal validator passed.",
+                "- Event-driven renderer shadow policy validator passed.",
+                "- Surface ramp shader lightening validator passed.",
+                $"- `{mapSunAnchorPath}` `SetPresetAtRuntime` count: {CountOrdinalOccurrences(mapSunAnchorSource, "SetPresetAtRuntime(")}",
+                $"- `{mapSunAnchorPath}` delegates runtime preset changes to driver: {mapSunAnchorSource.IndexOf("driver.ApplyPreset(sunPreset, instant);", StringComparison.Ordinal) >= 0}",
+                $"- `{driverPath}` serialized transition duration token: {driverSource.IndexOf("transitionDuration = 1.8f", StringComparison.Ordinal) >= 0}",
+                $"- `{driverPath}` `Time.deltaTime` transition update count: {CountOrdinalOccurrences(driverSource, "Time.deltaTime")}",
+                $"- `{driverPath}` `SunRuntimeValues.Lerp(` count: {CountOrdinalOccurrences(driverSource, "SunRuntimeValues.Lerp(")}",
+                $"- `{driverPath}` `Quaternion.Slerp` count: {CountOrdinalOccurrences(driverSource, "Quaternion.Slerp")}",
+                string.Empty,
+                "## Capture Evidence",
+                string.Empty,
+                "| File |",
+                "|---|"
+            };
+
+            for (var i = 0; i < evidenceFiles.Length; i++)
+            {
+                lines.Add($"| `{outputDirectory}/{evidenceFiles[i]}` |");
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("## Public Review Artifact Evidence");
+            lines.Add(string.Empty);
+            lines.Add("| File |");
+            lines.Add("|---|");
+
+            for (var i = 0; i < evidenceFiles.Length; i++)
+            {
+                lines.Add($"| `{Hd2dPhaseAGateAuditPublicReviewDirectory}/{evidenceFiles[i]}` |");
+            }
+
+            lines.Add($"| `{Hd2dPhaseAGateAuditPublicReviewDirectory}/index.md` |");
+            lines.Add($"| `{Hd2dPhaseAGateAuditPublicReviewDirectory}/devlog.txt` |");
+            lines.Add(string.Empty);
+            lines.Add("- Public review `devlog.txt` first non-empty line matches the expected review devlog and that file exists.");
+            lines.Add("- `docs/review` artifact policy is preserved by this audit; no external reference images or comparison boards are generated here.");
+
+            Directory.CreateDirectory(outputDirectory);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS Phase A gate audit diagnostics report failed: missing output file {reportPath}");
             }
         }
 
