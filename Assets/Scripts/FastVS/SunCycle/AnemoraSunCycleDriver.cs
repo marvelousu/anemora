@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -351,6 +352,7 @@ namespace Anemora.FastVS.SunCycle
             }
 
             ApplyVolumeValues(values);
+            ApplyOptionalSunEffects(values);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
             RenderSettings.ambientLight = values.ambientLightColor;
@@ -413,6 +415,99 @@ namespace Anemora.FastVS.SunCycle
             }
         }
 
+        private void ApplyOptionalSunEffects(SunRuntimeValues values)
+        {
+            ApplyDirectionalLightVolumetricScattering(values);
+            ApplyDirectionalLightLensFlare(values);
+            ApplyScreenSpaceLensFlare(values);
+            ApplyVolumetricFog(values);
+        }
+
+        private void ApplyDirectionalLightVolumetricScattering(SunRuntimeValues values)
+        {
+            if (directionalSunLight == null)
+            {
+                return;
+            }
+
+            var applied = TrySetMemberValue(directionalSunLight, "useVolumetricScattering", values.volumetricFogEnabled);
+            applied |= TrySetMemberValue(directionalSunLight, "useVolumetricLight", values.volumetricFogEnabled);
+            applied |= TrySetMemberValue(directionalSunLight, "volumetricScattering", values.volumetricFogEnabled);
+            applied |= TrySetMemberValue(directionalSunLight, "volumetricLight", values.volumetricFogEnabled);
+
+            if (!applied)
+            {
+                return;
+            }
+        }
+
+        private void ApplyDirectionalLightLensFlare(SunRuntimeValues values)
+        {
+            if (directionalSunLight == null)
+            {
+                return;
+            }
+
+            var lensFlareComponent = FindComponentByTypeName(directionalSunLight.gameObject, "UnityEngine.Rendering.LensFlareComponentSRP");
+            if (lensFlareComponent == null)
+            {
+                return;
+            }
+
+            if (!TryGetMemberValue(lensFlareComponent, "data", out var lensFlareData) &&
+                !TryGetMemberValue(lensFlareComponent, "lensFlareData", out lensFlareData))
+            {
+                return;
+            }
+
+            if (lensFlareData == null || !string.Equals(lensFlareData.GetType().Name, "LensFlareDataSRP", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            TrySetMemberValue(lensFlareComponent, "intensity", values.sunLensFlareIntensity);
+            TrySetMemberValue(lensFlareComponent, "data", lensFlareData);
+            TrySetMemberValue(lensFlareComponent, "lensFlareData", lensFlareData);
+        }
+
+        private void ApplyScreenSpaceLensFlare(SunRuntimeValues values)
+        {
+            var profile = GetVolumeProfile();
+            if (profile == null)
+            {
+                return;
+            }
+
+            if (profile.TryGet<ScreenSpaceLensFlare>(out var screenSpaceLensFlare))
+            {
+                screenSpaceLensFlare.active = true;
+                screenSpaceLensFlare.intensity.overrideState = true;
+                screenSpaceLensFlare.intensity.value = values.screenSpaceLensFlareIntensity;
+            }
+        }
+
+        private void ApplyVolumetricFog(SunRuntimeValues values)
+        {
+            var profile = GetVolumeProfile();
+            if (profile == null)
+            {
+                return;
+            }
+
+            var volumetricFog = FindVolumeComponentByTypeName(profile, "UnityEngine.Rendering.Universal.VolumetricFog");
+            if (volumetricFog == null)
+            {
+                return;
+            }
+
+            TrySetMemberValue(volumetricFog, "active", values.volumetricFogEnabled);
+            TrySetMemberValue(volumetricFog, "volumetricFogEnabled", values.volumetricFogEnabled);
+            TrySetMemberValue(volumetricFog, "volumetricAnisotropy", values.volumetricAnisotropy);
+            TrySetMemberValue(volumetricFog, "volumetricMeanFreePath", values.volumetricMeanFreePath);
+            TrySetMemberValue(volumetricFog, "volumetricBaseHeight", values.volumetricBaseHeight);
+            TrySetMemberValue(volumetricFog, "volumetricMaximumHeight", values.volumetricMaximumHeight);
+        }
+
         private VolumeProfile GetVolumeProfile()
         {
             if (globalVolume == null)
@@ -442,6 +537,228 @@ namespace Anemora.FastVS.SunCycle
             }
         }
 
+        private static object FindComponentByTypeName(GameObject gameObject, string typeName)
+        {
+            if (gameObject == null)
+            {
+                return null;
+            }
+
+            var components = gameObject.GetComponents<Component>();
+            for (var i = 0; i < components.Length; i++)
+            {
+                var component = components[i];
+                if (component == null)
+                {
+                    continue;
+                }
+
+                var componentType = component.GetType();
+                if (string.Equals(componentType.FullName, typeName, StringComparison.Ordinal) ||
+                    string.Equals(componentType.Name, typeName, StringComparison.Ordinal))
+                {
+                    return component;
+                }
+            }
+
+            return null;
+        }
+
+        private static object FindVolumeComponentByTypeName(VolumeProfile profile, string typeName)
+        {
+            if (profile == null || profile.components == null)
+            {
+                return null;
+            }
+
+            for (var i = 0; i < profile.components.Count; i++)
+            {
+                var component = profile.components[i];
+                if (component == null)
+                {
+                    continue;
+                }
+
+                var componentType = component.GetType();
+                if (string.Equals(componentType.FullName, typeName, StringComparison.Ordinal) ||
+                    string.Equals(componentType.Name, typeName, StringComparison.Ordinal))
+                {
+                    return component;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool TryGetMemberValue(object target, string memberName, out object value)
+        {
+            value = null;
+            if (target == null)
+            {
+                return false;
+            }
+
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var type = target.GetType();
+
+            var property = type.GetProperty(memberName, flags);
+            if (property != null && property.CanRead)
+            {
+                value = property.GetValue(target);
+                return true;
+            }
+
+            var field = type.GetField(memberName, flags);
+            if (field != null)
+            {
+                value = field.GetValue(target);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TrySetMemberValue(object target, string memberName, object value)
+        {
+            if (target == null)
+            {
+                return false;
+            }
+
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var type = target.GetType();
+
+            var property = type.GetProperty(memberName, flags);
+            if (property != null && property.CanWrite)
+            {
+                if (TryConvertValue(value, property.PropertyType, out var convertedValue))
+                {
+                    property.SetValue(target, convertedValue);
+                    return true;
+                }
+
+                if (TrySetNestedParameter(property.GetValue(target), value))
+                {
+                    return true;
+                }
+            }
+
+            var field = type.GetField(memberName, flags);
+            if (field != null)
+            {
+                if (TryConvertValue(value, field.FieldType, out var convertedFieldValue))
+                {
+                    field.SetValue(target, convertedFieldValue);
+                    return true;
+                }
+
+                if (TrySetNestedParameter(field.GetValue(target), value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TrySetNestedParameter(object target, object value)
+        {
+            if (target == null)
+            {
+                return false;
+            }
+
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var type = target.GetType();
+
+            var overrideState = type.GetProperty("overrideState", flags);
+            if (overrideState != null && overrideState.CanWrite && overrideState.PropertyType == typeof(bool))
+            {
+                overrideState.SetValue(target, true);
+            }
+
+            var valueProperty = type.GetProperty("value", flags);
+            if (valueProperty != null && valueProperty.CanWrite && TryConvertValue(value, valueProperty.PropertyType, out var convertedValue))
+            {
+                valueProperty.SetValue(target, convertedValue);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryConvertValue(object value, Type targetType, out object convertedValue)
+        {
+            convertedValue = null;
+            if (targetType == null || value == null)
+            {
+                return false;
+            }
+
+            if (targetType.IsInstanceOfType(value))
+            {
+                convertedValue = value;
+                return true;
+            }
+
+            var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+            if (underlyingType.IsEnum)
+            {
+                if (value is string enumText)
+                {
+                    convertedValue = Enum.Parse(underlyingType, enumText);
+                    return true;
+                }
+
+                convertedValue = Enum.ToObject(underlyingType, value);
+                return true;
+            }
+
+            if (underlyingType == typeof(bool))
+            {
+                convertedValue = Convert.ToBoolean(value);
+                return true;
+            }
+
+            if (underlyingType == typeof(float))
+            {
+                convertedValue = Convert.ToSingle(value);
+                return true;
+            }
+
+            if (underlyingType == typeof(double))
+            {
+                convertedValue = Convert.ToDouble(value);
+                return true;
+            }
+
+            if (underlyingType == typeof(int))
+            {
+                convertedValue = Convert.ToInt32(value);
+                return true;
+            }
+
+            if (underlyingType == typeof(long))
+            {
+                convertedValue = Convert.ToInt64(value);
+                return true;
+            }
+
+            if (underlyingType == typeof(string))
+            {
+                convertedValue = Convert.ToString(value);
+                return true;
+            }
+
+            if (underlyingType.IsAssignableFrom(value.GetType()))
+            {
+                convertedValue = value;
+                return true;
+            }
+
+            return false;
+        }
+
         private struct SunRuntimeValues
         {
             public Quaternion lightRotation;
@@ -461,6 +778,13 @@ namespace Anemora.FastVS.SunCycle
             public float lutContribution;
             public float volumeTemperature;
             public float volumeTint;
+            public bool volumetricFogEnabled;
+            public float volumetricAnisotropy;
+            public float volumetricMeanFreePath;
+            public float volumetricBaseHeight;
+            public float volumetricMaximumHeight;
+            public float screenSpaceLensFlareIntensity;
+            public float sunLensFlareIntensity;
 
             public static SunRuntimeValues FromPresetData(SunPresetData data)
             {
@@ -483,6 +807,13 @@ namespace Anemora.FastVS.SunCycle
                     lutContribution = data.lutContribution,
                     volumeTemperature = data.volumeTemperature,
                     volumeTint = data.volumeTint,
+                    volumetricFogEnabled = data.volumetricFogEnabled,
+                    volumetricAnisotropy = data.volumetricAnisotropy,
+                    volumetricMeanFreePath = data.volumetricMeanFreePath,
+                    volumetricBaseHeight = data.volumetricBaseHeight,
+                    volumetricMaximumHeight = data.volumetricMaximumHeight,
+                    screenSpaceLensFlareIntensity = data.screenSpaceLensFlareIntensity,
+                    sunLensFlareIntensity = data.sunLensFlareIntensity,
                 };
             }
 
@@ -508,6 +839,13 @@ namespace Anemora.FastVS.SunCycle
                     lutContribution = Mathf.Lerp(from.lutContribution, to.lutContribution, t),
                     volumeTemperature = Mathf.Lerp(from.volumeTemperature, to.volumeTemperature, t),
                     volumeTint = Mathf.Lerp(from.volumeTint, to.volumeTint, t),
+                    volumetricFogEnabled = t >= 0.5f ? to.volumetricFogEnabled : from.volumetricFogEnabled,
+                    volumetricAnisotropy = Mathf.Lerp(from.volumetricAnisotropy, to.volumetricAnisotropy, t),
+                    volumetricMeanFreePath = Mathf.Lerp(from.volumetricMeanFreePath, to.volumetricMeanFreePath, t),
+                    volumetricBaseHeight = Mathf.Lerp(from.volumetricBaseHeight, to.volumetricBaseHeight, t),
+                    volumetricMaximumHeight = Mathf.Lerp(from.volumetricMaximumHeight, to.volumetricMaximumHeight, t),
+                    screenSpaceLensFlareIntensity = Mathf.Lerp(from.screenSpaceLensFlareIntensity, to.screenSpaceLensFlareIntensity, t),
+                    sunLensFlareIntensity = Mathf.Lerp(from.sunLensFlareIntensity, to.sunLensFlareIntensity, t),
                 };
             }
         }
@@ -517,6 +855,9 @@ namespace Anemora.FastVS.SunCycle
         private const string CaptureOutputDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_a_sun_cycle_runtime_api_cycle165";
         private const string RuntimeApiReportPath = CaptureOutputDirectory + "/sun_cycle_runtime_api_diagnostics.md";
         private const string RuntimeApiStripPath = CaptureOutputDirectory + "/sun_cycle_preset_strip.png";
+        private const string PhaseBCaptureOutputDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_b_alpha_sun_cycle_runtime_cycle174";
+        private const string PhaseBReportFileName = "sun_cycle_runtime_diagnostics.md";
+        private const string PhaseBStripFileName = "sun_cycle_preset_strip.png";
         private const int CookieTextureSize = 128;
         private const int DiagnosticStripWidth = 1024;
         private const int DiagnosticStripHeight = 256;
@@ -551,6 +892,38 @@ namespace Anemora.FastVS.SunCycle
             AssetDatabase.Refresh();
 
             Debug.Log($"HD2D Phase A Sun Cycle diagnostics written: {GetAbsoluteProjectPath(CaptureOutputDirectory)}");
+        }
+
+        [MenuItem("Tools/Anemora/Validate HD2D Phase B Alpha Sun Cycle Runtime")]
+        public static void ValidateHd2dPhaseBAlphaSunCycleRuntimeBatch()
+        {
+            EnsurePresetAssets();
+
+            var issues = new List<string>();
+            for (var i = 0; i < PresetAssetSpecs.Length; i++)
+            {
+                ValidatePresetAsset(PresetAssetSpecs[i], issues);
+            }
+
+            if (issues.Count > 0)
+            {
+                throw new InvalidOperationException("HD2D Phase B-alpha Sun Cycle runtime validation failed:\n- " + string.Join("\n- ", issues));
+            }
+
+            Debug.Log("HD2D Phase B-alpha Sun Cycle runtime validation passed.");
+        }
+
+        [MenuItem("Tools/Anemora/Capture HD2D Phase B Alpha Sun Cycle Runtime Cycle 174 Screenshots")]
+        public static void CaptureHd2dPhaseBAlphaSunCycleRuntimeCycle174ScreenshotsBatch()
+        {
+            ValidateHd2dPhaseBAlphaSunCycleRuntimeBatch();
+
+            Directory.CreateDirectory(GetAbsoluteProjectPath(PhaseBCaptureOutputDirectory));
+            File.WriteAllText(GetAbsoluteProjectPath($"{PhaseBCaptureOutputDirectory}/{GetCaptureFileName(PhaseBReportFileName)}"), BuildPhaseBAlphaRuntimeReport(), Encoding.UTF8);
+            File.WriteAllBytes(GetAbsoluteProjectPath($"{PhaseBCaptureOutputDirectory}/{GetCaptureFileName(PhaseBStripFileName)}"), BuildPresetDiagnosticStripPng());
+            AssetDatabase.Refresh();
+
+            Debug.Log($"HD2D Phase B-alpha Sun Cycle diagnostics written: {GetAbsoluteProjectPath(PhaseBCaptureOutputDirectory)}");
         }
 
         private static void EnsurePresetAssets()
@@ -593,6 +966,13 @@ namespace Anemora.FastVS.SunCycle
             asset.lutContribution = spec.LutContribution;
             asset.volumeTemperature = spec.VolumeTemperature;
             asset.volumeTint = spec.VolumeTint;
+            asset.volumetricFogEnabled = spec.VolumetricFogEnabled;
+            asset.volumetricAnisotropy = spec.VolumetricAnisotropy;
+            asset.volumetricMeanFreePath = spec.VolumetricMeanFreePath;
+            asset.volumetricBaseHeight = spec.VolumetricBaseHeight;
+            asset.volumetricMaximumHeight = spec.VolumetricMaximumHeight;
+            asset.screenSpaceLensFlareIntensity = spec.ScreenSpaceLensFlareIntensity;
+            asset.sunLensFlareIntensity = spec.SunLensFlareIntensity;
             asset.cookieTexture = EnsureCookieSubAsset(spec, asset);
 
             EditorUtility.SetDirty(asset);
@@ -693,6 +1073,13 @@ namespace Anemora.FastVS.SunCycle
             RequireFloat(asset.lutContribution, spec.LutContribution, 0.001f, issues, $"{spec.Preset} lutContribution");
             RequireFloat(asset.volumeTemperature, spec.VolumeTemperature, 0.001f, issues, $"{spec.Preset} volumeTemperature");
             RequireFloat(asset.volumeTint, spec.VolumeTint, 0.001f, issues, $"{spec.Preset} volumeTint");
+            RequireBool(asset.volumetricFogEnabled, spec.VolumetricFogEnabled, issues, $"{spec.Preset} volumetricFogEnabled");
+            RequireFloat(asset.volumetricAnisotropy, spec.VolumetricAnisotropy, 0.001f, issues, $"{spec.Preset} volumetricAnisotropy");
+            RequireFloat(asset.volumetricMeanFreePath, spec.VolumetricMeanFreePath, 0.001f, issues, $"{spec.Preset} volumetricMeanFreePath");
+            RequireFloat(asset.volumetricBaseHeight, spec.VolumetricBaseHeight, 0.001f, issues, $"{spec.Preset} volumetricBaseHeight");
+            RequireFloat(asset.volumetricMaximumHeight, spec.VolumetricMaximumHeight, 0.001f, issues, $"{spec.Preset} volumetricMaximumHeight");
+            RequireFloat(asset.screenSpaceLensFlareIntensity, spec.ScreenSpaceLensFlareIntensity, 0.001f, issues, $"{spec.Preset} screenSpaceLensFlareIntensity");
+            RequireFloat(asset.sunLensFlareIntensity, spec.SunLensFlareIntensity, 0.001f, issues, $"{spec.Preset} sunLensFlareIntensity");
 
             if (asset.cookieTexture == null)
             {
@@ -809,6 +1196,14 @@ namespace Anemora.FastVS.SunCycle
             }
         }
 
+        private static void RequireBool(bool actual, bool expected, List<string> issues, string label)
+        {
+            if (actual != expected)
+            {
+                issues.Add($"{label} must be {expected}, found {actual}.");
+            }
+        }
+
         private static void RequireVector3(Vector3 actual, Vector3 expected, float tolerance, List<string> issues, string label)
         {
             if (Vector3.Distance(actual, expected) > tolerance)
@@ -838,6 +1233,17 @@ namespace Anemora.FastVS.SunCycle
             return $"({value.r:0.###}, {value.g:0.###}, {value.b:0.###}, {value.a:0.###})";
         }
 
+        private static string GetCaptureFileName(string fileName)
+        {
+            var audience = Environment.GetEnvironmentVariable("CYCLE_AUDIENCE");
+            if (string.IsNullOrWhiteSpace(audience))
+            {
+                return fileName;
+            }
+
+            return $"{audience}_{fileName}";
+        }
+
         private static string GetAbsoluteProjectPath(string relativePath)
         {
             return Path.GetFullPath(Path.Combine(Application.dataPath, "..", relativePath));
@@ -862,7 +1268,14 @@ namespace Anemora.FastVS.SunCycle
                 string lutPath,
                 float lutContribution,
                 float volumeTemperature,
-                float volumeTint)
+                float volumeTint,
+                bool volumetricFogEnabled,
+                float volumetricAnisotropy,
+                float volumetricMeanFreePath,
+                float volumetricBaseHeight,
+                float volumetricMaximumHeight,
+                float screenSpaceLensFlareIntensity,
+                float sunLensFlareIntensity)
             {
                 Preset = preset;
                 DirectionEuler = directionEuler;
@@ -881,6 +1294,13 @@ namespace Anemora.FastVS.SunCycle
                 LutContribution = lutContribution;
                 VolumeTemperature = volumeTemperature;
                 VolumeTint = volumeTint;
+                VolumetricFogEnabled = volumetricFogEnabled;
+                VolumetricAnisotropy = volumetricAnisotropy;
+                VolumetricMeanFreePath = volumetricMeanFreePath;
+                VolumetricBaseHeight = volumetricBaseHeight;
+                VolumetricMaximumHeight = volumetricMaximumHeight;
+                ScreenSpaceLensFlareIntensity = screenSpaceLensFlareIntensity;
+                SunLensFlareIntensity = sunLensFlareIntensity;
             }
 
             public SunPreset Preset { get; }
@@ -900,6 +1320,13 @@ namespace Anemora.FastVS.SunCycle
             public float LutContribution { get; }
             public float VolumeTemperature { get; }
             public float VolumeTint { get; }
+            public bool VolumetricFogEnabled { get; }
+            public float VolumetricAnisotropy { get; }
+            public float VolumetricMeanFreePath { get; }
+            public float VolumetricBaseHeight { get; }
+            public float VolumetricMaximumHeight { get; }
+            public float ScreenSpaceLensFlareIntensity { get; }
+            public float SunLensFlareIntensity { get; }
             public string AssetPath => $"{PresetAssetDirectory}/SunPreset_{Preset}.asset";
         }
 
@@ -922,7 +1349,14 @@ namespace Anemora.FastVS.SunCycle
                 "Assets/Art/LUT/LUT_Morning_Warm.png",
                 0.6f,
                 12f,
-                0f),
+                0f,
+                true,
+                0.6f,
+                100f,
+                0f,
+                30f,
+                0.4f,
+                0.48f),
             new PresetAssetSpec(
                 SunPreset.Noon,
                 new Vector3(70f, -12f, 0f),
@@ -940,7 +1374,14 @@ namespace Anemora.FastVS.SunCycle
                 "Assets/Art/LUT/LUT_Daylight.png",
                 0.6f,
                 8f,
-                0f),
+                0f,
+                true,
+                0.6f,
+                100f,
+                0f,
+                30f,
+                0.4f,
+                0.30f),
             new PresetAssetSpec(
                 SunPreset.Evening,
                 new Vector3(12f, 58f, 0f),
@@ -958,7 +1399,14 @@ namespace Anemora.FastVS.SunCycle
                 "Assets/Art/LUT/LUT_GoldenHour.png",
                 0.7f,
                 18f,
-                4f),
+                4f,
+                true,
+                0.6f,
+                100f,
+                0f,
+                30f,
+                0.4f,
+                0.72f),
             new PresetAssetSpec(
                 SunPreset.Night,
                 new Vector3(-35f, 8f, 0f),
@@ -976,8 +1424,39 @@ namespace Anemora.FastVS.SunCycle
                 "Assets/Art/LUT/LUT_Night_CoolBlue.png",
                 0.7f,
                 -12f,
-                -4f),
+                -4f,
+                true,
+                0.6f,
+                100f,
+                0f,
+                30f,
+                0.4f,
+                0.26f),
         };
+
+        private static string BuildPhaseBAlphaRuntimeReport()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("# HD2D Phase B-alpha Sun Cycle Runtime Diagnostics");
+            builder.AppendLine();
+            builder.AppendLine("- Authored runtime file: `Assets/Scripts/FastVS/SunCycle/AnemoraSunCycleDriver.cs`");
+            builder.AppendLine("- Preset assets: `Assets/Settings/SunCycle/SunPreset_<Name>.asset`");
+            builder.AppendLine("- Static validate entry: `Anemora.FastVS.SunCycle.AnemoraSunCycleDriver.ValidateHd2dPhaseBAlphaSunCycleRuntimeBatch`");
+            builder.AppendLine("- Static capture entry: `Anemora.FastVS.SunCycle.AnemoraSunCycleDriver.CaptureHd2dPhaseBAlphaSunCycleRuntimeCycle174ScreenshotsBatch`");
+            builder.AppendLine();
+            builder.AppendLine("| Preset | Asset | Direction Euler | Intensity | Volumetric | Screen Flare | Sun Flare | LUT | LUT Contribution | White Balance |");
+            builder.AppendLine("|---|---|---:|---:|---|---:|---:|---|---:|---:|");
+
+            for (var i = 0; i < PresetAssetSpecs.Length; i++)
+            {
+                var spec = PresetAssetSpecs[i];
+                builder.AppendLine(
+                    $"| {spec.Preset} | `{spec.AssetPath}` | {FormatVector3(spec.DirectionEuler)} | {spec.LightIntensity:0.###} | {(spec.VolumetricFogEnabled ? "enabled" : "disabled")}, aniso {spec.VolumetricAnisotropy:0.###}, mfp {spec.VolumetricMeanFreePath:0.###}, base {spec.VolumetricBaseHeight:0.###}, max {spec.VolumetricMaximumHeight:0.###} | {spec.ScreenSpaceLensFlareIntensity:0.###} | {spec.SunLensFlareIntensity:0.###} | `{spec.LutPath}` | {spec.LutContribution:0.###} | temp {spec.VolumeTemperature:0.###}, tint {spec.VolumeTint:0.###} |");
+            }
+
+            return builder.ToString();
+        }
+
 #endif
     }
 

@@ -70,8 +70,15 @@ MonoBehaviour:
   skySunSizeConvergence: 10
   fogColor: {r: 0.18, g: 0.22, b: 0.3, a: 1}
   fogDensity: 0.022
+  volumetricFogEnabled: 1
+  volumetricAnisotropy: 0.6
+  volumetricMeanFreePath: 100
+  volumetricBaseHeight: 0
+  volumetricMaximumHeight: 30
   bloomTint: {r: 0.78, g: 0.82, b: 1, a: 1}
   ambientLightColor: {r: 0.18, g: 0.22, b: 0.28, a: 1}
+  screenSpaceLensFlareIntensity: 0.4
+  sunLensFlareIntensity: 0.26
   colorLookup: {fileID: 2800000, guid: 93e519ccaf9b48bc88ef7833a46a05a8, type: 3}
   lutContribution: 0.7
   volumeTemperature: -12

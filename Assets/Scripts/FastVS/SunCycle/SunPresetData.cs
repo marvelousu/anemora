@@ -26,11 +26,24 @@ namespace Anemora.FastVS.SunCycle
         [ColorUsage(false, false)] public Color fogColor = Color.gray;
         [Range(0f, 0.2f)] public float fogDensity = 0.012f;
 
+        [Header("Volumetric Fog")]
+        public bool volumetricFogEnabled = true;
+        [Range(-1f, 1f)] public float volumetricAnisotropy = 0.6f;
+        [Range(0f, 500f)] public float volumetricMeanFreePath = 100f;
+        public float volumetricBaseHeight;
+        [Range(0f, 500f)] public float volumetricMaximumHeight = 30f;
+
         [Header("Bloom")]
         [ColorUsage(false, true)] public Color bloomTint = Color.white;
 
         [Header("Ambient")]
         [ColorUsage(false, false)] public Color ambientLightColor = Color.gray;
+
+        [Header("Screen Space Lens Flare")]
+        [Range(0f, 4f)] public float screenSpaceLensFlareIntensity = 0.4f;
+
+        [Header("Sun Lens Flare")]
+        [Range(0f, 4f)] public float sunLensFlareIntensity = 0.5f;
 
         [Header("Color Lookup")]
         public Texture2D colorLookup;
