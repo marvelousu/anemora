@@ -79,10 +79,10 @@ namespace Anemora.EditorTools
         private const string Stage2EmissionColorPropertyName = "_EmissionColor";
         private const string Stage2EmissionIntensityPropertyName = "_EmissionIntensity";
         private const int Stage2EmissionRenderQueue = 3012;
-        private const float Stage2WindowLightEmissionIntensity = 1.85f;
-        private const float Stage2LibraryWindowLightEmissionIntensity = 2.80f;
-        private static readonly Color Stage2WindowLightEmissionColor = new Color(0.88f, 0.70f, 0.46f, 1f);
-        private static readonly Color Stage2LibraryWindowLightEmissionColor = new Color(0.92f, 0.60f, 0.34f, 1f);
+        private const float Stage2WindowLightEmissionIntensity = 3.10f;
+        private const float Stage2LibraryWindowLightEmissionIntensity = 4.20f;
+        private static readonly Color Stage2WindowLightEmissionColor = new Color(1.00f, 0.95f, 0.82f, 1f);
+        private static readonly Color Stage2LibraryWindowLightEmissionColor = new Color(1.00f, 0.75f, 0.50f, 1f);
         private const string Stage3ExteriorSunCookieName = "FastVS_ExteriorRealtimeSunCookieStage3";
         private const string Stage3LibraryWindowCookieName = "FastVS_LibraryWindowCookieStage3";
         private const string Stage4OverlayRootName = "FastVS_Cycle128GradeRoot";
@@ -104,6 +104,8 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseBLensFlareDiagnosticsReportFileName = "phase_b_alpha_scene_lens_flare_diagnostics.md";
         private const string Hd2dPhaseBBetaButoAdoptionCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_b_beta_buto_adoption_cycle176_parent_review_20260528_01";
         private const string Hd2dPhaseBBetaButoAdoptionDiagnosticsReportFileName = "phase_b_beta_buto_adoption_diagnostics.md";
+        private const string Hd2dPhaseCAlphaEmissiveVfxCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_c_alpha_emissive_vfx_cycle177_parent_review_20260528_01";
+        private const string Hd2dPhaseCAlphaEmissiveVfxDiagnosticsReportFileName = "phase_c_alpha_emissive_vfx_diagnostics.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -435,6 +437,7 @@ namespace Anemora.EditorTools
             CreateHd2dAtmosphere(currentRoot, pastRoot);
             CreateHd2dStage7ApvVolumes(currentRoot, pastRoot);
             CreateHd2dStage7LibraryWarmAnchor(currentRoot, pastRoot, materials);
+            CreateHd2dPhaseCAlphaEmissiveVfx(currentAreas);
             CreateAudio(currentRoot, areaVisibility);
             var player = CreateNiroPlayer(currentRoot, camera, materials);
             var controller = CreateController(camera, currentRoot, pastRoot, player, materials);
@@ -1474,6 +1477,58 @@ namespace Anemora.EditorTools
                 "05_current_timewindow_aperture.png",
                 Hd2dPhaseASunCycleDiagnosticsReportFileName,
                 Hd2dPhaseBBetaButoAdoptionDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
+        }
+
+        public static void ValidateHd2dPhaseCAlphaEmissiveVfxBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseCAlphaEmissiveVfxSetup();
+        }
+
+        public static void CaptureHd2dPhaseCAlphaEmissiveVfxCycle177ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseCAlphaEmissiveVfxSetup();
+
+            var outputDirectory = Hd2dPhaseCAlphaEmissiveVfxCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS phase C-alpha emissive VFX capture failed: scene review components are missing.");
+            }
+
+            CaptureCurrentTimeWindowApertureToDirectory(
+                outputDirectory,
+                controller,
+                visibility,
+                guide,
+                realtimeRig,
+                camera,
+                "05_current_timewindow_aperture.png");
+            WriteHd2dPhaseCAlphaEmissiveVfxDiagnosticsReport(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png",
+                "05_current_timewindow_aperture.png",
+                Hd2dPhaseASunCycleDiagnosticsReportFileName,
+                Hd2dPhaseCAlphaEmissiveVfxDiagnosticsReportFileName
             });
             AssetDatabase.Refresh();
         }
@@ -32062,6 +32117,311 @@ namespace Anemora.EditorTools
             renderer.sortingOrder = 0;
         }
 
+        private static void CreateHd2dPhaseCAlphaEmissiveVfx(HouseMapAreas currentAreas)
+        {
+            var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
+            CreateHd2dPhaseCAlphaFireSpark(currentAreas.Library.transform, atmosphereMaterial);
+            CreateHd2dPhaseCAlphaFirefly(currentAreas.Library.transform, atmosphereMaterial);
+            CreateHd2dPhaseCAlphaSmoke(currentAreas.Library.transform, atmosphereMaterial);
+            CreateHd2dPhaseCAlphaWaterSplash(currentAreas.CentralPlaza.transform, atmosphereMaterial);
+            CreateHd2dPhaseCAlphaLibraryWarmEmissiveLight(currentAreas.Library.transform);
+            CreateHd2dPhaseCAlphaPlazaWaterSparkleLight(currentAreas.CentralPlaza.transform);
+        }
+
+        private static GameObject CreateHd2dPhaseCAlphaParticleSystem(
+            Transform parent,
+            string name,
+            int layer,
+            Vector3 localPosition,
+            Vector3 shapeScale,
+            Material material,
+            Color startColor,
+            int maxParticles,
+            float duration,
+            float lifetime,
+            float emissionRate,
+            float startSpeed,
+            float startSize,
+            float gravityModifier,
+            float randomDirectionAmount,
+            ParticleSystemSimulationSpace simulationSpace,
+            Action<ParticleSystem> extraConfiguration = null)
+        {
+            var atmosphere = FindSceneObjectIncludingInactive(name);
+            if (atmosphere == null)
+            {
+                atmosphere = new GameObject(name, typeof(ParticleSystem), typeof(ParticleSystemRenderer));
+            }
+            else
+            {
+                if (atmosphere.GetComponent<ParticleSystem>() == null)
+                {
+                    atmosphere.AddComponent<ParticleSystem>();
+                }
+
+                if (atmosphere.GetComponent<ParticleSystemRenderer>() == null)
+                {
+                    atmosphere.AddComponent<ParticleSystemRenderer>();
+                }
+            }
+
+            atmosphere.transform.SetParent(parent, false);
+            atmosphere.transform.localPosition = localPosition;
+            atmosphere.transform.localRotation = Quaternion.identity;
+            atmosphere.transform.localScale = Vector3.one;
+            atmosphere.layer = layer;
+
+            var system = atmosphere.GetComponent<ParticleSystem>();
+            var main = system.main;
+            main.loop = true;
+            main.prewarm = true;
+            main.playOnAwake = true;
+            main.duration = duration;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(lifetime);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(startSpeed);
+            main.startSize = new ParticleSystem.MinMaxCurve(startSize);
+            main.startColor = new ParticleSystem.MinMaxGradient(startColor);
+            main.maxParticles = maxParticles;
+            main.gravityModifier = gravityModifier;
+            main.simulationSpace = simulationSpace;
+            main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
+            main.scalingMode = ParticleSystemScalingMode.Local;
+            main.stopAction = ParticleSystemStopAction.None;
+
+            var emission = system.emission;
+            emission.enabled = true;
+            emission.rateOverTime = new ParticleSystem.MinMaxCurve(emissionRate);
+
+            var shape = system.shape;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = shapeScale;
+            shape.position = Vector3.zero;
+            shape.rotation = Vector3.zero;
+            shape.randomDirectionAmount = randomDirectionAmount;
+
+            var renderer = atmosphere.GetComponent<ParticleSystemRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.renderMode = ParticleSystemRenderMode.Billboard;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.alignment = ParticleSystemRenderSpace.View;
+            renderer.sortingOrder = 0;
+
+            extraConfiguration?.Invoke(system);
+            EditorUtility.SetDirty(atmosphere);
+            return atmosphere;
+        }
+
+        private static Light CreateHd2dPhaseCAlphaPointLight(
+            Transform parent,
+            string name,
+            int layer,
+            Vector3 localPosition,
+            Color color,
+            float intensity,
+            float range)
+        {
+            var lightObject = FindSceneObjectIncludingInactive(name);
+            if (lightObject == null)
+            {
+                lightObject = new GameObject(name, typeof(Light));
+            }
+            else if (lightObject.GetComponent<Light>() == null)
+            {
+                lightObject.AddComponent<Light>();
+            }
+
+            lightObject.transform.SetParent(parent, false);
+            lightObject.transform.localPosition = localPosition;
+            lightObject.transform.localRotation = Quaternion.identity;
+            lightObject.transform.localScale = Vector3.one;
+            lightObject.layer = layer;
+
+            var light = lightObject.GetComponent<Light>();
+            light.type = LightType.Point;
+            light.color = color;
+            light.intensity = intensity;
+            light.range = range;
+            light.shadows = LightShadows.None;
+            light.cullingMask = 1 << layer;
+            EditorUtility.SetDirty(lightObject);
+            return light;
+        }
+
+        private static void CreateHd2dPhaseCAlphaFireSpark(Transform parent, Material material)
+        {
+            CreateHd2dPhaseCAlphaParticleSystem(
+                parent,
+                "FastVS_HD2D_PhaseCAlpha_Fire_Spark",
+                CurrentSpaceRenderLayer,
+                LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.10f, 0.26f, 0.02f),
+                new Vector3(0.22f, 0.24f, 0.18f),
+                material,
+                new Color(1.42f, 0.92f, 0.44f, 0.92f),
+                12,
+                1.60f,
+                1.50f,
+                7.20f,
+                0.72f,
+                0.08f,
+                -0.14f,
+                0.82f,
+                ParticleSystemSimulationSpace.World,
+                system =>
+                {
+                    var colorOverLifetime = system.colorOverLifetime;
+                    colorOverLifetime.enabled = false;
+                });
+        }
+
+        private static void CreateHd2dPhaseCAlphaFirefly(Transform parent, Material material)
+        {
+            CreateHd2dPhaseCAlphaParticleSystem(
+                parent,
+                "FastVS_HD2D_PhaseCAlpha_Firefly",
+                CurrentSpaceRenderLayer,
+                LibraryVsCenter + new Vector3(1.10f, 1.42f, -0.62f),
+                new Vector3(0.36f, 0.28f, 0.24f),
+                material,
+                new Color(1.12f, 0.98f, 0.52f, 0.82f),
+                6,
+                5.10f,
+                5.00f,
+                2.30f,
+                0.18f,
+                0.05f,
+                -0.04f,
+                0.34f,
+                ParticleSystemSimulationSpace.World,
+                system =>
+                {
+                    var colorOverLifetime = system.colorOverLifetime;
+                    colorOverLifetime.enabled = true;
+                    var gradient = new Gradient();
+                    gradient.SetKeys(
+                        new[]
+                        {
+                            new GradientColorKey(new Color(1.00f, 0.96f, 0.62f, 1f), 0f),
+                            new GradientColorKey(new Color(1.00f, 0.84f, 0.38f, 1f), 0.42f),
+                            new GradientColorKey(new Color(1.00f, 0.97f, 0.70f, 1f), 1f)
+                        },
+                        new[]
+                        {
+                            new GradientAlphaKey(0.05f, 0f),
+                            new GradientAlphaKey(0.92f, 0.18f),
+                            new GradientAlphaKey(0.35f, 1f)
+                        });
+                    colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
+                });
+        }
+
+        private static void CreateHd2dPhaseCAlphaSmoke(Transform parent, Material material)
+        {
+            CreateHd2dPhaseCAlphaParticleSystem(
+                parent,
+                "FastVS_HD2D_PhaseCAlpha_Smoke",
+                CurrentSpaceRenderLayer,
+                LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.02f, 0.84f, -0.02f),
+                new Vector3(0.44f, 0.38f, 0.36f),
+                material,
+                new Color(0.78f, 0.74f, 0.68f, 0.34f),
+                8,
+                3.20f,
+                3.00f,
+                1.50f,
+                0.16f,
+                0.18f,
+                -0.08f,
+                0.18f,
+                ParticleSystemSimulationSpace.World,
+                system =>
+                {
+                    var colorOverLifetime = system.colorOverLifetime;
+                    colorOverLifetime.enabled = true;
+                    var gradient = new Gradient();
+                    gradient.SetKeys(
+                        new[]
+                        {
+                            new GradientColorKey(new Color(0.80f, 0.76f, 0.70f, 1f), 0f),
+                            new GradientColorKey(new Color(0.72f, 0.68f, 0.64f, 1f), 0.55f),
+                            new GradientColorKey(new Color(0.60f, 0.56f, 0.54f, 1f), 1f)
+                        },
+                        new[]
+                        {
+                            new GradientAlphaKey(0.24f, 0f),
+                            new GradientAlphaKey(0.20f, 0.55f),
+                            new GradientAlphaKey(0.02f, 1f)
+                        });
+                    colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
+                });
+        }
+
+        private static void CreateHd2dPhaseCAlphaWaterSplash(Transform parent, Material material)
+        {
+            CreateHd2dPhaseCAlphaParticleSystem(
+                parent,
+                "FastVS_HD2D_PhaseCAlpha_WaterSplash",
+                CurrentSpaceRenderLayer,
+                CentralPlazaVsCenter + new Vector3(-0.08f, 0.56f, 2.22f),
+                new Vector3(0.42f, 0.22f, 0.42f),
+                material,
+                new Color(0.86f, 0.96f, 1.08f, 0.86f),
+                16,
+                0.84f,
+                0.80f,
+                9.40f,
+                0.42f,
+                0.05f,
+                0.92f,
+                0.64f,
+                ParticleSystemSimulationSpace.World,
+                system =>
+                {
+                    var colorOverLifetime = system.colorOverLifetime;
+                    colorOverLifetime.enabled = true;
+                    var gradient = new Gradient();
+                    gradient.SetKeys(
+                        new[]
+                        {
+                            new GradientColorKey(new Color(0.92f, 0.98f, 1.00f, 1f), 0f),
+                            new GradientColorKey(new Color(0.78f, 0.92f, 1.00f, 1f), 0.45f),
+                            new GradientColorKey(new Color(0.64f, 0.80f, 0.94f, 1f), 1f)
+                        },
+                        new[]
+                        {
+                            new GradientAlphaKey(0.78f, 0f),
+                            new GradientAlphaKey(0.38f, 0.55f),
+                            new GradientAlphaKey(0.04f, 1f)
+                        });
+                    colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
+                });
+        }
+
+        private static void CreateHd2dPhaseCAlphaLibraryWarmEmissiveLight(Transform parent)
+        {
+            CreateHd2dPhaseCAlphaPointLight(
+                parent,
+                "FastVS_HD2D_PhaseCAlpha_LibraryWarmEmissiveLight",
+                CurrentSpaceRenderLayer,
+                LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
+                new Color(1.00f, 0.84f, 0.60f, 1f),
+                4.10f,
+                4.80f);
+        }
+
+        private static void CreateHd2dPhaseCAlphaPlazaWaterSparkleLight(Transform parent)
+        {
+            CreateHd2dPhaseCAlphaPointLight(
+                parent,
+                "FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight",
+                CurrentSpaceRenderLayer,
+                CentralPlazaVsCenter + new Vector3(-0.08f, 0.96f, 2.20f),
+                new Color(0.88f, 0.96f, 1.00f, 1f),
+                3.60f,
+                4.40f);
+        }
+
         private static void CreateAudio(Transform currentRoot, FastVsHouseAreaVisibility areaVisibility)
         {
             CreateLoopingAudioSource(
@@ -35270,6 +35630,105 @@ namespace Anemora.EditorTools
             }
 
             AssetDatabase.Refresh();
+        }
+
+        private static void ValidateHd2dPhaseCAlphaEmissiveVfxSetup()
+        {
+            ValidateHd2dStage2EmissiveShaderProfile();
+            BuildHd2dPhaseCAlphaEmissiveVfxDiagnosticsLines(out _, out _);
+        }
+
+        private static void WriteHd2dPhaseCAlphaEmissiveVfxDiagnosticsReport(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var lines = BuildHd2dPhaseCAlphaEmissiveVfxDiagnosticsLines(out _, out _);
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseCAlphaEmissiveVfxDiagnosticsReportFileName);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS phase C-alpha emissive VFX diagnostics report failed: missing output file {reportPath}");
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        private static List<string> BuildHd2dPhaseCAlphaEmissiveVfxDiagnosticsLines(out bool vfxGraphPackageAvailable, out bool particleSystemFallbackUsed)
+        {
+            vfxGraphPackageAvailable = IsHd2dVisualEffectGraphPackageAvailable();
+            particleSystemFallbackUsed = true;
+
+            ValidateHd2dPhaseCAlphaEmissiveVfxObjects();
+
+            var fireSpark = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_Fire_Spark");
+            var firefly = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_Firefly");
+            var smoke = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_Smoke");
+            var waterSplash = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_WaterSplash");
+            var libraryWarmLight = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_LibraryWarmEmissiveLight")?.GetComponent<Light>();
+            var plazaWaterLight = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight")?.GetComponent<Light>();
+
+            var fireSparkSystem = fireSpark != null ? fireSpark.GetComponent<ParticleSystem>() : null;
+            var fireflySystem = firefly != null ? firefly.GetComponent<ParticleSystem>() : null;
+            var smokeSystem = smoke != null ? smoke.GetComponent<ParticleSystem>() : null;
+            var waterSplashSystem = waterSplash != null ? waterSplash.GetComponent<ParticleSystem>() : null;
+
+            return new List<string>
+            {
+                "# HD2D Phase C Alpha Emissive VFX Diagnostics",
+                string.Empty,
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseCAlphaEmissiveVfxBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseCAlphaEmissiveVfxCycle177ScreenshotsBatch)}`",
+                $"- VFX Graph package available: `{vfxGraphPackageAvailable}`",
+                $"- ParticleSystem fallback used: `{particleSystemFallbackUsed}`",
+                $"- Fallback state recorded without failing when VFX Graph is absent: `{!vfxGraphPackageAvailable && particleSystemFallbackUsed}`",
+                $"- Stage 2 window light emission: color=`{Stage2WindowLightEmissionColor}`, intensity=`{Stage2WindowLightEmissionIntensity:0.000}`",
+                $"- Stage 2 library window light emission: color=`{Stage2LibraryWindowLightEmissionColor}`, intensity=`{Stage2LibraryWindowLightEmissionIntensity:0.000}`",
+                $"- Phase C-alpha fire spark particles: max=`{(fireSparkSystem != null ? fireSparkSystem.main.maxParticles : 0)}`, lifetime=`{(fireSparkSystem != null ? fireSparkSystem.main.startLifetime.constant : 0f):0.000}`, color=`{(fireSparkSystem != null ? fireSparkSystem.main.startColor.color : Color.clear)}`",
+                $"- Phase C-alpha firefly particles: max=`{(fireflySystem != null ? fireflySystem.main.maxParticles : 0)}`, lifetime=`{(fireflySystem != null ? fireflySystem.main.startLifetime.constant : 0f):0.000}`, color=`{(fireflySystem != null ? fireflySystem.main.startColor.color : Color.clear)}`",
+                $"- Phase C-alpha smoke particles: max=`{(smokeSystem != null ? smokeSystem.main.maxParticles : 0)}`, lifetime=`{(smokeSystem != null ? smokeSystem.main.startLifetime.constant : 0f):0.000}`, color=`{(smokeSystem != null ? smokeSystem.main.startColor.color : Color.clear)}`",
+                $"- Phase C-alpha water splash particles: max=`{(waterSplashSystem != null ? waterSplashSystem.main.maxParticles : 0)}`, lifetime=`{(waterSplashSystem != null ? waterSplashSystem.main.startLifetime.constant : 0f):0.000}`, color=`{(waterSplashSystem != null ? waterSplashSystem.main.startColor.color : Color.clear)}`",
+                $"- Phase C-alpha library warm emissive light intensity: `{(libraryWarmLight != null ? libraryWarmLight.intensity : 0f):0.000}`",
+                $"- Phase C-alpha plaza water sparkle light intensity: `{(plazaWaterLight != null ? plazaWaterLight.intensity : 0f):0.000}`",
+                string.Empty,
+                "- Tom review evidence only; this report does not claim visual sign-off."
+            };
+        }
+
+        private static bool IsHd2dVisualEffectGraphPackageAvailable()
+        {
+            var manifestPath = Path.Combine("Packages", "manifest.json");
+            if (File.Exists(manifestPath))
+            {
+                var manifestText = File.ReadAllText(manifestPath);
+                if (ContainsAnyToken(manifestText, "com.unity.visualeffectgraph", "visualeffectgraph"))
+                {
+                    return true;
+                }
+            }
+
+            var packageLockPath = Path.Combine("Packages", "packages-lock.json");
+            if (File.Exists(packageLockPath))
+            {
+                var packageLockText = File.ReadAllText(packageLockPath);
+                if (ContainsAnyToken(packageLockText, "com.unity.visualeffectgraph", "visualeffectgraph"))
+                {
+                    return true;
+                }
+            }
+
+            var packageCacheDirectory = Path.Combine("Library", "PackageCache");
+            if (Directory.Exists(packageCacheDirectory))
+            {
+                foreach (var packageDirectory in Directory.GetDirectories(packageCacheDirectory, "com.unity.visualeffectgraph@*"))
+                {
+                    if (!string.IsNullOrEmpty(packageDirectory))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static void ValidateHd2dPhaseBBetaButoAdoptionReportState()
@@ -45743,6 +46202,222 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: {objectName} must use the generated atmosphere material with shadows disabled.");
             }
+        }
+
+        private static void ValidateHd2dPhaseCAlphaEmissiveVfxObjects()
+        {
+            var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
+            ValidateHd2dPhaseCAlphaParticleSystem(
+                "FastVS_HD2D_PhaseCAlpha_Fire_Spark",
+                "Current_LibraryMap_SeparateSpace",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.10f, 0.26f, 0.02f),
+                new Vector3(0.22f, 0.24f, 0.18f),
+                12,
+                1.60f,
+                1.50f,
+                7.20f,
+                0.72f,
+                0.08f,
+                -0.14f,
+                0.82f,
+                new Color(1.42f, 0.92f, 0.44f, 0.92f),
+                false);
+            ValidateHd2dPhaseCAlphaParticleSystem(
+                "FastVS_HD2D_PhaseCAlpha_Firefly",
+                "Current_LibraryMap_SeparateSpace",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                LibraryVsCenter + new Vector3(1.10f, 1.42f, -0.62f),
+                new Vector3(0.36f, 0.28f, 0.24f),
+                6,
+                5.10f,
+                5.00f,
+                2.30f,
+                0.18f,
+                0.05f,
+                -0.04f,
+                0.34f,
+                new Color(1.12f, 0.98f, 0.52f, 0.82f),
+                true);
+            ValidateHd2dPhaseCAlphaParticleSystem(
+                "FastVS_HD2D_PhaseCAlpha_Smoke",
+                "Current_LibraryMap_SeparateSpace",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.02f, 0.84f, -0.02f),
+                new Vector3(0.44f, 0.38f, 0.36f),
+                8,
+                3.20f,
+                3.00f,
+                1.50f,
+                0.16f,
+                0.18f,
+                -0.08f,
+                0.18f,
+                new Color(0.78f, 0.74f, 0.68f, 0.34f),
+                true);
+            ValidateHd2dPhaseCAlphaParticleSystem(
+                "FastVS_HD2D_PhaseCAlpha_WaterSplash",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CurrentSpaceRenderLayer,
+                atmosphereMaterial,
+                CentralPlazaVsCenter + new Vector3(-0.08f, 0.56f, 2.22f),
+                new Vector3(0.42f, 0.22f, 0.42f),
+                16,
+                0.84f,
+                0.80f,
+                9.40f,
+                0.42f,
+                0.05f,
+                0.92f,
+                0.64f,
+                new Color(0.86f, 0.96f, 1.08f, 0.86f),
+                true);
+
+            ValidateHd2dPhaseCAlphaPointLight(
+                "FastVS_HD2D_PhaseCAlpha_LibraryWarmEmissiveLight",
+                "Current_LibraryMap_SeparateSpace",
+                CurrentSpaceRenderLayer,
+                LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
+                new Color(1.00f, 0.84f, 0.60f, 1f),
+                4.10f,
+                4.80f);
+            ValidateHd2dPhaseCAlphaPointLight(
+                "FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight",
+                "Current_CentralPlazaMap_SeparateSpace",
+                CurrentSpaceRenderLayer,
+                CentralPlazaVsCenter + new Vector3(-0.08f, 0.96f, 2.20f),
+                new Color(0.88f, 0.96f, 1.00f, 1f),
+                3.60f,
+                4.40f);
+        }
+
+        private static void ValidateHd2dPhaseCAlphaParticleSystem(
+            string objectName,
+            string expectedParentName,
+            int expectedLayer,
+            Material expectedMaterial,
+            Vector3 expectedLocalPosition,
+            Vector3 expectedShapeScale,
+            int expectedMaxParticles,
+            float expectedDuration,
+            float expectedLifetime,
+            float expectedEmissionRate,
+            float expectedStartSpeed,
+            float expectedStartSize,
+            float expectedGravityModifier,
+            float expectedRandomDirectionAmount,
+            Color expectedStartColor,
+            bool expectColorOverLifetime)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase C-alpha particle system {objectName}.");
+            }
+
+            if (sceneObject.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase C-alpha particle system {objectName} must stay on layer {expectedLayer}, but was {sceneObject.layer}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase C-alpha particle system {objectName} must stay under {expectedParentName}.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+            ValidateVectorNear($"{objectName} local scale", sceneObject.transform.localScale, Vector3.one);
+
+            var system = sceneObject.GetComponent<ParticleSystem>();
+            var renderer = sceneObject.GetComponent<ParticleSystemRenderer>();
+            if (system == null || renderer == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have ParticleSystem and ParticleSystemRenderer components.");
+            }
+
+            var main = system.main;
+            var emission = system.emission;
+            var shape = system.shape;
+            var colorOverLifetime = system.colorOverLifetime;
+            if (renderer.sharedMaterial != expectedMaterial ||
+                renderer.shadowCastingMode != ShadowCastingMode.Off ||
+                renderer.receiveShadows ||
+                renderer.renderMode != ParticleSystemRenderMode.Billboard ||
+                renderer.alignment != ParticleSystemRenderSpace.View ||
+                main.maxParticles != expectedMaxParticles ||
+                Mathf.Abs(main.duration - expectedDuration) > 0.01f ||
+                Mathf.Abs(main.startLifetime.constant - expectedLifetime) > 0.01f ||
+                Mathf.Abs(main.startSpeed.constant - expectedStartSpeed) > 0.01f ||
+                Mathf.Abs(main.startSize.constant - expectedStartSize) > 0.01f ||
+                Mathf.Abs(main.gravityModifier.constant - expectedGravityModifier) > 0.02f ||
+                Mathf.Abs(emission.rateOverTime.constant - expectedEmissionRate) > 0.05f ||
+                main.simulationSpace != ParticleSystemSimulationSpace.World ||
+                shape.shapeType != ParticleSystemShapeType.Box ||
+                shape.scale != expectedShapeScale ||
+                Mathf.Abs(shape.randomDirectionAmount - expectedRandomDirectionAmount) > 0.02f ||
+                main.loop != true ||
+                main.prewarm != true ||
+                main.playOnAwake != true ||
+                main.stopAction != ParticleSystemStopAction.None ||
+                colorOverLifetime.enabled != expectColorOverLifetime)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: {objectName} must stay a low-count world-space atmosphere fallback emitter. " +
+                    $"material={(renderer.sharedMaterial != null ? renderer.sharedMaterial.name : "<none>")}, maxParticles={main.maxParticles}, duration={main.duration:0.000}, lifetime={main.startLifetime.constant:0.000}, emission={emission.rateOverTime.constant:0.000}, speed={main.startSpeed.constant:0.000}, size={main.startSize.constant:0.000}, gravity={main.gravityModifier.constant:0.000}, randomDirection={shape.randomDirectionAmount:0.000}, colorOverLifetime={colorOverLifetime.enabled}.");
+            }
+
+            ValidateColorNear($"{objectName} start color", main.startColor.color, expectedStartColor, 0.03f);
+        }
+
+        private static void ValidateHd2dPhaseCAlphaPointLight(
+            string objectName,
+            string expectedParentName,
+            int expectedLayer,
+            Vector3 expectedLocalPosition,
+            Color expectedColor,
+            float expectedIntensity,
+            float expectedRange)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase C-alpha point light {objectName}.");
+            }
+
+            if (sceneObject.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase C-alpha point light {objectName} must stay on layer {expectedLayer}, but was {sceneObject.layer}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase C-alpha point light {objectName} must stay under {expectedParentName}.");
+            }
+
+            ValidateVectorNear($"{objectName} local position", sceneObject.transform.localPosition, expectedLocalPosition);
+
+            if (sceneObject.transform.localRotation != Quaternion.identity || sceneObject.transform.localScale != Vector3.one)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase C-alpha point light {objectName} must keep identity rotation and unit scale.");
+            }
+
+            var light = sceneObject.GetComponent<Light>();
+            if (light == null ||
+                light.type != LightType.Point ||
+                light.shadows != LightShadows.None ||
+                light.cullingMask != (1 << expectedLayer) ||
+                Mathf.Abs(light.intensity - expectedIntensity) > 0.02f ||
+                Mathf.Abs(light.range - expectedRange) > 0.05f)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: Phase C-alpha point light {objectName} must stay a restrained point light with the expected mask and intensity. " +
+                    $"type={(light != null ? light.type.ToString() : "<none>")}, shadows={(light != null ? light.shadows.ToString() : "<none>")}, cullingMask={(light != null ? light.cullingMask : 0)}, intensity={(light != null ? light.intensity : 0f):0.000}, range={(light != null ? light.range : 0f):0.000}.");
+            }
+
+            ValidateColorNear($"{objectName} color", light.color, expectedColor, 0.03f);
         }
 
         private static void ValidateGeneratedRepeatTextureAsset(string textureId, int minWidth, int minHeight, int minimumDistinctColors)
