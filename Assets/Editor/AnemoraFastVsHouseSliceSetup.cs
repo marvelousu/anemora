@@ -1407,6 +1407,34 @@ namespace Anemora.EditorTools
             WriteHd2dPhaseARealtimeRigSunHandoffSourceReport(outputDirectory);
         }
 
+        public static void ValidateHd2dPhaseAPaintedOverlayRemovalBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+            ValidateHd2dPhaseAPaintedOverlayRemovalSource();
+        }
+
+        public static void CaptureHd2dPhaseAPaintedOverlayRemovalCycle169ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+            ValidateHd2dPhaseAPaintedOverlayRemovalSource();
+
+            var outputDirectory = Path.Combine(
+                "docs",
+                "devlog",
+                "screenshots",
+                "fast_vs_hd2d_phase_a_painted_overlay_removal_cycle169");
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            WriteHd2dPhaseAPaintedOverlayRemovalSourceReport(outputDirectory);
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -29714,6 +29742,62 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"Fast VS Phase A realtime rig sun handoff diagnostics report failed: missing output file {reportPath}");
             }
+        }
+
+        private static void ValidateHd2dPhaseAPaintedOverlayRemovalSource()
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var source = File.ReadAllText(sourcePath);
+            var forbiddenTokens = new[]
+            {
+                "Cycle128",
+                "Cycle131",
+                "cycle128",
+                "cycle131",
+                "Painted",
+                "ApplyCycle131CameraPaintOverlay",
+                "EnsureCycle128",
+                "EnsureCycle131",
+                "SetCycle128CameraGradeActive",
+                "ShouldSuppressCentralPlazaReferenceOverlay",
+                "Current_CentralPlaza_Cycle129Painted",
+                "Current_CentralPlaza_Cycle130Reference",
+                "FastVS_Cycle128",
+                "FastVS_Cycle131"
+            };
+
+            for (var i = 0; i < forbiddenTokens.Length; i++)
+            {
+                if (source.IndexOf(forbiddenTokens[i], StringComparison.Ordinal) >= 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: painted overlay removal source still contains `{forbiddenTokens[i]}`.");
+                }
+            }
+        }
+
+        private static void WriteHd2dPhaseAPaintedOverlayRemovalSourceReport(string outputDirectory)
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var reportPath = Path.Combine(outputDirectory, "painted_overlay_removal_diagnostics.md");
+            var lines = new[]
+            {
+                "# HD2D Phase A Painted Overlay Removal Diagnostics",
+                string.Empty,
+                $"- Source: `{sourcePath}`",
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseAPaintedOverlayRemovalBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseAPaintedOverlayRemovalCycle169ScreenshotsBatch)}`",
+                "- Grep: Rig source has no Cycle128/Cycle131 camera overlay helper, activation, or legacy painted overlay suppression token.",
+                "- Remaining ownership: Rig keeps realtime shadow policy and sun handoff behavior; the old painted camera overlay runtime block is removed."
+            };
+
+            Directory.CreateDirectory(outputDirectory);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS Phase A painted overlay removal diagnostics report failed: missing output file {reportPath}");
+            }
+
+            AssetDatabase.Refresh();
         }
 
         private static void CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(string outputDirectory)
