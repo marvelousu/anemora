@@ -1383,6 +1383,30 @@ namespace Anemora.EditorTools
             WriteHd2dPhaseAMainDirectionalHandoffSourceReport(outputDirectory);
         }
 
+        public static void ValidateHd2dPhaseARealtimeRigSunHandoffBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+        }
+
+        public static void CaptureHd2dPhaseARealtimeRigSunHandoffCycle168ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseARealtimeRigSunHandoffSource();
+
+            var outputDirectory = Path.Combine(
+                "docs",
+                "devlog",
+                "screenshots",
+                "fast_vs_hd2d_phase_a_realtime_rig_sun_handoff_cycle168");
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            WriteHd2dPhaseARealtimeRigSunHandoffSourceReport(outputDirectory);
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -29637,6 +29661,58 @@ namespace Anemora.EditorTools
             if (!File.Exists(reportPath))
             {
                 throw new InvalidOperationException($"Fast VS Phase A main directional handoff diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static void ValidateHd2dPhaseARealtimeRigSunHandoffSource()
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var source = File.ReadAllText(sourcePath);
+            var forbiddenTokens = new[]
+            {
+                "mainLight.intensity",
+                "mainLight.shadowStrength",
+                "mainLight.color",
+                "mainLight.transform.rotation",
+                "mainLight.cookie",
+                "mainLight.cookieSize",
+                "mainLight.cookieSize2D",
+                "EnsureCentralPlazaSunCookieTexture",
+                "EnsureExteriorSunCookieTexture",
+                "IsRuntimeDirectionalCookie",
+                "RenderSettings.ambientMode",
+                "RenderSettings.ambientLight",
+                "RenderSettings.fog"
+            };
+
+            for (var i = 0; i < forbiddenTokens.Length; i++)
+            {
+                if (source.IndexOf(forbiddenTokens[i], StringComparison.Ordinal) >= 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Phase A realtime rig sun handoff source still contains `{forbiddenTokens[i]}`.");
+                }
+            }
+        }
+
+        private static void WriteHd2dPhaseARealtimeRigSunHandoffSourceReport(string outputDirectory)
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsRealtimeLightShadowRig.cs");
+            var reportPath = Path.Combine(outputDirectory, "realtime_rig_sun_handoff_diagnostics.md");
+            var lines = new[]
+            {
+                "# HD2D Phase A Realtime Rig Sun Handoff Diagnostics",
+                string.Empty,
+                $"- Source: `{sourcePath}`",
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseARealtimeRigSunHandoffBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseARealtimeRigSunHandoffCycle168ScreenshotsBatch)}`",
+                "- Grep: Rig source has no `mainLight.intensity`, `mainLight.shadowStrength`, `mainLight.color`, `mainLight.transform.rotation`, `mainLight.cookie`, `mainLight.cookieSize`, `mainLight.cookieSize2D`, `EnsureCentralPlazaSunCookieTexture`, `EnsureExteriorSunCookieTexture`, `IsRuntimeDirectionalCookie`, `RenderSettings.ambientMode`, `RenderSettings.ambientLight`, or `RenderSettings.fog` token.",
+                "- Remaining ownership: Rig keeps realtime shadow bias/resolution setup; `AnemoraSunCycleDriver` owns sun appearance and ambient/fog state."
+            };
+
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS Phase A realtime rig sun handoff diagnostics report failed: missing output file {reportPath}");
             }
         }
 

@@ -14,12 +14,6 @@ namespace Anemora.FastVS
         private const string OverlayGlowRole = "OverlayGlow";
         private const string ContactShadowRole = "ContactShadow";
         private const float ShadowPolicyRefreshSeconds = 0.35f;
-        private const int CentralPlazaSunCookieSize = 128;
-        private const float CentralPlazaSunCookieWorldSize = 9.25f;
-        private const string CentralPlazaSunCookieName = "FastVS_CentralPlazaRealtimeSunCookieCycle147";
-        private const int ExteriorSunCookieSize = 128;
-        private const float ExteriorSunCookieWorldSize = 12.0f;
-        private const string ExteriorSunCookieName = "FastVS_ExteriorRealtimeSunCookieStage3";
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
@@ -37,9 +31,6 @@ namespace Anemora.FastVS
         private static readonly Color CentralPlazaTopLight = new Color(1.06f, 1.04f, 0.94f, 1f);
         private static readonly Color RealtimeOutdoorSideShade = new Color(0.68f, 0.69f, 0.66f, 1f);
         private static readonly Color RealtimeOutdoorFloorShade = new Color(0.64f, 0.65f, 0.61f, 1f);
-        private const float ExteriorReviewShadowStrength = 0.42f;
-        private const float LibraryReviewShadowStrength = 0.30f;
-        private const float CentralPlazaStage7jShadowStrength = 0.52f;
         private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;
         private const float CentralPlazaStage7jFacadeShadowTextureStrength = 0.20f;
         private const float CentralPlazaStage7jFloorShadowTextureStrength = 0.18f;
@@ -72,8 +63,6 @@ namespace Anemora.FastVS
         private Texture2D cycle128BeamTexture;
         private Texture2D cycle131ShadowPaintTexture;
         private Texture2D cycle131SunPaintTexture;
-        private Texture2D centralPlazaSunCookieTexture;
-        private Texture2D exteriorSunCookieTexture;
 
         private void Awake()
         {
@@ -123,7 +112,6 @@ namespace Anemora.FastVS
         private void ApplyLightAndSky()
         {
             var area = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
-            var isCentralPlaza = area == FastVsHouseArea.CentralPlaza;
             var isRealtimeOutdoor = IsRealtimeOutdoorArea(area);
 
             if (mainLight != null)
@@ -132,41 +120,9 @@ namespace Anemora.FastVS
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
                 mainLight.shadowResolution = isRealtimeOutdoor ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
-                mainLight.shadowStrength = isRealtimeOutdoor ? ResolveReviewShadowStrength(area) : Mathf.Max(mainLight.shadowStrength, 0.82f);
                 mainLight.shadowBias = isRealtimeOutdoor ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
                 mainLight.shadowNormalBias = isRealtimeOutdoor ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
-
-                if (isCentralPlaza)
-                {
-                    mainLight.intensity = 2.32f;
-                    mainLight.color = new Color(1.00f, 0.96f, 0.86f, 1f);
-                    mainLight.transform.rotation = Quaternion.Euler(43f, -38f, 0f);
-                    mainLight.cookie = EnsureCentralPlazaSunCookieTexture();
-                    mainLight.cookieSize = CentralPlazaSunCookieWorldSize;
-                }
-                else if (area == FastVsHouseArea.Exterior)
-                {
-                    mainLight.intensity = 2.05f;
-                    mainLight.color = new Color(1.00f, 0.98f, 0.90f, 1f);
-                    mainLight.transform.rotation = Quaternion.Euler(42f, -42f, 0f);
-                    mainLight.cookie = EnsureExteriorSunCookieTexture();
-                    mainLight.cookieSize = ExteriorSunCookieWorldSize;
-                }
-                else if (area == FastVsHouseArea.Library)
-                {
-                    mainLight.intensity = 1.95f;
-                    mainLight.color = new Color(1.00f, 0.96f, 0.86f, 1f);
-                    mainLight.transform.rotation = Quaternion.Euler(44f, -34f, 0f);
-                    if (IsRuntimeDirectionalCookie(mainLight.cookie))
-                    {
-                        mainLight.cookie = null;
-                    }
-                }
-                else if (IsRuntimeDirectionalCookie(mainLight.cookie))
-                {
-                    mainLight.cookie = null;
-                }
             }
 
             if (sceneCamera != null && (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza))
@@ -184,20 +140,6 @@ namespace Anemora.FastVS
 
             if (isRealtimeOutdoor)
             {
-                RenderSettings.fog = false;
-                RenderSettings.ambientMode = AmbientMode.Flat;
-            }
-
-            if (isCentralPlaza)
-            {
-                RenderSettings.ambientLight = new Color(0.038f, 0.039f, 0.038f, 1f);
-                RenderSettings.reflectionIntensity = 0f;
-            }
-            else if (isRealtimeOutdoor)
-            {
-                RenderSettings.ambientLight = area == FastVsHouseArea.Exterior
-                    ? new Color(0.200f, 0.198f, 0.184f, 1f)
-                    : new Color(0.220f, 0.204f, 0.184f, 1f);
                 RenderSettings.reflectionIntensity = 0f;
             }
             else
@@ -213,21 +155,6 @@ namespace Anemora.FastVS
             return area == FastVsHouseArea.Exterior ||
                    area == FastVsHouseArea.CentralPlaza ||
                    area == FastVsHouseArea.Library;
-        }
-
-        private static float ResolveReviewShadowStrength(FastVsHouseArea area)
-        {
-            if (area == FastVsHouseArea.CentralPlaza)
-            {
-                return CentralPlazaStage7jShadowStrength;
-            }
-
-            if (area == FastVsHouseArea.Library)
-            {
-                return LibraryReviewShadowStrength;
-            }
-
-            return ExteriorReviewShadowStrength;
         }
 
         private bool TryApplyRuntimeOutdoorSkybox(FastVsHouseArea area)
@@ -368,130 +295,6 @@ namespace Anemora.FastVS
             }
 
             return centralPlazaSkyboxMaterial;
-        }
-
-        private Texture2D EnsureCentralPlazaSunCookieTexture()
-        {
-            if (centralPlazaSunCookieTexture != null)
-            {
-                return centralPlazaSunCookieTexture;
-            }
-
-            centralPlazaSunCookieTexture = new Texture2D(
-                CentralPlazaSunCookieSize,
-                CentralPlazaSunCookieSize,
-                TextureFormat.RGBA32,
-                false,
-                true)
-            {
-                name = CentralPlazaSunCookieName,
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Clamp,
-                hideFlags = HideFlags.DontSave
-            };
-
-            var pixels = new Color[CentralPlazaSunCookieSize * CentralPlazaSunCookieSize];
-            for (var y = 0; y < CentralPlazaSunCookieSize; y++)
-            {
-                var v = y / (float)(CentralPlazaSunCookieSize - 1);
-                for (var x = 0; x < CentralPlazaSunCookieSize; x++)
-                {
-                    var u = x / (float)(CentralPlazaSunCookieSize - 1);
-                    var luma = SampleCentralPlazaSunCookieLuma(u, v);
-                    pixels[(y * CentralPlazaSunCookieSize) + x] = new Color(luma, luma, luma, 1f);
-                }
-            }
-
-            centralPlazaSunCookieTexture.SetPixels(pixels);
-            centralPlazaSunCookieTexture.Apply(false, true);
-            return centralPlazaSunCookieTexture;
-        }
-
-        private Texture2D EnsureExteriorSunCookieTexture()
-        {
-            if (exteriorSunCookieTexture != null)
-            {
-                return exteriorSunCookieTexture;
-            }
-
-            exteriorSunCookieTexture = new Texture2D(
-                ExteriorSunCookieSize,
-                ExteriorSunCookieSize,
-                TextureFormat.RGBA32,
-                false,
-                true)
-            {
-                name = ExteriorSunCookieName,
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Clamp,
-                hideFlags = HideFlags.DontSave
-            };
-
-            var pixels = new Color[ExteriorSunCookieSize * ExteriorSunCookieSize];
-            for (var y = 0; y < ExteriorSunCookieSize; y++)
-            {
-                var v = y / (float)(ExteriorSunCookieSize - 1);
-                for (var x = 0; x < ExteriorSunCookieSize; x++)
-                {
-                    var u = x / (float)(ExteriorSunCookieSize - 1);
-                    var luma = SampleExteriorSunCookieLuma(u, v);
-                    pixels[(y * ExteriorSunCookieSize) + x] = new Color(luma, luma, luma, 1f);
-                }
-            }
-
-            exteriorSunCookieTexture.SetPixels(pixels);
-            exteriorSunCookieTexture.Apply(false, true);
-            return exteriorSunCookieTexture;
-        }
-
-        private static float SampleCentralPlazaSunCookieLuma(float u, float v)
-        {
-            var leafNoiseA = Hash01(Mathf.FloorToInt(u * 20f), Mathf.FloorToInt(v * 20f), 1471);
-            var leafNoiseB = Hash01(Mathf.FloorToInt((u + v) * 29f), Mathf.FloorToInt((v - u) * 29f), 1472);
-            var leafNoiseC = Hash01(Mathf.FloorToInt(u * 9f), Mathf.FloorToInt(v * 9f), 1473);
-            var dapple = Mathf.SmoothStep(0.36f, 0.84f, (leafNoiseA * 0.54f) + (leafNoiseB * 0.34f) + (leafNoiseC * 0.12f));
-            var vignette = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((u * (1f - u) * v * (1f - v)) * 15.5f));
-            var softSunField = Mathf.Lerp(0.72f, 1.0f, dapple);
-            var broadVariation = Mathf.Lerp(0.92f, 1.03f, leafNoiseC);
-            return Mathf.Clamp01(softSunField * broadVariation * Mathf.Lerp(0.94f, 1.02f, vignette));
-        }
-
-        private static float SampleExteriorSunCookieLuma(float u, float v)
-        {
-            var coarseLeaf = Hash01(Mathf.FloorToInt(u * 12f), Mathf.FloorToInt(v * 12f), 3011);
-            var canopyBreak = Hash01(Mathf.FloorToInt((u + v * 0.42f) * 18f), Mathf.FloorToInt((v - u * 0.30f) * 18f), 3012);
-            var fineLeaf = Hash01(Mathf.FloorToInt(u * 28f), Mathf.FloorToInt(v * 28f), 3013);
-            var dapple = Mathf.SmoothStep(0.40f, 0.90f, (coarseLeaf * 0.56f) + (canopyBreak * 0.32f) + (fineLeaf * 0.12f));
-            var diagonalCanopy = Mathf.Clamp01(1f - Mathf.Abs(((u * 0.72f) + (v * 1.10f)) - 0.86f) / 0.48f);
-            var edgeFeather = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((u * (1f - u) * v * (1f - v)) * 13.0f));
-            var luma = Mathf.Lerp(0.64f, 1.0f, dapple);
-            luma *= Mathf.Lerp(0.92f, 1.08f, diagonalCanopy);
-            return Mathf.Clamp01(luma * Mathf.Lerp(0.94f, 1.0f, edgeFeather));
-        }
-
-        private static bool IsRuntimeDirectionalCookie(Texture cookie)
-        {
-            if (cookie == null)
-            {
-                return false;
-            }
-
-            return cookie.name == CentralPlazaSunCookieName ||
-                   cookie.name == ExteriorSunCookieName;
-        }
-
-        private static float Hash01(int x, int y, int seed)
-        {
-            unchecked
-            {
-                var hash = seed;
-                hash ^= x * 374761393;
-                hash = (hash << 13) ^ hash;
-                hash ^= y * 668265263;
-                hash *= 1274126177;
-                hash ^= hash >> 16;
-                return (hash & 0x7fffffff) / (float)int.MaxValue;
-            }
         }
 
         private void ApplyRendererShadowPolicy()
