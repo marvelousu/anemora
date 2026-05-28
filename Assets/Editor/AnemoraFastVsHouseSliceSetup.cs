@@ -106,6 +106,8 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseBBetaButoAdoptionDiagnosticsReportFileName = "phase_b_beta_buto_adoption_diagnostics.md";
         private const string Hd2dPhaseCAlphaEmissiveVfxCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_c_alpha_emissive_vfx_cycle177_parent_review_20260528_01";
         private const string Hd2dPhaseCAlphaEmissiveVfxDiagnosticsReportFileName = "phase_c_alpha_emissive_vfx_diagnostics.md";
+        private const string Hd2dPhaseCBetaArtisticTiltShiftAdoptionCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_c_beta_artistic_tiltshift_adoption_cycle178_parent_review_20260528_01";
+        private const string Hd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReportFileName = "phase_c_beta_artistic_tiltshift_adoption_diagnostics.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1529,6 +1531,60 @@ namespace Anemora.EditorTools
                 "05_current_timewindow_aperture.png",
                 Hd2dPhaseASunCycleDiagnosticsReportFileName,
                 Hd2dPhaseCAlphaEmissiveVfxDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
+        }
+
+        public static void ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseCAlphaEmissiveVfxSetup();
+            ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState();
+        }
+
+        public static void CaptureHd2dPhaseCBetaArtisticTiltShiftAdoptionCycle178ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseCAlphaEmissiveVfxSetup();
+            ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState();
+
+            var outputDirectory = Hd2dPhaseCBetaArtisticTiltShiftAdoptionCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS phase C-beta Artistic tilt-shift adoption capture failed: scene review components are missing.");
+            }
+
+            CaptureCurrentTimeWindowApertureToDirectory(
+                outputDirectory,
+                controller,
+                visibility,
+                guide,
+                realtimeRig,
+                camera,
+                "05_current_timewindow_aperture.png");
+            WriteHd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReport(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png",
+                "05_current_timewindow_aperture.png",
+                Hd2dPhaseASunCycleDiagnosticsReportFileName,
+                Hd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReportFileName
             });
             AssetDatabase.Refresh();
         }
@@ -35692,6 +35748,323 @@ namespace Anemora.EditorTools
                 string.Empty,
                 "- Tom review evidence only; this report does not claim visual sign-off."
             };
+        }
+
+        private static void ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState()
+        {
+            ValidateStage7TiltShiftRendererFeature();
+
+            var rendererAssetTextInspected = false;
+            var rendererFallbackFeatureFound = false;
+            var rendererFallbackBlockActive = false;
+            BuildHd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsLines(
+                out _,
+                out _,
+                out _,
+                out _,
+                out rendererAssetTextInspected,
+                out rendererFallbackFeatureFound,
+                out rendererFallbackBlockActive);
+
+            if (!rendererAssetTextInspected)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift adoption validation failed: the URP renderer asset text could not be inspected.");
+            }
+
+            if (!rendererFallbackFeatureFound || !rendererFallbackBlockActive)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift adoption validation failed: the self-made Stage 7 tilt-shift fallback block is not active.");
+            }
+        }
+
+        private static void WriteHd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReport(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var lines = BuildHd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsLines(
+                out _,
+                out _,
+                out _,
+                out _,
+                out _,
+                out _,
+                out _);
+            var reportPath = Path.Combine(outputDirectory, Hd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReportFileName);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS phase C-beta Artistic tilt-shift adoption diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static List<string> BuildHd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsLines(
+            out bool artisticImported,
+            out bool volumeCandidateFound,
+            out bool manifestInspected,
+            out bool packageLockInspected,
+            out bool rendererAssetTextInspected,
+            out bool rendererFallbackFeatureFound,
+            out bool rendererFallbackBlockActive)
+        {
+            var artisticTokens = new[]
+            {
+                "Fronkon Games",
+                "FronkonGames",
+                "Fronkon",
+                "Artistic Tilt Shift",
+                "Artistic: Tilt Shift",
+                "ArtisticTiltShift"
+            };
+            var rendererArtisticHintTokens = new[]
+            {
+                "Fronkon Games",
+                "FronkonGames",
+                "Fronkon",
+                "Artistic Tilt Shift",
+                "Artistic: Tilt Shift",
+                "ArtisticTiltShift"
+            };
+            var volumeTokens = new[]
+            {
+                "Volume",
+                "VolumeComponent",
+                "VolumeParameter",
+                "VolumeOverride"
+            };
+
+            var assetPathMatches = CollectHd2dPhaseCBetaArtisticTiltShiftAssetPathMatches(artisticTokens);
+            var assemblyMatches = CollectHd2dPhaseCBetaArtisticTiltShiftAssemblyMatches(artisticTokens);
+            manifestInspected = TryReadHd2dTextFile(Path.Combine("Packages", "manifest.json"), out var manifestText);
+            var manifestMatches = manifestInspected
+                ? CollectHd2dPhaseCBetaArtisticTiltShiftTextMatches(manifestText, artisticTokens)
+                : new List<string>();
+            packageLockInspected = TryReadHd2dTextFile(Path.Combine("Packages", "packages-lock.json"), out var packageLockText);
+            var packageLockMatches = packageLockInspected
+                ? CollectHd2dPhaseCBetaArtisticTiltShiftTextMatches(packageLockText, artisticTokens)
+                : new List<string>();
+            rendererAssetTextInspected = TryReadHd2dTextFile("Assets/Settings/UniversalRenderPipeline_Renderer.asset", out var rendererAssetText);
+            var rendererArtisticHintMatches = rendererAssetTextInspected
+                ? CollectHd2dPhaseCBetaArtisticTiltShiftTextMatches(rendererAssetText, rendererArtisticHintTokens)
+                : new List<string>();
+            var rendererVolumeMatches = rendererAssetTextInspected
+                ? CollectHd2dPhaseCBetaArtisticTiltShiftTextMatches(rendererAssetText, volumeTokens)
+                : new List<string>();
+
+            artisticImported =
+                assetPathMatches.Count > 0 ||
+                assemblyMatches.Count > 0 ||
+                manifestMatches.Count > 0 ||
+                packageLockMatches.Count > 0;
+
+            volumeCandidateFound =
+                artisticImported &&
+                (ContainsAnyTokenInMatches(assemblyMatches, volumeTokens) ||
+                 rendererArtisticHintMatches.Count > 0 && rendererVolumeMatches.Count > 0);
+
+            rendererFallbackFeatureFound = rendererAssetTextInspected && ContainsAnyToken(rendererAssetText, Stage7TiltShiftFeatureName);
+            rendererFallbackBlockActive = rendererFallbackFeatureFound && IsHd2dPhaseCBetaArtisticTiltShiftRendererFallbackBlockActive(rendererAssetText);
+
+            return new List<string>
+            {
+                "# HD2D Phase C Beta Artistic Tilt Shift Adoption Diagnostics",
+                string.Empty,
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseCBetaArtisticTiltShiftAdoptionCycle178ScreenshotsBatch)}`",
+                $"- Artistic imported: `{artisticImported}`",
+                $"- Packages/manifest.json inspected: `{manifestInspected}`",
+                $"- Packages/manifest.json matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(manifestMatches)}`",
+                $"- Packages/packages-lock.json inspected: `{packageLockInspected}`",
+                $"- Packages/packages-lock.json matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(packageLockMatches)}`",
+                $"- Asset path matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(assetPathMatches)}`",
+                $"- Loaded assembly/type matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(assemblyMatches)}`",
+                $"- Renderer asset text artistic hint matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(rendererArtisticHintMatches)}`",
+                $"- Volume override/type candidates found: `{volumeCandidateFound}`",
+                $"- Renderer asset text inspected: `{rendererAssetTextInspected}`",
+                $"- Renderer asset contains FastVS HD2D Stage7 TiltShift: `{rendererFallbackFeatureFound}`",
+                $"- Renderer asset serialized block active: `{rendererFallbackBlockActive}`",
+                $"- Self-made tilt shift fallback remains active: `{rendererFallbackBlockActive}`",
+                $"- When Artistic is absent, the self-made tilt shift fallback stays active: `{!artisticImported && rendererFallbackBlockActive}`",
+                string.Empty,
+                "- Tom must decide adoption after import/comparison; this report does not claim visual acceptance."
+            };
+        }
+
+        private static List<string> CollectHd2dPhaseCBetaArtisticTiltShiftAssetPathMatches(params string[] tokens)
+        {
+            var matches = new List<string>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var assetPaths = AssetDatabase.GetAllAssetPaths();
+            for (var i = 0; i < assetPaths.Length; i++)
+            {
+                var assetPath = assetPaths[i];
+                if (!ContainsAnyToken(assetPath, tokens))
+                {
+                    continue;
+                }
+
+                if (seen.Add(assetPath))
+                {
+                    matches.Add(assetPath);
+                }
+            }
+
+            return matches;
+        }
+
+        private static List<string> CollectHd2dPhaseCBetaArtisticTiltShiftAssemblyMatches(params string[] tokens)
+        {
+            var matches = new List<string>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (var i = 0; i < assemblies.Length; i++)
+            {
+                var assembly = assemblies[i];
+                if (assembly == null)
+                {
+                    continue;
+                }
+
+                var assemblyName = assembly.GetName().Name;
+                if (!string.IsNullOrEmpty(assemblyName) && ContainsAnyToken(assemblyName, tokens) && seen.Add(assemblyName))
+                {
+                    matches.Add(assemblyName);
+                }
+
+                Type[] types = null;
+                try
+                {
+                    types = assembly.GetTypes();
+                }
+                catch (ReflectionTypeLoadException reflectionTypeLoadException)
+                {
+                    types = reflectionTypeLoadException.Types;
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (types == null)
+                {
+                    continue;
+                }
+
+                for (var j = 0; j < types.Length; j++)
+                {
+                    var type = types[j];
+                    if (type == null)
+                    {
+                        continue;
+                    }
+
+                    var typeName = type.FullName ?? type.Name ?? string.Empty;
+                    if (!ContainsAnyToken(typeName, tokens))
+                    {
+                        continue;
+                    }
+
+                    if (seen.Add(typeName))
+                    {
+                        matches.Add(typeName);
+                    }
+                }
+            }
+
+            return matches;
+        }
+
+        private static List<string> CollectHd2dPhaseCBetaArtisticTiltShiftTextMatches(string sourceText, params string[] tokens)
+        {
+            var matches = new List<string>();
+            if (string.IsNullOrEmpty(sourceText))
+            {
+                return matches;
+            }
+
+            for (var i = 0; i < tokens.Length; i++)
+            {
+                var token = tokens[i];
+                if (!string.IsNullOrEmpty(token) && ContainsAnyToken(sourceText, token) && !ContainsAnyTokenInMatches(matches, token))
+                {
+                    matches.Add(token);
+                }
+            }
+
+            return matches;
+        }
+
+        private static bool TryReadHd2dTextFile(string relativePath, out string text)
+        {
+            text = string.Empty;
+            var fullPath = Path.GetFullPath(relativePath);
+            if (!File.Exists(fullPath))
+            {
+                return false;
+            }
+
+            try
+            {
+                text = File.ReadAllText(fullPath);
+                return true;
+            }
+            catch
+            {
+                text = string.Empty;
+                return false;
+            }
+        }
+
+        private static bool IsHd2dPhaseCBetaArtisticTiltShiftRendererFallbackBlockActive(string rendererAssetText)
+        {
+            if (string.IsNullOrEmpty(rendererAssetText))
+            {
+                return false;
+            }
+
+            var featureMarker = "m_Name: " + Stage7TiltShiftFeatureName;
+            var featureIndex = rendererAssetText.IndexOf(featureMarker, StringComparison.Ordinal);
+            if (featureIndex < 0)
+            {
+                return false;
+            }
+
+            var blockEndIndex = rendererAssetText.IndexOf("\n--- !u!", featureIndex, StringComparison.Ordinal);
+            if (blockEndIndex < 0)
+            {
+                blockEndIndex = rendererAssetText.Length;
+            }
+
+            var blockText = rendererAssetText.Substring(featureIndex, blockEndIndex - featureIndex);
+            return ContainsAnyToken(blockText, Stage7TiltShiftFeatureName) &&
+                   ContainsAnyToken(blockText, "FullScreenPassRendererFeature") &&
+                   ContainsAnyToken(blockText, "m_Active: 1");
+        }
+
+        private static string FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(IReadOnlyList<string> matches)
+        {
+            if (matches == null || matches.Count == 0)
+            {
+                return "<none>";
+            }
+
+            var summaryCount = Math.Min(matches.Count, 4);
+            var summary = string.Empty;
+            for (var i = 0; i < summaryCount; i++)
+            {
+                if (i > 0)
+                {
+                    summary += ", ";
+                }
+
+                summary += matches[i];
+            }
+
+            if (matches.Count > summaryCount)
+            {
+                summary += $" (+{matches.Count - summaryCount} more)";
+            }
+
+            return summary;
         }
 
         private static bool IsHd2dVisualEffectGraphPackageAvailable()
