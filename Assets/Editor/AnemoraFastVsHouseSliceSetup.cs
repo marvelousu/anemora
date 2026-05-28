@@ -35486,10 +35486,50 @@ namespace Anemora.EditorTools
             for (var i = 0; i < tokens.Length; i++)
             {
                 var token = tokens[i];
-                if (!string.IsNullOrEmpty(token) && value.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (string.IsNullOrEmpty(token))
+                {
+                    continue;
+                }
+
+                if (string.Equals(token, "Buto", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (ContainsButoPackageToken(value))
+                    {
+                        return true;
+                    }
+
+                    continue;
+                }
+
+                if (value.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     return true;
                 }
+            }
+
+            return false;
+        }
+
+        private static bool ContainsButoPackageToken(string value)
+        {
+            var index = 0;
+            while (index < value.Length)
+            {
+                var matchIndex = value.IndexOf("Buto", index, StringComparison.OrdinalIgnoreCase);
+                if (matchIndex < 0)
+                {
+                    return false;
+                }
+
+                var beforeIsIdentifier = matchIndex > 0 && (char.IsLetterOrDigit(value[matchIndex - 1]) || value[matchIndex - 1] == '_');
+                var afterIndex = matchIndex + 4;
+                var afterIsLowerIdentifier = afterIndex < value.Length && (char.IsLower(value[afterIndex]) || char.IsDigit(value[afterIndex]) || value[afterIndex] == '_');
+                if (!beforeIsIdentifier && !afterIsLowerIdentifier)
+                {
+                    return true;
+                }
+
+                index = matchIndex + 4;
             }
 
             return false;
