@@ -1,0 +1,24 @@
+HD-2D Phase C-alpha emissive VFX review (cycle 177)
+
+Commit:
+- ae5dd1bc feat(hd2d): add phase c alpha emissive vfx fallback
+
+Validation:
+- Validate: passed
+- Capture: passed
+- Build: passed
+- Smoke: built exe launched for 24 seconds with pattern count 0
+
+Applied changes:
+- Increased window and library window emission values.
+- Added C-alpha fire spark, firefly, smoke, and water splash ParticleSystem fallback emitters.
+- Added Library warm emissive point light and Plaza water sparkle point light.
+- VFX Graph package is not present, so fallback use is recorded in diagnostics.
+
+Current gap against references:
+- `.vfx` assets were not created because VFX Graph is absent.
+- Bloom and warm/cool contrast are stronger, but target HD-2D quality remains substantially below the reference target.
+
+Build exe path:
+- `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- 起動時は `Builds/FastVS_HouseSlice/` フォルダごと起動。
