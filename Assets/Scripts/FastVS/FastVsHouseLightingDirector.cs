@@ -12,11 +12,6 @@ namespace Anemora.FastVS
         [SerializeField] private Light libraryWindowLight;
         [SerializeField] private float transitionDuration = 0.55f;
 
-        private const float UnifiedSunAzimuthDegrees = -38f;
-        private const float UnifiedExteriorSunElevationDegrees = 52f;
-        private const float UnifiedCentralPlazaSunElevationDegrees = 38f;
-        private const float UnifiedLibrarySunElevationDegrees = 56f;
-        private const float UnifiedInteriorSunElevationDegrees = 48f;
         private const int LibraryWindowCookieSize = 128;
         private const string LibraryWindowCookieName = "FastVS_LibraryWindowCookieStage3";
 
@@ -225,7 +220,6 @@ namespace Anemora.FastVS
             float blend,
             bool isTransition)
         {
-            ApplyMainLight(profile.mainLightIntensity, profile.mainLightShadowStrength, profile.mainLightColor, profile.mainLightRotation);
             ApplyAmbient(profile.ambientLight);
             ApplyFog(
                 isTransition ? (fromProfile.fogEnabled || toProfile.fogEnabled) : profile.fogEnabled,
@@ -243,22 +237,6 @@ namespace Anemora.FastVS
                 profile.libraryWindowRange,
                 profile.libraryWindowSpotAngle,
                 profile.libraryWindowColor);
-        }
-
-        private void ApplyMainLight(float intensity, float shadowStrength, Color color, Quaternion rotation)
-        {
-            if (mainLight == null)
-            {
-                return;
-            }
-
-            mainLight.enabled = true;
-            mainLight.type = LightType.Directional;
-            mainLight.intensity = intensity;
-            mainLight.shadowStrength = shadowStrength;
-            mainLight.color = color;
-            mainLight.shadows = LightShadows.Soft;
-            mainLight.transform.rotation = rotation;
         }
 
         private static void ApplyAmbient(Color ambient)
@@ -419,10 +397,6 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Exterior:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 1.80f,
-                        mainLightShadowStrength = 0.80f,
-                        mainLightColor = new Color(1.00f, 0.92f, 0.76f, 1f),
-                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Exterior)),
                         ambientLight = new Color(0.152f, 0.158f, 0.164f, 1f),
                         fogEnabled = true,
                         fogColor = new Color(0.226f, 0.221f, 0.204f, 1f),
@@ -447,10 +421,6 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.CentralPlaza:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 1.72f,
-                        mainLightShadowStrength = 1.00f,
-                        mainLightColor = new Color(1.00f, 0.86f, 0.62f, 1f),
-                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.CentralPlaza)),
                         ambientLight = new Color(0.074f, 0.068f, 0.058f, 1f),
                         fogEnabled = false,
                         fogColor = new Color(0.235f, 0.215f, 0.178f, 1f),
@@ -475,10 +445,6 @@ namespace Anemora.FastVS
                 case FastVsHouseArea.Library:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 1.70f,
-                        mainLightShadowStrength = 0.66f,
-                        mainLightColor = new Color(1.00f, 0.83f, 0.62f, 1f),
-                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Library)),
                         ambientLight = new Color(0.110f, 0.102f, 0.096f, 1f),
                         fogEnabled = true,
                         fogColor = new Color(0.075f, 0.068f, 0.060f, 1f),
@@ -503,10 +469,6 @@ namespace Anemora.FastVS
                 default:
                     return new LightingProfile
                     {
-                        mainLightIntensity = 1.20f,
-                        mainLightShadowStrength = 0.68f,
-                        mainLightColor = new Color(1.00f, 0.85f, 0.64f, 1f),
-                        mainLightRotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior)),
                         ambientLight = new Color(0.155f, 0.145f, 0.138f, 1f),
                         fogEnabled = false,
                         fogColor = new Color(0.080f, 0.074f, 0.070f, 1f),
@@ -531,30 +493,10 @@ namespace Anemora.FastVS
             }
         }
 
-        private static Vector3 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea area)
-        {
-            switch (area)
-            {
-                case FastVsHouseArea.Interior:
-                    return new Vector3(UnifiedInteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
-                case FastVsHouseArea.Library:
-                    return new Vector3(UnifiedLibrarySunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
-                case FastVsHouseArea.CentralPlaza:
-                    return new Vector3(UnifiedCentralPlazaSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
-                case FastVsHouseArea.Exterior:
-                default:
-                    return new Vector3(UnifiedExteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
-            }
-        }
-
         private static LightingProfile LerpProfiles(in LightingProfile from, in LightingProfile to, float blend)
         {
             return new LightingProfile
             {
-                mainLightIntensity = Mathf.Lerp(from.mainLightIntensity, to.mainLightIntensity, blend),
-                mainLightShadowStrength = Mathf.Lerp(from.mainLightShadowStrength, to.mainLightShadowStrength, blend),
-                mainLightColor = Color.Lerp(from.mainLightColor, to.mainLightColor, blend),
-                mainLightRotation = Quaternion.Slerp(from.mainLightRotation, to.mainLightRotation, blend),
                 ambientLight = Color.Lerp(from.ambientLight, to.ambientLight, blend),
                 fogEnabled = blend < 1f ? (from.fogEnabled || to.fogEnabled) : to.fogEnabled,
                 fogColor = Color.Lerp(from.fogColor, to.fogColor, blend),
@@ -592,10 +534,6 @@ namespace Anemora.FastVS
 
         private struct LightingProfile
         {
-            public float mainLightIntensity;
-            public float mainLightShadowStrength;
-            public Color mainLightColor;
-            public Quaternion mainLightRotation;
             public Color ambientLight;
             public bool fogEnabled;
             public Color fogColor;

@@ -1359,6 +1359,30 @@ namespace Anemora.EditorTools
             CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
         }
 
+        public static void ValidateHd2dPhaseAMainDirectionalHandoffBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+        }
+
+        public static void CaptureHd2dPhaseAMainDirectionalHandoffCycle167ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseAMainDirectionalHandoffSource();
+
+            var outputDirectory = Path.Combine(
+                "docs",
+                "devlog",
+                "screenshots",
+                "fast_vs_hd2d_phase_a_main_directional_handoff_cycle167");
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            WriteHd2dPhaseAMainDirectionalHandoffSourceReport(outputDirectory);
+        }
+
         public static void CaptureHd2dStage7VfxReferenceScreenshotsBatch()
         {
             var outputDirectory = Path.Combine(
@@ -29567,6 +29591,52 @@ namespace Anemora.EditorTools
             if (sceneText.IndexOf(token, StringComparison.Ordinal) < 0)
             {
                 throw new InvalidOperationException($"House slice validation failed: Phase A SunCycle scene YAML is missing `{token}`.");
+            }
+        }
+
+        private static void ValidateHd2dPhaseAMainDirectionalHandoffSource()
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsHouseLightingDirector.cs");
+            var source = File.ReadAllText(sourcePath);
+            var forbiddenTokens = new[]
+            {
+                "ApplyMainLight(",
+                "mainLight.intensity",
+                "mainLight.shadowStrength",
+                "mainLight.color",
+                "mainLight.transform.rotation",
+                "mainLight.cookie",
+                "mainLight.cookieSize"
+            };
+
+            for (var i = 0; i < forbiddenTokens.Length; i++)
+            {
+                if (source.IndexOf(forbiddenTokens[i], StringComparison.Ordinal) >= 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: Phase A main directional handoff source still contains `{forbiddenTokens[i]}`.");
+                }
+            }
+        }
+
+        private static void WriteHd2dPhaseAMainDirectionalHandoffSourceReport(string outputDirectory)
+        {
+            var sourcePath = Path.Combine("Assets", "Scripts", "FastVS", "FastVsHouseLightingDirector.cs");
+            var reportPath = Path.Combine(outputDirectory, "main_directional_handoff_diagnostics.md");
+            var lines = new[]
+            {
+                "# HD2D Phase A Main Directional Handoff Diagnostics",
+                string.Empty,
+                $"- Source: `{sourcePath}`",
+                $"- Validate entry: `{nameof(ValidateHd2dPhaseAMainDirectionalHandoffBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dPhaseAMainDirectionalHandoffCycle167ScreenshotsBatch)}`",
+                "- Grep: Director source has no `ApplyMainLight(`, `mainLight.intensity`, `mainLight.shadowStrength`, `mainLight.color`, `mainLight.transform.rotation`, `mainLight.cookie`, or `mainLight.cookieSize` token.",
+                "- Remaining main-light ownership: `AnemoraSunCycleDriver` controls Directional Light rotation/color/intensity/cookie."
+            };
+
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS Phase A main directional handoff diagnostics report failed: missing output file {reportPath}");
             }
         }
 

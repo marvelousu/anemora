@@ -1,0 +1,20 @@
+Phase A Director Sun Handoff Review
+Date: 2026-05-28 JST
+
+Scope:
+- FastVsHouseLightingDirector no longer writes Main Directional rotation/color/intensity/cookie values.
+- AnemoraSunCycleDriver remains the Directional Light owner.
+- This review set is diagnostic only, not the final Phase A Tom gate.
+
+Validation:
+- Runner log: tools/logs/cycle-167-20260528-094550.log
+- Validate: Logs/cycle-167-20260528-094550-validate.log
+- Capture: Logs/cycle-167-20260528-094550-capture.log
+- Build: Logs/cycle-167-20260528-094550-build.log
+- Smoke: Logs/cycle-167-20260528-094550-smoke.log
+- Smoke patterns: Exception|Shader error|error CS|NullReference|MissingReference|Assertion|Failed
+- Smoke pattern count: 0
+
+Build exe:
+Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe
+起動時は Builds/FastVS_HouseSlice/ フォルダごと起動。
