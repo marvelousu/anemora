@@ -1,3 +1,5 @@
+docs/devlog/2026-05-28_fast_vs_hd2d_phase_a_surface_ramp_shader_lightening_cycle171_final.md
+
 Fast VS HD-2D Phase A Gate Review
 Date: 2026-05-28
 Branch: work/fast-vs-hd2d-shading-foundation-20260522
