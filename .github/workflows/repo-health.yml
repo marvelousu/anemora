@@ -1,0 +1,57 @@
+name: repo-health
+
+# Weekly packfile-size watchdog. Reports the largest objects and opens (or
+# updates) an issue if the pack exceeds the budget.
+
+on:
+  schedule:
+    - cron: '0 18 * * 1'   # Mondays 18:00 UTC
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Repack and measure
+        id: m
+        run: |
+          git repack -ad >/dev/null 2>&1 || true
+          PACK=$(du -bc .git/objects/pack/*.pack 2>/dev/null | tail -1 | cut -f1)
+          echo "pack_bytes=$PACK" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Top 20 largest objects in history"
+            echo
+            echo '| size (MB) | path |'
+            echo '|--:|--|'
+            git rev-list --all --objects \
+              | git cat-file --batch-check='%(objecttype) %(objectsize) %(objectname) %(rest)' \
+              | awk '$1=="blob"{print $2"\t"$4}' \
+              | sort -rn | head -20 \
+              | awk -F'\t' '{printf "| %.1f | %s |\n", $1/1048576, $2}'
+          } > report.md
+      - name: Enforce budget / open issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Interim 1.2 GiB budget; tighten to 419430400 (400 MiB) in the PR that lands the history purge.
+          PACK_BUDGET_BYTES: '1288490188'
+        run: |
+          PACK='${{ steps.m.outputs.pack_bytes }}'
+          echo "packfile = $((PACK/1048576)) MB (budget $((PACK_BUDGET_BYTES/1048576)) MB)"
+          if [ "$PACK" -gt "$PACK_BUDGET_BYTES" ]; then
+            gh label create repo-health -c FBCA04 -d "automated packfile watchdog" 2>/dev/null || true
+            title="repo-health: packfile over budget ($((PACK/1048576))MB)"
+            body=$(cat report.md)
+            existing=$(gh issue list --label repo-health --state open --json number -q '.[0].number // empty')
+            if [ -n "$existing" ]; then
+              gh issue comment "$existing" --body "$body"
+            else
+              gh issue create --label repo-health --title "$title" --body "$body"
+            fi
+            exit 1
+          fi

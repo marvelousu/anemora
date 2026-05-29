@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Repo-hygiene pre-push guard. Inspects EVERY commit in each pushed range
+# (not just the endpoints), sizing files from each commit's own blobs, so
+# transient bloat added then removed mid-range is still caught.
+set -euo pipefail
+DIR="$(git rev-parse --show-toplevel)/tools/githooks"
+fail=0
+ZERO=0000000000000000000000000000000000000000
+
+while read -r _lref lsha _rref rsha; do
+  [ "$lsha" = "$ZERO" ] && continue   # branch deletion -> nothing to scan
+  if [ "$rsha" = "$ZERO" ]; then
+    # new remote branch: commits not yet on any remote-tracking ref
+    commits=$(git rev-list "$lsha" --not --remotes 2>/dev/null || true)
+    [ -z "$commits" ] && commits="$lsha"
+  else
+    commits=$(git rev-list "$rsha..$lsha")
+  fi
+  for c in $commits; do
+    export REV="$c" SIZE_SRC=rev
+    git diff-tree --no-commit-id --name-only -r --diff-filter=AM "$c" \
+      | bash "$DIR/_bloat_check.sh" || fail=1
+  done
+done
+
+[ "$fail" = 0 ] || { echo "pre-push: bloat guard FAILED (override only in emergencies: git push --no-verify)." >&2; exit 1; }

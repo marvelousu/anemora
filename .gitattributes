@@ -11,3 +11,17 @@
 *.wav binary
 *.mp3 binary
 *.ogg binary
+*.glb binary
+*.ttf binary
+*.otf binary
+*.woff2 binary
+# TMP SDF font atlases are large binary ScriptableObjects:
+Assets/UI/Localization/Fonts/*.asset binary
+
+# Git LFS is intentionally NOT used: the anemora-viewer build extracts image
+# bytes via `git archive` over a blob:none clone, which would emit LFS pointer
+# text instead of pixels and break thumbnail generation. The bloat guard
+# (tools/githooks) blocks any `filter=lfs` line from being added here.
+
+# Hook scripts must stay LF even on Windows:
+tools/githooks/* text eol=lf

@@ -1,0 +1,16 @@
+{
+  "Rules": [
+    {
+      "ID": "expire-review-45d",
+      "Filter": { "Prefix": "review/" },
+      "Status": "Enabled",
+      "Expiration": { "Days": 45 }
+    },
+    {
+      "ID": "expire-devlog-45d",
+      "Filter": { "Prefix": "devlog/" },
+      "Status": "Enabled",
+      "Expiration": { "Days": 45 }
+    }
+  ]
+}

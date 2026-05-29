@@ -1,0 +1,48 @@
+name: bloat-guard
+
+# Blocks commits that introduce ephemeral imagery, generated artifacts, bake
+# output, oversized binaries, or Git LFS (which breaks the anemora-viewer build).
+# Inspects every commit the event introduced, sizing files from each commit's
+# own blobs. Never inspects pre-existing history.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+      - name: Bloat guard
+        # All event data is passed via env (never interpolated into the script)
+        # to avoid shell injection from attacker-controlled branch/file names.
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.event.after }}
+        run: |
+          set -euo pipefail
+          ZERO=0000000000000000000000000000000000000000
+          if [ "$EVENT" = pull_request ]; then base="$PR_BASE"; head="$HEAD_SHA"; else base="$PUSH_BEFORE"; head="$PUSH_AFTER"; fi
+          if [ -z "$head" ] || [ "$head" = "$ZERO" ]; then echo "no head commit; nothing to check"; exit 0; fi
+          if [ -z "$base" ] || [ "$base" = "$ZERO" ]; then
+            commits=$(git rev-list "$head" --not --remotes 2>/dev/null || true)
+            [ -z "$commits" ] && commits="$head"
+          else
+            commits=$(git rev-list "$base..$head")
+          fi
+          fail=0
+          for c in $commits; do
+            export REV="$c" SIZE_SRC=rev
+            git diff-tree --no-commit-id --name-only -r --diff-filter=AM "$c" \
+              | bash tools/githooks/_bloat_check.sh || fail=1
+          done
+          exit $fail
