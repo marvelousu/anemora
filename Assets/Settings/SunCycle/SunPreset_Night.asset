@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: SunPreset_Night
   m_EditorClassIdentifier: Assembly-CSharp:Anemora.FastVS.SunCycle:SunPresetData
   preset: 3
-  directionEuler: {x: -35, y: 8, z: 0}
+  directionEuler: {x: -32, y: 12, z: 0}
   lightColor: {r: 0.42, g: 0.55, b: 0.72, a: 1}
   lightIntensity: 0.4
   cookieTexture: {fileID: -2932755737217835701}

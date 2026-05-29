@@ -1,0 +1,38 @@
+FastVS HD2D feedback lighting polish - cycle 179
+
+Build exe:
+Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe
+
+Launch note:
+Start the whole Builds/FastVS_HouseSlice folder, not only a copied exe.
+
+Public review scope:
+- 01_plaza_feedback_lighting.png
+- 02_library_feedback_floor_cleanup.png
+- 03_timewindow_aperture.png
+- 04_house_interior_sun_transition.png
+- 05_house_exterior_sun_transition.png
+
+Changes applied:
+- Smoothed the exterior Morning sun anchor transition so leaving the house no longer uses the same hard switch path.
+- Reduced Noon harshness and adjusted the runtime SunPreset table/assets.
+- Reduced dust/light-mote particle density and alpha in plaza/library.
+- Reduced C-alpha fallback VFX/light values for sparks, fireflies, smoke, and water sparkle.
+- Disabled broad library floor overlay objects that contributed to the suspicious texture read.
+- Added cycle-specific validation/capture diagnostics.
+
+Validation:
+- cycle-179-20260529-sun-cycle-runtime-validate-3.log: exit 0.
+- cycle-179-20260529-feedback-polish-validate-5.log: exit 0.
+- cycle-179-20260529-feedback-polish-capture-4.log: exit 0.
+- cycle-179-20260529-feedback-polish-build.log: exit 0, Build Finished, Result: Success.
+- cycle-179-20260529-feedback-polish-smoke.log: built exe launched 24 seconds with -batchmode -nographics; scanned Exception|Shader error|error CS|NullReference|MissingReference|Assertion|Failed; pattern count 0.
+
+MCP/RealPlayDiag note:
+- Unity MCP package/settings are present in the project.
+- This Codex session exposed no MCP resources/templates.
+- RealPlayDiag/RealPlay/PlayDiag grep had no project matches.
+- Verification therefore used Unity batch validation/capture, serialized scene grep, fresh build, and built-exe smoke.
+
+Reference gap:
+The target HD-2D quality remains substantially below the reference. Plaza lighting is still broad/washed, and the library still needs a more authored light hierarchy; this set is evidence for Tom review, not visual sign-off.

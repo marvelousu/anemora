@@ -234,14 +234,14 @@ namespace Anemora.FastVS.SunCycle
             switch (preset)
             {
                 case SunPreset.Morning:
-                    return new Vector3(24f, -118f, 0f);
+                    return new Vector3(28f, -128f, 0f);
                 case SunPreset.Evening:
-                    return new Vector3(12f, 58f, 0f);
+                    return new Vector3(24f, -28f, 0f);
                 case SunPreset.Night:
-                    return new Vector3(-35f, 8f, 0f);
+                    return new Vector3(-32f, 12f, 0f);
                 case SunPreset.Noon:
                 default:
-                    return new Vector3(70f, -12f, 0f);
+                    return new Vector3(50f, -78f, 0f);
             }
         }
 
@@ -1334,20 +1334,20 @@ namespace Anemora.FastVS.SunCycle
         {
             new PresetAssetSpec(
                 SunPreset.Morning,
-                new Vector3(24f, -118f, 0f),
-                new Color(1.00f, 0.85f, 0.72f, 1f),
-                1.6f,
-                new Color(1.00f, 0.92f, 0.78f, 1f),
-                11.0f,
-                new Color(0.85f, 0.72f, 0.55f, 1f),
+                new Vector3(28f, -128f, 0f),
+                new Color(1.00f, 0.84f, 0.70f, 1f),
+                1.5f,
+                new Color(0.99f, 0.91f, 0.78f, 1f),
+                10.5f,
+                new Color(0.84f, 0.71f, 0.54f, 1f),
                 0.042f,
                 5f,
-                new Color(0.92f, 0.78f, 0.60f, 1f),
-                0.012f,
-                new Color(1.00f, 0.92f, 0.78f, 1f),
-                new Color(0.55f, 0.50f, 0.42f, 1f),
+                new Color(0.91f, 0.77f, 0.59f, 1f),
+                0.011f,
+                new Color(0.99f, 0.91f, 0.78f, 1f),
+                new Color(0.54f, 0.49f, 0.41f, 1f),
                 "Assets/Art/LUT/LUT_Morning_Warm.png",
-                0.6f,
+                0.58f,
                 12f,
                 0f,
                 true,
@@ -1359,47 +1359,47 @@ namespace Anemora.FastVS.SunCycle
                 0.48f),
             new PresetAssetSpec(
                 SunPreset.Noon,
-                new Vector3(70f, -12f, 0f),
-                new Color(1.00f, 0.97f, 0.90f, 1f),
-                2.4f,
-                new Color(1.00f, 0.98f, 0.92f, 1f),
-                9.5f,
-                new Color(0.62f, 0.78f, 0.96f, 1f),
-                0.040f,
+                new Vector3(50f, -78f, 0f),
+                new Color(0.86f, 0.84f, 0.78f, 1f),
+                0.90f,
+                new Color(0.84f, 0.82f, 0.78f, 1f),
+                10.2f,
+                new Color(0.56f, 0.70f, 0.86f, 1f),
+                0.036f,
                 8f,
-                new Color(0.82f, 0.88f, 0.95f, 1f),
-                0.008f,
-                new Color(1.00f, 0.97f, 0.90f, 1f),
-                new Color(0.48f, 0.52f, 0.55f, 1f),
+                new Color(0.64f, 0.70f, 0.76f, 1f),
+                0.001f,
+                new Color(0.76f, 0.74f, 0.68f, 1f),
+                new Color(0.26f, 0.29f, 0.32f, 1f),
                 "Assets/Art/LUT/LUT_Daylight.png",
-                0.6f,
-                8f,
-                0f,
+                0.32f,
+                -2f,
+                -4f,
                 true,
                 0.6f,
                 100f,
                 0f,
                 30f,
                 0.4f,
-                0.30f),
+                0.25f),
             new PresetAssetSpec(
                 SunPreset.Evening,
-                new Vector3(12f, 58f, 0f),
+                new Vector3(24f, -28f, 0f),
                 new Color(1.00f, 0.62f, 0.42f, 1f),
-                1.7f,
-                new Color(1.00f, 0.72f, 0.48f, 1f),
-                12.0f,
-                new Color(0.92f, 0.55f, 0.42f, 1f),
-                0.055f,
+                1.55f,
+                new Color(1.00f, 0.71f, 0.48f, 1f),
+                11.5f,
+                new Color(0.91f, 0.56f, 0.43f, 1f),
+                0.050f,
                 4f,
-                new Color(0.78f, 0.52f, 0.42f, 1f),
-                0.018f,
-                new Color(1.00f, 0.72f, 0.48f, 1f),
-                new Color(0.50f, 0.38f, 0.32f, 1f),
+                new Color(0.79f, 0.53f, 0.43f, 1f),
+                0.017f,
+                new Color(1.00f, 0.71f, 0.48f, 1f),
+                new Color(0.49f, 0.38f, 0.32f, 1f),
                 "Assets/Art/LUT/LUT_GoldenHour.png",
-                0.7f,
-                18f,
-                4f,
+                0.66f,
+                16f,
+                3f,
                 true,
                 0.6f,
                 100f,
@@ -1409,7 +1409,7 @@ namespace Anemora.FastVS.SunCycle
                 0.72f),
             new PresetAssetSpec(
                 SunPreset.Night,
-                new Vector3(-35f, 8f, 0f),
+                new Vector3(-32f, 12f, 0f),
                 new Color(0.42f, 0.55f, 0.72f, 1f),
                 0.40f,
                 new Color(0.55f, 0.65f, 0.85f, 1f),

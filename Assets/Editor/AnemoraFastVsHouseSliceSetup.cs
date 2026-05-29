@@ -108,6 +108,8 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseCAlphaEmissiveVfxDiagnosticsReportFileName = "phase_c_alpha_emissive_vfx_diagnostics.md";
         private const string Hd2dPhaseCBetaArtisticTiltShiftAdoptionCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_phase_c_beta_artistic_tiltshift_adoption_cycle178_parent_review_20260528_01";
         private const string Hd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReportFileName = "phase_c_beta_artistic_tiltshift_adoption_diagnostics.md";
+        private const string Hd2dFeedbackLightingPolishCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_feedback_lighting_polish_cycle179_parent_review_20260529_01";
+        private const string Hd2dFeedbackLightingPolishDiagnosticsReportFileName = "feedback_lighting_polish_diagnostics.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1585,6 +1587,64 @@ namespace Anemora.EditorTools
                 "05_current_timewindow_aperture.png",
                 Hd2dPhaseASunCycleDiagnosticsReportFileName,
                 Hd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
+        }
+
+        public static void ValidateHd2dFeedbackLightingPolishBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseBBetaButoAdoptionReportState();
+            ValidateHd2dPhaseCAlphaEmissiveVfxSetup();
+            ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState();
+            ValidateHd2dFeedbackLightingPolishSceneState();
+        }
+
+        public static void CaptureHd2dFeedbackLightingPolishCycle179ScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dPhaseBAlphaSceneLensFlareSetup();
+            ValidateHd2dPhaseBBetaButoAdoptionReportState();
+            ValidateHd2dPhaseCAlphaEmissiveVfxSetup();
+            ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState();
+            ValidateHd2dFeedbackLightingPolishSceneState();
+
+            var outputDirectory = Hd2dFeedbackLightingPolishCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dPhaseASunCycleSceneWiringDiagnostics(outputDirectory);
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var realtimeRig = UnityEngine.Object.FindFirstObjectByType<FastVsRealtimeLightShadowRig>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || realtimeRig == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS feedback lighting polish capture failed: scene review components are missing.");
+            }
+
+            CaptureCurrentTimeWindowApertureToDirectory(
+                outputDirectory,
+                controller,
+                visibility,
+                guide,
+                realtimeRig,
+                camera,
+                "05_current_timewindow_aperture.png");
+            WriteHd2dFeedbackLightingPolishDiagnosticsReport(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_sun_cycle_morning.png",
+                "02_current_house_exterior_sun_cycle_morning.png",
+                "03_current_central_plaza_sun_cycle_noon.png",
+                "04_current_library_sun_cycle_evening.png",
+                "05_current_timewindow_aperture.png",
+                Hd2dPhaseASunCycleDiagnosticsReportFileName,
+                Hd2dFeedbackLightingPolishDiagnosticsReportFileName
             });
             AssetDatabase.Refresh();
         }
@@ -17034,6 +17094,85 @@ namespace Anemora.EditorTools
                 CreateCurrentLibraryRuinGroundingPolish(root, c, materials, wood, trim);
             }
             CreateLibraryFloorDecayDetails(root, prefix, past, materials, c, floor, wood, trim);
+            if (!past)
+            {
+                ApplyHd2dFeedbackLibraryFloorArtifactCleanup();
+            }
+        }
+
+        private static void ApplyHd2dFeedbackLibraryFloorArtifactCleanup()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_Library_EntryFloor_SoftDustPool",
+                "Current_Library_WallShelfDepth_LeftSideShelfFloorShadowA",
+                "Current_Library_WallShelfDepth_RightSideShelfFloorShadowA",
+                "Current_Library_SideBookshelfDepth_LeftFloorShadowA",
+                "Current_Library_SideBookshelfDepth_RightFloorShadowA",
+                "Current_Library_ReadingTableGrounding_RetoDeskFloorShadowA",
+                "Current_Library_Ruin_ScatteredBoardPile_DustPatch",
+                "Current_Library_Ruin_DustSheetNearEntry",
+                "Current_Library_RuinFloorDetail_DustMatCenterA",
+                "Current_Library_RuinFloorDetail_LowShadowUnderDebrisA",
+                "Current_Library_RuinFloorDetail_PaperFanNearRetoA",
+                "Current_Library_RuinFloorDetail_BookPageTrailWestA",
+                "Current_Library_ReadingSurfaceDensity_EntryFloorLoosePageA",
+                "Current_Library_FloorDecay_ScuffBandEntry",
+                "Current_Library_FloorDecay_DustBandWest",
+                "Current_Library_FloorDecay_ScuffBandBack",
+                "Current_Library_FloorDecay_DustBandEast",
+                "Current_Library_FloorDecay_ScuffBandCenter",
+                "Current_Library_FloorDecay_PageBundleWest",
+                "Current_Library_FloorDecay_PageBundleBack",
+                "Current_Library_FloorDecay_PageBundleEast",
+                "Current_Library_Stage8c_WarmFloorPool_LongTableA",
+                "Current_Library_Stage8c_WarmFloorPool_SideTableA",
+                "Current_Library_Stage8c_WarmFloorPool_SideTableB",
+                "Current_Library_Stage8c_WarmBackShelfFloorBounceA",
+                "Current_Library_Stage8c_CoolFloorWash_LeftWindowA",
+                "Current_Library_Stage8c_CoolFloorWash_RightWindowA",
+                "Current_Library_Stage8d_FloorWarmRun_LongTableNorthA",
+                "Current_Library_Stage8d_FloorWarmPaperRun_LongTableSouthA",
+                "Current_Library_Stage8d_FloorWarmRun_SideTableA",
+                "Current_Library_Stage8d_FloorWarmPaperRun_SideTableB",
+                "Current_Library_Stage8d_TableContactShadow_LongA",
+                "Current_Library_Stage8d_TableContactShadow_SideA",
+                "Current_Library_Stage8d_TableContactShadow_SideB",
+                "Current_Library_Stage8d_BackShelfDustLightBreakLeftA",
+                "Current_Library_Stage8d_BackShelfWarmLightBreakRightA",
+                "Current_Library_Stage8j_FloorWarmSpillUnderLongTableA",
+                "Current_Library_Stage8j_DiagonalCoolFloorBreakA",
+                "Current_Library_Stage8j_LongTableUnderContactShadowA",
+                "Current_Library_Stage8j_LongTableBookCastShadowA",
+                "Current_Library_Stage8k_FloorCoolSpillBehindChairA",
+                "Current_Library_Stage8k_FloorWarmKickUnderChairA",
+                "Current_Library_Stage8k_NearChairCastShadowA",
+                "Current_Library_Stage8l_FloorCoolWindowSkimMidA",
+                "Current_Library_Stage8l_FloorWarmBounceNearReaderA",
+                "Current_Library_Stage8l_LongTableLegShadowLeftA",
+                "Current_Library_Stage8l_LongTableLegShadowRightA",
+                "Current_Library_Stage8l_LongTablePlankCatchlightA",
+                "Current_Library_Stage8l_MidFloorPlankCoolEdgeA",
+                "Current_Library_Stage8l_MidFloorShadowBreakA",
+                "Current_Library_Stage8l_NearFloorWarmPlankStepA",
+                "Current_Library_Stage8l_LeftFloorDustScrapeA",
+                "Current_Library_Stage8l_ReaderFootContactShadowA",
+                "Current_Library_Stage8l_LeftDeskFloorShadowA",
+                "Current_Library_Stage8l_RightFloorTableShadowA",
+                "Current_Library_Stage8l_RightDeskFloorWarmEdgeA",
+                "Current_Library_Stage8n_FloorLoosePageShadowA",
+                "Current_Library_Stage8n_FloorClosedBookShadowA"
+            })
+            {
+                var sceneObject = FindSceneObjectIncludingInactive(objectName);
+                if (sceneObject == null)
+                {
+                    continue;
+                }
+
+                sceneObject.SetActive(false);
+                EditorUtility.SetDirty(sceneObject);
+            }
         }
 
         private static void CreateLibraryUpperGalleryDetails(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
@@ -25205,12 +25344,13 @@ namespace Anemora.EditorTools
             CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(0.18f, 0.612f, -0.48f), Quaternion.Euler(0f, -11f, 0f), new Vector3(0.42f, 0.012f, 0.055f), materials.SignPaint, "Current_Library_Stage8n_LongTableBookmarkSlipA", "Current.library.stage8n.long_table.bookmark_slip_a");
             CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.08f, 0.608f, -0.34f), Quaternion.Euler(0f, 7f, 0f), new Vector3(0.62f, 0.012f, 0.18f), materials.SignPaint, "Current_Library_Stage8n_LongTableLoosePagePairA", "Current.library.stage8n.long_table.loose_page_pair_a");
             CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(0.02f, 0.586f, -0.34f), Quaternion.Euler(0f, 7f, 0f), new Vector3(0.72f, 0.008f, 0.20f), materials.Shadow, "Current_Library_Stage8n_LongTableLoosePageShadowA", "Current.library.stage8n.long_table.loose_page_shadow_a");
-            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.82f, 0.126f, -1.20f), Quaternion.Euler(0f, -13f, 0f), new Vector3(0.58f, 0.010f, 0.24f), materials.SignPaint, "Current_Library_Stage8n_FloorLoosePageA", "Current.library.stage8n.floor.loose_page_a");
-            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.82f, 0.104f, -1.20f), Quaternion.Euler(0f, -13f, 0f), new Vector3(0.66f, 0.008f, 0.28f), materials.Shadow, "Current_Library_Stage8n_FloorLoosePageShadowA", "Current.library.stage8n.floor.loose_page_shadow_a");
+            var depthShadow = EnsureHd2dDepthShadowMaterial();
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.82f, 0.126f, -1.20f), Quaternion.Euler(0f, -13f, 0f), new Vector3(0.32f, 0.010f, 0.12f), materials.SignPaint, "Current_Library_Stage8n_FloorLoosePageA", "Current.library.stage8n.floor.loose_page_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(-0.82f, 0.104f, -1.20f), Quaternion.Euler(0f, -13f, 0f), new Vector3(0.38f, 0.006f, 0.15f), depthShadow, "Current_Library_Stage8n_FloorLoosePageShadowA", "Current.library.stage8n.floor.loose_page_shadow_a");
             CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(2.36f, 0.608f, -1.18f), Quaternion.Euler(0f, 8f, 0f), new Vector3(0.54f, 0.012f, 0.18f), materials.SignPaint, "Current_Library_Stage8n_RightDeskStackPageA", "Current.library.stage8n.right_desk.stack_page_a");
             CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(2.82f, 0.612f, -1.02f), Quaternion.Euler(0f, -9f, 0f), new Vector3(0.64f, 0.042f, 0.18f), materials.Book, "Current_Library_Stage8n_RightDeskStackBookA", "Current.library.stage8n.right_desk.stack_book_a");
-            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(1.70f, 0.128f, -1.36f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.46f, 0.040f, 0.22f), materials.Book, "Current_Library_Stage8n_FloorClosedBookA", "Current.library.stage8n.floor.closed_book_a");
-            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(1.70f, 0.104f, -1.36f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.56f, 0.008f, 0.28f), materials.Shadow, "Current_Library_Stage8n_FloorClosedBookShadowA", "Current.library.stage8n.floor.closed_book_shadow_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(1.70f, 0.128f, -1.36f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.28f, 0.030f, 0.14f), materials.Book, "Current_Library_Stage8n_FloorClosedBookA", "Current.library.stage8n.floor.closed_book_a");
+            CreateStage8NLibraryLoosePageClusterAccent(root, c + new Vector3(1.70f, 0.104f, -1.36f), Quaternion.Euler(0f, 9f, 0f), new Vector3(0.32f, 0.006f, 0.15f), depthShadow, "Current_Library_Stage8n_FloorClosedBookShadowA", "Current.library.stage8n.floor.closed_book_shadow_a");
         }
 
         private static GameObject CreateStage8NLibraryLoosePageClusterAccent(Transform root, Vector3 localPosition, Quaternion localRotation, Vector3 localScale, Material material, string objectName, string landmarkId)
@@ -29773,7 +29913,7 @@ namespace Anemora.EditorTools
             SerializedSet(driver, "transitionDuration", 1.8f);
 
             CreateHd2dPhaseAMapSunAnchor(currentAreas.Interior.transform, "FastVS_HD2D_MapSunAnchor_Interior_Morning", SunPreset.Morning, false, 0);
-            CreateHd2dPhaseAMapSunAnchor(currentAreas.Exterior.transform, "FastVS_HD2D_MapSunAnchor_Exterior_Morning", SunPreset.Morning, false, 0);
+            CreateHd2dPhaseAMapSunAnchor(currentAreas.Exterior.transform, "FastVS_HD2D_MapSunAnchor_Exterior_Morning", SunPreset.Morning, true, 0);
             CreateHd2dPhaseAMapSunAnchor(currentAreas.CentralPlaza.transform, "FastVS_HD2D_MapSunAnchor_CentralPlaza_Noon", SunPreset.Noon, true, 0);
             CreateHd2dPhaseAMapSunAnchor(currentAreas.Library.transform, "FastVS_HD2D_MapSunAnchor_Library_Evening", SunPreset.Evening, true, 0);
 
@@ -29989,7 +30129,7 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_MapSunAnchor_Exterior_Morning",
                 "Current_HouseExteriorMap_SeparateSpace",
                 SunPreset.Morning,
-                false,
+                true,
                 0);
             ValidateHd2dPhaseASunCycleAnchor(
                 "FastVS_HD2D_MapSunAnchor_CentralPlaza_Noon",
@@ -31251,13 +31391,13 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_CurrentLibrary_DustMotes",
                 LibraryVsCenter + new Vector3(0f, 1.55f, 2.75f),
                 new Vector3(6.4f, 1.10f, 4.2f),
-                new Color(0.90f, 0.88f, 0.82f, 0.15f),
-                64,
+                new Color(0.90f, 0.88f, 0.82f, 0.05f),
+                24,
                 12f,
                 11f,
-                5.5f,
-                0.035f,
-                0.042f,
+                2.2f,
+                0.024f,
+                0.026f,
                 ParticleSystemSimulationSpace.World,
                 material);
 
@@ -31266,13 +31406,13 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_Stage7_CurrentLibrary_Fireflies",
                 LibraryVsCenter + new Vector3(0.8f, 1.45f, 3.10f),
                 new Vector3(3.6f, 0.9f, 2.4f),
-                new Color(1.00f, 0.95f, 0.76f, 0.22f),
-                16,
+                new Color(1.00f, 0.95f, 0.76f, 0.07f),
+                5,
                 12f,
                 10f,
-                1.6f,
-                0.05f,
-                0.075f,
+                0.7f,
+                0.025f,
+                0.035f,
                 ParticleSystemSimulationSpace.World,
                 material);
 
@@ -31296,13 +31436,13 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_CurrentPlaza_DustDrift",
                 CentralPlazaVsCenter + new Vector3(0f, 1.40f, 3.35f),
                 new Vector3(7.2f, 1.50f, 5.0f),
-                new Color(0.88f, 0.84f, 0.76f, 0.12f),
-                52,
+                new Color(0.88f, 0.84f, 0.76f, 0.05f),
+                24,
                 10f,
                 9f,
-                3.5f,
-                0.09f,
-                0.070f,
+                1.4f,
+                0.040f,
+                0.040f,
                 ParticleSystemSimulationSpace.World,
                 material);
 
@@ -31311,13 +31451,13 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_Stage7_CurrentPlaza_SunMotes",
                 CentralPlazaVsCenter + new Vector3(0f, 1.75f, 2.75f),
                 new Vector3(4.8f, 1.1f, 2.8f),
-                new Color(1.00f, 0.97f, 0.84f, 0.16f),
-                14,
+                new Color(1.00f, 0.97f, 0.84f, 0.05f),
+                6,
                 12f,
                 10f,
-                1.6f,
-                0.05f,
-                0.072f,
+                0.55f,
+                0.024f,
+                0.035f,
                 ParticleSystemSimulationSpace.World,
                 material);
 
@@ -31326,14 +31466,14 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_Stage7_CurrentPlaza_MoteCardA",
                 CentralPlazaVsCenter + new Vector3(-0.72f, 1.18f, 4.30f),
                 0.045f,
-                new Color(0.84f, 0.74f, 0.52f, 0.08f),
+                new Color(0.84f, 0.74f, 0.52f, 0.025f),
                 material);
             CreateStage7VfxMoteCard(
                 currentRoot,
                 "FastVS_HD2D_Stage7_CurrentPlaza_MoteCardB",
                 CentralPlazaVsCenter + new Vector3(0.85f, 1.52f, 5.10f),
                 0.038f,
-                new Color(0.90f, 0.62f, 0.30f, 0.07f),
+                new Color(0.90f, 0.62f, 0.30f, 0.020f),
                 material);
 
             CreateAtmosphereParticleSystem(
@@ -31370,15 +31510,15 @@ namespace Anemora.EditorTools
                 currentRoot,
                 "FastVS_HD2D_Stage7_CurrentLibrary_MoteCardA",
                 LibraryVsCenter + new Vector3(-0.62f, 1.20f, 0.45f),
-                0.12f,
-                new Color(1.00f, 0.94f, 0.68f, 0.44f),
+                0.045f,
+                new Color(1.00f, 0.94f, 0.68f, 0.055f),
                 material);
             CreateStage7VfxMoteCard(
                 currentRoot,
                 "FastVS_HD2D_Stage7_CurrentLibrary_MoteCardB",
                 LibraryVsCenter + new Vector3(0.92f, 1.54f, 1.56f),
-                0.095f,
-                new Color(1.00f, 0.74f, 0.46f, 0.38f),
+                0.038f,
+                new Color(1.00f, 0.74f, 0.46f, 0.045f),
                 material);
 
             CreateAtmosphereParticleSystem(
@@ -32314,15 +32454,15 @@ namespace Anemora.EditorTools
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.10f, 0.26f, 0.02f),
                 new Vector3(0.22f, 0.24f, 0.18f),
                 material,
-                new Color(1.42f, 0.92f, 0.44f, 0.92f),
+                new Color(1.18f, 0.78f, 0.36f, 0.55f),
                 12,
                 1.60f,
                 1.50f,
-                7.20f,
-                0.72f,
-                0.08f,
+                3.00f,
+                0.42f,
+                0.045f,
                 -0.14f,
-                0.82f,
+                0.50f,
                 ParticleSystemSimulationSpace.World,
                 system =>
                 {
@@ -32340,15 +32480,15 @@ namespace Anemora.EditorTools
                 LibraryVsCenter + new Vector3(1.10f, 1.42f, -0.62f),
                 new Vector3(0.36f, 0.28f, 0.24f),
                 material,
-                new Color(1.12f, 0.98f, 0.52f, 0.82f),
+                new Color(1.00f, 0.92f, 0.46f, 0.24f),
                 6,
                 5.10f,
                 5.00f,
-                2.30f,
-                0.18f,
-                0.05f,
+                0.70f,
+                0.12f,
+                0.032f,
                 -0.04f,
-                0.34f,
+                0.20f,
                 ParticleSystemSimulationSpace.World,
                 system =>
                 {
@@ -32365,8 +32505,8 @@ namespace Anemora.EditorTools
                         new[]
                         {
                             new GradientAlphaKey(0.05f, 0f),
-                            new GradientAlphaKey(0.92f, 0.18f),
-                            new GradientAlphaKey(0.35f, 1f)
+                            new GradientAlphaKey(0.28f, 0.18f),
+                            new GradientAlphaKey(0.10f, 1f)
                         });
                     colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
                 });
@@ -32381,13 +32521,13 @@ namespace Anemora.EditorTools
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.02f, 0.84f, -0.02f),
                 new Vector3(0.44f, 0.38f, 0.36f),
                 material,
-                new Color(0.78f, 0.74f, 0.68f, 0.34f),
+                new Color(0.78f, 0.74f, 0.68f, 0.22f),
                 8,
                 3.20f,
                 3.00f,
-                1.50f,
-                0.16f,
-                0.18f,
+                0.80f,
+                0.12f,
+                0.13f,
                 -0.08f,
                 0.18f,
                 ParticleSystemSimulationSpace.World,
@@ -32422,15 +32562,15 @@ namespace Anemora.EditorTools
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.56f, 2.22f),
                 new Vector3(0.42f, 0.22f, 0.42f),
                 material,
-                new Color(0.86f, 0.96f, 1.08f, 0.86f),
+                new Color(0.76f, 0.88f, 0.96f, 0.30f),
                 16,
                 0.84f,
                 0.80f,
-                9.40f,
-                0.42f,
-                0.05f,
+                2.20f,
+                0.34f,
+                0.032f,
                 0.92f,
-                0.64f,
+                0.32f,
                 ParticleSystemSimulationSpace.World,
                 system =>
                 {
@@ -32446,8 +32586,8 @@ namespace Anemora.EditorTools
                         },
                         new[]
                         {
-                            new GradientAlphaKey(0.78f, 0f),
-                            new GradientAlphaKey(0.38f, 0.55f),
+                            new GradientAlphaKey(0.28f, 0f),
+                            new GradientAlphaKey(0.14f, 0.55f),
                             new GradientAlphaKey(0.04f, 1f)
                         });
                     colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
@@ -32462,8 +32602,8 @@ namespace Anemora.EditorTools
                 CurrentSpaceRenderLayer,
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
                 new Color(1.00f, 0.84f, 0.60f, 1f),
-                4.10f,
-                4.80f);
+                3.00f,
+                3.20f);
         }
 
         private static void CreateHd2dPhaseCAlphaPlazaWaterSparkleLight(Transform parent)
@@ -32474,8 +32614,8 @@ namespace Anemora.EditorTools
                 CurrentSpaceRenderLayer,
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.96f, 2.20f),
                 new Color(0.88f, 0.96f, 1.00f, 1f),
-                3.60f,
-                4.40f);
+                1.20f,
+                2.20f);
         }
 
         private static void CreateAudio(Transform currentRoot, FastVsHouseAreaVisibility areaVisibility)
@@ -35748,6 +35888,180 @@ namespace Anemora.EditorTools
                 string.Empty,
                 "- Tom review evidence only; this report does not claim visual sign-off."
             };
+        }
+
+        private static void ValidateHd2dFeedbackLightingPolishSceneState()
+        {
+            var exteriorAnchor = FindSceneObjectIncludingInactive("FastVS_HD2D_MapSunAnchor_Exterior_Morning")?.GetComponent<MapSunAnchor>();
+            if (exteriorAnchor == null || !exteriorAnchor.TransitionFromPrevious)
+            {
+                throw new InvalidOperationException("Fast VS feedback lighting polish validation failed: the exterior sun anchor must use runtime transition smoothing.");
+            }
+
+            var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
+            ValidateHd2dFeedbackMaterialAlpha(atmosphereMaterial, "_BaseColor", 0.60f);
+            ValidateHd2dFeedbackMaterialAlpha(atmosphereMaterial, "_Color", 0.60f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_CurrentLibrary_DustMotes", 0.06f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_Stage7_CurrentLibrary_Fireflies", 0.08f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_CurrentPlaza_DustDrift", 0.06f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_Stage7_CurrentPlaza_SunMotes", 0.06f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_Fire_Spark", 0.56f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_Firefly", 0.25f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_Smoke", 0.23f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_WaterSplash", 0.31f);
+
+            ValidateHd2dFeedbackObjectScale("Current_Library_Stage8n_FloorLoosePageA", new Vector3(0.34f, 0.012f, 0.13f));
+            ValidateHd2dFeedbackObjectScale("Current_Library_Stage8n_FloorLoosePageShadowA", new Vector3(0.40f, 0.008f, 0.16f));
+            ValidateHd2dFeedbackObjectScale("Current_Library_Stage8n_FloorClosedBookA", new Vector3(0.30f, 0.032f, 0.15f));
+            ValidateHd2dFeedbackObjectScale("Current_Library_Stage8n_FloorClosedBookShadowA", new Vector3(0.34f, 0.008f, 0.16f));
+            ValidateHd2dFeedbackMaterialNameContains("Current_Library_Stage8n_FloorLoosePageShadowA", "depth_shadow");
+            ValidateHd2dFeedbackMaterialNameContains("Current_Library_Stage8n_FloorClosedBookShadowA", "depth_shadow");
+            ValidateHd2dFeedbackInactive("Current_Library_Stage8c_WarmFloorPool_LongTableA");
+            ValidateHd2dFeedbackInactive("Current_Library_Stage8l_MidFloorShadowBreakA");
+            ValidateHd2dFeedbackInactive("Current_Library_RuinFloorDetail_DustMatCenterA");
+            ValidateHd2dFeedbackInactive("Current_Library_FloorDecay_ScuffBandCenter");
+
+            var libraryWarmLight = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_LibraryWarmEmissiveLight")?.GetComponent<Light>();
+            var plazaWaterLight = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight")?.GetComponent<Light>();
+            if (libraryWarmLight == null || libraryWarmLight.intensity > 3.05f || libraryWarmLight.range > 3.25f ||
+                plazaWaterLight == null || plazaWaterLight.intensity > 1.25f || plazaWaterLight.range > 2.25f)
+            {
+                throw new InvalidOperationException("Fast VS feedback lighting polish validation failed: local emissive point lights are above the tuned feedback limits.");
+            }
+
+            var warmPoolMaxAlpha = GetHd2dTextureMaxAlpha(EnsureHd2dWarmLightPoolTexture());
+            var atmosphereMaxAlpha = GetHd2dTextureMaxAlpha(EnsureHd2dAtmosphereParticleTexture());
+            if (warmPoolMaxAlpha > 0.145f || atmosphereMaxAlpha > 0.505f)
+            {
+                throw new InvalidOperationException(
+                    $"Fast VS feedback lighting polish validation failed: generated overlay textures are too opaque. warmPool={warmPoolMaxAlpha:0.000}, atmosphere={atmosphereMaxAlpha:0.000}.");
+            }
+        }
+
+        private static void WriteHd2dFeedbackLightingPolishDiagnosticsReport(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            var lines = BuildHd2dFeedbackLightingPolishDiagnosticsLines();
+            var reportPath = Path.Combine(outputDirectory, Hd2dFeedbackLightingPolishDiagnosticsReportFileName);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS feedback lighting polish diagnostics report failed: missing output file {reportPath}");
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+        private static List<string> BuildHd2dFeedbackLightingPolishDiagnosticsLines()
+        {
+            ValidateHd2dFeedbackLightingPolishSceneState();
+
+            var exteriorAnchor = FindSceneObjectIncludingInactive("FastVS_HD2D_MapSunAnchor_Exterior_Morning")?.GetComponent<MapSunAnchor>();
+            var atmosphereMaterial = EnsureHd2dAtmosphereParticleMaterial();
+            var libraryWarmLight = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_LibraryWarmEmissiveLight")?.GetComponent<Light>();
+            var plazaWaterLight = FindSceneObjectIncludingInactive("FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight")?.GetComponent<Light>();
+            var floorPage = FindSceneObjectIncludingInactive("Current_Library_Stage8n_FloorLoosePageA");
+            var floorBook = FindSceneObjectIncludingInactive("Current_Library_Stage8n_FloorClosedBookA");
+            var floorPool = FindSceneObjectIncludingInactive("Current_Library_Stage8c_WarmFloorPool_LongTableA");
+            var shadowBreak = FindSceneObjectIncludingInactive("Current_Library_Stage8l_MidFloorShadowBreakA");
+            var packageManifest = File.Exists("Packages/manifest.json") &&
+                File.ReadAllText("Packages/manifest.json").Contains("com.gamelovers.mcp-unity");
+            var mcpSettings = File.Exists("ProjectSettings/McpUnitySettings.json");
+
+            return new List<string>
+            {
+                "# HD2D Feedback Lighting Polish Diagnostics",
+                string.Empty,
+                $"- Validate entry: `{nameof(ValidateHd2dFeedbackLightingPolishBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dFeedbackLightingPolishCycle179ScreenshotsBatch)}`",
+                $"- Build exe path: `{BuildExePath}`",
+                $"- Launch note: start the whole `Builds/FastVS_HouseSlice` folder, not only a copied exe.",
+                $"- Exterior anchor transition smoothing: `{(exteriorAnchor != null && exteriorAnchor.TransitionFromPrevious)}`",
+                $"- Atmosphere material _BaseColor alpha: `{(atmosphereMaterial != null && atmosphereMaterial.HasProperty("_BaseColor") ? atmosphereMaterial.GetColor("_BaseColor").a : 0f):0.000}`",
+                $"- Atmosphere material texture max alpha: `{GetHd2dTextureMaxAlpha(EnsureHd2dAtmosphereParticleTexture()):0.000}`",
+                $"- Warm light pool texture max alpha: `{GetHd2dTextureMaxAlpha(EnsureHd2dWarmLightPoolTexture()):0.000}`",
+                $"- Library warm emissive light intensity/range: `{(libraryWarmLight != null ? libraryWarmLight.intensity : 0f):0.000}` / `{(libraryWarmLight != null ? libraryWarmLight.range : 0f):0.000}`",
+                $"- Plaza water sparkle light intensity/range: `{(plazaWaterLight != null ? plazaWaterLight.intensity : 0f):0.000}` / `{(plazaWaterLight != null ? plazaWaterLight.range : 0f):0.000}`",
+                $"- Library floor loose page scale: `{(floorPage != null ? floorPage.transform.localScale : Vector3.zero)}`",
+                $"- Library floor closed book scale: `{(floorBook != null ? floorBook.transform.localScale : Vector3.zero)}`",
+                $"- Library broad warm floor pool active: `{(floorPool != null && floorPool.activeSelf)}`",
+                $"- Library mid-floor shadow break active: `{(shadowBreak != null && shadowBreak.activeSelf)}`",
+                $"- Unity MCP package in manifest: `{packageManifest}`",
+                $"- Unity MCP settings file present: `{mcpSettings}`",
+                string.Empty,
+                "- Tom review evidence only; this report does not claim visual sign-off."
+            };
+        }
+
+        private static void ValidateHd2dFeedbackMaterialAlpha(Material material, string propertyName, float maxAlpha)
+        {
+            if (material == null || !material.HasProperty(propertyName) || material.GetColor(propertyName).a > maxAlpha + 0.0001f)
+            {
+                var alpha = material != null && material.HasProperty(propertyName) ? material.GetColor(propertyName).a : -1f;
+                throw new InvalidOperationException($"Fast VS feedback lighting polish validation failed: material {propertyName} alpha is {alpha:0.000}, expected <= {maxAlpha:0.000}.");
+            }
+        }
+
+        private static void ValidateHd2dFeedbackParticleStartAlpha(string objectName, float maxAlpha)
+        {
+            var particleObject = FindSceneObjectIncludingInactive(objectName);
+            var system = particleObject != null ? particleObject.GetComponent<ParticleSystem>() : null;
+            var alpha = system != null ? system.main.startColor.color.a : -1f;
+            if (system == null || alpha > maxAlpha + 0.0001f)
+            {
+                throw new InvalidOperationException($"Fast VS feedback lighting polish validation failed: particle {objectName} alpha is {alpha:0.000}, expected <= {maxAlpha:0.000}.");
+            }
+        }
+
+        private static void ValidateHd2dFeedbackObjectScale(string objectName, Vector3 maxScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var scale = sceneObject != null ? sceneObject.transform.localScale : Vector3.positiveInfinity;
+            if (sceneObject == null ||
+                scale.x > maxScale.x + 0.0001f ||
+                scale.y > maxScale.y + 0.0001f ||
+                scale.z > maxScale.z + 0.0001f)
+            {
+                throw new InvalidOperationException($"Fast VS feedback lighting polish validation failed: object {objectName} scale is {scale}, expected <= {maxScale}.");
+            }
+        }
+
+        private static void ValidateHd2dFeedbackMaterialNameContains(string objectName, string requiredToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<MeshRenderer>() : null;
+            var materialName = renderer != null && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : string.Empty;
+            if (string.IsNullOrEmpty(materialName) || materialName.IndexOf(requiredToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"Fast VS feedback lighting polish validation failed: object {objectName} material {materialName} does not contain token {requiredToken}.");
+            }
+        }
+
+        private static void ValidateHd2dFeedbackInactive(string objectName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null || sceneObject.activeSelf)
+            {
+                throw new InvalidOperationException($"Fast VS feedback lighting polish validation failed: object {objectName} must be kept inactive in review captures.");
+            }
+        }
+
+        private static float GetHd2dTextureMaxAlpha(Texture2D texture)
+        {
+            if (texture == null)
+            {
+                return 0f;
+            }
+
+            var pixels = texture.GetPixels32();
+            var maxAlpha = 0f;
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                maxAlpha = Mathf.Max(maxAlpha, pixels[i].a / 255f);
+            }
+
+            return maxAlpha;
         }
 
         private static void ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState()
@@ -46590,12 +46904,12 @@ namespace Anemora.EditorTools
                 12,
                 1.60f,
                 1.50f,
-                7.20f,
-                0.72f,
-                0.08f,
+                3.00f,
+                0.42f,
+                0.045f,
                 -0.14f,
-                0.82f,
-                new Color(1.42f, 0.92f, 0.44f, 0.92f),
+                0.50f,
+                new Color(1.18f, 0.78f, 0.36f, 0.55f),
                 false);
             ValidateHd2dPhaseCAlphaParticleSystem(
                 "FastVS_HD2D_PhaseCAlpha_Firefly",
@@ -46607,12 +46921,12 @@ namespace Anemora.EditorTools
                 6,
                 5.10f,
                 5.00f,
-                2.30f,
-                0.18f,
-                0.05f,
+                0.70f,
+                0.12f,
+                0.032f,
                 -0.04f,
-                0.34f,
-                new Color(1.12f, 0.98f, 0.52f, 0.82f),
+                0.20f,
+                new Color(1.00f, 0.92f, 0.46f, 0.24f),
                 true);
             ValidateHd2dPhaseCAlphaParticleSystem(
                 "FastVS_HD2D_PhaseCAlpha_Smoke",
@@ -46624,12 +46938,12 @@ namespace Anemora.EditorTools
                 8,
                 3.20f,
                 3.00f,
-                1.50f,
-                0.16f,
-                0.18f,
+                0.80f,
+                0.12f,
+                0.13f,
                 -0.08f,
                 0.18f,
-                new Color(0.78f, 0.74f, 0.68f, 0.34f),
+                new Color(0.78f, 0.74f, 0.68f, 0.22f),
                 true);
             ValidateHd2dPhaseCAlphaParticleSystem(
                 "FastVS_HD2D_PhaseCAlpha_WaterSplash",
@@ -46641,12 +46955,12 @@ namespace Anemora.EditorTools
                 16,
                 0.84f,
                 0.80f,
-                9.40f,
-                0.42f,
-                0.05f,
+                2.20f,
+                0.34f,
+                0.032f,
                 0.92f,
-                0.64f,
-                new Color(0.86f, 0.96f, 1.08f, 0.86f),
+                0.32f,
+                new Color(0.76f, 0.88f, 0.96f, 0.30f),
                 true);
 
             ValidateHd2dPhaseCAlphaPointLight(
@@ -46655,16 +46969,16 @@ namespace Anemora.EditorTools
                 CurrentSpaceRenderLayer,
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
                 new Color(1.00f, 0.84f, 0.60f, 1f),
-                4.10f,
-                4.80f);
+                3.00f,
+                3.20f);
             ValidateHd2dPhaseCAlphaPointLight(
                 "FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight",
                 "Current_CentralPlazaMap_SeparateSpace",
                 CurrentSpaceRenderLayer,
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.96f, 2.20f),
                 new Color(0.88f, 0.96f, 1.00f, 1f),
-                3.60f,
-                4.40f);
+                1.20f,
+                2.20f);
         }
 
         private static void ValidateHd2dPhaseCAlphaParticleSystem(
@@ -72237,8 +72551,8 @@ namespace Anemora.EditorTools
                     var core = Mathf.Clamp01(1f - ellipse);
                     var softEdge = Mathf.SmoothStep(0f, 1f, core);
                     var halo = Mathf.Clamp01(1f - Mathf.Max(Mathf.Abs(u) * 0.86f, Mathf.Abs(v) * 1.12f));
-                    var alpha = (softEdge * softEdge * 0.20f) + (halo * 0.04f);
-                    alpha = Mathf.Clamp(alpha, 0f, 0.24f);
+                    var alpha = (softEdge * softEdge * 0.11f) + (halo * 0.025f);
+                    alpha = Mathf.Clamp(alpha, 0f, 0.14f);
                     return new Color(1.0f, 0.72f, 0.30f, alpha);
                 });
         }
@@ -72918,12 +73232,12 @@ namespace Anemora.EditorTools
 
             if (material.HasProperty("_BaseColor"))
             {
-                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.92f));
+                material.SetColor("_BaseColor", new Color(1f, 1f, 1f, 0.58f));
             }
 
             if (material.HasProperty("_Color"))
             {
-                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.92f));
+                material.SetColor("_Color", new Color(1f, 1f, 1f, 0.58f));
             }
 
             EditorUtility.SetDirty(material);
@@ -73059,8 +73373,8 @@ namespace Anemora.EditorTools
                     var centeredY = ((y + 0.5f) / 64f) * 2f - 1f;
                     var distance = Mathf.Sqrt((centeredX * centeredX) + (centeredY * centeredY));
                     var core = Mathf.Clamp01(1f - distance);
-                    var alpha = core * core * 0.95f;
-                    var tone = 0.96f + (core * 0.04f);
+                    var alpha = core * core * 0.50f;
+                    var tone = 0.90f + (core * 0.05f);
                     return new Color(tone, tone, tone, alpha);
                 });
         }
