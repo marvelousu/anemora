@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Anemora.FastVS;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -37,7 +38,7 @@ namespace Anemora.FastVS.SunCycle
         [SerializeField] private SunPresetData[] presets = new SunPresetData[PresetCount];
 
         [Header("Defaults")]
-        [SerializeField] private SunPreset defaultPreset = SunPreset.Noon;
+        [SerializeField] private SunPreset defaultPreset = SunPreset.Morning;
         [SerializeField, Range(MinTransitionDuration, 10f)] private float transitionDuration = 1.8f;
         [SerializeField] private AnimationCurve transitionCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
@@ -47,12 +48,14 @@ namespace Anemora.FastVS.SunCycle
         private bool hasAppliedValues;
         private float transitionElapsed;
         private MapSunAnchor activeAnchor;
+        private FastVsHouseAreaVisibility areaVisibility;
 
         public static AnemoraSunCycleDriver Instance { get; private set; }
 
         public SunPreset CurrentPreset { get; private set; }
         public SunPreset TargetPreset { get; private set; }
         public bool IsTransitioning { get; private set; }
+        public bool IndoorSunSuppressionActiveForReview => IsIndoorAreaActive();
 
         public event Action<SunPreset, SunPreset> OnPresetChanged;
         public event Action<SunPreset, SunPreset> OnPresetTransitionStart;
@@ -335,29 +338,35 @@ namespace Anemora.FastVS.SunCycle
                     globalVolume = volumes[0];
                 }
             }
+
+            if (areaVisibility == null)
+            {
+                areaVisibility = FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            }
         }
 
         private void ApplyValues(SunRuntimeValues values)
         {
             currentValues = values;
             hasAppliedValues = true;
+            var effectiveValues = ApplyActiveAreaSunPolicy(values);
 
             if (directionalSunLight != null)
             {
-                directionalSunLight.transform.rotation = values.lightRotation;
-                directionalSunLight.color = values.lightColor;
-                directionalSunLight.intensity = values.lightIntensity;
-                directionalSunLight.cookie = values.cookieTexture;
-                directionalSunLight.cookieSize2D = new Vector2(values.cookieSize, values.cookieSize);
+                directionalSunLight.transform.rotation = effectiveValues.lightRotation;
+                directionalSunLight.color = effectiveValues.lightColor;
+                directionalSunLight.intensity = effectiveValues.lightIntensity;
+                directionalSunLight.cookie = effectiveValues.cookieTexture;
+                directionalSunLight.cookieSize2D = new Vector2(effectiveValues.cookieSize, effectiveValues.cookieSize);
             }
 
-            ApplyVolumeValues(values);
-            ApplyOptionalSunEffects(values);
+            ApplyVolumeValues(effectiveValues);
+            ApplyOptionalSunEffects(effectiveValues);
 
             RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = values.ambientLightColor;
-            RenderSettings.fogColor = values.fogColor;
-            RenderSettings.fogDensity = values.fogDensity;
+            RenderSettings.ambientLight = effectiveValues.ambientLightColor;
+            RenderSettings.fogColor = effectiveValues.fogColor;
+            RenderSettings.fogDensity = effectiveValues.fogDensity;
 
             var skybox = RenderSettings.skybox;
             if (skybox == null)
@@ -367,18 +376,47 @@ namespace Anemora.FastVS.SunCycle
 
             if (skybox.HasProperty("_SkyTint"))
             {
-                skybox.SetColor("_SkyTint", values.skyTint);
+                skybox.SetColor("_SkyTint", effectiveValues.skyTint);
             }
 
             if (skybox.HasProperty("_SunSize"))
             {
-                skybox.SetFloat("_SunSize", values.skySunSize);
+                skybox.SetFloat("_SunSize", effectiveValues.skySunSize);
             }
 
             if (skybox.HasProperty("_SunSizeConvergence"))
             {
-                skybox.SetFloat("_SunSizeConvergence", values.skySunSizeConvergence);
+                skybox.SetFloat("_SunSizeConvergence", effectiveValues.skySunSizeConvergence);
             }
+        }
+
+        private SunRuntimeValues ApplyActiveAreaSunPolicy(SunRuntimeValues values)
+        {
+            if (!IsIndoorAreaActive())
+            {
+                return values;
+            }
+
+            values.lightIntensity *= 0.08f;
+            values.skySunSize = 0.001f;
+            values.skySunSizeConvergence = Mathf.Max(values.skySunSizeConvergence, 10f);
+            values.fogDensity = 0f;
+            values.volumetricFogEnabled = false;
+            values.screenSpaceLensFlareIntensity = 0f;
+            values.sunLensFlareIntensity = 0f;
+            return values;
+        }
+
+        private bool IsIndoorAreaActive()
+        {
+            if (areaVisibility == null)
+            {
+                areaVisibility = FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            }
+
+            return areaVisibility != null &&
+                   (areaVisibility.ActiveAreaForReview == FastVsHouseArea.Interior ||
+                    areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library);
         }
 
         private void ApplyVolumeValues(SunRuntimeValues values)

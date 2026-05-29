@@ -1,0 +1,34 @@
+Fast VS HD-2D Cycle 180 Review
+
+変更を適用しました。
+
+- Story sun timing:
+  - Interior / Exterior / CentralPlaza / Library anchors are Morning before the library-exit beat.
+  - `AnemoraSunCycleDriver.defaultPreset` is Morning.
+  - `Library -> CentralPlaza` sets the story state to Noon during the transition fade.
+- Indoor sun suppression:
+  - Interior and Library suppress direct sun intensity, sun disk, screen-space flare, lens flare, and volumetric fog.
+- Plaza-wide sunlight coverage:
+  - Added `FastVsDynamicSunShaftField`.
+  - Added five dynamic Plaza sunshaft renderers across west / center / east spans.
+  - The renderers update alpha, rotation, and parallax from camera/sun state each frame.
+
+Evidence:
+
+- Validate: `Logs/cycle-180-20260529-story-sun-plaza-shafts-validate-4.log`, exit 0.
+- Capture: `Logs/cycle-180-20260529-story-sun-plaza-shafts-capture-2.log`, exit 0.
+- Build: `Logs/cycle-180-20260529-story-sun-plaza-shafts-build.log`, `Build Finished, Result: Success.`
+- Smoke: `Logs/cycle-180-20260529-story-sun-plaza-shafts-smoke.log`, 24 seconds, severe pattern count 0.
+- Serialized scene grep includes `defaultPreset: 0`, `FastVS_HD2D_MapSunAnchor_Library_Morning`, and `FastVS_HD2D_Cycle180_CentralPlaza_DynamicSunShaftField`.
+
+参考画像とのギャップ:
+
+Plaza is still below the target HD-2D reference quality. The light now spans more of the map, but parts still read as bright ground wash / haze bands rather than convincing volumetric sunlight shafts. The Library texture/overbright artifact needs a follow-up cleanup cycle.
+
+Tom 判定をお願いします。
+
+Build exe:
+
+`Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+
+Run note: start the whole `Builds/FastVS_HouseSlice/` folder, not only a copied exe.
