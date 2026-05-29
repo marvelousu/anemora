@@ -501,6 +501,7 @@ namespace Anemora.EditorTools
             var story = CreateStoryFlow(camera, controller, player, areaVisibility, guide);
             CreateHouseDoorTransitions(controller, player, areaVisibility, story);
             CreateHd2dDepthFraming(currentAreas, pastAreas);
+            story.ApplyConfiguredStartStateForReview();
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -9859,6 +9860,7 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle138AriaPastMarketStallSilhouetteDetails(ariaStreetRoot, prefix, past, materials);
             CreateHouseDoorMarkers(interiorRoot, exteriorRoot, prefix, past, materials);
             CreateRouteMoveMarkers(exteriorRoot, plazaRoot, libraryRoot, prefix, past, materials);
+            CreateChapter1BaselineMapPointMarkers(exteriorRoot, plazaRoot, libraryRoot, prefix, past, materials);
             CreateCentralPlazaLegacySunRibbonHardKillCycle121(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceSurfaceRemapCycle122(plazaRoot, prefix, past, materials);
             CreateCentralPlazaReferenceAerialLiftCycle123(plazaRoot, prefix, past, materials);
