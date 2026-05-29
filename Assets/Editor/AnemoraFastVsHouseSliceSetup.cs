@@ -112,6 +112,8 @@ namespace Anemora.EditorTools
         private const string Hd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReportFileName = "phase_c_beta_artistic_tiltshift_adoption_diagnostics.md";
         private const string Hd2dFeedbackLightingPolishCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_feedback_lighting_polish_cycle179_parent_review_20260529_01";
         private const string Hd2dFeedbackLightingPolishDiagnosticsReportFileName = "feedback_lighting_polish_diagnostics.md";
+        private const string Hd2dCycle181PlazaShaftQualityLibraryArtifactCaptureDirectory = "docs/devlog/screenshots/fast_vs_hd2d_cycle181_plaza_shaft_quality_library_artifact_parent_review_20260529_01";
+        private const string Hd2dCycle181PlazaShaftQualityLibraryArtifactDiagnosticsReportFileName = "cycle181_plaza_shaft_quality_library_artifact_diagnostics.md";
         private const string Stage7TiltShiftFeatureName = "FastVS HD2D Stage7 TiltShift";
         private const string Stage7TiltShiftShaderName = "Anemora/FastVS/TiltShiftFullscreen";
         private const string Stage7TiltShiftMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_stage7_tilt_shift.mat";
@@ -1681,6 +1683,36 @@ namespace Anemora.EditorTools
                 "04_current_central_plaza_story_east_broad_sunshaft.png",
                 "05_current_library_story_morning_exit.png",
                 Hd2dCycle180StorySunAndPlazaShaftsDiagnosticsReportFileName
+            });
+            AssetDatabase.Refresh();
+        }
+
+        public static void ValidateHd2dCycle181PlazaShaftQualityLibraryArtifactBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dCycle181PlazaShaftQualityLibraryArtifactScene();
+        }
+
+        public static void CaptureHd2dCycle181PlazaShaftQualityLibraryArtifactScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            ValidateHd2dPhaseASunCycleSceneWiring();
+            ValidateHd2dCycle181PlazaShaftQualityLibraryArtifactScene();
+
+            var outputDirectory = Hd2dCycle181PlazaShaftQualityLibraryArtifactCaptureDirectory;
+            Directory.CreateDirectory(outputDirectory);
+            CaptureHd2dCycle181PlazaShaftQualityLibraryArtifactEvidence(outputDirectory);
+            PrefixHd2dPhaseACaptureOutputsIfNeeded(outputDirectory, GetCycleAudiencePrefix(), new[]
+            {
+                "01_current_house_interior_story_morning.png",
+                "02_current_central_plaza_story_west_center_dynamic_shafts.png",
+                "03_current_central_plaza_story_east_dynamic_shafts.png",
+                "04_current_library_suspicious_texture_close_view.png",
+                "05_current_library_story_morning_exit.png",
+                Hd2dCycle181PlazaShaftQualityLibraryArtifactDiagnosticsReportFileName
             });
             AssetDatabase.Refresh();
         }
@@ -30046,47 +30078,47 @@ namespace Anemora.EditorTools
             renderers[0] = CreateHd2dCycle180DynamicSunShaftQuad(
                 fieldObject.transform,
                 "FastVS_HD2D_Cycle180_CentralPlaza_DynamicSunShaft_WestWide",
-                new Vector3(-5.60f, 2.35f, 2.30f),
-                new Vector3(3.30f, 5.20f, 1f),
-                Quaternion.Euler(0f, -13f, 11f),
+                new Vector3(-5.92f, 3.72f, 1.96f),
+                new Vector3(4.10f, 6.90f, 1f),
+                Quaternion.Euler(0f, -16f, 12f),
                 material);
             renderers[1] = CreateHd2dCycle180DynamicSunShaftQuad(
                 fieldObject.transform,
                 "FastVS_HD2D_Cycle180_CentralPlaza_DynamicSunShaft_WestCenter",
-                new Vector3(-2.70f, 2.20f, 3.32f),
-                new Vector3(3.70f, 5.00f, 1f),
-                Quaternion.Euler(0f, -11f, 9f),
+                new Vector3(-2.94f, 3.48f, 3.02f),
+                new Vector3(4.52f, 7.28f, 1f),
+                Quaternion.Euler(0f, -12f, 10f),
                 material);
             renderers[2] = CreateHd2dCycle180DynamicSunShaftQuad(
                 fieldObject.transform,
                 "FastVS_HD2D_Cycle180_CentralPlaza_DynamicSunShaft_Center",
-                new Vector3(0.10f, 2.10f, 3.95f),
-                new Vector3(4.20f, 5.30f, 1f),
-                Quaternion.Euler(0f, -9f, 8f),
+                new Vector3(0.02f, 3.36f, 4.08f),
+                new Vector3(4.96f, 7.82f, 1f),
+                Quaternion.Euler(0f, -9f, 9f),
                 material);
             renderers[3] = CreateHd2dCycle180DynamicSunShaftQuad(
                 fieldObject.transform,
                 "FastVS_HD2D_Cycle180_CentralPlaza_DynamicSunShaft_EastCenter",
-                new Vector3(2.96f, 2.18f, 3.20f),
-                new Vector3(3.55f, 4.90f, 1f),
-                Quaternion.Euler(0f, -7f, 7f),
+                new Vector3(3.08f, 3.50f, 2.98f),
+                new Vector3(4.36f, 7.16f, 1f),
+                Quaternion.Euler(0f, -7f, 8f),
                 material);
             renderers[4] = CreateHd2dCycle180DynamicSunShaftQuad(
                 fieldObject.transform,
                 "FastVS_HD2D_Cycle180_CentralPlaza_DynamicSunShaft_EastWide",
-                new Vector3(5.70f, 2.28f, 2.18f),
-                new Vector3(3.20f, 5.10f, 1f),
-                Quaternion.Euler(0f, -5f, 8f),
+                new Vector3(5.96f, 3.76f, 1.92f),
+                new Vector3(4.00f, 6.94f, 1f),
+                Quaternion.Euler(0f, -4f, 8f),
                 material);
 
             var field = fieldObject.AddComponent<FastVsDynamicSunShaftField>();
             SerializedSetObjectReferenceArray(field, "shaftRenderers", renderers);
             SerializedSet(field, "baseAlpha", 0.24f);
-            SerializedSet(field, "viewReactiveAlpha", 0.16f);
-            SerializedSet(field, "pulseAmplitude", 0.040f);
-            SerializedSet(field, "pulseSpeed", 0.38f);
-            SerializedSet(field, "cameraParallax", 0.16f);
-            SerializedSet(field, "sunYawInfluence", 14f);
+            SerializedSet(field, "viewReactiveAlpha", 0.15f);
+            SerializedSet(field, "pulseAmplitude", 0.034f);
+            SerializedSet(field, "pulseSpeed", 0.44f);
+            SerializedSet(field, "cameraParallax", 0.19f);
+            SerializedSet(field, "sunYawInfluence", 18f);
             SerializedSet(field, "centralPlazaOnly", true);
 
             EditorUtility.SetDirty(fieldObject);
@@ -30266,6 +30298,10 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: dynamic sunshaft field needs visible renderer children, found {renderers.Length}.");
             }
 
+            var hasWestSpan = false;
+            var hasCenterSpan = false;
+            var hasEastSpan = false;
+            var hasElevatedRenderer = false;
             for (var i = 0; i < renderers.Length; i++)
             {
                 var renderer = renderers[i];
@@ -30274,7 +30310,46 @@ namespace Anemora.EditorTools
                 {
                     throw new InvalidOperationException($"House slice validation failed: dynamic sunshaft renderer {renderer.name} must use {PlazaSunbeamShaftsCycle113MaterialPath}.");
                 }
+
+                var localX = renderer.transform.localPosition.x;
+                if (localX < -2.0f)
+                {
+                    hasWestSpan = true;
+                }
+                else if (localX > 2.0f)
+                {
+                    hasEastSpan = true;
+                }
+                else
+                {
+                    hasCenterSpan = true;
+                }
+
+                if (renderer.transform.localPosition.y >= 3.0f && renderer.transform.localScale.y >= 6.5f)
+                {
+                    hasElevatedRenderer = true;
+                }
             }
+
+            if (!hasWestSpan || !hasCenterSpan || !hasEastSpan || !hasElevatedRenderer)
+            {
+                throw new InvalidOperationException(
+                    "House slice validation failed: dynamic sunshaft field must span west, center, and east with elevated air-space shafts rather than only low floor wash.");
+            }
+        }
+
+        private static void ValidateHd2dCycle181PlazaShaftQualityLibraryArtifactScene()
+        {
+            ValidateHd2dCycle180StorySunAndPlazaShafts();
+            ValidateHd2dCycle181LibraryArtifactTriageTargets();
+        }
+
+        private static void ValidateHd2dCycle181LibraryArtifactTriageTargets()
+        {
+            ValidateLibraryArtifactTriageObject("Current_Library_WindowTexture_Left", "Current_LibraryMap_SeparateSpace", "empty_window_hd2d_plate");
+            ValidateLibraryArtifactTriageObject("Current_Library_WindowLightShaft_Left", "Current_LibraryMap_SeparateSpace", "hd2d_library_window_light");
+            ValidateLibraryArtifactTriageObject("Current_Library_WindowLightPool_LeftFloor", "Current_LibraryMap_SeparateSpace", "hd2d_library_window_light");
+            ValidateLibraryArtifactTriageObject("Current_Library_WindowBreakup_Left_DustSlatUpper", "Current_LibraryMap_SeparateSpace", "dust");
         }
 
         private static void ValidateHd2dCycle180RuntimeStorySunPolicySource()
@@ -30294,6 +30369,28 @@ namespace Anemora.EditorTools
             ValidateSourceToken(sunCycleSource, "areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library", sunCycleSourcePath);
             ValidateSourceToken(dynamicShaftSource, "public sealed class FastVsDynamicSunShaftField", dynamicShaftSourcePath);
             ValidateSourceToken(dynamicShaftSource, "renderer.SetPropertyBlock(propertyBlock);", dynamicShaftSourcePath);
+        }
+
+        private static void ValidateLibraryArtifactTriageObject(string objectName, string expectedParentName, string expectedMaterialToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing library artifact triage object {objectName}.");
+            }
+
+            var parentName = sceneObject.transform.parent != null ? sceneObject.transform.parent.name : string.Empty;
+            if (!string.Equals(parentName, expectedParentName, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}, found {parentName}.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            var materialPath = renderer != null && renderer.sharedMaterial != null ? AssetDatabase.GetAssetPath(renderer.sharedMaterial) : string.Empty;
+            if (string.IsNullOrEmpty(materialPath) || !materialPath.Contains(expectedMaterialToken, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep material token {expectedMaterialToken}, found {materialPath}.");
+            }
         }
 
         private static void ValidateHd2dPhaseASunCyclePlazaBroadSunshaftReceiver(
@@ -31626,6 +31723,175 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"Fast VS cycle 180 story sun and plaza shafts diagnostics report failed: missing output file {reportPath}");
             }
+        }
+
+        private static void CaptureHd2dCycle181PlazaShaftQualityLibraryArtifactEvidence(string outputDirectory)
+        {
+            Directory.CreateDirectory(outputDirectory);
+            ValidateHd2dCycle181PlazaShaftQualityLibraryArtifactScene();
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            var root = FindSceneObjectIncludingInactive(Hd2dPhaseASunCycleRootName);
+            var driver = root != null ? root.GetComponent<AnemoraSunCycleDriver>() : null;
+            if (controller == null || visibility == null || guide == null || camera == null || driver == null)
+            {
+                throw new InvalidOperationException("Fast VS cycle 181 plaza shaft quality and library artifact capture failed: scene review components or SunCycle driver are missing.");
+            }
+
+            var files = new[]
+            {
+                "01_current_house_interior_story_morning.png",
+                "02_current_central_plaza_story_west_center_dynamic_shafts.png",
+                "03_current_central_plaza_story_east_dynamic_shafts.png",
+                "04_current_library_suspicious_texture_close_view.png",
+                "05_current_library_story_morning_exit.png"
+            };
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.Interior,
+                HouseInteriorPlayerStart,
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[0]));
+            ValidateScreenshotOutputExists(outputDirectory, files[0]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(-3.88f, 0.02f, 3.54f),
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[1]));
+            ValidateScreenshotOutputExists(outputDirectory, files[1]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.CentralPlaza,
+                CentralPlazaVsCenter + new Vector3(4.18f, 0.02f, 3.54f),
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[2]));
+            ValidateScreenshotOutputExists(outputDirectory, files[2]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-4.86f, 0.02f, -1.82f),
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[3]));
+            ValidateScreenshotOutputExists(outputDirectory, files[3]);
+
+            CaptureHd2dPhaseASunCycleSceneWiringScreenshot(
+                controller,
+                visibility,
+                guide,
+                camera,
+                driver,
+                FastVsHouseArea.Library,
+                LibraryVsCenter + new Vector3(-0.82f, 0.02f, -0.58f),
+                SunPreset.Morning,
+                Path.Combine(outputDirectory, files[4]));
+            ValidateScreenshotOutputExists(outputDirectory, files[4]);
+
+            WriteHd2dCycle181PlazaShaftQualityLibraryArtifactDiagnosticsReport(outputDirectory, files);
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS cycle 181 plaza shaft quality and library artifact evidence captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        private static void WriteHd2dCycle181PlazaShaftQualityLibraryArtifactDiagnosticsReport(string outputDirectory, IReadOnlyList<string> screenshotFiles)
+        {
+            var lines = new List<string>
+            {
+                "# HD2D Cycle 181 Plaza Shaft Quality and Library Artifact Diagnostics",
+                string.Empty,
+                $"- Scene: `{ScenePath}`",
+                $"- Validate entry: `{nameof(ValidateHd2dCycle181PlazaShaftQualityLibraryArtifactBatch)}`",
+                $"- Capture entry: `{nameof(CaptureHd2dCycle181PlazaShaftQualityLibraryArtifactScreenshotsBatch)}`",
+                $"- Story sun anchors remain Morning before the library-exit beat, and the Library -> CentralPlaza Noon switch still belongs to the transition fade.",
+                string.Empty,
+                "| Anchor | Parent | Preset | Transition | Priority |",
+                "|---|---|---:|---:|---:|"
+            };
+
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_Interior_Morning");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_Exterior_Morning");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_CentralPlaza_Morning");
+            AddHd2dPhaseASunCycleAnchorReportLine(lines, "FastVS_HD2D_MapSunAnchor_Library_Morning");
+
+            lines.Add(string.Empty);
+            lines.Add("| Broad Sunshaft Receiver | Parent | Landmark Id | Local Position | Local Scale |");
+            lines.Add("|---|---|---|---|---|");
+            AddHd2dCycle180BroadSunshaftReceiverReportLine(lines, "FastVS_HD2D_Cycle180_CentralPlaza_BroadSunshaftReceiver_WestSpan");
+            AddHd2dCycle180BroadSunshaftReceiverReportLine(lines, "FastVS_HD2D_Cycle180_CentralPlaza_BroadSunshaftReceiver_CenterSpan");
+            AddHd2dCycle180BroadSunshaftReceiverReportLine(lines, "FastVS_HD2D_Cycle180_CentralPlaza_BroadSunshaftReceiver_EastSpan");
+
+            lines.Add(string.Empty);
+            lines.Add("| Dynamic Sunshaft Field | Parent | Renderer Count | Alpha / Motion |");
+            lines.Add("|---|---|---:|---|");
+            AddHd2dCycle180DynamicSunShaftFieldReportLine(lines);
+
+            lines.Add(string.Empty);
+            lines.Add("| Dynamic Sunshaft Renderer | Parent | Material | Local Position | Local Scale |");
+            lines.Add("|---|---|---|---|---|");
+            AddHd2dCycle180DynamicSunShaftRendererReportLines(lines);
+
+            lines.Add(string.Empty);
+            lines.Add("| Library Artifact Triaged Object | Parent | Material Token | Local Position | Local Scale |");
+            lines.Add("|---|---|---|---|---|");
+            AddHd2dCycle181LibraryArtifactReportLine(lines, "Current_Library_WindowTexture_Left");
+            AddHd2dCycle181LibraryArtifactReportLine(lines, "Current_Library_WindowLightShaft_Left");
+            AddHd2dCycle181LibraryArtifactReportLine(lines, "Current_Library_WindowLightPool_LeftFloor");
+            AddHd2dCycle181LibraryArtifactReportLine(lines, "Current_Library_WindowBreakup_Left_DustSlatUpper");
+
+            lines.Add(string.Empty);
+            lines.Add("| Screenshot |");
+            lines.Add("|---|");
+            for (var i = 0; i < screenshotFiles.Count; i++)
+            {
+                lines.Add($"| `{screenshotFiles[i]}` |");
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("- Plaza evidence is centered on broad aerial shafts, and the library close view isolates the suspicious window texture area for review.");
+
+            var reportPath = Path.Combine(outputDirectory, Hd2dCycle181PlazaShaftQualityLibraryArtifactDiagnosticsReportFileName);
+            File.WriteAllText(reportPath, string.Join(Environment.NewLine, lines) + Environment.NewLine);
+            if (!File.Exists(reportPath))
+            {
+                throw new InvalidOperationException($"Fast VS cycle 181 plaza shaft quality and library artifact diagnostics report failed: missing output file {reportPath}");
+            }
+        }
+
+        private static void AddHd2dCycle181LibraryArtifactReportLine(List<string> lines, string objectName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                lines.Add($"| `{objectName}` | missing | missing | missing | missing |");
+                return;
+            }
+
+            var parentName = sceneObject.transform.parent != null ? sceneObject.transform.parent.name : string.Empty;
+            var renderer = sceneObject.GetComponent<Renderer>();
+            var materialPath = renderer != null && renderer.sharedMaterial != null ? AssetDatabase.GetAssetPath(renderer.sharedMaterial) : string.Empty;
+            lines.Add($"| `{objectName}` | `{parentName}` | `{materialPath}` | `{sceneObject.transform.localPosition}` | `{sceneObject.transform.localScale}` |");
         }
 
         private static void AddHd2dPhaseASunCycleAnchorReportLine(List<string> lines, string objectName)
