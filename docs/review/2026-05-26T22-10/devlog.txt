@@ -1,0 +1,40 @@
+docs/devlog/2026-05-25_fast_vs_hd2d_stage7_bokeh_focus.md
+
+Stage7s aperture frame blend review
+
+Branch:
+work/fast-vs-hd2d-shading-foundation-20260522
+
+Build:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Launch folder:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+フォルダごと起動
+
+Capture:
+C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7s_aperture_frame_blend
+
+Changes:
+- Darkened the current TimeWindow aperture frame and threshold material colors.
+- Added a bounded aperture-frame blend validation gate.
+- Reused the Stage7 portal / paired-space / PortalStencilFeature validation path and the existing five-area capture convention.
+
+Validation:
+- ValidateHd2dStage7ApertureFrameBlendBatch: exit 0, Logs\stage7s_aperture_frame_blend_validate.log.
+- CaptureHd2dStage7ApertureFrameBlendReferenceScreenshotsBatch: exit 0 with graphics enabled, Logs\stage7s_aperture_frame_blend_capture_gfx.log.
+- BuildAndValidateBatch: Build Finished, Result: Success, Logs\stage7s_aperture_frame_blend_build_gfx.log.
+- Player smoke: killed after 20 seconds, Logs\stage7s_aperture_frame_blend_smoke.log; no Exception/Error/Failed/NullReference/MissingReference/Assertion matches.
+- PortalStencilFeature, Stage7 TiltShift, and Stage7 Outline are active in UniversalRenderPipeline_Renderer.asset.
+- Current/Past CentralPlaza paired-space roots and TimeWindowPairedSpacePortalController are present in Anemora_FastVS_HouseSlice.unity.
+- tw_current_aperture.png visually checked: aperture content is present, not black.
+
+Public review curation:
+- No external target reference images are included.
+- No comparison board is included.
+- Route-close diagnostic images are kept out of this public review set because the oversized foreground sprite obstructs the center.
+
+Open gaps:
+- The TimeWindow aperture frame is darker, but the portal still reads as a flat technical overlay with strong vertical repetition.
+- Plaza, library, and home exterior remain substantially below the HD-2D target in depth staging, material variation, light density, and composition.
+- Judgment pending; this review is a checkpoint, not a final visual approval.

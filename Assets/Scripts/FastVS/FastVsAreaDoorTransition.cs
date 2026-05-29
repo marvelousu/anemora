@@ -1,4 +1,5 @@
 using System.Collections;
+using Anemora.FastVS.SunCycle;
 using Anemora.TimeManagement;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ namespace Anemora.FastVS
 
         private static float nextGlobalAllowedTime;
         private static int activeTransitionCount;
+        private static bool storyReachedPostLibraryNoon;
         private bool isTransitioning;
         private float transitionAlpha;
 
@@ -37,6 +39,7 @@ namespace Anemora.FastVS
         public float TransitionHoldSecondsForReview => transitionHoldSeconds;
         public bool IsTransitioningForReview => isTransitioning;
         public bool StoryFlowWiredForReview => storyFlow != null;
+        public static bool StoryReachedPostLibraryNoonForReview => storyReachedPostLibraryNoon;
         public static bool AnyTransitionInProgressForReview => activeTransitionCount > 0;
 
         public void TriggerForReview()
@@ -135,8 +138,17 @@ namespace Anemora.FastVS
 
             if (areaVisibility != null)
             {
-                areaVisibility.SetActiveAreaForReview(targetArea);
+                if (Application.isPlaying)
+                {
+                    areaVisibility.SetActiveAreaWithLightingTransitionForReview(targetArea);
+                }
+                else
+                {
+                    areaVisibility.SetActiveAreaForReview(targetArea);
+                }
             }
+
+            ApplyStorySunPresetForTransition();
 
             if (portalController != null)
             {
@@ -144,6 +156,29 @@ namespace Anemora.FastVS
             }
 
             return true;
+        }
+
+        private void ApplyStorySunPresetForTransition()
+        {
+            if (sourceArea == FastVsHouseArea.Library && targetArea == FastVsHouseArea.CentralPlaza)
+            {
+                storyReachedPostLibraryNoon = true;
+            }
+
+            if (targetArea != FastVsHouseArea.Exterior && targetArea != FastVsHouseArea.CentralPlaza)
+            {
+                return;
+            }
+
+            var driver = AnemoraSunCycleDriver.Instance != null
+                ? AnemoraSunCycleDriver.Instance
+                : FindFirstObjectByType<AnemoraSunCycleDriver>();
+            if (driver == null)
+            {
+                return;
+            }
+
+            driver.ApplyPreset(storyReachedPostLibraryNoon ? SunPreset.Noon : SunPreset.Morning, true);
         }
 
         private bool IsSourceAreaActive()

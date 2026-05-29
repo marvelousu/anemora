@@ -1,0 +1,1 @@
+docs/devlog/2026-05-25_fast_vs_phaseA_plaza_route_pad_visibility_fix.md

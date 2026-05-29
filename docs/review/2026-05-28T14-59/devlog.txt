@@ -1,0 +1,30 @@
+docs/devlog/2026-05-28_fast_vs_hd2d_phase_a_gate_review_v2.md
+
+Fast VS HD-2D Phase A Gate Review
+Date: 2026-05-28
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+
+Build exe:
+Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe
+Run note: フォルダごと起動
+
+Included captures:
+01_home.png
+02_home_outside.png
+03_plaza.png
+04_plaza_niro_in_shadow.png
+05_library.png
+06_timewindow_aperture.png
+
+Verification:
+- Cycle171 validate/capture/build/smoke completed after Phase A shader lightening.
+- Built exe smoke ran for 24 seconds with zero configured error-pattern hits.
+- Painted overlay removal was checked by source grep against FastVsRealtimeLightShadowRig.cs.
+- The old 0.35s periodic shadow-policy refresh tokens are absent from the realtime rig.
+- FastVS_SurfaceRampLit.shader uses Cull Back and does not use the old custom MainLightRealtimeShadow(...) PCF path.
+- TimeWindow aperture was checked for black-frame or obvious missing-render symptoms; final visual judgement remains for Tom.
+
+Gate wording:
+変更を適用しました。
+参考画像とのギャップは、Phase A 時点では Buto の volumetric god rays、Tilt Shift、HDR emissive/VFX が未導入であり、target HD-2D quality remains substantially below reference です。
+Tom 判定をお願いします。

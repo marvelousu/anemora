@@ -1,0 +1,38 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7r_route_close_cleanup.md
+
+Stage7r route-close artifact cleanup review
+
+Branch:
+work/fast-vs-hd2d-shading-foundation-20260522
+
+Build:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Launch folder:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+HTML phrase: &#12501;&#12457;&#12523;&#12480;&#12372;&#12392;&#36215;&#21205;
+
+Capture:
+C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7_route_pad_silhouette
+
+Changes:
+- Removed the obsolete Stage7 route strip-shadow clamp and its realtime-light exception.
+- Reworked current-side library entry plinth / threshold surfaces toward shadow and dust.
+- Removed close-threshold and door-relief micro geometry that produced bright rectangular noise in the route-close shot.
+- Preserved review capture ordering so the close review camera applies the guide and Stage7 focus after route positioning.
+
+Validation:
+- ValidateHd2dStage7RoutePadSilhouetteBatch: exit 0.
+- CaptureHd2dStage7RoutePadSilhouetteReferenceScreenshotsBatch: exit 0.
+- BuildAndValidateBatch: exit 0.
+- stage7r-route-close-artifact-smoke.log: no smoke failure matches.
+- PortalStencilFeature and Stage7 renderer features active.
+- Paired-space scene objects and current/past route glow pads present.
+- tw_current_aperture.png visually checked: content is present, not black.
+
+Open gaps:
+- The previous white strip artifact is removed, but close-route framing still has oversized sprite blur and flat background geometry.
+- Library facade, plaza, and home exterior remain far below the Octopath HD-2D target in light density, material response, fog/depth, and composition.
+- TimeWindow aperture still shows hard repetition and rough portal blending.
+
+Judgment pending. Work continues until an explicit stop instruction.

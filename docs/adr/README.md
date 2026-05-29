@@ -62,6 +62,8 @@ YYYY-MM-DD
 | [0006](0006-save-system.md) | セーブシステムの実装方針 | Accepted | 2026-05-04 |
 | [0007](0007-ui-framework-ugui.md) | UI フレームワークに uGUI を採用 (UI Toolkit は将来選択肢) | Accepted | 2026-05-04 |
 | [0008](0008-localization.md) | ローカライズ実装方針 (Unity Localization + TMP Atlas + DeepL Pro) | Accepted | 2026-05-04 |
+| [0009](0009-asset-pipeline.md) | アセット制作パイプライン正式手順 | Accepted | 2026-05-05 |
+| [0010](0010-unity-mcp-editor-bridge.md) | Unity Editor 操作の MCP ブリッジ採用 (CoderGamester/mcp-unity) と運用ガード | Accepted | 2026-05-18 |
 
 ## ロードマップ (予定)
 

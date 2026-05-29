@@ -189,6 +189,11 @@ namespace Anemora.FastVS
             scaler.matchWidthOrHeight = 0.5f;
             canvasObject.AddComponent<GraphicRaycaster>();
 
+            if (fontAsset != null)
+            {
+                TMP_Settings.defaultFontAsset = fontAsset;
+            }
+
             panel = CreatePanel("DialoguePanel", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1172f, 124f), new Vector2(0f, 44f), new Color(0.025f, 0.022f, 0.022f, 0.88f));
             CreateRect(panel, "TopStripe", AnchorTopStretch(), new Vector2(0f, 3f), new Vector2(0f, -1.5f), new Color(0.95f, 0.57f, 0.26f, 0.92f));
             speakerText = CreateText(panel, "Speaker", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(240f, 30f), new Vector2(22f, -14f), 22f, FontStyles.Bold, TextAlignmentOptions.TopLeft, new Color(1f, 0.80f, 0.48f, 1f));

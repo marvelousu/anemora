@@ -191,6 +191,7 @@ namespace Anemora.FastVS
         public string RuntimeHudActiveTextForReview => runtimeHud != null ? runtimeHud.ActiveFullTextForReview : string.Empty;
         public string RuntimeHudVisibleTextForReview => runtimeHud != null ? runtimeHud.VisibleTextForReview : string.Empty;
         public string RuntimeHudObjectiveTextForReview => runtimeHud != null ? runtimeHud.ObjectiveTextForReview : string.Empty;
+        public bool RuntimeHudObjectivePanelActiveForReview => runtimeHud != null && runtimeHud.ObjectivePanelActiveForReview;
         public bool RuntimeHudQuestionActiveForReview => runtimeHud != null && runtimeHud.QuestionActiveForReview;
         public bool RuntimeHudBrushActiveForReview => runtimeHud != null && runtimeHud.BrushActiveForReview;
         public Vector2 RuntimeHudBrushAnchoredPositionForReview => runtimeHud != null ? runtimeHud.BrushAnchoredPositionForReview : Vector2.positiveInfinity;

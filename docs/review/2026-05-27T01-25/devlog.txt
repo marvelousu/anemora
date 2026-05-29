@@ -1,1 +1,1 @@
-docs/devlog/2026-05-27_chapter1_map_content_refine_cycle96.md
+docs/devlog/2026-05-27_fast_vs_hd2d_stage7v_apv_baked_gi.md

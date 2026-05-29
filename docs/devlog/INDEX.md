@@ -1,14 +1,14 @@
-# Devlog Index
+﻿# Devlog Index
 
-> Status: v3.1 recovered cross-worktree + notes devlog index (2026-05-19). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.34 fast VS exterior exit tree clearance index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 234 files including INDEX.md and README.md.
-- Dated devlog records: 232 files.
-- Linked evidence files present under docs/devlog/screenshots/: 163 files.
+- Root-level Markdown coverage: 512 files including INDEX.md and README.md.
+- Dated devlog records: 510 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1332 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -28,9 +28,326 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-15 | 1 |
 | 2026-05-16 | 1 |
 | 2026-05-17 | 5 |
-| 2026-05-18 | 46 |
+| 2026-05-18 | 48 |
+| 2026-05-19 | 3 |
+| 2026-05-20 | 54 |
+| 2026-05-21 | 54 |
+| 2026-05-22 | 51 |
+| 2026-05-23 | 40 |
+| 2026-05-24 | 37 |
+| 2026-05-25 | 37 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-05-25
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-25_fast_vs_hd2d_exterior_exit_tree_clearance_cycle164.md](2026-05-25_fast_vs_hd2d_exterior_exit_tree_clearance_cycle164.md) | Fast VS / HD2D | fix(fast-vs): keep exterior exit camera off tree |
+| [2026-05-25_fast_vs_hd2d_global_realtime_exterior_anchor_cycle163.md](2026-05-25_fast_vs_hd2d_global_realtime_exterior_anchor_cycle163.md) | Fast VS / HD2D | feat(hd2d): clamp exterior realtime camera anchor |
+| [2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md](2026-05-25_fast_vs_hd2d_global_realtime_camera_exposure_cycle162.md) | Fast VS / HD2D | feat(hd2d): tune global realtime camera exposure |
+| [2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md](2026-05-25_fast_vs_hd2d_global_realtime_lighting_cycle161.md) | Fast VS / HD2D | feat(hd2d): globalize realtime light and shadow |
+| [2026-05-25_fast_vs_hd2d_plaza_neutral_base_color_cycle160.md](2026-05-25_fast_vs_hd2d_plaza_neutral_base_color_cycle160.md) | Fast VS / HD2D | feat(hd2d): neutralize plaza realtime base color |
+| [2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md](2026-05-25_fast_vs_hd2d_plaza_neutral_realtime_shader_cycle159.md) | Fast VS / HD2D | feat(hd2d): neutralize plaza realtime shader |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_contrast_cycle158.md](2026-05-25_fast_vs_hd2d_plaza_realtime_contrast_cycle158.md) | Fast VS / HD2D | feat(hd2d): tighten plaza realtime contrast |
+| [2026-05-25_fast_vs_hd2d_plaza_skybox_horizon_cycle157.md](2026-05-25_fast_vs_hd2d_plaza_skybox_horizon_cycle157.md) | Fast VS / HD2D | feat(hd2d): fix plaza skybox horizon |
+| [2026-05-25_fast_vs_hd2d_plaza_sky_reveal_camera_cycle156.md](2026-05-25_fast_vs_hd2d_plaza_sky_reveal_camera_cycle156.md) | Fast VS / HD2D | feat(hd2d): restore plaza sky reveal camera |
+| [2026-05-25_fast_vs_hd2d_plaza_trim_broad_realtime_casters_cycle155.md](2026-05-25_fast_vs_hd2d_plaza_trim_broad_realtime_casters_cycle155.md) | Fast VS / HD2D | feat(hd2d): trim broad plaza realtime casters |
+| [2026-05-25_fast_vs_hd2d_plaza_highres_realtime_shadow_cycle154.md](2026-05-25_fast_vs_hd2d_plaza_highres_realtime_shadow_cycle154.md) | Fast VS / HD2D | feat(hd2d): raise plaza realtime shadow quality |
+| [2026-05-25_fast_vs_hd2d_plaza_desaturated_realtime_sun_cycle153.md](2026-05-25_fast_vs_hd2d_plaza_desaturated_realtime_sun_cycle153.md) | Fast VS / HD2D | feat(hd2d): desaturate plaza realtime sun grade |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_cookie_no_ribbon_cycle152.md](2026-05-25_fast_vs_hd2d_plaza_realtime_cookie_no_ribbon_cycle152.md) | Fast VS / HD2D | feat(hd2d): remove plaza realtime sun ribbons |
+| [2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md](2026-05-25_fast_vs_hd2d_plaza_vs_sky_camera_cycle151.md) | Fast VS / HD2D | feat(hd2d): restore plaza VS sky camera |
+| [2026-05-25_fast_vs_hd2d_plaza_visible_caster_cycle150.md](2026-05-25_fast_vs_hd2d_plaza_visible_caster_cycle150.md) | Fast VS / HD2D | feat(hd2d): cast shadows from visible plaza props |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_sprite_tracking_cycle149.md](2026-05-25_fast_vs_hd2d_plaza_realtime_sprite_tracking_cycle149.md) | Fast VS / HD2D | feat(hd2d): track plaza sprite realtime light |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_soft_shadow_cycle148.md](2026-05-25_fast_vs_hd2d_plaza_realtime_soft_shadow_cycle148.md) | Fast VS / HD2D | feat(hd2d): soften plaza realtime shadowmap |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_sun_cookie_cycle147.md](2026-05-25_fast_vs_hd2d_plaza_realtime_sun_cookie_cycle147.md) | Fast VS / HD2D | feat(hd2d): project plaza realtime sun cookie |
+| [2026-05-25_fast_vs_hd2d_plaza_facade_shadow_lift_cycle146.md](2026-05-25_fast_vs_hd2d_plaza_facade_shadow_lift_cycle146.md) | Fast VS / HD2D | feat(hd2d): lift plaza facade realtime shadows |
+| [2026-05-25_fast_vs_hd2d_plaza_reference_camera_grade_cycle145.md](2026-05-25_fast_vs_hd2d_plaza_reference_camera_grade_cycle145.md) | Fast VS / HD2D | feat(hd2d): tune plaza reference camera grade |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_sun_lift_cycle144.md](2026-05-25_fast_vs_hd2d_plaza_realtime_sun_lift_cycle144.md) | Fast VS / HD2D | feat(hd2d): lift plaza realtime sun response |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_lift_cycle143.md](2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_lift_cycle143.md) | Fast VS / HD2D | feat(hd2d): lift plaza realtime shadow texture |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_texture_cycle142.md](2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_texture_cycle142.md) | Fast VS / HD2D | feat(hd2d): texture plaza realtime shadows |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_caster_shape_rewrite_cycle141.md](2026-05-25_fast_vs_hd2d_plaza_realtime_caster_shape_rewrite_cycle141.md) | Fast VS / HD2D | feat(hd2d): rewrite plaza realtime caster shapes |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_mesh_caster_cycle140.md](2026-05-25_fast_vs_hd2d_plaza_realtime_mesh_caster_cycle140.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime mesh casters |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md](2026-05-25_fast_vs_hd2d_plaza_realtime_surface_response_cycle139.md) | Fast VS / HD2D | feat(hd2d): boost plaza realtime surface response |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md](2026-05-25_fast_vs_hd2d_plaza_realtime_dapple_caster_cycle138.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime dapple casters |
+| [2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md](2026-05-25_fast_vs_hd2d_plaza_follow_realtime_tracking_cycle137.md) | Fast VS / HD2D | feat(hd2d): recover plaza realtime follow framing |
+| [2026-05-25_fast_vs_hd2d_plaza_map_safe_camera_cycle136.md](2026-05-25_fast_vs_hd2d_plaza_map_safe_camera_cycle136.md) | Fast VS / HD2D | feat(hd2d): keep plaza follow camera on map |
+| [2026-05-25_fast_vs_hd2d_plaza_vs_camera_recovery_cycle135.md](2026-05-25_fast_vs_hd2d_plaza_vs_camera_recovery_cycle135.md) | Fast VS / HD2D | feat(hd2d): recover plaza VS camera framing |
+| [2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_recovery_cycle134.md](2026-05-25_fast_vs_hd2d_plaza_realtime_shadow_recovery_cycle134.md) | Fast VS / HD2D | feat(hd2d): recover plaza realtime shadow read |
+| [2026-05-25_fast_vs_hd2d_plaza_reference_shadow_rebalance_cycle133.md](2026-05-25_fast_vs_hd2d_plaza_reference_shadow_rebalance_cycle133.md) | Fast VS / HD2D | feat(hd2d): rebalance plaza reference shadow grade |
+| [2026-05-25_fast_vs_hd2d_plaza_reference_shadow_contrast_cycle132.md](2026-05-25_fast_vs_hd2d_plaza_reference_shadow_contrast_cycle132.md) | Fast VS / HD2D | feat(hd2d): force plaza reference shadow contrast |
+| [2026-05-25_fast_vs_hd2d_plaza_reference_shadow_bloom_cycle131.md](2026-05-25_fast_vs_hd2d_plaza_reference_shadow_bloom_cycle131.md) | Fast VS / HD2D | feat(hd2d): add plaza reference shadow bloom |
+| [2026-05-25_fast_vs_hd2d_plaza_reference_shadow_quality_cycle130.md](2026-05-25_fast_vs_hd2d_plaza_reference_shadow_quality_cycle130.md) | Fast VS / HD2D | feat(hd2d): push plaza reference shadow quality |
+| [2026-05-25_fast_vs_hd2d_plaza_painted_soft_shadow_cycle129.md](2026-05-25_fast_vs_hd2d_plaza_painted_soft_shadow_cycle129.md) | Fast VS / HD2D | feat(hd2d): paint plaza soft shadow grade |
+| [2026-05-25_fast_vs_hd2d_plaza_reference_grade_cycle128.md](2026-05-25_fast_vs_hd2d_plaza_reference_grade_cycle128.md) | Fast VS / HD2D | feat(hd2d): push plaza reference grade |
+
+### 2026-05-24
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-24_fast_vs_hd2d_plaza_realtime_light_shadow_cycle127.md](2026-05-24_fast_vs_hd2d_plaza_realtime_light_shadow_cycle127.md) | Fast VS / HD2D | feat(hd2d): add plaza realtime light shadow rig |
+| [2026-05-24_fast_vs_hd2d_plaza_close_shadow_bar_mute_cycle126.md](2026-05-24_fast_vs_hd2d_plaza_close_shadow_bar_mute_cycle126.md) | Fast VS / HD2D | feat(hd2d): mute plaza close shadow bars |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_diorama_shadow_cycle125.md](2026-05-24_fast_vs_hd2d_plaza_reference_diorama_shadow_cycle125.md) | Fast VS / HD2D | feat(hd2d): rebuild plaza reference diorama shadow |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_focus_shadow_cycle124.md](2026-05-24_fast_vs_hd2d_plaza_reference_focus_shadow_cycle124.md) | Fast VS / HD2D | feat(hd2d): restore plaza focus shadow clarity |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_aerial_lift_cycle123.md](2026-05-24_fast_vs_hd2d_plaza_reference_aerial_lift_cycle123.md) | Fast VS / HD2D | feat(hd2d): lift plaza aerial sun grade |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_surface_remap_cycle122.md](2026-05-24_fast_vs_hd2d_plaza_reference_surface_remap_cycle122.md) | Fast VS / HD2D | feat(hd2d): remap plaza surfaces to reference sun |
+| [2026-05-24_fast_vs_hd2d_plaza_legacy_sun_ribbon_mute_cycle121.md](2026-05-24_fast_vs_hd2d_plaza_legacy_sun_ribbon_mute_cycle121.md) | Fast VS / HD2D | feat(hd2d): mute plaza legacy sun ribbons and clean floor sun |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_light_column_cycle120.md](2026-05-24_fast_vs_hd2d_plaza_reference_light_column_cycle120.md) | Fast VS / HD2D | feat(hd2d): add plaza reference light column |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_composite_cycle119.md](2026-05-24_fast_vs_hd2d_plaza_reference_composite_cycle119.md) | Fast VS / HD2D | feat(hd2d): repaint plaza reference composite |
+| [2026-05-24_fast_vs_hd2d_plaza_shadow_receiver_field_cycle118.md](2026-05-24_fast_vs_hd2d_plaza_shadow_receiver_field_cycle118.md) | Fast VS / HD2D | feat(hd2d): layer plaza shadow receiver field |
+| [2026-05-24_fast_vs_hd2d_plaza_reference_shadow_quality_cycle117.md](2026-05-24_fast_vs_hd2d_plaza_reference_shadow_quality_cycle117.md) | Fast VS / HD2D | feat(hd2d): stamp plaza reference shadow quality |
+| [2026-05-24_fast_vs_hd2d_plaza_solar_shadow_reset_cycle116.md](2026-05-24_fast_vs_hd2d_plaza_solar_shadow_reset_cycle116.md) | Fast VS / HD2D | feat(hd2d): reset plaza solar shadow grade |
+| [2026-05-24_fast_vs_hd2d_plaza_sun_shadow_grade_cycle115.md](2026-05-24_fast_vs_hd2d_plaza_sun_shadow_grade_cycle115.md) | Fast VS / HD2D | feat(hd2d): deepen plaza sun shadow grade |
+| [2026-05-24_fast_vs_hd2d_plaza_cast_shadow_contrast_cycle114.md](2026-05-24_fast_vs_hd2d_plaza_cast_shadow_contrast_cycle114.md) | Fast VS / HD2D | feat(hd2d): deepen plaza cast shadow contrast |
+| [2026-05-24_fast_vs_hd2d_plaza_sunbeam_shafts_cycle113.md](2026-05-24_fast_vs_hd2d_plaza_sunbeam_shafts_cycle113.md) | Fast VS / HD2D | feat(hd2d): add plaza sunbeam shafts |
+| [2026-05-24_fast_vs_hd2d_plaza_sun_exposure_base_cycle112.md](2026-05-24_fast_vs_hd2d_plaza_sun_exposure_base_cycle112.md) | Fast VS / HD2D | feat(hd2d): add plaza sun exposure base |
+| [2026-05-24_fast_vs_hd2d_plaza_broad_sunfield_cycle111.md](2026-05-24_fast_vs_hd2d_plaza_broad_sunfield_cycle111.md) | Fast VS / HD2D | feat(hd2d): add plaza broad sunfield |
+| [2026-05-24_fast_vs_hd2d_plaza_sunlit_islands_visibility_cycle110.md](2026-05-24_fast_vs_hd2d_plaza_sunlit_islands_visibility_cycle110.md) | Fast VS / HD2D | feat(hd2d): strengthen plaza sunlit islands |
+| [2026-05-24_fast_vs_hd2d_plaza_sunlit_floor_islands_cycle109.md](2026-05-24_fast_vs_hd2d_plaza_sunlit_floor_islands_cycle109.md) | Fast VS / HD2D | feat(hd2d): add plaza sunlit floor islands |
+| [2026-05-24_fast_vs_hd2d_plaza_shadow_penumbra_breakup_cycle108.md](2026-05-24_fast_vs_hd2d_plaza_shadow_penumbra_breakup_cycle108.md) | Fast VS / HD2D | feat(hd2d): soften plaza hard shadow strips |
+| [2026-05-24_fast_vs_hd2d_plaza_shadow_midtone_lift_cycle107.md](2026-05-24_fast_vs_hd2d_plaza_shadow_midtone_lift_cycle107.md) | Fast VS / HD2D | feat(hd2d): lift plaza shadow midtones |
+| [2026-05-24_fast_vs_hd2d_outdoor_sun_slash_highlights_cycle106.md](2026-05-24_fast_vs_hd2d_outdoor_sun_slash_highlights_cycle106.md) | Fast VS / HD2D | feat(hd2d): add plaza sun slash highlights |
+| [2026-05-24_fast_vs_hd2d_outdoor_sunbreak_streak_breakup_cycle105.md](2026-05-24_fast_vs_hd2d_outdoor_sunbreak_streak_breakup_cycle105.md) | Fast VS / HD2D | feat(hd2d): break plaza sunbreak into streaks |
+| [2026-05-24_fast_vs_hd2d_outdoor_sunbreak_dapple_balance_cycle104.md](2026-05-24_fast_vs_hd2d_outdoor_sunbreak_dapple_balance_cycle104.md) | Fast VS / HD2D | feat(hd2d): balance outdoor sunbreak against dappled shadows |
+| [2026-05-24_fast_vs_hd2d_cinematic_dappled_ground_shadows_cycle103.md](2026-05-24_fast_vs_hd2d_cinematic_dappled_ground_shadows_cycle103.md) | Fast VS / HD2D | feat(hd2d): add cinematic dappled ground shadows |
+| [2026-05-24_fast_vs_hd2d_grounded_shadow_visual_gate_cycle102.md](2026-05-24_fast_vs_hd2d_grounded_shadow_visual_gate_cycle102.md) | Fast VS / HD2D | test(hd2d): correct grounded shadow visual gate |
+| [2026-05-24_fast_vs_hd2d_exaggerated_grounded_shadows_cycle101.md](2026-05-24_fast_vs_hd2d_exaggerated_grounded_shadows_cycle101.md) | Fast VS / HD2D | feat(hd2d): exaggerate grounded shadows |
+| [2026-05-24_fast_vs_hd2d_unified_sun_direction_cycle100.md](2026-05-24_fast_vs_hd2d_unified_sun_direction_cycle100.md) | Fast VS / HD2D | feat(hd2d): unify sun direction |
+| [2026-05-24_fast_vs_hd2d_reference_sun_shadow_grade_cycle99.md](2026-05-24_fast_vs_hd2d_reference_sun_shadow_grade_cycle99.md) | Fast VS / HD2D | feat(hd2d): strengthen reference sun shadows |
+| [2026-05-24_fast_vs_hd2d_house_exterior_ground_continuity_artifact_cleanup_cycle98.md](2026-05-24_fast_vs_hd2d_house_exterior_ground_continuity_artifact_cleanup_cycle98.md) | Fast VS / HD2D | feat(hd2d): replace house black ground boards |
+| [2026-05-24_fast_vs_hd2d_house_exterior_artifact_consolidation_cycle97.md](2026-05-24_fast_vs_hd2d_house_exterior_artifact_consolidation_cycle97.md) | Fast VS / HD2D | feat(hd2d): consolidate house exterior artifacts |
+| [2026-05-24_fast_vs_hd2d_house_exterior_ground_shadow_breakup_cycle96.md](2026-05-24_fast_vs_hd2d_house_exterior_ground_shadow_breakup_cycle96.md) | Fast VS / HD2D | feat(hd2d): break up house ground shadow slab |
+| [2026-05-24_fast_vs_hd2d_house_exterior_facade_naturalization_cycle95.md](2026-05-24_fast_vs_hd2d_house_exterior_facade_naturalization_cycle95.md) | Fast VS / HD2D | feat(hd2d): naturalize house exterior facade |
+| [2026-05-24_fast_vs_hd2d_house_exterior_opaque_artifact_closure_cycle94.md](2026-05-24_fast_vs_hd2d_house_exterior_opaque_artifact_closure_cycle94.md) | Fast VS / HD2D | feat(hd2d): close house exterior opaque artifacts |
+| [2026-05-24_fast_vs_hd2d_house_exterior_leak_closure_cycle93.md](2026-05-24_fast_vs_hd2d_house_exterior_leak_closure_cycle93.md) | Fast VS / HD2D | feat(hd2d): close house exterior leak bars |
+| [2026-05-24_fast_vs_hd2d_faded_dusk_camera_grade_cycle92.md](2026-05-24_fast_vs_hd2d_faded_dusk_camera_grade_cycle92.md) | Fast VS / HD2D | feat(hd2d): deepen faded dusk camera grade |
+| [2026-05-24_fast_vs_hd2d_house_exterior_sky_bar_mask_cycle91.md](2026-05-24_fast_vs_hd2d_house_exterior_sky_bar_mask_cycle91.md) | Fast VS / HD2D | feat(hd2d): mask house sky bars |
+
+### 2026-05-23
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-23_fast_vs_hd2d_dusk_sun_sky_mood_cycle90.md](2026-05-23_fast_vs_hd2d_dusk_sun_sky_mood_cycle90.md) | Fast VS / HD2D | feat(hd2d): add dusk sun sky mood |
+| [2026-05-23_fast_vs_hd2d_outdoor_backdrop_foreground_cleanup_cycle89.md](2026-05-23_fast_vs_hd2d_outdoor_backdrop_foreground_cleanup_cycle89.md) | Fast VS / HD2D | feat(hd2d): clean outdoor backdrop foreground |
+| [2026-05-23_fast_vs_hd2d_outdoor_backdrop_billboards_cycle88.md](2026-05-23_fast_vs_hd2d_outdoor_backdrop_billboards_cycle88.md) | Fast VS / HD2D | feat(hd2d): billboard outdoor backdrop layers |
+| [2026-05-23_fast_vs_hd2d_house_eave_shadow_softening_cycle87.md](2026-05-23_fast_vs_hd2d_house_eave_shadow_softening_cycle87.md) | Fast VS / HD2D | feat(hd2d): soften house eave shadow bands |
+| [2026-05-23_fast_vs_hd2d_faded_camera_grade_cycle86.md](2026-05-23_fast_vs_hd2d_faded_camera_grade_cycle86.md) | Fast VS / HD2D | feat(hd2d): add faded camera grade |
+| [2026-05-23_fast_vs_hd2d_sun_key_lighting_cycle85.md](2026-05-23_fast_vs_hd2d_sun_key_lighting_cycle85.md) | Fast VS / HD2D | feat(hd2d): strengthen sun key lighting |
+| [2026-05-23_fast_vs_hd2d_cinematic_sun_grade_cycle84.md](2026-05-23_fast_vs_hd2d_cinematic_sun_grade_cycle84.md) | Fast VS / HD2D | feat(hd2d): add cinematic sun grade |
+| [2026-05-23_fast_vs_hd2d_house_door_jamb_regression_fix_cycle83.md](2026-05-23_fast_vs_hd2d_house_door_jamb_regression_fix_cycle83.md) | Fast VS / HD2D | fix(hd2d): keep house door jamb opaque |
+| [2026-05-23_fast_vs_hd2d_house_door_jamb_blend_cycle82.md](2026-05-23_fast_vs_hd2d_house_door_jamb_blend_cycle82.md) | Fast VS / HD2D | feat(hd2d): blend house door jamb |
+| [2026-05-23_fast_vs_hd2d_house_door_sightline_diagnostics_cycle81.md](2026-05-23_fast_vs_hd2d_house_door_sightline_diagnostics_cycle81.md) | Fast VS / HD2D | test(hd2d): add house door sightline diagnostics |
+| [2026-05-23_fast_vs_hd2d_transparent_depth_test_cycle80.md](2026-05-23_fast_vs_hd2d_transparent_depth_test_cycle80.md) | Fast VS / HD2D | feat(hd2d): depth-test transparent world overlays |
+| [2026-05-23_fast_vs_hd2d_house_exterior_door_front_leaf_cycle79.md](2026-05-23_fast_vs_hd2d_house_exterior_door_front_leaf_cycle79.md) | Fast VS / HD2D | feat(hd2d): add house door front leaf seal |
+| [2026-05-23_fast_vs_hd2d_house_exterior_door_light_plane_clearance_cycle78.md](2026-05-23_fast_vs_hd2d_house_exterior_door_light_plane_clearance_cycle78.md) | Fast VS / HD2D | feat(hd2d): tighten house door light plane clearance |
+| [2026-05-23_fast_vs_hd2d_house_exterior_front_plane_door_clearance_cycle77.md](2026-05-23_fast_vs_hd2d_house_exterior_front_plane_door_clearance_cycle77.md) | Fast VS / HD2D | feat(hd2d): clear house front plane from door |
+| [2026-05-23_fast_vs_hd2d_house_exterior_no_player_door_review_cycle76.md](2026-05-23_fast_vs_hd2d_house_exterior_no_player_door_review_cycle76.md) | Fast VS / HD2D | feat(hd2d): add no-player house door review captures |
+| [2026-05-23_fast_vs_hd2d_house_exterior_door_eave_readability_cycle75.md](2026-05-23_fast_vs_hd2d_house_exterior_door_eave_readability_cycle75.md) | Fast VS / HD2D | feat(hd2d): soften house doorway eave bars |
+| [2026-05-23_fast_vs_hd2d_house_exterior_door_readability_cycle74.md](2026-05-23_fast_vs_hd2d_house_exterior_door_readability_cycle74.md) | Fast VS / HD2D | feat(hd2d): replace black doorway fill with readable depth |
+| [2026-05-23_fast_vs_hd2d_house_exterior_porch_occlusion_readability_cycle73.md](2026-05-23_fast_vs_hd2d_house_exterior_porch_occlusion_readability_cycle73.md) | Fast VS / HD2D | feat(hd2d): soften house porch occlusion slab |
+| [2026-05-23_fast_vs_hd2d_house_exterior_sightline_closure_cycle72.md](2026-05-23_fast_vs_hd2d_house_exterior_sightline_closure_cycle72.md) | Fast VS / HD2D | feat(hd2d): close house exterior sightline gaps |
+| [2026-05-23_cycle_tool_operation_report_for_blog_session.md](2026-05-23_cycle_tool_operation_report_for_blog_session.md) | Tooling / Cycle | Cycle Tool Operation Report For Blog Session |
+| [2026-05-23_fast_vs_hd2d_outdoor_shadow_softening_cycle71.md](2026-05-23_fast_vs_hd2d_outdoor_shadow_softening_cycle71.md) | Fast VS / HD2D | feat(hd2d): soften outdoor directional shadows |
+| [2026-05-23_fast_vs_hd2d_outdoor_directional_shadow_cycle70.md](2026-05-23_fast_vs_hd2d_outdoor_directional_shadow_cycle70.md) | Fast VS / HD2D | feat(hd2d): add outdoor directional shadow pass |
+| [2026-05-23_fast_vs_hd2d_house_exterior_ground_shadow_cycle69.md](2026-05-23_fast_vs_hd2d_house_exterior_ground_shadow_cycle69.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D House Exterior Ground Shadow Cycle 69 |
+| [2026-05-23_fast_vs_hd2d_plaza_library_ground_shadow_cycle68.md](2026-05-23_fast_vs_hd2d_plaza_library_ground_shadow_cycle68.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Ground Shadow Cycle 68 |
+| [2026-05-23_fast_vs_hd2d_reto_desk_silhouette_cycle67.md](2026-05-23_fast_vs_hd2d_reto_desk_silhouette_cycle67.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Reto Desk Silhouette Cycle 67 |
+| [2026-05-23_fast_vs_hd2d_library_shadow_hierarchy_cycle66.md](2026-05-23_fast_vs_hd2d_library_shadow_hierarchy_cycle66.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Library Shadow Hierarchy Cycle 66 |
+| [2026-05-23_fast_vs_hd2d_shadow_response_foundation_cycle65.md](2026-05-23_fast_vs_hd2d_shadow_response_foundation_cycle65.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Shadow Response Foundation Cycle 65 |
+| [2026-05-23_fast_vs_hd2d_house_exterior_porch_gap_closure_cycle64.md](2026-05-23_fast_vs_hd2d_house_exterior_porch_gap_closure_cycle64.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D House Exterior Porch Gap Closure Cycle 64 |
+| [2026-05-23_fast_vs_hd2d_central_plaza_scenic_horizon_grounding_cycle63.md](2026-05-23_fast_vs_hd2d_central_plaza_scenic_horizon_grounding_cycle63.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Central Plaza Scenic Horizon Grounding Cycle 63 |
+| [2026-05-23_fast_vs_hd2d_central_plaza_outer_ground_skirt_cycle62.md](2026-05-23_fast_vs_hd2d_central_plaza_outer_ground_skirt_cycle62.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Central Plaza Outer Ground Skirt Cycle 62 |
+| [2026-05-23_fast_vs_hd2d_plaza_library_side_window_ledges_cycle61.md](2026-05-23_fast_vs_hd2d_plaza_library_side_window_ledges_cycle61.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Window Ledges Cycle 61 |
+| [2026-05-23_fast_vs_hd2d_plaza_library_side_wall_material_breakup_cycle60.md](2026-05-23_fast_vs_hd2d_plaza_library_side_wall_material_breakup_cycle60.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Wall Material Breakup Cycle 60 |
+| [2026-05-23_fast_vs_hd2d_plaza_library_roof_underside_shadow_cycle59.md](2026-05-23_fast_vs_hd2d_plaza_library_roof_underside_shadow_cycle59.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Roof Underside Shadow Cycle 59 |
+| [2026-05-23_fast_vs_hd2d_plaza_library_side_relief_cycle58.md](2026-05-23_fast_vs_hd2d_plaza_library_side_relief_cycle58.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Side Relief Cycle 58 |
+| [2026-05-23_fast_vs_hd2d_plaza_library_oblique_review_cycle57.md](2026-05-23_fast_vs_hd2d_plaza_library_oblique_review_cycle57.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Plaza Library Oblique Review Cycle 57 |
+| [2026-05-23_fast_vs_hd2d_library_facade_mass_closure_cycle56.md](2026-05-23_fast_vs_hd2d_library_facade_mass_closure_cycle56.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Library Facade Mass Closure Cycle 56 |
+| [2026-05-23_fast_vs_hd2d_outdoor_horizon_silhouette_blend_cycle55.md](2026-05-23_fast_vs_hd2d_outdoor_horizon_silhouette_blend_cycle55.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Outdoor Horizon Silhouette Blend Cycle 55 |
+| [2026-05-23_fast_vs_hd2d_outdoor_perimeter_edge_breakup_cycle54.md](2026-05-23_fast_vs_hd2d_outdoor_perimeter_edge_breakup_cycle54.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Outdoor Perimeter Edge Breakup Cycle 54 |
+| [2026-05-23_fast_vs_hd2d_outdoor_perimeter_world_continuation_cycle53.md](2026-05-23_fast_vs_hd2d_outdoor_perimeter_world_continuation_cycle53.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D Outdoor Perimeter World Continuation Cycle 53 |
+| [2026-05-23_fast_vs_hd2d_house_facade_porch_closure_cycle52.md](2026-05-23_fast_vs_hd2d_house_facade_porch_closure_cycle52.md) | Fast VS / HD2D | 2026-05-23 Fast VS HD2D House Facade Porch Closure Cycle 52 |
+
+### 2026-05-22
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-22_fast_vs_hd2d_material_light_shadow_response_cycle51.md](2026-05-22_fast_vs_hd2d_material_light_shadow_response_cycle51.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Material Light / Shadow Response Cycle 51 |
+| [2026-05-22_fast_vs_hd2d_house_facade_closure_shadow_cycle50.md](2026-05-22_fast_vs_hd2d_house_facade_closure_shadow_cycle50.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Facade Closure / Shadow Cycle 50 |
+| [2026-05-22_fast_vs_hd2d_decisive_light_shadow_cycle49.md](2026-05-22_fast_vs_hd2d_decisive_light_shadow_cycle49.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Decisive Light / Shadow Contrast Cycle 49 |
+| [2026-05-22_fast_vs_hd2d_shadow_occlusion_readability_cycle48.md](2026-05-22_fast_vs_hd2d_shadow_occlusion_readability_cycle48.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Shadow/Occlusion Readability Cycle 48 |
+| [2026-05-22_fast_vs_hd2d_library_interior_verticality_ground_skirt_cycle47.md](2026-05-22_fast_vs_hd2d_library_interior_verticality_ground_skirt_cycle47.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Interior Verticality / Ground Skirt Continuation Cycle 47 |
+| [2026-05-22_fast_vs_hd2d_architecture_material_texture_cycle46.md](2026-05-22_fast_vs_hd2d_architecture_material_texture_cycle46.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architecture Material Texture Cycle 46 |
+| [2026-05-22_fast_vs_hd2d_architecture_surface_depth_cycle45.md](2026-05-22_fast_vs_hd2d_architecture_surface_depth_cycle45.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architecture Surface Depth Cycle 45 |
+| [2026-05-22_fast_vs_hd2d_library_verticality_ground_continuation_cycle43.md](2026-05-22_fast_vs_hd2d_library_verticality_ground_continuation_cycle43.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Verticality / Ground Continuation Cycle 43 |
+| [2026-05-22_fast_vs_hd2d_facade_edge_softening_cycle42.md](2026-05-22_fast_vs_hd2d_facade_edge_softening_cycle42.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Facade Edge Softening Cycle 42 |
+| [2026-05-22_fast_vs_hd2d_facade_surface_depth_cycle41.md](2026-05-22_fast_vs_hd2d_facade_surface_depth_cycle41.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Facade Surface Depth Cycle 41 |
+| [2026-05-22_fast_vs_hd2d_architectural_closure_grounding_cycle40.md](2026-05-22_fast_vs_hd2d_architectural_closure_grounding_cycle40.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Architectural Closure / Grounding Cycle 40 |
+| [2026-05-22_fast_vs_hd2d_outdoor_framed_light_planes_cycle39.md](2026-05-22_fast_vs_hd2d_outdoor_framed_light_planes_cycle39.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Framed Light Planes Cycle 39 |
+| [2026-05-22_fast_vs_hd2d_outdoor_light_composition_contact_grounding_cycle38.md](2026-05-22_fast_vs_hd2d_outdoor_light_composition_contact_grounding_cycle38.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Light Composition Contact Grounding Cycle 38 |
+| [2026-05-22_fast_vs_hd2d_outdoor_horizon_scenic_depth_cycle37.md](2026-05-22_fast_vs_hd2d_outdoor_horizon_scenic_depth_cycle37.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Horizon Scenic Depth Cycle 37 |
+| [2026-05-22_fast_vs_hd2d_outdoor_world_envelope_foundation_cycle36.md](2026-05-22_fast_vs_hd2d_outdoor_world_envelope_foundation_cycle36.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor World Envelope / Horizon Grounding Cycle 36 |
+| [2026-05-22_fast_vs_hd2d_outdoor_ground_continuation_library_verticality_cycle35.md](2026-05-22_fast_vs_hd2d_outdoor_ground_continuation_library_verticality_cycle35.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Ground Continuation / Library Verticality Cycle 35 |
+| [2026-05-22_fast_vs_hd2d_house_exterior_hero_readability_cycle34.md](2026-05-22_fast_vs_hd2d_house_exterior_hero_readability_cycle34.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Hero Readability Cycle 34 |
+| [2026-05-22_fast_vs_hd2d_house_exterior_proportion_cleanup_cycle33.md](2026-05-22_fast_vs_hd2d_house_exterior_proportion_cleanup_cycle33.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Proportion Cleanup Cycle 33 |
+| [2026-05-22_fast_vs_hd2d_outdoor_composition_sky_backdrop_cycle32.md](2026-05-22_fast_vs_hd2d_outdoor_composition_sky_backdrop_cycle32.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Composition Sky Backdrop Foundation Cycle 32 |
+| [2026-05-22_fast_vs_hd2d_house_exterior_facade_backdrop_readability_cycle31.md](2026-05-22_fast_vs_hd2d_house_exterior_facade_backdrop_readability_cycle31.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Facade/Backdrop Readability Cycle 31 |
+| [2026-05-22_fast_vs_hd2d_house_exterior_architectural_closure_cycle30.md](2026-05-22_fast_vs_hd2d_house_exterior_architectural_closure_cycle30.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Architectural Closure Cycle 30 |
+| [2026-05-22_fast_vs_hd2d_outdoor_scenic_backdrop_foundation_cycle29.md](2026-05-22_fast_vs_hd2d_outdoor_scenic_backdrop_foundation_cycle29.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Outdoor Scenic Backdrop Foundation Cycle 29 |
+| [2026-05-22_fast_vs_hd2d_house_exterior_facade_composition_cycle28.md](2026-05-22_fast_vs_hd2d_house_exterior_facade_composition_cycle28.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Facade Composition Cycle 28 |
+| [2026-05-22_fast_vs_hd2d_exterior_occlusion_backdrop_cycle27.md](2026-05-22_fast_vs_hd2d_exterior_occlusion_backdrop_cycle27.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Exterior Occlusion Backdrop Cycle 27 |
+| [2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md](2026-05-22_fast_vs_hd2d_library_window_light_cookie_cycle26.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Window Light Cookie Cycle 26 |
+| [2026-05-22_fast_vs_hd2d_postprocess_grade_cycle25.md](2026-05-22_fast_vs_hd2d_postprocess_grade_cycle25.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Postprocess Grade Cycle 25 |
+| [2026-05-22_fast_vs_hd2d_sprite_card_world_light_bridge_cycle24.md](2026-05-22_fast_vs_hd2d_sprite_card_world_light_bridge_cycle24.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card World Light Bridge Cycle 24 |
+| [2026-05-22_fast_vs_hd2d_sprite_card_edge_rim_cycle23.md](2026-05-22_fast_vs_hd2d_sprite_card_edge_rim_cycle23.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Edge Rim Cycle 23 |
+| [2026-05-22_fast_vs_hd2d_character_contact_shadow_texture_cycle22.md](2026-05-22_fast_vs_hd2d_character_contact_shadow_texture_cycle22.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Character Contact Shadow Texture Cycle 22 |
+| [2026-05-22_fast_vs_hd2d_static_directional_shadow_texture_cycle21.md](2026-05-22_fast_vs_hd2d_static_directional_shadow_texture_cycle21.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Static Directional Shadow Texture Cycle 21 |
+| [2026-05-22_fast_vs_hd2d_surface_directional_shade_texture_cycle20.md](2026-05-22_fast_vs_hd2d_surface_directional_shade_texture_cycle20.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Directional Shade Texture Cycle 20 |
+| [2026-05-22_fast_vs_hd2d_library_side_bookshelf_surface_cycle19.md](2026-05-22_fast_vs_hd2d_library_side_bookshelf_surface_cycle19.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Side Bookshelf Surface Cycle 19 |
+| [2026-05-22_fast_vs_hd2d_library_bookshelf_surface_cycle18.md](2026-05-22_fast_vs_hd2d_library_bookshelf_surface_cycle18.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Library Bookshelf Surface Cycle 18 |
+| [2026-05-22_fast_vs_hd2d_house_exterior_ground_microcontrast_cycle17.md](2026-05-22_fast_vs_hd2d_house_exterior_ground_microcontrast_cycle17.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D House Exterior Ground Microcontrast Cycle 17 |
+| [2026-05-22_fast_vs_hd2d_surface_texture_metric_audit_cycle16.md](2026-05-22_fast_vs_hd2d_surface_texture_metric_audit_cycle16.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Texture Metric Audit Cycle 16 |
+| [2026-05-22_fast_vs_hd2d_surface_profile_foundation_cycle15.md](2026-05-22_fast_vs_hd2d_surface_profile_foundation_cycle15.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Profile Foundation Cycle 15 |
+| [2026-05-22_fast_vs_hd2d_warm_light_pool_foundation_cycle14.md](2026-05-22_fast_vs_hd2d_warm_light_pool_foundation_cycle14.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Warm Light Pool Foundation Cycle 14 |
+| [2026-05-22_fast_vs_hd2d_overlay_profile_foundation_cycle13.md](2026-05-22_fast_vs_hd2d_overlay_profile_foundation_cycle13.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Overlay Profile Foundation Cycle 13 |
+| [2026-05-22_fast_vs_hd2d_current_interior_surface_readability_cycle12.md](2026-05-22_fast_vs_hd2d_current_interior_surface_readability_cycle12.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Current Interior Surface Readability Cycle 12 |
+| [2026-05-22_fast_vs_hd2d_area_lighting_profile_cycle11.md](2026-05-22_fast_vs_hd2d_area_lighting_profile_cycle11.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Area Lighting Profile Cycle 11 |
+| [2026-05-22_fast_vs_hd2d_visual_snapshot_audit_cycle10.md](2026-05-22_fast_vs_hd2d_visual_snapshot_audit_cycle10.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Visual Snapshot Audit Cycle 10 |
+| [2026-05-22_fast_vs_hd2d_surface_ramp_shader_cycle09.md](2026-05-22_fast_vs_hd2d_surface_ramp_shader_cycle09.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Ramp Shader Cycle 09 |
+| [2026-05-22_fast_vs_hd2d_sprite_card_ramp_shader_cycle08.md](2026-05-22_fast_vs_hd2d_sprite_card_ramp_shader_cycle08.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Ramp Shader Cycle 08 |
+| [2026-05-22_fast_vs_hd2d_surface_directional_shade_cycle07.md](2026-05-22_fast_vs_hd2d_surface_directional_shade_cycle07.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Surface Directional Shade Cycle 07 |
+| [2026-05-22_fast_vs_hd2d_static_directional_shadow_cycle06.md](2026-05-22_fast_vs_hd2d_static_directional_shadow_cycle06.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Static Directional Shadow Cycle 06 |
+| [2026-05-22_fast_vs_hd2d_character_directional_shadow_cycle05.md](2026-05-22_fast_vs_hd2d_character_directional_shadow_cycle05.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Character Directional Shadow Cycle 05 |
+| [2026-05-22_fast_vs_hd2d_lighting_transition_cycle04.md](2026-05-22_fast_vs_hd2d_lighting_transition_cycle04.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Lighting Transition Cycle 04 |
+| [2026-05-22_fast_vs_hd2d_sprite_card_lighting_cycle03.md](2026-05-22_fast_vs_hd2d_sprite_card_lighting_cycle03.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Sprite Card Lighting Cycle 03 |
+| [2026-05-22_fast_vs_hd2d_material_role_foundation_cycle02.md](2026-05-22_fast_vs_hd2d_material_role_foundation_cycle02.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Material Role Foundation Cycle 02 |
+| [2026-05-22_fast_vs_hd2d_shading_foundation_cycle01.md](2026-05-22_fast_vs_hd2d_shading_foundation_cycle01.md) | Fast VS / HD2D | 2026-05-22 Fast VS HD2D Shading Foundation Cycle 01 |
+
+### 2026-05-21
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-21_fast_vs_hd2d_house_exterior_porch_door_grounding_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_porch_door_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Porch Door Grounding Cycle |
+| [2026-05-21_fast_vs_hd2d_library_side_shelf_edge_depth_cycle.md](2026-05-21_fast_vs_hd2d_library_side_shelf_edge_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Side Shelf Edge Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_library_back_shelf_book_spine_depth_cycle.md](2026-05-21_fast_vs_hd2d_library_back_shelf_book_spine_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Back Shelf Book-Spine Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_door_relief_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_door_relief_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Door Relief Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_window_reveal_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_window_reveal_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Window Reveal Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_lower_facade_grounding_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_lower_facade_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Lower Facade Grounding Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_entry_plinth_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_entry_plinth_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Entry Plinth Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_side_wall_masonry_relief_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_side_wall_masonry_relief_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Side Wall Masonry Relief Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_atmosphere_depth_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_atmosphere_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Atmosphere Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_bright_accent_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_bright_accent_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Bright Accent Cleanup Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_rear_roof_connection_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_rear_roof_connection_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Rear Roof Connection Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_side_recess_framing_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_side_recess_framing_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Side Recess Framing Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_side_wall_surface_tuning_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_side_wall_surface_tuning_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Side Wall Surface Tuning Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_deep_exterior_volume_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_deep_exterior_volume_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Deep Exterior Volume Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_horizon_layering_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_horizon_layering_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Horizon Layering Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_front_depth_readability_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_front_depth_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Front Depth Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_side_surface_breakup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_side_surface_breakup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Side Surface Breakup Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_roof_side_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_roof_side_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Roof Side Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_texture_readability_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_texture_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Texture Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_backdrop_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_backdrop_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Backdrop Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_backward_volume_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_backward_volume_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Backward Volume Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_horizon_depth_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_horizon_depth_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Horizon Depth Cleanup Cycle |
+| [2026-05-21_fast_vs_hd2d_library_reading_surface_density_cycle.md](2026-05-21_fast_vs_hd2d_library_reading_surface_density_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Reading Surface Density Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_entry_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_entry_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Entry Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_house_exterior_eave_contact_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_eave_contact_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Eave Contact Cycle |
+| [2026-05-21_fast_vs_hd2d_library_gallery_atmosphere_cycle.md](2026-05-21_fast_vs_hd2d_library_gallery_atmosphere_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Gallery Atmosphere Cycle |
+| [2026-05-21_fast_vs_hd2d_library_back_bookshelf_frame_cycle.md](2026-05-21_fast_vs_hd2d_library_back_bookshelf_frame_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Back Bookshelf Frame Cycle |
+| [2026-05-21_fast_vs_hd2d_library_entry_table_contrast_cycle.md](2026-05-21_fast_vs_hd2d_library_entry_table_contrast_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Entry Table Contrast Cycle |
+| [2026-05-21_fast_vs_hd2d_library_side_bookshelf_depth_cycle.md](2026-05-21_fast_vs_hd2d_library_side_bookshelf_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Side Bookshelf Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_library_table_silhouette_cycle.md](2026-05-21_fast_vs_hd2d_library_table_silhouette_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Table Silhouette Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_far_edge_transition_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_far_edge_transition_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Far-Edge Transition Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_and_plaza_library_volume_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_and_plaza_library_volume_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky And Plaza Library Volume Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_sky_wash_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_sky_wash_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Sky Wash Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_exterior_depth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Exterior Depth Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_facade_surface_breakup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Facade Surface Breakup Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_volume_readability_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_volume_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Volume Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_current_library_gallery_floor_seam_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_current_library_gallery_floor_seam_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Gallery Floor Seam Cleanup Cycle |
+| [2026-05-21_fast_vs_hd2d_current_library_wall_recess_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_current_library_wall_recess_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Wall Recess Cleanup Cycle |
+| [2026-05-21_fast_vs_hd2d_library_upper_gallery_support_polish_cycle.md](2026-05-21_fast_vs_hd2d_library_upper_gallery_support_polish_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Upper Gallery Support Polish Cycle |
+| [2026-05-21_fast_vs_hd2d_library_reading_table_grounding_cycle.md](2026-05-21_fast_vs_hd2d_library_reading_table_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Reading Table Grounding Cycle |
+| [2026-05-21_fast_vs_hd2d_central_plaza_paving_readability_cycle.md](2026-05-21_fast_vs_hd2d_central_plaza_paving_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Central Plaza Paving Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_central_plaza_focal_prop_readability_cycle.md](2026-05-21_fast_vs_hd2d_central_plaza_focal_prop_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Central Plaza Focal Prop Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_current_library_ruin_grounding_cycle.md](2026-05-21_fast_vs_hd2d_current_library_ruin_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Current Library Ruin Grounding Cycle |
+| [2026-05-21_fast_vs_hd2d_house_interior_furniture_grounding_cycle.md](2026-05-21_fast_vs_hd2d_house_interior_furniture_grounding_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Interior Furniture Grounding Cycle |
+| [2026-05-21_fast_vs_hd2d_house_interior_prop_readability_cycle.md](2026-05-21_fast_vs_hd2d_house_interior_prop_readability_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Interior Prop Readability Cycle |
+| [2026-05-21_fast_vs_hd2d_plaza_library_facade_microdepth_cycle.md](2026-05-21_fast_vs_hd2d_plaza_library_facade_microdepth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Plaza Library Facade Microdepth Cycle |
+| [2026-05-21_fast_vs_hd2d_library_readable_microprops_cycle.md](2026-05-21_fast_vs_hd2d_library_readable_microprops_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Readable Microprops Cycle |
+| [2026-05-21_fast_vs_hd2d_central_plaza_current_ruin_landmark_polish_cycle.md](2026-05-21_fast_vs_hd2d_central_plaza_current_ruin_landmark_polish_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Central Plaza Current Ruin Landmark Polish Cycle |
+| [2026-05-21_fast_vs_hd2d_outdoor_void_background_treatment_cycle.md](2026-05-21_fast_vs_hd2d_outdoor_void_background_treatment_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Outdoor Void Background Treatment Cycle |
+| [2026-05-21_fast_vs_hd2d_house_exterior_vegetation_silhouette_cleanup_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_vegetation_silhouette_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Vegetation Silhouette Cleanup Cycle |
+| [2026-05-21_fast_vs_hd2d_house_exterior_path_porch_dressing_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_path_porch_dressing_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Path/Porch Dressing Cycle |
+| [2026-05-21_fast_vs_hd2d_house_exterior_facade_microdepth_cycle.md](2026-05-21_fast_vs_hd2d_house_exterior_facade_microdepth_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D House Exterior Facade Microdepth Cycle |
+| [2026-05-21_fast_vs_hd2d_library_wall_plane_dressing_cycle.md](2026-05-21_fast_vs_hd2d_library_wall_plane_dressing_cycle.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Library Wall Plane Dressing Cycle |
+| [2026-05-21_fast_vs_hd2d_graphics_improvement_22h30m_report.md](2026-05-21_fast_vs_hd2d_graphics_improvement_22h30m_report.md) | Fast VS / HD2D | 2026-05-21 Fast VS HD2D Graphics Improvement 22h30m Report |
+
+### 2026-05-20
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-20_fast_vs_hd2d_library_bookshelf_external_texture_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_external_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf External Texture Cycle |
+| [2026-05-20_fast_vs_hd2d_central_plaza_tree_line_sprites_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_tree_line_sprites_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Tree Line Sprites Cycle |
+| [2026-05-20_fast_vs_hd2d_house_exterior_hedge_sprites_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_hedge_sprites_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Hedge Sprites Cycle |
+| [2026-05-20_fast_vs_hd2d_readable_book_props_cycle.md](2026-05-20_fast_vs_hd2d_readable_book_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Readable Book Props Cycle |
+| [2026-05-20_fast_vs_hd2d_book_palette_cycle.md](2026-05-20_fast_vs_hd2d_book_palette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Book Palette Cycle |
+| [2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_plaza_library_facade_landmark_cycle.md](2026-05-20_fast_vs_hd2d_plaza_library_facade_landmark_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Plaza Library Facade Landmark Cycle |
+| [2026-05-20_fast_vs_hd2d_plaza_library_approach_cycle.md](2026-05-20_fast_vs_hd2d_plaza_library_approach_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Plaza Library Approach Cycle |
+| [2026-05-20_fast_vs_hd2d_central_plaza_floor_fountain_cycle.md](2026-05-20_fast_vs_hd2d_central_plaza_floor_fountain_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Central Plaza Floor Fountain Cycle |
+| [2026-05-20_fast_vs_hd2d_character_ground_bounce_cycle.md](2026-05-20_fast_vs_hd2d_character_ground_bounce_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Ground Bounce Cycle |
+| [2026-05-20_fast_vs_hd2d_character_foot_contact_cycle.md](2026-05-20_fast_vs_hd2d_character_foot_contact_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Foot Contact Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_side_shelf_visibility_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelf_visibility_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelf Visibility Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_atmosphere_cycle.md](2026-05-20_fast_vs_hd2d_current_library_atmosphere_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Atmosphere Cycle |
+| [2026-05-20_fast_vs_hd2d_house_exterior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_house_exterior_tree_fence_silhouette_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_tree_fence_silhouette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Tree Fence Silhouette Cycle |
+| [2026-05-20_fast_vs_hd2d_house_exterior_tree_crown_silhouette_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_tree_crown_silhouette_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Tree Crown Silhouette Cycle |
+| [2026-05-20_fast_vs_hd2d_house_exterior_external_tree_sprite_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_external_tree_sprite_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior External Tree Sprite Cycle |
+| [2026-05-20_fast_vs_hd2d_house_exterior_facade_texture_cycle.md](2026-05-20_fast_vs_hd2d_house_exterior_facade_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Exterior Facade Texture Cycle |
+| [2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Textile Cycle |
+| [2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_soft_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Soft Textile Cycle |
+| [2026-05-20_fast_vs_hd2d_house_bed_layered_textile_cycle.md](2026-05-20_fast_vs_hd2d_house_bed_layered_textile_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Bed Layered Textile Cycle |
+| [2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_wall_floor_warmth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Wall Floor Warmth Cycle |
+| [2026-05-20_fast_vs_hd2d_house_interior_room_depth_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_room_depth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Room Depth Cycle |
+| [2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_edge_dressing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Edge Dressing Cycle |
+| [2026-05-20_fast_vs_hd2d_outdoor_boundary_nature_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_boundary_nature_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Boundary Nature Cycle |
+| [2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md](2026-05-20_fast_vs_hd2d_character_contact_shadow_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Character Contact Shadow Cycle |
+| [2026-05-20_fast_vs_hd2d_library_side_shelf_slab_cleanup_cycle.md](2026-05-20_fast_vs_hd2d_library_side_shelf_slab_cleanup_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Side Shelf Slab Cleanup Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md](2026-05-20_fast_vs_hd2d_current_library_side_shelves_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Side Shelves Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_wall_shelf_depth_cycle.md](2026-05-20_fast_vs_hd2d_current_library_wall_shelf_depth_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Wall Shelf Depth Cycle |
+| [2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md](2026-05-20_fast_vs_hd2d_house_interior_life_props_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D House Interior Life Props Cycle |
+| [2026-05-20_fast_vs_hd2d_current_library_ruin_floor_detail_cycle.md](2026-05-20_fast_vs_hd2d_current_library_ruin_floor_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Current Library Ruin Floor Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_library_facade_close_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_facade_close_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Facade Close Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_library_facade_architecture_cycle.md](2026-05-20_fast_vs_hd2d_library_facade_architecture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Facade Architecture Cycle |
+| [2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_bookshelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Bookshelf Readability Cycle |
+| [2026-05-20_fast_vs_hd2d_library_side_shelf_readability_cycle.md](2026-05-20_fast_vs_hd2d_library_side_shelf_readability_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Side Shelf Readability Cycle |
+| [2026-05-20_fast_vs_hd2d_library_floor_decay_cycle.md](2026-05-20_fast_vs_hd2d_library_floor_decay_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Floor Decay Cycle |
+| [2026-05-20_fast_vs_hd2d_library_upper_gallery_cycle.md](2026-05-20_fast_vs_hd2d_library_upper_gallery_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Upper Gallery Cycle |
+| [2026-05-20_fast_vs_hd2d_library_window_light_cycle.md](2026-05-20_fast_vs_hd2d_library_window_light_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Window Light Cycle |
+| [2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_prop_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Prop Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md](2026-05-20_fast_vs_hd2d_library_reading_table_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Library Reading Table Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_lighting_balance_cycle.md](2026-05-20_fast_vs_hd2d_lighting_balance_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Lighting Balance Cycle |
+| [2026-05-20_fast_vs_hd2d_close_review_cycle.md](2026-05-20_fast_vs_hd2d_close_review_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Close Review Cycle |
+| [2026-05-20_fast_vs_hd2d_depth_framing_cycle.md](2026-05-20_fast_vs_hd2d_depth_framing_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Depth Framing Cycle |
+| [2026-05-20_fast_vs_hd2d_facade_detail_cycle.md](2026-05-20_fast_vs_hd2d_facade_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Facade Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_first_cycle.md](2026-05-20_fast_vs_hd2d_first_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D First Cycle |
+| [2026-05-20_fast_vs_hd2d_grass_texture_cycle.md](2026-05-20_fast_vs_hd2d_grass_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Grass Texture Cycle |
+| [2026-05-20_fast_vs_hd2d_outdoor_ground_detail_cycle.md](2026-05-20_fast_vs_hd2d_outdoor_ground_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Outdoor Ground Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md](2026-05-20_fast_vs_hd2d_hero_prop_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Hero Prop Texture Cycle |
+| [2026-05-20_fast_vs_hd2d_object_detail_cycle.md](2026-05-20_fast_vs_hd2d_object_detail_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Object Detail Cycle |
+| [2026-05-20_fast_vs_hd2d_path_stone_cycle.md](2026-05-20_fast_vs_hd2d_path_stone_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Path Stone Cycle |
+| [2026-05-20_fast_vs_hd2d_second_cycle.md](2026-05-20_fast_vs_hd2d_second_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Second Cycle |
+| [2026-05-20_fast_vs_hd2d_surface_texture_cycle.md](2026-05-20_fast_vs_hd2d_surface_texture_cycle.md) | Fast VS / HD2D | 2026-05-20 Fast VS HD2D Surface Texture Cycle |
+| [2026-05-20_post_vs_parallel_branch_strategy.md](2026-05-20_post_vs_parallel_branch_strategy.md) | Fast VS / Chapter 1 | 2026-05-20 Post-VS Parallel Branch Strategy |
+
+### 2026-05-19
+
+| File | Area | Title |
+|---|---|---|
+| [2026-05-19_fast_vs_guidance_mainbase_validation.md](2026-05-19_fast_vs_guidance_mainbase_validation.md) | Fast VS | 2026-05-19 Fast VS Guidance Mainbase Validation |
+| [2026-05-19_fast_vs_hd2d_local_shape_pass.md](2026-05-19_fast_vs_hd2d_local_shape_pass.md) | Fast VS | 2026-05-19 Fast VS HD2D Local Shape Pass |
+| [2026-05-19_mcp_foundation_carry_forward.md](2026-05-19_mcp_foundation_carry_forward.md) | Tooling / Repo | 2026-05-19 MCP Foundation Carry-Forward |
 
 ### 2026-05-18
 
@@ -45,6 +362,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | [2026-05-18_fast_vs_external_bookshelf_story_motion.md](2026-05-18_fast_vs_external_bookshelf_story_motion.md) | Fast VS | Fast VS external bookshelf and Reto motion fix |
 | [2026-05-18_fast_vs_facade_redcue_text_fix.md](2026-05-18_fast_vs_facade_redcue_text_fix.md) | Fast VS | Fast VS facade, red cue, and text fix |
 | [2026-05-18_fast_vs_house_orientation_walk_camera_fix.md](2026-05-18_fast_vs_house_orientation_walk_camera_fix.md) | Fast VS | 2026-05-18 Fast VS house orientation / walk / camera fix |
+| [2026-05-18_fast_vs_left_bottom_timewindow_hint.md](2026-05-18_fast_vs_left_bottom_timewindow_hint.md) | Fast VS | 2026-05-18 Fast VS left-bottom Time Window hint |
 | [2026-05-18_fast_vs_library_depth_mezzanine_dotgothic_lock.md](2026-05-18_fast_vs_library_depth_mezzanine_dotgothic_lock.md) | Fast VS | 2026-05-18 Fast VS Library Depth/Mezzanine Prototype and DotGothic16 Lock |
 | [2026-05-18_fast_vs_library_entrance_alignment_and_hero_shadow_plan.md](2026-05-18_fast_vs_library_entrance_alignment_and_hero_shadow_plan.md) | Fast VS | 2026-05-18 Fast VS Library Entrance Alignment and Hero Shadow Plan |
 | [2026-05-18_fast_vs_library_expand_debug_label_cleanup_dot_font_candidates.md](2026-05-18_fast_vs_library_expand_debug_label_cleanup_dot_font_candidates.md) | Fast VS | 2026-05-18 Fast VS Library Expansion, Debug Label Cleanup, and Dot Font Candidates |
@@ -350,5 +668,155 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.33 | 2026-05-25 | Added Fast VS HD2D global realtime exterior anchor cycle record with Exterior follow-anchor clamping, exterior road/ground shadow receiver capture, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.32 | 2026-05-25 | Added Fast VS HD2D global realtime camera/exposure cycle record with Exterior/Library VS camera profiles, exterior procedural skybox, stronger global receiver direct-light response, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.31 | 2026-05-25 | Added Fast VS HD2D global realtime lighting cycle record with Exterior, CentralPlaza, and Library receiver/caster lighting policy, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.30 | 2026-05-25 | Added Fast VS HD2D plaza neutral base-color cycle record with runtime BaseColor property blocks for central-plaza surface receivers, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.29 | 2026-05-25 | Added Fast VS HD2D plaza neutral realtime shader cycle record with neutral SurfaceRampLit sun/shadow tint constants, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.28 | 2026-05-25 | Added Fast VS HD2D plaza realtime contrast cycle record with lower ambient, stronger realtime shadow strength, neutral surface shade ramps, receiver shadow property blocks, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.27 | 2026-05-25 | Added Fast VS HD2D plaza skybox horizon cycle record with blue-gray runtime skybox horizon, wider sky-reveal central-plaza follow camera, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.26 | 2026-05-25 | Added Fast VS HD2D plaza sky reveal camera cycle record with runtime skybox, updated central-plaza follow framing, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.25 | 2026-05-25 | Added Fast VS HD2D plaza trimmed realtime caster cycle record with narrower ShadowsOnly caster meshes, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.24 | 2026-05-25 | Added Fast VS HD2D plaza highres realtime shadow cycle record with VeryHigh Directional Light shadow resolution, tighter 9-tap receiver filtering, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.23 | 2026-05-25 | Added Fast VS HD2D plaza desaturated realtime sun cycle record with warm-neutral Directional Light color, lower-saturation central-plaza surface grade, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.22 | 2026-05-25 | Added Fast VS HD2D plaza realtime cookie no-ribbon cycle record with broad diagonal sun-ribbon removal, soft realtime dapple cookie preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.21 | 2026-05-25 | Added Fast VS HD2D plaza VS sky camera cycle record with central-plaza follow-anchor depth clamp, blue-gray clear-color restoration, realtime lighting preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.06 | 2026-05-25 | Added Fast VS HD2D plaza map-safe camera cycle record with lower central-plaza follow camera, in-map review anchor, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.05 | 2026-05-25 | Added Fast VS HD2D plaza VS camera recovery cycle record with central-plaza follow camera reframing, realtime shadow preservation, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.04 | 2026-05-25 | Added Fast VS HD2D plaza realtime shadow recovery cycle record with central-plaza realtime caster preservation, eight added ShadowOnly occluders, painted/camera overlay suppression, fog removal, VS camera recovery, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.03 | 2026-05-25 | Added Fast VS HD2D plaza reference shadow rebalance cycle record with fixed central-plaza sun intensity, runtime oversized sun-patch suppression, warmer fog grade, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.02 | 2026-05-25 | Added Fast VS HD2D plaza reference shadow contrast cycle record with repainted central-plaza camera grade texture, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.01 | 2026-05-25 | Added Fast VS HD2D plaza reference shadow bloom cycle record with central-plaza camera-space shadow/sun paint plates, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v8.00 | 2026-05-25 | Added Fast VS HD2D plaza reference shadow quality cycle record with high-angle camera, separated sun/ink/contact shadow layers, stronger runtime sun grade, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
+| v7.82 | 2026-05-24 | Added Fast VS HD2D plaza sunbeam shafts cycle record with current-only atmospheric light-beam plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.81 | 2026-05-24 | Added Fast VS HD2D plaza sun exposure base cycle record with under-shadow floor-light plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.80 | 2026-05-24 | Added Fast VS HD2D plaza broad sunfield cycle record with current-only broad sunlight plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.79 | 2026-05-24 | Added Fast VS HD2D plaza sunlit islands visibility cycle record with strengthened current-plaza sunlight plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.75 | 2026-05-24 | Added Fast VS HD2D outdoor sun slash highlight cycle record with current-only narrow plaza sun slash plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.74 | 2026-05-24 | Added Fast VS HD2D outdoor sunbreak streak breakup cycle record with plaza sunbreak texture/placement refinement plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.73 | 2026-05-24 | Added Fast VS HD2D outdoor sunbreak dapple balance cycle record with current plaza sunbreak counter-light plan, current/past/library guard screenshots, validation, build, and smoke evidence. |
+| v7.68 | 2026-05-24 | Added Fast VS HD2D reference sun shadow grade cycle record with warm key-light tuning, lower ambient, runtime director sync, audit sync, validation plan, build/smoke plan, and four parent-review screenshot evidence files. |
+| v7.60 | 2026-05-24 | Added Fast VS HD2D house exterior sky bar mask cycle record with generated dusk mask material/texture, persisted disabled DepthOfField/FilmGrain baseline, validation, build, smoke, and three parent-review screenshot evidence files. |
+| v7.59 | 2026-05-23 | Added Fast VS HD2D dusk sun sky mood cycle record with scene-side visible sun, darker faded outdoor mood, persisted disabled DepthOfField/FilmGrain baseline, validation, build, smoke, and four parent-review screenshot evidence files. |
+| v7.58 | 2026-05-23 | Added Fast VS HD2D outdoor backdrop foreground cleanup cycle record with capture filename correction, front house exterior backdrop cleanup review, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.57 | 2026-05-23 | Added Fast VS HD2D outdoor backdrop billboard cycle record with far haze/horizon quad conversion plan, validation, build, smoke, and parent-review screenshot evidence. |
+| v7.56 | 2026-05-23 | Added Fast VS HD2D house eave shadow softening cycle record with current-side `hd2d_depth_shadow` eave-band replacement, persisted disabled DepthOfField/FilmGrain baseline, validation, and overview/oblique screenshot evidence. |
+| v7.55 | 2026-05-23 | Added Fast VS HD2D faded camera grade cycle record with darker/desaturated VolumeProfile values, audit sync, validation, and overview screenshot evidence. |
+| v7.54 | 2026-05-23 | Added Fast VS HD2D sun key lighting cycle record with runtime/setup/audit profile sync, stronger warm key light, lower ambient/fill values, validation, and overview screenshot evidence. |
+| v7.53 | 2026-05-23 | Added Fast VS HD2D cinematic sun grade cycle record with generated sun-disc and sky-veil assets, current/past outdoor validation, and overview screenshot evidence. |
+| v7.52 | 2026-05-23 | Added Fast VS HD2D house door jamb regression fix cycle record with opaque narrow jamb lines, updated validation, and lower/oblique screenshot evidence. |
+| v7.51 | 2026-05-23 | Added Fast VS HD2D house door jamb blend cycle record with narrow occlusion strip, wall blend, top shadow, validation, and lower/oblique screenshot evidence. |
+| v7.50 | 2026-05-23 | Added Fast VS HD2D house door sightline diagnostics cycle record with current/past medium, lower-close, and oblique-left captures plus validation. |
+| v7.49 | 2026-05-23 | Added Fast VS HD2D transparent depth-test cycle record with `_ZTest=LessEqual` setup for transparent world overlays, validation, and no-player screenshot evidence. |
+| v7.48 | 2026-05-23 | Added Fast VS HD2D house door front-leaf seal cycle record with visual-only current/past closed-door veneer, seam/band details, validation, and no-player screenshot evidence. |
+| v7.47 | 2026-05-23 | Added Fast VS HD2D house door light-plane clearance cycle record with narrowed current/past under-eave occlusion planes, validation, no-player close captures, and expected screenshot evidence. |
+| v7.46 | 2026-05-23 | Added Fast VS HD2D house front-plane door clearance cycle record with adjusted lintel/front-plane geometry, current/past close review captures, validation, and expected screenshot evidence. |
+| v7.32 | 2026-05-23 | Added Fast VS HD2D house exterior porch gap closure cycle record with current/past front return fills, seam strips, awning cap, threshold shadows, validation, close-review screenshot evidence, and visual snapshot audit. |
+| v7.31 | 2026-05-23 | Added Fast VS HD2D central plaza scenic horizon grounding cycle record with low path, grass, stone, and retaining-edge continuation pieces, validation, visual snapshot audit, oblique screenshot evidence, and rejected-sky-card guardrail note. |
+| v7.30 | 2026-05-23 | Added Fast VS HD2D central plaza outer ground skirt cycle record with current/past outer street, grass, stone, and corner continuation pieces, validation, visual snapshot audit, oblique screenshot evidence, and shadow-reference note. |
+| v7.29 | 2026-05-23 | Added Fast VS HD2D plaza library side window ledges cycle record with current/past side windows, narrow frame bars, stone sills, validation, and oblique screenshot evidence. |
+| v7.28 | 2026-05-23 | Added Fast VS HD2D plaza library side wall material breakup cycle record with visible trim and stone side-wall courses, validation, parent visibility fix, and oblique screenshot evidence. |
+| v7.27 | 2026-05-23 | Added Fast VS HD2D plaza library roof underside shadow cycle record with softened eave, side-wall, and base depth overlays, validation, and oblique screenshot evidence. |
+| v7.26 | 2026-05-23 | Added Fast VS HD2D plaza library side relief cycle record with visible outside side-wall ribs, horizontal courses, roof underside shadows, validation, and oblique screenshot evidence. |
+| v7.25 | 2026-05-23 | Added Fast VS HD2D plaza library oblique review cycle record with dedicated current/past left and right oblique screenshot capture, validation, and evidence for future side-mass review. |
+| v7.24 | 2026-05-23 | Added Fast VS HD2D library facade mass closure cycle record with side fills, upper cheek walls, roof returns, rear bridge pieces, side contact shadows, validation, close review, and screenshot evidence. |
+| v7.23 | 2026-05-23 | Added Fast VS HD2D outdoor horizon silhouette blend cycle record with low distant horizon bands and side carry strips for house exterior and plaza, validation, close review, and screenshot evidence. |
+| v7.22 | 2026-05-23 | Added Fast VS HD2D outdoor perimeter edge breakup cycle record with low-profile terrain and stone silhouette fragments around the house exterior and plaza edges, validation, and screenshot evidence. |
+| v7.21 | 2026-05-23 | Added Fast VS HD2D outdoor perimeter world continuation cycle record with low-profile house exterior and plaza world-envelope ground extensions, validation, and screenshot evidence. |
+| v7.20 | 2026-05-23 | Added Fast VS HD2D house facade porch closure cycle record with forward porch posts, side/outer cheek wall fills, eave board support, validation, and screenshot evidence. |
+| v7.18 | 2026-05-22 | Added Fast VS HD2D house facade closure/shadow cycle record with current/past door-side closure geometry, validation, and close/overview screenshot evidence. |
+| v7.17 | 2026-05-22 | Added Fast VS HD2D decisive light/shadow contrast cycle record with stronger exterior, plaza, and library shadow contrast tuning, localized occlusion objects, validation, and screenshot evidence. |
+| v7.16 | 2026-05-22 | Added Fast VS HD2D shadow/occlusion readability cycle record with current/past contact-shadow tuning, house door leak closure correction, library/plaza occlusion validation, and screenshot evidence. |
+| v6.98 | 2026-05-22 | Added Fast VS HD2D house exterior facade/backdrop readability cycle record with current/past roof trim, side solidity, door/window grounding, low-haze edge framing, validation, and report notes. |
+| v7.14 | 2026-05-22 | Added Fast VS HD2D architecture surface depth cycle record with current/past house roof ridge and library parapet/reveal depth polish, validation, and screenshot evidence. |
+| v6.88 | 2026-05-22 | Added Fast VS HD2D house exterior architectural closure cycle record with current/past shell closure polish, validation, and report notes. |
+| v6.87 | 2026-05-22 | Added Fast VS HD2D surface texture metric audit cycle record with report generation, validation, and cleanup notes. |
+| v6.86 | 2026-05-22 | Added Fast VS HD2D surface profile foundation cycle record with current/past major surface review metadata, validation, and cleanup notes. |
+| v6.85 | 2026-05-22 | Added Fast VS HD2D current interior surface readability cycle record with current-world interior texture/plate tuning, validation, and cleanup notes. |
+| v6.84 | 2026-05-22 | Added Fast VS HD2D outdoor scenic backdrop foundation cycle record with current/past house exterior and plaza sky, haze, treeline, roofline backdrop layers, outdoor clear-color correction, validation, and report evidence. |
+| v6.82 | 2026-05-22 | Added Fast VS HD2D area lighting profile cycle record with current-world area profile markers, validation, and cleanup notes. |
+| v6.81 | 2026-05-22 | Added Fast VS HD2D visual snapshot audit cycle record with current-world batch captures, PNG evidence, luminance and local contrast gates, validation, and cleanup notes. |
+| v6.80 | 2026-05-22 | Added Fast VS HD2D surface ramp shader cycle record with a custom opaque surface ramp shader, surface material generation and audits, validation, and cleanup notes. |
+| v6.83 | 2026-05-22 | Added Fast VS HD2D house exterior facade composition cycle record with current/past doorway returns, right wall trim, roof depth, background edge masks, validation, parent screenshot correction, and report evidence. |
+| v6.79 | 2026-05-22 | Added Fast VS HD2D sprite card ramp shader cycle record with a custom transparent sprite-card ramp shader, sprite-card material generation and audits, validation, and cleanup notes. |
+| v6.78 | 2026-05-22 | Added Fast VS HD2D surface directional shade cycle record with a shared vertical surface shade overlay material/texture, house facade, plaza facade, and library back shelf placements, validation, and cleanup notes. |
+| v6.79 | 2026-05-22 | Added Fast VS HD2D outdoor background sky depth cycle record with restrained layered sky curtains, broken horizon and roofline strips, validation, and screenshot evidence. |
+| v6.77 | 2026-05-22 | Added Fast VS HD2D static directional shadow cycle record with shared thin soft shadow material/texture, house facade, plaza facade, and library back shelf placements, validation, and cleanup notes. |
+| v6.76 | 2026-05-22 | Added Fast VS HD2D character directional shadow cycle record with a shared soft shadow material/texture, Niro/Reto/Aria placement updates, validation, and cleanup notes. |
+| v6.71 | 2026-05-21 | Added Fast VS HD2D house exterior porch door grounding cycle record with current/past threshold, frame, step shadow, validation, build, smoke, and screenshot evidence. |
+| v6.70 | 2026-05-21 | Added Fast VS HD2D library side shelf edge depth cycle record with current/past side-shelf edge/book/dust cues, validation, build, smoke, and screenshot evidence. |
+| v6.69 | 2026-05-21 | Added Fast VS HD2D library back shelf book-spine depth cycle record with current/past back-shelf spine/depth cues, validation, build, smoke, and screenshot evidence. |
+| v6.68 | 2026-05-21 | Added Fast VS HD2D plaza library door relief cycle record with current/past door seams, bands, hinge plates, reveal strips, validation, build, smoke, and screenshot evidence. |
+| v6.67 | 2026-05-21 | Added Fast VS HD2D plaza library window reveal depth cycle record with current/past window reveal strips, lips, supports, validation, build, smoke, and screenshot evidence. |
+| v6.66 | 2026-05-21 | Added Fast VS HD2D plaza library lower facade grounding cycle record with current/past entrance base, pilaster base, and window support cues plus validation, build, smoke, and screenshot evidence. |
+| v6.65 | 2026-05-21 | Added Fast VS HD2D plaza library entry plinth depth cycle record with current/past entrance step/plinth cues, validation, build, smoke, and screenshot evidence. |
+| v6.64 | 2026-05-21 | Added Fast VS HD2D plaza library side wall masonry relief cycle record with current/past side-wall ribs/courses/caps, validation, build, smoke, and screenshot evidence. |
+| v6.63 | 2026-05-21 | Added Fast VS HD2D outdoor sky atmosphere depth cycle record with subtle house/plaza sky wash objects, outdoor void background tone fix, validation, build, smoke, and screenshot evidence. |
+| v6.62 | 2026-05-21 | Added Fast VS HD2D plaza library bright accent cleanup cycle record with past-side facade accent material cleanup, validation, build, smoke, and screenshot evidence. |
+| v6.61 | 2026-05-21 | Added Fast VS HD2D plaza library rear roof connection cycle record with rear roof/wall/corner cues, material review fixes, validation, build, smoke, and screenshot evidence. |
+| v6.60 | 2026-05-21 | Added Fast VS HD2D plaza library side recess framing cycle record with current/past side recess caps/lips, validation, build, smoke, and screenshot evidence. |
+| v6.59 | 2026-05-21 | Added Fast VS HD2D plaza library side wall surface tuning cycle record with current/past side wall courses, panel chips, roof under-edge cues, validation, build, smoke, and screenshot evidence. |
+| v6.58 | 2026-05-21 | Added Fast VS HD2D plaza library deep exterior volume cycle record with current/past rear hall wall, long side wall, roof run, validation, build, smoke, and screenshot evidence. |
+| v6.57 | 2026-05-21 | Added Fast VS HD2D outdoor sky horizon layering cycle record with low-alpha horizon ridge objects, sky wash alpha tuning, validation, build, smoke, and screenshot evidence. |
+| v6.56 | 2026-05-21 | Added Fast VS HD2D plaza library front depth readability cycle record with current/past facade return, eave, roof lip, entrance recess, validation, build, smoke, and screenshot evidence. |
+| v6.56 | 2026-05-22 | Added Fast VS HD2D house exterior hero readability cycle record with stronger roof, facade, camera, texture, validation, and snapshot evidence. |
+| v6.55 | 2026-05-21 | Added Fast VS HD2D plaza library side surface breakup cycle record with current/past side wall detail cues, validation, build, smoke, and screenshot evidence. |
+| v6.54 | 2026-05-21 | Added Fast VS HD2D plaza library roof side depth cycle record with current/past side roof depth cues, validation, build, smoke, and screenshot evidence. |
+| v6.53 | 2026-05-21 | Added Fast VS HD2D outdoor sky texture readability cycle record with improved generated sky wash alpha, validation, build, smoke, and screenshot evidence. |
+| v6.52 | 2026-05-21 | Added Fast VS HD2D outdoor sky backdrop cycle record with outdoor camera clear-color switching, validation, build, smoke, and screenshot evidence. |
+| v6.51 | 2026-05-21 | Added Fast VS HD2D plaza library backward volume cycle record with current/past rear roof, side return, base contact, eave seam visuals, validation, build, smoke, and screenshot evidence. |
+| v6.50 | 2026-05-21 | Added Fast VS HD2D outdoor horizon depth cleanup cycle record with restrained house/plaza distant silhouette details, validation, build, smoke, screenshot evidence, and follow-up tasks for sky/background and plaza library exterior depth. |
+| v6.46 | 2026-05-21 | Added Fast VS HD2D library gallery atmosphere cycle record with current/past upper-gallery underside and back-wall atmosphere details plus validation and screenshot evidence. |
+| v6.45 | 2026-05-21 | Added Fast VS HD2D plaza library volume readability cycle record with current/past eave, roof seam, rear contact details, validation, build, smoke, and screenshot evidence. |
+| v6.44 | 2026-05-21 | Added Fast VS HD2D library entry table contrast cycle record with current/past entry and table-foot contrast details, validation, build, smoke, and screenshot evidence. |
+| v6.38 | 2026-05-21 | Added Fast VS HD2D library table silhouette cycle record with current/past table bevels, leg shading, validation, and screenshot evidence. |
+| v6.37 | 2026-05-21 | Added Fast VS HD2D outdoor far-edge transition cycle record with low-profile berm, grass, paving, stone, and dust shapes at the map edge plus validation and screenshot evidence. |
+| v6.36 | 2026-05-21 | Added Fast VS HD2D outdoor sky wash cycle record with generated low-alpha sky wash materials, validation, and screenshot evidence. |
+| v6.35 | 2026-05-21 | Added Fast VS HD2D plaza library exterior depth cycle record with rear roof mass, side wall depth, validation, build, smoke, and screenshot evidence. |
+| v6.34 | 2026-05-21 | Added Fast VS HD2D plaza library facade surface breakup cycle record with current/past facade breakup details, validation, and screenshot evidence. |
+| v6.33 | 2026-05-21 | Added Fast VS HD2D current library gallery floor seam cleanup cycle record with current-side dust seams, validation, build, smoke, and screenshot evidence. |
+| v6.32 | 2026-05-21 | Added Fast VS HD2D current library wall recess cleanup cycle record with current-side dust-toned wall/recess cleanup, window breakup slats, validation, build, smoke, and screenshot evidence. |
+| v6.31 | 2026-05-21 | Added Fast VS HD2D library upper gallery support polish cycle record with non-colliding support posts, underside bands, rail highlights, validation, and screenshot evidence. |
+| v6.30 | 2026-05-21 | Added Fast VS HD2D library reading table grounding cycle record with non-colliding table contact shadows, edge accents, and book contact details plus validation and screenshot evidence. |
+| v6.29 | 2026-05-21 | Added Fast VS HD2D central plaza paving readability cycle record with non-colliding plaza paving chips, contact accents, and seam details plus validation and screenshot evidence. |
+| v6.28 | 2026-05-21 | Added Fast VS HD2D current library ruin grounding cycle record with non-colliding dust, chip, scrap, and floor book details plus validation and screenshot evidence. |
+| v6.27 | 2026-05-21 | Added Fast VS HD2D house exterior facade microdepth cycle record with non-colliding door, window, and base accents plus validation and screenshot evidence. |
+| v6.26 | 2026-05-21 | Added Fast VS HD2D house interior furniture grounding cycle record with non-colliding bed, table, shelf, and hearth contact accents plus validation and screenshot evidence. |
+| v6.25 | 2026-05-21 | Added Fast VS HD2D plaza library facade microdepth cycle record with subtle door, window, and base accents plus validation and screenshot evidence. |
+| v6.22 | 2026-05-21 | Added Fast VS HD2D outdoor void background treatment cycle record with subtle distant silhouettes, validation, and screenshot evidence. |
+| v6.21 | 2026-05-21 | Added Fast VS HD2D house exterior vegetation silhouette cleanup cycle with tree crown sprite breakup, validation, and screenshot evidence. |
+| v6.20 | 2026-05-21 | Added Fast VS HD2D house exterior path/porch dressing cycle with doorway, path shoulder, road edge, and fence-side ground details plus validation and screenshot evidence. |
+| v6.19 | 2026-05-21 | Added Fast VS HD2D library wall plane dressing cycle with thin wall, shelf-contact, pilaster, and window recess details plus validation and screenshot evidence. |
+| v6.18 | 2026-05-21 | Added Fast VS HD2D 22h30m graphics improvement report with branch state, accepted work summary, external asset inventory, rejected attempts, validation state, and next steps. |
+| v6.17 | 2026-05-20 | Added Fast VS HD2D house bed layered textile cycle record with validation and screenshot evidence after rejecting the floating external bed sprite approach. |
+| v6.16 | 2026-05-20 | Added Fast VS HD2D library bookshelf external texture cycle record with OpenGameArt CC0 bookshelf source, validation, and screenshot evidence. |
+| v6.13 | 2026-05-20 | Added Fast VS HD2D house exterior external tree sprite cycle record with OpenGameArt CC0 tree source, hidden collision shells, validation, and screenshot evidence. |
+| v6.9 | 2026-05-20 | Added Fast VS HD2D plaza library approach cycle record with current/past low-profile steps, curbs, validation, build, player-smoke, and screenshot evidence. |
+| v6.8 | 2026-05-20 | Added Fast VS HD2D current library wall shelf depth cycle record with current-side shadow/dust bands, validation, build, player-smoke, and screenshot evidence. |
+| v6.6 | 2026-05-20 | Added Fast VS HD2D current library ruin floor detail cycle record with current-side floor clutter, validation, build, player-smoke, and screenshot evidence. |
+| v6.5 | 2026-05-20 | Added Fast VS HD2D house interior room depth cycle record with upper wall caps, corner posts, dark shadow framing, validation, and screenshot evidence. |
+| v6.4 | 2026-05-20 | Added Fast VS HD2D outdoor boundary nature cycle record with low boundary vegetation, stone, dust, and shadow accents plus validation and screenshot evidence. |
+| v6.3 | 2026-05-20 | Added Fast VS HD2D house exterior facade texture cycle record with updated wall and roof procedural textures, validation, and close screenshot evidence. |
+| v6.2 | 2026-05-20 | Added Fast VS HD2D library reading table detail cycle record with current/past bench pairs, table-top seams, validation, and screenshot evidence. |
+| v6.1 | 2026-05-20 | Added Fast VS HD2D library bookshelf readability cycle record with current/past side shelf lips, refreshed generated bookshelf textures, validation, build, and player-smoke evidence. |
+| v6.0 | 2026-05-20 | Added Fast VS HD2D house interior wall/floor warmth cycle record with current/past house interior screenshots, validation, build, and player-smoke evidence. |
+| v5.6 | 2026-05-20 | Added Fast VS HD2D outdoor edge dressing cycle record with current/past house and plaza boundary screenshots, validation, and review evidence. |
+| v5.7 | 2026-05-20 | Added Fast VS HD2D library window light cycle record with generated transparent gradient window-shaft and floor-pool accents, validation, screenshot, and review evidence. |
+| v5.5 | 2026-05-20 | Added Fast VS HD2D house interior life props cycle record with current/past bedside rug, table, and book-detail screenshots, validation, and review evidence. |
+| v5.1 | 2026-05-20 | Added Fast VS HD2D library facade close-detail cycle record with current/past door and window close screenshots, validation, and review evidence. |
+| v4.9 | 2026-05-20 | Added Fast VS HD2D house exterior detail cycle record with current/past porch and road detail screenshots, validation, and review evidence. |
+| v4.7 | 2026-05-20 | Added Fast VS HD2D house interior detail cycle record with current/past bed and table detail screenshots, validation, and review evidence. |
+| v4.3 | 2026-05-20 | Added Fast VS HD2D grass texture cycle record with procedural current/past grass plates, review-fix screenshots, validation, build, and player-smoke evidence. |
+| v4.2 | 2026-05-20 | Added Fast VS HD2D path stone cycle record with procedural current/past path plates, validation, screenshot, build, and player-smoke evidence. |
+| v4.1 | 2026-05-20 | Added Fast VS HD2D book palette cycle record with muted procedural shelf colors, variable book widths, validation, screenshot, build, and player-smoke evidence. |
+| v4.0 | 2026-05-20 | Added Fast VS HD2D depth framing cycle record with local shadow/warm-pool staging, validation, screenshot, build, and player-smoke evidence. |
+| v3.9 | 2026-05-20 | Added Fast VS HD2D close review screenshot cycle record with close-up evidence for interior props, facade doors/windows, Reto desk book, and library rubble. |
+| v3.8 | 2026-05-20 | Added Fast VS HD2D object detail cycle record with generated door/rubble materials, open-book line detail, validation, screenshot, build, and player-smoke evidence. |
+| v3.7 | 2026-05-20 | Added Fast VS HD2D hero prop texture cycle record with generated bed, facade, roof, window, plank, validation, screenshot, build, and player-smoke evidence. |
+| v3.6 | 2026-05-20 | Added Fast VS HD2D surface texture cycle record with generated texture assets, validation, screenshot, build, and player-smoke evidence. |
+| v3.5 | 2026-05-20 | Added Fast VS HD2D second-cycle atmosphere, validation, screenshot, build, and player-smoke record. |
+| v3.4 | 2026-05-20 | Added Fast VS HD2D first-cycle render, validation, screenshot, build, and player-smoke record. |
+| v3.3 | 2026-05-20 | Added post-VS parallel branch strategy and Chapter 1 continuation session prompt. |
+| v3.2 | 2026-05-19 | Added work-branch Fast VS HD2D/MCP/guidance records and preserved the left-bottom Time Window hint record after the public-main merge. |
 | v3.1 | 2026-05-19 | Added notes-based retroactive devlogs for Pass 8 reception and Chapter 1 TimeWindow/public-preview recovery on 2026-05-14 through 2026-05-16. |
 | v3.0 | 2026-05-18 | Rebuilt index after recovering missing 2026-05-07 through 2026-05-18 devlogs across local worktrees, refs, and fetched remotes. |

@@ -1,0 +1,24 @@
+HD-2D Phase B-alpha scene lens flare review (cycle 175)
+
+Commit:
+- 4525b7ee feat(hd2d): add phase b alpha scene lens flare setup
+
+Validation:
+- Validate: passed
+- Capture: passed
+- Build: passed
+- Smoke: built exe launched for 24 seconds with pattern count 0
+
+Applied changes:
+- Directional Sun receives `LensFlareComponentSRP`.
+- Added local procedural `Assets/Art/LensFlare/LensFlareData_Sun.asset`.
+- Default volume profile now keeps `ScreenSpaceLensFlare` active at intensity 0.4, samples 1, quarter resolution.
+- URP data-driven and screen-space lens flare support flags are enabled.
+
+Current gap against references:
+- Local URP 17 package cache does not expose a compiled `VolumetricFog` override, so the visible god-ray layer remains below the reference target.
+- This review set is for Tom's visual judgement of the B-alpha lens-flare groundwork before proceeding to Buto B-beta.
+
+Build exe path:
+- `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- 起動時は `Builds/FastVS_HouseSlice/` フォルダごと起動。

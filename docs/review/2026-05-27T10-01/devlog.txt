@@ -1,5 +1,1 @@
-docs/devlog/2026-05-27_chapter1_map_content_refine_cycle118.md
-
-# Review notes
-- Cycle 118 targets only the C1-C3 past-side lower garden edge.
-- Current-side debris, route pads, lower road, main path, buildings, and tree blocks are intended to remain unchanged.
+docs/devlog/2026-05-27_fast_vs_hd2d_stage8l_library_floor_bounce_grounding.md

@@ -1,0 +1,1 @@
+docs/devlog/2026-05-27_fast_vs_hd2d_stage7x_public_review_shadow_legibility.md

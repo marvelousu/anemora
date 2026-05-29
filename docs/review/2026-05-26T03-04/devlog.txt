@@ -1,0 +1,29 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7i_plaza_shadow_lift.md
+
+Stage 7i: Plaza Shadow Lift
+
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+Build: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+Launch: launch the whole C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice folder.
+
+Change:
+- Added three local CentralPlaza shadow-lift overlay planes.
+- Reused existing plaza sun exposure and shadow midtone materials.
+- Added Stage7i validate and capture editor batch methods.
+
+Validation:
+- ValidateHd2dStage7PlazaShadowLiftBatch: exit 0.
+- ValidateHouseSliceBatch: exit 0.
+- CaptureHd2dStage7PlazaShadowLiftReferenceScreenshotsBatch: exit 0.
+- Build: exit 0, exe timestamp 2026-05-26 03:01:14.
+- Smoke: killed after 20 seconds, error match count 0.
+- PortalStencilFeature active.
+- TimeWindow aperture PNG viewed; not black.
+- Scene grep before cleanup found Stage7i objects, Stage7 APV current/past volumes, separate spaces, and TimeWindowPairedSpacePortalController.
+
+Gap:
+- Target standard is still largely insufficient.
+- Plaza black shadow masses remain dominant.
+- Wide capture impact is subtle.
+- Floor and facade still read flat and tiled.
+- TimeWindow aperture functions but is visually far from the reference language.

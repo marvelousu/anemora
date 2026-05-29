@@ -1,0 +1,38 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7t_plan_conformance_settings.md
+
+Stage7t plan conformance settings closure review
+
+Branch:
+work/fast-vs-hd2d-shading-foundation-20260522
+
+Build:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+
+Launch folder:
+C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice
+フォルダごと起動
+
+Capture:
+C:\Users\maro6\OneDrive\work\projects\anemora_reference\reference\20260525_stage7s_aperture_frame_blend
+
+Changes:
+- Closed explicit Stage 1 postprocess drift: postExposure 0, Bloom threshold 0.85, high quality filtering enabled, Vignette 0.30 / 0.40, FilmGrain disabled.
+- Closed explicit Stage 3 URP shadow drift: 4 cascades, Cascade4 split 0.10 / 0.30 / 0.60, normal bias 1.5.
+- Updated render setup and validation gates so future apply/validate paths preserve the plan-conformant values.
+
+Validation:
+- VerifyShadingFoundationV1: first run failed on FilmGrain, second run passed, Logs\stage7t_plan_conformance_shading_audit_r2.log.
+- ValidateHouseSliceBatch: exit 0, Logs\stage7t_plan_conformance_validate_house.log.
+- CaptureHd2dStage7ApertureFrameBlendReferenceScreenshotsBatch: exit 0 with graphics enabled, Logs\stage7t_plan_conformance_capture.log.
+- BuildAndValidateBatch: Build Finished, Result: Success, Logs\stage7t_plan_conformance_build.log.
+- Player smoke: killed after 22 seconds, Logs\stage7t_plan_conformance_smoke.log; no Exception/Error/Failed/NullReference/MissingReference/Assertion matches.
+- Candidate public images passed central obstruction checks; route-close diagnostic images were not copied into this review.
+
+Public review curation:
+- No external target reference images are included.
+- No comparison board is included.
+- No obstructed route-close diagnostic images are included.
+
+Open gaps:
+- The scene remains substantially below the HD-2D target in integrated depth staging, material richness, atmospheric layering, and composition.
+- This review is a checkpoint for plan-conformant settings, not final visual approval.

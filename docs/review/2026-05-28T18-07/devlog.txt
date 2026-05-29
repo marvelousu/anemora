@@ -1,0 +1,24 @@
+HD-2D Phase B-beta Buto adoption review (cycle 176)
+
+Commits:
+- 5438c950 feat(hd2d): add phase b beta buto adoption fallback
+- af59796f feat(hd2d): add phase b beta buto adoption fallback
+
+Validation:
+- Validate: passed after disk space recovery
+- Capture: passed
+- Build: passed
+- Smoke: built exe launched for 24 seconds with pattern count 0
+
+Applied changes:
+- Added B-beta diagnostic batch methods.
+- Scans asset paths, loaded assemblies/types, and URP renderer asset text for Buto/OccaSoftware without hard references.
+- Keeps the B-alpha ScreenSpaceLensFlare and Directional Sun lens flare fallback active when Buto is absent.
+
+Current gap against references:
+- Buto is not imported in the current workspace, so no B-beta god-ray comparison is available yet.
+- The target HD-2D quality remains substantially below the reference target.
+
+Build exe path:
+- `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`
+- 起動時は `Builds/FastVS_HouseSlice/` フォルダごと起動。

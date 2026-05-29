@@ -1,0 +1,28 @@
+docs/devlog/2026-05-26_fast_vs_hd2d_stage7k_plaza_caster_silhouette_trim.md
+
+Stage 7k: Plaza Caster Silhouette Trim
+
+Branch: work/fast-vs-hd2d-shading-foundation-20260522
+Build: C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe
+Launch: launch the whole C:\Users\maro6\Documents\Unity\Anemora-fast-vs-v24-hd2d-work\Builds\FastVS_HouseSlice folder.
+
+Change:
+- Trimmed broad CentralPlaza realtime shadow caster mesh sizes.
+- Kept caster names/counts, realtime ShadowsOnly policy, cookies, runtime camera, route pads, and TimeWindow setup intact.
+- Added Stage7k validate and capture editor batch methods.
+
+Validation:
+- ValidateHd2dStage7PlazaCasterSilhouetteTrimBatch: exit 0.
+- ValidateHouseSliceBatch: exit 0.
+- CaptureHd2dStage7PlazaCasterSilhouetteTrimReferenceScreenshotsBatch: exit 0.
+- Build: exit 0, exe timestamp 2026-05-26 03:48:11.
+- Smoke: killed after 20 seconds, error match count 0.
+- PortalStencilFeature active.
+- TimeWindow aperture PNG viewed; not black.
+- Scene grep before cleanup found Stage7 objects, APV current/past volumes, separate spaces, TimeWindowPairedSpacePortalController, and trimmed cycle140 caster mesh.
+
+Gap:
+- Target standard is still largely insufficient.
+- Shadow silhouettes are smaller but still compositionally dominant.
+- Plaza floor and facade remain flat and tiled.
+- Material depth and reference-level spatial hierarchy are still missing.

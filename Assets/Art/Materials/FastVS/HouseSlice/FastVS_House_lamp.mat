@@ -31,6 +31,7 @@ Material:
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap:
+    AnemoraFastVsHd2dRole: OverlayGlow
     RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
