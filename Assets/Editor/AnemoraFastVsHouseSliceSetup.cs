@@ -55,6 +55,7 @@ namespace Anemora.EditorTools
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const string CharacterDirectory = "Assets/Art/Characters/FastVS";
         private const string OutdoorOcclusionGradientMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient.mat";
         private const string OutdoorOcclusionGradientTexturePath = TextureDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient_soft.asset";
         private const string OutdoorWarmStageLightMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_outdoor_warm_stage_light.mat";
@@ -206,6 +207,60 @@ namespace Anemora.EditorTools
         private const string RetoTalkLoopStripPath = "Assets/Art/Characters/FastVS/Reto/reto_talk_loop_v02_4f_64x96.png";
         private const string RetoRaiseArmsStripPath = "Assets/Art/Characters/FastVS/Reto/reto_raise_arms_v02_6f_64x96.png";
         private const string AriaNormalLoopStripPath = "Assets/Art/Characters/FastVS/Aria/resident_a_aria_normal_loop_breath_v01_4f_64x96_review_only.png";
+        private const string MiaNormalLoopStripPath = CharacterDirectory + "/Mia/mia_normal_loop_breath_v01_4f_64x96.png";
+        private const string MiaTalkLoopStripPath = CharacterDirectory + "/Mia/mia_talk_loop_breath_v01_4f_64x96.png";
+        private const string MiaNormalToTalkStripPath = CharacterDirectory + "/Mia/mia_normal_to_talk_transition_v01_4f_64x96.png";
+        private const string MiaTalkToNormalStripPath = CharacterDirectory + "/Mia/mia_talk_to_normal_transition_reverse_v01_4f_64x96.png";
+        private const string MiaFrontStillPath = CharacterDirectory + "/Mia/mia_front_idle_v12_64x96.png";
+        private const string MiaBackStillPath = CharacterDirectory + "/Mia/mia_back_idle_v12_64x96.png";
+        private const string MiaLeftStillPath = CharacterDirectory + "/Mia/mia_left_idle_v12_64x96.png";
+        private const string MiaRightStillPath = CharacterDirectory + "/Mia/mia_right_idle_v12_64x96.png";
+        private const string KaiaNormalLoopStripPath = CharacterDirectory + "/Kaia/kaia_normal_loop_breath_v01_4f_64x96.png";
+        private const string KaiaTalkLoopStripPath = CharacterDirectory + "/Kaia/kaia_talk_loop_breath_v01_4f_64x96.png";
+        private const string KaiaNormalToTalkStripPath = CharacterDirectory + "/Kaia/kaia_normal_to_talk_transition_v01_4f_64x96.png";
+        private const string KaiaTalkToNormalStripPath = CharacterDirectory + "/Kaia/kaia_talk_to_normal_transition_reverse_v01_4f_64x96.png";
+        private const string KaiaFrontStillPath = CharacterDirectory + "/Kaia/kaia_front_idle_v12_64x96.png";
+        private const string KaiaBackStillPath = CharacterDirectory + "/Kaia/kaia_back_idle_v12_64x96.png";
+        private const string KaiaLeftStillPath = CharacterDirectory + "/Kaia/kaia_left_idle_v12_64x96.png";
+        private const string KaiaRightStillPath = CharacterDirectory + "/Kaia/kaia_right_idle_v12_64x96.png";
+        private const string DarioNormalLoopStripPath = CharacterDirectory + "/Dario/dario_normal_loop_breath_v01_4f_64x96.png";
+        private const string DarioTalkLoopStripPath = CharacterDirectory + "/Dario/dario_talk_loop_breath_v01_4f_64x96.png";
+        private const string DarioNormalToTalkStripPath = CharacterDirectory + "/Dario/dario_normal_to_talk_transition_v01_4f_64x96.png";
+        private const string DarioTalkToNormalStripPath = CharacterDirectory + "/Dario/dario_talk_to_normal_transition_reverse_v01_4f_64x96.png";
+        private const string DarioFrontStillPath = CharacterDirectory + "/Dario/dario_front_idle_v12_64x96.png";
+        private const string DarioBackStillPath = CharacterDirectory + "/Dario/dario_back_idle_v12_64x96.png";
+        private const string DarioLeftStillPath = CharacterDirectory + "/Dario/dario_left_idle_v12_64x96.png";
+        private const string DarioRightStillPath = CharacterDirectory + "/Dario/dario_right_idle_v12_64x96.png";
+        private const string KarlaNormalLoopStripPath = CharacterDirectory + "/Karla/karla_normal_loop_breath_v01_4f_64x96.png";
+        private const string KarlaTalkLoopStripPath = CharacterDirectory + "/Karla/karla_talk_loop_breath_v01_4f_64x96.png";
+        private const string KarlaNormalToTalkStripPath = CharacterDirectory + "/Karla/karla_normal_to_talk_transition_v01_4f_64x96.png";
+        private const string KarlaTalkToNormalStripPath = CharacterDirectory + "/Karla/karla_talk_to_normal_transition_reverse_v01_4f_64x96.png";
+        private const string KarlaFrontStillPath = CharacterDirectory + "/Karla/karla_front_idle_v12_64x96.png";
+        private const string KarlaBackStillPath = CharacterDirectory + "/Karla/karla_back_idle_v12_64x96.png";
+        private const string KarlaLeftStillPath = CharacterDirectory + "/Karla/karla_left_idle_v12_64x96.png";
+        private const string KarlaRightStillPath = CharacterDirectory + "/Karla/karla_right_idle_v12_64x96.png";
+        private const string KairoNormalLoopStripPath = CharacterDirectory + "/Kairo/kairo_normal_loop_breath_v01_4f_64x96.png";
+        private const string KairoTalkLoopStripPath = CharacterDirectory + "/Kairo/kairo_talk_loop_breath_v01_4f_64x96.png";
+        private const string KairoNormalToTalkStripPath = CharacterDirectory + "/Kairo/kairo_normal_to_talk_transition_v01_4f_64x96.png";
+        private const string KairoTalkToNormalStripPath = CharacterDirectory + "/Kairo/kairo_talk_to_normal_transition_reverse_v01_4f_64x96.png";
+        private const string KairoFrontStillPath = CharacterDirectory + "/Kairo/kairo_front_idle_v12_64x96.png";
+        private const string KairoBackStillPath = CharacterDirectory + "/Kairo/kairo_back_idle_v12_64x96.png";
+        private const string KairoLeftStillPath = CharacterDirectory + "/Kairo/kairo_left_idle_v12_64x96.png";
+        private const string KairoRightStillPath = CharacterDirectory + "/Kairo/kairo_right_idle_v12_64x96.png";
+        private const string LunaNormalLoopStripPath = CharacterDirectory + "/Luna/luna_normal_loop_breath_v01_4f_64x96.png";
+        private const string LunaTalkLoopStripPath = CharacterDirectory + "/Luna/luna_talk_loop_breath_v01_4f_64x96.png";
+        private const string LunaNormalToTalkStripPath = CharacterDirectory + "/Luna/luna_normal_to_talk_transition_v01_4f_64x96.png";
+        private const string LunaTalkToNormalStripPath = CharacterDirectory + "/Luna/luna_talk_to_normal_transition_reverse_v01_4f_64x96.png";
+        private const string LunaFrontStillPath = CharacterDirectory + "/Luna/luna_front_idle_v12_64x96.png";
+        private const string LunaBackStillPath = CharacterDirectory + "/Luna/luna_back_idle_v12_64x96.png";
+        private const string LunaLeftStillPath = CharacterDirectory + "/Luna/luna_left_idle_v12_64x96.png";
+        private const string LunaRightStillPath = CharacterDirectory + "/Luna/luna_right_idle_v12_64x96.png";
+        private const string GenericAdultMaleAFrontLoopPath = CharacterDirectory + "/Generic/IdleBreath/generic_adult_male_a_front_idle_breath_v59_recovery_4f_64x96_review_only.png";
+        private const string GenericAdultMaleBFrontLoopPath = CharacterDirectory + "/Generic/IdleBreath/generic_adult_male_b_front_idle_breath_v59_recovery_4f_64x96_review_only.png";
+        private const string GenericAdultFemaleAFrontLoopPath = CharacterDirectory + "/Generic/IdleBreath/generic_adult_female_a_front_idle_breath_v59_recovery_4f_64x96_review_only.png";
+        private const string GenericAdultFemaleBFrontLoopPath = CharacterDirectory + "/Generic/IdleBreath/generic_adult_female_b_front_idle_breath_v59_recovery_4f_64x96_review_only.png";
+        private const string GenericElderFemaleFrontLoopPath = CharacterDirectory + "/Generic/IdleBreath/generic_elder_female_front_idle_breath_v59_recovery_4f_64x96_review_only.png";
+        private const string GenericChildAFrontLoopPath = CharacterDirectory + "/Generic/IdleBreath/generic_child_a_front_idle_breath_v59_recovery_4f_64x96_review_only.png";
         private const string OpenGameArtTreeSpritePath = "Assets/Art/External/OpenGameArt/edomin_tree_sprites_cc0/tree3_0.png";
         private const string OpenGameArtBookshelfTexturePath = "Assets/Art/External/OpenGameArt/alejandrohaibi_bookshelf_cc0/bookshelf_2.png";
         private const int RetoExpectedFrameWidth = 64;
@@ -388,6 +443,17 @@ namespace Anemora.EditorTools
         private static readonly Vector3 Chapter1AriaStreetMapCenter = CentralPlazaVsCenter + new Vector3(25.50f, 0f, -1.75f);
         private static readonly Vector3 Chapter1KaiaFarmMapCenter = CentralPlazaVsCenter + new Vector3(32.50f, 0f, -2.85f);
         private static readonly Vector3 Chapter1RuinsMapCenter = CentralPlazaVsCenter + new Vector3(45.50f, 0f, 0.05f);
+        private static readonly Vector3 Chapter1MiaRuntimePosition = Chapter1MiaHouseMapCenter + new Vector3(-1.92f, 0.02f, 0.62f);
+        private static readonly Vector3 Chapter1DarioStreetRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(-6.72f, 0.02f, 4.42f);
+        private static readonly Vector3 Chapter1KairoRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(-10.64f, 0.02f, 2.34f);
+        private static readonly Vector3 Chapter1LunaRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(-9.12f, 0.02f, 3.38f);
+        private static readonly Vector3 Chapter1KarlaRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(7.76f, 0.02f, 3.42f);
+        private static readonly Vector3 Chapter1KaiaRuntimePosition = Chapter1KaiaFarmMapCenter + new Vector3(-2.82f, 0.02f, -6.74f);
+        private static readonly Vector3 Chapter1DarioFarmRuntimePosition = Chapter1KaiaFarmMapCenter + new Vector3(-6.72f, 0.02f, 3.12f);
+        private static readonly Vector3 Chapter1RuinsBridgeWorkerRuntimePosition = Chapter1RuinsMapCenter + new Vector3(-3.78f, 0.56f, -0.30f);
+        private static readonly Vector3 Chapter1RuinsMerchantRuntimePosition = Chapter1RuinsMapCenter + new Vector3(12.58f, 0.02f, -4.68f);
+        private static readonly Vector3 Chapter1RuinsResidentUpperRuntimePosition = Chapter1RuinsMapCenter + new Vector3(-22.10f, 0.02f, 3.88f);
+        private static readonly Vector3 Chapter1RuinsResidentLowerRuntimePosition = Chapter1RuinsMapCenter + new Vector3(-21.85f, 0.02f, -4.40f);
         private static readonly Vector3 Chapter1EndSideViewCenter = CentralPlazaVsCenter + new Vector3(9.10f, 0f, -10.50f);
         private static readonly Vector3 Chapter1EndSideViewCameraAnchor = Chapter1EndSideViewCenter + new Vector3(-1.05f, 1.45f, 0f);
         private static readonly Vector3 Chapter1EndSideViewPreviewTarget = Chapter1EndSideViewCenter + new Vector3(-2.40f, 0.02f, 0f);
@@ -535,6 +601,8 @@ namespace Anemora.EditorTools
             ValidateNiroSpriteAsset();
             ValidateAriaSpriteAsset();
             ValidateRetoStateflowAssets();
+            ValidatePromotedCharacterAssets();
+            ValidateChapter1RuntimeCharacterPopulation();
             ValidateHouseMapSeparationAndDoorTransitions(controller);
             ValidateDirectionalSpriteAnimator();
             ValidatePlayerSpritePresentation();
@@ -831,7 +899,35 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"Fast VS house slice build failed: {report.summary.result}");
             }
 
+            EnsureHouseSliceFilmGrainDisabledAfterBuild();
             Debug.Log($"Fast VS house slice player built: {Path.GetFullPath(BuildExePath)}");
+        }
+
+        private static void EnsureHouseSliceFilmGrainDisabledAfterBuild()
+        {
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(profilePath);
+            if (profile == null)
+            {
+                throw new InvalidOperationException($"Fast VS house slice build postprocess failed: volume profile is missing: {profilePath}");
+            }
+
+            if (!profile.TryGet<FilmGrain>(out var filmGrain))
+            {
+                throw new InvalidOperationException("Fast VS house slice build postprocess failed: FilmGrain is missing from the default volume profile.");
+            }
+
+            filmGrain.active = false;
+            filmGrain.type.overrideState = false;
+            filmGrain.intensity.overrideState = true;
+            filmGrain.intensity.value = 0f;
+            filmGrain.response.overrideState = true;
+            filmGrain.response.value = 0.8f;
+            filmGrain.texture.overrideState = true;
+            filmGrain.texture.value = null;
+            EditorUtility.SetDirty(filmGrain);
+            EditorUtility.SetDirty(profile);
+            AssetDatabase.SaveAssets();
         }
 
         public static void BuildAndValidateBatch()
@@ -11047,6 +11143,196 @@ namespace Anemora.EditorTools
             CreateLandmarkCube(markerObjectName, root, triggerCenter + new Vector3(0f, -0.452f, 0.10f), new Vector3(0.54f, 0.030f, 0.20f), Quaternion.identity, markerMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, landmarkId);
         }
 
+        private static void CreateChapter1MiaRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (past)
+            {
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_Mia",
+                "Mia",
+                Chapter1MiaRuntimePosition,
+                1.08f,
+                NamedNpcLoopMaterial("mia_normal_loop_breath_sprite", MiaNormalLoopStripPath),
+                materials.Label,
+                2.1f,
+                FastVsHouseArea.MiaHouse,
+                true,
+                new Vector3(0.74f, 0.24f, 1f));
+        }
+
+        private static void CreateChapter1StreetRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_DarioStreet",
+                "Dario",
+                Chapter1DarioStreetRuntimePosition,
+                1.12f,
+                NamedNpcLoopMaterial("dario_normal_loop_breath_sprite", DarioNormalLoopStripPath),
+                materials.Label,
+                2.2f,
+                FastVsHouseArea.AriaStreet,
+                false,
+                new Vector3(0.76f, 0.25f, 1f));
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_Kairo",
+                "Kairo",
+                Chapter1KairoRuntimePosition,
+                1.04f,
+                NamedNpcLoopMaterial("kairo_normal_loop_breath_sprite", KairoNormalLoopStripPath),
+                materials.Label,
+                2.0f,
+                FastVsHouseArea.AriaStreet,
+                false,
+                new Vector3(0.70f, 0.22f, 1f));
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_Luna",
+                "Luna",
+                Chapter1LunaRuntimePosition,
+                0.78f,
+                NamedNpcLoopMaterial("luna_normal_loop_breath_sprite", LunaNormalLoopStripPath),
+                materials.Label,
+                2.7f,
+                FastVsHouseArea.AriaStreet,
+                false,
+                new Vector3(0.52f, 0.17f, 1f));
+        }
+
+        private static void CreateChapter1AriaHouseRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_Karla",
+                "Karla",
+                Chapter1KarlaRuntimePosition,
+                1.08f,
+                NamedNpcLoopMaterial("karla_normal_loop_breath_sprite", KarlaNormalLoopStripPath),
+                materials.Label,
+                2.1f,
+                FastVsHouseArea.AriaStreet,
+                false,
+                new Vector3(0.74f, 0.24f, 1f));
+        }
+
+        private static void CreateChapter1KaiaFarmRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (past)
+            {
+                CreateAnimatedSpriteCharacter(
+                    root,
+                    "FastVS_SpriteCharacter_DarioFarm",
+                    "Dario",
+                    Chapter1DarioFarmRuntimePosition,
+                    1.12f,
+                    NamedNpcLoopMaterial("dario_normal_loop_breath_sprite", DarioNormalLoopStripPath),
+                    materials.Label,
+                    2.2f,
+                    FastVsHouseArea.KaiaFarm,
+                    false,
+                    new Vector3(0.76f, 0.25f, 1f));
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_Kaia",
+                "Kaia",
+                Chapter1KaiaRuntimePosition,
+                1.10f,
+                NamedNpcLoopMaterial("kaia_normal_loop_breath_sprite", KaiaNormalLoopStripPath),
+                materials.Label,
+                2.1f,
+                FastVsHouseArea.KaiaFarm,
+                true,
+                new Vector3(0.74f, 0.24f, 1f));
+        }
+
+        private static void CreateChapter1RuinsBridgeRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_GenericNpc_RuinsBridgeWorker",
+                "Bridge Worker",
+                Chapter1RuinsBridgeWorkerRuntimePosition,
+                1.02f,
+                GenericNpcLoopMaterial("generic_ruins_bridge_worker_sprite", GenericAdultMaleAFrontLoopPath, new Color(1.00f, 0.94f, 0.84f, 0.92f)),
+                materials.Label,
+                2.2f,
+                FastVsHouseArea.Ruins,
+                false,
+                new Vector3(0.70f, 0.23f, 1f));
+        }
+
+        private static void CreateChapter1RuinsSideHomesRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_GenericNpc_RuinsMerchant",
+                "Merchant",
+                Chapter1RuinsMerchantRuntimePosition,
+                1.04f,
+                GenericNpcLoopMaterial("generic_ruins_merchant_sprite", GenericElderFemaleFrontLoopPath, new Color(1.00f, 0.90f, 0.74f, 0.90f)),
+                materials.Label,
+                1.8f,
+                FastVsHouseArea.Ruins,
+                false,
+                new Vector3(0.72f, 0.24f, 1f));
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_GenericNpc_RuinsResidentUpper",
+                "Resident",
+                Chapter1RuinsResidentUpperRuntimePosition,
+                0.96f,
+                GenericNpcLoopMaterial("generic_ruins_resident_upper_sprite", GenericAdultFemaleAFrontLoopPath, new Color(0.96f, 0.86f, 0.72f, 0.76f)),
+                materials.Label,
+                2.0f,
+                FastVsHouseArea.Ruins,
+                false,
+                new Vector3(0.64f, 0.21f, 1f));
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_GenericNpc_RuinsResidentLower",
+                "Resident",
+                Chapter1RuinsResidentLowerRuntimePosition,
+                0.98f,
+                GenericNpcLoopMaterial("generic_ruins_resident_lower_sprite", GenericAdultMaleBFrontLoopPath, new Color(0.92f, 0.84f, 0.70f, 0.74f)),
+                materials.Label,
+                2.0f,
+                FastVsHouseArea.Ruins,
+                false,
+                new Vector3(0.66f, 0.22f, 1f));
+        }
+
         private static void CreateMiaHouseExteriorContinuation(Transform root, string prefix, bool past, Materials materials)
         {
             var c = Chapter1MiaHouseMapCenter;
@@ -11095,6 +11381,8 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_C1_DryPlantStrip", root, c + new Vector3(1.98f, 0.08f, -5.86f), new Vector3(5.30f, 0.06f, 0.52f), Quaternion.identity, materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.c1.dry_plant_strip");
                 CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_C1", c + new Vector3(8.22f, 0.20f, 0.98f), leaf, 0);
             }
+
+            CreateChapter1MiaRuntimePopulation(root, past, materials);
         }
 
         private static void CreateMiaYardCycle41LayoutDetails(Transform root, string prefix, bool past, Materials materials)
@@ -11287,6 +11575,8 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_D1_LeftRuinRoofShard", root, c + new Vector3(-18.52f, 1.92f, 3.78f), new Vector3(1.38f, 0.12f, 0.42f), Quaternion.Euler(10f, 0f, -18f), materials.CurrentRoof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.d1.left_ruin_roof_shard");
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_D1_StallDebrisCross", root, c + new Vector3(-1.15f, 0.18f, 5.02f), new Vector3(3.20f, 0.10f, 0.18f), Quaternion.Euler(0f, -22f, 7f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.d1.stall_debris_cross");
             }
+
+            CreateChapter1StreetRuntimePopulation(root, past, materials);
         }
 
         private static void CreateKaiaFarmContinuation(Transform root, string prefix, bool past, Materials materials)
@@ -11401,6 +11691,7 @@ namespace Anemora.EditorTools
             CreateKaiaFarmCycle119PastLowerLeftFieldEdgeOffsetDetails(root, prefix, past, materials);
             CreateKaiaFarmCycle107CurrentLowerFieldPanelBreakupDetails(root, prefix, past, materials);
             CreateKaiaFarmCycle109CurrentOrchardScatterDetails(root, prefix, past, materials);
+            CreateChapter1KaiaFarmRuntimePopulation(root, past, materials);
         }
 
         private static void CreateKaiaFarmCycle48YardSpaceAndFieldBandDetails(Transform root, string prefix, bool past, Materials materials)
@@ -13572,6 +13863,8 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_F1_CollapsedHouseWall", root, c + new Vector3(-24.35f, 0.34f, 4.05f), new Vector3(1.44f, 0.92f, 0.18f), Quaternion.Euler(0f, -10f, 6f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f1.collapsed_wall");
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_F1_MudBank", root, c + new Vector3(0.98f, 0.04f, -3.88f), new Vector3(0.92f, 0.05f, 0.30f), Quaternion.Euler(0f, 10f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f1.mud_bank");
             }
+
+            CreateChapter1RuinsBridgeRuntimePopulation(root, past, materials);
         }
 
         private static void CreateChapter1Cycle96BridgeLandingShoulderDetails(Transform root, string prefix, bool past, Materials materials)
@@ -14461,6 +14754,8 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_D2_DustPile", root, c + new Vector3(4.05f, 0.05f, 3.10f), new Vector3(1.50f, 0.05f, 0.50f), Quaternion.Euler(0f, -16f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.d2.dust_pile");
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_D2_BrokenStep", root, c + new Vector3(-4.60f, 0.10f, 3.15f), new Vector3(1.20f, 0.10f, 0.36f), Quaternion.Euler(0f, 18f, 0f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.d2.broken_step");
             }
+
+            CreateChapter1AriaHouseRuntimePopulation(root, past, materials);
         }
 
         private static void CreateStreetCornerMarketAndRoadEdgeDetails(Transform root, string prefix, bool past, Materials materials)
@@ -15619,6 +15914,8 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_F_RightRuinRoofSlabB", root, c + new Vector3(16.96f, 0.16f, 1.52f), new Vector3(0.86f, 0.09f, 0.34f), Quaternion.Euler(7f, 0f, 18f), materials.CurrentRoof, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f.right_ruin_roof_slab_b");
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_F_RightWastelandDustSheet", root, c + new Vector3(17.12f, 0.055f, -5.34f), new Vector3(2.10f, 0.05f, 0.54f), Quaternion.Euler(0f, -12f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f.right_wasteland_dust_sheet");
             }
+
+            CreateChapter1RuinsSideHomesRuntimePopulation(root, past, materials);
         }
 
         private static void CreateRuinsCycle50RoughLandAndVegetationDetails(Transform root, string prefix, bool past, Materials materials)
@@ -42544,6 +42841,121 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException(
                     $"House slice validation failed: Aria idle-breath strip must be {expectedWidth}x{NiroExpectedTextureHeight}, but was {texture.width}x{texture.height}: {AriaNormalLoopStripPath}");
+            }
+        }
+
+        private static void ValidatePromotedCharacterAssets()
+        {
+            EnsurePromotedCharacterAssets();
+            foreach (var path in EnumeratePromotedCharacterAssetPaths())
+            {
+                ValidatePromotedCharacterAssetTexture(path);
+            }
+        }
+
+        private static void ValidatePromotedCharacterAssetTexture(string path)
+        {
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: promoted character texture missing: {path}");
+            }
+
+            var expectedWidth = path.IndexOf("_4f_", StringComparison.OrdinalIgnoreCase) >= 0
+                ? NiroExpectedTextureWidth * NiroAnimatedFrameCount
+                : NiroExpectedTextureWidth;
+            if (texture.width != expectedWidth || texture.height != NiroExpectedTextureHeight)
+            {
+                throw new InvalidOperationException(
+                    $"House slice validation failed: promoted character texture must be {expectedWidth}x{NiroExpectedTextureHeight}, but was {texture.width}x{texture.height}: {path}");
+            }
+        }
+
+        private static void ValidateChapter1RuntimeCharacterPopulation()
+        {
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Mia", Chapter1MiaRuntimePosition, "mia_normal_loop_breath_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Kaia", Chapter1KaiaRuntimePosition, "kaia_normal_loop_breath_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_DarioStreet", Chapter1DarioStreetRuntimePosition, "dario_normal_loop_breath_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_DarioFarm", Chapter1DarioFarmRuntimePosition, "dario_normal_loop_breath_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Karla", Chapter1KarlaRuntimePosition, "karla_normal_loop_breath_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Kairo", Chapter1KairoRuntimePosition, "kairo_normal_loop_breath_sprite");
+            var lunaRenderer = ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Luna", Chapter1LunaRuntimePosition, "luna_normal_loop_breath_sprite");
+            if (lunaRenderer.transform.localScale.y > 0.82f)
+            {
+                throw new InvalidOperationException("House slice validation failed: Luna must keep the child scale ladder and not be normalized to adult height.");
+            }
+
+            ValidateRuntimeCharacterSprite("FastVS_GenericNpc_RuinsBridgeWorker", Chapter1RuinsBridgeWorkerRuntimePosition, "generic_ruins_bridge_worker_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_GenericNpc_RuinsMerchant", Chapter1RuinsMerchantRuntimePosition, "generic_ruins_merchant_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_GenericNpc_RuinsResidentUpper", Chapter1RuinsResidentUpperRuntimePosition, "generic_ruins_resident_upper_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_GenericNpc_RuinsResidentLower", Chapter1RuinsResidentLowerRuntimePosition, "generic_ruins_resident_lower_sprite");
+
+            if (FindSceneObjectIncludingInactive("Mia_NameLabel") != null ||
+                FindSceneObjectIncludingInactive("Kaia_NameLabel") != null ||
+                FindSceneObjectIncludingInactive("Dario_NameLabel") != null ||
+                FindSceneObjectIncludingInactive("Karla_NameLabel") != null ||
+                FindSceneObjectIncludingInactive("Kairo_NameLabel") != null ||
+                FindSceneObjectIncludingInactive("Luna_NameLabel") != null)
+            {
+                throw new InvalidOperationException("House slice validation failed: Chapter 1 runtime characters must not render debug name labels.");
+            }
+        }
+
+        private static Renderer ValidateRuntimeCharacterSprite(string objectName, Vector3 expectedPosition, string materialId)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing runtime character {objectName}.");
+            }
+
+            ValidateVectorNear($"{objectName} placement", sceneObject.transform.localPosition, expectedPosition);
+
+            var animator = sceneObject.GetComponent<FastVsSpriteStripLoopAnimator>();
+            if (animator == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} is missing FastVsSpriteStripLoopAnimator.");
+            }
+
+            if (animator.FrameCountForReview != NiroAnimatedFrameCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must animate {NiroAnimatedFrameCount} frames.");
+            }
+
+            var renderer = sceneObject.GetComponentInChildren<Renderer>(true);
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} sprite renderer/material is missing.");
+            }
+
+            if (renderer.sharedMaterial.name.IndexOf(materialId, StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} expected material id {materialId}, but got {renderer.sharedMaterial.name}.");
+            }
+
+            ValidateGeneratedRuntimeCharacterMaterial(materialId);
+            if (FindSceneObjectIncludingInactive($"{objectName}_ContactShadow") == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} is missing its contact shadow.");
+            }
+
+            return renderer;
+        }
+
+        private static void ValidateGeneratedRuntimeCharacterMaterial(string materialId)
+        {
+            var materialPath = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: runtime character material missing: {materialPath}");
+            }
+
+            var shadedPath = $"{TextureDirectory}/FastVS_House_{materialId}_shaded.asset";
+            var shaded = AssetDatabase.LoadAssetAtPath<Texture2D>(shadedPath);
+            if (shaded == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: runtime character shaded texture missing: {shadedPath}");
             }
         }
 
@@ -80178,6 +80590,61 @@ namespace Anemora.EditorTools
             CreateSpriteCardParts(character.transform, displayName, height, spriteMaterial, false, label);
         }
 
+        private static GameObject CreateAnimatedSpriteCharacter(
+            Transform root,
+            string objectName,
+            string displayName,
+            Vector3 localPosition,
+            float height,
+            Material spriteMaterial,
+            Material label,
+            float framesPerSecond,
+            FastVsHouseArea area,
+            bool currentWorld,
+            Vector3 contactShadowScale)
+        {
+            var character = new GameObject(objectName);
+            character.transform.SetParent(root, false);
+            character.transform.localPosition = localPosition;
+            character.AddComponent<FastVsPaperBillboard>();
+
+            var renderer = CreateSpriteCardParts(character.transform, displayName, height, spriteMaterial, false, label);
+            var animator = character.AddComponent<FastVsSpriteStripLoopAnimator>();
+            SerializedSet(animator, "spriteRenderer", renderer);
+            SerializedSet(animator, "frameCount", NiroAnimatedFrameCount);
+            SerializedSet(animator, "framesPerSecond", framesPerSecond);
+
+            CreateRuntimeCharacterContactShadow(root, objectName, localPosition, contactShadowScale, area, currentWorld);
+            return character;
+        }
+
+        private static GameObject CreateRuntimeCharacterContactShadow(
+            Transform root,
+            string characterObjectName,
+            Vector3 localPosition,
+            Vector3 localScale,
+            FastVsHouseArea area,
+            bool currentWorld)
+        {
+            var shadow = CreateCharacterContactShadow(
+                $"{characterObjectName}_ContactShadow",
+                root,
+                localPosition + new Vector3(0f, 0.036f, 0.018f),
+                localScale,
+                EnsureCharacterContactShadowMaterial("chapter1_runtime_character_contact_shadow"));
+            AddHd2dOverlayProfile(
+                shadow,
+                $"{characterObjectName}.contact_shadow",
+                area,
+                FastVsHd2dOverlayKind.CharacterContactShadow,
+                currentWorld,
+                true,
+                new Vector2(0.055f, 0.115f),
+                new Vector2(localScale.x, localScale.y),
+                new Color(0.05f, 0.045f, 0.04f, 0.095f));
+            return shadow;
+        }
+
         private static void CreateRetoAtLibraryDesk(Transform root, Materials materials)
         {
             var reto = new GameObject("FastVS_Reto_WritingAtDesk");
@@ -89182,6 +89649,21 @@ namespace Anemora.EditorTools
             return SpriteStripMaterial(id, texturePath, tint, strip ? NiroAnimatedFrameCount : 1);
         }
 
+        private static Material NamedNpcLoopMaterial(string id, string texturePath)
+        {
+            return SpriteStripMaterial(id, texturePath, Color.white, NiroAnimatedFrameCount);
+        }
+
+        private static Material NamedNpcStillMaterial(string id, string texturePath)
+        {
+            return SpriteStripMaterial(id, texturePath, Color.white, 1);
+        }
+
+        private static Material GenericNpcLoopMaterial(string id, string texturePath, Color tint)
+        {
+            return SpriteStripMaterial(id, texturePath, tint, NiroAnimatedFrameCount);
+        }
+
         private static Material ExternalSpriteMaterial(string id, string texturePath, Color tint)
         {
             EnsureTextureImporter(texturePath);
@@ -90072,11 +90554,102 @@ namespace Anemora.EditorTools
             if (!File.Exists(AriaNormalLoopStripPath))
             {
                 Debug.LogWarning($"Fast VS bundled Aria character asset missing: {AriaNormalLoopStripPath}");
-                return;
+            }
+            else
+            {
+                AssetDatabase.ImportAsset(AriaNormalLoopStripPath, ImportAssetOptions.ForceSynchronousImport);
+                EnsureTextureImporter(AriaNormalLoopStripPath);
             }
 
-            AssetDatabase.ImportAsset(AriaNormalLoopStripPath, ImportAssetOptions.ForceSynchronousImport);
-            EnsureTextureImporter(AriaNormalLoopStripPath);
+            EnsurePromotedCharacterAssets();
+        }
+
+        private static void EnsurePromotedCharacterAssets()
+        {
+            foreach (var path in EnumeratePromotedCharacterAssetPaths())
+            {
+                if (!File.Exists(path))
+                {
+                    throw new InvalidOperationException($"Fast VS promoted character asset missing: {path}");
+                }
+
+                EnsureTextureImporter(path);
+            }
+        }
+
+        private static IEnumerable<string> EnumeratePromotedCharacterAssetPaths()
+        {
+            yield return MiaNormalLoopStripPath;
+            yield return MiaTalkLoopStripPath;
+            yield return MiaNormalToTalkStripPath;
+            yield return MiaTalkToNormalStripPath;
+            yield return MiaFrontStillPath;
+            yield return MiaBackStillPath;
+            yield return MiaLeftStillPath;
+            yield return MiaRightStillPath;
+            yield return KaiaNormalLoopStripPath;
+            yield return KaiaTalkLoopStripPath;
+            yield return KaiaNormalToTalkStripPath;
+            yield return KaiaTalkToNormalStripPath;
+            yield return KaiaFrontStillPath;
+            yield return KaiaBackStillPath;
+            yield return KaiaLeftStillPath;
+            yield return KaiaRightStillPath;
+            yield return DarioNormalLoopStripPath;
+            yield return DarioTalkLoopStripPath;
+            yield return DarioNormalToTalkStripPath;
+            yield return DarioTalkToNormalStripPath;
+            yield return DarioFrontStillPath;
+            yield return DarioBackStillPath;
+            yield return DarioLeftStillPath;
+            yield return DarioRightStillPath;
+            yield return KarlaNormalLoopStripPath;
+            yield return KarlaTalkLoopStripPath;
+            yield return KarlaNormalToTalkStripPath;
+            yield return KarlaTalkToNormalStripPath;
+            yield return KarlaFrontStillPath;
+            yield return KarlaBackStillPath;
+            yield return KarlaLeftStillPath;
+            yield return KarlaRightStillPath;
+            yield return KairoNormalLoopStripPath;
+            yield return KairoTalkLoopStripPath;
+            yield return KairoNormalToTalkStripPath;
+            yield return KairoTalkToNormalStripPath;
+            yield return KairoFrontStillPath;
+            yield return KairoBackStillPath;
+            yield return KairoLeftStillPath;
+            yield return KairoRightStillPath;
+            yield return LunaNormalLoopStripPath;
+            yield return LunaTalkLoopStripPath;
+            yield return LunaNormalToTalkStripPath;
+            yield return LunaTalkToNormalStripPath;
+            yield return LunaFrontStillPath;
+            yield return LunaBackStillPath;
+            yield return LunaLeftStillPath;
+            yield return LunaRightStillPath;
+
+            var variants = new[]
+            {
+                "generic_adult_male_a",
+                "generic_adult_male_b",
+                "generic_adult_female_a",
+                "generic_adult_female_b",
+                "generic_elder_male",
+                "generic_elder_female",
+                "generic_child_a",
+                "generic_child_b"
+            };
+            var directions = new[] { "front", "back", "left", "right" };
+            foreach (var variant in variants)
+            {
+                foreach (var direction in directions)
+                {
+                    yield return CharacterDirectory + $"/Generic/Directions/{variant}_{direction}_v59_recovery_64x96_review_only.png";
+                    yield return CharacterDirectory + $"/Generic/IdleBreath/{variant}_{direction}_idle_breath_v59_recovery_4f_64x96_review_only.png";
+                }
+
+                yield return CharacterDirectory + $"/Generic/Selected/{variant}_v59_recovery_64x96_review_only.png";
+            }
         }
 
         private static void EnsureFolder(string path)
