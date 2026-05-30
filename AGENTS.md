@@ -19,13 +19,13 @@
 - **物語 / canon / 演出 / handover = Linux Claude**。実装 / Unity build / validate / screenshot = **Codex Windows**。
 - Linux 環境では Unity build 不可。実装検証を要する作業は Codex 引継ぎプロンプトで渡す。
 
-## screenshot / review ワークフロー (Codex 主担当)
-- レビュー対象画像は `docs/review/<YYYY-MM-DDTHH-MM>/` (JST、ISO 8601 + URL safe で `:` を `-`) に置く。1 セッション = 1 ディレクトリ。画像枚数の上限なし。
-- 同ディレクトリに **`devlog.txt` 必須**。最初の非空・非コメント行 (`#` で始まらない行) に、そのサイクルの対応 devlog markdown のリポ相対パスを 1 行で書く。
-- `docs/devlog/screenshots/` は引き続き Codex の作業ログ用 (生ログ・revision 含む)。`docs/review/` はレビュー出し用にキュレーションした画像群。役割分離で並存。
-- PR には `.github/workflows/review-check.yml` が走り、ディレクトリ名・`devlog.txt` 存在・参照先 .md の実在・画像 1 枚以上を validate。違反は CI fail。
-- viewer (`https://anemora-viewer.pages.dev/`) の Review タブが `docs/review/*` を自動表示。
-- 詳細: `docs/review/README.md`
+## レビュー画像ワークフロー (R2 移行済 2026-05-30、Codex 主担当)
+- レビュー画像は従来どおり `docs/review/<YYYY-MM-DDTHH-MM>/` (JST、ISO 8601、`:`→`-`) に **ローカル生成**。1 サイクル = 1 ディレクトリ、`devlog.txt` 必須 (最初の非空・非コメント行 = 対応 devlog .md のリポ相対パス)。
+- ただし **git にはコミットしない**。`bloat-guard` (pre-commit/pre-push + CI) が `docs/review/`・`docs/devlog/screenshots/` を拒否する。代わりに R2 へ:
+  `tools/r2/r2-upload-review.ps1 -CycleDir docs/review/<ts> -Branch work/<branch>` (画像は `git add` しない)。
+- `work/*` を origin へ push すると Action `r2-mirror-review` が R2 を同期。viewer は R2 から取得して Review タブに表示。詳細 `tools/r2/README.md`。
+- 生成シーン `Assets/Scenes/Anemora_FastVS_HouseSlice.unity` と APV ベイク `Assets/Settings/*.Cell*.bytes` は gitignore (再生成/再ベイク)。**Git LFS 禁止** (viewer の git archive を壊す)。
+- 新 clone/worktree は `tools/githooks/install.ps1` (= `git config core.hooksPath tools/githooks`) でガード有効化。詳細 `../anemora-repo-hygiene-cicd-plan.md`。
 
 ## branch / 公開規律
 - `main` = **public 安定 VS baseline**。コード変更は continuation branch 経由が原則、`main` 直編集はしない。
