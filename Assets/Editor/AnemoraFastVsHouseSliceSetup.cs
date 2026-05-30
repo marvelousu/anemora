@@ -38618,6 +38618,13 @@ namespace Anemora.EditorTools
             light.color = new Color(1.00f, 0.88f, 0.68f, 1f);
             lightObject.transform.rotation = Quaternion.Euler(GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior));
             ApplyHd2dPhaseBLensFlareToDirectionalLight(light);
+#if BUTO
+            var butoLight = lightObject.GetComponent<OccaSoftware.Buto.Runtime.ButoLight>() ??
+                lightObject.AddComponent<OccaSoftware.Buto.Runtime.ButoLight>();
+            butoLight.SetInheritance(true);
+            butoLight.SetDirty();
+            EditorUtility.SetDirty(butoLight);
+#endif
             var warmFillObject = new GameObject("FastVS_HD2D_WarmFillLight", typeof(Light));
             var warmFill = warmFillObject.GetComponent<Light>();
             warmFill.type = LightType.Point;
@@ -48306,7 +48313,11 @@ namespace Anemora.EditorTools
             var hasVolumetricFogEnabled = volumetricFogEnabled != null;
             if (hasVolumetricFogEnabled)
             {
+#if BUTO
+                volumetricFogEnabled.boolValue = false;
+#else
                 volumetricFogEnabled.boolValue = true;
+#endif
             }
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
@@ -48598,7 +48609,11 @@ namespace Anemora.EditorTools
 
         private static void ValidateHd2dPhaseCBetaArtisticTiltShiftAdoptionReportState()
         {
+#if FRONKON_TILTSHIFT
+            ValidateHd2dPhaseCBetaArtisticTiltShiftIntegratedState();
+#else
             ValidateStage7TiltShiftRendererFeature();
+#endif
 
             var rendererAssetTextInspected = false;
             var rendererFallbackFeatureFound = false;
@@ -48617,11 +48632,76 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift adoption validation failed: the URP renderer asset text could not be inspected.");
             }
 
+#if FRONKON_TILTSHIFT
+            if (rendererFallbackBlockActive)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift adoption validation failed: the self-made Stage 7 tilt-shift fallback is still active while Fronkon is enabled.");
+            }
+#else
             if (!rendererFallbackFeatureFound || !rendererFallbackBlockActive)
             {
                 throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift adoption validation failed: the self-made Stage 7 tilt-shift fallback block is not active.");
             }
+#endif
         }
+
+#if FRONKON_TILTSHIFT
+        private static void ValidateHd2dPhaseCBetaArtisticTiltShiftIntegratedState()
+        {
+            const string rendererDataPath = "Assets/Settings/UniversalRenderPipeline_Renderer.asset";
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererDataPath);
+            if (rendererData == null)
+            {
+                throw new InvalidOperationException($"Fast VS HD-2D phase C-beta Artistic tilt-shift validation failed: missing renderer data at {rendererDataPath}.");
+            }
+
+            FronkonGames.Artistic.TiltShift.TiltShift artisticFeature = null;
+            FullScreenPassRendererFeature fallbackFeature = null;
+            for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
+            {
+                if (rendererData.rendererFeatures[i] is FronkonGames.Artistic.TiltShift.TiltShift tiltShift)
+                {
+                    artisticFeature = tiltShift;
+                }
+                else if (rendererData.rendererFeatures[i] is FullScreenPassRendererFeature fullScreenFeature &&
+                         string.Equals(fullScreenFeature.name, Stage7TiltShiftFeatureName, StringComparison.Ordinal))
+                {
+                    fallbackFeature = fullScreenFeature;
+                }
+            }
+
+            if (artisticFeature == null || !IsScriptableRendererFeatureActive(artisticFeature))
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift validation failed: Fronkon TiltShift renderer feature is missing or inactive.");
+            }
+
+            if (fallbackFeature == null || IsScriptableRendererFeatureActive(fallbackFeature))
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift validation failed: self-made Stage 7 tilt-shift renderer feature must exist but be inactive.");
+            }
+
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(profilePath);
+            if (profile == null ||
+                !profile.TryGet<FronkonGames.Artistic.TiltShift.TiltShiftVolume>(out var tiltShiftVolume) ||
+                !tiltShiftVolume.active ||
+                !tiltShiftVolume.intensity.overrideState ||
+                Mathf.Abs(tiltShiftVolume.intensity.value - 1f) > 0.001f ||
+                !tiltShiftVolume.angle.overrideState ||
+                Mathf.Abs(tiltShiftVolume.angle.value) > 0.001f ||
+                !tiltShiftVolume.aperture.overrideState ||
+                Mathf.Abs(tiltShiftVolume.aperture.value - 0.7f) > 0.001f ||
+                !tiltShiftVolume.blur.overrideState ||
+                Mathf.Abs(tiltShiftVolume.blur.value - 1.2f) > 0.001f ||
+                !tiltShiftVolume.blurCurve.overrideState ||
+                Mathf.Abs(tiltShiftVolume.blurCurve.value - 3f) > 0.001f ||
+                !tiltShiftVolume.quality.overrideState ||
+                tiltShiftVolume.quality.value != FronkonGames.Artistic.TiltShift.Quality.High)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase C-beta Artistic tilt-shift validation failed: TiltShiftVolume must be active with horizontal high-quality HD-2D defaults.");
+            }
+        }
+#endif
 
         private static void WriteHd2dPhaseCBetaArtisticTiltShiftAdoptionDiagnosticsReport(string outputDirectory)
         {
@@ -48709,6 +48789,13 @@ namespace Anemora.EditorTools
 
             rendererFallbackFeatureFound = rendererAssetTextInspected && ContainsAnyToken(rendererAssetText, Stage7TiltShiftFeatureName);
             rendererFallbackBlockActive = rendererFallbackFeatureFound && IsHd2dPhaseCBetaArtisticTiltShiftRendererFallbackBlockActive(rendererAssetText);
+#if FRONKON_TILTSHIFT
+            var artisticRendererFeatureActive = IsHd2dPhaseCBetaArtisticRendererFeatureActive();
+            var artisticVolumeOverrideActive = IsHd2dPhaseCBetaArtisticVolumeOverrideConfigured();
+#else
+            var artisticRendererFeatureActive = false;
+            var artisticVolumeOverrideActive = false;
+#endif
 
             return new List<string>
             {
@@ -48725,15 +48812,49 @@ namespace Anemora.EditorTools
                 $"- Loaded assembly/type matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(assemblyMatches)}`",
                 $"- Renderer asset text artistic hint matches: `{FormatHd2dPhaseCBetaArtisticTiltShiftMatchSummary(rendererArtisticHintMatches)}`",
                 $"- Volume override/type candidates found: `{volumeCandidateFound}`",
+                $"- Fronkon renderer feature active: `{artisticRendererFeatureActive}`",
+                $"- Fronkon TiltShiftVolume override configured: `{artisticVolumeOverrideActive}`",
                 $"- Renderer asset text inspected: `{rendererAssetTextInspected}`",
                 $"- Renderer asset contains FastVS HD2D Stage7 TiltShift: `{rendererFallbackFeatureFound}`",
                 $"- Renderer asset serialized block active: `{rendererFallbackBlockActive}`",
-                $"- Self-made tilt shift fallback remains active: `{rendererFallbackBlockActive}`",
+                $"- Self-made tilt shift fallback active: `{rendererFallbackBlockActive}`",
                 $"- When Artistic is absent, the self-made tilt shift fallback stays active: `{!artisticImported && rendererFallbackBlockActive}`",
+                $"- When Artistic is enabled, the self-made fallback is inactive: `{artisticRendererFeatureActive && !rendererFallbackBlockActive}`",
                 string.Empty,
                 "- Tom must decide adoption after import/comparison; this report does not claim visual acceptance."
             };
         }
+
+#if FRONKON_TILTSHIFT
+        private static bool IsHd2dPhaseCBetaArtisticRendererFeatureActive()
+        {
+            var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>("Assets/Settings/UniversalRenderPipeline_Renderer.asset");
+            if (rendererData == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
+            {
+                if (rendererData.rendererFeatures[i] is FronkonGames.Artistic.TiltShift.TiltShift feature)
+                {
+                    return IsScriptableRendererFeatureActive(feature);
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsHd2dPhaseCBetaArtisticVolumeOverrideConfigured()
+        {
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>("Assets/Settings/DefaultVolumeProfile.asset");
+            return profile != null &&
+                   profile.TryGet<FronkonGames.Artistic.TiltShift.TiltShiftVolume>(out var tiltShiftVolume) &&
+                   tiltShiftVolume.active &&
+                   tiltShiftVolume.intensity.overrideState &&
+                   tiltShiftVolume.intensity.value > 0f;
+        }
+#endif
 
         private static List<string> CollectHd2dPhaseCBetaArtisticTiltShiftAssetPathMatches(params string[] tokens)
         {
@@ -48952,6 +49073,9 @@ namespace Anemora.EditorTools
 
         private static void ValidateHd2dPhaseBBetaButoAdoptionReportState()
         {
+#if BUTO
+            ValidateHd2dPhaseBBetaButoIntegratedState();
+#else
             var fallbackWiringActive = false;
             BuildHd2dPhaseBBetaButoAdoptionDiagnosticsLines(out _, out _, out _, out fallbackWiringActive);
 
@@ -48959,7 +49083,61 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException("Fast VS HD-2D phase B-beta Buto adoption validation failed: the B-alpha fallback wiring is broken.");
             }
+#endif
         }
+
+#if BUTO
+        private static void ValidateHd2dPhaseBBetaButoIntegratedState()
+        {
+            const string rendererDataPath = "Assets/Settings/UniversalRenderPipeline_Renderer.asset";
+            const string profilePath = "Assets/Settings/DefaultVolumeProfile.asset";
+            var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(rendererDataPath);
+            if (rendererData == null)
+            {
+                throw new InvalidOperationException($"Fast VS HD-2D phase B-beta Buto validation failed: missing renderer data at {rendererDataPath}.");
+            }
+
+            OccaSoftware.Buto.Runtime.ButoRenderFeature butoFeature = null;
+            for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
+            {
+                if (rendererData.rendererFeatures[i] is OccaSoftware.Buto.Runtime.ButoRenderFeature feature)
+                {
+                    butoFeature = feature;
+                    break;
+                }
+            }
+
+            if (butoFeature == null || !IsScriptableRendererFeatureActive(butoFeature))
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-beta Buto validation failed: ButoRenderFeature is missing or inactive.");
+            }
+
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(profilePath);
+            if (profile == null ||
+                !profile.TryGet<OccaSoftware.Buto.Runtime.ButoVolumetricFog>(out var butoFog) ||
+                !butoFog.active ||
+                !butoFog.mode.overrideState ||
+                butoFog.mode.value != OccaSoftware.Buto.Runtime.VolumetricFogMode.On ||
+                !butoFog.fogDensity.overrideState ||
+                butoFog.fogDensity.value <= 0f ||
+                !butoFog.anisotropy.overrideState)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-beta Buto validation failed: ButoVolumetricFog override must be active and configured.");
+            }
+
+            var directionalSunObject = FindSceneObjectIncludingInactive("Directional Light");
+            if (directionalSunObject == null || directionalSunObject.GetComponent<OccaSoftware.Buto.Runtime.ButoLight>() == null)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-beta Buto validation failed: Directional Light must have ButoLight for god rays.");
+            }
+
+            if (TryGetSerializedBoolAssetValue(UniversalRenderPipelineAssetPath, "m_VolumetricFogEnabled", out var standardVolumetricEnabled) &&
+                standardVolumetricEnabled)
+            {
+                throw new InvalidOperationException("Fast VS HD-2D phase B-beta Buto validation failed: URP standard volumetric fog must be disabled when Buto is enabled.");
+            }
+        }
+#endif
 
         private static void WriteHd2dPhaseBBetaButoAdoptionDiagnosticsReport(string outputDirectory)
         {
@@ -48994,7 +49172,16 @@ namespace Anemora.EditorTools
             volumeCandidateFound =
                 ContainsAnyTokenInMatches(assemblyMatches, "Volume", "VolumeComponent") ||
                 (rendererAssetTextHasButoHint && ContainsAnyToken(rendererAssetText, "Volume", "VolumeComponent"));
+#if BUTO
+            var butoRendererFeatureActive = IsHd2dPhaseBBetaButoRendererFeatureActive();
+            var butoVolumeOverrideActive = IsHd2dPhaseBBetaButoVolumeOverrideConfigured();
+            var butoLightOnSun = IsHd2dPhaseBBetaButoLightOnDirectionalSun();
+            var urpStandardVolumetricDisabled = !TryGetSerializedBoolAssetValue(UniversalRenderPipelineAssetPath, "m_VolumetricFogEnabled", out var standardVolumetricEnabled) ||
+                !standardVolumetricEnabled;
+            fallbackWiringActive = butoRendererFeatureActive && butoVolumeOverrideActive && butoLightOnSun && urpStandardVolumetricDisabled;
+#else
             fallbackWiringActive = true;
+#endif
 
             return new List<string>
             {
@@ -49010,12 +49197,57 @@ namespace Anemora.EditorTools
                 $"- Renderer asset text matches: `{FormatHd2dPhaseBBetaButoMatchSummary(rendererAssetTextMatches)}`",
                 $"- Renderer feature candidates found: `{rendererCandidateFound}`",
                 $"- Volume candidates found: `{volumeCandidateFound}`",
+#if BUTO
+                $"- Buto renderer feature active: `{butoRendererFeatureActive}`",
+                $"- ButoVolumetricFog override configured: `{butoVolumeOverrideActive}`",
+                $"- Directional Light has ButoLight: `{butoLightOnSun}`",
+                $"- URP standard volumetric disabled: `{urpStandardVolumetricDisabled}`",
+#endif
                 $"- URP standard/B-alpha fallback remains active: `{fallbackWiringActive}`",
                 $"- When Buto is absent, the current URP standard/B-alpha fallback stays active: `{!butoImported && fallbackWiringActive}`",
                 string.Empty,
                 "- Tom must decide adoption after import/comparison; this report does not claim visual acceptance."
             };
         }
+
+#if BUTO
+        private static bool IsHd2dPhaseBBetaButoRendererFeatureActive()
+        {
+            var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>("Assets/Settings/UniversalRenderPipeline_Renderer.asset");
+            if (rendererData == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
+            {
+                if (rendererData.rendererFeatures[i] is OccaSoftware.Buto.Runtime.ButoRenderFeature feature)
+                {
+                    return IsScriptableRendererFeatureActive(feature);
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsHd2dPhaseBBetaButoVolumeOverrideConfigured()
+        {
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>("Assets/Settings/DefaultVolumeProfile.asset");
+            return profile != null &&
+                   profile.TryGet<OccaSoftware.Buto.Runtime.ButoVolumetricFog>(out var butoFog) &&
+                   butoFog.active &&
+                   butoFog.mode.overrideState &&
+                   butoFog.mode.value == OccaSoftware.Buto.Runtime.VolumetricFogMode.On &&
+                   butoFog.fogDensity.overrideState &&
+                   butoFog.fogDensity.value > 0f;
+        }
+
+        private static bool IsHd2dPhaseBBetaButoLightOnDirectionalSun()
+        {
+            var directionalSunObject = FindSceneObjectIncludingInactive("Directional Light");
+            return directionalSunObject != null && directionalSunObject.GetComponent<OccaSoftware.Buto.Runtime.ButoLight>() != null;
+        }
+#endif
 
         private static List<string> CollectHd2dPhaseBBetaButoAssetPathMatches()
         {
@@ -49256,6 +49488,38 @@ namespace Anemora.EditorTools
             }
 
             return summary;
+        }
+
+        private static bool IsScriptableRendererFeatureActive(ScriptableRendererFeature feature)
+        {
+            if (feature == null)
+            {
+                return false;
+            }
+
+            var serialized = new SerializedObject(feature);
+            var active = serialized.FindProperty("m_Active");
+            return active == null || active.propertyType != SerializedPropertyType.Boolean || active.boolValue;
+        }
+
+        private static bool TryGetSerializedBoolAssetValue(string assetPath, string propertyName, out bool value)
+        {
+            value = false;
+            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            if (asset == null)
+            {
+                return false;
+            }
+
+            var serialized = new SerializedObject(asset);
+            var property = serialized.FindProperty(propertyName);
+            if (property == null || property.propertyType != SerializedPropertyType.Boolean)
+            {
+                return false;
+            }
+
+            value = property.boolValue;
+            return true;
         }
 
         private static bool GetSerializedBoolAssetValue(string assetPath, string propertyName)

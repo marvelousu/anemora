@@ -7,6 +7,10 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
+#if BUTO
+using OccaSoftware.Buto.Runtime;
+#endif
+
 #if UNITY_EDITOR
 using System.IO;
 using System.Text;
@@ -468,6 +472,17 @@ namespace Anemora.FastVS.SunCycle
                 return;
             }
 
+#if BUTO
+            var butoLight = directionalSunLight.GetComponent<ButoLight>();
+            if (butoLight == null)
+            {
+                return;
+            }
+
+            butoLight.SetInheritance(true);
+            butoLight.enabled = values.volumetricFogEnabled;
+            butoLight.SetDirty();
+#else
             var applied = TrySetMemberValue(directionalSunLight, "useVolumetricScattering", values.volumetricFogEnabled);
             applied |= TrySetMemberValue(directionalSunLight, "useVolumetricLight", values.volumetricFogEnabled);
             applied |= TrySetMemberValue(directionalSunLight, "volumetricScattering", values.volumetricFogEnabled);
@@ -477,6 +492,7 @@ namespace Anemora.FastVS.SunCycle
             {
                 return;
             }
+#endif
         }
 
         private void ApplyDirectionalLightLensFlare(SunRuntimeValues values)
@@ -532,6 +548,41 @@ namespace Anemora.FastVS.SunCycle
                 return;
             }
 
+#if BUTO
+            if (!profile.TryGet<ButoVolumetricFog>(out var butoFog))
+            {
+                return;
+            }
+
+            var enabled = values.volumetricFogEnabled;
+            butoFog.active = true;
+            butoFog.mode.overrideState = true;
+            butoFog.mode.value = enabled ? VolumetricFogMode.On : VolumetricFogMode.Off;
+            butoFog.qualityLevel.overrideState = true;
+            butoFog.qualityLevel.value = OccaSoftware.Buto.Runtime.QualityLevel.High;
+            butoFog.anisotropy.overrideState = true;
+            butoFog.anisotropy.value = Mathf.Clamp(values.volumetricAnisotropy, -1f, 1f);
+            butoFog.fogDensity.overrideState = true;
+            butoFog.fogDensity.value = enabled ? Mathf.Clamp(1f / Mathf.Max(1f, values.volumetricMeanFreePath), 0f, 5f) : 0f;
+            butoFog.baseHeight.overrideState = true;
+            butoFog.baseHeight.value = values.volumetricBaseHeight;
+            butoFog.maxDistanceVolumetric.overrideState = true;
+            butoFog.maxDistanceVolumetric.value = Mathf.Max(10f, values.volumetricMaximumHeight);
+            butoFog.attenuationBoundarySize.overrideState = true;
+            butoFog.attenuationBoundarySize.value = Mathf.Max(1f, values.volumetricMaximumHeight);
+            butoFog.litColor.overrideState = true;
+            butoFog.litColor.value = values.fogColor;
+            butoFog.shadowedColor.overrideState = true;
+            butoFog.shadowedColor.value = new Color(
+                values.fogColor.r * 0.35f,
+                values.fogColor.g * 0.35f,
+                values.fogColor.b * 0.40f,
+                values.fogColor.a);
+            butoFog.directionalForward.overrideState = true;
+            butoFog.directionalForward.value = Color.Lerp(values.fogColor, values.lightColor, 0.45f);
+            butoFog.directionalBack.overrideState = true;
+            butoFog.directionalBack.value = Color.Lerp(values.fogColor, values.ambientLightColor, 0.45f);
+#else
             var volumetricFog = FindVolumeComponentByTypeName(profile, "UnityEngine.Rendering.Universal.VolumetricFog");
             if (volumetricFog == null)
             {
@@ -544,6 +595,7 @@ namespace Anemora.FastVS.SunCycle
             TrySetMemberValue(volumetricFog, "volumetricMeanFreePath", values.volumetricMeanFreePath);
             TrySetMemberValue(volumetricFog, "volumetricBaseHeight", values.volumetricBaseHeight);
             TrySetMemberValue(volumetricFog, "volumetricMaximumHeight", values.volumetricMaximumHeight);
+#endif
         }
 
         private VolumeProfile GetVolumeProfile()

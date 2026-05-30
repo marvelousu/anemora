@@ -27,9 +27,11 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 5881961369050309807}
   - {fileID: 7728037277843947302}
+  - {fileID: 7486145474345907720}
   - {fileID: 3390581824547954834}
   - {fileID: 8844436198139456221}
-  m_RendererFeatureMap: af64d080b3eca051267fdd94f5803f6b92a0139234c40d2fdd6ab5c4dcbfbd7a
+  - {fileID: 708021917459708139}
+  m_RendererFeatureMap: af64d080b3eca051267fdd94f5803f6b08364947a521e46792a0139234c40d2fdd6ab5c4dcbfbd7aeb7860c32e66d309
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 0}
   m_AssetVersion: 3
@@ -57,6 +59,19 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &708021917459708139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e7136ccf173734c8ad4051eb0f2677, type: 3}
+  m_Name: Fronkon Artistic Tilt Shift
+  m_EditorClassIdentifier: FronkonGames.Artistic.TiltShift::FronkonGames.Artistic.TiltShift.TiltShift
+  m_Active: 1
 --- !u!114 &3390581824547954834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +84,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
   m_Name: FastVS HD2D Stage7 TiltShift
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
-  m_Active: 1
+  m_Active: 0
   injectionPoint: 600
   fetchColorBuffer: 1
   requirements: 4
@@ -97,6 +112,21 @@ MonoBehaviour:
   insidePortalLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7486145474345907720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96dab975e69883249a56554e791c4fd0, type: 3}
+  m_Name: Buto Volumetric Fog
+  m_EditorClassIdentifier: OccaSoftware.Buto.Runtime::OccaSoftware.Buto.Runtime.ButoRenderFeature
+  m_Active: 1
+  settings:
+    renderPassEvent: 450
 --- !u!114 &7728037277843947302
 MonoBehaviour:
   m_ObjectHideFlags: 0

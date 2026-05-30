@@ -41,6 +41,8 @@ namespace Anemora.EditorTools
         private const float Stage7OutlineRadius = 1.25f;
         private const float Stage7OutlineDepthWeight = 0.35f;
         private const float Stage7OutlineColorWeight = 0.65f;
+        private const string ButoRenderFeatureName = "Buto Volumetric Fog";
+        private const string FronkonTiltShiftFeatureName = "Fronkon Artistic Tilt Shift";
 
         public static void ApplyShadingFoundationV1()
         {
@@ -128,6 +130,21 @@ namespace Anemora.EditorTools
             ssaoFeature.Create();
             EditorUtility.SetDirty(ssaoFeature);
 
+#if BUTO
+            var butoFeature = FindFeature(rendererData, typeof(OccaSoftware.Buto.Runtime.ButoRenderFeature)) as OccaSoftware.Buto.Runtime.ButoRenderFeature;
+            if (butoFeature == null)
+            {
+                butoFeature = ScriptableObject.CreateInstance<OccaSoftware.Buto.Runtime.ButoRenderFeature>();
+                butoFeature.name = ButoRenderFeatureName;
+                AssetDatabase.AddObjectToAsset(butoFeature, rendererData);
+            }
+
+            butoFeature.name = ButoRenderFeatureName;
+            butoFeature.SetActive(true);
+            butoFeature.Create();
+            EditorUtility.SetDirty(butoFeature);
+#endif
+
             var tiltShiftFeature = FindNamedFullScreenFeature(rendererData, Stage7TiltShiftFeatureName);
             if (tiltShiftFeature == null)
             {
@@ -137,7 +154,11 @@ namespace Anemora.EditorTools
             }
 
             tiltShiftFeature.name = Stage7TiltShiftFeatureName;
+#if FRONKON_TILTSHIFT
+            tiltShiftFeature.SetActive(false);
+#else
             tiltShiftFeature.SetActive(true);
+#endif
             tiltShiftFeature.injectionPoint = FullScreenPassRendererFeature.InjectionPoint.AfterRenderingPostProcessing;
             tiltShiftFeature.fetchColorBuffer = true;
             tiltShiftFeature.requirements = ScriptableRenderPassInput.Color;
@@ -166,11 +187,32 @@ namespace Anemora.EditorTools
             outlineFeature.Create();
             EditorUtility.SetDirty(outlineFeature);
 
+#if FRONKON_TILTSHIFT
+            var artisticTiltShiftFeature = FindFeature(rendererData, typeof(FronkonGames.Artistic.TiltShift.TiltShift)) as FronkonGames.Artistic.TiltShift.TiltShift;
+            if (artisticTiltShiftFeature == null)
+            {
+                artisticTiltShiftFeature = ScriptableObject.CreateInstance<FronkonGames.Artistic.TiltShift.TiltShift>();
+                artisticTiltShiftFeature.name = FronkonTiltShiftFeatureName;
+                AssetDatabase.AddObjectToAsset(artisticTiltShiftFeature, rendererData);
+            }
+
+            artisticTiltShiftFeature.name = FronkonTiltShiftFeatureName;
+            artisticTiltShiftFeature.SetActive(true);
+            artisticTiltShiftFeature.Create();
+            EditorUtility.SetDirty(artisticTiltShiftFeature);
+#endif
+
             var orderedFeatures = new List<ScriptableRendererFeature>(rendererData.rendererFeatures.Count + 2);
             var portalAdded = false;
             var ssaoAdded = false;
+#if BUTO
+            var butoAdded = false;
+#endif
             var tiltShiftAdded = false;
             var outlineAdded = false;
+#if FRONKON_TILTSHIFT
+            var artisticTiltShiftAdded = false;
+#endif
 
             for (var i = 0; i < rendererData.rendererFeatures.Count; i++)
             {
@@ -202,6 +244,19 @@ namespace Anemora.EditorTools
                     continue;
                 }
 
+#if BUTO
+                if (feature == butoFeature || feature is OccaSoftware.Buto.Runtime.ButoRenderFeature)
+                {
+                    if (!butoAdded)
+                    {
+                        orderedFeatures.Add(butoFeature);
+                        butoAdded = true;
+                    }
+
+                    continue;
+                }
+#endif
+
                 if (feature == tiltShiftFeature || feature is FullScreenPassRendererFeature && feature.name == Stage7TiltShiftFeatureName)
                 {
                     if (!tiltShiftAdded)
@@ -224,6 +279,19 @@ namespace Anemora.EditorTools
                     continue;
                 }
 
+#if FRONKON_TILTSHIFT
+                if (feature == artisticTiltShiftFeature || feature is FronkonGames.Artistic.TiltShift.TiltShift)
+                {
+                    if (!artisticTiltShiftAdded)
+                    {
+                        orderedFeatures.Add(artisticTiltShiftFeature);
+                        artisticTiltShiftAdded = true;
+                    }
+
+                    continue;
+                }
+#endif
+
                 orderedFeatures.Add(feature);
             }
 
@@ -243,11 +311,28 @@ namespace Anemora.EditorTools
                 {
                     orderedFeatures.Add(ssaoFeature);
                 }
+
+                ssaoAdded = true;
             }
+
+#if BUTO
+            if (!butoAdded)
+            {
+                var insertIndex = Mathf.Min(orderedFeatures.Count, portalAdded && ssaoAdded ? 2 : orderedFeatures.Count);
+                orderedFeatures.Insert(insertIndex, butoFeature);
+                butoAdded = true;
+            }
+#endif
 
             if (!tiltShiftAdded)
             {
                 var insertIndex = Mathf.Min(orderedFeatures.Count, portalAdded && ssaoAdded ? 2 : orderedFeatures.Count);
+#if BUTO
+                if (butoAdded)
+                {
+                    insertIndex = Mathf.Min(orderedFeatures.Count, orderedFeatures.IndexOf(butoFeature) + 1);
+                }
+#endif
                 orderedFeatures.Insert(insertIndex, tiltShiftFeature);
                 tiltShiftAdded = true;
             }
@@ -259,6 +344,13 @@ namespace Anemora.EditorTools
                     : orderedFeatures.Count;
                 orderedFeatures.Insert(insertIndex, outlineFeature);
             }
+
+#if FRONKON_TILTSHIFT
+            if (!artisticTiltShiftAdded)
+            {
+                orderedFeatures.Add(artisticTiltShiftFeature);
+            }
+#endif
 
             var serialized = new SerializedObject(rendererData);
             var featureList = serialized.FindProperty("m_RendererFeatures");
@@ -367,6 +459,8 @@ namespace Anemora.EditorTools
 
         private static void ApplyVolumeProfileSettings(VolumeProfile volumeProfile)
         {
+            RemoveNullVolumeComponents(volumeProfile);
+
             var bloom = EnsureVolumeComponent<Bloom>(volumeProfile);
             bloom.active = true;
             bloom.threshold.overrideState = true;
@@ -428,6 +522,13 @@ namespace Anemora.EditorTools
             depthOfField.highQualitySampling.overrideState = true;
             depthOfField.highQualitySampling.value = true;
 
+#if BUTO
+            ApplyHd2dPhaseBBetaButoVolume(volumeProfile);
+#endif
+#if FRONKON_TILTSHIFT
+            ApplyHd2dPhaseCBetaArtisticTiltShiftVolume(volumeProfile);
+#endif
+
             if (volumeProfile.TryGet<FilmGrain>(out var filmGrain))
             {
                 DisableVolumeComponentForBaseline(filmGrain);
@@ -440,6 +541,64 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(whiteBalance);
             EditorUtility.SetDirty(depthOfField);
         }
+
+#if BUTO
+        private static void ApplyHd2dPhaseBBetaButoVolume(VolumeProfile volumeProfile)
+        {
+            var buto = EnsureVolumeComponent<OccaSoftware.Buto.Runtime.ButoVolumetricFog>(volumeProfile);
+            buto.mode.overrideState = true;
+            buto.mode.value = OccaSoftware.Buto.Runtime.VolumetricFogMode.On;
+            buto.qualityLevel.overrideState = true;
+            buto.qualityLevel.value = OccaSoftware.Buto.Runtime.QualityLevel.High;
+            buto.anisotropy.overrideState = true;
+            buto.anisotropy.value = 0.6f;
+            buto.fogDensity.overrideState = true;
+            buto.fogDensity.value = 0.02f;
+            buto.maxDistanceVolumetric.overrideState = true;
+            buto.maxDistanceVolumetric.value = 30f;
+            buto.baseHeight.overrideState = true;
+            buto.baseHeight.value = 0f;
+            buto.attenuationBoundarySize.overrideState = true;
+            buto.attenuationBoundarySize.value = 30f;
+            buto.litColor.overrideState = true;
+            buto.litColor.value = new Color(0.91f, 0.77f, 0.59f, 1f);
+            buto.shadowedColor.overrideState = true;
+            buto.shadowedColor.value = new Color(0.18f, 0.15f, 0.12f, 1f);
+            buto.directionalForward.overrideState = true;
+            buto.directionalForward.value = new Color(1.00f, 0.84f, 0.64f, 1f);
+            buto.directionalBack.overrideState = true;
+            buto.directionalBack.value = new Color(0.42f, 0.48f, 0.58f, 1f);
+
+            EditorUtility.SetDirty(buto);
+        }
+#endif
+
+#if FRONKON_TILTSHIFT
+        private static void ApplyHd2dPhaseCBetaArtisticTiltShiftVolume(VolumeProfile volumeProfile)
+        {
+            var tiltShift = EnsureVolumeComponent<FronkonGames.Artistic.TiltShift.TiltShiftVolume>(volumeProfile);
+            tiltShift.intensity.overrideState = true;
+            tiltShift.intensity.value = 1f;
+            tiltShift.quality.overrideState = true;
+            tiltShift.quality.value = FronkonGames.Artistic.TiltShift.Quality.High;
+            tiltShift.angle.overrideState = true;
+            tiltShift.angle.value = 0f;
+            tiltShift.aperture.overrideState = true;
+            tiltShift.aperture.value = 0.7f;
+            tiltShift.offset.overrideState = true;
+            tiltShift.offset.value = 0f;
+            tiltShift.blur.overrideState = true;
+            tiltShift.blur.value = 1.2f;
+            tiltShift.blurCurve.overrideState = true;
+            tiltShift.blurCurve.value = 3f;
+            tiltShift.distortion.overrideState = true;
+            tiltShift.distortion.value = 0f;
+            tiltShift.distortionScale.overrideState = true;
+            tiltShift.distortionScale.value = 1f;
+
+            EditorUtility.SetDirty(tiltShift);
+        }
+#endif
 
         private static void ApplyStage5ColorLookup(VolumeProfile volumeProfile)
         {
@@ -455,17 +614,45 @@ namespace Anemora.EditorTools
 
         private static T EnsureVolumeComponent<T>(VolumeProfile volumeProfile) where T : VolumeComponent
         {
+            var created = false;
             if (!volumeProfile.TryGet(out T component))
             {
                 component = volumeProfile.Add<T>(false);
+                created = true;
             }
             else
             {
                 component.SetAllOverridesTo(false);
             }
 
+            if (created && AssetDatabase.Contains(volumeProfile) && !AssetDatabase.Contains(component))
+            {
+                AssetDatabase.AddObjectToAsset(component, volumeProfile);
+            }
+
             component.active = true;
+            EditorUtility.SetDirty(volumeProfile);
             return component;
+        }
+
+        private static void RemoveNullVolumeComponents(VolumeProfile volumeProfile)
+        {
+            var removed = false;
+            for (var i = volumeProfile.components.Count - 1; i >= 0; i--)
+            {
+                if (volumeProfile.components[i] != null)
+                {
+                    continue;
+                }
+
+                volumeProfile.components.RemoveAt(i);
+                removed = true;
+            }
+
+            if (removed)
+            {
+                EditorUtility.SetDirty(volumeProfile);
+            }
         }
 
         private static void DisableVolumeComponentForBaseline(VolumeComponent component)
