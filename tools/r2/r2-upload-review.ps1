@@ -50,15 +50,23 @@ foreach ($f in Get-ChildItem $CycleDir -File) {
   $rels += $rel
 }
 
-# (c) merge rel paths into manifests/<slug>.json (download-union-upload)
+# (c) Rebuild manifests/<slug>.json from the never-pruned local archive (authoritative;
+#     it holds every uploaded cycle). Replaces a fragile download-union round-trip whose
+#     ConvertTo-Json/ConvertFrom-Json compounding corrupted the manifest into nested
+#     objects + space-joined strings. Build the JSON array by hand so PS cannot wrap it.
 $mTmp = Join-Path $env:TEMP "manifest-$Slug.json"
-Remove-Item $mTmp -ErrorAction SilentlyContinue
-wrangler r2 object get "$Bucket/manifests/$Slug.json" --file $mTmp --remote 2>$null | Out-Null
-$existing = @()
-if (Test-Path $mTmp) { try { $existing = @(Get-Content $mTmp -Raw | ConvertFrom-Json) } catch { $existing = @() } }
-$union = @($existing + $rels | Where-Object { $_ } | Select-Object -Unique | Sort-Object)
-($union | ConvertTo-Json) | Out-File $mTmp -Encoding ascii
+$ArchiveSlugRoot = Join-Path $ArchiveRoot "tree\$Slug"
+$allRels = @()
+if (Test-Path $ArchiveSlugRoot) {
+  $allRels = Get-ChildItem $ArchiveSlugRoot -Recurse -File |
+    ForEach-Object { ($_.FullName.Substring($ArchiveSlugRoot.Length + 1) -replace '\\', '/') } |
+    Where-Object { $_ -like 'docs/review/*' -or $_ -like 'docs/devlog/screenshots/*' } |
+    Sort-Object -Unique
+}
+$items = $allRels | ForEach-Object { '"' + ($_ -replace '\\', '\\' -replace '"', '\"') + '"' }
+$manifestJson = '[' + ($items -join ',') + ']'
+[System.IO.File]::WriteAllText($mTmp, $manifestJson, [System.Text.Encoding]::ASCII)
 wrangler r2 object put "$Bucket/manifests/$Slug.json" --file $mTmp --content-type application/json --remote | Out-Null
 if ($LASTEXITCODE -ne 0) { Write-Warning "manifest upload FAILED for $Slug (viewer may miss this cycle until re-run)" }
 
-Write-Host "uploaded $($rels.Count) files for $Slug/$Ts (bucket TTL ${TtlDays}d); manifest now lists $($union.Count) paths"
+Write-Host "uploaded $($rels.Count) files for $Slug/$Ts (bucket TTL ${TtlDays}d); manifest now lists $($allRels.Count) paths"
