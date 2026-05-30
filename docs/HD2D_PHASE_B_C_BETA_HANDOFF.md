@@ -164,6 +164,37 @@ git status   # FronkonGames/ buto/ が untracked のまま & ignore されるこ
 - `FastVS HD2D Stage7 Outline` (line 136, 維持)
 - **追加**: `ButoRenderFeature`, `FronkonGames...TiltShift` (programmatic)
 
+### 3.E Optional 統合 (#if ガード) — **公開リポ compile-safety の必須要件** (採用方針: 選択肢1)
+有償アセットは gitignore 済なので、**Buto/Fronkon を参照するコードは scripting-define ガードで囲み、アセット不在の公開 clone/CI でも compile が通る**ようにする。
+
+- **assembly 構成 (確認済、好都合)**: 生成器 `Assets/Editor/AnemoraFastVsHouseSliceSetup.cs` (asmdef 無し → `Assembly-CSharp-Editor`)、Driver `Assets/Scripts/FastVS/SunCycle/*.cs` (asmdef 無し → `Assembly-CSharp`) は**デフォルト assembly = 存在する asmdef を自動参照**。よって **asmdef のハード参照を足す/外す必要なし**。`#if` ガードだけで成立。
+  - 注意: Buto/Fronkon の Runtime asmdef (`OccaSoftware.Buto.Runtime.asmdef` / `FronkonGames.Artistic.TiltShift.asmdef`) の **"Auto Referenced" が true** であること (false だとアセット在っても Assembly-CSharp から型が見えず compile 不可)。
+- **Buto define**: `BUTO` / `OCCASOFTWARE` は `Packages/com.occasoftware.buto/Editor/Symbols/AddCustomScriptingSymbols.cs` の `[InitializeOnLoad]` が PlayerSettings に自動注入。Buto 参照コードは `#if BUTO ... #endif` で囲む。
+  - **罠**: この注入は define を**追加するだけで削除しない**。Buto を後で外しても `BUTO` define が ProjectSettings に残り `#if BUTO` が有効のまま → 型欠落で compile 不可。アセット不在 compile テスト時は define を手動クリアする。
+- **Fronkon define**: 自動 define **無し**。Codex が下記 auto-define エディタスクリプトを新規作成 (first-party コード = 公開コミット可)。`FRONKON_TILTSHIFT` を付与し、**不在時は自動除去**する (Buto より堅牢):
+  ```csharp
+  // Assets/Editor/FronkonTiltShiftDefineInjector.cs  (first-party、commit 可)
+  #if UNITY_EDITOR
+  using System.Linq; using UnityEditor; using UnityEditor.Build;
+  [InitializeOnLoad]
+  internal static class FronkonTiltShiftDefineInjector {
+      const string Define = "FRONKON_TILTSHIFT";
+      static FronkonTiltShiftDefineInjector() {
+          bool present = System.AppDomain.CurrentDomain.GetAssemblies()
+              .Any(a => a.GetType("FronkonGames.Artistic.TiltShift.TiltShiftVolume") != null);
+          var grp = NamedBuildTarget.FromBuildTargetGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+          var defines = PlayerSettings.GetScriptingDefineSymbols(grp).Split(';').Where(s => s.Length > 0).ToList();
+          bool has = defines.Contains(Define);
+          if (present && !has) { defines.Add(Define); PlayerSettings.SetScriptingDefineSymbols(grp, string.Join(";", defines)); }
+          else if (!present && has) { defines.Remove(Define); PlayerSettings.SetScriptingDefineSymbols(grp, string.Join(";", defines)); }
+      }
+  }
+  #endif
+  ```
+  Fronkon 参照コードは `#if FRONKON_TILTSHIFT ... #endif` で囲む。
+- **ガード対象**: §Step2-5 で書く Buto/Fronkon 型参照 (`using OccaSoftware.Buto.Runtime;`, `using FronkonGames.Artistic.TiltShift;`, `profile.Add<ButoVolumetricFog>()`, `TiltShiftVolume`, `ButoLight`, renderer feature の `ButoRenderFeature`/`TiltShift` 追加) はすべてガード内。define off 時は「自前 B-α/C-α のまま」になるよう else 経路 or 無処理にする。
+- **既存パターン流用**: cycle178 の C-β scaffold は文字列/リフレクション検出 (`:48710`) で型参照を避けている。検出系はそのままでも compile-safe。実 swap の型参照部分だけ `#if` で囲めば良い。
+
 ### 3.D SunCycle (`Assets/Scripts/FastVS/SunCycle/`)
 - `SunPresetData.cs` — フィールド: preset / directionEuler / lightColor / lightIntensity / cookieTexture,Tint,Size / skyTint,skySunSize,skySunSizeConvergence / fogColor,fogDensity / **volumetricFogEnabled, volumetricAnisotropy, volumetricMeanFreePath, volumetricBaseHeight, volumetricMaximumHeight** (`:29-34`) / bloomTint / ambientLightColor / screenSpaceLensFlareIntensity / sunLensFlareIntensity / colorLookup,lutContribution / volumeTemperature,volumeTint。
 - `AnemoraSunCycleDriver.cs` (1501行): `ApplyValues` `:348` → `RenderSettings` (ambient/fog/skybox `:366-371`) + `ApplyVolumeValues` `:422` (TryGet<ColorLookup `:430`/WhiteBalance `:439`/Bloom `:448>`) + `ApplyOptionalSunEffects` `:456` → `ApplyDirectionalLightVolumetricScattering` `:464` (reflection `TrySetMemberValue` useVolumetricScattering 等 `:471-474`) + **`ApplyVolumetricFog` `:461`** ← **Buto 駆動の主拡張点**。preset 補間 `SunRuntimeValues.Lerp` `:107`。`MapSunAnchor` 経由で preset 適用 `:203/262-272`。
@@ -175,8 +206,18 @@ git status   # FronkonGames/ buto/ が untracked のまま & ignore されるこ
 
 Unity: `C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe`。各 batchmode 実行は **自前 `EXIT=$?` echo + log の "return code"/例外 grep で真の合否判定** (background 完了通知の exit code は信用しない — 0 と出て実際 1 だった実績あり)。
 
-1. **コンパイル+再生成**: `Unity.exe -batchmode -quit -projectPath "<wt>" -executeMethod Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene -logFile "<wt>\Temp\v.log"; echo EXIT=$?`
-   期待: log に `Fast VS house slice scene created`, `Exiting batchmode successfully now!`, `return code 0`、`error CS` 0件。
+0. **公開 compile-safety (Option1 の肝、最重要)**: 有償アセットを一時退避して compile が通るか確認。
+   ```
+   # Fronkon/Buto を一時退避 + define クリア
+   mv Assets/FronkonGames /tmp/_fg ; mv Packages/com.occasoftware.buto /tmp/_buto
+   # ProjectSettings/ProjectSettings.asset の scripting define から BUTO;OCCASOFTWARE;FRONKON_TILTSHIFT を一時除去
+   Unity.exe -batchmode -quit -projectPath "<wt>" -executeMethod Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene -logFile "<wt>\Temp\v0.log"; echo EXIT=$?
+   # 期待: error CS 0件、return code 0 (ガードで Buto/Fronkon コードが除外され compile 成功)
+   mv /tmp/_fg Assets/FronkonGames ; mv /tmp/_buto Packages/com.occasoftware.buto   # 復元
+   ```
+   これが通らない = #if ガード漏れ or asmdef ハード参照が残っている。**公開リポを壊すので最優先で確認**。
+1. **コンパイル+再生成 (アセット在)**: `Unity.exe -batchmode -quit -projectPath "<wt>" -executeMethod Anemora.EditorTools.AnemoraFastVsHouseSliceSetup.CreateHouseSliceScene -logFile "<wt>\Temp\v.log"; echo EXIT=$?`
+   期待: log に `Fast VS house slice scene created`, `Exiting batchmode successfully now!`, `return code 0`、`error CS` 0件。define on で Buto/Fronkon コードが有効化される。
 2. **ドア/ルート検証**: `-executeMethod ...ValidateHouseSliceBatch`
    期待: 例外なし `return code 0`、`missing chapter 1 continuation route marker` 無し。
 3. **.exe ビルド**: `-executeMethod ...BuildAndValidateBatch`
@@ -203,6 +244,9 @@ Unity: `C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe`。各 ba
 8. **main は immutable** (`project_anemora_hd2d_chapter1_merge`): main へ merge しない。chapter1-continuation-map-vs 上で作業。
 9. **TimeWindow アパーチャ**: Buto fog/god ray が Portal 越し paired-space で二重/破綻しないか `tw_*_aperture.png` 目視 (`project_anemora_timewindow_aperture`)。
 10. **生成器が真実の源** (`project_anemora_pipeline_provenance_gap`): renderer asset / volume profile / scene を手編集しても生成器の再実行で上書きされる。**変更は生成器コードに入れて再生成**。
+11. **#if ガード漏れ = 公開リポ破壊**: Buto/Fronkon 型参照が1つでもガード外に出ると、アセット不在環境で compile 不可。Smoke Test step 0 (アセット退避 compile) を必ず緑にしてからコミット。
+12. **define の残留**: Buto の auto-define は追加のみ・削除しない。Fronkon は本 handoff の injector で不在時除去。アセット退避テスト時は ProjectSettings の `BUTO;OCCASOFTWARE;FRONKON_TILTSHIFT` を手動クリアしないと #if が誤って有効化されたままになる。
+13. **Auto Referenced**: `OccaSoftware.Buto.Runtime.asmdef` / `FronkonGames.Artistic.TiltShift.asmdef` の Auto Referenced が true であること (false だとアセット在でも Assembly-CSharp から型が見えない)。
 
 ---
 
