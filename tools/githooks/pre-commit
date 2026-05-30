@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Repo-hygiene pre-commit guard. Checks staged additions/modifications.
+set -euo pipefail
+DIR="$(git rev-parse --show-toplevel)/tools/githooks"
+export SIZE_SRC=index
+git diff --cached --name-only --diff-filter=AM | bash "$DIR/_bloat_check.sh" || {
+  echo "pre-commit: bloat guard FAILED. Fix the items above (emergency override: git commit --no-verify)." >&2
+  exit 1
+}
