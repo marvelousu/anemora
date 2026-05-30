@@ -420,7 +420,9 @@ namespace Anemora.FastVS.SunCycle
 
             return areaVisibility != null &&
                    (areaVisibility.ActiveAreaForReview == FastVsHouseArea.Interior ||
-                    areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library);
+                    areaVisibility.ActiveAreaForReview == FastVsHouseArea.Library ||
+                    areaVisibility.ActiveAreaForReview == FastVsHouseArea.MiaInterior ||
+                    areaVisibility.ActiveAreaForReview == FastVsHouseArea.AriaInterior);
         }
 
         private void ApplyVolumeValues(SunRuntimeValues values)

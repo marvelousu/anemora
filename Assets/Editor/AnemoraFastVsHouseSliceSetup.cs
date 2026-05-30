@@ -402,6 +402,8 @@ namespace Anemora.EditorTools
         private const int PlayerVisibleRenderLayer = 0;
         private static readonly Vector3 HouseInteriorCenter = new Vector3(-8.35f, 0f, -8.35f);
         private static readonly Vector3 HouseInteriorPlayerStart = HouseInteriorCenter + new Vector3(-2.42f, 0.12f, 0.96f);
+        private static readonly Vector3 MiaInteriorCenter = new Vector3(-21.20f, 0f, -8.35f);
+        private static readonly Vector3 AriaInteriorCenter = new Vector3(-32.95f, 0f, -8.35f);
         private static readonly Vector3 HouseExteriorCenter = new Vector3(8.20f, 0f, 8.20f);
         private static readonly Vector3 CentralPlazaVsCenter = new Vector3(20.80f, 0f, 15.80f);
         private static readonly Vector3 LibraryVsCenter = new Vector3(31.00f, 0f, 20.00f);
@@ -412,6 +414,10 @@ namespace Anemora.EditorTools
         private static readonly Vector3 InteriorDoorStoryTriggerSize = new Vector3(0.86f, 1.72f, 0.28f);
         private static readonly Vector3 InteriorDoorTriggerCenter = HouseInteriorCenter + new Vector3(0.82f, 0.70f, -2.32f);
         private static readonly Vector3 InteriorDoorExitTarget = HouseInteriorCenter + new Vector3(0.82f, 0.02f, -1.52f);
+        private static readonly Vector3 MiaInteriorDoorTriggerCenter = MiaInteriorCenter + new Vector3(0.82f, 0.70f, -2.32f);
+        private static readonly Vector3 MiaInteriorDoorExitTarget = MiaInteriorCenter + new Vector3(0.82f, 0.02f, -1.52f);
+        private static readonly Vector3 AriaInteriorDoorTriggerCenter = AriaInteriorCenter + new Vector3(0.82f, 0.70f, -2.32f);
+        private static readonly Vector3 AriaInteriorDoorExitTarget = AriaInteriorCenter + new Vector3(0.82f, 0.02f, -1.52f);
         private static readonly Vector3 ExteriorDoorTriggerCenter = HouseExteriorCenter + new Vector3(-1.05f, 0.70f, -2.22f);
         private static readonly Vector3 ExteriorDoorExitTarget = HouseExteriorCenter + new Vector3(-1.05f, 0.02f, -3.18f);
         private static readonly Vector3 ExteriorToPlazaTriggerCenter = HouseExteriorCenter + new Vector3(10.95f, 0.70f, 5.90f);
@@ -443,11 +449,16 @@ namespace Anemora.EditorTools
         private static readonly Vector3 Chapter1AriaStreetMapCenter = CentralPlazaVsCenter + new Vector3(25.50f, 0f, -1.75f);
         private static readonly Vector3 Chapter1KaiaFarmMapCenter = CentralPlazaVsCenter + new Vector3(32.50f, 0f, -2.85f);
         private static readonly Vector3 Chapter1RuinsMapCenter = CentralPlazaVsCenter + new Vector3(45.50f, 0f, 0.05f);
-        private static readonly Vector3 Chapter1MiaRuntimePosition = Chapter1MiaHouseMapCenter + new Vector3(-1.92f, 0.02f, 0.62f);
+        private static readonly Vector3 MiaHouseDoorTriggerCenter = Chapter1MiaHouseMapCenter + new Vector3(-0.80f, 0.70f, 2.08f);
+        private static readonly Vector3 MiaHouseDoorExitTarget = Chapter1MiaHouseMapCenter + new Vector3(-0.80f, 0.02f, 1.34f);
+        private static readonly Vector3 AriaHouseDoorTriggerCenter = Chapter1AriaStreetMapCenter + new Vector3(8.95f, 0.70f, 3.92f);
+        private static readonly Vector3 AriaHouseDoorExitTarget = Chapter1AriaStreetMapCenter + new Vector3(8.95f, 0.02f, 3.12f);
+        private static readonly Vector3 Chapter1MiaRuntimePosition = MiaInteriorCenter + new Vector3(-1.28f, 0.02f, -0.62f);
         private static readonly Vector3 Chapter1DarioStreetRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(-6.72f, 0.02f, 4.42f);
         private static readonly Vector3 Chapter1KairoRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(-10.64f, 0.02f, 2.34f);
         private static readonly Vector3 Chapter1LunaRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(-9.12f, 0.02f, 3.38f);
-        private static readonly Vector3 Chapter1KarlaRuntimePosition = Chapter1AriaStreetMapCenter + new Vector3(7.76f, 0.02f, 3.42f);
+        private static readonly Vector3 Chapter1KarlaRuntimePosition = AriaInteriorCenter + new Vector3(-0.76f, 0.02f, -0.46f);
+        private static readonly Vector3 Chapter1AriaRuntimePosition = AriaInteriorCenter + new Vector3(0.70f, 0.02f, -0.52f);
         private static readonly Vector3 Chapter1KaiaRuntimePosition = Chapter1KaiaFarmMapCenter + new Vector3(-2.82f, 0.02f, -6.74f);
         private static readonly Vector3 Chapter1DarioFarmRuntimePosition = Chapter1KaiaFarmMapCenter + new Vector3(-6.72f, 0.02f, 3.12f);
         private static readonly Vector3 Chapter1RuinsBridgeWorkerRuntimePosition = Chapter1RuinsMapCenter + new Vector3(-3.78f, 0.56f, -0.30f);
@@ -566,6 +577,7 @@ namespace Anemora.EditorTools
             var guide = CreateGuide(camera, controller, player, areaVisibility);
             var story = CreateStoryFlow(camera, controller, player, areaVisibility, guide);
             CreateHouseDoorTransitions(controller, player, areaVisibility, story);
+            CreateRuntimeSmokeProbe();
             CreateHd2dDepthFraming(currentAreas, pastAreas);
             story.ApplyConfiguredStartStateForReview();
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
@@ -1117,6 +1129,41 @@ namespace Anemora.EditorTools
 
             AssetDatabase.Refresh();
             Debug.Log($"Fast VS chapter 1 all maps screenshots captured: {Path.GetFullPath(outputDirectory)}");
+        }
+
+        public static void CaptureChapter1InteriorsScreenshotsBatch()
+        {
+            CreateHouseSliceScene();
+            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            var controller = UnityEngine.Object.FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            var visibility = UnityEngine.Object.FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            var guide = UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>();
+            var camera = Camera.main;
+            if (controller == null || visibility == null || guide == null || camera == null)
+            {
+                throw new InvalidOperationException("Fast VS chapter 1 interiors screenshot capture failed: scene review components are missing.");
+            }
+
+            var outputDirectory = Environment.GetEnvironmentVariable("ANEMORA_REVIEW_DIR");
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+            {
+                outputDirectory = $"docs/review/{DateTime.Now:yyyy-MM-ddTHH-mm-ss}_chapter1_interiors";
+            }
+
+            Directory.CreateDirectory(outputDirectory);
+            foreach (var existingPng in Directory.GetFiles(outputDirectory, "*.png"))
+            {
+                File.Delete(existingPng);
+            }
+
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.MiaHouse, MiaHouseDoorTriggerCenter, new Vector3(0f, 12.40f, -17.60f), new Vector3(0f, 0.22f, 1.50f), Path.Combine(outputDirectory, "01_mia_house_current.png"), Path.Combine(outputDirectory, "02_mia_house_past.png"));
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.MiaInterior, MiaInteriorCenter + new Vector3(0f, 0.02f, -0.35f), new Vector3(0f, 7.20f, -8.35f), new Vector3(0f, 0.18f, 0.72f), Path.Combine(outputDirectory, "03_mia_interior_current.png"), Path.Combine(outputDirectory, "04_mia_interior_past.png"));
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.AriaStreet, AriaHouseDoorTriggerCenter, new Vector3(0f, 13.80f, -18.80f), new Vector3(0f, 0.22f, 1.60f), Path.Combine(outputDirectory, "05_aria_house_current.png"), Path.Combine(outputDirectory, "06_aria_house_past.png"));
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.AriaInterior, AriaInteriorCenter + new Vector3(0f, 0.02f, -0.35f), new Vector3(0f, 7.20f, -8.35f), new Vector3(0f, 0.18f, 0.72f), Path.Combine(outputDirectory, "07_aria_interior_current.png"), Path.Combine(outputDirectory, "08_aria_interior_past.png"));
+
+            AssetDatabase.Refresh();
+            Debug.Log($"Fast VS chapter 1 interiors screenshots captured: {Path.GetFullPath(outputDirectory)}");
         }
 
         private static string GetCycleAudienceFilePrefix()
@@ -9907,7 +9954,9 @@ namespace Anemora.EditorTools
             var plazaRoot = CreateMapSetRoot(root, $"{prefix}_CentralPlazaMap_SeparateSpace");
             var libraryRoot = CreateMapSetRoot(root, $"{prefix}_LibraryMap_SeparateSpace");
             var miaHouseRoot = CreateMapSetRoot(root, $"{prefix}_MiaHouseMap_SeparateSpace");
+            var miaInteriorRoot = CreateMapSetRoot(root, $"{prefix}_MiaInteriorMap_SeparateSpace");
             var ariaStreetRoot = CreateMapSetRoot(root, $"{prefix}_AriaStreetMap_SeparateSpace");
+            var ariaInteriorRoot = CreateMapSetRoot(root, $"{prefix}_AriaInteriorMap_SeparateSpace");
             var kaiaFarmRoot = CreateMapSetRoot(root, $"{prefix}_KaiaFarmMap_SeparateSpace");
             var ruinsRoot = CreateMapSetRoot(root, $"{prefix}_RuinsMap_SeparateSpace");
             var chapter1EndRoot = CreateMapSetRoot(root, $"{prefix}_Chapter1EndMap_SeparateSpace");
@@ -9917,7 +9966,9 @@ namespace Anemora.EditorTools
             CreateLibrary(libraryRoot, prefix, past, materials);
             CreateChapter1PlazaContinuation(plazaRoot, prefix, past, materials);
             CreateMiaChapter1Map(miaHouseRoot, prefix, past, materials);
+            CreateMiaInterior(miaInteriorRoot, prefix, past, materials);
             CreateAriaStreetChapter1Map(ariaStreetRoot, prefix, past, materials);
+            CreateAriaInterior(ariaInteriorRoot, prefix, past, materials);
             CreateKaiaFarmChapter1Map(kaiaFarmRoot, prefix, past, materials);
             CreateRuinsChapter1Map(ruinsRoot, prefix, past, materials);
             CreateChapter1EndSideViewMap(chapter1EndRoot, prefix, past, materials);
@@ -9978,7 +10029,9 @@ namespace Anemora.EditorTools
                 plazaRoot.gameObject,
                 libraryRoot.gameObject,
                 miaHouseRoot.gameObject,
+                miaInteriorRoot.gameObject,
                 ariaStreetRoot.gameObject,
+                ariaInteriorRoot.gameObject,
                 kaiaFarmRoot.gameObject,
                 ruinsRoot.gameObject,
                 chapter1EndRoot.gameObject);
@@ -10008,8 +10061,12 @@ namespace Anemora.EditorTools
             SerializedSet(visibility, "pastLibraryMap", pastAreas.Library);
             SerializedSet(visibility, "currentMiaHouseMap", currentAreas.MiaHouse);
             SerializedSet(visibility, "pastMiaHouseMap", pastAreas.MiaHouse);
+            SerializedSet(visibility, "currentMiaInteriorMap", currentAreas.MiaInterior);
+            SerializedSet(visibility, "pastMiaInteriorMap", pastAreas.MiaInterior);
             SerializedSet(visibility, "currentAriaStreetMap", currentAreas.AriaStreet);
             SerializedSet(visibility, "pastAriaStreetMap", pastAreas.AriaStreet);
+            SerializedSet(visibility, "currentAriaInteriorMap", currentAreas.AriaInterior);
+            SerializedSet(visibility, "pastAriaInteriorMap", pastAreas.AriaInterior);
             SerializedSet(visibility, "currentKaiaFarmMap", currentAreas.KaiaFarm);
             SerializedSet(visibility, "pastKaiaFarmMap", pastAreas.KaiaFarm);
             SerializedSet(visibility, "currentRuinsMap", currentAreas.Ruins);
@@ -10181,6 +10238,147 @@ namespace Anemora.EditorTools
                 c + new Vector3(0f, 0.75f, -2.99f),
                 new Vector3(7.45f, 1.50f, 0.22f),
                 $"{prefix}.house_interior.front_drop_guard");
+        }
+
+        private static void CreateMiaInterior(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = MiaInteriorCenter;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var cloth = past ? materials.LaundryBright : materials.LaundryAccent;
+            var quietShadow = past ? EnsureHd2dWarmLightPoolMaterial() : materials.Dust;
+
+            CreateSmallHouseInteriorShell(root, prefix, past, materials, c, FastVsHouseArea.MiaInterior, "MiaInterior", "mia_interior");
+            CreateLandmarkCube($"{prefix}_MiaInterior_WorkTableTop", root, c + new Vector3(-1.18f, 0.46f, -0.92f), new Vector3(1.54f, 0.16f, 0.76f), Quaternion.Euler(0f, past ? -2f : -7f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.work_table");
+            CreateLandmarkCube($"{prefix}_MiaInterior_WorkTableUnderShadow", root, c + new Vector3(-1.18f, 0.36f, -0.92f), new Vector3(1.36f, 0.04f, 0.62f), Quaternion.Euler(0f, past ? -2f : -7f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.work_table.under_shadow");
+            CreateLandmarkCube($"{prefix}_MiaInterior_Stool", root, c + new Vector3(-1.18f, 0.24f, -0.08f), new Vector3(0.58f, 0.34f, 0.48f), Quaternion.Euler(0f, past ? 4f : -5f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.stool");
+            CreateLandmarkCube($"{prefix}_MiaInterior_FabricRollBack", root, c + new Vector3(1.92f, 0.32f, 1.42f), new Vector3(0.34f, 0.58f, 1.12f), Quaternion.Euler(0f, past ? 2f : 9f, 0f), cloth, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.fabric_roll_back");
+            CreateLandmarkCube($"{prefix}_MiaInterior_FabricBasket", root, c + new Vector3(1.34f, 0.22f, -1.34f), new Vector3(0.72f, 0.32f, 0.52f), Quaternion.Euler(0f, past ? -8f : 12f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.fabric_basket");
+            CreateHouseInteriorPropDetailSlab(root, $"{prefix}_MiaInterior_TableClothFoldA", c + new Vector3(-1.44f, 0.575f, -0.90f), Quaternion.Euler(0f, -12f, 5f), new Vector3(0.62f, 0.018f, 0.18f), cloth, $"{prefix}.mia_interior.table_cloth_fold_a");
+            CreateHouseInteriorPropDetailSlab(root, $"{prefix}_MiaInterior_TableClothFoldB", c + new Vector3(-0.88f, 0.582f, -0.76f), Quaternion.Euler(0f, 8f, -4f), new Vector3(0.48f, 0.016f, 0.14f), past ? materials.LaundryAccent : materials.Dust, $"{prefix}.mia_interior.table_cloth_fold_b");
+            CreateHouseInteriorPropDetailSlab(root, $"{prefix}_MiaInterior_SewingNeedleCue", c + new Vector3(-1.04f, 0.602f, -1.12f), Quaternion.Euler(0f, -22f, 3f), new Vector3(0.42f, 0.012f, 0.035f), trim, $"{prefix}.mia_interior.sewing_needle_cue");
+            CreateLandmarkCube($"{prefix}_MiaInterior_BackShelfThreadBox", root, c + new Vector3(2.36f, 0.76f, 1.90f), new Vector3(0.78f, 0.28f, 0.28f), Quaternion.Euler(0f, 0f, past ? 0f : 4f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.thread_box");
+            CreateLandmarkCube($"{prefix}_MiaInterior_WorkLightPool", root, c + new Vector3(-1.20f, 0.022f, -0.66f), new Vector3(1.86f, 0.035f, 1.18f), Quaternion.Euler(0f, past ? -2f : -7f, 0f), quietShadow, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.mia_interior.work_light_pool");
+
+            if (past)
+            {
+                CreateLandmarkCube($"{prefix}_MiaInterior_WindowClothWarm", root, c + new Vector3(2.62f, 1.24f, 2.70f), new Vector3(0.58f, 0.46f, 0.05f), Quaternion.identity, materials.LaundryBright, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.window_cloth_warm");
+                CreateLandmarkCube($"{prefix}_MiaInterior_Lantern", root, c + new Vector3(-2.64f, 1.24f, 2.68f), new Vector3(0.18f, 0.26f, 0.06f), Quaternion.identity, materials.Lamp, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.lantern");
+            }
+            else
+            {
+                CreateLandmarkCube($"{prefix}_MiaInterior_DustSoftPatch", root, c + new Vector3(1.16f, 0.018f, 0.68f), new Vector3(1.18f, 0.032f, 0.72f), Quaternion.Euler(0f, -10f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.mia_interior.dust_soft_patch");
+                CreateHouseInteriorPropDetailSlab(root, $"{prefix}_MiaInterior_FrayedClothEdge", c + new Vector3(-1.50f, 0.610f, -0.64f), Quaternion.Euler(0f, 16f, -5f), new Vector3(0.46f, 0.012f, 0.045f), materials.Dust, $"{prefix}.mia_interior.frayed_cloth_edge");
+            }
+
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_MiaInterior_WorkTableTop"),
+                $"{(past ? "Past" : "Current")}.MiaInterior.WorkTable.Main",
+                FastVsHouseArea.MiaInterior,
+                FastVsHd2dSurfaceKind.Furniture,
+                !past,
+                new Vector2(past ? 0.18f : 0.20f, past ? 0.30f : 0.32f),
+                new Vector2(0.07f, 0.24f),
+                new Vector2(3f, 3f),
+                true,
+                past ? "past_furniture" : "current_furniture");
+
+            CreateChapter1MiaRuntimePopulation(root, past, materials);
+        }
+
+        private static void CreateAriaInterior(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = AriaInteriorCenter;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var page = materials.SignPaint;
+            var deskAccent = past ? materials.Book : materials.Dust;
+
+            CreateSmallHouseInteriorShell(root, prefix, past, materials, c, FastVsHouseArea.AriaInterior, "AriaInterior", "aria_interior");
+            CreateLandmarkCube($"{prefix}_AriaInterior_LedgerTableTop", root, c + new Vector3(0.00f, 0.46f, -0.92f), new Vector3(1.86f, 0.16f, 0.82f), Quaternion.Euler(0f, past ? 0f : -5f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.ledger_table");
+            CreateLandmarkCube($"{prefix}_AriaInterior_LedgerTableUnderShadow", root, c + new Vector3(0.00f, 0.36f, -0.92f), new Vector3(1.62f, 0.04f, 0.66f), Quaternion.Euler(0f, past ? 0f : -5f, 0f), materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.ledger_table.under_shadow");
+            CreateReadableBookProp(root, $"{prefix}_AriaInterior_OpenLedger", c + new Vector3(0.16f, 0.59f, -0.96f), Quaternion.Euler(0f, past ? -8f : -15f, 0f), new Vector3(0.62f, 0.05f, 0.36f), materials.Book, page, trim, true, $"{prefix}.aria_interior.open_ledger");
+            CreateHouseInteriorPropDetailSlab(root, $"{prefix}_AriaInterior_LedgerPageLineA", c + new Vector3(0.18f, 0.652f, -1.02f), Quaternion.Euler(0f, -8f, 0f), new Vector3(0.38f, 0.010f, 0.025f), trim, $"{prefix}.aria_interior.ledger_line_a");
+            CreateHouseInteriorPropDetailSlab(root, $"{prefix}_AriaInterior_LedgerPageLineB", c + new Vector3(0.20f, 0.654f, -0.88f), Quaternion.Euler(0f, -8f, 0f), new Vector3(0.34f, 0.010f, 0.025f), trim, $"{prefix}.aria_interior.ledger_line_b");
+            CreateLandmarkCube($"{prefix}_AriaInterior_TutorBenchKarla", root, c + new Vector3(-0.76f, 0.22f, 0.02f), new Vector3(0.82f, 0.26f, 0.38f), Quaternion.Euler(0f, past ? 2f : -3f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.tutor_bench_karla");
+            CreateLandmarkCube($"{prefix}_AriaInterior_TutorBenchAria", root, c + new Vector3(0.70f, 0.22f, 0.02f), new Vector3(0.82f, 0.26f, 0.38f), Quaternion.Euler(0f, past ? -2f : 4f, 0f), wood, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.tutor_bench_aria");
+            CreateLandmarkCube($"{prefix}_AriaInterior_ShelfLedgerStack", root, c + new Vector3(2.44f, 0.72f, 1.72f), new Vector3(0.72f, 0.38f, 0.56f), Quaternion.Euler(0f, past ? 0f : 6f, 0f), deskAccent, true, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.ledger_stack");
+            CreateLandmarkCube($"{prefix}_AriaInterior_CountingTokensTray", root, c + new Vector3(-1.08f, 0.60f, -0.78f), new Vector3(0.42f, 0.06f, 0.28f), Quaternion.Euler(0f, 12f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.counting_tokens_tray");
+            CreateHouseInteriorPropDetailSlab(root, $"{prefix}_AriaInterior_CountingTokenRow", c + new Vector3(-1.08f, 0.648f, -0.78f), Quaternion.Euler(0f, 12f, 0f), new Vector3(0.36f, 0.012f, 0.040f), materials.Lamp, $"{prefix}.aria_interior.counting_token_row");
+
+            if (past)
+            {
+                CreateLandmarkCube($"{prefix}_AriaInterior_WallLedgerPinboard", root, c + new Vector3(-2.38f, 1.18f, 2.70f), new Vector3(1.02f, 0.54f, 0.05f), Quaternion.identity, materials.SignPaint, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.wall_ledger_pinboard");
+                CreateLandmarkCube($"{prefix}_AriaInterior_TableLantern", root, c + new Vector3(0.82f, 0.66f, -1.12f), new Vector3(0.16f, 0.22f, 0.08f), Quaternion.identity, materials.Lamp, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.table_lantern");
+            }
+            else
+            {
+                CreateLandmarkCube($"{prefix}_AriaInterior_DustAcrossLedgerTable", root, c + new Vector3(0.20f, 0.612f, -0.68f), new Vector3(1.10f, 0.025f, 0.22f), Quaternion.Euler(0f, -10f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.dust_across_ledger_table");
+                CreateLandmarkCube($"{prefix}_AriaInterior_FallenLedgerCorner", root, c + new Vector3(1.48f, 0.08f, 0.88f), new Vector3(0.46f, 0.04f, 0.30f), Quaternion.Euler(0f, -18f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.aria_interior.fallen_ledger_corner");
+            }
+
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_AriaInterior_LedgerTableTop"),
+                $"{(past ? "Past" : "Current")}.AriaInterior.LedgerTable.Main",
+                FastVsHouseArea.AriaInterior,
+                FastVsHd2dSurfaceKind.Furniture,
+                !past,
+                new Vector2(past ? 0.18f : 0.20f, past ? 0.30f : 0.32f),
+                new Vector2(0.07f, 0.24f),
+                new Vector2(3f, 3f),
+                true,
+                past ? "past_furniture" : "current_furniture");
+
+            CreateChapter1AriaHouseRuntimePopulation(root, past, materials);
+            CreateChapter1AriaRuntimePopulation(root, past, materials);
+        }
+
+        private static void CreateSmallHouseInteriorShell(Transform root, string prefix, bool past, Materials materials, Vector3 c, FastVsHouseArea area, string objectToken, string landmarkToken)
+        {
+            var floor = past ? materials.PastWoodFloor : materials.CurrentInteriorFloor;
+            var wall = past ? materials.PastInteriorWall : materials.CurrentInteriorWall;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var glow = CreateChapter1InteriorDoorGlowMaterial(past);
+
+            CreateLandmarkCube($"{prefix}_{objectToken}_PixelFloor", root, c, new Vector3(6.40f, 0.12f, 5.42f), Quaternion.identity, floor, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.{landmarkToken}.floor");
+            CreateLandmarkCube($"{prefix}_{objectToken}_BackWall", root, c + new Vector3(0f, 1.02f, 2.64f), new Vector3(6.52f, 2.04f, 0.18f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.{landmarkToken}.back_wall");
+            CreateLandmarkCube($"{prefix}_{objectToken}_LeftWall", root, c + new Vector3(-3.20f, 0.92f, 0.02f), new Vector3(0.18f, 1.84f, 5.26f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.{landmarkToken}.left_wall");
+            CreateLandmarkCube($"{prefix}_{objectToken}_RightWall", root, c + new Vector3(3.20f, 0.92f, 0.02f), new Vector3(0.18f, 1.84f, 5.26f), Quaternion.identity, wall, true, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.{landmarkToken}.right_wall");
+            CreateLandmarkCube($"{prefix}_{objectToken}_BackWallTopTrim", root, c + new Vector3(0f, 1.88f, 2.56f), new Vector3(6.14f, 0.06f, 0.06f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.{landmarkToken}.back_wall_top_trim");
+            CreateLandmarkCube($"{prefix}_{objectToken}_BackWallWainscot", root, c + new Vector3(0f, 0.60f, 2.54f), new Vector3(6.08f, 0.30f, 0.05f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.{landmarkToken}.back_wall_wainscot");
+            CreateLandmarkCube($"{prefix}_{objectToken}_FloorBoardWarmBand", root, c + new Vector3(0.44f, 0.018f, -1.72f), new Vector3(3.12f, 0.020f, 0.26f), Quaternion.Euler(0f, past ? 0f : -3f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.{landmarkToken}.floor_board_warm_band");
+            CreateGlowDisc($"{prefix}_{objectToken}_InteriorExitGlowPad", root, c + new Vector3(0.82f, 0.12f, -2.34f), Stage7HouseInteriorMapMoveGlowPadScale, glow, true);
+
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_{objectToken}_PixelFloor"),
+                $"{(past ? "Past" : "Current")}.{objectToken}.Floor.Main",
+                area,
+                FastVsHd2dSurfaceKind.Floor,
+                !past,
+                new Vector2(past ? 0.19f : 0.16f, past ? 0.31f : 0.27f),
+                new Vector2(0.06f, 0.18f),
+                past ? new Vector2(4f, 3f) : CurrentInteriorSurfaceReadabilityFloorTextureScale,
+                true,
+                past ? "past_wood_floor" : "current_interior_floor");
+            AddHd2dSurfaceProfile(
+                FindSceneObjectIncludingInactive($"{prefix}_{objectToken}_BackWall"),
+                $"{(past ? "Past" : "Current")}.{objectToken}.Wall.Back",
+                area,
+                FastVsHd2dSurfaceKind.Wall,
+                !past,
+                new Vector2(past ? 0.20f : 0.18f, past ? 0.32f : 0.30f),
+                new Vector2(0.07f, 0.22f),
+                new Vector2(6f, 4f),
+                true,
+                past ? "past_interior_wall" : "current_interior_wall");
+
+            CreateInvisibleColliderBox(
+                $"{prefix}_{objectToken}_InvisibleFrontDropGuard",
+                root,
+                c + new Vector3(0f, 0.75f, -2.84f),
+                new Vector3(6.60f, 1.50f, 0.22f),
+                $"{prefix}.{landmarkToken}.front_drop_guard");
         }
 
         private static void CreateHouseInteriorFurnitureGroundingPolish(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material bedMaterial)
@@ -10602,17 +10800,23 @@ namespace Anemora.EditorTools
         {
             var trim = past ? materials.PastFence : materials.CurrentFence;
             var doorPanelDetail = past ? materials.PastHouseDoorDetail : materials.CurrentHouseDoorDetail;
-            var glow = FlatMaterial(
-                past ? "past_map_move_floor_glow" : "current_map_move_floor_glow",
-                past ? Stage7PastMapMoveGlowColor : Stage7CurrentMapMoveGlowColor,
-                true);
-            ConfigureTransparentUnlitMaterial(glow, 3036);
+            var glow = CreateChapter1InteriorDoorGlowMaterial(past);
 
             CreateGlowDisc($"{prefix}_HouseInterior_MapMoveGlowPad", interiorRoot, InteriorDoorTriggerCenter + new Vector3(0f, -0.58f, -0.05f), Stage7HouseInteriorMapMoveGlowPadScale, glow, true);
             CreateLandmarkCube($"{prefix}_HouseExterior_ReturnDoorHandleCue", exteriorRoot, HouseExteriorCenter + new Vector3(-0.72f, 0.94f, -1.29f), new Vector3(0.10f, 0.10f, 0.08f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.return_door_handle_cue");
             CreateGlowDisc($"{prefix}_HouseExterior_MapMoveGlowPad", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.58f, 0.02f), Stage7HouseExteriorMapMoveGlowPadScale, glow, true);
             CreateGlowDisc($"{prefix}_HouseExterior_DoorEntrySmallGlow", exteriorRoot, ExteriorDoorTriggerCenter + new Vector3(0f, -0.50f, 0.02f), Stage7HouseExteriorDoorEntryGlowPadScale, glow, true);
             CreateLandmarkCube($"{prefix}_HouseExterior_DoorClosedPanel", exteriorRoot, HouseExteriorCenter + new Vector3(-1.06f, 0.84f, -1.50f), new Vector3(1.92f, 1.40f, 0.08f), Quaternion.identity, doorPanelDetail, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.closed_door_panel");
+        }
+
+        private static Material CreateChapter1InteriorDoorGlowMaterial(bool past)
+        {
+            var glow = FlatMaterial(
+                past ? "past_map_move_floor_glow" : "current_map_move_floor_glow",
+                past ? Stage7PastMapMoveGlowColor : Stage7CurrentMapMoveGlowColor,
+                true);
+            ConfigureTransparentUnlitMaterial(glow, 3036);
+            return glow;
         }
 
         private static void CreateHd2dDepthFraming(HouseMapAreas currentAreas, HouseMapAreas pastAreas)
@@ -11159,7 +11363,7 @@ namespace Anemora.EditorTools
                 NamedNpcLoopMaterial("mia_normal_loop_breath_sprite", MiaNormalLoopStripPath),
                 materials.Label,
                 2.1f,
-                FastVsHouseArea.MiaHouse,
+                FastVsHouseArea.MiaInterior,
                 true,
                 new Vector3(0.74f, 0.24f, 1f));
         }
@@ -11227,7 +11431,28 @@ namespace Anemora.EditorTools
                 NamedNpcLoopMaterial("karla_normal_loop_breath_sprite", KarlaNormalLoopStripPath),
                 materials.Label,
                 2.1f,
-                FastVsHouseArea.AriaStreet,
+                FastVsHouseArea.AriaInterior,
+                false,
+                new Vector3(0.74f, 0.24f, 1f));
+        }
+
+        private static void CreateChapter1AriaRuntimePopulation(Transform root, bool past, Materials materials)
+        {
+            if (!past)
+            {
+                return;
+            }
+
+            CreateAnimatedSpriteCharacter(
+                root,
+                "FastVS_SpriteCharacter_Aria",
+                "Aria",
+                Chapter1AriaRuntimePosition,
+                1.08f,
+                NamedNpcLoopMaterial("aria_v46_normal_loop_breath_sprite", AriaNormalLoopStripPath),
+                materials.Label,
+                2.2f,
+                FastVsHouseArea.AriaInterior,
                 false,
                 new Vector3(0.74f, 0.24f, 1f));
         }
@@ -11381,8 +11606,6 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_C1_DryPlantStrip", root, c + new Vector3(1.98f, 0.08f, -5.86f), new Vector3(5.30f, 0.06f, 0.52f), Quaternion.identity, materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.c1.dry_plant_strip");
                 CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_C1", c + new Vector3(8.22f, 0.20f, 0.98f), leaf, 0);
             }
-
-            CreateChapter1MiaRuntimePopulation(root, past, materials);
         }
 
         private static void CreateMiaYardCycle41LayoutDetails(Transform root, string prefix, bool past, Materials materials)
@@ -14661,6 +14884,7 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_HouseStoneBase", root, c + new Vector3(-0.22f, 0.22f, 2.54f), new Vector3(5.42f, 0.16f, 0.12f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c2.house_stone_base");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_RoofFrontLip", root, c + new Vector3(-0.22f, 2.16f, 1.72f), new Vector3(5.98f, 0.12f, 0.16f), Quaternion.Euler(7f, 0f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c2.roof_front_lip");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C2_DoorStep", root, c + new Vector3(-0.80f, 0.11f, 2.14f), new Vector3(0.98f, 0.12f, 0.36f), Quaternion.identity, stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c2.door_step");
+            CreateGlowDisc($"{prefix}_CentralPlaza_Chapter1_C2_MiaInteriorDoorGlowPad", root, MiaHouseDoorTriggerCenter + new Vector3(0f, -0.58f, 0f), Stage7HouseExteriorDoorEntryGlowPadScale, CreateChapter1InteriorDoorGlowMaterial(past), true);
             CreateMiaFrontYardReadabilityDetails(root, prefix, past, materials);
         }
 
@@ -14714,6 +14938,7 @@ namespace Anemora.EditorTools
             CreateChapter1FacadeDepth(root, $"{prefix}_CentralPlaza_Chapter1_D2_AriaHouseVolume", c + new Vector3(8.95f, 1.12f, 4.88f), 3.82f, 2.10f, 1.22f, wall, roof, trim, materials.Shadow, $"{prefix}.central_plaza.chapter1.d2.aria_house_volume");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_AriaHouseDoor", root, c + new Vector3(8.95f, 0.70f, 4.70f), new Vector3(0.54f, 1.18f, 0.08f), Quaternion.identity, wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.d2.aria_house_door");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_AriaHouseFrontStep", root, c + new Vector3(8.95f, 0.13f, 3.72f), new Vector3(1.58f, 0.16f, 0.58f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.d2.aria_house_front_step");
+            CreateGlowDisc($"{prefix}_CentralPlaza_Chapter1_D2_AriaInteriorDoorGlowPad", root, AriaHouseDoorTriggerCenter + new Vector3(0f, -0.58f, 0f), Stage7HouseExteriorDoorEntryGlowPadScale, CreateChapter1InteriorDoorGlowMaterial(past), true);
             if (past)
             {
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_D2_RightHouseWall", root, c + new Vector3(10.06f, 0.92f, 0.54f), new Vector3(3.48f, 1.66f, 0.22f), Quaternion.Euler(0f, -2f, 0f), wall, false, TimeWindowPairedSpaceLandmarkKind.WallOrLandmark, $"{prefix}.central_plaza.chapter1.d2.right_house.wall");
@@ -14754,8 +14979,6 @@ namespace Anemora.EditorTools
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_D2_DustPile", root, c + new Vector3(4.05f, 0.05f, 3.10f), new Vector3(1.50f, 0.05f, 0.50f), Quaternion.Euler(0f, -16f, 0f), materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.d2.dust_pile");
                 CreateLandmarkCube("Current_CentralPlaza_Chapter1_D2_BrokenStep", root, c + new Vector3(-4.60f, 0.10f, 3.15f), new Vector3(1.20f, 0.10f, 0.36f), Quaternion.Euler(0f, 18f, 0f), materials.CurrentFence, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.d2.broken_step");
             }
-
-            CreateChapter1AriaHouseRuntimePopulation(root, past, materials);
         }
 
         private static void CreateStreetCornerMarketAndRoadEdgeDetails(Transform root, string prefix, bool past, Materials materials)
@@ -38583,6 +38806,54 @@ namespace Anemora.EditorTools
                 "Door: house exterior to interior local",
                 storyFlow);
             CreateAreaDoorTransition(
+                "FastVS_DoorTransition_MiaHouse_To_MiaInterior",
+                controller,
+                player,
+                areaVisibility,
+                FastVsHouseArea.MiaHouse,
+                FastVsHouseArea.MiaInterior,
+                MiaHouseDoorTriggerCenter,
+                DoorTriggerSize,
+                MiaInteriorDoorExitTarget,
+                "Door: Mia house to interior local",
+                storyFlow);
+            CreateAreaDoorTransition(
+                "FastVS_DoorTransition_MiaInterior_To_MiaHouse",
+                controller,
+                player,
+                areaVisibility,
+                FastVsHouseArea.MiaInterior,
+                FastVsHouseArea.MiaHouse,
+                MiaInteriorDoorTriggerCenter,
+                DoorTriggerSize,
+                MiaHouseDoorExitTarget,
+                "Door: Mia interior to house exterior local",
+                storyFlow);
+            CreateAreaDoorTransition(
+                "FastVS_DoorTransition_AriaStreet_To_AriaInterior",
+                controller,
+                player,
+                areaVisibility,
+                FastVsHouseArea.AriaStreet,
+                FastVsHouseArea.AriaInterior,
+                AriaHouseDoorTriggerCenter,
+                DoorTriggerSize,
+                AriaInteriorDoorExitTarget,
+                "Door: Aria house to interior local",
+                storyFlow);
+            CreateAreaDoorTransition(
+                "FastVS_DoorTransition_AriaInterior_To_AriaStreet",
+                controller,
+                player,
+                areaVisibility,
+                FastVsHouseArea.AriaInterior,
+                FastVsHouseArea.AriaStreet,
+                AriaInteriorDoorTriggerCenter,
+                DoorTriggerSize,
+                AriaHouseDoorExitTarget,
+                "Door: Aria interior to street local",
+                storyFlow);
+            CreateAreaDoorTransition(
                 "FastVS_DoorTransition_Exterior_To_CentralPlaza",
                 controller,
                 player,
@@ -38738,6 +39009,12 @@ namespace Anemora.EditorTools
                 Chapter1EndFromF6Target,
                 "Route: ruins F6 to Chapter 1 side-view endpoint",
                 storyFlow);
+        }
+
+        private static void CreateRuntimeSmokeProbe()
+        {
+            var probeObject = new GameObject("FastVS_HouseRuntimeSmokeProbe");
+            probeObject.AddComponent<FastVsHouseRuntimeSmokeProbe>();
         }
 
         private static void CreateAreaDoorTransition(
@@ -39019,6 +39296,8 @@ namespace Anemora.EditorTools
             switch (area)
             {
                 case FastVsHouseArea.Interior:
+                case FastVsHouseArea.MiaInterior:
+                case FastVsHouseArea.AriaInterior:
                     return new Vector3(UnifiedInteriorSunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
                 case FastVsHouseArea.Library:
                     return new Vector3(UnifiedLibrarySunElevationDegrees, UnifiedSunAzimuthDegrees, 0f);
@@ -39041,6 +39320,38 @@ namespace Anemora.EditorTools
                 HouseInteriorCenter,
                 new Vector2(0.16f, 0.24f),
                 GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.Interior),
+                1.20f,
+                new Color(1.00f, 0.85f, 0.64f, 1f),
+                0.60f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.147f,
+                new Color(0.155f, 0.145f, 0.138f, 1f));
+
+            CreateAreaLightingProfile(
+                currentAreas.MiaInterior.transform,
+                "FastVS_HD2D_MiaInteriorLightingProfile",
+                FastVsHouseArea.MiaInterior,
+                "Mia house interior",
+                true,
+                MiaInteriorCenter,
+                new Vector2(0.16f, 0.24f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.MiaInterior),
+                1.20f,
+                new Color(1.00f, 0.85f, 0.64f, 1f),
+                0.60f,
+                new Color(1.00f, 0.70f, 0.44f, 1f),
+                0.147f,
+                new Color(0.155f, 0.145f, 0.138f, 1f));
+
+            CreateAreaLightingProfile(
+                currentAreas.AriaInterior.transform,
+                "FastVS_HD2D_AriaInteriorLightingProfile",
+                FastVsHouseArea.AriaInterior,
+                "Aria house interior",
+                true,
+                AriaInteriorCenter,
+                new Vector2(0.16f, 0.24f),
+                GetUnifiedSunKeyLightEulerDegrees(FastVsHouseArea.AriaInterior),
                 1.20f,
                 new Color(1.00f, 0.85f, 0.64f, 1f),
                 0.60f,
@@ -42878,6 +43189,7 @@ namespace Anemora.EditorTools
             ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_DarioStreet", Chapter1DarioStreetRuntimePosition, "dario_normal_loop_breath_sprite");
             ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_DarioFarm", Chapter1DarioFarmRuntimePosition, "dario_normal_loop_breath_sprite");
             ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Karla", Chapter1KarlaRuntimePosition, "karla_normal_loop_breath_sprite");
+            ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Aria", Chapter1AriaRuntimePosition, "aria_v46_normal_loop_breath_sprite");
             ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Kairo", Chapter1KairoRuntimePosition, "kairo_normal_loop_breath_sprite");
             var lunaRenderer = ValidateRuntimeCharacterSprite("FastVS_SpriteCharacter_Luna", Chapter1LunaRuntimePosition, "luna_normal_loop_breath_sprite");
             if (lunaRenderer.transform.localScale.y > 0.82f)
@@ -42894,6 +43206,7 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("Kaia_NameLabel") != null ||
                 FindSceneObjectIncludingInactive("Dario_NameLabel") != null ||
                 FindSceneObjectIncludingInactive("Karla_NameLabel") != null ||
+                FindSceneObjectIncludingInactive("Aria_NameLabel") != null ||
                 FindSceneObjectIncludingInactive("Kairo_NameLabel") != null ||
                 FindSceneObjectIncludingInactive("Luna_NameLabel") != null)
             {
@@ -43082,7 +43395,9 @@ namespace Anemora.EditorTools
                 visibility.CentralPlazaActiveForReview ||
                 visibility.LibraryActiveForReview ||
                 visibility.MiaHouseActiveForReview ||
+                visibility.MiaInteriorActiveForReview ||
                 visibility.AriaStreetActiveForReview ||
+                visibility.AriaInteriorActiveForReview ||
                 visibility.KaiaFarmActiveForReview ||
                 visibility.RuinsActiveForReview ||
                 visibility.Chapter1EndActiveForReview)
@@ -43096,7 +43411,9 @@ namespace Anemora.EditorTools
                 visibility.CentralPlazaActiveForReview ||
                 visibility.LibraryActiveForReview ||
                 visibility.MiaHouseActiveForReview ||
+                visibility.MiaInteriorActiveForReview ||
                 visibility.AriaStreetActiveForReview ||
+                visibility.AriaInteriorActiveForReview ||
                 visibility.KaiaFarmActiveForReview ||
                 visibility.RuinsActiveForReview ||
                 visibility.Chapter1EndActiveForReview)
@@ -43110,7 +43427,9 @@ namespace Anemora.EditorTools
                 visibility.ExteriorActiveForReview ||
                 visibility.LibraryActiveForReview ||
                 visibility.MiaHouseActiveForReview ||
+                visibility.MiaInteriorActiveForReview ||
                 visibility.AriaStreetActiveForReview ||
+                visibility.AriaInteriorActiveForReview ||
                 visibility.KaiaFarmActiveForReview ||
                 visibility.RuinsActiveForReview ||
                 visibility.Chapter1EndActiveForReview)
@@ -43124,7 +43443,9 @@ namespace Anemora.EditorTools
                 visibility.ExteriorActiveForReview ||
                 visibility.CentralPlazaActiveForReview ||
                 visibility.MiaHouseActiveForReview ||
+                visibility.MiaInteriorActiveForReview ||
                 visibility.AriaStreetActiveForReview ||
+                visibility.AriaInteriorActiveForReview ||
                 visibility.KaiaFarmActiveForReview ||
                 visibility.RuinsActiveForReview ||
                 visibility.Chapter1EndActiveForReview)
@@ -43133,31 +43454,43 @@ namespace Anemora.EditorTools
             }
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.MiaHouse);
-            if (!visibility.MiaHouseActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.AriaStreetActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
+            if (!visibility.MiaHouseActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaInteriorActiveForReview || visibility.AriaStreetActiveForReview || visibility.AriaInteriorActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Mia house map set is not isolated from the other route map sets.");
             }
 
+            visibility.SetActiveAreaForReview(FastVsHouseArea.MiaInterior);
+            if (!visibility.MiaInteriorActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.AriaStreetActiveForReview || visibility.AriaInteriorActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: Mia interior map set is not isolated from the other route map sets.");
+            }
+
             visibility.SetActiveAreaForReview(FastVsHouseArea.AriaStreet);
-            if (!visibility.AriaStreetActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
+            if (!visibility.AriaStreetActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.MiaInteriorActiveForReview || visibility.AriaInteriorActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Aria street map set is not isolated from the other route map sets.");
             }
 
+            visibility.SetActiveAreaForReview(FastVsHouseArea.AriaInterior);
+            if (!visibility.AriaInteriorActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.MiaInteriorActiveForReview || visibility.AriaStreetActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
+            {
+                throw new InvalidOperationException("House slice validation failed: Aria interior map set is not isolated from the other route map sets.");
+            }
+
             visibility.SetActiveAreaForReview(FastVsHouseArea.KaiaFarm);
-            if (!visibility.KaiaFarmActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.AriaStreetActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
+            if (!visibility.KaiaFarmActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.MiaInteriorActiveForReview || visibility.AriaStreetActiveForReview || visibility.AriaInteriorActiveForReview || visibility.RuinsActiveForReview || visibility.Chapter1EndActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Kaia farm map set is not isolated from the other route map sets.");
             }
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Ruins);
-            if (!visibility.RuinsActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.AriaStreetActiveForReview || visibility.KaiaFarmActiveForReview || visibility.Chapter1EndActiveForReview)
+            if (!visibility.RuinsActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.MiaInteriorActiveForReview || visibility.AriaStreetActiveForReview || visibility.AriaInteriorActiveForReview || visibility.KaiaFarmActiveForReview || visibility.Chapter1EndActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: ruins map set is not isolated from the other route map sets.");
             }
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Chapter1End);
-            if (!visibility.Chapter1EndActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.AriaStreetActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview)
+            if (!visibility.Chapter1EndActiveForReview || visibility.InteriorActiveForReview || visibility.ExteriorActiveForReview || visibility.CentralPlazaActiveForReview || visibility.LibraryActiveForReview || visibility.MiaHouseActiveForReview || visibility.MiaInteriorActiveForReview || visibility.AriaStreetActiveForReview || visibility.AriaInteriorActiveForReview || visibility.KaiaFarmActiveForReview || visibility.RuinsActiveForReview)
             {
                 throw new InvalidOperationException("House slice validation failed: Chapter 1 endpoint map set is not isolated from the other route map sets.");
             }
@@ -43177,7 +43510,15 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("Current_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
                 FindSceneObjectIncludingInactive("Past_CentralPlaza_ToLibrary_MapMoveGlowPad") == null ||
                 FindSceneObjectIncludingInactive("Current_Library_ToCentralPlaza_MapMoveGlowPad") == null ||
-                FindSceneObjectIncludingInactive("Past_Library_ToCentralPlaza_MapMoveGlowPad") == null)
+                FindSceneObjectIncludingInactive("Past_Library_ToCentralPlaza_MapMoveGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_Chapter1_C2_MiaInteriorDoorGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_Chapter1_C2_MiaInteriorDoorGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_MiaInterior_InteriorExitGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_MiaInterior_InteriorExitGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_CentralPlaza_Chapter1_D2_AriaInteriorDoorGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_CentralPlaza_Chapter1_D2_AriaInteriorDoorGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Current_AriaInterior_InteriorExitGlowPad") == null ||
+                FindSceneObjectIncludingInactive("Past_AriaInterior_InteriorExitGlowPad") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: separate-map route floor glow pads are missing.");
             }
@@ -43189,10 +43530,22 @@ namespace Anemora.EditorTools
             ValidateVisibleRouteGlowPad("Current_CentralPlaza_ToLibrary_MapMoveGlowPad", "Current_CentralPlazaMap_SeparateSpace");
             visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
             ValidateVisibleRouteGlowPad("Current_Library_ToCentralPlaza_MapMoveGlowPad", "Current_LibraryMap_SeparateSpace");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.MiaHouse);
+            ValidateVisibleRouteGlowPad("Current_CentralPlaza_Chapter1_C2_MiaInteriorDoorGlowPad", "Current_MiaHouseMap_SeparateSpace");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.MiaInterior);
+            ValidateVisibleRouteGlowPad("Current_MiaInterior_InteriorExitGlowPad", "Current_MiaInteriorMap_SeparateSpace");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.AriaStreet);
+            ValidateVisibleRouteGlowPad("Current_CentralPlaza_Chapter1_D2_AriaInteriorDoorGlowPad", "Current_AriaStreetMap_SeparateSpace");
+            visibility.SetActiveAreaForReview(FastVsHouseArea.AriaInterior);
+            ValidateVisibleRouteGlowPad("Current_AriaInterior_InteriorExitGlowPad", "Current_AriaInteriorMap_SeparateSpace");
             visibility.SetActiveAreaForReview(FastVsHouseArea.Interior);
 
             ValidateInvisibleDropGuard("Current_HouseInterior_InvisibleFrontDropGuard");
             ValidateInvisibleDropGuard("Past_HouseInterior_InvisibleFrontDropGuard");
+            ValidateInvisibleDropGuard("Current_MiaInterior_InvisibleFrontDropGuard");
+            ValidateInvisibleDropGuard("Past_MiaInterior_InvisibleFrontDropGuard");
+            ValidateInvisibleDropGuard("Current_AriaInterior_InvisibleFrontDropGuard");
+            ValidateInvisibleDropGuard("Past_AriaInterior_InvisibleFrontDropGuard");
             ValidateInvisibleDropGuard("Current_HouseExterior_InvisibleFrontDropGuard");
             ValidateInvisibleDropGuard("Past_HouseExterior_InvisibleFrontDropGuard");
             ValidateInvisibleDropGuard("Current_CentralPlaza_InvisibleFrontDropGuard");
@@ -43222,6 +43575,7 @@ namespace Anemora.EditorTools
             ValidateInvisibleDropGuard("Current_Library_ReadingTableSideB_NoStepCollider");
             ValidateLibraryMapLayout("Current_Library_PixelFloor", "Current_Library_BackWall", "Current_Library_SecondFloor_LeftBalcony", "Current_Library_SecondFloor_RightBalcony", "Current_Library_SecondFloor_BackGallery", "Current_Library_SecondFloor_Railing_Left");
             ValidateLibraryMapLayout("Past_Library_PixelFloor", "Past_Library_BackWall", "Past_Library_SecondFloor_LeftBalcony", "Past_Library_SecondFloor_RightBalcony", "Past_Library_SecondFloor_BackGallery", "Past_Library_SecondFloor_Railing_Left");
+            ValidateChapter1InteriorMapLayout();
             ValidateLibrarySideBookshelves();
             ValidateLibraryEntryAlignment("Current_Library_EntryThreshold", "Past_Library_EntryThreshold");
             ValidateLibraryEntryDoorPanelsRemoved();
@@ -43368,6 +43722,10 @@ namespace Anemora.EditorTools
             var plazaToExterior = GameObject.Find("FastVS_DoorTransition_CentralPlaza_To_Exterior")?.GetComponent<FastVsAreaDoorTransition>();
             var plazaToLibrary = GameObject.Find("FastVS_DoorTransition_CentralPlaza_To_Library")?.GetComponent<FastVsAreaDoorTransition>();
             var libraryToPlaza = GameObject.Find("FastVS_DoorTransition_Library_To_CentralPlaza")?.GetComponent<FastVsAreaDoorTransition>();
+            var miaHouseToMiaInterior = GameObject.Find("FastVS_DoorTransition_MiaHouse_To_MiaInterior")?.GetComponent<FastVsAreaDoorTransition>();
+            var miaInteriorToMiaHouse = GameObject.Find("FastVS_DoorTransition_MiaInterior_To_MiaHouse")?.GetComponent<FastVsAreaDoorTransition>();
+            var ariaStreetToAriaInterior = GameObject.Find("FastVS_DoorTransition_AriaStreet_To_AriaInterior")?.GetComponent<FastVsAreaDoorTransition>();
+            var ariaInteriorToAriaStreet = GameObject.Find("FastVS_DoorTransition_AriaInterior_To_AriaStreet")?.GetComponent<FastVsAreaDoorTransition>();
             var plazaB3ToMiaC1 = GameObject.Find("FastVS_DoorTransition_CentralPlaza_B3_To_MiaHouse_C1")?.GetComponent<FastVsAreaDoorTransition>();
             var miaC1ToPlazaB3 = GameObject.Find("FastVS_DoorTransition_MiaHouse_C1_To_CentralPlaza_B3")?.GetComponent<FastVsAreaDoorTransition>();
             var miaC3ToAriaD1 = GameObject.Find("FastVS_DoorTransition_MiaHouse_C3_To_AriaStreet_D1")?.GetComponent<FastVsAreaDoorTransition>();
@@ -43383,6 +43741,10 @@ namespace Anemora.EditorTools
                 plazaToExterior == null ||
                 plazaToLibrary == null ||
                 libraryToPlaza == null ||
+                miaHouseToMiaInterior == null ||
+                miaInteriorToMiaHouse == null ||
+                ariaStreetToAriaInterior == null ||
+                ariaInteriorToAriaStreet == null ||
                 plazaB3ToMiaC1 == null ||
                 miaC1ToPlazaB3 == null ||
                 miaC3ToAriaD1 == null ||
@@ -43407,12 +43769,20 @@ namespace Anemora.EditorTools
                 plazaToExterior.TransitionFadeSecondsForReview < 0.18f ||
                 plazaToLibrary.TransitionFadeSecondsForReview < 0.18f ||
                 libraryToPlaza.TransitionFadeSecondsForReview < 0.18f ||
+                miaHouseToMiaInterior.TransitionFadeSecondsForReview < 0.18f ||
+                miaInteriorToMiaHouse.TransitionFadeSecondsForReview < 0.18f ||
+                ariaStreetToAriaInterior.TransitionFadeSecondsForReview < 0.18f ||
+                ariaInteriorToAriaStreet.TransitionFadeSecondsForReview < 0.18f ||
                 interiorToExterior.TransitionHoldSecondsForReview < 0.04f ||
                 exteriorToInterior.TransitionHoldSecondsForReview < 0.04f ||
                 exteriorToPlaza.TransitionHoldSecondsForReview < 0.04f ||
                 plazaToExterior.TransitionHoldSecondsForReview < 0.04f ||
                 plazaToLibrary.TransitionHoldSecondsForReview < 0.04f ||
-                libraryToPlaza.TransitionHoldSecondsForReview < 0.04f)
+                libraryToPlaza.TransitionHoldSecondsForReview < 0.04f ||
+                miaHouseToMiaInterior.TransitionHoldSecondsForReview < 0.04f ||
+                miaInteriorToMiaHouse.TransitionHoldSecondsForReview < 0.04f ||
+                ariaStreetToAriaInterior.TransitionHoldSecondsForReview < 0.04f ||
+                ariaInteriorToAriaStreet.TransitionHoldSecondsForReview < 0.04f)
             {
                 throw new InvalidOperationException("House slice validation failed: route map transitions need a visible fade instead of an instant cut.");
             }
@@ -43433,6 +43803,10 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: exterior door does not switch to interior map set.");
             }
 
+            ValidateHouseDoorTransition("Mia house to Mia interior", miaHouseToMiaInterior, MiaHouseDoorTriggerCenter, MiaInteriorDoorExitTarget, FastVsHouseArea.MiaHouse, FastVsHouseArea.MiaInterior);
+            ValidateHouseDoorTransition("Mia interior to Mia house", miaInteriorToMiaHouse, MiaInteriorDoorTriggerCenter, MiaHouseDoorExitTarget, FastVsHouseArea.MiaInterior, FastVsHouseArea.MiaHouse);
+            ValidateHouseDoorTransition("Aria street to Aria interior", ariaStreetToAriaInterior, AriaHouseDoorTriggerCenter, AriaInteriorDoorExitTarget, FastVsHouseArea.AriaStreet, FastVsHouseArea.AriaInterior);
+            ValidateHouseDoorTransition("Aria interior to Aria street", ariaInteriorToAriaStreet, AriaInteriorDoorTriggerCenter, AriaHouseDoorExitTarget, FastVsHouseArea.AriaInterior, FastVsHouseArea.AriaStreet);
             ValidateRouteTransition("exterior to plaza", exteriorToPlaza, ExteriorToPlazaTriggerCenter, PlazaFromExteriorTarget, FastVsHouseArea.Exterior, FastVsHouseArea.CentralPlaza);
             ValidateRouteTransition("plaza to exterior", plazaToExterior, PlazaToExteriorTriggerCenter, ExteriorFromPlazaTarget, FastVsHouseArea.CentralPlaza, FastVsHouseArea.Exterior);
             ValidateRouteTransition("plaza to library", plazaToLibrary, PlazaToLibraryTriggerCenter, LibraryFromPlazaTarget, FastVsHouseArea.CentralPlaza, FastVsHouseArea.Library);
@@ -43465,16 +43839,38 @@ namespace Anemora.EditorTools
             ValidateRouteSpawnOffset("ruins F6 to endpoint clearance", Chapter1EndFromF6Target, Chapter1F6RouteTriggerCenter);
             ValidateRouteTriggerSourceAreaIsolation(controller, visibility, exteriorToPlaza, FastVsHouseArea.CentralPlaza, ExteriorToPlazaTriggerCenter, "exterior to plaza");
             ValidateRouteTriggerSourceAreaIsolation(controller, visibility, plazaToLibrary, FastVsHouseArea.Exterior, PlazaToLibraryTriggerCenter, "plaza to library");
+            ValidateRouteTriggerSourceAreaIsolation(controller, visibility, miaHouseToMiaInterior, FastVsHouseArea.MiaInterior, MiaHouseDoorTriggerCenter, "Mia house to Mia interior");
+            ValidateRouteTriggerSourceAreaIsolation(controller, visibility, ariaStreetToAriaInterior, FastVsHouseArea.AriaInterior, AriaHouseDoorTriggerCenter, "Aria street to Aria interior");
             ValidateRouteTriggerSourceAreaIsolation(controller, visibility, plazaB3ToMiaC1, FastVsHouseArea.MiaHouse, Chapter1B3RouteTriggerCenter, "central plaza B3 to Mia C1");
             ValidateRouteTriggerSourceAreaIsolation(controller, visibility, miaC3ToAriaD1, FastVsHouseArea.AriaStreet, Chapter1C3RouteTriggerCenter, "Mia C3 to Aria D1");
             ValidateRouteTriggerSourceAreaIsolation(controller, visibility, ariaD3ToKaiaE1, FastVsHouseArea.KaiaFarm, Chapter1D3RouteTriggerCenter, "Aria D3 to Kaia E1");
             ValidateRouteTriggerSourceAreaIsolation(controller, visibility, kaiaE3ToRuinsF1, FastVsHouseArea.Ruins, Chapter1E3RouteTriggerCenter, "Kaia E3 to ruins F1");
 
             ValidateMapTransitionClosesCurrentTimePortal(controller, visibility, exteriorToPlaza);
-            ValidateDoorTriggerReachability(controller, visibility, interiorToExterior, exteriorToInterior, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza, plazaB3ToMiaC1, miaC1ToPlazaB3, miaC3ToAriaD1, ariaD1ToMiaC3, ariaD3ToKaiaE1, kaiaE1ToAriaD3, kaiaE3ToRuinsF1, ruinsF1ToKaiaE3, ruinsF6ToEnd);
+            ValidateDoorTriggerReachability(controller, visibility, interiorToExterior, exteriorToInterior, miaHouseToMiaInterior, miaInteriorToMiaHouse, ariaStreetToAriaInterior, ariaInteriorToAriaStreet, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza, plazaB3ToMiaC1, miaC1ToPlazaB3, miaC3ToAriaD1, ariaD1ToMiaC3, ariaD3ToKaiaE1, kaiaE1ToAriaD3, kaiaE3ToRuinsF1, ruinsF1ToKaiaE3, ruinsF6ToEnd);
             ValidateExteriorDoorExitCameraClearance(controller, visibility, interiorToExterior);
-            ValidateDoorTransitionExecution(controller, visibility, interiorToExterior, exteriorToInterior, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza, plazaB3ToMiaC1, miaC1ToPlazaB3, miaC3ToAriaD1, ariaD1ToMiaC3, ariaD3ToKaiaE1, kaiaE1ToAriaD3, kaiaE3ToRuinsF1, ruinsF1ToKaiaE3, ruinsF6ToEnd);
+            ValidateDoorTransitionExecution(controller, visibility, interiorToExterior, exteriorToInterior, miaHouseToMiaInterior, miaInteriorToMiaHouse, ariaStreetToAriaInterior, ariaInteriorToAriaStreet, exteriorToPlaza, plazaToExterior, plazaToLibrary, libraryToPlaza, plazaB3ToMiaC1, miaC1ToPlazaB3, miaC3ToAriaD1, ariaD1ToMiaC3, ariaD3ToKaiaE1, kaiaE1ToAriaD3, kaiaE3ToRuinsF1, ruinsF1ToKaiaE3, ruinsF6ToEnd);
             ValidateChapter1ContinuationPlayableRoute(controller, visibility);
+        }
+
+        private static void ValidateChapter1InteriorMapLayout()
+        {
+            ValidateLandmarkExists("Current_MiaInterior_PixelFloor", "Current_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_MiaInterior_PixelFloor", "Past_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_MiaInterior_BackWall", "Current_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_MiaInterior_BackWall", "Past_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_MiaInterior_WorkTableTop", "Current_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_MiaInterior_WorkTableTop", "Past_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_MiaInterior_FabricBasket", "Current_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_MiaInterior_FabricBasket", "Past_MiaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_AriaInterior_PixelFloor", "Current_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_AriaInterior_PixelFloor", "Past_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_AriaInterior_BackWall", "Current_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_AriaInterior_BackWall", "Past_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_AriaInterior_LedgerTableTop", "Current_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_AriaInterior_LedgerTableTop", "Past_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Current_AriaInterior_OpenLedger", "Current_AriaInteriorMap_SeparateSpace");
+            ValidateLandmarkExists("Past_AriaInterior_OpenLedger", "Past_AriaInteriorMap_SeparateSpace");
         }
 
         private static void ValidateDoorWarp(TimeWindowPairedSpacePortalController controller)
@@ -43506,6 +43902,18 @@ namespace Anemora.EditorTools
         {
             ValidateVectorNear($"{label} trigger", transition.TriggerLocalCenterForReview, expectedTrigger);
             ValidateVectorNear($"{label} trigger size", transition.TriggerLocalSizeForReview, RouteTriggerSize);
+            ValidateVectorNear($"{label} target", transition.TargetLocalPositionForReview, expectedTarget);
+            if (transition.SourceAreaForReview != expectedSourceArea ||
+                transition.TargetAreaForReview != expectedTargetArea)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {label} does not switch from {expectedSourceArea} to {expectedTargetArea} map set.");
+            }
+        }
+
+        private static void ValidateHouseDoorTransition(string label, FastVsAreaDoorTransition transition, Vector3 expectedTrigger, Vector3 expectedTarget, FastVsHouseArea expectedSourceArea, FastVsHouseArea expectedTargetArea)
+        {
+            ValidateVectorNear($"{label} trigger", transition.TriggerLocalCenterForReview, expectedTrigger);
+            ValidateVectorNear($"{label} trigger size", transition.TriggerLocalSizeForReview, DoorTriggerSize);
             ValidateVectorNear($"{label} target", transition.TargetLocalPositionForReview, expectedTarget);
             if (transition.SourceAreaForReview != expectedSourceArea ||
                 transition.TargetAreaForReview != expectedTargetArea)
@@ -43578,6 +43986,10 @@ namespace Anemora.EditorTools
             FastVsHouseAreaVisibility visibility,
             FastVsAreaDoorTransition interiorToExterior,
             FastVsAreaDoorTransition exteriorToInterior,
+            FastVsAreaDoorTransition miaHouseToMiaInterior,
+            FastVsAreaDoorTransition miaInteriorToMiaHouse,
+            FastVsAreaDoorTransition ariaStreetToAriaInterior,
+            FastVsAreaDoorTransition ariaInteriorToAriaStreet,
             FastVsAreaDoorTransition exteriorToPlaza,
             FastVsAreaDoorTransition plazaToExterior,
             FastVsAreaDoorTransition plazaToLibrary,
@@ -43617,6 +44029,42 @@ namespace Anemora.EditorTools
 
             var interiorLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
             ValidateVectorNear("exterior door execution target", interiorLocal, InteriorDoorExitTarget);
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.MiaHouse);
+            controller.ForcePlayerCurrentLocalForReview(MiaHouseDoorTriggerCenter);
+            miaHouseToMiaInterior.TriggerForReview();
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.MiaInterior)
+            {
+                throw new InvalidOperationException("House slice validation failed: Mia house door did not activate Mia interior map set.");
+            }
+
+            ValidateVectorNear("Mia house to interior execution target", controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position), MiaInteriorDoorExitTarget);
+
+            miaInteriorToMiaHouse.TriggerForReview();
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.MiaHouse)
+            {
+                throw new InvalidOperationException("House slice validation failed: Mia interior door did not activate Mia house map set.");
+            }
+
+            ValidateVectorNear("Mia interior to house execution target", controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position), MiaHouseDoorExitTarget);
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.AriaStreet);
+            controller.ForcePlayerCurrentLocalForReview(AriaHouseDoorTriggerCenter);
+            ariaStreetToAriaInterior.TriggerForReview();
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.AriaInterior)
+            {
+                throw new InvalidOperationException("House slice validation failed: Aria street door did not activate Aria interior map set.");
+            }
+
+            ValidateVectorNear("Aria street to interior execution target", controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position), AriaInteriorDoorExitTarget);
+
+            ariaInteriorToAriaStreet.TriggerForReview();
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.AriaStreet)
+            {
+                throw new InvalidOperationException("House slice validation failed: Aria interior door did not activate Aria street map set.");
+            }
+
+            ValidateVectorNear("Aria interior to street execution target", controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position), AriaHouseDoorExitTarget);
 
             visibility.SetActiveAreaForReview(FastVsHouseArea.Exterior);
             controller.ForcePlayerCurrentLocalForReview(ExteriorToPlazaTriggerCenter);
@@ -43795,6 +44243,10 @@ namespace Anemora.EditorTools
             FastVsHouseAreaVisibility visibility,
             FastVsAreaDoorTransition interiorToExterior,
             FastVsAreaDoorTransition exteriorToInterior,
+            FastVsAreaDoorTransition miaHouseToMiaInterior,
+            FastVsAreaDoorTransition miaInteriorToMiaHouse,
+            FastVsAreaDoorTransition ariaStreetToAriaInterior,
+            FastVsAreaDoorTransition ariaInteriorToAriaStreet,
             FastVsAreaDoorTransition exteriorToPlaza,
             FastVsAreaDoorTransition plazaToExterior,
             FastVsAreaDoorTransition plazaToLibrary,
@@ -43848,6 +44300,10 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException("House slice validation failed: interior spawn target is still inside the exit trigger and may bounce back outside.");
             }
 
+            ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.MiaHouse, miaHouseToMiaInterior, MiaHouseDoorTriggerCenter, MiaInteriorDoorExitTarget, FastVsHouseArea.MiaInterior, "Mia house to Mia interior");
+            ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.MiaInterior, miaInteriorToMiaHouse, MiaInteriorDoorTriggerCenter, MiaHouseDoorExitTarget, FastVsHouseArea.MiaHouse, "Mia interior to Mia house");
+            ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.AriaStreet, ariaStreetToAriaInterior, AriaHouseDoorTriggerCenter, AriaInteriorDoorExitTarget, FastVsHouseArea.AriaInterior, "Aria street to Aria interior");
+            ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.AriaInterior, ariaInteriorToAriaStreet, AriaInteriorDoorTriggerCenter, AriaHouseDoorExitTarget, FastVsHouseArea.AriaStreet, "Aria interior to Aria street");
             ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.Exterior, exteriorToPlaza, ExteriorToPlazaTriggerCenter, PlazaFromExteriorTarget, FastVsHouseArea.CentralPlaza, "exterior to plaza");
             ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.CentralPlaza, plazaToExterior, PlazaToExteriorTriggerCenter, ExteriorFromPlazaTarget, FastVsHouseArea.Exterior, "plaza to exterior");
             ValidateReachableRoutePad(controller, visibility, FastVsHouseArea.CentralPlaza, plazaToLibrary, PlazaToLibraryTriggerCenter, LibraryFromPlazaTarget, FastVsHouseArea.Library, "plaza to library");
@@ -90696,7 +91152,9 @@ namespace Anemora.EditorTools
                 GameObject centralPlaza,
                 GameObject library,
                 GameObject miaHouse,
+                GameObject miaInterior,
                 GameObject ariaStreet,
+                GameObject ariaInterior,
                 GameObject kaiaFarm,
                 GameObject ruins,
                 GameObject chapter1End)
@@ -90706,7 +91164,9 @@ namespace Anemora.EditorTools
                 CentralPlaza = centralPlaza;
                 Library = library;
                 MiaHouse = miaHouse;
+                MiaInterior = miaInterior;
                 AriaStreet = ariaStreet;
+                AriaInterior = ariaInterior;
                 KaiaFarm = kaiaFarm;
                 Ruins = ruins;
                 Chapter1End = chapter1End;
@@ -90717,7 +91177,9 @@ namespace Anemora.EditorTools
             public GameObject CentralPlaza { get; }
             public GameObject Library { get; }
             public GameObject MiaHouse { get; }
+            public GameObject MiaInterior { get; }
             public GameObject AriaStreet { get; }
+            public GameObject AriaInterior { get; }
             public GameObject KaiaFarm { get; }
             public GameObject Ruins { get; }
             public GameObject Chapter1End { get; }

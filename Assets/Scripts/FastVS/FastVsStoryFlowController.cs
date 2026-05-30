@@ -962,8 +962,12 @@ namespace Anemora.FastVS
                         : "レトの机へ向かう。";
                 case FastVsHouseArea.MiaHouse:
                     return "ミアの家の前へ進む。";
+                case FastVsHouseArea.MiaInterior:
+                    return "室内を確認する。";
                 case FastVsHouseArea.AriaStreet:
                     return "アリアの通りを進む。";
+                case FastVsHouseArea.AriaInterior:
+                    return "室内を確認する。";
                 case FastVsHouseArea.KaiaFarm:
                     return "カイアの畑へ向かう。";
                 case FastVsHouseArea.Ruins:
@@ -989,8 +993,12 @@ namespace Anemora.FastVS
                     return "ミアの家へ向かう。";
                 case FastVsHouseArea.MiaHouse:
                     return "ミアの家の前へ進む。";
+                case FastVsHouseArea.MiaInterior:
+                    return "室内を確認する。";
                 case FastVsHouseArea.AriaStreet:
                     return "アリアの通りを進む。";
+                case FastVsHouseArea.AriaInterior:
+                    return "室内を確認する。";
                 case FastVsHouseArea.KaiaFarm:
                     return "カイアの畑へ向かう。";
                 case FastVsHouseArea.Ruins:

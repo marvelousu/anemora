@@ -466,6 +466,10 @@ namespace Anemora.FastVS
                         libraryWindowSpotAngle = 48f,
                         libraryWindowColor = new Color(1.00f, 0.74f, 0.44f, 1f)
                     };
+                case FastVsHouseArea.MiaInterior:
+                    return CreateSmallHouseInteriorProfile(new Vector3(-21.20f, 1.65f, -8.90f));
+                case FastVsHouseArea.AriaInterior:
+                    return CreateSmallHouseInteriorProfile(new Vector3(-32.95f, 1.65f, -8.80f));
                 default:
                     return new LightingProfile
                     {
@@ -491,6 +495,33 @@ namespace Anemora.FastVS
                         libraryWindowColor = new Color(1.00f, 0.76f, 0.48f, 1f)
                     };
             }
+        }
+
+        private static LightingProfile CreateSmallHouseInteriorProfile(Vector3 warmFillPosition)
+        {
+            return new LightingProfile
+            {
+                ambientLight = new Color(0.155f, 0.145f, 0.138f, 1f),
+                fogEnabled = false,
+                fogColor = new Color(0.080f, 0.074f, 0.070f, 1f),
+                fogStartDistance = 10f,
+                fogEndDistance = 42f,
+                cameraBackgroundColor = new Color(0.060f, 0.056f, 0.055f, 1f),
+                warmFillPosition = warmFillPosition,
+                warmFillIntensity = 0.60f,
+                warmFillRange = 5.8f,
+                warmFillColor = new Color(1.00f, 0.70f, 0.44f, 1f),
+                coolRimRotation = Quaternion.Euler(25f, 132f, 0f),
+                coolRimIntensity = 0.15f,
+                coolRimColor = new Color(0.58f, 0.70f, 1.00f, 1f),
+                libraryWindowEnabled = false,
+                libraryWindowPosition = new Vector3(28.55f, 3.05f, 23.15f),
+                libraryWindowRotation = Quaternion.Euler(58f, 36f, 0f),
+                libraryWindowIntensity = 0f,
+                libraryWindowRange = 8.5f,
+                libraryWindowSpotAngle = 48f,
+                libraryWindowColor = new Color(1.00f, 0.76f, 0.48f, 1f)
+            };
         }
 
         private static LightingProfile LerpProfiles(in LightingProfile from, in LightingProfile to, float blend)
