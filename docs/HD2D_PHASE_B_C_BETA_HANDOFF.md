@@ -228,6 +228,7 @@ Unity: `C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe`。各 ba
    ```
    期待: Player.log に GfxDevice 作成・scene load・**例外/NullReference 0件**。Buto compute shader / TiltShift のエラーが出ないこと。fps 極端低下が無いか。
 5. **5エリアスクショ + Tom 目視ゲート**: home/Home_outside/plaza/plaza_niro_in_shadow/library + TimeWindow アパーチャ。B-α vs B-β / C-α vs C-β 並置。**自己判定せず Tom 提示**、exe フルパス添付 (`feedback_anemora_present_build_exe`, `feedback_anemora_gfx_quality_bar`)。
+   - **⚠️ レビュー画像の運用 (順序依存)**: repo 衛生伝播 (`Documents/Unity/anemora-handoff-repo-hygiene-propagation.md`) が **先に** map-vs に入る。それが入った後は `docs/review/` / `docs/devlog/screenshots/` への **git add が bloat-guard に拒否される**。スクショは**ローカル生成のみ (git add しない)** とし、`tools\r2\r2-upload-review.ps1 -CycleDir docs/review/<ts> -Branch work/chapter1-continuation-map-vs-20260524` で **R2 へアップロード** (wrangler 認証要。`~/.cf_token` 削除済→ `wrangler login`)。devlog .md 本体はコミット可。衛生伝播がまだ入っていなければ従来通りで可。
 6. **シーン資産 grep 実証**: 変更が `Anemora_FastVS_HouseSlice.unity` / `UniversalRenderPipeline_Renderer.asset` / `DefaultVolumeProfile.asset` に焼かれたか実値 grep。
 
 ---
@@ -247,6 +248,7 @@ Unity: `C:\Program Files\Unity\Hub\Editor\6000.3.14f1\Editor\Unity.exe`。各 ba
 11. **#if ガード漏れ = 公開リポ破壊**: Buto/Fronkon 型参照が1つでもガード外に出ると、アセット不在環境で compile 不可。Smoke Test step 0 (アセット退避 compile) を必ず緑にしてからコミット。
 12. **define の残留**: Buto の auto-define は追加のみ・削除しない。Fronkon は本 handoff の injector で不在時除去。アセット退避テスト時は ProjectSettings の `BUTO;OCCASOFTWARE;FRONKON_TILTSHIFT` を手動クリアしないと #if が誤って有効化されたままになる。
 13. **Auto Referenced**: `OccaSoftware.Buto.Runtime.asmdef` / `FronkonGames.Artistic.TiltShift.asmdef` の Auto Referenced が true であること (false だとアセット在でも Assembly-CSharp から型が見えない)。
+14. **順序依存 (repo衛生伝播が先)**: `anemora-handoff-repo-hygiene-propagation.md` を先に map-vs へ入れる。その後はレビュー画像を git add すると bloat-guard が拒否 → R2 運用 (§4 step5)。本 B-β/C-β を衛生伝播より先に着手する場合のみ従来コミット可。3本 (CI/CD → B-β/C-β → character) は別セッション・別ドメインで、生成器 (`AnemoraFastVsHouseSliceSetup.cs`) と .gitignore を共有するため、着手前に最新 origin を取り込む。
 
 ---
 
