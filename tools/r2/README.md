@@ -66,6 +66,8 @@ Do **not** `git add` the images. The pre-commit guard (`tools/githooks`) blocks
 
 - `wrangler` (object put/get, lifecycle) reads `CLOUDFLARE_API_TOKEN`
   (an Account "Workers R2 Storage: Edit" token; stored locally in `~/.cf_token`).
+  `r2-upload-review.ps1` auto-loads `~/.cf_token` into the env when the var is unset,
+  so the AI review loop can upload unattended (no interactive `wrangler login`).
 - The GitHub Action uses the **S3** API (rclone) with `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
 - IMPORTANT: every `wrangler r2 object put/get/delete` MUST pass `--remote`, or wrangler
   4.x targets a *local* simulated bucket. The scripts already include `--remote`.

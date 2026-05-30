@@ -16,6 +16,19 @@ param(
 )
 $ErrorActionPreference = 'Continue'
 
+# Durable unattended auth: if CLOUDFLARE_API_TOKEN is not already exported, load it
+# from ~/.cf_token (plaintext Account "Workers R2 Storage: Edit" token, by design).
+# Lets the AI review loop upload without an interactive `wrangler login`.
+if (-not $env:CLOUDFLARE_API_TOKEN) {
+  $CfTokenFile = Join-Path $env:USERPROFILE '.cf_token'
+  if (Test-Path $CfTokenFile) {
+    $env:CLOUDFLARE_API_TOKEN = (Get-Content $CfTokenFile -Raw).Trim()
+  }
+}
+if (-not $env:CLOUDFLARE_API_TOKEN) {
+  Write-Warning "No CLOUDFLARE_API_TOKEN and no ~/.cf_token; wrangler put will fail. See tools/r2/README.md."
+}
+
 if (-not (Test-Path $CycleDir)) { Write-Error "CycleDir not found: $CycleDir"; exit 1 }
 
 $Slug = ($Branch -replace '^work/', '' -replace '[^a-zA-Z0-9._-]+', '-').Trim('-')
