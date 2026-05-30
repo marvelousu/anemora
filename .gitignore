@@ -108,3 +108,10 @@ audio/_intermediate/
 # Keep machine-resolved local paths out of git; track only .example templates.
 /.mcp.json
 /.codex/config.toml
+
+# Paid Asset Store assets — DO NOT commit to this public repo (EULA: no public
+# redistribution of paid asset source). Each environment imports from its own
+# Asset Store account. See docs/HD2D_PHASE_B_C_BETA_HANDOFF.md.
+/Assets/FronkonGames/
+/Assets/FronkonGames.meta
+/Packages/com.occasoftware.buto/
