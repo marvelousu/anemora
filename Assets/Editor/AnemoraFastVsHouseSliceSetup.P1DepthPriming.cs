@@ -117,7 +117,9 @@ namespace Anemora.EditorTools
             }
             finally
             {
-                SetHd2dAutonomousP1DepthPrimingModeForReview(originalMode == DepthPrimingMode.Disabled ? DepthPrimingMode.Auto : originalMode);
+                // RecoveryV3 (2026-06-03): restore to Disabled (the build truth), not Auto. The old code
+                // converted Disabled back to Auto here, re-infecting the renderer asset after review.
+                SetHd2dAutonomousP1DepthPrimingModeForReview(DepthPrimingMode.Disabled);
             }
 
             Debug.Log($"Fast VS autonomous P1-49 depth priming review captured: {Path.GetFullPath(outputDirectory)}");
@@ -131,7 +133,13 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice setup failed: missing renderer data for P1-49 depth priming at {UniversalRenderPipelineRendererAssetPath}.");
             }
 
-            rendererData.depthPrimingMode = DepthPrimingMode.Auto;
+            // RecoveryV3 (2026-06-03): set Disabled (was Auto). This is the normal create path that runs
+            // on every CreateHouseSliceScene; leaving it Auto re-infected the renderer asset and undid the
+            // fix in AnemoraFastVsHd2dRenderAssetSetup. DepthPrimingMode.Auto + ForwardPlus conflicts with
+            // PortalStencilFeature, dropping portal-stencil-dependent opaque ground/buildings from the
+            // main opaque pass at runtime. The DepthOnly passes below stay enabled (good for
+            // alpha-clip/opaque depth); only the priming MODE changes to Disabled.
+            rendererData.depthPrimingMode = DepthPrimingMode.Disabled;
             EditorUtility.SetDirty(rendererData);
 
             foreach (var material in LoadHd2dAutonomousP1DepthPrimingMaterials())
@@ -154,9 +162,9 @@ namespace Anemora.EditorTools
         private static void ValidateHd2dAutonomousP1DepthPriming()
         {
             var rendererData = AssetDatabase.LoadAssetAtPath<UniversalRendererData>(UniversalRenderPipelineRendererAssetPath);
-            if (rendererData == null || rendererData.depthPrimingMode != DepthPrimingMode.Auto)
+            if (rendererData == null || rendererData.depthPrimingMode != DepthPrimingMode.Disabled)
             {
-                throw new InvalidOperationException($"House slice validation failed: P1-49 renderer depth priming must be Auto, current={rendererData?.depthPrimingMode.ToString() ?? "missing"}.");
+                throw new InvalidOperationException($"House slice validation failed: P1-49 renderer depth priming must be Disabled (Auto+ForwardPlus drops portal-stencil opaque ground/buildings from the main opaque pass), current={rendererData?.depthPrimingMode.ToString() ?? "missing"}.");
             }
 
             ValidateSourceToken(File.ReadAllText(Hd2dAutonomousP1DepthPrimingFoliageShaderPath), "Name \"DepthOnly\"", Hd2dAutonomousP1DepthPrimingFoliageShaderPath);

@@ -8,6 +8,8 @@ namespace Anemora.FastVS
     [AddComponentMenu("Anemora/HD2D/Vegetation Wind Control Plane")]
     public sealed class FastVsHd2dVegetationWindManager : MonoBehaviour
     {
+        private const float InteractiveBendSidewaysWeight = 0.16f;
+
         private static readonly int WindDirectionId = Shader.PropertyToID("_WindDirection");
         private static readonly int WindMainId = Shader.PropertyToID("_WindMain");
         private static readonly int WindTurbulenceId = Shader.PropertyToID("_WindTurbulence");
@@ -51,6 +53,8 @@ namespace Anemora.FastVS
         private int allocatedBendMapResolution;
         private int bendMapActivePixels;
         private float bendMapPeakValue;
+        private CharacterController cachedPrimaryTrampler;
+        private TimeWindowPairedSpacePortalController cachedPortalController;
 
         private readonly Trampler[] tramplers = new Trampler[4];
 
@@ -308,7 +312,12 @@ namespace Anemora.FastVS
                 return count;
             }
 
-            var player = FindFirstObjectByType<CharacterController>();
+            if (cachedPrimaryTrampler == null)
+            {
+                cachedPrimaryTrampler = FindFirstObjectByType<CharacterController>();
+            }
+
+            var player = cachedPrimaryTrampler;
             if (player != null)
             {
                 tramplers[count++] = new Trampler
@@ -319,7 +328,12 @@ namespace Anemora.FastVS
                 };
             }
 
-            var portal = FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            if (cachedPortalController == null)
+            {
+                cachedPortalController = FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            }
+
+            var portal = cachedPortalController;
             if (portal != null && portal.HasPortalPair)
             {
                 AddPortalTrampler(portal.CurrentPortalRootForReview, ref count);
@@ -396,6 +410,7 @@ namespace Anemora.FastVS
                     }
 
                     var direction = distance > 0.0001f ? delta / distance : new Vector2(ResolveWindDirection().x, ResolveWindDirection().z);
+                    direction *= InteractiveBendSidewaysWeight;
                     bendMapPixels[index] = new Color32(
                         (byte)Mathf.Clamp(Mathf.RoundToInt((direction.x * 0.5f + 0.5f) * 255f), 0, 255),
                         (byte)Mathf.Clamp(Mathf.RoundToInt((direction.y * 0.5f + 0.5f) * 255f), 0, 255),

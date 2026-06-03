@@ -18590,14 +18590,14 @@ namespace Anemora.EditorTools
             SerializedSet(manager, "witheredness", 0f);
             SerializedSet(manager, "bendMap", EnsureHd2dAutonomousP0VegetationBendMapTexture());
             SerializedSet(manager, "useInteractiveBendMap", true);
-            SerializedSet(manager, "bendMapResolution", 128);
+            SerializedSet(manager, "bendMapResolution", 96);
             SerializedSet(manager, "bendMapWorldSize", new Vector2(6.4f, 5.8f));
             SerializedSet(manager, "bendMapWorldCenter", GetHd2dAutonomousP0GpuGrassLocalPosition(false));
             SerializedSet(manager, "trackPrimaryTrampler", true);
             SerializedSet(manager, "bendMapDecayPerSecond", 1.65f);
-            SerializedSet(manager, "bendMapStrength", 1.0f);
-            SerializedSet(manager, "playerTramplerRadius", 0.58f);
-            SerializedSet(manager, "portalTramplerRadius", 1.12f);
+            SerializedSet(manager, "bendMapStrength", 0.72f);
+            SerializedSet(manager, "playerTramplerRadius", 0.50f);
+            SerializedSet(manager, "portalTramplerRadius", 0.86f);
             SerializedSet(manager, "useReviewTramplers", false);
             SerializedSet(manager, "reviewTramplerA", Vector4.zero);
             SerializedSet(manager, "reviewTramplerB", Vector4.zero);

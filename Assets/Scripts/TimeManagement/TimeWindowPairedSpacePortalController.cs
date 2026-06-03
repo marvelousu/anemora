@@ -796,7 +796,9 @@ namespace Anemora.TimeManagement
             }
 
             var landmark = renderer.GetComponentInParent<TimeWindowPairedSpaceLandmark>();
-            if (landmark != null && landmark.Kind == TimeWindowPairedSpaceLandmarkKind.PathOrFloor)
+            if (landmark != null &&
+                (landmark.Kind == TimeWindowPairedSpaceLandmarkKind.PathOrFloor ||
+                 landmark.Kind == TimeWindowPairedSpaceLandmarkKind.WallOrLandmark))
             {
                 return false;
             }
@@ -1288,6 +1290,12 @@ namespace Anemora.TimeManagement
                     return;
                 }
 
+                if (ShouldRejectCurrentBackSideOccupancy(currentLocal))
+                {
+                    BlockCurrentBackSideCrossing(currentLocal);
+                    return;
+                }
+
                 previousCurrentLocal = currentLocal;
                 return;
             }
@@ -1343,8 +1351,20 @@ namespace Anemora.TimeManagement
                 return false;
             }
 
-            var blockPlane = portalLocalCenter.z + Mathf.Max(currentBackSideBlockDepth, transferExitOffset + crossingHalfDepth);
+            var blockPlane = CurrentBackSideBlockPlane();
             return previousLocal.z >= blockPlane && currentLocal.z <= blockPlane;
+        }
+
+        private bool ShouldRejectCurrentBackSideOccupancy(Vector3 currentLocal)
+        {
+            return enableBackSideBlocking &&
+                   IsInsidePortalBackBlockZone(currentLocal) &&
+                   currentLocal.z > CurrentBackSideBlockPlane() + 0.005f;
+        }
+
+        private float CurrentBackSideBlockPlane()
+        {
+            return portalLocalCenter.z + Mathf.Max(currentBackSideBlockDepth, transferExitOffset + crossingHalfDepth);
         }
 
         private bool IsInsidePortalBackBlockZone(Vector3 local)
@@ -1361,7 +1381,7 @@ namespace Anemora.TimeManagement
         private void BlockCurrentBackSideCrossing(Vector3 attemptedLocal)
         {
             var blocked = attemptedLocal;
-            blocked.z = portalLocalCenter.z + Mathf.Max(currentBackSideBlockDepth, transferExitOffset + crossingHalfDepth);
+            blocked.z = CurrentBackSideBlockPlane();
             SetPlayerWorldPosition(currentSpaceRoot.TransformPoint(blocked));
             previousCurrentLocal = blocked;
             hasPreviousCurrentLocal = true;

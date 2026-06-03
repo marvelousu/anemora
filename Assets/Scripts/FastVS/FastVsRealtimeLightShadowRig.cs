@@ -15,6 +15,9 @@ namespace Anemora.FastVS
         private const string PortalWindowRole = "PortalWindow";
         private const string OverlayGlowRole = "OverlayGlow";
         private const string ContactShadowRole = "ContactShadow";
+        // RecoveryV3 diagnostic toggle: false = capture the native snapshot look (fake-look washes left ON)
+        // so we can compare against the wash-stripped build and decide exactly what to keep vs remove.
+        private const bool EnableFakeLookWashSuppression = true;
         private static readonly int CharacterBillboardShadowFixId = Shader.PropertyToID("_CharacterBillboardShadowFix");
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
@@ -58,6 +61,14 @@ namespace Anemora.FastVS
         private Material centralPlazaSkyboxMaterial;
         private Material exteriorSkyboxMaterial;
 
+        // RecoveryV3 (2026-06-03): one-shot runtime visibility probe. The ground/buildings were reported
+        // rendererVisible=false from the main camera (a render-pipeline issue, not culling). After a few
+        // rendered frames, log whether the key opaque geometry is actually visible so we can confirm the
+        // depth-priming fix flips them to visible.
+        private int _visDiagFrameCounter;
+        private bool _visDiagLogged;
+        private bool _washSuppressionLogged;
+
         private void Awake()
         {
             ResolveReferences();
@@ -78,6 +89,55 @@ namespace Anemora.FastVS
         {
             ResolveReferences();
             ApplyLightAndSky();
+
+            if (Application.isPlaying && !_visDiagLogged)
+            {
+                _visDiagFrameCounter++;
+                if (_visDiagFrameCounter >= 120)
+                {
+                    _visDiagLogged = true;
+                    LogVisibilityDiagnostic();
+                }
+            }
+        }
+
+        private void LogVisibilityDiagnostic()
+        {
+            var total = 0;
+            var visible = 0;
+            var key = new System.Text.StringBuilder();
+            var keyCount = 0;
+            foreach (var r in FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (r == null || !r.gameObject.scene.IsValid())
+                {
+                    continue;
+                }
+
+                total++;
+                if (r.isVisible)
+                {
+                    visible++;
+                }
+
+                var n = r.gameObject.name;
+                var isKey = n.Contains("PixelGround") ||
+                            n.Contains("Facade") ||
+                            n.Contains("Library") ||
+                            n.Contains("BuildingFacade") ||
+                            (n.Contains("CentralPlaza") && (n.Contains("Ground") || n.Contains("Wall") || n.Contains("Building")));
+                if (isKey && keyCount < 24)
+                {
+                    keyCount++;
+                    key.Append($"{n}[vis={r.isVisible},en={r.enabled},layer={r.gameObject.layer}] ");
+                }
+            }
+
+            var cam = Camera.main;
+            var camInfo = cam != null
+                ? $"cam pos={cam.transform.position} fov={cam.fieldOfView} mask={cam.cullingMask}"
+                : "cam=null";
+            Debug.Log($"[RecoveryV3Vis] frame={_visDiagFrameCounter} activeRenderers={total} isVisibleTrue={visible} | {camInfo} | KEY: {key}");
         }
 
         public void ApplyNowForReview()
@@ -443,10 +503,32 @@ namespace Anemora.FastVS
         private void ApplyRendererShadowPolicy(FastVsHouseArea activeArea)
         {
             var isRealtimeOutdoor = IsRealtimeOutdoorArea(activeArea);
+            var fakeLookWashDisabledCount = 0;
+            var totalRenderers = 0;
+            var washDisabledNames = new System.Collections.Generic.HashSet<string>();
             foreach (var renderer in FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (renderer == null || !renderer.gameObject.scene.IsValid())
                 {
+                    continue;
+                }
+
+                totalRenderers++;
+
+                // RecoveryV3 (2026-06-03): strip only the annotated pale surface coating over the plaza
+                // floor/library facade. Gated on isPlaying so editor bake keeps the lifted receivers and
+                // validators still pass; sky, dust, shafts, water, contact shadows, portal and sprite
+                // layers are intentionally left enabled.
+                if (EnableFakeLookWashSuppression && Application.isPlaying && IsPaleFakeLookSurfaceWashRenderer(renderer))
+                {
+                    renderer.enabled = false;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                    fakeLookWashDisabledCount++;
+                    if (washDisabledNames.Count < 80)
+                    {
+                        washDisabledNames.Add(renderer.gameObject.name);
+                    }
                     continue;
                 }
 
@@ -539,6 +621,12 @@ namespace Anemora.FastVS
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
                     renderer.receiveShadows = false;
                 }
+            }
+
+            if (Application.isPlaying && fakeLookWashDisabledCount > 0 && !_washSuppressionLogged)
+            {
+                _washSuppressionLogged = true;
+                Debug.Log($"[RecoveryV3] ApplyRendererShadowPolicy area={activeArea}: total renderers={totalRenderers}, disabled {fakeLookWashDisabledCount} pale fake-look wash renderer(s). Disabled names: {string.Join(" | ", washDisabledNames)}");
             }
         }
 
@@ -928,12 +1016,14 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(SideShadeId))
             {
-                block.SetColor(SideShadeId, isCentralPlaza ? CentralPlazaStage7jSideShade : RealtimeOutdoorSideShade);
+                var sideShade = isCentralPlaza ? CentralPlazaStage7jSideShade : RealtimeOutdoorSideShade;
+                block.SetColor(SideShadeId, sideShade);
             }
 
             if (material.HasProperty(FloorShadeId))
             {
-                block.SetColor(FloorShadeId, isCentralPlaza ? CentralPlazaStage7jFloorShade : RealtimeOutdoorFloorShade);
+                var floorShade = isCentralPlaza ? CentralPlazaStage7jFloorShade : RealtimeOutdoorFloorShade;
+                block.SetColor(FloorShadeId, floorShade);
             }
 
             CopyMaterialEmissionToPropertyBlock(material, block);
@@ -1182,9 +1272,123 @@ namespace Anemora.FastVS
         private static bool UsesCharacterBillboardShadowFix(Renderer renderer)
         {
             var material = renderer != null ? renderer.sharedMaterial : null;
-            return material != null &&
-                   material.HasProperty(CharacterBillboardShadowFixId) &&
-                   material.GetFloat(CharacterBillboardShadowFixId) > 0.5f;
+            if (material == null)
+            {
+                return false;
+            }
+
+            // RecoveryV3 (2026-06-03): default to the TwoSided billboard-shadow path UNLESS a material
+            // explicitly opts out (property present and <= 0.5). New chapter1 character/NPC materials
+            // never set _CharacterBillboardShadowFix, so the old strict check returned false and routed
+            // them to ShadowCastingMode.On, which the GPU Resident Drawer mis-batches and culls (NPCs
+            // vanish). Absent property now means "on".
+            if (!material.HasProperty(CharacterBillboardShadowFixId))
+            {
+                return true;
+            }
+
+            return material.GetFloat(CharacterBillboardShadowFixId) > 0.5f;
+        }
+
+        private static bool IsPaleFakeLookSurfaceWashRenderer(Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return false;
+            }
+
+            // Never touch the time-window portal, gameplay nav pads / interaction "open" cues, or the
+            // character-grounding family (ground bounce, foot/contact/directional cast shadows).
+            var name = renderer.gameObject.name;
+            if (name.Contains("MapMoveGlowPad") ||
+                name.Contains("GlowCue") ||
+                name.Contains("OpenCue") ||
+                name.Contains("GroundBounce") ||
+                name.Contains("FootContact") ||
+                name.Contains("ContactShadow") ||
+                name.Contains("DirectionalCastShadow"))
+            {
+                return false;
+            }
+
+            if (!IsTargetedWhiteSurfaceWashRendererName(name))
+            {
+                return false;
+            }
+
+            var material = renderer.sharedMaterial;
+            if (material == null)
+            {
+                return false;
+            }
+
+            var role = GetMaterialRole(material);
+            if (role == PortalWindowRole || role == SpriteCardRole || role == PaperCardRole)
+            {
+                return false;
+            }
+
+            if (!IsPaleWashColor(material))
+            {
+                return false;
+            }
+
+            var profile = renderer.GetComponentInParent<FastVsHd2dOverlayProfile>(true);
+            if (profile != null)
+            {
+                var kind = profile.OverlayKindForReview;
+                return kind == FastVsHd2dOverlayKind.LightPool ||
+                       kind == FastVsHd2dOverlayKind.Atmosphere;
+            }
+
+            if (material.renderQueue < 2950)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsTargetedWhiteSurfaceWashRendererName(string name)
+        {
+            return IsTargetedPlazaFloorWhiteWashName(name) ||
+                   IsTargetedLibraryExteriorWhiteWashName(name);
+        }
+
+        private static bool IsTargetedPlazaFloorWhiteWashName(string name)
+        {
+            return name.Contains("Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_StoneSquareSunMass") ||
+                   name.Contains("Current_CentralPlaza_Cycle109_SunlitFloorIsland_");
+        }
+
+        private static bool IsTargetedLibraryExteriorWhiteWashName(string name)
+        {
+            return name.Contains("Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_FacadeBroadRake") ||
+                   name.Contains("Current_CentralPlaza_LibraryFacade") &&
+                   (name.Contains("FacadeReadability") || name.Contains("SurfaceRemap"));
+        }
+
+        private static bool IsPaleWashColor(Material material)
+        {
+            var color = Color.white;
+            if (material.HasProperty(BaseColorId))
+            {
+                color = material.GetColor(BaseColorId);
+            }
+            else if (material.HasProperty("_Color"))
+            {
+                color = material.GetColor("_Color");
+            }
+
+            var maxChannel = Mathf.Max(color.r, Mathf.Max(color.g, color.b));
+            if (maxChannel < 0.70f)
+            {
+                return false; // dark overlay (shadow / void / occlusion) -> not a whitening wash
+            }
+
+            var minChannel = Mathf.Min(color.r, Mathf.Min(color.g, color.b));
+            var saturation = maxChannel > 0.0001f ? (maxChannel - minChannel) / maxChannel : 0f;
+            return saturation <= 0.45f; // near-white / cream / pale -> whitening wash
         }
 
     }

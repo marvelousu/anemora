@@ -131,7 +131,12 @@ namespace Anemora.EditorTools
         private static void ApplyRendererSettings(UniversalRendererData rendererData)
         {
             rendererData.renderingMode = RenderingMode.ForwardPlus;
-            rendererData.depthPrimingMode = DepthPrimingMode.Auto;
+            // RecoveryV3 (2026-06-03): DepthPrimingMode.Auto + ForwardPlus skips the early depth
+            // pre-pass and conflicts with PortalStencilFeature's stencil/depth sequencing, leaving
+            // portal-stencil-dependent opaque geometry (ground/buildings) invisible and the time-window
+            // contents stuck in the present world. Disable depth priming so the portal stencil pass is
+            // depth-correct.
+            rendererData.depthPrimingMode = DepthPrimingMode.Disabled;
 
             var portalFeature = FindFeature(rendererData, typeof(PortalStencilFeature)) as PortalStencilFeature;
             if (portalFeature == null)

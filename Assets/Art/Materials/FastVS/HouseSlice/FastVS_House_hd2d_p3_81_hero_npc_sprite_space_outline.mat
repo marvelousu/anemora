@@ -43,7 +43,7 @@ Material:
     - _Cutoff: 0.16
     - _DstBlend: 10
     - _OutlineAlpha: 0.64
-    - _OutlineWidthTexels: 1.15
+    - _OutlineWidthTexels: 0.55
     - _QueueControl: 1
     - _QueueOffset: 18
     - _SrcBlend: 5
