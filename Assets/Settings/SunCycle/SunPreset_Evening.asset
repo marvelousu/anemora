@@ -16,6 +16,8 @@ MonoBehaviour:
   directionEuler: {x: 24, y: -28, z: 0}
   lightColor: {r: 1, g: 0.62, b: 0.42, a: 1}
   lightIntensity: 1.55
+  useColorTemperature: 1
+  colorTemperatureKelvin: 3000
   cookieTexture: {fileID: 6615063979325605460}
   cookieTint: {r: 1, g: 0.71, b: 0.48, a: 1}
   cookieSize: 11.5
@@ -31,6 +33,10 @@ MonoBehaviour:
   volumetricMaximumHeight: 30
   bloomTint: {r: 1, g: 0.71, b: 0.48, a: 1}
   ambientLightColor: {r: 0.49, g: 0.38, b: 0.32, a: 1}
+  readabilityFloor: 0.055
+  readabilityFloorTint: {r: 0.18, g: 0.22, b: 0.3, a: 1}
+  readabilityFloorStrength: 0.36
+  windowEmissionStrength: 0.85
   screenSpaceLensFlareIntensity: 0.4
   sunLensFlareIntensity: 0.72
   colorLookup: {fileID: 2800000, guid: 5395ad7608cf46e8bcc0182a9e115c9d, type: 3}

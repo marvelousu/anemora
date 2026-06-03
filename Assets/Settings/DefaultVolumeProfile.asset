@@ -82,14 +82,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FilmGrain
   active: 0
   type:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   intensity:
     m_OverrideState: 1
     m_Value: 0
   response:
     m_OverrideState: 1
-    m_Value: 0.8
+    m_Value: 0.76
   texture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
   m_Name: ChromaticAberration
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.ChromaticAberration
-  active: 1
+  active: 0
   intensity:
     m_OverrideState: 1
     m_Value: 0
@@ -313,10 +313,10 @@ MonoBehaviour:
   active: 1
   distance:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 0.55
   cropToFit:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.85
 --- !u!114 &-4320265201207610681
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -409,24 +409,24 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0.85
+    m_Value: 1.05
   intensity:
     m_OverrideState: 1
-    m_Value: 0.8
+    m_Value: 0.4
   scatter:
     m_OverrideState: 1
-    m_Value: 0.72
+    m_Value: 0.74
   clamp:
     m_OverrideState: 1
-    m_Value: 65472
+    m_Value: 16
   tint:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0.94, b: 0.86, a: 1}
+    m_Value: {r: 1, g: 0.92, b: 0.8, a: 1}
   highQualityFiltering:
     m_OverrideState: 1
     m_Value: 1
   filter:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   downscale:
     m_OverrideState: 1
@@ -494,6 +494,7 @@ MonoBehaviour:
   - {fileID: -4320265201207610681}
   - {fileID: 4753709331720075544}
   - {fileID: 9090027181472131333}
+  - {fileID: 3552877476739560955}
 --- !u!114 &538979347352623535
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -529,13 +530,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_Value: {r: 0.43, g: 0.55, b: 0.72, a: 1}
   highlights:
     m_OverrideState: 1
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_Value: {r: 1, g: 0.77, b: 0.48, a: 1}
   balance:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -8
 --- !u!114 &2045443699546163578
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -643,6 +644,44 @@ MonoBehaviour:
   chromaticAbberationIntensity:
     m_OverrideState: 1
     m_Value: 0.12
+--- !u!114 &3552877476739560955
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dcd4c4f14d563f4caf438a46c89628d, type: 3}
+  m_Name: FastVsHd2dAtmosphericPerspectiveVolume
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dAtmosphericPerspectiveVolume
+  active: 1
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.12
+  nearColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.88, g: 0.78, b: 0.62, a: 1}
+  farColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.54, g: 0.64, b: 0.74, a: 1}
+  colorGradient:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  distanceStart:
+    m_OverrideState: 1
+    m_Value: 3.5
+  distanceEnd:
+    m_OverrideState: 1
+    m_Value: 12
+  heightBand:
+    m_OverrideState: 1
+    m_Value: {x: -0.4, y: 3.1}
+  heightStrength:
+    m_OverrideState: 1
+    m_Value: 0.32
 --- !u!114 &4246018851413942845
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -685,23 +724,23 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 2
   gridPixelSize:
-    m_OverrideState: 0
-    m_Value: 12
+    m_OverrideState: 1
+    m_Value: 8
   gridSizeZ:
-    m_OverrideState: 0
-    m_Value: 160
+    m_OverrideState: 1
+    m_Value: 96
   maxDistanceVolumetric:
     m_OverrideState: 1
     m_Value: 30
   depthRatio:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 2
   temporalAALighting:
-    m_OverrideState: 0
-    m_Value: 0.05
+    m_OverrideState: 1
+    m_Value: 0.06
   temporalAAMedia:
-    m_OverrideState: 0
-    m_Value: 0.05
+    m_OverrideState: 1
+    m_Value: 0.06
   fogDensity:
     m_OverrideState: 1
     m_Value: 0.02

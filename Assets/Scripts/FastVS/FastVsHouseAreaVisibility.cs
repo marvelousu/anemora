@@ -14,7 +14,12 @@ namespace Anemora.FastVS
         Ruins,
         Chapter1End,
         MiaInterior,
-        AriaInterior
+        AriaInterior,
+        KaiaInterior,
+        RuinsF4Interior,
+        RuinsF2Interior,
+        RuinsF3Interior,
+        RuinsF5Interior
     }
 
     public sealed class FastVsHouseAreaVisibility : MonoBehaviour
@@ -37,8 +42,18 @@ namespace Anemora.FastVS
         [SerializeField] private GameObject pastAriaInteriorMap;
         [SerializeField] private GameObject currentKaiaFarmMap;
         [SerializeField] private GameObject pastKaiaFarmMap;
+        [SerializeField] private GameObject currentKaiaInteriorMap;
+        [SerializeField] private GameObject pastKaiaInteriorMap;
         [SerializeField] private GameObject currentRuinsMap;
         [SerializeField] private GameObject pastRuinsMap;
+        [SerializeField] private GameObject currentRuinsF4InteriorMap;
+        [SerializeField] private GameObject pastRuinsF4InteriorMap;
+        [SerializeField] private GameObject currentRuinsF2InteriorMap;
+        [SerializeField] private GameObject pastRuinsF2InteriorMap;
+        [SerializeField] private GameObject currentRuinsF3InteriorMap;
+        [SerializeField] private GameObject pastRuinsF3InteriorMap;
+        [SerializeField] private GameObject currentRuinsF5InteriorMap;
+        [SerializeField] private GameObject pastRuinsF5InteriorMap;
         [SerializeField] private GameObject currentChapter1EndMap;
         [SerializeField] private GameObject pastChapter1EndMap;
         [SerializeField] private FastVsHouseArea activeArea;
@@ -56,7 +71,12 @@ namespace Anemora.FastVS
         public bool AriaStreetActiveForReview => IsActive(currentAriaStreetMap) && IsActive(pastAriaStreetMap);
         public bool AriaInteriorActiveForReview => IsActive(currentAriaInteriorMap) && IsActive(pastAriaInteriorMap);
         public bool KaiaFarmActiveForReview => IsActive(currentKaiaFarmMap) && IsActive(pastKaiaFarmMap);
+        public bool KaiaInteriorActiveForReview => IsActive(currentKaiaInteriorMap) && IsActive(pastKaiaInteriorMap);
         public bool RuinsActiveForReview => IsActive(currentRuinsMap) && IsActive(pastRuinsMap);
+        public bool RuinsF4InteriorActiveForReview => IsActive(currentRuinsF4InteriorMap) && IsActive(pastRuinsF4InteriorMap);
+        public bool RuinsF2InteriorActiveForReview => IsActive(currentRuinsF2InteriorMap) && IsActive(pastRuinsF2InteriorMap);
+        public bool RuinsF3InteriorActiveForReview => IsActive(currentRuinsF3InteriorMap) && IsActive(pastRuinsF3InteriorMap);
+        public bool RuinsF5InteriorActiveForReview => IsActive(currentRuinsF5InteriorMap) && IsActive(pastRuinsF5InteriorMap);
         public bool Chapter1EndActiveForReview => IsActive(currentChapter1EndMap) && IsActive(pastChapter1EndMap);
         public bool HasAllMapSetsForReview =>
             currentInteriorMap != null &&
@@ -77,8 +97,18 @@ namespace Anemora.FastVS
             pastAriaInteriorMap != null &&
             currentKaiaFarmMap != null &&
             pastKaiaFarmMap != null &&
+            currentKaiaInteriorMap != null &&
+            pastKaiaInteriorMap != null &&
             currentRuinsMap != null &&
             pastRuinsMap != null &&
+            currentRuinsF4InteriorMap != null &&
+            pastRuinsF4InteriorMap != null &&
+            currentRuinsF2InteriorMap != null &&
+            pastRuinsF2InteriorMap != null &&
+            currentRuinsF3InteriorMap != null &&
+            pastRuinsF3InteriorMap != null &&
+            currentRuinsF5InteriorMap != null &&
+            pastRuinsF5InteriorMap != null &&
             currentChapter1EndMap != null &&
             pastChapter1EndMap != null;
 
@@ -119,8 +149,18 @@ namespace Anemora.FastVS
             SetActive(pastAriaInteriorMap, activeArea == FastVsHouseArea.AriaInterior);
             SetActive(currentKaiaFarmMap, activeArea == FastVsHouseArea.KaiaFarm);
             SetActive(pastKaiaFarmMap, activeArea == FastVsHouseArea.KaiaFarm);
+            SetActive(currentKaiaInteriorMap, activeArea == FastVsHouseArea.KaiaInterior);
+            SetActive(pastKaiaInteriorMap, activeArea == FastVsHouseArea.KaiaInterior);
             SetActive(currentRuinsMap, activeArea == FastVsHouseArea.Ruins);
             SetActive(pastRuinsMap, activeArea == FastVsHouseArea.Ruins);
+            SetActive(currentRuinsF4InteriorMap, activeArea == FastVsHouseArea.RuinsF4Interior);
+            SetActive(pastRuinsF4InteriorMap, activeArea == FastVsHouseArea.RuinsF4Interior);
+            SetActive(currentRuinsF2InteriorMap, activeArea == FastVsHouseArea.RuinsF2Interior);
+            SetActive(pastRuinsF2InteriorMap, activeArea == FastVsHouseArea.RuinsF2Interior);
+            SetActive(currentRuinsF3InteriorMap, activeArea == FastVsHouseArea.RuinsF3Interior);
+            SetActive(pastRuinsF3InteriorMap, activeArea == FastVsHouseArea.RuinsF3Interior);
+            SetActive(currentRuinsF5InteriorMap, activeArea == FastVsHouseArea.RuinsF5Interior);
+            SetActive(pastRuinsF5InteriorMap, activeArea == FastVsHouseArea.RuinsF5Interior);
             SetActive(currentChapter1EndMap, activeArea == FastVsHouseArea.Chapter1End);
             SetActive(pastChapter1EndMap, activeArea == FastVsHouseArea.Chapter1End);
             if (!ApplyLightingProfile(transitionLighting))

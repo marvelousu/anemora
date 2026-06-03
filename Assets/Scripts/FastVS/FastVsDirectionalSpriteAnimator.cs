@@ -1,5 +1,7 @@
 using Anemora.TimeManagement;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Anemora.FastVS
 {
@@ -40,7 +42,16 @@ namespace Anemora.FastVS
         [SerializeField] private float walkFramesPerSecond = 8f;
         [SerializeField] private float idleFramesPerSecond = 2f;
 
+        private static readonly int CharacterBillboardShadowFixId = Shader.PropertyToID("_CharacterBillboardShadowFix");
+        private static readonly int ReceiveWorldShadowsId = Shader.PropertyToID("_ReceiveWorldShadows");
+        private static readonly int UseSpriteDirectionalNormalsId = Shader.PropertyToID("_UseSpriteDirectionalNormals");
+        private static readonly int SpriteNormalStrengthId = Shader.PropertyToID("_SpriteNormalStrength");
+        private static readonly int SpriteDirectionalLightStrengthId = Shader.PropertyToID("_SpriteDirectionalLightStrength");
+        private static readonly int ZWriteId = Shader.PropertyToID("_ZWrite");
+        private static readonly int ZTestId = Shader.PropertyToID("_ZTest");
+
         private MaterialPropertyBlock propertyBlock;
+        private readonly Dictionary<Material, Material> niroRuntimeVisibilityMaterials = new Dictionary<Material, Material>();
         private bool hasPreviousLocal;
         private Vector3 previousLocal;
         private FastVsCharacterDirection currentDirection = FastVsCharacterDirection.Front;
@@ -87,6 +98,7 @@ namespace Anemora.FastVS
                 return;
             }
 
+            EnsureNiroRuntimeVisibilityRecoveryApplied();
             var otherTime = portalController != null && portalController.PlayerInOtherTime;
             var direction = currentDirection;
             var movementFrozen = IsMovementFrozenForReview();
@@ -112,6 +124,7 @@ namespace Anemora.FastVS
             }
 
             UpdateAnimationFrame();
+            EnsureNiroRuntimeVisibilityRecoveryApplied();
         }
 
         public void SetDirectionForReview(FastVsCharacterDirection direction, bool otherTime)
@@ -179,7 +192,7 @@ namespace Anemora.FastVS
             var material = ResolveMaterial(currentDirection, lastOtherTime, moving);
             if (material != null)
             {
-                spriteRenderer.sharedMaterial = material;
+                spriteRenderer.sharedMaterial = ResolveRuntimeMaterial(material);
             }
 
             activeFrameCount = ResolveFrameCount(material);
@@ -226,7 +239,112 @@ namespace Anemora.FastVS
             spriteRenderer.GetPropertyBlock(propertyBlock);
             propertyBlock.SetVector("_BaseMap_ST", new Vector4(frameWidth, 1f, offsetX, 0f));
             propertyBlock.SetVector("_MainTex_ST", new Vector4(frameWidth, 1f, offsetX, 0f));
+            if (UsesNiroRuntimeVisibilityRecovery())
+            {
+                propertyBlock.SetFloat(CharacterBillboardShadowFixId, 0f);
+                propertyBlock.SetFloat(ReceiveWorldShadowsId, 1f);
+                propertyBlock.SetFloat(UseSpriteDirectionalNormalsId, 0f);
+                propertyBlock.SetFloat(SpriteNormalStrengthId, 0f);
+                propertyBlock.SetFloat(SpriteDirectionalLightStrengthId, 0f);
+            }
+
             spriteRenderer.SetPropertyBlock(propertyBlock);
+        }
+
+        private bool UsesNiroRuntimeVisibilityRecovery()
+        {
+            return spriteRenderer != null &&
+                   string.Equals(spriteRenderer.gameObject.name, "Niro_Sprite64x96", System.StringComparison.Ordinal);
+        }
+
+        private void EnsureNiroRuntimeVisibilityRecoveryApplied()
+        {
+            if (!Application.isPlaying ||
+                !UsesNiroRuntimeVisibilityRecovery() ||
+                spriteRenderer.sharedMaterial == null ||
+                spriteRenderer.sharedMaterial.name.EndsWith("_RuntimeVisible", System.StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            ApplyMaterial();
+        }
+
+        private Material ResolveRuntimeMaterial(Material material)
+        {
+            if (!Application.isPlaying || !UsesNiroRuntimeVisibilityRecovery() || material == null)
+            {
+                return material;
+            }
+
+            if (!niroRuntimeVisibilityMaterials.TryGetValue(material, out var runtimeMaterial) || runtimeMaterial == null)
+            {
+                runtimeMaterial = new Material(material)
+                {
+                    name = material.name + "_RuntimeVisible"
+                };
+                ApplyNiroRuntimeVisibilityMaterialOverrides(runtimeMaterial);
+                niroRuntimeVisibilityMaterials[material] = runtimeMaterial;
+            }
+
+            spriteRenderer.forceRenderingOff = false;
+            spriteRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            spriteRenderer.receiveShadows = true;
+            return runtimeMaterial;
+        }
+
+        private static void ApplyNiroRuntimeVisibilityMaterialOverrides(Material material)
+        {
+            material.enableInstancing = false;
+            material.renderQueue = (int)RenderQueue.Transparent;
+            material.SetShaderPassEnabled("DepthOnly", false);
+            material.SetShaderPassEnabled("SHADOWCASTER", false);
+            material.SetShaderPassEnabled("ShadowCaster", false);
+            if (material.HasProperty(ZWriteId))
+            {
+                material.SetFloat(ZWriteId, 0f);
+            }
+
+            if (material.HasProperty(ZTestId))
+            {
+                material.SetFloat(ZTestId, (float)CompareFunction.Always);
+            }
+
+            if (material.HasProperty(CharacterBillboardShadowFixId))
+            {
+                material.SetFloat(CharacterBillboardShadowFixId, 0f);
+            }
+
+            if (material.HasProperty(ReceiveWorldShadowsId))
+            {
+                material.SetFloat(ReceiveWorldShadowsId, 1f);
+            }
+
+            if (material.HasProperty(UseSpriteDirectionalNormalsId))
+            {
+                material.SetFloat(UseSpriteDirectionalNormalsId, 0f);
+            }
+
+            if (material.HasProperty(SpriteNormalStrengthId))
+            {
+                material.SetFloat(SpriteNormalStrengthId, 0f);
+            }
+
+            if (material.HasProperty(SpriteDirectionalLightStrengthId))
+            {
+                material.SetFloat(SpriteDirectionalLightStrengthId, 0f);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var material in niroRuntimeVisibilityMaterials.Values)
+            {
+                if (material != null)
+                {
+                    Destroy(material);
+                }
+            }
         }
 
         private Material ResolveMaterial(FastVsCharacterDirection direction, bool otherTime, bool isMoving)

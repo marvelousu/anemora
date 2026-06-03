@@ -1,0 +1,47 @@
+#pragma kernel CullGrass
+#pragma target 4.5
+
+struct BladeData
+{
+    float4 positionHeight;
+    float4 angleWidthPhaseVariant;
+};
+
+StructuredBuffer<BladeData> _BladeInput;
+AppendStructuredBuffer<BladeData> _VisibleBladeOutput;
+
+uint _BladeCount;
+float _GrassCullDistance;
+float3 _CameraPositionWS;
+float4x4 _AnemoraHd2dGrassLocalToWorld;
+float4 _GrassCullPlanes[6];
+
+[numthreads(128, 1, 1)]
+void CullGrass(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if (index >= _BladeCount)
+    {
+        return;
+    }
+
+    BladeData blade = _BladeInput[index];
+    float3 positionWS = mul(_AnemoraHd2dGrassLocalToWorld, float4(blade.positionHeight.xyz, 1.0)).xyz;
+    float cullRadius = max(blade.positionHeight.w, blade.angleWidthPhaseVariant.y) * 1.75;
+
+    bool visible = true;
+    [unroll]
+    for (int planeIndex = 0; planeIndex < 6; planeIndex++)
+    {
+        float4 plane = _GrassCullPlanes[planeIndex];
+        visible = visible && (dot(plane.xyz, positionWS) + plane.w >= -cullRadius);
+    }
+
+    float distanceToCamera = distance(positionWS, _CameraPositionWS);
+    visible = visible && (distanceToCamera <= _GrassCullDistance);
+
+    if (visible)
+    {
+        _VisibleBladeOutput.Append(blade);
+    }
+}

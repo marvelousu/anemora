@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abcb40b83906d624989aa7649ef6baf0, type: 3}
+  m_Name: FastVS_Niro_P1_DirectionalBakeSet
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsDirectionalSpriteBakeSet
+  bakeSetId: niro_p1_registered_4dir_bake_contract
+  facingMode: 4
+  frameWidth: 64
+  frameHeight: 96
+  frameCount: 4
+  cameraPitchDegrees: 30
+  turntableStepDegrees: 90
+  sourceModelPath: 'NEEDS-TOM: rigged 3D source model not locked'
+  bakeMethod: orthographic turntable RenderTexture bake contract
+  facingLabels:
+  - Front
+  - Back
+  - Left
+  - Right
+  diffuseSheets:
+  - {fileID: 2800000, guid: ab79a1e06ba7f2a40a1278169c394a97, type: 3}
+  - {fileID: 2800000, guid: f23309c40aad09946862909ed383657d, type: 3}
+  - {fileID: 2800000, guid: a8ed503042c36d04388b068bdfa95d55, type: 3}
+  - {fileID: 2800000, guid: be72016577bc5a94e8f321211edc8f69, type: 3}
+  normalSheets:
+  - {fileID: 2800000, guid: 0a2e0080b9991554a831cf9d5f94689b, type: 2}
+  - {fileID: 2800000, guid: 4ba383d3272f11449857c108f104446d, type: 2}
+  - {fileID: 2800000, guid: 024f4a845d39cd34ba98ab33816f1f26, type: 2}
+  - {fileID: 2800000, guid: c69c2e25c2a1ed84385e8cee26722161, type: 2}
+  registeredDiffuseSheet: {fileID: 2800000, guid: 5e5e8202c7a06164da74d3cbfa19356f, type: 2}
+  registeredNormalSheet: {fileID: 2800000, guid: fde8d3abef14cf7498d20ca693d70661, type: 2}
+  reviewNotes: P1-35 keeps authored Niro sheets registered as the review baseline
+    until Tom signs off on model source, camera pitch, light rig, and 4-vs-8 facing
+    count.

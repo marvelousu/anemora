@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d69e71f18cfa14b876a2b546a934b0, type: 3}
+  m_Name: FastVS_HD2D_P2_SnowWeatherProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dSnowWeatherProfile
+  needsTomApproval: 1
+  finalSnowWeatherApproved: 0
+  particleSystemFallback: 1
+  vfxGraphDeferredForTom: 1
+  defaultSnowAmount: 0
+  conservativeSnowAmount: 0.28
+  strongerSnowAmount: 0.54
+  snowColor: {r: 0.92, g: 0.965, b: 1, a: 1}
+  topNormalPower: 4.4
+  accumulationNoiseScale: 1.85
+  accumulationNoiseStrength: 0.18
+  overcastHorizon: {r: 0.76, g: 0.84, b: 0.92, a: 1}
+  overcastZenith: {r: 0.48, g: 0.58, b: 0.7, a: 1}
+  overcastFogColor: {r: 0.72, g: 0.82, b: 0.92, a: 1}
+  overcastFogDensity: 0.018
+  overcastAmbientIntensity: 1.08
+  windDirection: {x: 0.7828232, y: 0, z: 0.6222441}
+  windDriftSpeed: 0.48
+  fallSpeed: 0.58
+  turbulence: 0.34
+  flakeEmissionRate: 92
+  maxParticles: 360
+  flakeMinSize: 0.075
+  flakeMaxSize: 0.13
+  flakeLifetime: 5.2
+  recommendation: Keep this as conservative snow-weather data only. Tom should approve
+    final snow amount, sky brightness, flake density, drift speed, and whether to
+    replace the ParticleSystem fallback with VFX Graph turbulence.

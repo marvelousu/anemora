@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97066fc6d75492d4eb2db520fc5c0b28, type: 3}
+  m_Name: FastVS_HD2D_P1_ParallaxBackdropProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dParallaxBackdropProfile
+  layers:
+  - layerId: near_haze_hills
+    localPosition: {x: 20.8, y: 7.2, z: 73.8}
+    localScale: {x: 150, y: 14, z: 1}
+    parallaxFactor: 0.34
+    hazeWeight: 0.38
+    tint: {r: 0.58, g: 0.7, b: 0.68, a: 0.52}
+  - layerId: mid_hills
+    localPosition: {x: 20.8, y: 10.2, z: 93.8}
+    localScale: {x: 175, y: 23, z: 1}
+    parallaxFactor: 0.18
+    hazeWeight: 0.62
+    tint: {r: 0.43, g: 0.56, b: 0.68, a: 0.58}
+  - layerId: far_mountains
+    localPosition: {x: 20.8, y: 12.8, z: 121.8}
+    localScale: {x: 210, y: 31, z: 1}
+    parallaxFactor: 0.07
+    hazeWeight: 0.86
+    tint: {r: 0.34, g: 0.45, b: 0.64, a: 0.46}
+  farMountainsDistance: 106
+  midHillsDistance: 78
+  lowHazeDistance: 58
+  farMountainsParallaxFactor: 0.07
+  midHillsParallaxFactor: 0.18
+  lowHazeParallaxFactor: 0.34
+  farMountainsHorizonBlend: 0.86
+  midHillsHorizonBlend: 0.62
+  lowHazeHorizonBlend: 0.38
+  farMountainsTint: {r: 0.34, g: 0.45, b: 0.64, a: 0.46}
+  midHillsTint: {r: 0.43, g: 0.56, b: 0.68, a: 0.58}
+  lowHazeTint: {r: 0.58, g: 0.7, b: 0.68, a: 0.52}
+  ringWingAngleDegrees: 22
+  followCameraXz: 1

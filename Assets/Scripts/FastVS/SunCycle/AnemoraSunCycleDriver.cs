@@ -33,6 +33,17 @@ namespace Anemora.FastVS.SunCycle
     {
         private const int PresetCount = 4;
         private const float MinTransitionDuration = 0.05f;
+        private const float MinColorTemperatureKelvin = 1500f;
+        private const float MaxColorTemperatureKelvin = 20000f;
+        private const float KelvinKeyColorBlend = 0.35f;
+        private static readonly int Hd2dSunKeyColorId = Shader.PropertyToID("_AnemoraHd2dSunKeyColor");
+        private static readonly int Hd2dSunKeyDirectionId = Shader.PropertyToID("_AnemoraHd2dSunKeyDirection");
+        private static readonly int Hd2dSunKeyKelvinId = Shader.PropertyToID("_AnemoraHd2dSunKeyKelvin");
+        private static readonly int Hd2dSunKeyIntensityId = Shader.PropertyToID("_AnemoraHd2dSunKeyIntensity");
+        private static readonly int Hd2dReadabilityFloorId = Shader.PropertyToID("_AnemoraHd2dReadabilityFloor");
+        private static readonly int Hd2dReadabilityFloorTintId = Shader.PropertyToID("_AnemoraHd2dReadabilityFloorTint");
+        private static readonly int Hd2dReadabilityFloorStrengthId = Shader.PropertyToID("_AnemoraHd2dReadabilityFloorStrength");
+        private static readonly int Hd2dWindowEmissionStrengthId = Shader.PropertyToID("_AnemoraHd2dWindowEmissionStrength");
 
         [Header("References")]
         [SerializeField] private Light directionalSunLight;
@@ -354,16 +365,20 @@ namespace Anemora.FastVS.SunCycle
             currentValues = values;
             hasAppliedValues = true;
             var effectiveValues = ApplyActiveAreaSunPolicy(values);
+            EnableKelvinLightingProjectSettings();
 
             if (directionalSunLight != null)
             {
                 directionalSunLight.transform.rotation = effectiveValues.lightRotation;
+                directionalSunLight.useColorTemperature = effectiveValues.useColorTemperature;
+                directionalSunLight.colorTemperature = Mathf.Clamp(effectiveValues.colorTemperatureKelvin, MinColorTemperatureKelvin, MaxColorTemperatureKelvin);
                 directionalSunLight.color = effectiveValues.lightColor;
                 directionalSunLight.intensity = effectiveValues.lightIntensity;
                 directionalSunLight.cookie = effectiveValues.cookieTexture;
                 directionalSunLight.cookieSize2D = new Vector2(effectiveValues.cookieSize, effectiveValues.cookieSize);
             }
 
+            PublishSunKeyShaderGlobals(effectiveValues);
             ApplyVolumeValues(effectiveValues);
             ApplyOptionalSunEffects(effectiveValues);
 
@@ -392,6 +407,48 @@ namespace Anemora.FastVS.SunCycle
             {
                 skybox.SetFloat("_SunSizeConvergence", effectiveValues.skySunSizeConvergence);
             }
+        }
+
+        private static void PublishSunKeyShaderGlobals(SunRuntimeValues values)
+        {
+            var keyColor = EvaluateKeyLightColor(values.lightColor, values.useColorTemperature, values.colorTemperatureKelvin);
+            var direction = values.lightRotation * Vector3.forward;
+            Shader.SetGlobalColor(Hd2dSunKeyColorId, keyColor);
+            Shader.SetGlobalVector(Hd2dSunKeyDirectionId, new Vector4(direction.x, direction.y, direction.z, 0f));
+            Shader.SetGlobalFloat(Hd2dSunKeyKelvinId, values.useColorTemperature ? Mathf.Clamp(values.colorTemperatureKelvin, MinColorTemperatureKelvin, MaxColorTemperatureKelvin) : 0f);
+            Shader.SetGlobalFloat(Hd2dSunKeyIntensityId, values.lightIntensity);
+            Shader.SetGlobalFloat(Hd2dReadabilityFloorId, Mathf.Clamp(values.readabilityFloor, 0f, 0.12f));
+            Shader.SetGlobalColor(Hd2dReadabilityFloorTintId, values.readabilityFloorTint);
+            Shader.SetGlobalFloat(Hd2dReadabilityFloorStrengthId, Mathf.Clamp01(values.readabilityFloorStrength));
+            Shader.SetGlobalFloat(Hd2dWindowEmissionStrengthId, Mathf.Clamp(values.windowEmissionStrength, 0f, 1.5f));
+        }
+
+        private static void EnableKelvinLightingProjectSettings()
+        {
+            GraphicsSettings.lightsUseLinearIntensity = true;
+            var useColorTemperatureProperty = typeof(GraphicsSettings).GetProperty(
+                "lightsUseColorTemperature",
+                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            if (useColorTemperatureProperty != null && useColorTemperatureProperty.CanWrite)
+            {
+                useColorTemperatureProperty.SetValue(null, true);
+            }
+        }
+
+        private static Color EvaluateKeyLightColor(Color artTint, bool useColorTemperature, float colorTemperatureKelvin)
+        {
+            if (!useColorTemperature)
+            {
+                return artTint;
+            }
+
+            var kelvinTint = Mathf.CorrelatedColorTemperatureToRGB(Mathf.Clamp(colorTemperatureKelvin, MinColorTemperatureKelvin, MaxColorTemperatureKelvin));
+            var kelvinKeyColor = new Color(
+                artTint.r * kelvinTint.r,
+                artTint.g * kelvinTint.g,
+                artTint.b * kelvinTint.b,
+                artTint.a);
+            return Color.Lerp(artTint, kelvinKeyColor, KelvinKeyColorBlend);
         }
 
         private SunRuntimeValues ApplyActiveAreaSunPolicy(SunRuntimeValues values)
@@ -856,6 +913,8 @@ namespace Anemora.FastVS.SunCycle
             public Quaternion lightRotation;
             public Color lightColor;
             public float lightIntensity;
+            public bool useColorTemperature;
+            public float colorTemperatureKelvin;
             public Texture cookieTexture;
             public Color cookieTint;
             public float cookieSize;
@@ -866,6 +925,10 @@ namespace Anemora.FastVS.SunCycle
             public float fogDensity;
             public Color bloomTint;
             public Color ambientLightColor;
+            public float readabilityFloor;
+            public Color readabilityFloorTint;
+            public float readabilityFloorStrength;
+            public float windowEmissionStrength;
             public Texture2D colorLookup;
             public float lutContribution;
             public float volumeTemperature;
@@ -885,6 +948,8 @@ namespace Anemora.FastVS.SunCycle
                     lightRotation = Quaternion.Euler(data.directionEuler),
                     lightColor = data.lightColor,
                     lightIntensity = data.lightIntensity,
+                    useColorTemperature = data.useColorTemperature,
+                    colorTemperatureKelvin = data.colorTemperatureKelvin,
                     cookieTexture = data.cookieTexture,
                     cookieTint = data.cookieTint,
                     cookieSize = data.cookieSize,
@@ -895,6 +960,10 @@ namespace Anemora.FastVS.SunCycle
                     fogDensity = data.fogDensity,
                     bloomTint = data.bloomTint,
                     ambientLightColor = data.ambientLightColor,
+                    readabilityFloor = data.readabilityFloor,
+                    readabilityFloorTint = data.readabilityFloorTint,
+                    readabilityFloorStrength = data.readabilityFloorStrength,
+                    windowEmissionStrength = data.windowEmissionStrength,
                     colorLookup = data.colorLookup,
                     lutContribution = data.lutContribution,
                     volumeTemperature = data.volumeTemperature,
@@ -917,6 +986,8 @@ namespace Anemora.FastVS.SunCycle
                     lightRotation = Quaternion.Slerp(from.lightRotation, to.lightRotation, t),
                     lightColor = Color.Lerp(from.lightColor, to.lightColor, t),
                     lightIntensity = Mathf.Lerp(from.lightIntensity, to.lightIntensity, t),
+                    useColorTemperature = t >= 0.5f ? to.useColorTemperature : from.useColorTemperature,
+                    colorTemperatureKelvin = Mathf.Lerp(from.colorTemperatureKelvin, to.colorTemperatureKelvin, t),
                     cookieTexture = useTargetTexture ? to.cookieTexture : from.cookieTexture,
                     cookieTint = Color.Lerp(from.cookieTint, to.cookieTint, t),
                     cookieSize = Mathf.Lerp(from.cookieSize, to.cookieSize, t),
@@ -927,6 +998,10 @@ namespace Anemora.FastVS.SunCycle
                     fogDensity = Mathf.Lerp(from.fogDensity, to.fogDensity, t),
                     bloomTint = Color.Lerp(from.bloomTint, to.bloomTint, t),
                     ambientLightColor = Color.Lerp(from.ambientLightColor, to.ambientLightColor, t),
+                    readabilityFloor = Mathf.Lerp(from.readabilityFloor, to.readabilityFloor, t),
+                    readabilityFloorTint = Color.Lerp(from.readabilityFloorTint, to.readabilityFloorTint, t),
+                    readabilityFloorStrength = Mathf.Lerp(from.readabilityFloorStrength, to.readabilityFloorStrength, t),
+                    windowEmissionStrength = Mathf.Lerp(from.windowEmissionStrength, to.windowEmissionStrength, t),
                     colorLookup = useTargetTexture ? to.colorLookup : from.colorLookup,
                     lutContribution = Mathf.Lerp(from.lutContribution, to.lutContribution, t),
                     volumeTemperature = Mathf.Lerp(from.volumeTemperature, to.volumeTemperature, t),
@@ -1018,6 +1093,11 @@ namespace Anemora.FastVS.SunCycle
             Debug.Log($"HD2D Phase B-alpha Sun Cycle diagnostics written: {GetAbsoluteProjectPath(PhaseBCaptureOutputDirectory)}");
         }
 
+        public static void EnsureHd2dSunPresetAssetsForEditor()
+        {
+            EnsurePresetAssets();
+        }
+
         private static void EnsurePresetAssets()
         {
             EnsureFolder(PresetAssetDirectory);
@@ -1045,6 +1125,8 @@ namespace Anemora.FastVS.SunCycle
             asset.directionEuler = spec.DirectionEuler;
             asset.lightColor = spec.LightColor;
             asset.lightIntensity = spec.LightIntensity;
+            asset.useColorTemperature = spec.UseColorTemperature;
+            asset.colorTemperatureKelvin = spec.ColorTemperatureKelvin;
             asset.cookieTint = spec.CookieTint;
             asset.cookieSize = spec.CookieSize;
             asset.skyTint = spec.SkyTint;
@@ -1054,6 +1136,10 @@ namespace Anemora.FastVS.SunCycle
             asset.fogDensity = spec.FogDensity;
             asset.bloomTint = spec.BloomTint;
             asset.ambientLightColor = spec.AmbientLightColor;
+            asset.readabilityFloor = spec.ReadabilityFloor;
+            asset.readabilityFloorTint = spec.ReadabilityFloorTint;
+            asset.readabilityFloorStrength = spec.ReadabilityFloorStrength;
+            asset.windowEmissionStrength = spec.WindowEmissionStrength;
             asset.colorLookup = AssetDatabase.LoadAssetAtPath<Texture2D>(spec.LutPath);
             asset.lutContribution = spec.LutContribution;
             asset.volumeTemperature = spec.VolumeTemperature;
@@ -1153,6 +1239,8 @@ namespace Anemora.FastVS.SunCycle
             RequireVector3(asset.directionEuler, spec.DirectionEuler, 0.001f, issues, $"{spec.Preset} directionEuler");
             RequireColor(asset.lightColor, spec.LightColor, 0.001f, issues, $"{spec.Preset} lightColor");
             RequireFloat(asset.lightIntensity, spec.LightIntensity, 0.001f, issues, $"{spec.Preset} lightIntensity");
+            RequireBool(asset.useColorTemperature, spec.UseColorTemperature, issues, $"{spec.Preset} useColorTemperature");
+            RequireFloat(asset.colorTemperatureKelvin, spec.ColorTemperatureKelvin, 0.001f, issues, $"{spec.Preset} colorTemperatureKelvin");
             RequireColor(asset.cookieTint, spec.CookieTint, 0.001f, issues, $"{spec.Preset} cookieTint");
             RequireFloat(asset.cookieSize, spec.CookieSize, 0.001f, issues, $"{spec.Preset} cookieSize");
             RequireColor(asset.skyTint, spec.SkyTint, 0.001f, issues, $"{spec.Preset} skyTint");
@@ -1162,6 +1250,10 @@ namespace Anemora.FastVS.SunCycle
             RequireFloat(asset.fogDensity, spec.FogDensity, 0.001f, issues, $"{spec.Preset} fogDensity");
             RequireColor(asset.bloomTint, spec.BloomTint, 0.001f, issues, $"{spec.Preset} bloomTint");
             RequireColor(asset.ambientLightColor, spec.AmbientLightColor, 0.001f, issues, $"{spec.Preset} ambientLightColor");
+            RequireFloat(asset.readabilityFloor, spec.ReadabilityFloor, 0.001f, issues, $"{spec.Preset} readabilityFloor");
+            RequireColor(asset.readabilityFloorTint, spec.ReadabilityFloorTint, 0.001f, issues, $"{spec.Preset} readabilityFloorTint");
+            RequireFloat(asset.readabilityFloorStrength, spec.ReadabilityFloorStrength, 0.001f, issues, $"{spec.Preset} readabilityFloorStrength");
+            RequireFloat(asset.windowEmissionStrength, spec.WindowEmissionStrength, 0.001f, issues, $"{spec.Preset} windowEmissionStrength");
             RequireFloat(asset.lutContribution, spec.LutContribution, 0.001f, issues, $"{spec.Preset} lutContribution");
             RequireFloat(asset.volumeTemperature, spec.VolumeTemperature, 0.001f, issues, $"{spec.Preset} volumeTemperature");
             RequireFloat(asset.volumeTint, spec.VolumeTint, 0.001f, issues, $"{spec.Preset} volumeTint");
@@ -1203,14 +1295,14 @@ namespace Anemora.FastVS.SunCycle
             builder.AppendLine("- Static validate entry: `Anemora.FastVS.SunCycle.AnemoraSunCycleDriver.ValidateHd2dPhaseASunCycleRuntimeApiBatch`");
             builder.AppendLine("- Static capture entry: `Anemora.FastVS.SunCycle.AnemoraSunCycleDriver.CaptureHd2dPhaseASunCycleRuntimeApiCycle165ScreenshotsBatch`");
             builder.AppendLine();
-            builder.AppendLine("| Preset | Asset | Direction Euler | Intensity | LUT | LUT Contribution | White Balance |");
-            builder.AppendLine("|---|---|---:|---:|---|---:|---:|");
+            builder.AppendLine("| Preset | Asset | Direction Euler | Intensity | Kelvin | Readability Floor | Window Emission | LUT | LUT Contribution | White Balance |");
+            builder.AppendLine("|---|---|---:|---:|---:|---:|---:|---|---:|---:|");
 
             for (var i = 0; i < PresetAssetSpecs.Length; i++)
             {
                 var spec = PresetAssetSpecs[i];
                 builder.AppendLine(
-                    $"| {spec.Preset} | `{spec.AssetPath}` | {FormatVector3(spec.DirectionEuler)} | {spec.LightIntensity:0.###} | `{spec.LutPath}` | {spec.LutContribution:0.###} | temp {spec.VolumeTemperature:0.###}, tint {spec.VolumeTint:0.###} |");
+                    $"| {spec.Preset} | `{spec.AssetPath}` | {FormatVector3(spec.DirectionEuler)} | {spec.LightIntensity:0.###} | {(spec.UseColorTemperature ? spec.ColorTemperatureKelvin.ToString("0") : "off")} | {spec.ReadabilityFloor:0.###} / {spec.ReadabilityFloorStrength:0.###} | {spec.WindowEmissionStrength:0.###} | `{spec.LutPath}` | {spec.LutContribution:0.###} | temp {spec.VolumeTemperature:0.###}, tint {spec.VolumeTint:0.###} |");
             }
 
             return builder.ToString();
@@ -1248,7 +1340,8 @@ namespace Anemora.FastVS.SunCycle
                     var lightBand = Mathf.SmoothStep(0.18f, 0.98f, u);
                     var skyFogBlend = Mathf.SmoothStep(0.35f, 0.92f, v);
                     var skyFog = Color.Lerp(spec.FogColor, spec.SkyTint, skyFogBlend);
-                    var color = Color.Lerp(skyFog, spec.LightColor, lightBand * 0.42f);
+                    var keyColor = EvaluateKeyLightColor(spec.LightColor, spec.UseColorTemperature, spec.ColorTemperatureKelvin);
+                    var color = Color.Lerp(skyFog, keyColor, lightBand * 0.42f);
 
                     var sunDir = Quaternion.Euler(spec.DirectionEuler) * Vector3.forward;
                     var diagonal = Mathf.Abs(((u - 0.5f) * sunDir.x) + ((v - 0.5f) * Mathf.Max(0.2f, Mathf.Abs(sunDir.y))));
@@ -1348,6 +1441,8 @@ namespace Anemora.FastVS.SunCycle
                 Vector3 directionEuler,
                 Color lightColor,
                 float lightIntensity,
+                bool useColorTemperature,
+                float colorTemperatureKelvin,
                 Color cookieTint,
                 float cookieSize,
                 Color skyTint,
@@ -1357,6 +1452,10 @@ namespace Anemora.FastVS.SunCycle
                 float fogDensity,
                 Color bloomTint,
                 Color ambientLightColor,
+                float readabilityFloor,
+                Color readabilityFloorTint,
+                float readabilityFloorStrength,
+                float windowEmissionStrength,
                 string lutPath,
                 float lutContribution,
                 float volumeTemperature,
@@ -1373,6 +1472,8 @@ namespace Anemora.FastVS.SunCycle
                 DirectionEuler = directionEuler;
                 LightColor = lightColor;
                 LightIntensity = lightIntensity;
+                UseColorTemperature = useColorTemperature;
+                ColorTemperatureKelvin = colorTemperatureKelvin;
                 CookieTint = cookieTint;
                 CookieSize = cookieSize;
                 SkyTint = skyTint;
@@ -1382,6 +1483,10 @@ namespace Anemora.FastVS.SunCycle
                 FogDensity = fogDensity;
                 BloomTint = bloomTint;
                 AmbientLightColor = ambientLightColor;
+                ReadabilityFloor = readabilityFloor;
+                ReadabilityFloorTint = readabilityFloorTint;
+                ReadabilityFloorStrength = readabilityFloorStrength;
+                WindowEmissionStrength = windowEmissionStrength;
                 LutPath = lutPath;
                 LutContribution = lutContribution;
                 VolumeTemperature = volumeTemperature;
@@ -1399,6 +1504,8 @@ namespace Anemora.FastVS.SunCycle
             public Vector3 DirectionEuler { get; }
             public Color LightColor { get; }
             public float LightIntensity { get; }
+            public bool UseColorTemperature { get; }
+            public float ColorTemperatureKelvin { get; }
             public Color CookieTint { get; }
             public float CookieSize { get; }
             public Color SkyTint { get; }
@@ -1408,6 +1515,10 @@ namespace Anemora.FastVS.SunCycle
             public float FogDensity { get; }
             public Color BloomTint { get; }
             public Color AmbientLightColor { get; }
+            public float ReadabilityFloor { get; }
+            public Color ReadabilityFloorTint { get; }
+            public float ReadabilityFloorStrength { get; }
+            public float WindowEmissionStrength { get; }
             public string LutPath { get; }
             public float LutContribution { get; }
             public float VolumeTemperature { get; }
@@ -1429,6 +1540,8 @@ namespace Anemora.FastVS.SunCycle
                 new Vector3(28f, -128f, 0f),
                 new Color(1.00f, 0.84f, 0.70f, 1f),
                 1.5f,
+                true,
+                3400f,
                 new Color(0.99f, 0.91f, 0.78f, 1f),
                 10.5f,
                 new Color(0.84f, 0.71f, 0.54f, 1f),
@@ -1438,6 +1551,10 @@ namespace Anemora.FastVS.SunCycle
                 0.011f,
                 new Color(0.99f, 0.91f, 0.78f, 1f),
                 new Color(0.54f, 0.49f, 0.41f, 1f),
+                0.050f,
+                new Color(0.20f, 0.22f, 0.28f, 1f),
+                0.26f,
+                0.25f,
                 "Assets/Art/LUT/LUT_Morning_Warm.png",
                 0.58f,
                 12f,
@@ -1454,6 +1571,8 @@ namespace Anemora.FastVS.SunCycle
                 new Vector3(50f, -78f, 0f),
                 new Color(0.86f, 0.84f, 0.78f, 1f),
                 0.90f,
+                true,
+                6200f,
                 new Color(0.84f, 0.82f, 0.78f, 1f),
                 10.2f,
                 new Color(0.56f, 0.70f, 0.86f, 1f),
@@ -1463,6 +1582,10 @@ namespace Anemora.FastVS.SunCycle
                 0.001f,
                 new Color(0.76f, 0.74f, 0.68f, 1f),
                 new Color(0.26f, 0.29f, 0.32f, 1f),
+                0.050f,
+                new Color(0.22f, 0.23f, 0.26f, 1f),
+                0.20f,
+                0.05f,
                 "Assets/Art/LUT/LUT_Daylight.png",
                 0.32f,
                 -2f,
@@ -1479,6 +1602,8 @@ namespace Anemora.FastVS.SunCycle
                 new Vector3(24f, -28f, 0f),
                 new Color(1.00f, 0.62f, 0.42f, 1f),
                 1.55f,
+                true,
+                3000f,
                 new Color(1.00f, 0.71f, 0.48f, 1f),
                 11.5f,
                 new Color(0.91f, 0.56f, 0.43f, 1f),
@@ -1488,6 +1613,10 @@ namespace Anemora.FastVS.SunCycle
                 0.017f,
                 new Color(1.00f, 0.71f, 0.48f, 1f),
                 new Color(0.49f, 0.38f, 0.32f, 1f),
+                0.055f,
+                new Color(0.18f, 0.22f, 0.30f, 1f),
+                0.36f,
+                0.85f,
                 "Assets/Art/LUT/LUT_GoldenHour.png",
                 0.66f,
                 16f,
@@ -1504,6 +1633,8 @@ namespace Anemora.FastVS.SunCycle
                 new Vector3(-32f, 12f, 0f),
                 new Color(0.42f, 0.55f, 0.72f, 1f),
                 0.40f,
+                true,
+                8000f,
                 new Color(0.55f, 0.65f, 0.85f, 1f),
                 13.0f,
                 new Color(0.10f, 0.12f, 0.22f, 1f),
@@ -1513,6 +1644,10 @@ namespace Anemora.FastVS.SunCycle
                 0.022f,
                 new Color(0.78f, 0.82f, 1.00f, 1f),
                 new Color(0.18f, 0.22f, 0.28f, 1f),
+                0.065f,
+                new Color(0.16f, 0.22f, 0.34f, 1f),
+                0.55f,
+                1.15f,
                 "Assets/Art/LUT/LUT_Night_CoolBlue.png",
                 0.7f,
                 -12f,
@@ -1536,14 +1671,14 @@ namespace Anemora.FastVS.SunCycle
             builder.AppendLine("- Static validate entry: `Anemora.FastVS.SunCycle.AnemoraSunCycleDriver.ValidateHd2dPhaseBAlphaSunCycleRuntimeBatch`");
             builder.AppendLine("- Static capture entry: `Anemora.FastVS.SunCycle.AnemoraSunCycleDriver.CaptureHd2dPhaseBAlphaSunCycleRuntimeCycle174ScreenshotsBatch`");
             builder.AppendLine();
-            builder.AppendLine("| Preset | Asset | Direction Euler | Intensity | Volumetric | Screen Flare | Sun Flare | LUT | LUT Contribution | White Balance |");
-            builder.AppendLine("|---|---|---:|---:|---|---:|---:|---|---:|---:|");
+            builder.AppendLine("| Preset | Asset | Direction Euler | Intensity | Kelvin | Volumetric | Screen Flare | Sun Flare | LUT | LUT Contribution | White Balance |");
+            builder.AppendLine("|---|---|---:|---:|---:|---|---:|---:|---|---:|---:|");
 
             for (var i = 0; i < PresetAssetSpecs.Length; i++)
             {
                 var spec = PresetAssetSpecs[i];
                 builder.AppendLine(
-                    $"| {spec.Preset} | `{spec.AssetPath}` | {FormatVector3(spec.DirectionEuler)} | {spec.LightIntensity:0.###} | {(spec.VolumetricFogEnabled ? "enabled" : "disabled")}, aniso {spec.VolumetricAnisotropy:0.###}, mfp {spec.VolumetricMeanFreePath:0.###}, base {spec.VolumetricBaseHeight:0.###}, max {spec.VolumetricMaximumHeight:0.###} | {spec.ScreenSpaceLensFlareIntensity:0.###} | {spec.SunLensFlareIntensity:0.###} | `{spec.LutPath}` | {spec.LutContribution:0.###} | temp {spec.VolumeTemperature:0.###}, tint {spec.VolumeTint:0.###} |");
+                    $"| {spec.Preset} | `{spec.AssetPath}` | {FormatVector3(spec.DirectionEuler)} | {spec.LightIntensity:0.###} | {(spec.UseColorTemperature ? spec.ColorTemperatureKelvin.ToString("0") : "off")} | {(spec.VolumetricFogEnabled ? "enabled" : "disabled")}, aniso {spec.VolumetricAnisotropy:0.###}, mfp {spec.VolumetricMeanFreePath:0.###}, base {spec.VolumetricBaseHeight:0.###}, max {spec.VolumetricMaximumHeight:0.###} | {spec.ScreenSpaceLensFlareIntensity:0.###} | {spec.SunLensFlareIntensity:0.###} | `{spec.LutPath}` | {spec.LutContribution:0.###} | temp {spec.VolumeTemperature:0.###}, tint {spec.VolumeTint:0.###} |");
             }
 
             return builder.ToString();

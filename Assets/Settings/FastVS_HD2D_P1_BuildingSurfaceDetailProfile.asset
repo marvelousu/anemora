@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e15cb4774f113d4bbf96121a2f79ef7, type: 3}
+  m_Name: FastVS_HD2D_P1_BuildingSurfaceDetailProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dBuildingSurfaceDetailProfile
+  roofTileRowSpacing: 0.28
+  roofTileRowThickness: 0.024
+  roofMicroShadowStrength: 0.42
+  timberBeamThickness: 0.075
+  wallBandingStrength: 0.36
+  generatedNormalStrength: 0.35
+  edgeAccentStrength: 0.48
+  cavityShadeStrength: 0.34
+  roofTextureScale: {x: 5.5, y: 3.2}
+  wallTextureScale: {x: 4, y: 2.8}
+  generatedNormalMapsReady: 1
+  shaderHasNormalMapSlot: 0
+  shaderHasParallaxSlot: 0
+  conservativeReviewMode: 1
+  requiresTomArtApproval: 1
+  roofAlbedoTexturePath: Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_p1_building_roof_tile_edge.asset
+  roofNormalTexturePath: Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_p1_building_roof_tile_detail_normal.asset
+  roofHeightTexturePath: Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_p1_building_roof_tile_detail_height.asset
+  wallAlbedoTexturePath: Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_p1_building_wall_timber_frame.asset
+  wallNormalTexturePath: Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_p1_building_wall_band_detail_normal.asset
+  wallHeightTexturePath: Assets/Art/Textures/FastVS/HouseSlice/FastVS_House_hd2d_p1_building_wall_band_detail_height.asset
+  sourceTextureNote: Procedural CC0-safe review baseline; replace with approved CC0
+    roof/wall sources. SurfaceRampLit has no final normal/parallax slot in this branch,
+    so generated normal/height textures are staged as data while geometry rows and
+    edge accents carry review-visible detail.

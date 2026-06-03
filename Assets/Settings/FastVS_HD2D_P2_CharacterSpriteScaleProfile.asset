@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b300a767ce69f4bb0f19c767026c60, type: 3}
+  m_Name: FastVS_HD2D_P2_CharacterSpriteScaleProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dCharacterSpriteScaleProfile
+  worldUnitMeters: 1
+  framePixelWidth: 64
+  framePixelHeight: 96
+  loopFrameCount: 4
+  standardAdultCardWorldHeight: 1.18
+  smallAdultMinimumWorldHeight: 0.96
+  smallAdultMaximumWorldHeight: 1.12
+  childCardWorldHeight: 0.78
+  transparentFootPixels: 2
+  heightTolerance: 0.035
+  widthTolerance: 0.03
+  visualFootPivotTolerance: 0.018
+  texelsPerWorldUnitTolerance: 0.75
+  doorwayReferenceWorldHeight: 1.8
+  minimumReviewLineupCount: 4
+  fixedReviewCameraFieldOfView: 30
+  pointFilteringRequired: 1
+  mipMapsDisabledRequired: 1
+  reviewContract: World unit is one meter. Character cards use bottom-center visual-foot
+    pivot after the transparent 2px foot pad, 64x96 authored frames, Point filtering,
+    no mips, and fixed review camera distance so texel density remains comparable.

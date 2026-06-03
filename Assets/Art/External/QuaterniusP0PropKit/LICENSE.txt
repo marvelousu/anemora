@@ -1,0 +1,17 @@
+Quaternius P0 Prop Kit Subset
+
+Selected source assets copied from:
+- Quaternius Fantasy Props MegaKit, Standard version
+  https://quaternius.com/packs/fantasypropsmegakit.html
+  https://opengameart.org/content/fantasy-props-megakit
+- Quaternius Medieval Village MegaKit, Standard version
+  https://quaternius.com/packs/medievalvillagemegakit.html
+  https://opengameart.org/content/medieval-village-megakit
+
+License: Creative Commons Zero v1.0 Universal (CC0).
+Author: Quaternius.
+
+Only a small FBX subset was imported for the unattended P0-8 review pass:
+barrel, crate, farm crate, market stall/cart, bench, chest, and wooden/metal fence pieces.
+Imported source PBR/materials are not used by the scene. The Unity prefabs created by
+AnemoraFastVsHouseSliceSetup assign the local FastVS toon/ramp surface material instead.

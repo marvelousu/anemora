@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7f8cb1cd5dedf440b6493a2fbcc1121, type: 3}
+  m_Name: FastVS_HD2D_P2_AerialRampTintProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dAerialRampTintProfile
+  strength: 0.16
+  distanceStartOffset: 1
+  distanceEndOffset: 5
+  currentTint: {r: 0.54, g: 0.64, b: 0.74, a: 1}
+  pastTint: {r: 0.74, g: 0.56, b: 0.42, a: 1}
+  enableGroundAndBuildingMaterials: 1
+  needsTomApproval: 1
+  finalAerialTintApproved: 0
+  reviewNotes: Conservative P2-56 shader-side aerial tint data prep. The atmospheric
+    driver publishes Volume farColor/distance globals; Tom should tune strength and
+    distance offsets before final approval.

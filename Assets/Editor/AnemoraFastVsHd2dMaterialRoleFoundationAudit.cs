@@ -12,6 +12,7 @@ namespace Anemora.EditorTools
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
         private const string SpriteCardRampLitShaderName = "Anemora/FastVS/SpriteCardRampLit";
         private const string SurfaceRampLitShaderName = "Anemora/FastVS/SurfaceRampLit";
+        private const string DepthGradientWaterShaderName = "Anemora/FastVS/DepthGradientWater";
         private const float SpriteCardAlphaCutoff = 0.15f;
         private const int SpriteCardCutoutRenderQueue = 2450;
 
@@ -83,7 +84,67 @@ namespace Anemora.EditorTools
                 "sign_paint"
             })
             {
-                ValidateMaterialAsset(issues, materialId, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SurfaceLit, requireOpaque: true);
+                if (string.Equals(materialId, "water", StringComparison.Ordinal))
+                {
+                    ValidateMaterialAsset(
+                        issues,
+                        materialId,
+                        AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SurfaceLit,
+                        requireTransparent: true,
+                        minRenderQueue: 2990,
+                        maxRenderQueue: 3010);
+                    ValidateDepthGradientWaterMaterial(issues, materialId);
+                }
+                else
+                {
+                    ValidateMaterialAsset(issues, materialId, AnemoraFastVsHouseSliceSetup.FastVsHd2dMaterialRole.SurfaceLit, requireOpaque: true);
+                }
+            }
+        }
+
+        private static void ValidateDepthGradientWaterMaterial(List<string> issues, string materialId)
+        {
+            var path = $"{MaterialDirectory}/FastVS_House_{materialId}.mat";
+            var material = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (material == null)
+            {
+                return;
+            }
+
+            if (material.shader == null || !string.Equals(material.shader.name, DepthGradientWaterShaderName, StringComparison.Ordinal))
+            {
+                issues.Add($"Material {path} must use shader {DepthGradientWaterShaderName}.");
+            }
+
+            foreach (var propertyName in new[]
+            {
+                "_DepthGradientStrength",
+                "_DeepDistance",
+                "_ObjectDeepDistance",
+                "_ShallowColor",
+                "_DeepColor",
+                "_FoamStrength",
+                "_FoamDistance",
+                "_FoamColor",
+                "_FoamCutoff",
+                "_FoamNoiseScale",
+                "_FoamNoiseStrength",
+                "_FoamScrollSpeed",
+                "_FoamInnerOffset",
+                "_FoamInnerWidth",
+                "_FoamTimeOffset",
+                "_WaterSpecularStrength",
+                "_WaterSpecularPower",
+                "_WaterSpecularCutoff",
+                "_WaterSpecularNoiseScale",
+                "_WaterSpecularScrollSpeed",
+                "_WaterSpecularColor"
+            })
+            {
+                if (!material.HasProperty(propertyName))
+                {
+                    issues.Add($"Material {path} must expose P1 water control {propertyName}.");
+                }
             }
         }
 
@@ -270,9 +331,9 @@ namespace Anemora.EditorTools
                 issues.Add($"Material {path} must keep ShadowCaster enabled for cutout depth sorting.");
             }
 
-            if (material.GetShaderPassEnabled("DepthOnly"))
+            if (!material.GetShaderPassEnabled("DepthOnly"))
             {
-                issues.Add($"Material {path} must not enable a missing DepthOnly pass.");
+                issues.Add($"Material {path} must keep DepthOnly enabled for P1-49 depth priming.");
             }
         }
 

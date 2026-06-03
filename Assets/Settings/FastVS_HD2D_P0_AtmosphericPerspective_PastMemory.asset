@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: FastVS_HD2D_P0_AtmosphericPerspective_PastMemory
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.VolumeProfile
+  components:
+  - {fileID: 3206804050532401257}
+--- !u!114 &3206804050532401257
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dcd4c4f14d563f4caf438a46c89628d, type: 3}
+  m_Name: FastVsHd2dAtmosphericPerspectiveVolume
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dAtmosphericPerspectiveVolume
+  active: 1
+  strength:
+    m_OverrideState: 1
+    m_Value: 0.16
+  nearColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.94, g: 0.74, b: 0.52, a: 1}
+  farColor:
+    m_OverrideState: 1
+    m_Value: {r: 0.74, g: 0.56, b: 0.42, a: 1}
+  colorGradient:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: 54d3b5a5b6c3a1d41b5f6d4493910a96, type: 2}
+    dimension: 1
+  distanceStart:
+    m_OverrideState: 1
+    m_Value: 3.2
+  distanceEnd:
+    m_OverrideState: 1
+    m_Value: 11
+  heightBand:
+    m_OverrideState: 1
+    m_Value: {x: -0.5, y: 3.4}
+  heightStrength:
+    m_OverrideState: 1
+    m_Value: 0.38

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e48b5dd7426c21458eb0965d87f516c, type: 3}
+  m_Name: FastVS_HD2D_P1_AmbientDustPollenProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dAmbientDustPollenProfile
+  maxParticles: 144
+  duration: 12
+  lifetime: 10.5
+  emissionRate: 13.5
+  startSpeedMin: 0.012
+  startSpeedMax: 0.042
+  startSizeMin: 0.024
+  startSizeMax: 0.062
+  cameraLocalOffset: {x: 0, y: 0.18, z: 6}
+  boxSize: {x: 15.5, y: 4.2, z: 18}
+  worldWindVelocity: {x: 0.018, y: 0.014, z: -0.01}
+  randomDirectionAmount: 0.16
+  noiseStrength: 0.034
+  noiseFrequency: 0.18
+  defaultTintWarmth: 0.38
+  coolShadeTint: {r: 0.76, g: 0.84, b: 0.9, a: 0.082}
+  warmPollenTint: {r: 1, g: 0.82, b: 0.54, a: 0.104}
+  reviewCaptureEmissionMultiplier: 2.15
+  cameraAttached: 1
+  simulationSpaceWorld: 1
+  cpuShuriken: 1
+  independentOfSunShafts: 1
+  conservativeReviewMode: 1
+  requiresTomArtApproval: 1
+  sourceNote: Procedural CPU Shuriken camera-attached ambient dust/pollen review
+    layer; keep alpha below snow/noise thresholds and request Tom to tune final density,
+    tint, and grade.

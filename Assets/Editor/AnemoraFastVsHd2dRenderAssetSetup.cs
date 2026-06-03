@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using Anemora.FastVS;
 using Anemora.TimeManagement.Portal;
 using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -41,6 +44,10 @@ namespace Anemora.EditorTools
         private const float Stage7OutlineRadius = 1.25f;
         private const float Stage7OutlineDepthWeight = 0.35f;
         private const float Stage7OutlineColorWeight = 0.65f;
+        private const string P0AtmosphericPerspectiveFeatureName = "FastVS HD2D P0 Atmospheric Perspective";
+        private const string P0AtmosphericPerspectiveShaderName = "Anemora/FastVS/AtmosphericPerspectiveFullscreen";
+        private const string P0AtmosphericPerspectiveMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_p0_atmospheric_perspective.mat";
+        private const float P0AtmosphericPerspectiveLocalIntensity = 1f;
         private const string ButoRenderFeatureName = "Buto Volumetric Fog";
         private const string FronkonTiltShiftFeatureName = "Fronkon Artistic Tilt Shift";
 
@@ -65,7 +72,7 @@ namespace Anemora.EditorTools
 
             Debug.Log(
                 "Shading Foundation v1 applied: " +
-                "shadowDistance=35, mainShadowmap=4096, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
+                "shadowDistance=32, mainShadowmap=4096, cascades=0.08/0.24/0.55, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
                 "volumeProfile=reference Bloom/ColorAdjustments/Vignette/DepthOfField with ACES tonemapping.");
         }
 
@@ -76,8 +83,15 @@ namespace Anemora.EditorTools
 
         private static void ApplyPipelineSettings(UniversalRenderPipelineAsset pipelineAsset)
         {
+            pipelineAsset.useSRPBatcher = true;
+            pipelineAsset.gpuResidentDrawerMode = GPUResidentDrawerMode.InstancedDrawing;
+            TrySetBatchRendererGroupShaderStrippingMode(BatchRendererGroupStrippingMode.KeepAll);
+
             var serialized = new SerializedObject(pipelineAsset);
-            TrySetFloat(serialized, "m_ShadowDistance", 35f, "shadowDistance");
+            TrySetBool(serialized, "m_UseSRPBatcher", true, "useSRPBatcher");
+            TrySetBool(serialized, "m_SupportsDynamicBatching", false, "supportsDynamicBatching");
+            TrySetEnumByPreferredNames(serialized, "m_GPUResidentDrawerMode", new[] { "InstancedDrawing" }, "gpuResidentDrawerMode");
+            TrySetFloat(serialized, "m_ShadowDistance", 32f, "shadowDistance");
             TrySetBool(serialized, "m_MainLightShadowsSupported", true, "mainLightShadowsSupported");
             TrySetInt(serialized, "m_MainLightShadowmapResolution", 4096, "mainLightShadowmapResolution");
             TrySetInt(serialized, "m_AdditionalLightsRenderingMode", 1, "additionalLightsRenderingMode");
@@ -88,9 +102,10 @@ namespace Anemora.EditorTools
             TrySetBool(serialized, "m_SoftShadowsSupported", true, "softShadowsSupported");
             TrySetInt(serialized, "m_SoftShadowQuality", 3, "softShadowQuality");
             TrySetInt(serialized, "m_ShadowCascadeCount", 4, "shadowCascadeCount");
-            TrySetVector3(serialized, "m_Cascade4Split", new Vector3(0.10f, 0.30f, 0.60f), "cascade4Split");
-            TrySetFloat(serialized, "m_ShadowDepthBias", 1f, "shadowDepthBias");
-            TrySetFloat(serialized, "m_ShadowNormalBias", 1.5f, "shadowNormalBias");
+            TrySetVector3(serialized, "m_Cascade4Split", new Vector3(0.08f, 0.24f, 0.55f), "cascade4Split");
+            TrySetFloat(serialized, "m_CascadeBorder", 0.15f, "cascadeBorder");
+            TrySetFloat(serialized, "m_ShadowDepthBias", 0.8f, "shadowDepthBias");
+            TrySetFloat(serialized, "m_ShadowNormalBias", 1f, "shadowNormalBias");
             TrySetEnumByPreferredNames(serialized, "m_LightProbeSystem", new[] { "ProbeVolumes" }, "lightProbeSystem");
             TrySetEnumByPreferredNames(serialized, "m_ProbeVolumeMemoryBudget", new[] { "MemoryBudgetMedium" }, "probeVolumeMemoryBudget");
             TrySetEnumByPreferredNames(serialized, "m_ProbeVolumeBlendingMemoryBudget", new[] { "MemoryBudgetMedium" }, "probeVolumeBlendingMemoryBudget");
@@ -102,8 +117,22 @@ namespace Anemora.EditorTools
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        private static void TrySetBatchRendererGroupShaderStrippingMode(BatchRendererGroupStrippingMode mode)
+        {
+            var property = typeof(EditorGraphicsSettings).GetProperty(
+                "batchRendererGroupShaderStrippingMode",
+                BindingFlags.Public | BindingFlags.Static);
+            if (property != null && property.CanWrite)
+            {
+                property.SetValue(null, mode);
+            }
+        }
+
         private static void ApplyRendererSettings(UniversalRendererData rendererData)
         {
+            rendererData.renderingMode = RenderingMode.ForwardPlus;
+            rendererData.depthPrimingMode = DepthPrimingMode.Auto;
+
             var portalFeature = FindFeature(rendererData, typeof(PortalStencilFeature)) as PortalStencilFeature;
             if (portalFeature == null)
             {
@@ -144,6 +173,25 @@ namespace Anemora.EditorTools
             butoFeature.Create();
             EditorUtility.SetDirty(butoFeature);
 #endif
+
+            var atmosphericPerspectiveFeature = FindNamedFullScreenFeature(rendererData, P0AtmosphericPerspectiveFeatureName);
+            if (atmosphericPerspectiveFeature == null)
+            {
+                atmosphericPerspectiveFeature = ScriptableObject.CreateInstance<FullScreenPassRendererFeature>();
+                atmosphericPerspectiveFeature.name = P0AtmosphericPerspectiveFeatureName;
+                AssetDatabase.AddObjectToAsset(atmosphericPerspectiveFeature, rendererData);
+            }
+
+            atmosphericPerspectiveFeature.name = P0AtmosphericPerspectiveFeatureName;
+            atmosphericPerspectiveFeature.SetActive(true);
+            atmosphericPerspectiveFeature.injectionPoint = FullScreenPassRendererFeature.InjectionPoint.BeforeRenderingPostProcessing;
+            atmosphericPerspectiveFeature.fetchColorBuffer = true;
+            atmosphericPerspectiveFeature.requirements = ScriptableRenderPassInput.Color | ScriptableRenderPassInput.Depth;
+            atmosphericPerspectiveFeature.passMaterial = EnsureP0AtmosphericPerspectiveMaterial();
+            atmosphericPerspectiveFeature.passIndex = 0;
+            atmosphericPerspectiveFeature.bindDepthStencilAttachment = false;
+            atmosphericPerspectiveFeature.Create();
+            EditorUtility.SetDirty(atmosphericPerspectiveFeature);
 
             var tiltShiftFeature = FindNamedFullScreenFeature(rendererData, Stage7TiltShiftFeatureName);
             if (tiltShiftFeature == null)
@@ -208,6 +256,7 @@ namespace Anemora.EditorTools
 #if BUTO
             var butoAdded = false;
 #endif
+            var atmosphericPerspectiveAdded = false;
             var tiltShiftAdded = false;
             var outlineAdded = false;
 #if FRONKON_TILTSHIFT
@@ -256,6 +305,17 @@ namespace Anemora.EditorTools
                     continue;
                 }
 #endif
+
+                if (feature == atmosphericPerspectiveFeature || feature is FullScreenPassRendererFeature && feature.name == P0AtmosphericPerspectiveFeatureName)
+                {
+                    if (!atmosphericPerspectiveAdded)
+                    {
+                        orderedFeatures.Add(atmosphericPerspectiveFeature);
+                        atmosphericPerspectiveAdded = true;
+                    }
+
+                    continue;
+                }
 
                 if (feature == tiltShiftFeature || feature is FullScreenPassRendererFeature && feature.name == Stage7TiltShiftFeatureName)
                 {
@@ -324,6 +384,19 @@ namespace Anemora.EditorTools
             }
 #endif
 
+            if (!atmosphericPerspectiveAdded)
+            {
+                var insertIndex = Mathf.Min(orderedFeatures.Count, portalAdded && ssaoAdded ? 2 : orderedFeatures.Count);
+#if BUTO
+                if (butoAdded)
+                {
+                    insertIndex = Mathf.Min(orderedFeatures.Count, orderedFeatures.IndexOf(butoFeature) + 1);
+                }
+#endif
+                orderedFeatures.Insert(insertIndex, atmosphericPerspectiveFeature);
+                atmosphericPerspectiveAdded = true;
+            }
+
             if (!tiltShiftAdded)
             {
                 var insertIndex = Mathf.Min(orderedFeatures.Count, portalAdded && ssaoAdded ? 2 : orderedFeatures.Count);
@@ -333,6 +406,10 @@ namespace Anemora.EditorTools
                     insertIndex = Mathf.Min(orderedFeatures.Count, orderedFeatures.IndexOf(butoFeature) + 1);
                 }
 #endif
+                if (atmosphericPerspectiveAdded)
+                {
+                    insertIndex = Mathf.Min(orderedFeatures.Count, orderedFeatures.IndexOf(atmosphericPerspectiveFeature) + 1);
+                }
                 orderedFeatures.Insert(insertIndex, tiltShiftFeature);
                 tiltShiftAdded = true;
             }
@@ -371,6 +448,35 @@ namespace Anemora.EditorTools
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(rendererData);
+        }
+
+        private static Material EnsureP0AtmosphericPerspectiveMaterial()
+        {
+            EnsureFolder(MaterialDirectory);
+
+            var shader = Shader.Find(P0AtmosphericPerspectiveShaderName);
+            if (shader == null)
+            {
+                throw new InvalidOperationException($"P0 atmospheric perspective shader not found: {P0AtmosphericPerspectiveShaderName}");
+            }
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>(P0AtmosphericPerspectiveMaterialPath);
+            if (material == null)
+            {
+                material = new Material(shader)
+                {
+                    name = "FastVS_House_hd2d_p0_atmospheric_perspective"
+                };
+                AssetDatabase.CreateAsset(material, P0AtmosphericPerspectiveMaterialPath);
+            }
+            else if (material.shader != shader)
+            {
+                material.shader = shader;
+            }
+
+            material.SetFloat("_LocalIntensity", P0AtmosphericPerspectiveLocalIntensity);
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static Material EnsureStage7TiltShiftMaterial()
@@ -464,13 +570,27 @@ namespace Anemora.EditorTools
             var bloom = EnsureVolumeComponent<Bloom>(volumeProfile);
             bloom.active = true;
             bloom.threshold.overrideState = true;
-            bloom.threshold.value = 0.85f;
+            bloom.threshold.value = 1.05f;
             bloom.intensity.overrideState = true;
-            bloom.intensity.value = 0.80f;
+            bloom.intensity.value = 0.40f;
             bloom.scatter.overrideState = true;
-            bloom.scatter.value = 0.72f;
+            bloom.scatter.value = 0.74f;
+            bloom.clamp.overrideState = true;
+            bloom.clamp.value = 16f;
+            bloom.tint.overrideState = true;
+            bloom.tint.value = new Color(1.00f, 0.92f, 0.80f, 1f);
             bloom.highQualityFiltering.overrideState = true;
             bloom.highQualityFiltering.value = true;
+            bloom.filter.overrideState = true;
+            bloom.filter.value = BloomFilterMode.Gaussian;
+            bloom.downscale.overrideState = true;
+            bloom.downscale.value = BloomDownscaleMode.Half;
+            bloom.maxIterations.overrideState = true;
+            bloom.maxIterations.value = 6;
+            bloom.dirtTexture.overrideState = true;
+            bloom.dirtTexture.value = null;
+            bloom.dirtIntensity.overrideState = true;
+            bloom.dirtIntensity.value = 0f;
 
             var colorAdjustments = EnsureVolumeComponent<ColorAdjustments>(volumeProfile);
             colorAdjustments.active = true;
@@ -502,6 +622,7 @@ namespace Anemora.EditorTools
 
             ApplyStage5ColorLookup(volumeProfile);
             ApplyOptionalColorGrade(volumeProfile);
+            ApplyP0AtmosphericPerspectiveVolume(volumeProfile);
 
             var depthOfField = EnsureVolumeComponent<DepthOfField>(volumeProfile);
             depthOfField.active = true;
@@ -540,6 +661,27 @@ namespace Anemora.EditorTools
             EditorUtility.SetDirty(tonemapping);
             EditorUtility.SetDirty(whiteBalance);
             EditorUtility.SetDirty(depthOfField);
+        }
+
+        private static void ApplyP0AtmosphericPerspectiveVolume(VolumeProfile volumeProfile)
+        {
+            var atmospheric = EnsureVolumeComponent<FastVsHd2dAtmosphericPerspectiveVolume>(volumeProfile);
+            atmospheric.strength.overrideState = true;
+            atmospheric.strength.value = 0.12f;
+            atmospheric.nearColor.overrideState = true;
+            atmospheric.nearColor.value = new Color(0.88f, 0.78f, 0.62f, 1f);
+            atmospheric.farColor.overrideState = true;
+            atmospheric.farColor.value = new Color(0.54f, 0.64f, 0.74f, 1f);
+            atmospheric.distanceStart.overrideState = true;
+            atmospheric.distanceStart.value = 3.5f;
+            atmospheric.distanceEnd.overrideState = true;
+            atmospheric.distanceEnd.value = 12f;
+            atmospheric.heightBand.overrideState = true;
+            atmospheric.heightBand.value = new Vector2(-0.4f, 3.1f);
+            atmospheric.heightStrength.overrideState = true;
+            atmospheric.heightStrength.value = 0.32f;
+
+            EditorUtility.SetDirty(atmospheric);
         }
 
 #if BUTO

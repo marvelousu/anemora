@@ -11,6 +11,8 @@ namespace Anemora.FastVS.SunCycle
         public Vector3 directionEuler;
         [ColorUsage(false, true)] public Color lightColor = Color.white;
         [Range(0f, 4f)] public float lightIntensity = 1f;
+        public bool useColorTemperature = true;
+        [Range(1500f, 20000f)] public float colorTemperatureKelvin = 5600f;
 
         [Header("Cookie")]
         public Texture2D cookieTexture;
@@ -38,6 +40,14 @@ namespace Anemora.FastVS.SunCycle
 
         [Header("Ambient")]
         [ColorUsage(false, false)] public Color ambientLightColor = Color.gray;
+
+        [Header("Readability Floor")]
+        [Range(0f, 0.12f)] public float readabilityFloor = 0.05f;
+        [ColorUsage(false, false)] public Color readabilityFloorTint = new Color(0.20f, 0.22f, 0.28f, 1f);
+        [Range(0f, 1f)] public float readabilityFloorStrength = 0.3f;
+
+        [Header("Window Emission")]
+        [Range(0f, 1.5f)] public float windowEmissionStrength = 0.25f;
 
         [Header("Screen Space Lens Flare")]
         [Range(0f, 4f)] public float screenSpaceLensFlareIntensity = 0.4f;

@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da9ed1ec01a47bc4fa2f77505dbae7a6, type: 3}
+  m_Name: FastVS_HD2D_P1_ModularBuildingKitProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dModularBuildingKitProfile
+  gridUnit: 1
+  sourceKitName: Quaternius Medieval Village MegaKit
+  sourceKitRoot: Assets/Art/External/QuaterniusP0PropKit/MedievalVillageMegaKit
+  prefabVariantsEnabled: 1
+  sourceBuildingFbxPresent: 0
+  modules:
+  - moduleId: wall_interior
+    kind: wall
+    gridSize: {x: 1, y: 1, z: 0.16}
+    interiorIncluded: 1
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_wall_interior.prefab
+  - moduleId: corner_post
+    kind: corner
+    gridSize: {x: 0.18, y: 1, z: 0.18}
+    interiorIncluded: 0
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_corner_post.prefab
+  - moduleId: floor_slab
+    kind: floor
+    gridSize: {x: 1, y: 0.08, z: 1}
+    interiorIncluded: 1
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_floor_slab.prefab
+  - moduleId: roof_gable
+    kind: roof
+    gridSize: {x: 1, y: 0.18, z: 1}
+    interiorIncluded: 0
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_roof_gable.prefab
+  - moduleId: door_single
+    kind: door
+    gridSize: {x: 0.62, y: 0.88, z: 0.08}
+    interiorIncluded: 1
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_door_single.prefab
+  - moduleId: window_small
+    kind: window
+    gridSize: {x: 0.42, y: 0.34, z: 0.06}
+    interiorIncluded: 1
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_window_small.prefab
+  - moduleId: stair_step
+    kind: stair
+    gridSize: {x: 0.58, y: 0.1, z: 0.22}
+    interiorIncluded: 0
+    prefabPath: Assets/Prefabs/Zone1/Hd2dAutonomousP1ModularBuildingKit/Modules/FastVS_HD2D_P1_Module_stair_step.prefab
+  recipes:
+  - buildingId: narrow_shop
+    footprint: {x: 3, y: 2}
+    floors: 2
+    roofStyle: gable
+    doorCount: 1
+    windowCount: 4
+    facadeVariant: plaster_a
+    interiorWalls: 1
+  - buildingId: corner_tower
+    footprint: {x: 2, y: 2}
+    floors: 3
+    roofStyle: steep_gable
+    doorCount: 1
+    windowCount: 5
+    facadeVariant: stone_trim
+    interiorWalls: 1
+  - buildingId: wide_inn
+    footprint: {x: 4, y: 2}
+    floors: 2
+    roofStyle: cross_gable
+    doorCount: 1
+    windowCount: 6
+    facadeVariant: warm_plaster
+    interiorWalls: 1
+  - buildingId: workshop_shed
+    footprint: {x: 3, y: 3}
+    floors: 1
+    roofStyle: shed
+    doorCount: 1
+    windowCount: 3
+    facadeVariant: timber_low
+    interiorWalls: 1
+  - buildingId: stair_loft
+    footprint: {x: 2, y: 3}
+    floors: 2
+    roofStyle: flat_parapet
+    doorCount: 1
+    windowCount: 4
+    facadeVariant: loft_stair
+    interiorWalls: 1

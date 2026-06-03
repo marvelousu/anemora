@@ -17,6 +17,8 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
         _PaperLowerShadeStrength("Paper Lower Shade Strength", Range(0, 0.25)) = 0.08
         _WorldLightStrength("World Light Strength", Range(0, 0.25)) = 0.08
         _WorldShadowReceiveStrength("World Shadow Receive Strength", Range(0, 0.20)) = 0.05
+        _VegetationControlWeight("Vegetation Control Weight", Range(0, 1)) = 0
+        _WeatherDriftWeight("Weather Drift Weight", Range(0, 1)) = 0
     }
 
     SubShader
@@ -46,34 +48,47 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ _LIGHT_COOKIES
+            #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
-            float4 _BaseMap_ST;
             float4 _BaseMap_TexelSize;
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            float4 _MainTex_ST;
 
             TEXTURE2D(_EmissionMap);
             SAMPLER(sampler_EmissionMap);
 
+            CBUFFER_START(UnityPerMaterial)
+            float4 _BaseMap_ST;
+            float4 _MainTex_ST;
             float4 _BaseColor;
             float4 _EmissionColor;
-            half _EmissionIntensity;
-            half _RampStrength;
+            float _EmissionIntensity;
+            float _RampStrength;
             float4 _TopLight;
             float4 _SideShade;
             float4 _FloorShade;
-            half _PaperEdgeStrength;
-            half _PaperRimStrength;
-            half _PaperLowerShadeStrength;
-            half _WorldLightStrength;
-            half _WorldShadowReceiveStrength;
+            float _PaperEdgeStrength;
+            float _PaperRimStrength;
+            float _PaperLowerShadeStrength;
+            float _WorldLightStrength;
+            float _WorldShadowReceiveStrength;
+            float _VegetationControlWeight;
+            float _WeatherDriftWeight;
+            CBUFFER_END
+            #define FASTVS_SHARED_VEGETATION_WIND_CONTROL_SKIP_CONTROL_WEIGHT_DECLS
+            #include "Assets/Art/Shaders/FastVS/FastVS_SharedVegetationWindControl.hlsl"
+            float4 _AnemoraHd2dSunKeyColor;
+            float _AnemoraHd2dSunKeyIntensity;
+            float _AnemoraHd2dReadabilityFloor;
+            float4 _AnemoraHd2dReadabilityFloorTint;
+            float _AnemoraHd2dReadabilityFloorStrength;
+            float _AnemoraHd2dWindowEmissionStrength;
 
             struct Attributes
             {
@@ -92,6 +107,7 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             {
                 Varyings output;
                 output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                output.positionWS = FastVsApplySharedWindControl(output.positionWS, input.uv, 0.075, _VegetationControlWeight, _WeatherDriftWeight);
                 output.positionHCS = TransformWorldToHClip(output.positionWS);
                 output.uv = input.uv;
                 return output;
@@ -162,6 +178,7 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
                 half worldLightStrength = saturate((half)_WorldLightStrength);
                 half worldShadowReceiveStrength = saturate((half)_WorldShadowReceiveStrength);
                 half3 mainLightColor = half3(mainLight.color.r, mainLight.color.g, mainLight.color.b);
+                mainLightColor = lerp(mainLightColor, half3(_AnemoraHd2dSunKeyColor.rgb), step(0.001h, (half)_AnemoraHd2dSunKeyIntensity));
                 half lightCookieLuma = dot(mainLightColor, half3(0.2126h, 0.7152h, 0.0722h));
                 half lightCookieResponse = smoothstep(0.36h, 0.88h, lightCookieLuma);
                 half3 mainTint = lerp(neutral, saturate(mainLightColor + half3(0.06h, 0.03h, -0.04h)), worldLightStrength);
@@ -169,9 +186,19 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
                 shadowGrade *= lerp(0.92h, 1.06h, lightCookieResponse * worldLightStrength);
 
                 half3 rgb = baseSample.rgb * grade * mainTint * shadowGrade;
+                rgb = FastVsApplySharedVegetationTint(rgb, _VegetationControlWeight);
                 half3 emissionSample = SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, uv).rgb;
                 half3 emissionColor = half3(_EmissionColor.r, _EmissionColor.g, _EmissionColor.b);
-                rgb += emissionSample * emissionColor * (half)_EmissionIntensity * baseSample.a;
+                half windowEmissionStrength = max((half)_AnemoraHd2dWindowEmissionStrength, 0.0h);
+                rgb += emissionSample * emissionColor * (half)_EmissionIntensity * windowEmissionStrength * baseSample.a;
+                half readabilityFloor = saturate((half)_AnemoraHd2dReadabilityFloor);
+                half readabilityStrength = saturate((half)_AnemoraHd2dReadabilityFloorStrength);
+                half rgbLuma = dot(rgb, half3(0.2126h, 0.7152h, 0.0722h));
+                half floorMask = saturate((readabilityFloor - rgbLuma) / max(readabilityFloor, 0.001h));
+                half3 readabilityTint = max(half3(_AnemoraHd2dReadabilityFloorTint.rgb), half3(0.001h, 0.001h, 0.001h));
+                half readabilityTintLuma = max(dot(readabilityTint, half3(0.2126h, 0.7152h, 0.0722h)), 0.001h);
+                half3 floorColor = readabilityTint * (readabilityFloor / readabilityTintLuma);
+                rgb = lerp(rgb, max(rgb, floorColor), floorMask * readabilityStrength);
                 return half4(rgb, baseSample.a);
             }
             ENDHLSL
@@ -191,14 +218,33 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
+            CBUFFER_START(UnityPerMaterial)
             float4 _BaseMap_ST;
+            float4 _MainTex_ST;
             float4 _BaseColor;
+            float4 _EmissionColor;
+            float _EmissionIntensity;
+            float _RampStrength;
+            float4 _TopLight;
+            float4 _SideShade;
+            float4 _FloorShade;
+            float _PaperEdgeStrength;
+            float _PaperRimStrength;
+            float _PaperLowerShadeStrength;
+            float _WorldLightStrength;
+            float _WorldShadowReceiveStrength;
+            float _VegetationControlWeight;
+            float _WeatherDriftWeight;
+            CBUFFER_END
+            #define FASTVS_SHARED_VEGETATION_WIND_CONTROL_SKIP_CONTROL_WEIGHT_DECLS
+            #include "Assets/Art/Shaders/FastVS/FastVS_SharedVegetationWindControl.hlsl"
             float3 _LightDirection;
             float3 _LightPosition;
 
@@ -219,6 +265,7 @@ Shader "Anemora/FastVS/SpriteCardRampUnlit"
             {
                 ShadowVaryings output;
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                positionWS = FastVsApplySharedWindControl(positionWS, input.uv, 0.075, _VegetationControlWeight, _WeatherDriftWeight);
                 float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
 
                 #if defined(_CASTING_PUNCTUAL_LIGHT_SHADOW)

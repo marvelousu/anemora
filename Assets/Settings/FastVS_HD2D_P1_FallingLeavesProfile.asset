@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98a5f909b3abc64b94b14463293fbc0, type: 3}
+  m_Name: FastVS_HD2D_P1_FallingLeavesProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dFallingLeavesProfile
+  totalMaxParticles: 15
+  foregroundMaxParticles: 5
+  midDepthMaxParticles: 10
+  duration: 9.5
+  lifetime: 7.8
+  emissionRate: 1.75
+  reviewCaptureEmissionMultiplier: 1.65
+  cameraLocalOffset: {x: 0, y: 0, z: 0}
+  foregroundLocalCenter: {x: 0, y: 1.12, z: 2.75}
+  midDepthLocalCenter: {x: 0, y: 1.62, z: 6.85}
+  foregroundBoxSize: {x: 7.4, y: 1.7, z: 1.4}
+  midDepthBoxSize: {x: 10.8, y: 2.4, z: 3}
+  localFallVelocity: {x: 0.1, y: -0.46, z: -0.03}
+  gravityModifier: 0.018
+  noiseStrength: 0.28
+  noiseFrequency: 0.22
+  randomDirectionAmount: 0.2
+  rotationOverLifetimeRadians: 2.8
+  rotationBySpeedRadians: 1.45
+  greenLeafTint: {r: 0.84, g: 1, b: 0.46, a: 0.88}
+  pinkPetalTint: {r: 1, g: 0.56, b: 0.82, a: 0.86}
+  greenLeafBiomeId: green_leaf
+  pinkPetalBiomeId: pink_petal
+  greenLeafMaterial: {fileID: 2100000, guid: ed6a53237e649b34984e463a8731f819, type: 2}
+  pinkPetalMaterial: {fileID: 2100000, guid: 1dfb3b3d4b9cf7a4d9fe8f8c07f92212, type: 2}
+  greenLeafTexture: {fileID: 2800000, guid: 87e5438434ea14d45b0c79f1b6a117e0, type: 2}
+  pinkPetalTexture: {fileID: 2800000, guid: 65013b08dd63c064f8e3b6bbdd04c91d, type: 2}
+  defaultBiome: 0
+  cameraAttached: 1
+  biomeSwappable: 1
+  foregroundBokehLayer: 1
+  cpuShuriken: 1
+  simulationSpaceWorld: 1
+  conservativeReviewMode: 1
+  requiresTomArtApproval: 1
+  sourceNote: Procedural CC0-safe leaf/petal sprites and CPU Shuriken camera overlay;
+    Tom should tune final sprite art, density, wind, bokeh placement, and biome mapping.
+    Pass2 raises readability only while keeping the 15-particle cap.

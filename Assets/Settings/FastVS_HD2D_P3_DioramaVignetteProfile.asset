@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94ce7730e3c817542abd4bb21897c3f1, type: 3}
+  m_Name: FastVS_HD2D_P3_DioramaVignetteProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dDioramaVignetteProfile
+  needsTomApproval: 1
+  finalDioramaVignetteApproved: 0
+  conservativeDataPrep: 1
+  sharedVolumeCurrentLockedByLegacyValidation: 1
+  runtimeDefaultUnchanged: 1
+  roundedCandidatePreferred: 1
+  currentSharedIntensity: 0.3
+  currentSharedSmoothness: 0.4
+  currentSharedRounded: 0
+  conservativeIntensity: 0.3
+  conservativeSmoothness: 0.58
+  conservativeRounded: 1
+  strongerIntensity: 0.38
+  strongerSmoothness: 0.64
+  vignetteColor: {r: 0.035, g: 0.045, b: 0.055, a: 1}
+  recommendation: Keep the shared runtime Vignette unchanged until Tom approves a
+    softer rounded candidate. Prefer intensity 0.30 / smoothness 0.58 / rounded on
+    if the A/B keeps corner gameplay readable.

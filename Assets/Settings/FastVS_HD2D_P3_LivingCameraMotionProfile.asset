@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b3732e83c437547a5215b496b497df, type: 3}
+  m_Name: FastVS_HD2D_P3_LivingCameraMotionProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dLivingCameraMotionProfile
+  needsTomApproval: 1
+  finalLivingCameraMotionApproved: 0
+  conservativeDataPrep: 1
+  directRuntimeCameraAuthorityDisabled: 1
+  activeOnAwake: 0
+  accessibilityTogglePrepared: 1
+  accessibilityMotionDisabledByDefault: 1
+  cinemachineNoiseConfigured: 1
+  positionComposerDampingConfigured: 1
+  targetPixelDrift: 1.2
+  positionAmplitudeMeters: {x: 0.01, y: 0.006, z: 0.003}
+  frequencyHz: 0.18
+  rotationAmplitudeDegrees: 0
+  noiseAmplitudeGain: 1
+  noiseFrequencyGain: 0.18
+  followDampingSeconds: {x: 0.45, y: 0.58, z: 0.72}
+  lookAheadTime: 0.16
+  lookAheadSmoothing: 7.5
+  stopEaseSeconds: 0.68
+  fieldOfView: 38
+  cameraDistance: 4.55
+  basePositionOffset: {x: 0, y: 2.75, z: -4.55}
+  baseLookOffset: {x: 0, y: 0.72, z: 0.45}
+  inactivePriority: 5
+  plannedLivePriority: 155
+  recommendation: Keep this as conservative living-camera data only. Tom should tune
+    final drift amplitude, damping, look-ahead, and accessibility defaults before
+    this controls the live gameplay camera.

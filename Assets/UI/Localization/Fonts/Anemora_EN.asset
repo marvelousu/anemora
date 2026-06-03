@@ -38,26 +38,26 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 0f261887b8cc7ae46ac3c9a6ccd064d7, type: 2}
   m_SourceFontFileGUID: 52bf6ba545e2a424ba0492562c311594
   m_CreationSettings:
-    sourceFontFileName: 
-    sourceFontFileGUID: 
+    sourceFontFileName: PressStart2P-Regular.ttf
+    sourceFontFileGUID: 52bf6ba545e2a424ba0492562c311594
     faceIndex: 0
     pointSizeSamplingMode: 0
-    pointSize: 0
-    padding: 0
+    pointSize: 16
+    padding: 4
     paddingMode: 0
     packingMode: 0
-    atlasWidth: 0
-    atlasHeight: 0
+    atlasWidth: 2048
+    atlasHeight: 2048
     characterSetSelectionMode: 0
     characterSequence: 
     referencedFontAssetGUID: 
     referencedTextAssetGUID: 
     fontStyle: 0
     fontStyleModifier: 0
-    renderMode: 0
+    renderMode: 4122
     includeFontFeatures: 0
-  m_SourceFontFile: {fileID: 0}
-  m_SourceFontFilePath: 
+  m_SourceFontFile: {fileID: 12800000, guid: 52bf6ba545e2a424ba0492562c311594, type: 3}
+  m_SourceFontFilePath: Assets/UI/Localization/Fonts/ThirdParty/PressStart2P-Regular.ttf
   m_AtlasPopulationMode: 0
   InternalDynamicOS: 0
   m_GlyphTable:

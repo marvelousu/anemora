@@ -15,7 +15,7 @@ Material:
   m_InvalidKeywords:
   - _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap:
@@ -71,6 +71,22 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SplatAMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatBMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatGMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SplatRMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -86,6 +102,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AerialTintStrength: 0.16
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -105,8 +122,14 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _GroundMacroHueStrength: 0.045
+    - _GroundMacroVariationScale: 0.16
+    - _GroundMacroVariationStrength: 0.16
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _PainterlyGroundAOStrength: 0.18
+    - _PainterlyGroundRadius: 12
+    - _PainterlyGroundValueStrength: 0.12
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -115,20 +138,43 @@ Material:
     - _Smoothness: 0.16
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 0
+    - _SpecularPower: 34
+    - _SpecularStep: 0.62
+    - _SplatATriplanarBlendEnd: 0.82
+    - _SplatATriplanarBlendStart: 0.58
+    - _SplatATriplanarScale: 1.2
+    - _SplatHeightStrength: 0.42
+    - _SplatTransitionSharpness: 0.62
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _SurfaceRampStrength: 0.36
+    - _UseAerialRampTint: 0
+    - _UseGroundMacroVariation: 0
+    - _UseHeightAwareSplat: 0
+    - _UsePainterlyGroundValue: 0
+    - _UseSplatATriplanar: 0
+    - _UseVertexSplat: 0
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
+    - _AerialTint: {r: 0.54, g: 0.64, b: 0.74, a: 1}
+    - _AerialTintDistance: {r: 4.5, g: 17, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FloorShade: {r: 0.62, g: 0.56, b: 0.48, a: 1}
+    - _PainterlyGroundCenter: {r: 20.8, g: 15.8, b: 0, a: 0}
+    - _PainterlyGroundCoolTint: {r: 0.86, g: 0.91, b: 1, a: 1}
+    - _PainterlyGroundWarmTint: {r: 1.04, g: 1.02, b: 0.94, a: 1}
     - _SideShade: {r: 0.7, g: 0.64, b: 0.54, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _SpecularTint: {r: 1, g: 0.86, b: 0.62, a: 1}
+    - _SplatAColor: {r: 0.62, g: 0.6, b: 0.55, a: 1}
+    - _SplatBColor: {r: 0.72, g: 0.62, b: 0.44, a: 1}
+    - _SplatGColor: {r: 0.6, g: 0.45, b: 0.3, a: 1}
+    - _SplatRColor: {r: 0.52, g: 0.64, b: 0.36, a: 1}
     - _TopLight: {r: 1.18, g: 1.06, b: 0.84, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

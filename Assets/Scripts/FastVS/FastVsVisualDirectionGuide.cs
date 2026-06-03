@@ -1,4 +1,5 @@
 using Anemora.TimeManagement;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Anemora.FastVS
@@ -12,6 +13,10 @@ namespace Anemora.FastVS
 
         private const float CameraModeFov = 38f;
         private static readonly FollowCameraProfile SharedFollowCameraProfile = new FollowCameraProfile(
+            new Vector3(0f, 3.82f, -5.15f),
+            new Vector3(0f, 0.72f, 0.45f),
+            32f);
+        private static readonly FollowCameraProfile ParkedRuntimeFollowCameraProfile = new FollowCameraProfile(
             new Vector3(0f, 2.75f, -4.55f),
             new Vector3(0f, 0.72f, 0.45f),
             38f);
@@ -20,6 +25,11 @@ namespace Anemora.FastVS
         [SerializeField] private Transform player;
         [SerializeField] private Camera reviewCamera;
         [SerializeField] private FastVsHouseAreaVisibility areaVisibility;
+        [SerializeField] private FastVsHd2dCameraRigProfile cameraRigProfile;
+        [SerializeField] private bool useAuthoredCinemachineRig = false; // PARKED: guide drives the review camera directly until the authored rig has one camera authority.
+        [SerializeField] private Transform authoredCinemachineCamera;
+        [SerializeField] private FastVsHd2dAreaCinemachineBlendRig areaCameraBlendRig;
+        [SerializeField] private FastVsHd2dDioramaCameraBoundsClamp dioramaCameraBoundsClamp;
         [SerializeField] private float moveSpeed = 2.35f;
         [SerializeField] private float cameraFollowSharpness = 8.5f;
         [SerializeField] private bool showGuide = true;
@@ -53,6 +63,11 @@ namespace Anemora.FastVS
             ApplyActiveTimeIsolation();
             HandleMovement();
             HandleCameraInput();
+        }
+
+        private void LateUpdate()
+        {
+            ResolveReferences();
             UpdateCamera();
         }
 
@@ -93,8 +108,10 @@ namespace Anemora.FastVS
             }
 
             var motion = input * (moveSpeed * Time.deltaTime);
-            motion += Physics.gravity * Time.deltaTime;
-            playerController.Move(motion);
+            if (motion.sqrMagnitude > 0f)
+            {
+                playerController.Move(motion);
+            }
         }
 
         private void HandleCameraInput()
@@ -127,11 +144,15 @@ namespace Anemora.FastVS
             Vector3 targetPosition;
             Vector3 lookAt;
             var targetFieldOfView = reviewCamera.fieldOfView;
+            var usesSignaturePerspectiveRig = true;
+            var shouldSnapCamera = ShouldSnapCamera();
+            var activeArea = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
 
             if (TryResolveChapter1EndSideViewCamera(out targetPosition, out lookAt))
             {
                 reviewCamera.orthographic = true;
                 reviewCamera.orthographicSize = Chapter1EndSideViewOrthographicSize;
+                usesSignaturePerspectiveRig = false;
             }
             else if (cameraMode == 1 && portalController != null && ResolveActivePortalRoot() != null)
             {
@@ -152,18 +173,48 @@ namespace Anemora.FastVS
             else
             {
                 reviewCamera.orthographic = false;
-                var anchor = ResolveActiveSideCameraAnchor();
-                var followProfile = GetFollowCameraProfile(areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior);
+                var rawAnchor = ResolveActiveSideCameraAnchor();
+                var anchor = rawAnchor;
+                var activeRoot = ResolveActiveSpaceRoot();
+                var followProfile = GetActiveFollowCameraProfile(activeArea);
+                if (useAuthoredCinemachineRig &&
+                    areaCameraBlendRig != null &&
+                    areaCameraBlendRig.UpdateRigForReview(rawAnchor, activeRoot, activeArea, Time.deltaTime, shouldSnapCamera) &&
+                    areaCameraBlendRig.TryGetBlendedFollowProfileForReview(out var blendedPositionOffset, out var blendedLookOffset, out var blendedFieldOfView))
+                {
+                    followProfile = new FollowCameraProfile(blendedPositionOffset, blendedLookOffset, blendedFieldOfView);
+                }
+
+                if (useAuthoredCinemachineRig &&
+                    dioramaCameraBoundsClamp != null &&
+                    dioramaCameraBoundsClamp.TryClampAnchorForReview(
+                        rawAnchor,
+                        activeRoot,
+                        activeArea,
+                        followProfile.PositionOffset,
+                        followProfile.LookOffset,
+                        followProfile.FieldOfView,
+                        reviewCamera.aspect,
+                        out var clampedAnchor))
+                {
+                    anchor = clampedAnchor;
+                    if (areaCameraBlendRig != null)
+                    {
+                        areaCameraBlendRig.UpdateRigForReview(anchor, activeRoot, activeArea, 0f, false);
+                    }
+                }
+
                 targetPosition = anchor + followProfile.PositionOffset;
                 lookAt = anchor + followProfile.LookOffset;
                 targetFieldOfView = followProfile.FieldOfView;
             }
 
             var targetRotation = Quaternion.LookRotation(lookAt - targetPosition, Vector3.up);
-            if (ShouldSnapCamera())
+            if (shouldSnapCamera)
             {
                 reviewCamera.transform.SetPositionAndRotation(targetPosition, targetRotation);
                 reviewCamera.fieldOfView = targetFieldOfView;
+                ApplyAuthoredRigState(usesSignaturePerspectiveRig, targetPosition, targetRotation);
                 CaptureCameraState();
                 return;
             }
@@ -171,6 +222,7 @@ namespace Anemora.FastVS
             reviewCamera.transform.position = Vector3.Lerp(reviewCamera.transform.position, targetPosition, Time.deltaTime * cameraFollowSharpness);
             reviewCamera.transform.rotation = Quaternion.Slerp(reviewCamera.transform.rotation, targetRotation, Time.deltaTime * cameraFollowSharpness);
             reviewCamera.fieldOfView = Mathf.Lerp(reviewCamera.fieldOfView, targetFieldOfView, Time.deltaTime * cameraFollowSharpness);
+            ApplyAuthoredRigState(usesSignaturePerspectiveRig, reviewCamera.transform.position, reviewCamera.transform.rotation);
             CaptureCameraState();
         }
 
@@ -185,6 +237,8 @@ namespace Anemora.FastVS
         }
 
         public bool MovementFrozenForReview => movementFrozen;
+        public bool UsesAreaCinemachineBlendRigForReview => areaCameraBlendRig != null && areaCameraBlendRig.IsReadyForReview;
+        public bool UsesDioramaCameraBoundsForReview => dioramaCameraBoundsClamp != null && dioramaCameraBoundsClamp.IsReadyForReview;
 
         public void SetMovementFrozen(bool frozen)
         {
@@ -248,6 +302,24 @@ namespace Anemora.FastVS
             return SharedFollowCameraProfile;
         }
 
+        private FollowCameraProfile GetActiveFollowCameraProfile(FastVsHouseArea area)
+        {
+            if (!useAuthoredCinemachineRig)
+            {
+                return ParkedRuntimeFollowCameraProfile;
+            }
+
+            if (cameraRigProfile == null)
+            {
+                return GetFollowCameraProfile(area);
+            }
+
+            return new FollowCameraProfile(
+                cameraRigProfile.PositionOffset,
+                cameraRigProfile.LookOffset,
+                cameraRigProfile.FieldOfView);
+        }
+
         public static (Vector3 PositionOffset, Vector3 LookOffset, float FieldOfView) GetFollowCameraProfileForReview(FastVsHouseArea area)
         {
             var profile = GetFollowCameraProfile(area);
@@ -264,6 +336,16 @@ namespace Anemora.FastVS
             return portalController.PlayerInOtherTime
                 ? portalController.OtherTimePortalRootForReview
                 : portalController.CurrentPortalRootForReview;
+        }
+
+        private void ApplyAuthoredRigState(bool active, Vector3 position, Quaternion rotation)
+        {
+            if (!useAuthoredCinemachineRig || !active || authoredCinemachineCamera == null)
+            {
+                return;
+            }
+
+            authoredCinemachineCamera.SetPositionAndRotation(position, rotation);
         }
 
         private void ResolveReferences()
@@ -288,9 +370,28 @@ namespace Anemora.FastVS
                 reviewCamera = Camera.main;
             }
 
+            if (!useAuthoredCinemachineRig && reviewCamera != null)
+            {
+                var brain = reviewCamera.GetComponent<CinemachineBrain>();
+                if (brain != null && brain.enabled)
+                {
+                    brain.enabled = false;
+                }
+            }
+
             if (areaVisibility == null)
             {
                 areaVisibility = FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            }
+
+            if (areaCameraBlendRig == null)
+            {
+                areaCameraBlendRig = FindFirstObjectByType<FastVsHd2dAreaCinemachineBlendRig>();
+            }
+
+            if (dioramaCameraBoundsClamp == null)
+            {
+                dioramaCameraBoundsClamp = FindFirstObjectByType<FastVsHd2dDioramaCameraBoundsClamp>();
             }
         }
 
@@ -368,6 +469,11 @@ namespace Anemora.FastVS
             }
 
             var area = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
+            if (useAuthoredCinemachineRig && areaCameraBlendRig != null && areaCameraBlendRig.IsReadyForReview)
+            {
+                return !hasCameraState;
+            }
+
             return !hasCameraState || area != lastArea;
         }
 

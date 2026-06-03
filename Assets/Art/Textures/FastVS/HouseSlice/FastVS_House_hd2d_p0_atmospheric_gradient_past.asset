@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!28 &2800000
+Texture2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FastVS_House_hd2d_p0_atmospheric_gradient_past
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 4
+  m_Width: 64
+  m_Height: 1
+  m_CompleteImageSize: 256
+  m_MipsStripped: 0
+  m_TextureFormat: 4
+  m_MipCount: 1
+  m_IsReadable: 1
+  m_IsPreProcessed: 0
+  m_IgnoreMipmapLimit: 1
+  m_MipmapLimitGroupName: 
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
+  m_VTOnly: 0
+  m_AlphaIsTransparency: 0
+  m_ImageCount: 1
+  m_TextureDimension: 2
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_LightmapFormat: 0
+  m_ColorSpace: 0
+  m_PlatformBlob: 
+  image data: 256
+  _typelessdata: f0bd85fff0bd85ffefbd85ffefbc85ffefbc85ffeebc85ffeebc85ffedbb85ffedbb84ffecba84ffebba84ffebb984ffeab884ffe9b883ffe8b783ffe7b683ffe6b682ffe5b582ffe4b482ffe3b381ffe2b281ffe1b180ffe0b080ffdeaf7fffddae7fffdcad7effdbac7effd9ab7dffd8aa7dffd7a97cffd6a87cffd4a77bffd3a67bffd2a57affd1a37affcfa279ffcea179ffcda078ffcb9f78ffca9e77ffc99d77ffc89c76ffc79b76ffc69a75ffc49975ffc39974ffc29874ffc19773ffc09673ffbf9573ffbf9572ffbe9472ffbd9372ffbc9371ffbc9271ffbb9271ffba9171ffba9170ffb99070ffb99070ffb99070ffb89070ffb89070ffb89070ff
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 

@@ -28,7 +28,7 @@ Material:
   m_InvalidKeywords:
   - _ALPHATEST_ON
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: 2450
   stringTagMap:
@@ -36,7 +36,6 @@ Material:
     RenderType: TransparentCutout
   disabledShaderPasses:
   - MOTIONVECTORS
-  - DepthOnly
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -53,13 +52,27 @@ Material:
         m_Texture: {fileID: 2800000, guid: 646afdaa35aa1c84bbfca6d10ad8d956, type: 2}
         m_Scale: {x: 0.25, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpriteNormalMap:
+        m_Texture: {fileID: 2800000, guid: fea2ff80771f60f4d91be39b78c5d223, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 1
     - _AlphaToMask: 0
+    - _BillboardLightingSideStrength: 0.1
+    - _BillboardShadowCutoff: 0.5
     - _Blend: 0
     - _BlendOp: 0
+    - _CanopyInteriorAo: 0
+    - _CanopyLayerDepth: 0
+    - _CanopyTranslucency: 0
+    - _CanopyWindPhase: 0
+    - _CharacterBillboardShadowFix: 1
+    - _CharacterRimBacklightPower: 0.85
+    - _CharacterRimBacklightStrength: 0.15
+    - _CharacterRimBacklightWidth: 1.1
     - _Cull: 0
     - _Cutoff: 0.15
     - _DstBlend: 0
@@ -71,16 +84,28 @@ Material:
     - _QueueControl: 1
     - _QueueOffset: 0
     - _RampStrength: 0.18
+    - _ReceiveWorldShadows: 0
     - _SampleGI: 0
+    - _SpriteDirectionalLightStrength: 0.2
+    - _SpriteNormalAmbientFloor: 0.72
+    - _SpriteNormalStrength: 0.34
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UseSpriteDirectionalNormals: 1
+    - _VegetationControlWeight: 0
+    - _WeatherDriftWeight: 0
     - _WorldLightStrength: 0.1
     - _WorldShadowReceiveStrength: 0.11
     - _XRMotionVectorsPass: 1
+    - _ZTest: 4
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CanopyBacklightWarmColor: {r: 1, g: 0.72, b: 0.36, a: 1}
+    - _CharacterRimBacklightColor: {r: 1, g: 0.78, b: 0.52, a: 1}
+    - _CharacterRimBacklightCoolColor: {r: 0.52, g: 0.68, b: 1, a: 1}
+    - _CharacterRimBacklightDirection: {r: 0.68, g: 0, b: 0.74, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FloorShade: {r: 0.89, g: 0.92, b: 0.96, a: 1}

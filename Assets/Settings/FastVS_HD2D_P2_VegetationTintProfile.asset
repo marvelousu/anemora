@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6695eb4b14ff7c54ba42ce4f9b30c2c1, type: 3}
+  m_Name: FastVS_HD2D_P2_VegetationTintProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dVegetationTintProfile
+  timeOfDayTints:
+  - preset: 0
+    timeOfDayTint: {r: 1, g: 0.92, b: 0.76, a: 1}
+    witherednessBias: 0.04
+  - preset: 1
+    timeOfDayTint: {r: 0.94, g: 1, b: 0.88, a: 1}
+    witherednessBias: 0
+  - preset: 2
+    timeOfDayTint: {r: 1, g: 0.78, b: 0.58, a: 1}
+    witherednessBias: 0.08
+  - preset: 3
+    timeOfDayTint: {r: 0.58, g: 0.68, b: 0.9, a: 1}
+    witherednessBias: 0.16
+  lushSeasonTint: {r: 0.96, g: 1, b: 0.9, a: 1}
+  witheredSeasonTint: {r: 0.82, g: 0.68, b: 0.42, a: 1}
+  defaultWitheredness: 0.08
+  transitionSeconds: 1.8
+  publishEveryFrame: 1
+  needsTomApproval: 1
+  finalVegetationTintApproved: 0
+  recommendation: 'Keep P2-58 as conservative vegetation control-plane data prep.
+    Recommendation: use the current lush/withered and ToD tint deltas as a starting
+    point, but Tom should tune final hue, season mapping, and night readability after
+    lighting/ground sign-off.'

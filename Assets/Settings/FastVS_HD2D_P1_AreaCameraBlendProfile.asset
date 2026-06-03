@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21bd93e0c21683e4085156ad3129e355, type: 3}
+  m_Name: FastVS_HD2D_P1_AreaCameraBlendProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dAreaCameraBlendProfile
+  pitchDegrees: 29
+  defaultBlendSeconds: 0.72
+  inactivePriority: 10
+  livePriority: 120
+  entries:
+  - entryId: central_plaza_wide
+    reviewRole: wide town
+    area: 2
+    fieldOfView: 32
+    distance: 5.15
+    targetHeight: 0.72
+    lookAhead: 0.45
+    lateralOffset: 0
+    triggerLocalCenter: {x: 28.8, y: 0.7, z: 17.2}
+    triggerLocalSize: {x: 70, y: 3, z: 27}
+  - entryId: library_tight_interior
+    reviewRole: tight interior
+    area: 3
+    fieldOfView: 27.5
+    distance: 4.35
+    targetHeight: 0.76
+    lookAhead: 0.34
+    lateralOffset: 0
+    triggerLocalCenter: {x: 31, y: 0.7, z: 20.1}
+    triggerLocalSize: {x: 12.5, y: 3, z: 15}
+  - entryId: ruins_mid_combat
+    reviewRole: mid-combat
+    area: 7
+    fieldOfView: 29.5
+    distance: 4.75
+    targetHeight: 0.78
+    lookAhead: 0.5
+    lateralOffset: 0
+    triggerLocalCenter: {x: 68.3, y: 0.7, z: 15.85}
+    triggerLocalSize: {x: 36, y: 3, z: 18}

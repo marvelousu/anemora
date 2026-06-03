@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f2ccc83b658964fa6858b7aa9c0bc9, type: 3}
+  m_Name: FastVS_HD2D_P2_LocalVolumetricFogProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dLocalVolumetricFogProfile
+  interiorDensity: 0.17
+  lowValleyDensity: 0.12
+  portalClosedDensity: 0
+  portalOpenDensity: 0.24
+  portalStrongOptionMultiplier: 1.35
+  edgeFeather: 0.42
+  noiseStrength: 0.18
+  noiseScale: 4.2
+  heightFade: 0.34
+  portalGlow: 0.2
+  interiorColor: {r: 0.66, g: 0.76, b: 0.84, a: 0.3}
+  lowValleyColor: {r: 0.58, g: 0.72, b: 0.78, a: 0.28}
+  portalColor: {r: 0.7, g: 0.92, b: 1, a: 0.38}
+  interiorBounds: {x: 4.9, y: 1.35, z: 3.2}
+  lowValleyBounds: {x: 4.4, y: 0.58, z: 1.45}
+  portalBounds: {x: 2.15, y: 1.65, z: 0.32}
+  tiePortalDensityToOpenState: 1
+  renderGraphNativePackageDeferred: 1
+  legitimateVolumetricAssetDecisionRequired: 1
+  needsTomApproval: 1
+  finalLocalFogApproved: 0
+  recommendation: Conservative P2-65 local mist data prep using lightweight transparent
+    slice volumes. Tom should decide whether to buy a legitimate Render Graph-native
+    volumetric solution for final interior/portal fog, then tune density, portal
+    glow, and doorway falloff against the approved camera and grade.

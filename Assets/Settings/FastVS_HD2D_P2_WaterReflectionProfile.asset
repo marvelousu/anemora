@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7fa341cc9f8954ea75efe3b82e3b65, type: 3}
+  m_Name: FastVS_HD2D_P2_WaterReflectionProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dWaterReflectionProfile
+  reflectionStrength: 0.62
+  fresnelPower: 1.65
+  fresnelBias: 0.14
+  roughness: 0.12
+  reflectionTint: {r: 0.96, g: 0.99, b: 1, a: 1}
+  skyFallback: 0.24
+  probeBoxSize: {x: 5.8, y: 3.2, z: 4.4}
+  probeResolution: 128
+  planarReflectionDeferred: 1
+  needsTomApproval: 1
+  finalWaterReflectionApproved: 0
+  recommendation: Conservative P2-64 boxed-probe reflection baseline using a custom
+    review cubemap derived from warm/cool/pale tall marker colors. Tom should tune
+    strength/Fresnel/roughness against final still ponds, and only add planar reflection
+    to named hero ponds if the doubled reflected draws are acceptable.

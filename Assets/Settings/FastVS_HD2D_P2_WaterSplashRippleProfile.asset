@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 296ca2f052c5d0049966659deaecd8a7, type: 3}
+  m_Name: FastVS_HD2D_P2_WaterSplashRippleProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dWaterSplashRippleProfile
+  maxRippleParticles: 10
+  splashBurstParticles: 12
+  maxMistParticles: 40
+  rippleLifetime: 0.96
+  rippleStartSize: 0.34
+  rippleEndSize: 1.12
+  ripplePeakAlpha: 0.36
+  splashLifetime: 0.56
+  splashStartSizeMin: 0.065
+  splashStartSizeMax: 0.12
+  splashHorizontalVelocity: 0.6
+  splashUpVelocityMin: 1.05
+  splashUpVelocityMax: 1.7
+  splashGravity: 0.3
+  mistEmissionRate: 12.8
+  mistLifetime: 2.35
+  mistStartSizeMin: 0.22
+  mistStartSizeMax: 0.56
+  mistRiseVelocity: 0.18
+  mistOutwardVelocity: 0.12
+  mistNoiseStrength: 0.14
+  mistNoiseFrequency: 0.32
+  mistPeakAlpha: 0.3
+  softParticleFarFade: 0.9
+  waterRayHeight: 0.48
+  waterRayDistance: 0.9
+  distanceCullFarMeters: 38
+  strongerOptionMultiplier: 1.34
+  rippleTint: {r: 0.68, g: 0.94, b: 1.15, a: 0.36}
+  splashTint: {r: 1.18, g: 1.34, b: 1.45, a: 1}
+  mistTint: {r: 0.7, g: 0.86, b: 0.94, a: 0.3}
+  subEmitterBirth: 1
+  raycastEntryHookPrepared: 1
+  continuousMistEmitter: 1
+  softParticlesRequired: 1
+  fadeCompleteWithinOneSecond: 1
+  conservativeDataPrep: 1
+  needsTomApproval: 1
+  finalWaterSplashRippleApproved: 0
+  recommendation: Keep this conservative P2-69 water FX data prep. Tom should tune
+    final ripple ring thickness, droplet crown density, mist opacity, and placement
+    against approved water-body art and lighting.

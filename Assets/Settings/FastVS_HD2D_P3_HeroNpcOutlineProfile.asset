@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4596a7df343acc143b532272b8f7c6c3, type: 3}
+  m_Name: FastVS_HD2D_P3_HeroNpcOutlineProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dHeroNpcOutlineProfile
+  needsTomApproval: 1
+  finalHeroNpcOutlineApproved: 0
+  conservativeDataPrep: 1
+  spriteSpaceOutlinePreferred: 1
+  urpRenderGraphEdgeDetectDeferred: 1
+  activeOnAwake: 0
+  perCharacterOptInOnly: 1
+  washedSceneFallbackPrepared: 1
+  conservativeOutlineWidthTexels: 0.55
+  strongerOutlineWidthTexels: 1.15
+  outlineAlpha: 0.64
+  alphaCutoff: 0.16
+  washedSpriteAlpha: 0.68
+  outlineColor: {r: 0.08, g: 0.1, b: 0.14, a: 1}
+  washedBackdropTint: {r: 0.76, g: 0.8, b: 0.82, a: 0.72}
+  recommendation: Keep this as conservative sprite-space outline data only. Tom should
+    approve final opt-in characters, outline color, 1px/2px width, and any scene-wide
+    Render Graph edge-detect fallback.

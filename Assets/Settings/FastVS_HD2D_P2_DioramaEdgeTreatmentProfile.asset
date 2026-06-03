@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b61a7f419de3a4ab2488d2d3192500, type: 3}
+  m_Name: FastVS_HD2D_P2_DioramaEdgeTreatmentProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dDioramaEdgeTreatmentProfile
+  minimumDioramaRootCount: 10
+  minimumMarkerCount: 260
+  minimumMapCount: 5
+  minimumTreatmentTypeCount: 4
+  targetVisibleEdgeCoverageMeters: 520
+  targetFoliageSkirtCoverageMeters: 190
+  cliffLipDropMeters: 0.78
+  valueDropBandMeters: 1.18
+  edgeAoBandWidthMeters: 0.42
+  foliageSkirtSpacingMeters: 3.45
+  conservativeTreatmentEnabled: 1
+  staticGiRequired: 1
+  gpuInstancingRequired: 1
+  needsTomApproval: 1
+  finalDioramaEdgeTreatmentApproved: 0
+  sourceNote: P2-75 composes existing static cliff/stone pixels, alpha-clip foliage
+    cards, and dark value bands around current/past Chapter 1 outdoor diorama rims;
+    no new render pipeline feature is introduced.
+  recommendation: Keep the conservative rim treatment as data only. Tom should tune
+    final cliff silhouettes, fog value, foliage density, approved rock/grass meshes,
+    and per-map edge language.

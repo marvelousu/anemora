@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a381a7d2218f94c898641e53ab6c1c, type: 3}
+  m_Name: FastVS_HD2D_P3_CameraLensMicroDetailProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dCameraLensMicroDetailProfile
+  needsTomApproval: 1
+  finalLensMicroDetailApproved: 0
+  conservativeDataPrep: 1
+  userCinematicTogglePrepared: 1
+  cinematicToggleDefaultEnabled: 0
+  disabledForPromoScreenshots: 1
+  runtimeActivationLockedUntilTomApproval: 1
+  capturePreviewOnly: 1
+  centralSpriteSharpnessPriority: 1
+  filmGrainType: 0
+  conservativeFilmGrainIntensity: 0.14
+  strongerFilmGrainIntensity: 0.22
+  filmGrainResponse: 0.76
+  conservativeChromaticAberrationIntensity: 0.06
+  strongerChromaticAberrationIntensity: 0.11
+  recommendation: Recommend the conservative Thin1 grain 0.14 / response 0.76 and
+    chromatic aberration 0.06 only if Tom accepts the A/B. Keep shared runtime and
+    promo screenshots off by default.

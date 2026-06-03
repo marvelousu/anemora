@@ -7,6 +7,13 @@ namespace Anemora.FastVS
 {
     public sealed class FastVsAreaDoorTransition : MonoBehaviour
     {
+        public enum DoorTimeRequirement
+        {
+            Any,
+            PresentOnly,
+            OtherTimeOnly
+        }
+
         [SerializeField] private TimeWindowPairedSpacePortalController portalController;
         [SerializeField] private CharacterController playerController;
         [SerializeField] private Transform player;
@@ -22,6 +29,7 @@ namespace Anemora.FastVS
         [SerializeField] private float transitionFadeSeconds = 0.26f;
         [SerializeField] private float transitionHoldSeconds = 0.08f;
         [SerializeField] private Color transitionFadeColor = new Color(0.015f, 0.014f, 0.012f, 0.92f);
+        [SerializeField] private DoorTimeRequirement requiredTime = DoorTimeRequirement.Any;
 
         private static float nextGlobalAllowedTime;
         private static int activeTransitionCount;
@@ -37,6 +45,7 @@ namespace Anemora.FastVS
         public string TransitionLabelForReview => transitionLabel;
         public float TransitionFadeSecondsForReview => transitionFadeSeconds;
         public float TransitionHoldSecondsForReview => transitionHoldSeconds;
+        public DoorTimeRequirement RequiredTimeForReview => requiredTime;
         public bool IsTransitioningForReview => isTransitioning;
         public bool StoryFlowWiredForReview => storyFlow != null;
         public static bool StoryReachedPostLibraryNoonForReview => storyReachedPostLibraryNoon;
@@ -51,6 +60,11 @@ namespace Anemora.FastVS
         public bool TryEvaluateCurrentPlayerForReview()
         {
             ResolveReferences();
+            if (!IsRequiredTimeSatisfied())
+            {
+                return false;
+            }
+
             if (!IsPlayerInsideTrigger())
             {
                 return false;
@@ -62,6 +76,11 @@ namespace Anemora.FastVS
         private void Update()
         {
             ResolveReferences();
+            if (!IsRequiredTimeSatisfied())
+            {
+                return;
+            }
+
             if (portalController == null ||
                 player == null ||
                 isTransitioning ||
@@ -184,6 +203,22 @@ namespace Anemora.FastVS
         private bool IsSourceAreaActive()
         {
             return areaVisibility == null || areaVisibility.ActiveAreaForReview == sourceArea;
+        }
+
+        private bool IsRequiredTimeSatisfied()
+        {
+            if (requiredTime == DoorTimeRequirement.Any)
+            {
+                return true;
+            }
+
+            if (portalController == null)
+            {
+                return requiredTime == DoorTimeRequirement.PresentOnly;
+            }
+
+            var inOther = portalController.PlayerInOtherTime;
+            return requiredTime == DoorTimeRequirement.OtherTimeOnly ? inOther : !inOther;
         }
 
         private bool BeginRuntimeTransition()

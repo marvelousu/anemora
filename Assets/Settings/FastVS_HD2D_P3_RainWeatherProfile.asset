@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e86402a0234248d4c8ab564c58edddd5, type: 3}
+  m_Name: FastVS_HD2D_P3_RainWeatherProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dRainWeatherProfile
+  needsTomApproval: 1
+  finalRainWeatherApproved: 0
+  particleSystemFallback: 1
+  vfxGraphDeferredForTom: 1
+  defaultRainIntensity: 0
+  conservativeRainIntensity: 0.42
+  strongerRainIntensity: 0.62
+  rainyHorizon: {r: 0.42, g: 0.48, b: 0.56, a: 1}
+  rainyZenith: {r: 0.22, g: 0.28, b: 0.36, a: 1}
+  rainyFogColor: {r: 0.45, g: 0.52, b: 0.59, a: 1}
+  rainyFogDensity: 0.024
+  rainyAmbientIntensity: 0.74
+  directionalLightRainMultiplier: 0.66
+  wetnessScale: 0.54
+  wetDarken: 0.34
+  wetSpecularBoost: 0.48
+  windDirection: {x: 0.6222441, y: 0, z: 0.7828232}
+  windDriftSpeed: 0.46
+  fallSpeed: 8.4
+  turbulence: 0.34
+  rainEmissionRate: 520
+  maxParticles: 1200
+  streakWidth: 0.042
+  streakLength: 1.05
+  streakLifetime: 0.58
+  reviewProxyStreakCount: 76
+  lightningDirectionalBoost: 1.65
+  lightningSkyFlash: 0.36
+  recommendation: Keep this as conservative rain-weather data only. Tom should approve
+    final VFX Graph rain density, sky grade, fog density, wetness/specular strength,
+    and lightning cadence.

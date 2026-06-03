@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac3ef6f7f1a31634eb2292d1b72d11e6, type: 3}
+  m_Name: FastVS_HD2D_P2_LightCookieGoboProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dLightCookieGoboProfile
+  directionalCanopyCookie: {fileID: 2800000, guid: 8bcc980703944da4da051e2ea63d7b5c, type: 2}
+  directionalCookieSize: 8.5
+  directionalCookieContrast: 0.32
+  directionalCookieDriftPreview: 0.04
+  windowGoboCookie: {fileID: 2800000, guid: 0716c6b9b629f9b4db851b6d9e49a02c, type: 2}
+  windowGoboIntensity: 2.4
+  windowGoboRange: 8.5
+  windowGoboSpotAngle: 46
+  needsTomApproval: 1
+  runtimePresetIntegrationApproved: 0
+  reviewNotes: 'Conservative P2-53 data staging: generated dapple and window-gobo
+    cookies are review baselines only. Tom should approve final cookie art, intensity,
+    scale, and runtime preset integration.'

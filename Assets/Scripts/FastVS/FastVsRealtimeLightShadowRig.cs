@@ -15,6 +15,7 @@ namespace Anemora.FastVS
         private const string PortalWindowRole = "PortalWindow";
         private const string OverlayGlowRole = "OverlayGlow";
         private const string ContactShadowRole = "ContactShadow";
+        private static readonly int CharacterBillboardShadowFixId = Shader.PropertyToID("_CharacterBillboardShadowFix");
         private static readonly int SurfaceRampStrengthId = Shader.PropertyToID("_SurfaceRampStrength");
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int DirectionalLightStrengthId = Shader.PropertyToID("_DirectionalLightStrength");
@@ -38,6 +39,12 @@ namespace Anemora.FastVS
         private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;
         private const float RealtimeOutdoorFacadeShadowTextureStrength = 0.12f;
         private const float RealtimeOutdoorFloorShadowTextureStrength = 0.10f;
+        private const float OutdoorContactHardeningShadowBias = 0.010f;
+        private const float OutdoorContactHardeningNormalBias = 0.08f;
+        private const float OutdoorContactHardeningNearPlane = 0.06f;
+        private const float P1ContactHardeningFallbackShadowYawDegrees = 142f;
+        private const float P1ContactHardeningLowPitchDegrees = 18f;
+        private const float P1ContactHardeningHighPitchDegrees = 55f;
         private static readonly Color CentralPlazaStage7jSideShade = new Color(0.62f, 0.63f, 0.60f, 1f);
         private static readonly Color CentralPlazaStage7jFloorShade = new Color(0.58f, 0.59f, 0.55f, 1f);
 
@@ -80,6 +87,10 @@ namespace Anemora.FastVS
             ApplyRendererShadowPolicyForCurrentArea();
         }
 
+        public static float P1ContactHardeningOutdoorShadowBiasForReview => OutdoorContactHardeningShadowBias;
+        public static float P1ContactHardeningOutdoorShadowNormalBiasForReview => OutdoorContactHardeningNormalBias;
+        public static float P1ContactHardeningOutdoorShadowNearPlaneForReview => OutdoorContactHardeningNearPlane;
+
         private void HandleSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
             ResolveReferences();
@@ -116,9 +127,9 @@ namespace Anemora.FastVS
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
                 mainLight.shadowResolution = isRealtimeOutdoor ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
-                mainLight.shadowBias = isRealtimeOutdoor ? 0.012f : Mathf.Min(mainLight.shadowBias, 0.025f);
-                mainLight.shadowNormalBias = isRealtimeOutdoor ? 0.10f : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
-                mainLight.shadowNearPlane = Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
+                mainLight.shadowBias = isRealtimeOutdoor ? OutdoorContactHardeningShadowBias : Mathf.Min(mainLight.shadowBias, 0.025f);
+                mainLight.shadowNormalBias = isRealtimeOutdoor ? OutdoorContactHardeningNormalBias : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
+                mainLight.shadowNearPlane = isRealtimeOutdoor ? OutdoorContactHardeningNearPlane : Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
             }
 
             if (sceneCamera != null && (area == FastVsHouseArea.Exterior || area == FastVsHouseArea.CentralPlaza))
@@ -142,6 +153,123 @@ namespace Anemora.FastVS
             {
                 RenderSettings.reflectionIntensity = 1f;
             }
+
+            if (Application.isPlaying && isRealtimeOutdoor)
+            {
+                ApplyP1ContactHardeningShadowOverlaysForReview();
+            }
+        }
+
+        public static float GetP1ContactHardeningShadowYawDegreesForReview(Light keyLight)
+        {
+            if (keyLight == null)
+            {
+                return P1ContactHardeningFallbackShadowYawDegrees;
+            }
+
+            return Mathf.Repeat(keyLight.transform.eulerAngles.y + 270f, 360f);
+        }
+
+        public static float GetP1ContactHardeningLowSunFactorForReview(Light keyLight)
+        {
+            if (keyLight == null)
+            {
+                return 0.70f;
+            }
+
+            var signedPitch = Mathf.Abs(Mathf.DeltaAngle(0f, keyLight.transform.eulerAngles.x));
+            return 1f - Mathf.InverseLerp(P1ContactHardeningLowPitchDegrees, P1ContactHardeningHighPitchDegrees, signedPitch);
+        }
+
+        public static float GetP1ContactHardeningDirectionalLengthMultiplierForReview(Light keyLight)
+        {
+            return Mathf.Lerp(0.58f, 1.75f, GetP1ContactHardeningLowSunFactorForReview(keyLight));
+        }
+
+        public static float GetP1ContactHardeningStaticLengthMultiplierForReview(Light keyLight)
+        {
+            return Mathf.Lerp(0.78f, 1.42f, GetP1ContactHardeningLowSunFactorForReview(keyLight));
+        }
+
+        public static float GetP1ContactHardeningContactLengthMultiplierForReview(Light keyLight)
+        {
+            return Mathf.Lerp(0.96f, 1.18f, GetP1ContactHardeningLowSunFactorForReview(keyLight));
+        }
+
+        public static bool ApplyP1ContactHardeningOverlayTransformForReview(FastVsHd2dOverlayProfile profile, Light keyLight)
+        {
+            if (profile == null || keyLight == null)
+            {
+                return false;
+            }
+
+            var yawDegrees = GetP1ContactHardeningShadowYawDegreesForReview(keyLight);
+            var lowSunFactor = GetP1ContactHardeningLowSunFactorForReview(keyLight);
+            switch (profile.OverlayKindForReview)
+            {
+                case FastVsHd2dOverlayKind.CharacterDirectionalCastShadow:
+                    ApplyP1ContactHardeningOverlayTransform(
+                        profile,
+                        yawDegrees,
+                        GetP1ContactHardeningDirectionalLengthMultiplierForReview(keyLight),
+                        Mathf.Lerp(0.90f, 1.08f, lowSunFactor));
+                    return true;
+                case FastVsHd2dOverlayKind.StaticDirectionalCastShadow:
+                    ApplyP1ContactHardeningOverlayTransform(
+                        profile,
+                        yawDegrees,
+                        GetP1ContactHardeningStaticLengthMultiplierForReview(keyLight),
+                        Mathf.Lerp(0.92f, 1.12f, lowSunFactor));
+                    return true;
+                case FastVsHd2dOverlayKind.CharacterContactShadow:
+                case FastVsHd2dOverlayKind.CharacterFootContact:
+                    ApplyIndependentCharacterContactOverlayTransform(profile);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private void ApplyP1ContactHardeningShadowOverlaysForReview()
+        {
+            if (mainLight == null)
+            {
+                return;
+            }
+
+            var overlays = FindObjectsByType<FastVsHd2dOverlayProfile>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            for (var i = 0; i < overlays.Length; i++)
+            {
+                ApplyP1ContactHardeningOverlayTransformForReview(overlays[i], mainLight);
+            }
+        }
+
+        private static void ApplyP1ContactHardeningOverlayTransform(
+            FastVsHd2dOverlayProfile profile,
+            float yawDegrees,
+            float lengthMultiplier,
+            float widthMultiplier)
+        {
+            var target = profile.transform;
+            var baseFootprint = profile.FootprintWorldSizeForReview;
+            var baseLength = baseFootprint.x > 0.001f ? baseFootprint.x : Mathf.Abs(target.localScale.x);
+            var baseWidth = baseFootprint.y > 0.001f ? baseFootprint.y : Mathf.Abs(target.localScale.y);
+            var zScale = Mathf.Abs(target.localScale.z) > 0.001f ? target.localScale.z : 1f;
+
+            target.localRotation = Quaternion.Euler(90f, 0f, yawDegrees);
+            target.localScale = new Vector3(baseLength * lengthMultiplier, baseWidth * widthMultiplier, zScale);
+        }
+
+        private static void ApplyIndependentCharacterContactOverlayTransform(FastVsHd2dOverlayProfile profile)
+        {
+            var target = profile.transform;
+            var baseFootprint = profile.FootprintWorldSizeForReview;
+            var baseLength = baseFootprint.x > 0.001f ? baseFootprint.x : Mathf.Abs(target.localScale.x);
+            var baseWidth = baseFootprint.y > 0.001f ? baseFootprint.y : Mathf.Abs(target.localScale.y);
+            var zScale = Mathf.Abs(target.localScale.z) > 0.001f ? target.localScale.z : 1f;
+
+            target.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            target.localScale = new Vector3(baseLength, baseWidth, zScale);
         }
 
         private FastVsHouseArea GetActiveAreaForRendererShadowPolicy()
@@ -393,8 +521,17 @@ namespace Anemora.FastVS
                 }
                 else if (role == SpriteCardRole || role == PaperCardRole)
                 {
-                    renderer.shadowCastingMode = ShadowCastingMode.On;
-                    renderer.receiveShadows = true;
+                    if (UsesCharacterBillboardShadowFix(renderer))
+                    {
+                        renderer.shadowCastingMode = ShadowCastingMode.TwoSided;
+                        renderer.receiveShadows = false;
+                    }
+                    else
+                    {
+                        renderer.shadowCastingMode = ShadowCastingMode.On;
+                        renderer.receiveShadows = true;
+                    }
+
                     ApplySpriteRealtimeGrade(renderer, isRealtimeOutdoor);
                 }
                 else if (role == PortalWindowRole)
@@ -1040,6 +1177,14 @@ namespace Anemora.FastVS
         private static string GetMaterialRole(Material material)
         {
             return material != null ? material.GetTag(MaterialRoleTagName, false, string.Empty) : string.Empty;
+        }
+
+        private static bool UsesCharacterBillboardShadowFix(Renderer renderer)
+        {
+            var material = renderer != null ? renderer.sharedMaterial : null;
+            return material != null &&
+                   material.HasProperty(CharacterBillboardShadowFixId) &&
+                   material.GetFloat(CharacterBillboardShadowFixId) > 0.5f;
         }
 
     }

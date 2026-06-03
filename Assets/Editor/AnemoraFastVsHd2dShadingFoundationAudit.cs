@@ -60,7 +60,7 @@ namespace Anemora.EditorTools
         {
             var serialized = new SerializedObject(pipelineAsset);
 
-            RequireFloat(serialized, "m_ShadowDistance", 35f, 0.01f, issues, "Pipeline shadow distance must be 35.", "shadowDistance");
+            RequireFloat(serialized, "m_ShadowDistance", 32f, 0.01f, issues, "Pipeline shadow distance must be 32 for the P1 contact-hardening review profile.", "shadowDistance");
             RequireBool(serialized, "m_MainLightShadowsSupported", true, issues, "Main light shadows must be supported.", "mainLightShadowsSupported");
             RequireInt(serialized, "m_MainLightShadowmapResolution", 4096, issues, "Main light shadowmap resolution must be 4096.", "mainLightShadowmapResolution");
             RequireInt(serialized, "m_AdditionalLightsRenderingMode", 1, issues, "Additional lights rendering mode must be enabled.", "additionalLightsRenderingMode");
@@ -71,9 +71,10 @@ namespace Anemora.EditorTools
             RequireBool(serialized, "m_SoftShadowsSupported", true, issues, "Soft shadows must be enabled.", "softShadowsSupported");
             RequireInt(serialized, "m_SoftShadowQuality", 3, issues, "Soft shadow quality must be high.", "softShadowQuality");
             RequireInt(serialized, "m_ShadowCascadeCount", 4, issues, "Shadow cascade count must be 4.", "shadowCascadeCount");
-            RequireVector3(serialized, "m_Cascade4Split", new Vector3(0.10f, 0.30f, 0.60f), 0.01f, issues, "Cascade 4 split must be near 0.10 / 0.30 / 0.60.", "cascade4Split");
-            RequireFloat(serialized, "m_ShadowDepthBias", 1f, 0.01f, issues, "Shadow depth bias must stay at 1.", "shadowDepthBias");
-            RequireFloat(serialized, "m_ShadowNormalBias", 1.5f, 0.01f, issues, "Shadow normal bias must stay at 1.5.", "shadowNormalBias");
+            RequireVector3(serialized, "m_Cascade4Split", new Vector3(0.08f, 0.24f, 0.55f), 0.01f, issues, "Cascade 4 split must be near 0.08 / 0.24 / 0.55 for the P1 contact-hardening review profile.", "cascade4Split");
+            RequireFloat(serialized, "m_CascadeBorder", 0.15f, 0.01f, issues, "Cascade border must stay at 0.15 for the P1 contact-hardening review profile.", "cascadeBorder");
+            RequireFloat(serialized, "m_ShadowDepthBias", 0.8f, 0.01f, issues, "Shadow depth bias must stay at 0.8 for the P1 contact-hardening review profile.", "shadowDepthBias");
+            RequireFloat(serialized, "m_ShadowNormalBias", 1f, 0.01f, issues, "Shadow normal bias must stay at 1 for the P1 contact-hardening review profile.", "shadowNormalBias");
             RequireBool(serialized, "m_SupportsHDR", true, issues, "HDR must remain enabled.", "supportsHDR");
             RequireInt(serialized, "m_LightProbeSystem", 1, issues, "Adaptive Probe Volumes must be selected as the light probe system.", "lightProbeSystem");
             RequireInt(serialized, "m_ProbeVolumeMemoryBudget", 1024, issues, "APV memory budget must remain medium.", "probeVolumeMemoryBudget");
@@ -171,11 +172,13 @@ namespace Anemora.EditorTools
             {
                 RequireBool(bloom.active, true, issues, "Bloom must be active.");
                 RequireBool(bloom.threshold.overrideState, true, issues, "Bloom threshold override must be enabled.");
-                RequireFloat(bloom.threshold.value, 0.85f, 0.03f, issues, "Bloom threshold must use the Stage 1 high-threshold HD-2D grade.");
+                RequireFloat(bloom.threshold.value, 1.05f, 0.03f, issues, "Bloom threshold must use the P1-26 threshold-gated HD-2D grade.");
                 RequireBool(bloom.intensity.overrideState, true, issues, "Bloom intensity override must be enabled.");
-                RequireFloat(bloom.intensity.value, 0.80f, 0.05f, issues, "Bloom intensity must use the Stage 1 HD-2D lift.");
+                RequireFloat(bloom.intensity.value, 0.40f, 0.04f, issues, "Bloom intensity must stay low enough to avoid global haze.");
                 RequireBool(bloom.scatter.overrideState, true, issues, "Bloom scatter override must be enabled.");
-                RequireFloat(bloom.scatter.value, 0.72f, 0.06f, issues, "Bloom scatter must stay controlled for the reference sun-shadow grade.");
+                RequireFloat(bloom.scatter.value, 0.74f, 0.06f, issues, "Bloom scatter must stay controlled for threshold-gated highlights.");
+                RequireBool(bloom.clamp.overrideState, true, issues, "Bloom clamp override must be enabled.");
+                RequireFloat(bloom.clamp.value, 16f, 0.05f, issues, "Bloom clamp must stay low enough to suppress emissive/firefly specks.");
                 RequireBool(bloom.highQualityFiltering.overrideState, true, issues, "Bloom high quality filtering override must be enabled.");
                 RequireBool(bloom.highQualityFiltering.value, true, issues, "Bloom high quality filtering must be enabled.");
             }
@@ -410,6 +413,7 @@ namespace Anemora.EditorTools
             builder.AppendLine($"| Soft shadow quality | {FormatInt(FindInt(pipeline, "m_SoftShadowQuality", "softShadowQuality"))} |");
             builder.AppendLine($"| Cascade count | {FormatInt(FindInt(pipeline, "m_ShadowCascadeCount", "shadowCascadeCount"))} |");
             builder.AppendLine($"| Cascade 4 split | {FormatVector3(FindVector3(pipeline, "m_Cascade4Split", "cascade4Split"))} |");
+            builder.AppendLine($"| Cascade border | {FormatFloat(FindFloat(pipeline, "m_CascadeBorder", "cascadeBorder"))} |");
             builder.AppendLine($"| Shadow depth bias | {FormatFloat(FindFloat(pipeline, "m_ShadowDepthBias", "shadowDepthBias"))} |");
             builder.AppendLine($"| Shadow normal bias | {FormatFloat(FindFloat(pipeline, "m_ShadowNormalBias", "shadowNormalBias"))} |");
             builder.AppendLine($"| HDR | {FormatBool(FindBool(pipeline, "m_SupportsHDR", "supportsHDR"))} |");
@@ -493,6 +497,7 @@ namespace Anemora.EditorTools
                 builder.AppendLine($"| Bloom threshold | {FormatVolumeFloat(bloom.threshold)} |");
                 builder.AppendLine($"| Bloom intensity | {FormatVolumeFloat(bloom.intensity)} |");
                 builder.AppendLine($"| Bloom scatter | {FormatVolumeFloat(bloom.scatter)} |");
+                builder.AppendLine($"| Bloom clamp | {FormatVolumeFloat(bloom.clamp)} |");
                 builder.AppendLine($"| Bloom high quality filtering | {FormatVolumeBool(bloom.highQualityFiltering)} |");
             }
             else
@@ -501,6 +506,7 @@ namespace Anemora.EditorTools
                 builder.AppendLine("| Bloom threshold | n/a |");
                 builder.AppendLine("| Bloom intensity | n/a |");
                 builder.AppendLine("| Bloom scatter | n/a |");
+                builder.AppendLine("| Bloom clamp | n/a |");
                 builder.AppendLine("| Bloom high quality filtering | n/a |");
             }
 

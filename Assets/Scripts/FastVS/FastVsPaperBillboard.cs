@@ -8,6 +8,9 @@ namespace Anemora.FastVS
         [SerializeField] private bool lockY = true;
         [SerializeField] private bool useCameraForward = true;
 
+        public bool LockYForReview => lockY;
+        public bool UseCameraForwardForReview => useCameraForward;
+
         private void LateUpdate()
         {
             if (targetCamera == null)

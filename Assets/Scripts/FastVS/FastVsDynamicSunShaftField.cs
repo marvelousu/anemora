@@ -16,6 +16,8 @@ namespace Anemora.FastVS
         [SerializeField] private float pulseSpeed = 0.28f;
         [SerializeField] private float cameraParallax = 0.12f;
         [SerializeField] private float sunYawInfluence = 10f;
+        [SerializeField] private Vector2 lowSunPitchFadeBand = new Vector2(24f, 52f);
+        [SerializeField] private Vector2 sunIntensityFadeBand = new Vector2(0.45f, 0.90f);
         [SerializeField] private bool centralPlazaOnly = true;
 
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
@@ -25,9 +27,15 @@ namespace Anemora.FastVS
         private Transform[] shaftTransforms;
         private Vector3[] baseLocalPositions;
         private Quaternion[] baseLocalRotations;
+        private bool hasAtmospherePresetOverride;
+        private float atmospherePresetAlphaMultiplier = 1f;
+        private Color atmospherePresetTint = Color.white;
 
         public int ShaftRendererCountForReview => shaftRenderers != null ? shaftRenderers.Length : 0;
         public bool ActiveForReview => ShouldRenderShafts();
+        public float LowSunFactorForReview => ResolveLowSunFactor();
+        public float AtmospherePresetAlphaMultiplierForReview => hasAtmospherePresetOverride ? atmospherePresetAlphaMultiplier : 1f;
+        public Color AtmospherePresetTintForReview => hasAtmospherePresetOverride ? atmospherePresetTint : Color.white;
 
         private void Awake()
         {
@@ -63,8 +71,11 @@ namespace Anemora.FastVS
             var visible = ShouldRenderShafts();
             var sunYaw = ResolveSunYawDegrees();
             var viewFactor = ResolveViewAlignmentFactor();
+            var lowSunFactor = ResolveLowSunFactor();
             var pulse = 1f + Mathf.Sin(Time.time * Mathf.Max(0.01f, pulseSpeed)) * pulseAmplitude;
-            var alpha = visible ? Mathf.Clamp01((baseAlpha + viewReactiveAlpha * viewFactor) * pulse) : 0f;
+            var presetMultiplier = hasAtmospherePresetOverride ? atmospherePresetAlphaMultiplier : 1f;
+            var presetTint = hasAtmospherePresetOverride ? atmospherePresetTint : Color.white;
+            var alpha = visible ? Mathf.Clamp01((baseAlpha + viewReactiveAlpha * viewFactor) * lowSunFactor * pulse * presetMultiplier) : 0f;
             var parallaxOffset = ResolveCameraParallaxOffset();
 
             for (var i = 0; i < shaftRenderers.Length; i++)
@@ -76,7 +87,7 @@ namespace Anemora.FastVS
                 }
 
                 renderer.enabled = visible;
-                ApplyRendererAlpha(renderer, alpha);
+                ApplyRendererAlpha(renderer, alpha, presetTint);
 
                 if (shaftTransforms == null || i >= shaftTransforms.Length || shaftTransforms[i] == null)
                 {
@@ -87,6 +98,22 @@ namespace Anemora.FastVS
                 shaftTransforms[i].localPosition = baseLocalPositions[i] + parallaxOffset * phase;
                 shaftTransforms[i].localRotation = baseLocalRotations[i] * Quaternion.Euler(0f, 0f, sunYaw * sunYawInfluence * 0.01f);
             }
+        }
+
+        public void SetAtmospherePresetOverrideForReview(float alphaMultiplier, Color tint)
+        {
+            hasAtmospherePresetOverride = true;
+            atmospherePresetAlphaMultiplier = Mathf.Clamp(alphaMultiplier, 0f, 2.5f);
+            atmospherePresetTint = tint;
+            ApplyNowForReview();
+        }
+
+        public void ClearAtmospherePresetOverrideForReview()
+        {
+            hasAtmospherePresetOverride = false;
+            atmospherePresetAlphaMultiplier = 1f;
+            atmospherePresetTint = Color.white;
+            ApplyNowForReview();
         }
 
         private void ResolveReferences()
@@ -169,6 +196,29 @@ namespace Anemora.FastVS
             return Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
         }
 
+        private float ResolveLowSunFactor()
+        {
+            if (directionalSun == null)
+            {
+                return 1f;
+            }
+
+            var pitch = directionalSun.transform.eulerAngles.x;
+            if (pitch > 180f)
+            {
+                pitch -= 360f;
+            }
+
+            var lowPitch = Mathf.Min(lowSunPitchFadeBand.x, lowSunPitchFadeBand.y);
+            var highPitch = Mathf.Max(lowSunPitchFadeBand.x, lowSunPitchFadeBand.y);
+            var pitchFactor = 1f - Mathf.InverseLerp(lowPitch, highPitch, Mathf.Abs(pitch));
+            var intensityFactor = Mathf.InverseLerp(
+                Mathf.Min(sunIntensityFadeBand.x, sunIntensityFadeBand.y),
+                Mathf.Max(sunIntensityFadeBand.x, sunIntensityFadeBand.y),
+                directionalSun.intensity);
+            return Mathf.Clamp01(pitchFactor * intensityFactor);
+        }
+
         private float ResolveViewAlignmentFactor()
         {
             if (sceneCamera == null || directionalSun == null)
@@ -200,7 +250,7 @@ namespace Anemora.FastVS
                 Mathf.Clamp(local.z * -cameraParallax, -0.28f, 0.28f));
         }
 
-        private void ApplyRendererAlpha(Renderer renderer, float alpha)
+        private void ApplyRendererAlpha(Renderer renderer, float alpha, Color tint)
         {
             EnsurePropertyBlock();
             renderer.GetPropertyBlock(propertyBlock);
@@ -215,6 +265,9 @@ namespace Anemora.FastVS
                 sourceColor = material.GetColor(ColorId);
             }
 
+            sourceColor.r *= tint.r;
+            sourceColor.g *= tint.g;
+            sourceColor.b *= tint.b;
             sourceColor.a = alpha;
             propertyBlock.SetColor(BaseColorId, sourceColor);
             propertyBlock.SetColor(ColorId, sourceColor);

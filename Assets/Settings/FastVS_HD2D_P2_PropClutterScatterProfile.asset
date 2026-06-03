@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf11a52f96745749a1df667cf8ba39d, type: 3}
+  m_Name: FastVS_HD2D_P2_PropClutterScatterProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dPropClutterScatterProfile
+  minimumMarkerCount: 72
+  minimumClutterTypeCount: 8
+  minimumBareCornerFillCount: 6
+  reviewWallBaseSeamMeters: 13.2
+  targetWallBaseSeamCoverage: 0.68
+  focalBandNearMeters: 0
+  focalBandFarMeters: 34
+  farScatterCullDistanceMeters: 36
+  scaleJitterRange: {x: 0.88, y: 1.12}
+  yawJitterDegrees: {x: -18, y: 18}
+  conservativeScatterEnabled: 1
+  staticGiRequired: 1
+  gpuInstancingRequired: 1
+  needsTomApproval: 1
+  finalPropClutterApproved: 0
+  sourceKitNote: Procedural CC0-safe P2-74 review stand-ins; replace with approved
+    Quaternius/Kenney/itch CC0 prop meshes and hand-placed brush scatter after Tom
+    density approval.
+  recommendation: Keep the conservative wall-base and corner scatter as data prep
+    only. Tom should tune final density, silhouettes, walkable-path exclusions, approved
+    prop kit meshes, and per-area clutter language.

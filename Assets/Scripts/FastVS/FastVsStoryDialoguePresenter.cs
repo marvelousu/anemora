@@ -6,16 +6,32 @@ namespace Anemora.FastVS
 {
     public sealed class FastVsStoryDialoguePresenter : MonoBehaviour
     {
+        private const int PixelFontNativeSizeForReview = 16;
+        private const int PixelFontCaptionSizeForReview = 16;
+        private const int PixelFontBodySizeForReview = 32;
+        private const int PixelFontQuestionSizeForReview = 48;
+        private const float ReadableOutlineWidth = 0f;
         private const float QuestionHeadWorldOffset = 1.46f;
+        private const string UiLayerName = "UI";
+        private static readonly Vector4 DialogueFrameSpriteBorder = new Vector4(24f, 22f, 24f, 20f);
+        private static readonly Vector4 NameplateSpriteBorder = new Vector4(16f, 12f, 16f, 12f);
 
         [SerializeField] private TMP_FontAsset fontAsset;
         [SerializeField] private Camera targetCamera;
         [SerializeField] private Texture2D brushIconTexture;
+        [SerializeField] private Texture2D dialogueFrameTexture;
+        [SerializeField] private Texture2D nameplateTexture;
+        [SerializeField] private Sprite dialogueFrameSprite;
+        [SerializeField] private Sprite nameplateSprite;
+        [SerializeField] private bool ornateDialogueFrameEnabled = true;
         [SerializeField] private bool useTmpPresenter = true;
 
         private Canvas canvas;
         private CanvasScaler scaler;
         private RectTransform panel;
+        private RectTransform nameplatePanel;
+        private Image dialogueFrameImage;
+        private Image nameplateImage;
         private TextMeshProUGUI speakerText;
         private TextMeshProUGUI bodyText;
         private TextMeshProUGUI advanceText;
@@ -142,10 +158,7 @@ namespace Anemora.FastVS
         public void SetCameraForReview(Camera camera)
         {
             targetCamera = camera;
-            if (canvas != null)
-            {
-                canvas.worldCamera = targetCamera;
-            }
+            ConfigureScreenSpaceCameraCanvas();
         }
 
         private void UpdateQuestionPosition(Transform player, Camera storyCamera)
@@ -172,21 +185,22 @@ namespace Anemora.FastVS
         {
             if (canvas != null)
             {
+                ConfigureScreenSpaceCameraCanvas();
                 ApplyReadableTextStyle();
                 return;
             }
 
             var canvasObject = new GameObject("FastVS_StoryDialogueCanvas_TMP");
             canvasObject.transform.SetParent(transform, false);
+            canvasObject.layer = ResolveUiRenderLayer();
             canvas = canvasObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            canvas.worldCamera = targetCamera;
-            canvas.planeDistance = 1f;
             canvas.sortingOrder = 5000;
+            canvas.pixelPerfect = true;
+            ConfigureScreenSpaceCameraCanvas();
             scaler = canvasObject.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1280f, 720f);
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+            scaler.scaleFactor = 1f;
+            scaler.referencePixelsPerUnit = PixelFontNativeSizeForReview;
             canvasObject.AddComponent<GraphicRaycaster>();
 
             if (fontAsset != null)
@@ -194,18 +208,28 @@ namespace Anemora.FastVS
                 TMP_Settings.defaultFontAsset = fontAsset;
             }
 
-            panel = CreatePanel("DialoguePanel", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1172f, 124f), new Vector2(0f, 44f), new Color(0.025f, 0.022f, 0.022f, 0.88f));
-            CreateRect(panel, "TopStripe", AnchorTopStretch(), new Vector2(0f, 3f), new Vector2(0f, -1.5f), new Color(0.95f, 0.57f, 0.26f, 0.92f));
-            speakerText = CreateText(panel, "Speaker", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(240f, 30f), new Vector2(22f, -14f), 22f, FontStyles.Bold, TextAlignmentOptions.TopLeft, new Color(1f, 0.80f, 0.48f, 1f));
-            bodyText = CreateText(panel, "Body", new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(-44f, 46f), new Vector2(22f, -48f), 24f, FontStyles.Normal, TextAlignmentOptions.TopLeft, new Color(0.96f, 0.94f, 0.88f, 1f));
+            panel = CreatePanel("DialoguePanel", new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1112f, 176f), new Vector2(0f, 22f), Color.clear);
+            CreateRect(panel, "DropShadow", (Vector2.zero, Vector2.one), Vector2.zero, new Vector2(8f, -8f), new Color(0f, 0f, 0f, 0.48f));
+            CreateRect(panel, "InsetFill", (Vector2.zero, Vector2.one), new Vector2(-48f, -42f), new Vector2(0f, -2f), new Color(0.028f, 0.022f, 0.026f, 0.90f));
+            dialogueFrameImage = CreateSlicedImage(panel, "Frame9Slice", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, ResolveDialogueFrameSprite(), DialogueFrameSpriteBorder, Color.white);
+            CreateRect(panel, "InnerGoldRule", AnchorTopStretch(), new Vector2(-82f, 2f), new Vector2(0f, -25f), new Color(0.78f, 0.48f, 0.22f, 0.82f));
+            nameplatePanel = CreatePanel("Nameplate", new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(336f, 54f), new Vector2(32f, 16f), Color.clear);
+            nameplateImage = CreateSlicedImage(nameplatePanel, "Nameplate9Slice", Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero, ResolveNameplateSprite(), NameplateSpriteBorder, Color.white);
+            speakerText = CreateText(nameplatePanel, "Speaker", Vector2.zero, Vector2.one, new Vector2(-44f, -14f), new Vector2(22f, -2f), PixelFontBodySizeForReview, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, new Color(1f, 0.80f, 0.48f, 1f));
+            bodyText = CreateText(panel, "Body", new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(-96f, 82f), new Vector2(48f, -72f), PixelFontBodySizeForReview, FontStyles.Normal, TextAlignmentOptions.TopLeft, new Color(0.96f, 0.94f, 0.88f, 1f));
             bodyText.textWrappingMode = TextWrappingModes.Normal;
-            advanceText = CreateText(panel, "Advance", new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(170f, 24f), new Vector2(-20f, 8f), 15f, FontStyles.Normal, TextAlignmentOptions.MidlineRight, new Color(0.80f, 0.77f, 0.68f, 1f));
+            advanceText = CreateText(panel, "Advance", new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(108f, 28f), new Vector2(-32f, 18f), PixelFontCaptionSizeForReview, FontStyles.Normal, TextAlignmentOptions.MidlineRight, new Color(0.80f, 0.77f, 0.68f, 1f));
+            if (!ornateDialogueFrameEnabled)
+            {
+                dialogueFrameImage.gameObject.SetActive(false);
+                nameplateImage.gameObject.SetActive(false);
+            }
 
-            objectivePanel = CreatePanel("ObjectivePanel", new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(520f, 40f), new Vector2(18f, 18f), new Color(0.025f, 0.022f, 0.022f, 0.72f));
-            objectiveText = CreateText(objectivePanel, "Objective", new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(-28f, -16f), new Vector2(14f, 8f), 16f, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, new Color(0.94f, 0.91f, 0.84f, 1f));
+            objectivePanel = CreatePanel("ObjectivePanel", new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(680f, 56f), new Vector2(18f, 18f), new Color(0.025f, 0.022f, 0.022f, 0.72f));
+            objectiveText = CreateText(objectivePanel, "Objective", new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(-28f, -16f), new Vector2(14f, 8f), PixelFontBodySizeForReview, FontStyles.Normal, TextAlignmentOptions.MidlineLeft, new Color(0.94f, 0.91f, 0.84f, 1f));
 
-            questionRoot = CreatePanel("QuestionRoot", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(36f, 36f), Vector2.zero, Color.clear);
-            questionText = CreateText(questionRoot, "Question", new Vector2(0f, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero, 30f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(1f, 0.93f, 0.52f, 1f));
+            questionRoot = CreatePanel("QuestionRoot", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(56f, 56f), Vector2.zero, Color.clear);
+            questionText = CreateText(questionRoot, "Question", new Vector2(0f, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero, PixelFontQuestionSizeForReview, FontStyles.Normal, TextAlignmentOptions.Center, new Color(1f, 0.93f, 0.52f, 1f));
             questionText.text = "?";
 
             brushRoot = CreatePanel("BrushRoot", new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(224f, 224f), Vector2.zero, new Color(0.035f, 0.030f, 0.026f, 0.78f));
@@ -215,10 +239,50 @@ namespace Anemora.FastVS
             ApplyReadableTextStyle();
         }
 
+        private Image CreateSlicedImage(RectTransform parent, string objectName, Vector2 anchorMin, Vector2 anchorMax, Vector2 size, Vector2 position, Sprite sprite, Vector4 fallbackBorder, Color color)
+        {
+            var rect = CreateRect(parent, objectName, (anchorMin, anchorMax), size, position, Color.clear);
+            var image = rect.gameObject.AddComponent<Image>();
+            image.sprite = sprite;
+            image.type = Image.Type.Sliced;
+            image.pixelsPerUnitMultiplier = 1f;
+            image.color = sprite != null ? color : new Color(color.r, color.g, color.b, fallbackBorder.sqrMagnitude > 0f ? 0f : color.a);
+            image.raycastTarget = false;
+            return image;
+        }
+
+        private Sprite ResolveDialogueFrameSprite()
+        {
+            return ResolveSlicedSprite(ref dialogueFrameSprite, dialogueFrameTexture, DialogueFrameSpriteBorder, "FastVS_HD2D_P0_DialogueFramePresenter");
+        }
+
+        private Sprite ResolveNameplateSprite()
+        {
+            return ResolveSlicedSprite(ref nameplateSprite, nameplateTexture, NameplateSpriteBorder, "FastVS_HD2D_P0_NameplatePresenter");
+        }
+
+        private static Sprite ResolveSlicedSprite(ref Sprite cachedSprite, Texture2D texture, Vector4 border, string name)
+        {
+            if (cachedSprite != null)
+            {
+                return cachedSprite;
+            }
+
+            if (texture == null)
+            {
+                return null;
+            }
+
+            cachedSprite = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), PixelFontNativeSizeForReview, 0, SpriteMeshType.FullRect, border);
+            cachedSprite.name = name;
+            return cachedSprite;
+        }
+
         private static RawImage CreateRawImage(RectTransform parent, string objectName, Vector2 anchorMin, Vector2 anchorMax, Vector2 size, Vector2 position, Texture texture)
         {
             var imageObject = new GameObject(objectName);
             imageObject.transform.SetParent(parent, false);
+            imageObject.layer = parent.gameObject.layer;
             var rect = imageObject.AddComponent<RectTransform>();
             rect.anchorMin = anchorMin;
             rect.anchorMax = anchorMax;
@@ -248,6 +312,7 @@ namespace Anemora.FastVS
         {
             var rectObject = new GameObject(objectName);
             rectObject.transform.SetParent(parent, false);
+            rectObject.layer = parent.gameObject.layer;
             var rect = rectObject.AddComponent<RectTransform>();
             rect.anchorMin = anchors.Min;
             rect.anchorMax = anchors.Max;
@@ -275,6 +340,7 @@ namespace Anemora.FastVS
         {
             var textObject = new GameObject(objectName);
             textObject.transform.SetParent(parent, false);
+            textObject.layer = parent.gameObject.layer;
             var rect = textObject.AddComponent<RectTransform>();
             rect.anchorMin = anchorMin;
             rect.anchorMax = anchorMax;
@@ -295,12 +361,34 @@ namespace Anemora.FastVS
             text.alignment = alignment;
             text.color = color;
             text.faceColor = Color.white;
-            text.outlineColor = new Color(0f, 0f, 0f, 0.84f);
-            text.outlineWidth = 0.08f;
+            text.outlineColor = Color.clear;
+            text.outlineWidth = ReadableOutlineWidth;
             text.raycastTarget = false;
             text.characterSpacing = 0f;
             text.lineSpacing = 4f;
             return text;
+        }
+
+        private void ConfigureScreenSpaceCameraCanvas()
+        {
+            if (canvas == null)
+            {
+                return;
+            }
+
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = targetCamera;
+            canvas.planeDistance = 1f;
+            if (targetCamera != null)
+            {
+                targetCamera.cullingMask |= 1 << ResolveUiRenderLayer();
+            }
+        }
+
+        private static int ResolveUiRenderLayer()
+        {
+            var uiLayer = LayerMask.NameToLayer(UiLayerName);
+            return uiLayer >= 0 ? uiLayer : 0;
         }
 
         private void ApplyReadableTextStyle()
@@ -333,8 +421,8 @@ namespace Anemora.FastVS
             }
 
             text.faceColor = Color.white;
-            text.outlineColor = new Color(0f, 0f, 0f, 0.84f);
-            text.outlineWidth = 0.08f;
+            text.outlineColor = Color.clear;
+            text.outlineWidth = ReadableOutlineWidth;
             text.ForceMeshUpdate(true, true);
         }
 
@@ -372,12 +460,12 @@ namespace Anemora.FastVS
 
             if (readableFontMaterial.HasProperty(ShaderUtilities.ID_OutlineColor))
             {
-                readableFontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, new Color(0f, 0f, 0f, 0.84f));
+                readableFontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Color.clear);
             }
 
             if (readableFontMaterial.HasProperty(ShaderUtilities.ID_OutlineWidth))
             {
-                readableFontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, 0.08f);
+                readableFontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, ReadableOutlineWidth);
             }
 
             return readableFontMaterial;

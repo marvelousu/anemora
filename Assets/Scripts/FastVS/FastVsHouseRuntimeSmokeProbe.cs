@@ -19,12 +19,12 @@ namespace Anemora.FastVS
             }
 
             yield return null;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(3.0f);
 
             try
             {
                 RunChecks();
-                Debug.Log($"{PassMarker}: MiaInterior and AriaInterior door travel plus indoor character activation verified.");
+                Debug.Log($"{PassMarker}: stable startup framing, MiaInterior and AriaInterior door travel, and indoor character activation verified.");
                 Application.Quit(0);
             }
             catch (Exception exception)
@@ -52,6 +52,8 @@ namespace Anemora.FastVS
         {
             var controller = RequireObject<TimeWindowPairedSpacePortalController>("paired space controller");
             var visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+
+            VerifyStartupFraming(controller, visibility);
 
             VerifyTravel(
                 controller,
@@ -87,6 +89,83 @@ namespace Anemora.FastVS
                 FastVsHouseArea.AriaInterior,
                 FastVsHouseArea.AriaStreet,
                 "Aria interior to Aria street");
+        }
+
+        private static void VerifyStartupFraming(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility)
+        {
+            if (visibility.ActiveAreaForReview != FastVsHouseArea.CentralPlaza)
+            {
+                throw new InvalidOperationException($"Startup active area was {visibility.ActiveAreaForReview}, expected CentralPlaza.");
+            }
+
+            if (controller.PlayerInOtherTime)
+            {
+                throw new InvalidOperationException("Startup player must remain in current time.");
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("Missing main camera.");
+            }
+
+            var player = RequireObject<CharacterController>("player controller");
+            RequireActiveRenderer("Current_CentralPlazaMap_SeparateSpace", "central plaza stage");
+            var playerRenderer = RequireActiveRenderer("FastVS_PlayerVisual_NiroPaper", "player visual");
+
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            if ((camera.cullingMask & playerBit) == 0)
+            {
+                throw new InvalidOperationException("Startup camera culling mask does not include the visible player layer.");
+            }
+
+            var viewport = camera.WorldToViewportPoint(player.transform.position + Vector3.up * 0.75f);
+            if (viewport.z <= 0f ||
+                viewport.x < 0.12f ||
+                viewport.x > 0.88f ||
+                viewport.y < 0.10f ||
+                viewport.y > 0.90f)
+            {
+                throw new InvalidOperationException($"Startup player framing is out of range: viewport={viewport}.");
+            }
+
+            var playerLocal = controller.GetPlayerLocalCoordinateForReview();
+            if (playerLocal.y < -0.05f || playerLocal.y > 0.45f)
+            {
+                throw new InvalidOperationException($"Startup player local height drifted out of range after warmup: local={playerLocal}.");
+            }
+
+            VerifyRendererFraming(camera, playerRenderer, "player visual");
+        }
+
+        private static void VerifyRendererFraming(Camera camera, Renderer renderer, string label)
+        {
+            if (renderer == null)
+            {
+                throw new InvalidOperationException($"Missing {label} renderer.");
+            }
+
+            var bounds = renderer.bounds;
+            if (bounds.size.y < 0.25f || bounds.size.x < 0.10f)
+            {
+                throw new InvalidOperationException($"{label} renderer bounds are too small to confirm visibility: size={bounds.size}.");
+            }
+
+            var center = camera.WorldToViewportPoint(bounds.center);
+            var top = camera.WorldToViewportPoint(bounds.center + Vector3.up * bounds.extents.y);
+            var bottom = camera.WorldToViewportPoint(bounds.center - Vector3.up * bounds.extents.y);
+            var height = Mathf.Abs(top.y - bottom.y);
+            if (center.z <= 0f ||
+                center.x < 0.08f ||
+                center.x > 0.92f ||
+                center.y < 0.08f ||
+                center.y > 0.92f ||
+                height < 0.045f)
+            {
+                throw new InvalidOperationException($"{label} renderer is not framed clearly enough: center={center}, viewportHeight={height:0.000}.");
+            }
         }
 
         private static void VerifyTravel(
@@ -141,12 +220,17 @@ namespace Anemora.FastVS
             return transition;
         }
 
-        private static void RequireActiveRenderer(string objectName)
+        private static Renderer RequireActiveRenderer(string objectName)
+        {
+            return RequireActiveRenderer(objectName, objectName);
+        }
+
+        private static Renderer RequireActiveRenderer(string objectName, string label)
         {
             var gameObject = GameObject.Find(objectName);
             if (gameObject == null)
             {
-                throw new InvalidOperationException($"Missing indoor character {objectName}.");
+                throw new InvalidOperationException($"Missing {label} {objectName}.");
             }
 
             var renderers = gameObject.GetComponentsInChildren<Renderer>(true);
@@ -154,11 +238,11 @@ namespace Anemora.FastVS
             {
                 if (renderers[i] != null && renderers[i].enabled && renderers[i].gameObject.activeInHierarchy)
                 {
-                    return;
+                    return renderers[i];
                 }
             }
 
-            throw new InvalidOperationException($"Indoor character {objectName} has no active renderer.");
+            throw new InvalidOperationException($"{label} {objectName} has no active renderer.");
         }
     }
 }

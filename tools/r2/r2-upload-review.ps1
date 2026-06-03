@@ -58,10 +58,21 @@ $mTmp = Join-Path $env:TEMP "manifest-$Slug.json"
 $ArchiveSlugRoot = Join-Path $ArchiveRoot "tree\$Slug"
 $allRels = @()
 if (Test-Path $ArchiveSlugRoot) {
-  $allRels = Get-ChildItem $ArchiveSlugRoot -Recurse -File |
+  $relAll = Get-ChildItem $ArchiveSlugRoot -Recurse -File |
     ForEach-Object { ($_.FullName.Substring($ArchiveSlugRoot.Length + 1) -replace '\\', '/') } |
-    Where-Object { $_ -like 'docs/review/*' -or $_ -like 'docs/devlog/screenshots/*' } |
-    Sort-Object -Unique
+    Where-Object { $_ -like 'docs/review/*' -or $_ -like 'docs/devlog/screenshots/*' }
+  # Cap review cycles to the most recent N. At 100+ cycles (~840+ images) the Cloudflare Pages
+  # build r2.dev image fetch became flaky/partial, so collect-content indexed a non-deterministic
+  # (sometimes older) subset and the live viewer showed stale/regressed cycle sets. Bounding the
+  # fetch keeps builds reliable. Older images remain in R2 + the never-pruned archive; they are
+  # just not re-indexed into the live manifest. (2026-06-02)
+  $RecentCycles = 40
+  $reviewRel = @($relAll | Where-Object { $_ -like 'docs/review/*' })
+  $devlogRel = @($relAll | Where-Object { $_ -like 'docs/devlog/screenshots/*' })
+  $keepCycles = @($reviewRel | ForEach-Object { ($_ -split '/')[2] } | Sort-Object -Unique | Select-Object -Last $RecentCycles)
+  $keepSet = @{}; foreach ($c in $keepCycles) { $keepSet[$c] = $true }
+  $reviewKept = @($reviewRel | Where-Object { $keepSet.ContainsKey(($_ -split '/')[2]) })
+  $allRels = @($reviewKept + $devlogRel) | Sort-Object -Unique
 }
 $items = $allRels | ForEach-Object { '"' + ($_ -replace '\\', '\\' -replace '"', '\"') + '"' }
 $manifestJson = '[' + ($items -join ',') + ']'

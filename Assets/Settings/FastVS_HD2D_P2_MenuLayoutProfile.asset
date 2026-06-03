@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a26c3cca801f41449da60d5d9f6fd4c, type: 3}
+  m_Name: FastVS_HD2D_P2_MenuLayoutProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dMenuLayoutProfile
+  needsTomApproval: 1
+  finalMenuLayoutApproved: 0
+  reuseDialogueNineSliceFrame: 1
+  thirdsGridLayoutEnabled: 1
+  selectedFrameSwapEnabled: 1
+  screenSpaceCameraCanvas: 1
+  integerPixelUiScale: 1
+  editorCompositeBackdropBlurEnabled: 1
+  runtimeRendererFeatureDeferredForTom: 1
+  backdropDimAlpha: 0.58
+  unselectedFocusAlpha: 0.54
+  backdropBlurRadiusPixels: 8
+  inventoryPanelThirdsAnchor: {x: 0.33333334, y: 0.52}
+  detailPanelThirdsAnchor: {x: 0.6666667, y: 0.52}
+  headerPanelAnchor: {x: 0.5, y: 0.84}
+  footerPanelAnchor: {x: 0.5, y: 0.15}
+  inventoryPanelSize: {x: 560, y: 660}
+  detailPanelSize: {x: 620, y: 660}
+  headerPanelSize: {x: 720, y: 96}
+  footerPanelSize: {x: 940, y: 74}
+  panelFillColor: {r: 0.024, g: 0.02, b: 0.024, a: 0.92}
+  selectedFrameTint: {r: 1, g: 0.78, b: 0.36, a: 0.92}
+  selectedTextColor: {r: 1, g: 0.9, b: 0.62, a: 1}
+  unselectedTextColor: {r: 0.82, g: 0.8, b: 0.72, a: 0.82}
+  recommendation: Keep this as conservative P2-71 menu layout data only. Tom should
+    approve final frame art, blur strength, panel density, selected-state color,
+    and whether a real Render Graph blur pass replaces the editor composite proof.

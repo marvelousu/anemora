@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b165bf0af05c0d41b2f729533ce7d95, type: 3}
+  m_Name: FastVS_HD2D_P2_EmberSparkProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dEmberSparkProfile
+  maxParticlesPerEmitter: 28
+  libraryTorchEmissionRate: 13.5
+  cookfireEmissionRate: 18
+  porchTorchEmissionRate: 12
+  emberLifetime: 1.35
+  systemDuration: 2.25
+  startSizeMin: 0.024
+  startSizeMax: 0.058
+  riseVelocityMin: 0.58
+  riseVelocityMax: 0.86
+  lateralDriftVelocity: 0.16
+  noiseStrength: 0.105
+  noiseFrequency: 0.34
+  buoyancyEaseOutDamping: 0.18
+  flickerFrequency: 2.35
+  flickerAmplitude: 0.34
+  distanceCullFarMeters: 34
+  strongerOptionMultiplier: 1.42
+  hotCoreColor: {r: 2.15, g: 1.14, b: 0.34, a: 1}
+  hotFlickerColor: {r: 3.15, g: 1.68, b: 0.48, a: 1}
+  darkRedFadeColor: {r: 0.44, g: 0.075, b: 0.018, a: 1}
+  pointLightColor: {r: 1, g: 0.58, b: 0.24, a: 1}
+  hdrIntensity: 2.65
+  pointLightIntensity: 0.11
+  pointLightRange: 1.24
+  loopingShuriken: 1
+  additiveHdrMaterial: 1
+  softParticlesRequired: 1
+  upwardFadeBeforeHeight: 1
+  flickerPointLightsEnabled: 1
+  distanceCullFarEmitters: 1
+  conservativeDataPrep: 1
+  needsTomApproval: 1
+  finalEmberSparkApproved: 0
+  recommendation: Keep the conservative HDR additive ember baseline as data prep.
+    Tom should tune final density, bloom intensity, spark size, and point-light flicker
+    after checking it against the approved night grade.

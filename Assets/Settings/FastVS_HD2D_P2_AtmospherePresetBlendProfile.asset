@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74721c65c965c54385b669d6b3418fa, type: 3}
+  m_Name: FastVS_HD2D_P2_AtmospherePresetBlendProfile
+  m_EditorClassIdentifier: Assembly-CSharp::Anemora.FastVS.FastVsHd2dAtmospherePresetBlendProfile
+  presets:
+  - preset: 0
+    sunElevationDegrees: 28
+    fogStrength: 0.145
+    fogNearColor: {r: 0.98, g: 0.82, b: 0.6, a: 1}
+    fogFarColor: {r: 0.78, g: 0.58, b: 0.46, a: 1}
+    fogGradient: {fileID: 2800000, guid: aef27ec31d6998548b863acbdf447112, type: 2}
+    distanceStart: 2.8
+    distanceEnd: 12.5
+    heightBand: {x: -0.35, y: 3.4}
+    heightStrength: 0.4
+    aerialTintStrength: 0.17
+    aerialTintDistancePadding: {x: 0.8, y: 5.4}
+    shaftIntensityMultiplier: 1.05
+    shaftTint: {r: 1, g: 0.86, b: 0.64, a: 1}
+    ambientDustEmissionMultiplier: 1.15
+    ambientDustTintWarmth: 0.68
+    sunMoteEmissionMultiplier: 1.2
+  - preset: 1
+    sunElevationDegrees: 50
+    fogStrength: 0.075
+    fogNearColor: {r: 0.8, g: 0.86, b: 0.88, a: 1}
+    fogFarColor: {r: 0.54, g: 0.66, b: 0.78, a: 1}
+    fogGradient: {fileID: 2800000, guid: ece842aa60f1db9448cb96843b95bb24, type: 2}
+    distanceStart: 5
+    distanceEnd: 15
+    heightBand: {x: -0.25, y: 3}
+    heightStrength: 0.22
+    aerialTintStrength: 0.1
+    aerialTintDistancePadding: {x: 1.4, y: 5.8}
+    shaftIntensityMultiplier: 0.38
+    shaftTint: {r: 0.86, g: 0.9, b: 0.96, a: 1}
+    ambientDustEmissionMultiplier: 0.7
+    ambientDustTintWarmth: 0.32
+    sunMoteEmissionMultiplier: 0.28
+  - preset: 2
+    sunElevationDegrees: 24
+    fogStrength: 0.17
+    fogNearColor: {r: 1, g: 0.66, b: 0.44, a: 1}
+    fogFarColor: {r: 0.82, g: 0.46, b: 0.36, a: 1}
+    fogGradient: {fileID: 2800000, guid: 748bde7a52f829c40bfd3ff132999b82, type: 2}
+    distanceStart: 2.6
+    distanceEnd: 12
+    heightBand: {x: -0.45, y: 3.6}
+    heightStrength: 0.46
+    aerialTintStrength: 0.18
+    aerialTintDistancePadding: {x: 0.7, y: 5.2}
+    shaftIntensityMultiplier: 1.18
+    shaftTint: {r: 1, g: 0.74, b: 0.48, a: 1}
+    ambientDustEmissionMultiplier: 1.32
+    ambientDustTintWarmth: 0.82
+    sunMoteEmissionMultiplier: 1.42
+  - preset: 3
+    sunElevationDegrees: -32
+    fogStrength: 0.205
+    fogNearColor: {r: 0.42, g: 0.5, b: 0.66, a: 1}
+    fogFarColor: {r: 0.18, g: 0.24, b: 0.36, a: 1}
+    fogGradient: {fileID: 2800000, guid: 07873bdfbf2525a44aac8236b4a7aa8d, type: 2}
+    distanceStart: 2.4
+    distanceEnd: 10.2
+    heightBand: {x: -0.6, y: 3.8}
+    heightStrength: 0.52
+    aerialTintStrength: 0.15
+    aerialTintDistancePadding: {x: 0.6, y: 4.6}
+    shaftIntensityMultiplier: 0
+    shaftTint: {r: 0.48, g: 0.58, b: 0.82, a: 1}
+    ambientDustEmissionMultiplier: 0.42
+    ambientDustTintWarmth: 0.12
+    sunMoteEmissionMultiplier: 0
+  transitionSeconds: 1.8
+  publishEveryFrame: 1
+  needsTomApproval: 1
+  finalAtmosphereApproved: 0
+  recommendation: 'Keep the P2-57 profile as conservative data prep. Recommendation:
+    use the authored dawn/noon/dusk/night deltas as the starting point, but Tom should
+    tune final fog hue, shaft alpha, and dust density after camera/grade sign-off.'

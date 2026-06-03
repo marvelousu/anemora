@@ -38,26 +38,26 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 02a5a1ca1a420f94c8820330a8910946, type: 2}
   m_SourceFontFileGUID: 8e49f8e6e4c34bd46911c198f20550ed
   m_CreationSettings:
-    sourceFontFileName: 
-    sourceFontFileGUID: 
+    sourceFontFileName: DotGothic16-Regular.ttf
+    sourceFontFileGUID: 8e49f8e6e4c34bd46911c198f20550ed
     faceIndex: 0
     pointSizeSamplingMode: 0
-    pointSize: 0
-    padding: 0
+    pointSize: 16
+    padding: 4
     paddingMode: 0
     packingMode: 0
-    atlasWidth: 0
-    atlasHeight: 0
+    atlasWidth: 4096
+    atlasHeight: 4096
     characterSetSelectionMode: 0
     characterSequence: 
     referencedFontAssetGUID: 
     referencedTextAssetGUID: 
     fontStyle: 0
     fontStyleModifier: 0
-    renderMode: 0
+    renderMode: 4122
     includeFontFeatures: 0
-  m_SourceFontFile: {fileID: 0}
-  m_SourceFontFilePath: 
+  m_SourceFontFile: {fileID: 12800000, guid: 8e49f8e6e4c34bd46911c198f20550ed, type: 3}
+  m_SourceFontFilePath: Assets/UI/Localization/Fonts/ThirdParty/DotGothic16-Regular.ttf
   m_AtlasPopulationMode: 0
   InternalDynamicOS: 0
   m_GlyphTable:

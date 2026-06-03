@@ -13,6 +13,7 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
         [HideInInspector]_AlphaClip("__alphaClip", Float) = 1
         [HideInInspector]_ZWrite("__zw", Float) = 1
         [HideInInspector]_Cull("__cull", Float) = 0
+        [HideInInspector]_ZTest("__ztest", Float) = 4
         [HideInInspector]_SrcBlend("__src", Float) = 1
         [HideInInspector]_DstBlend("__dst", Float) = 0
         [HideInInspector]_QueueControl("__queueControl", Float) = 1
@@ -26,6 +27,28 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
         _PaperLowerShadeStrength("Paper Lower Shade Strength", Range(0, 0.25)) = 0.08
         _WorldLightStrength("World Light Strength", Range(0, 0.25)) = 0.08
         _WorldShadowReceiveStrength("World Shadow Receive Strength", Range(0, 0.20)) = 0.05
+        _ReceiveWorldShadows("Receive World Shadows", Range(0, 1)) = 1
+        _CharacterBillboardShadowFix("Character Billboard Shadow Fix", Range(0, 1)) = 0
+        _BillboardLightingSideStrength("Billboard Lighting Side Strength", Range(0, 0.25)) = 0.10
+        _BillboardShadowCutoff("Billboard Shadow Cutoff", Range(0, 1)) = 0.50
+        _CharacterRimBacklightStrength("Character Rim Backlight Strength", Range(0, 0.45)) = 0.15
+        _CharacterRimBacklightWidth("Character Rim Backlight Width", Range(0.25, 2.5)) = 1.10
+        _CharacterRimBacklightPower("Character Rim Backlight Power", Range(0.35, 4)) = 0.85
+        _CharacterRimBacklightColor("Character Rim Warm Tint", Color) = (1.0, 0.78, 0.52, 1)
+        _CharacterRimBacklightCoolColor("Character Rim Cool Tint", Color) = (0.52, 0.68, 1.0, 1)
+        _CharacterRimBacklightDirection("Character Rim Direction", Vector) = (0.68, 0, 0.74, 0)
+        [NoScaleOffset]_SpriteNormalMap("Sprite Normal Map", 2D) = "bump" {}
+        _UseSpriteDirectionalNormals("Use Sprite Directional Normals", Range(0, 1)) = 0
+        _SpriteNormalStrength("Sprite Normal Strength", Range(0, 1)) = 0.35
+        _SpriteDirectionalLightStrength("Sprite Directional Light Strength", Range(0, 0.7)) = 0.22
+        _SpriteNormalAmbientFloor("Sprite Normal Ambient Floor", Range(0.35, 1)) = 0.72
+        _CanopyTranslucency("Canopy Backlit Translucency", Range(0, 0.8)) = 0
+        _CanopyInteriorAo("Canopy Interior AO", Range(0, 0.8)) = 0
+        _CanopyLayerDepth("Canopy Layer Depth", Range(0, 1)) = 0
+        _CanopyWindPhase("Canopy Wind Phase", Range(0, 6.283)) = 0
+        _CanopyBacklightWarmColor("Canopy Backlight Warm Color", Color) = (1.0, 0.72, 0.36, 1)
+        _VegetationControlWeight("Vegetation Control Weight", Range(0, 1)) = 0
+        _WeatherDriftWeight("Weather Drift Weight", Range(0, 1)) = 0
     }
 
     SubShader
@@ -44,7 +67,7 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
             Tags { "LightMode" = "UniversalForward" }
 
             ZWrite [_ZWrite]
-            ZTest LEqual
+            ZTest [_ZTest]
             Cull [_Cull]
 
             HLSLPROGRAM
@@ -54,35 +77,78 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
             #pragma multi_compile _ _LIGHT_COOKIES
+            #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
-            float4 _BaseMap_ST;
             float4 _BaseMap_TexelSize;
 
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
-            float4 _MainTex_ST;
 
             TEXTURE2D(_EmissionMap);
             SAMPLER(sampler_EmissionMap);
 
+            TEXTURE2D(_SpriteNormalMap);
+            SAMPLER(sampler_SpriteNormalMap);
+
+            CBUFFER_START(UnityPerMaterial)
+            float4 _BaseMap_ST;
+            float4 _MainTex_ST;
             float4 _BaseColor;
             float4 _EmissionColor;
-            half _EmissionIntensity;
-            half _Cutoff;
-            half _RampStrength;
+            float _EmissionIntensity;
+            float _Cutoff;
+            float _Surface;
+            float _AlphaClip;
+            float _ZWrite;
+            float _Cull;
+            float _SrcBlend;
+            float _DstBlend;
+            float _QueueControl;
+            float _QueueOffset;
+            float _RampStrength;
             float4 _TopLight;
             float4 _SideShade;
             float4 _FloorShade;
-            half _PaperEdgeStrength;
-            half _PaperRimStrength;
-            half _PaperLowerShadeStrength;
-            half _WorldLightStrength;
-            half _WorldShadowReceiveStrength;
+            float _PaperEdgeStrength;
+            float _PaperRimStrength;
+            float _PaperLowerShadeStrength;
+            float _WorldLightStrength;
+            float _WorldShadowReceiveStrength;
+            float _ReceiveWorldShadows;
+            float _CharacterBillboardShadowFix;
+            float _BillboardLightingSideStrength;
+            float _BillboardShadowCutoff;
+            float _CharacterRimBacklightStrength;
+            float _CharacterRimBacklightWidth;
+            float _CharacterRimBacklightPower;
+            float4 _CharacterRimBacklightColor;
+            float4 _CharacterRimBacklightCoolColor;
+            float4 _CharacterRimBacklightDirection;
+            float _UseSpriteDirectionalNormals;
+            float _SpriteNormalStrength;
+            float _SpriteDirectionalLightStrength;
+            float _SpriteNormalAmbientFloor;
+            float _CanopyTranslucency;
+            float _CanopyInteriorAo;
+            float _CanopyLayerDepth;
+            float _CanopyWindPhase;
+            float4 _CanopyBacklightWarmColor;
+            float _VegetationControlWeight;
+            float _WeatherDriftWeight;
+            CBUFFER_END
+            #define FASTVS_SHARED_VEGETATION_WIND_CONTROL_SKIP_CONTROL_WEIGHT_DECLS
+            #include "Assets/Art/Shaders/FastVS/FastVS_SharedVegetationWindControl.hlsl"
+            float4 _AnemoraHd2dSunKeyColor;
+            float _AnemoraHd2dSunKeyIntensity;
+            float _AnemoraHd2dReadabilityFloor;
+            float4 _AnemoraHd2dReadabilityFloorTint;
+            float _AnemoraHd2dReadabilityFloorStrength;
+            float _AnemoraHd2dWindowEmissionStrength;
 
             struct Attributes
             {
@@ -101,6 +167,7 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
             {
                 Varyings output;
                 output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                output.positionWS = FastVsApplySharedWindControlWithPhase(output.positionWS, input.uv, 0.075, _VegetationControlWeight, _WeatherDriftWeight, _CanopyWindPhase);
                 output.positionHCS = TransformWorldToHClip(output.positionWS);
                 output.uv = input.uv;
                 return output;
@@ -167,16 +234,74 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
                 half worldLightStrength = saturate((half)_WorldLightStrength);
                 half worldShadowReceiveStrength = saturate((half)_WorldShadowReceiveStrength);
                 half3 mainLightColor = half3(mainLight.color.r, mainLight.color.g, mainLight.color.b);
+                mainLightColor = lerp(mainLightColor, half3(_AnemoraHd2dSunKeyColor.rgb), step(0.001h, (half)_AnemoraHd2dSunKeyIntensity));
+                half characterBillboardFix = saturate((half)_CharacterBillboardShadowFix);
+                float3 viewDirWS = normalize(GetCameraPositionWS() - input.positionWS);
+                float3 billboardNormalWS = float3(viewDirWS.x, 0.0, viewDirWS.z);
+                billboardNormalWS = dot(billboardNormalWS, billboardNormalWS) > 0.0001 ? normalize(billboardNormalWS) : float3(0.0, 0.0, 1.0);
+                float3 billboardRightWS = normalize(cross(float3(0.0, 1.0, 0.0), billboardNormalWS));
+                float sideLight = dot(billboardRightWS, mainLight.direction);
+                float litSideMask = lerp(1.0 - frameUv.x, frameUv.x, step(0.0, sideLight));
+                half sideStrength = saturate((half)_BillboardLightingSideStrength);
+                half sideLightGrade = lerp(1.0h - sideStrength, 1.0h + sideStrength, (half)smoothstep(0.18, 0.88, litSideMask));
+                grade *= lerp(neutral, half3(sideLightGrade, sideLightGrade, sideLightGrade), characterBillboardFix);
+                float3 rimDirectionInputWS = float3(_CharacterRimBacklightDirection.x, 0.0, _CharacterRimBacklightDirection.z);
+                float rimDirectionHasValue = step(0.0001, dot(rimDirectionInputWS, rimDirectionInputWS));
+                float3 rimDirectionWS = normalize(lerp(float3(0.68, 0.0, 0.74), rimDirectionInputWS, rimDirectionHasValue));
+                half rimFacing = (half)lerp(0.62, 1.0, saturate(abs(dot(billboardRightWS, rimDirectionWS))));
+                half rimWarmth = saturate((half)((_AnemoraHd2dSunKeyColor.r - _AnemoraHd2dSunKeyColor.b) * 1.45 + 0.48));
+                half3 rimTodTint = lerp((half3)_CharacterRimBacklightCoolColor.rgb, (half3)_CharacterRimBacklightColor.rgb, rimWarmth);
+                half3 rimSunTint = saturate(half3(_AnemoraHd2dSunKeyColor.rgb) + half3(0.10h, 0.08h, 0.05h));
+                rimTodTint = lerp(rimTodTint, rimSunTint, step(0.001h, (half)_AnemoraHd2dSunKeyIntensity) * 0.55h);
+                half rimEdge = (half)pow(saturate(edgeAccent * max(_CharacterRimBacklightWidth, 0.001h)), max(_CharacterRimBacklightPower, 0.001h));
+                half rimVerticalMask = (half)smoothstep(0.08, 0.92, frameUv.y);
+                half rimMask = characterBillboardFix * saturate(_CharacterRimBacklightStrength) * rimEdge * rimFacing * lerp(0.74h, 1.0h, rimVerticalMask) * saturate(baseSample.a);
+                half4 spriteNormalSample = SAMPLE_TEXTURE2D(_SpriteNormalMap, sampler_SpriteNormalMap, uv);
+                half3 spriteNormalTS = half3(spriteNormalSample.rg * 2.0h - 1.0h, max(spriteNormalSample.b * 2.0h - 1.0h, 0.10h));
+                spriteNormalTS.xy *= saturate(_SpriteNormalStrength);
+                spriteNormalTS = normalize(spriteNormalTS);
+                float3 billboardUpWS = float3(0.0, 1.0, 0.0);
+                float3 spriteNormalWS = normalize(billboardRightWS * spriteNormalTS.x + billboardUpWS * spriteNormalTS.y + billboardNormalWS * spriteNormalTS.z);
+                half spriteNormalLight = (half)smoothstep(0.18, 0.92, saturate(dot(spriteNormalWS, normalize(mainLight.direction)) * 0.5 + 0.5));
+                half spriteNormalGrade = lerp(saturate(_SpriteNormalAmbientFloor), 1.0h + saturate(_SpriteDirectionalLightStrength), spriteNormalLight);
+                half spriteDirectionalNormalMask = characterBillboardFix * saturate(_UseSpriteDirectionalNormals) * saturate(baseSample.a);
+                grade *= lerp(neutral, half3(spriteNormalGrade, spriteNormalGrade, spriteNormalGrade), spriteDirectionalNormalMask);
                 half lightCookieLuma = dot(mainLightColor, half3(0.2126h, 0.7152h, 0.0722h));
                 half lightCookieResponse = smoothstep(0.36h, 0.88h, lightCookieLuma);
                 half3 mainTint = lerp(neutral, saturate(mainLightColor + half3(0.06h, 0.03h, -0.04h)), worldLightStrength);
-                half shadowGrade = lerp(1.0h - worldShadowReceiveStrength, 1.0h, (half)mainLight.shadowAttenuation);
+                half shadowGrade = lerp(1.0h - worldShadowReceiveStrength * saturate((half)_ReceiveWorldShadows), 1.0h, (half)mainLight.shadowAttenuation);
                 shadowGrade *= lerp(0.92h, 1.06h, lightCookieResponse * worldLightStrength);
 
                 half3 rgb = baseSample.rgb * grade * mainTint * shadowGrade;
+                half canopyInteriorAo = saturate(_CanopyInteriorAo);
+                half canopyLayerDepth = saturate(_CanopyLayerDepth);
+                half canopyCoreX = (half)saturate(1.0 - abs(frameUv.x - 0.50) * 2.35);
+                half canopyCoreY = (half)saturate(1.0 - abs(frameUv.y - 0.58) * 2.05);
+                half canopyLowerCore = (half)saturate((1.0 - frameUv.y) * 1.22);
+                half canopyAlphaCore = (half)saturate(baseSample.a * 1.18 - edgeAccent * 0.44);
+                half canopyInteriorMask = canopyAlphaCore * saturate(canopyCoreX * (canopyCoreY * 0.70h + canopyLowerCore * 0.42h));
+                half canopyAo = canopyInteriorMask * canopyInteriorAo * (0.72h + canopyLayerDepth * 0.42h);
+                rgb *= lerp(1.0h, 0.62h, canopyAo);
+                half canopyTranslucency = saturate(_CanopyTranslucency);
+                half canopySunBehind = (half)saturate(dot(normalize(mainLight.direction), -viewDirWS) * 0.5 + 0.5);
+                half canopyEdgeTransmission = (half)saturate(edgeAccent * (0.45 + frameUv.y * 0.45 + warmKey * 0.25));
+                half canopyBacklight = canopyTranslucency * canopyEdgeTransmission * canopySunBehind * (0.60h + lightCookieResponse * 0.40h) * saturate(baseSample.a);
+                half3 canopyBacklightTint = saturate(half3(_CanopyBacklightWarmColor.rgb) * (0.74h + mainLightColor * 0.30h));
+                rgb += canopyBacklightTint * canopyBacklight * (1.0h - canopyLayerDepth * 0.26h);
+                rgb += rimTodTint * rimMask;
+                rgb = FastVsApplySharedVegetationTint(rgb, _VegetationControlWeight);
                 half3 emissionSample = SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, uv).rgb;
                 half3 emissionColor = half3(_EmissionColor.r, _EmissionColor.g, _EmissionColor.b);
-                rgb += emissionSample * emissionColor * (half)_EmissionIntensity;
+                half windowEmissionStrength = max((half)_AnemoraHd2dWindowEmissionStrength, 0.0h);
+                rgb += emissionSample * emissionColor * (half)_EmissionIntensity * windowEmissionStrength;
+                half readabilityFloor = saturate((half)_AnemoraHd2dReadabilityFloor);
+                half readabilityStrength = saturate((half)_AnemoraHd2dReadabilityFloorStrength);
+                half rgbLuma = dot(rgb, half3(0.2126h, 0.7152h, 0.0722h));
+                half floorMask = saturate((readabilityFloor - rgbLuma) / max(readabilityFloor, 0.001h));
+                half3 readabilityTint = max(half3(_AnemoraHd2dReadabilityFloorTint.rgb), half3(0.001h, 0.001h, 0.001h));
+                half readabilityTintLuma = max(dot(readabilityTint, half3(0.2126h, 0.7152h, 0.0722h)), 0.001h);
+                half3 floorColor = readabilityTint * (readabilityFloor / readabilityTintLuma);
+                rgb = lerp(rgb, max(rgb, floorColor), floorMask * readabilityStrength);
                 return half4(rgb, 1.0h);
             }
             ENDHLSL
@@ -196,15 +321,61 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
             #pragma vertex ShadowPassVertex
             #pragma fragment ShadowPassFragment
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
+            CBUFFER_START(UnityPerMaterial)
             float4 _BaseMap_ST;
+            float4 _MainTex_ST;
             float4 _BaseColor;
-            half _Cutoff;
+            float4 _EmissionColor;
+            float _EmissionIntensity;
+            float _Cutoff;
+            float _Surface;
+            float _AlphaClip;
+            float _ZWrite;
+            float _Cull;
+            float _SrcBlend;
+            float _DstBlend;
+            float _QueueControl;
+            float _QueueOffset;
+            float _RampStrength;
+            float4 _TopLight;
+            float4 _SideShade;
+            float4 _FloorShade;
+            float _PaperEdgeStrength;
+            float _PaperRimStrength;
+            float _PaperLowerShadeStrength;
+            float _WorldLightStrength;
+            float _WorldShadowReceiveStrength;
+            float _ReceiveWorldShadows;
+            float _CharacterBillboardShadowFix;
+            float _BillboardLightingSideStrength;
+            float _BillboardShadowCutoff;
+            float _CharacterRimBacklightStrength;
+            float _CharacterRimBacklightWidth;
+            float _CharacterRimBacklightPower;
+            float4 _CharacterRimBacklightColor;
+            float4 _CharacterRimBacklightCoolColor;
+            float4 _CharacterRimBacklightDirection;
+            float _UseSpriteDirectionalNormals;
+            float _SpriteNormalStrength;
+            float _SpriteDirectionalLightStrength;
+            float _SpriteNormalAmbientFloor;
+            float _CanopyTranslucency;
+            float _CanopyInteriorAo;
+            float _CanopyLayerDepth;
+            float _CanopyWindPhase;
+            float4 _CanopyBacklightWarmColor;
+            float _VegetationControlWeight;
+            float _WeatherDriftWeight;
+            CBUFFER_END
+            #define FASTVS_SHARED_VEGETATION_WIND_CONTROL_SKIP_CONTROL_WEIGHT_DECLS
+            #include "Assets/Art/Shaders/FastVS/FastVS_SharedVegetationWindControl.hlsl"
             float3 _LightDirection;
             float3 _LightPosition;
 
@@ -225,6 +396,7 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
             {
                 ShadowVaryings output;
                 float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                positionWS = FastVsApplySharedWindControlWithPhase(positionWS, input.uv, 0.075, _VegetationControlWeight, _WeatherDriftWeight, _CanopyWindPhase);
                 float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
 
                 #if defined(_CASTING_PUNCTUAL_LIGHT_SHADOW)
@@ -232,6 +404,21 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
                 #else
                     float3 lightDirectionWS = _LightDirection;
                 #endif
+
+                float billboardFix = saturate(_CharacterBillboardShadowFix);
+                float3 lightForwardWS = float3(lightDirectionWS.x, 0.0, lightDirectionWS.z);
+                float hasFlatLight = step(0.0001, dot(lightForwardWS, lightForwardWS));
+                lightForwardWS = normalize(lerp(float3(0.55, 0.0, 0.83), lightForwardWS, hasFlatLight));
+                float3 lightRightWS = normalize(cross(float3(0.0, 1.0, 0.0), lightForwardWS));
+                float3 objectPivotWS = TransformObjectToWorld(float3(0.0, 0.0, 0.0));
+                float objectWidthScale = length(mul((float3x3)UNITY_MATRIX_M, float3(1.0, 0.0, 0.0)));
+                float objectHeightScale = length(mul((float3x3)UNITY_MATRIX_M, float3(0.0, 1.0, 0.0)));
+                float3 lightFacingBillboardWS =
+                    objectPivotWS +
+                    lightRightWS * (input.positionOS.x * objectWidthScale) +
+                    float3(0.0, 1.0, 0.0) * (input.positionOS.y * objectHeightScale);
+                positionWS = lerp(positionWS, lightFacingBillboardWS, billboardFix);
+                normalWS = normalize(lerp(normalWS, -lightDirectionWS, billboardFix));
 
                 float4 positionCS = TransformWorldToHClip(ApplyShadowBias(positionWS, normalWS, lightDirectionWS));
                 #if UNITY_REVERSED_Z
@@ -246,6 +433,106 @@ Shader "Anemora/FastVS/SpriteCardRampLit"
             }
 
             half4 ShadowPassFragment(ShadowVaryings input) : SV_TARGET
+            {
+                half alpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).a * (half)_BaseColor.a;
+                half shadowCutoff = lerp(_Cutoff, _BillboardShadowCutoff, saturate(_CharacterBillboardShadowFix));
+                clip(alpha - shadowCutoff);
+                return 0;
+            }
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "DepthOnly"
+            Tags { "LightMode" = "DepthOnly" }
+
+            ZWrite On
+            ZTest LEqual
+            ColorMask 0
+            Cull [_Cull]
+
+            HLSLPROGRAM
+            #pragma vertex DepthOnlyVertex
+            #pragma fragment DepthOnlyFragment
+            #pragma multi_compile_instancing
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
+            CBUFFER_START(UnityPerMaterial)
+            float4 _BaseMap_ST;
+            float4 _MainTex_ST;
+            float4 _BaseColor;
+            float4 _EmissionColor;
+            float _EmissionIntensity;
+            float _Cutoff;
+            float _Surface;
+            float _AlphaClip;
+            float _ZWrite;
+            float _Cull;
+            float _SrcBlend;
+            float _DstBlend;
+            float _QueueControl;
+            float _QueueOffset;
+            float _RampStrength;
+            float4 _TopLight;
+            float4 _SideShade;
+            float4 _FloorShade;
+            float _PaperEdgeStrength;
+            float _PaperRimStrength;
+            float _PaperLowerShadeStrength;
+            float _WorldLightStrength;
+            float _WorldShadowReceiveStrength;
+            float _ReceiveWorldShadows;
+            float _CharacterBillboardShadowFix;
+            float _BillboardLightingSideStrength;
+            float _BillboardShadowCutoff;
+            float _CharacterRimBacklightStrength;
+            float _CharacterRimBacklightWidth;
+            float _CharacterRimBacklightPower;
+            float4 _CharacterRimBacklightColor;
+            float4 _CharacterRimBacklightCoolColor;
+            float4 _CharacterRimBacklightDirection;
+            float _UseSpriteDirectionalNormals;
+            float _SpriteNormalStrength;
+            float _SpriteDirectionalLightStrength;
+            float _SpriteNormalAmbientFloor;
+            float _CanopyTranslucency;
+            float _CanopyInteriorAo;
+            float _CanopyLayerDepth;
+            float _CanopyWindPhase;
+            float4 _CanopyBacklightWarmColor;
+            float _VegetationControlWeight;
+            float _WeatherDriftWeight;
+            CBUFFER_END
+            #define FASTVS_SHARED_VEGETATION_WIND_CONTROL_SKIP_CONTROL_WEIGHT_DECLS
+            #include "Assets/Art/Shaders/FastVS/FastVS_SharedVegetationWindControl.hlsl"
+
+            struct DepthOnlyAttributes
+            {
+                float4 positionOS : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct DepthOnlyVaryings
+            {
+                float4 positionCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            DepthOnlyVaryings DepthOnlyVertex(DepthOnlyAttributes input)
+            {
+                DepthOnlyVaryings output;
+                float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                positionWS = FastVsApplySharedWindControlWithPhase(positionWS, input.uv, 0.075, _VegetationControlWeight, _WeatherDriftWeight, _CanopyWindPhase);
+                output.positionCS = TransformWorldToHClip(positionWS);
+                output.uv = input.uv * _BaseMap_ST.xy + _BaseMap_ST.zw;
+                return output;
+            }
+
+            half4 DepthOnlyFragment(DepthOnlyVaryings input) : SV_TARGET
             {
                 half alpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv).a * (half)_BaseColor.a;
                 clip(alpha - _Cutoff);
