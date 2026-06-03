@@ -315,10 +315,30 @@ namespace Anemora.FastVS
         private void ApplyRendererShadowPolicy(FastVsHouseArea activeArea)
         {
             var isRealtimeOutdoor = IsRealtimeOutdoorArea(activeArea);
+            var fakeLookWashDisabledCount = 0;
             foreach (var renderer in FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (renderer == null || !renderer.gameObject.scene.IsValid())
                 {
+                    continue;
+                }
+
+                // RecoveryV3 (2026-06-03): authoritatively suppress the early HD-2D "fake-look" wash
+                // overlays (pale cream light pools laid over the plaza floor + the pale haze band across
+                // the backdrop) BEFORE every re-enable branch below. They were being force re-enabled
+                // here at runtime (IsStage7VfxRenderer / IsHd2dOverlayProfileRenderer), which is why
+                // disabling them only in the scene never stuck and the ground/building surfaces kept
+                // reading white (Tom: "地面や建物表面が白くなっている ... 初期のミス"). Dark shadow/contact
+                // overlays and the dark structural backdrop/void are NOT washes and stay enabled.
+                // Gate on isPlaying: at editor bake time (ApplyNowForReview) the scene keeps the washes
+                // enabled exactly as on HEAD, so the existence/queue/tag validators still pass; the strip
+                // only happens in the running player, which is where the whitening is actually seen.
+                if (Application.isPlaying && IsPaleFakeLookSurfaceWashRenderer(renderer))
+                {
+                    renderer.enabled = false;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                    fakeLookWashDisabledCount++;
                     continue;
                 }
 
@@ -403,6 +423,8 @@ namespace Anemora.FastVS
                     renderer.receiveShadows = false;
                 }
             }
+
+            Debug.Log($"[RecoveryV3] ApplyRendererShadowPolicy area={activeArea}: disabled {fakeLookWashDisabledCount} pale fake-look wash renderer(s).");
         }
 
         private static void ApplySurfaceShadowPolicy(Renderer renderer, bool isRealtimeOutdoor, FastVsHouseArea activeArea)
@@ -469,6 +491,88 @@ namespace Anemora.FastVS
             }
 
             return false;
+        }
+
+        private static bool IsPaleFakeLookSurfaceWashRenderer(Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return false;
+            }
+
+            // Never touch the time-window portal, gameplay nav pads / interaction "open" cues, or the
+            // character-grounding family (ground bounce, foot/contact/directional cast shadows). The
+            // grounding overlays do not whiten the floor and several are validator-required to stay
+            // enabled; the ground bounce in particular is a small warm pool under the character.
+            var name = renderer.gameObject.name;
+            if (name.Contains("MapMoveGlowPad") ||
+                name.Contains("GlowCue") ||
+                name.Contains("OpenCue") ||
+                name.Contains("GroundBounce") ||
+                name.Contains("FootContact") ||
+                name.Contains("ContactShadow") ||
+                name.Contains("DirectionalCastShadow"))
+            {
+                return false;
+            }
+
+            // (a) Overlay-profile light pools + atmosphere washes are the painted "fake-look" sheets laid
+            //     over the floor and the distance haze band. Dark shadow/contact profile kinds are NOT
+            //     washes -> keep them so the scene stays grounded.
+            var profile = renderer.GetComponentInParent<FastVsHd2dOverlayProfile>(true);
+            if (profile != null)
+            {
+                var kind = profile.OverlayKindForReview;
+                return kind == FastVsHd2dOverlayKind.LightPool ||
+                       kind == FastVsHd2dOverlayKind.Atmosphere;
+            }
+
+            // (b) Profile-less pale transparent washes (backdrop sky veils/curtains, facade-readability
+            //     washes). Restrict to the transparent overlay queue band so opaque base geometry
+            //     (SurfaceLit ~2000) and sprite cutouts (~2450) are never touched, and exclude the portal
+            //     window/sprite roles. Only near-white / low-saturation sheets count as whitening washes;
+            //     warm glows (lamp bloom, route glow) and dark overlays are kept.
+            var material = renderer.sharedMaterial;
+            if (material == null)
+            {
+                return false;
+            }
+
+            var role = GetMaterialRole(material);
+            if (role == PortalWindowRole || role == SpriteCardRole || role == PaperCardRole)
+            {
+                return false;
+            }
+
+            if (material.renderQueue < 2950)
+            {
+                return false;
+            }
+
+            return IsPaleWashColor(material);
+        }
+
+        private static bool IsPaleWashColor(Material material)
+        {
+            var color = Color.white;
+            if (material.HasProperty(BaseColorId))
+            {
+                color = material.GetColor(BaseColorId);
+            }
+            else if (material.HasProperty("_Color"))
+            {
+                color = material.GetColor("_Color");
+            }
+
+            var maxChannel = Mathf.Max(color.r, Mathf.Max(color.g, color.b));
+            if (maxChannel < 0.70f)
+            {
+                return false; // dark overlay (shadow / void / occlusion) -> not a whitening wash
+            }
+
+            var minChannel = Mathf.Min(color.r, Mathf.Min(color.g, color.b));
+            var saturation = maxChannel > 0.0001f ? (maxChannel - minChannel) / maxChannel : 0f;
+            return saturation <= 0.45f; // near-white / cream / pale -> whitening wash
         }
 
         private static bool IsHd2dOverlayProfileRenderer(Renderer renderer)
