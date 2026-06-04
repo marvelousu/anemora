@@ -186,7 +186,11 @@ namespace Anemora.FastVS
                 mainLight.enabled = true;
                 mainLight.type = LightType.Directional;
                 mainLight.shadows = LightShadows.Soft;
-                mainLight.shadowResolution = isRealtimeOutdoor ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
+                if (!Application.isPlaying)
+                {
+                    mainLight.shadowResolution = isRealtimeOutdoor ? LightShadowResolution.VeryHigh : mainLight.shadowResolution;
+                }
+
                 mainLight.shadowBias = isRealtimeOutdoor ? OutdoorContactHardeningShadowBias : Mathf.Min(mainLight.shadowBias, 0.025f);
                 mainLight.shadowNormalBias = isRealtimeOutdoor ? OutdoorContactHardeningNormalBias : Mathf.Min(mainLight.shadowNormalBias, 0.18f);
                 mainLight.shadowNearPlane = isRealtimeOutdoor ? OutdoorContactHardeningNearPlane : Mathf.Min(Mathf.Max(mainLight.shadowNearPlane, 0.05f), 0.12f);
