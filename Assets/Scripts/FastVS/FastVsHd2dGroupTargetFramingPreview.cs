@@ -157,7 +157,7 @@ namespace Anemora.FastVS
             groupCamera.Priority.Value = profile.InactivePriorityForReview;
             var lens = groupCamera.Lens;
             lens.FieldOfView = profile.BaseFieldOfViewForReview;
-            lens.NearClipPlane = 0.03f;
+            lens.NearClipPlane = 0.30f;
             lens.FarClipPlane = reviewCamera != null ? reviewCamera.farClipPlane : 140f;
             groupCamera.Lens = lens;
         }
@@ -329,7 +329,7 @@ namespace Anemora.FastVS
             var lookAt = activeRoot != null ? activeRoot.TransformPoint(lookLocal) : lookLocal;
             camera.orthographic = false;
             camera.fieldOfView = fieldOfView;
-            camera.nearClipPlane = 0.03f;
+            camera.nearClipPlane = 0.30f;
             camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
         }
 
@@ -347,7 +347,7 @@ namespace Anemora.FastVS
             groupCamera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
             var lens = groupCamera.Lens;
             lens.FieldOfView = fieldOfView;
-            lens.NearClipPlane = 0.03f;
+            lens.NearClipPlane = 0.30f;
             lens.FarClipPlane = reviewCamera != null ? reviewCamera.farClipPlane : 140f;
             groupCamera.Lens = lens;
             groupCamera.Priority.Value = profile.InactivePriorityForReview;

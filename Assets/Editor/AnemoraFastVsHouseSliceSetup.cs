@@ -31,6 +31,9 @@ namespace Anemora.EditorTools
         public const string BuildDirectory = "Builds/FastVS_HouseSlice";
         public const string BuildExePath = BuildDirectory + "/Anemora_FastVS_HouseSlice.exe";
         private const string MaterialRoleTagName = "AnemoraFastVsHd2dRole";
+        private const float Hd2dRuntimeCameraNearClipPlane = 0.30f;
+        private const float Hd2dRuntimeCameraNearClipPlaneTolerance = 0.005f;
+        private const AntialiasingQuality Hd2dRuntimeCameraSmaaQuality = AntialiasingQuality.Medium;
         private const string SpriteCardRampShaderName = "Anemora/FastVS/SpriteCardRampUnlit";
         private const string SpriteCardRampLitShaderName = "Anemora/FastVS/SpriteCardRampLit";
         private const string SpriteCardRampLitShaderPath = "Assets/Art/Shaders/FastVS/FastVS_SpriteCardRampLit.shader";
@@ -51240,6 +51243,8 @@ namespace Anemora.EditorTools
             additionalData.renderPostProcessing = true;
             additionalData.requiresDepthTexture = true;
             additionalData.volumeLayerMask = ~0;
+            additionalData.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+            additionalData.antialiasingQuality = Hd2dRuntimeCameraSmaaQuality;
             var camera = cameraObject.GetComponent<Camera>();
             camera.orthographic = false;
             camera.allowHDR = true;
@@ -51249,7 +51254,7 @@ namespace Anemora.EditorTools
             var lookOffset = cameraRigProfile != null ? cameraRigProfile.LookOffset : RuntimeVsFollowLookOffset;
             var fieldOfView = cameraRigProfile != null ? cameraRigProfile.FieldOfView : RuntimeVsFollowCameraFov;
             camera.fieldOfView = fieldOfView;
-            camera.nearClipPlane = 0.03f;
+            camera.nearClipPlane = Hd2dRuntimeCameraNearClipPlane;
             camera.farClipPlane = 140f;
             var position = currentRoot.TransformPoint(HouseInteriorCenter + positionOffset);
             var lookAt = currentRoot.TransformPoint(HouseInteriorCenter + lookOffset);
@@ -51337,7 +51342,7 @@ namespace Anemora.EditorTools
                 cinemachineCamera.LookAt = null;
                 var lens = cinemachineCamera.Lens;
                 lens.FieldOfView = entry.FieldOfViewForReview;
-                lens.NearClipPlane = 0.03f;
+                lens.NearClipPlane = Hd2dRuntimeCameraNearClipPlane;
                 lens.FarClipPlane = camera != null ? camera.farClipPlane : 140f;
                 cinemachineCamera.Lens = lens;
 
@@ -51441,7 +51446,7 @@ namespace Anemora.EditorTools
             cutsceneCamera.Priority.Value = profile != null ? profile.InactivePriorityForReview : 5;
             var lens = cutsceneCamera.Lens;
             lens.FieldOfView = profile != null ? profile.FieldOfViewForReview : 26f;
-            lens.NearClipPlane = 0.03f;
+            lens.NearClipPlane = Hd2dRuntimeCameraNearClipPlane;
             lens.FarClipPlane = camera != null ? camera.farClipPlane : 140f;
             cutsceneCamera.Lens = lens;
             splineDolly.Spline = splineContainer;
@@ -59718,9 +59723,9 @@ namespace Anemora.EditorTools
                 brain.DefaultBlend.Style != CinemachineBlendDefinition.Styles.EaseInOut ||
                 brain.DefaultBlend.Time < 0.6f ||
                 brain.DefaultBlend.Time > 1.0f ||
-                camera.nearClipPlane > 0.05f)
+                Mathf.Abs(camera.nearClipPlane - Hd2dRuntimeCameraNearClipPlane) > Hd2dRuntimeCameraNearClipPlaneTolerance)
             {
-                throw new InvalidOperationException("House slice validation failed: P1-37 requires an enabled CinemachineBrain with EaseInOut 0.6-1.0s default blend and a near clip <=0.05.");
+                throw new InvalidOperationException("House slice validation failed: P1-37 requires an enabled CinemachineBrain with EaseInOut 0.6-1.0s default blend and the runtime HD-2D near clip.");
             }
 
             var rig = UnityEngine.Object.FindFirstObjectByType<FastVsHd2dAreaCinemachineBlendRig>(FindObjectsInactive.Include);
@@ -59736,7 +59741,7 @@ namespace Anemora.EditorTools
                 if (volume == null ||
                     !volume.IsTriggerForReview ||
                     volume.CinemachineCameraForReview == null ||
-                    volume.NearClipPlaneForReview > 0.05f)
+                    Mathf.Abs(volume.NearClipPlaneForReview - Hd2dRuntimeCameraNearClipPlane) > Hd2dRuntimeCameraNearClipPlaneTolerance)
                 {
                     throw new InvalidOperationException($"House slice validation failed: P1-37 missing trigger volume or CinemachineCamera for profile entry `{entry.EntryIdForReview}`.");
                 }
@@ -59800,7 +59805,7 @@ namespace Anemora.EditorTools
                 "Mathf.SmoothStep",
                 "ForceAreaForReview",
                 "TryGetBlendedFollowProfileForReview",
-                "NearClipPlane = 0.03f"
+                "NearClipPlane = 0.30f"
             })
             {
                 ValidateSourceToken(runtimeRigSource, token, runtimeRigPath);
@@ -76692,6 +76697,13 @@ namespace Anemora.EditorTools
                 !additionalData.requiresDepthTexture)
             {
                 throw new InvalidOperationException("House slice validation failed: main camera must enable URP post-processing and depth texture rendering.");
+            }
+
+            if (Mathf.Abs(camera.nearClipPlane - Hd2dRuntimeCameraNearClipPlane) > Hd2dRuntimeCameraNearClipPlaneTolerance ||
+                additionalData.antialiasing != AntialiasingMode.SubpixelMorphologicalAntiAliasing ||
+                additionalData.antialiasingQuality != Hd2dRuntimeCameraSmaaQuality)
+            {
+                throw new InvalidOperationException("House slice validation failed: main camera must use the HD-2D runtime near clip and medium SMAA anti-aliasing.");
             }
 
             var volumeObject = FindSceneObjectIncludingInactive("FastVS_HD2D_GlobalVolume");
@@ -111139,7 +111151,7 @@ namespace Anemora.EditorTools
 
             camera.orthographic = false;
             camera.fieldOfView = fieldOfView;
-            camera.nearClipPlane = 0.03f;
+            camera.nearClipPlane = Hd2dRuntimeCameraNearClipPlane;
             var position = anchor + positionOffset;
             var lookAt = anchor + lookOffset;
             camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
@@ -111203,7 +111215,7 @@ namespace Anemora.EditorTools
             }
 
             camera.orthographic = false;
-            camera.nearClipPlane = 0.03f;
+            camera.nearClipPlane = Hd2dRuntimeCameraNearClipPlane;
             camera.fieldOfView = fieldOfView;
             var position = clampedWorldAnchor + positionOffset;
             var lookAt = clampedWorldAnchor + lookOffset;

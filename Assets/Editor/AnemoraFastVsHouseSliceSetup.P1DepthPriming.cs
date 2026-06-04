@@ -239,7 +239,7 @@ namespace Anemora.EditorTools
             realtimeRig.ApplyNowForReview();
             camera.orthographic = false;
             camera.fieldOfView = fieldOfView;
-            camera.nearClipPlane = 0.03f;
+            camera.nearClipPlane = Hd2dRuntimeCameraNearClipPlane;
             camera.farClipPlane = 170f;
             PositionChapter1AllMapsCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(playerLocal), cameraOffset, lookOffset);
             ApplyStage7BokehFocusForReview(camera);

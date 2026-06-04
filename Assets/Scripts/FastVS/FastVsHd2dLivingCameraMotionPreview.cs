@@ -75,7 +75,7 @@ namespace Anemora.FastVS
             previewCamera.Priority.Value = profile.InactivePriorityForReview;
             var lens = previewCamera.Lens;
             lens.FieldOfView = profile.FieldOfViewForReview;
-            lens.NearClipPlane = 0.03f;
+            lens.NearClipPlane = 0.30f;
             lens.FarClipPlane = reviewCamera != null ? reviewCamera.farClipPlane : 140f;
             previewCamera.Lens = lens;
 

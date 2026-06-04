@@ -341,7 +341,7 @@ namespace Anemora.FastVS
                 camera.LookAt = null;
                 var lens = camera.Lens;
                 lens.FieldOfView = entry.FieldOfViewForReview;
-                lens.NearClipPlane = 0.03f;
+                lens.NearClipPlane = 0.30f;
                 lens.FarClipPlane = mainCamera != null ? mainCamera.farClipPlane : 140f;
                 camera.Lens = lens;
             }

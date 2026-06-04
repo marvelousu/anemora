@@ -153,7 +153,7 @@ namespace Anemora.FastVS
                 cutsceneCamera.LookAt = null;
                 var lens = cutsceneCamera.Lens;
                 lens.FieldOfView = frame.FieldOfView;
-                lens.NearClipPlane = 0.03f;
+                lens.NearClipPlane = 0.30f;
                 lens.FarClipPlane = reviewCamera != null ? reviewCamera.farClipPlane : 140f;
                 cutsceneCamera.Lens = lens;
             }
@@ -162,7 +162,7 @@ namespace Anemora.FastVS
             {
                 reviewCamera.orthographic = false;
                 reviewCamera.fieldOfView = frame.FieldOfView;
-                reviewCamera.nearClipPlane = 0.03f;
+                reviewCamera.nearClipPlane = 0.30f;
                 reviewCamera.transform.SetPositionAndRotation(position, rotation);
             }
         }

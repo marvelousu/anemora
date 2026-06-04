@@ -1842,3 +1842,19 @@ All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PN
 R2/viewer propagation: upload confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T05-05_hd2d_p3_fix2_shadow_strength`; the Pages deploy hook returned success id `cd4d05c1-58ac-4622-b69b-4f721a287741`.
 
 Next action: continue to Fix 3 (near + SMAA) on the same P3 branch, with real-player A/B performance and all-map capture/upload before the next commit and push.
+
+## 2026-06-05T05:38+09:00 - Fix 3 P3 Camera Near Clip + SMAA
+
+Status: Fix 3 accepted on the correct P3 continuous branch. The wrong-line `work/chapter1-continuation-map-vs-20260524` source diffs were not used as implementation input.
+
+What changed: raised the runtime HD-2D camera near clip from `0.03` to `0.30` and enabled SMAA on the main runtime camera with `AntialiasingQuality.Medium`. Matching runtime/editor setters and validators were updated for the P1 area Cinemachine blend rig, cutscene camera director, group-target framing preview, living camera motion preview, depth-priming capture helper, and SRP/GPU-resident drawer capture helper. Isolated top-down/sky/parallax review helpers that still require `0.03` were left unchanged because they are not the runtime camera path targeted by Fix 3.
+
+Validation: `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_fix3_build_validate_20260605_r1.log` with `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`. The log still contains existing editor-side `Light.shadowResolution is compatible only with the Built-In Render Pipeline` warnings and shader compiler `out of memory during compilation` noise, but the built-player runtime logs did not reproduce the shadow-resolution warning.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 05:21:40`). Windowed runtime perf `Logs/hd2d_p3_fix3_perf_window_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.033 frames=561 avgMs=35.71 minMs=33.33 maxMs=433.32 avgFps=28.0 activeRenderers=1959 visibleRenderers=727`. A/B FPS so far: Step0 `25.9`, Fix1 `28.9`, Fix2 `30.6`, Fix3 `28.0`. SMAA costs about `2.6fps` versus Fix2 in this run, but remains above Step0 and near Fix1. Runtime smoke `Logs/hd2d_p3_fix3_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`, covering stable startup framing, Mia/Aria interior door travel, and indoor character activation.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T05-28_hd2d_p3_fix3_near_smaa` with 13 PNGs, four logs, and `REPORT.md`. The capture log is `Logs/hd2d_p3_fix3_allmaps_capture_20260605.log`; it completed with `Fast VS chapter 1 all maps screenshots captured` and retained the existing URP/Lit shader compiler OOM noise pattern. All 13 PNGs were checked at `1280x720`. Spot review confirmed no visible near-plane clipping in current plaza/house or side-view character captures; Fix2 A/B pixel sampling showed only small differences except `01_a1_a2_current.png` mean abs RGB `3.264`.
+
+R2/viewer propagation: upload confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T05-28_hd2d_p3_fix3_near_smaa`; the Pages deploy hook returned success id `d1d16812-7195-421f-b03d-ed864ddb134c`.
+
+Next action: continue to Fix 4 (`CopyDepthMode` AfterOpaques) on the same P3 branch, with real-player parity/runtime proof, all-map capture/upload, commit, and push at the next accepted milestone.
