@@ -1774,3 +1774,15 @@ Final 2026-06-04T17-05 status:
 - Performance: best accepted runtime milestone remains `014a8b38` at `avgFps=3.7`. The final clean-source perf recheck measured `area=CentralPlaza seconds=20.129 frames=61 avgMs=329.98 avgFps=3.0 activeRenderers=1959 visibleRenderers=704`; no source delta was retained after that measurement, so it is recorded as latest measured perf rather than a new accepted optimization.
 - Needs-Tom: taste-heavy camera/DoF/Kelvin/grade/ambient/fog/sun-shaft/water/sky/post choices are decision-ready in `docs/HD2D_TOM_DECISION_SHEET.md`; no blind taste finalization was made.
 - Skipped/reverted: SSAO sample/blur downgrade, Stage7 outline disable, GPU Resident Drawer camera occlusion, R-2 bounds refresh variants, GPU grass 40k, and further shadow downgrade all failed runtime perf/evidence acceptance and were reverted.
+
+## 2026-06-05T02:51+09:00 - Runtime Recovery Restart on P3 Continuous Branch
+
+Status: restart only; no visual/runtime fix is accepted in this entry.
+
+What changed operationally: corrected the working base for the HD-2D runtime recovery. The accepted P3/Tier-2 continuation line is `wip/snapshot-repair-proof-20260603` at `af46cca8` plus the repo-hygiene push-enabling commit `10dd592b`. A clean dedicated worktree now exists at `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery`. The earlier local `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 attempt is treated as a wrong-line attempt and is not accepted, not used as runtime evidence, and not used as implementation reference.
+
+Push policy: the correct branch was published to `origin/wip/snapshot-repair-proof-20260603`. Further accepted milestones will be committed and pushed regularly. PR creation still waits for Tom.
+
+Docs read for restart: canonical runtime recovery prompt `docs/HD2D_RUNTIME_RECOVERY_AND_PERF_AUTONOMOUS_PROMPT_20260604.md` and Tier-2 plan `docs/HD2D_TIER2_COMPLETION_AND_PERF_PLAN_20260604.md` were read from the provided prompt-document worktree because they are not present on this branch; branch-local operating rules `docs/CHAPTER1_HD2D_AUTONOMOUS_BACKLOG.md` and this progress log were read from the P3 worktree.
+
+Next action: start over from Step 0 on this P3 branch: all-map baseline capture, R2 upload with viewer slug `work/chapter1-continuation-map-vs-20260524`, deploy hook, then investigate and implement Fix 1 from the current P3 source only.
