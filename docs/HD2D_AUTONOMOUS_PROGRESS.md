@@ -1810,3 +1810,19 @@ Runtime baseline: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recov
 R2/viewer propagation: first upload was `uploaded 14 files`; after adding runtime perf/smoke logs and summary, the final Step 0 upload was `uploaded 17 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T03-42_hd2d_p3_step0_allmaps_baseline`. Deploy hook ids were `87833d28-1bd2-42c9-b358-ed05404276e1` and final `22cfc64e-3b95-46d7-9168-7a8ec64afcba`.
 
 Next action: investigate and implement Fix 1 from the current P3 source only, then rebuild, run real-player verification, capture/upload all maps again, commit, and push.
+
+## 2026-06-05T04:45+09:00 - Fix 1 P3 Cycle Shadow Restore
+
+Status: Fix 1 accepted on the correct P3 continuous branch. The wrong-line `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 diffs were not used as implementation input.
+
+What changed: restored realtime shadow participation for normal Cycle-authored floor, wall, facade, and prop renderers by removing the blanket `name.Contains("Cycle")` legacy-detail exclusion in `FastVsRealtimeLightShadowRig`. Explicit shadow-safe helper families remain excluded by name so the existing validator-owned camera plates, closure helpers, continuity cleanup surfaces, and past overlay helper surfaces stay non-shadow-casting.
+
+Validation: `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_fix1_build_validate_20260605_r5.log` with `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`. Earlier Fix1 local validation attempts on this branch were stopped by explicit validator-owned shadow-safe helper families and were resolved by adding only those specific helper-family tokens, not by restoring the broad Cycle exclusion.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 04:31:38`). Windowed runtime perf `Logs/hd2d_p3_fix1_perf_window_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.033 frames=579 avgMs=34.60 minMs=16.65 maxMs=500.00 avgFps=28.9 activeRenderers=1959 visibleRenderers=728`. Step0 baseline was `avgMs=38.56`, `avgFps=25.9`, so Fix1 showed no runtime perf regression in this acceptance run. Runtime smoke `Logs/hd2d_p3_fix1_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T04-37_hd2d_p3_fix1_shadow_restore` with 13 PNGs, four logs, and `REPORT.md`. The capture log is `Logs/hd2d_p3_fix1_allmaps_capture_20260605.log`; it completed with `Fast VS chapter 1 all maps screenshots captured` and also recorded URP/Lit shader compiler `out of memory during compilation` entries, matching the Step0 capture-log noise pattern. All 13 PNGs were checked at `1280x720`, and spot review confirmed shadowed ground/building reads returned in current house/plaza captures.
+
+R2/viewer propagation: upload confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T04-37_hd2d_p3_fix1_shadow_restore`; the Pages deploy hook returned success id `515bdfb5-89e2-4820-9d48-0e7f57d42077`.
+
+Next action: continue to Fix 2 (shadow strength) on the same P3 branch, with real-player verification, all-map capture/upload, commit, and push at the next accepted milestone.

@@ -1263,9 +1263,37 @@ namespace Anemora.FastVS
 
         private static bool IsLegacyCycleVisualDetailName(string name)
         {
-            return !string.IsNullOrEmpty(name) &&
-                   name.Contains("Cycle") &&
-                   !name.Contains("RealtimeShadowCasterCycle");
+            if (string.IsNullOrEmpty(name) ||
+                name.Contains("RealtimeShadowCasterCycle"))
+            {
+                return false;
+            }
+
+            // Cycle numbers are provenance, not a render class. The old blanket
+            // `name.Contains("Cycle")` guard removed normal Cycle-authored
+            // floor, wall, facade, and prop renderers from realtime shadows.
+            return name.Contains("CameraPlateCycle") ||
+                   name.Contains("LibraryMassClosure") ||
+                   name.Contains("LibrarySideRelief") ||
+                   name.Contains("LibraryRoofUndersideShadow") ||
+                   name.Contains("LibrarySideWallMaterialBreakup") ||
+                   name.Contains("LibrarySideWindowLedges") ||
+                   name.Contains("OuterGroundSkirt") ||
+                   name.Contains("Library_Cycle66_ShadowHierarchy") ||
+                   name.Contains("HouseExterior_Cycle72_PorchSightlineClosure") ||
+                   name.Contains("HouseExterior_Cycle74_DoorwaySoftDepthLine") ||
+                   name.Contains("HouseExterior_Cycle77_FrontPlane") ||
+                   name.Contains("HouseExterior_Cycle82_LeftDoorJamb") ||
+                   name.Contains("Cycle84_Cinematic") ||
+                   name.Contains("GroundContinuityArtifactCleanupCycle98") ||
+                   name.Contains("Cycle129") ||
+                   name.Contains("Cycle130") ||
+                   name.Contains("Past_CentralPlaza_Chapter1_F_Cycle140DeepGorge") ||
+                   name.Contains("Past_CentralPlaza_Chapter1_F_Cycle141Past") ||
+                   name.Contains("Past_CentralPlaza_Chapter1_F_Cycle142Past") ||
+                   name.Contains("Past_CentralPlaza_Chapter1_F_Cycle143Past") ||
+                   name.Contains("Past_CentralPlaza_Chapter1_F_Cycle144Past") ||
+                   name.Contains("Past_CentralPlaza_Chapter1_F_Cycle145Past");
         }
 
         private static string GetMaterialRole(Material material)
