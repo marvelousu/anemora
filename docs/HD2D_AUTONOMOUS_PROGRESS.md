@@ -1858,3 +1858,19 @@ All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PN
 R2/viewer propagation: upload confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T05-28_hd2d_p3_fix3_near_smaa`; the Pages deploy hook returned success id `d1d16812-7195-421f-b03d-ed864ddb134c`.
 
 Next action: continue to Fix 4 (`CopyDepthMode` AfterOpaques) on the same P3 branch, with real-player parity/runtime proof, all-map capture/upload, commit, and push at the next accepted milestone.
+
+## 2026-06-05T06:03+09:00 - Fix 4 P3 CopyDepthMode AfterOpaques
+
+Status: Fix 4 accepted on the correct P3 continuous branch. The wrong-line `work/chapter1-continuation-map-vs-20260524` source diffs were not used as implementation input.
+
+What changed: set and validated the URP renderer CopyDepthMode contract for the runtime HD-2D renderer. `AnemoraFastVsHd2dRenderAssetSetup.ApplyRendererSettings` now writes serialized `m_CopyDepthMode: 0` (`AfterOpaques`) immediately after keeping `DepthPrimingMode.Disabled`. `AnemoraFastVsHouseSliceSetup.P1DepthPriming` and `AnemoraFastVsHd2dShadingFoundationAudit` now validate `m_DepthPrimingMode: 0` plus `m_CopyDepthMode: 0`. Generated renderer-feature list churn from batch setup was not retained; the committed `UniversalRenderPipeline_Renderer.asset` delta is only `m_CopyDepthMode: 1 -> 0`.
+
+Validation: `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_fix4_build_validate_20260605.log` with `Fast VS house slice validation passed.`, `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`. The build log includes CopyDepth shader compilation entries for `Hidden/Universal Render Pipeline/CopyDepth`. Existing editor-side APV/missing-script noise, `Light.shadowResolution` warnings, and URP shader compiler OOM entries remain editor/build noise; the built-player runtime logs did not reproduce runtime errors.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 05:46:43`). Windowed runtime perf `Logs/hd2d_p3_fix4_perf_window_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.016 frames=582 avgMs=34.39 minMs=16.65 maxMs=483.33 avgFps=29.1 activeRenderers=1959 visibleRenderers=727`. A/B FPS so far: Step0 `25.9`, Fix1 `28.9`, Fix2 `30.6`, Fix3 `28.0`, Fix4 `29.1`. Runtime smoke `Logs/hd2d_p3_fix4_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`; runtime scan found `0` `Exception/Error/Crash/Light.shadowResolution` hits.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T05-51_hd2d_p3_fix4_copy_depth_after_opaques` with 13 PNGs, four logs, and `REPORT.md`. The capture log is `Logs/hd2d_p3_fix4_allmaps_capture_20260605.log`; it completed with `Fast VS chapter 1 all maps screenshots captured` and retained the known URP/Lit shader compiler OOM noise pattern. All 13 PNGs were checked at `1280x720`. Fix3 A/B pixel sampling was small for 12/13 images; `01_a1_a2_current.png` had mean abs RGB `32.733` due top-down void/ground coverage returning closer to Step0/Fix1, not a water/SSAO/outline-specific CopyDepth artifact in runtime proof.
+
+R2/viewer propagation: first upload reached `17/18` files and failed only `07_d1_d3_current.png`; immediate retry confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T05-51_hd2d_p3_fix4_copy_depth_after_opaques`. The Pages deploy hook returned success id `6a4d9d26-7262-4752-bf30-42d69488c5b4`.
+
+Next action: continue to Fix R-5 (library table checker/grid texture sampler fix) on the same P3 branch, using current P3 source only and revalidating with real-player runtime proof, all-map capture/upload, commit, and push.

@@ -88,6 +88,10 @@ namespace Anemora.EditorTools
 
         private static void ValidateRenderer(UniversalRendererData rendererData, List<string> issues)
         {
+            var serializedRenderer = new SerializedObject(rendererData);
+            RequireInt(serializedRenderer, "m_DepthPrimingMode", 0, issues, "Renderer depth priming must remain Disabled until the Portal DepthOnly/depth-priming milestone.", "depthPrimingMode");
+            RequireInt(serializedRenderer, "m_CopyDepthMode", 0, issues, "Renderer CopyDepthMode must be AfterOpaques so depth-reading fullscreen passes do not sample post-transparent depth.", "copyDepthMode");
+
             var portalCount = 0;
             var ssaoCount = 0;
 

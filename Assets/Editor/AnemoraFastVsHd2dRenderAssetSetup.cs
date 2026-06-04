@@ -139,6 +139,13 @@ namespace Anemora.EditorTools
             // contents stuck in the present world. Disable depth priming so the portal stencil pass is
             // depth-correct.
             rendererData.depthPrimingMode = DepthPrimingMode.Disabled;
+            var rendererSerialized = new SerializedObject(rendererData);
+            if (!TrySetInt(rendererSerialized, "m_CopyDepthMode", 0, "copyDepthMode"))
+            {
+                throw new InvalidOperationException("Could not set UniversalRenderPipeline_Renderer.asset CopyDepthMode to AfterOpaques.");
+            }
+
+            rendererSerialized.ApplyModifiedPropertiesWithoutUndo();
 
             var portalFeature = FindFeature(rendererData, typeof(PortalStencilFeature)) as PortalStencilFeature;
             if (portalFeature == null)

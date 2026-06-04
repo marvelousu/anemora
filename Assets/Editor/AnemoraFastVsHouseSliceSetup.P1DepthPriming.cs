@@ -140,6 +140,7 @@ namespace Anemora.EditorTools
             // main opaque pass at runtime. The DepthOnly passes below stay enabled (good for
             // alpha-clip/opaque depth); only the priming MODE changes to Disabled.
             rendererData.depthPrimingMode = DepthPrimingMode.Disabled;
+            SetHd2dRuntimeCopyDepthModeAfterOpaques(rendererData);
             EditorUtility.SetDirty(rendererData);
 
             foreach (var material in LoadHd2dAutonomousP1DepthPrimingMaterials())
@@ -167,6 +168,11 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: P1-49 renderer depth priming must be Disabled (Auto+ForwardPlus drops portal-stencil opaque ground/buildings from the main opaque pass), current={rendererData?.depthPrimingMode.ToString() ?? "missing"}.");
             }
 
+            if (!TryGetHd2dRuntimeCopyDepthMode(rendererData, out var copyDepthMode) || copyDepthMode != 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: P1-49 renderer CopyDepthMode must be AfterOpaques (0) while depth priming is disabled, current={(copyDepthMode >= 0 ? copyDepthMode.ToString() : "missing")}.");
+            }
+
             ValidateSourceToken(File.ReadAllText(Hd2dAutonomousP1DepthPrimingFoliageShaderPath), "Name \"DepthOnly\"", Hd2dAutonomousP1DepthPrimingFoliageShaderPath);
             ValidateSourceToken(File.ReadAllText(Hd2dAutonomousP1DepthPrimingFoliageShaderPath), "clip(alpha - _Cutoff)", Hd2dAutonomousP1DepthPrimingFoliageShaderPath);
             ValidateSourceToken(File.ReadAllText(Hd2dAutonomousP1DepthPrimingGpuGrassShaderPath), "Name \"DepthOnly\"", Hd2dAutonomousP1DepthPrimingGpuGrassShaderPath);
@@ -188,6 +194,37 @@ namespace Anemora.EditorTools
                     "House slice validation failed: P1-49 depth priming needs alpha-clipped foliage/sprite cards and opaque ground/props to expose DepthOnly while transparent overlays remain excluded. " +
                     $"cutout={stats.CutoutDepthOnlySlots}/{stats.CutoutMaterialSlots}, shadow={stats.CutoutShadowCasterSlots}, foliage={stats.FoliageCutoutDepthOnlySlots}, opaque={stats.OpaqueDepthOnlySlots}, transparentDepth={stats.TransparentDepthOnlySlots}.");
             }
+        }
+
+        private static void SetHd2dRuntimeCopyDepthModeAfterOpaques(UniversalRendererData rendererData)
+        {
+            var serialized = new SerializedObject(rendererData);
+            var property = serialized.FindProperty("m_CopyDepthMode");
+            if (property == null ||
+                (property.propertyType != SerializedPropertyType.Integer &&
+                 property.propertyType != SerializedPropertyType.Enum))
+            {
+                throw new InvalidOperationException("House slice setup failed: UniversalRenderPipeline_Renderer.asset is missing serialized property m_CopyDepthMode.");
+            }
+
+            property.intValue = 0;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static bool TryGetHd2dRuntimeCopyDepthMode(UniversalRendererData rendererData, out int value)
+        {
+            value = -1;
+            var serialized = new SerializedObject(rendererData);
+            var property = serialized.FindProperty("m_CopyDepthMode");
+            if (property == null ||
+                (property.propertyType != SerializedPropertyType.Integer &&
+                 property.propertyType != SerializedPropertyType.Enum))
+            {
+                return false;
+            }
+
+            value = property.intValue;
+            return true;
         }
 
         private static void SetHd2dAutonomousP1DepthPrimingModeForReview(DepthPrimingMode mode)
