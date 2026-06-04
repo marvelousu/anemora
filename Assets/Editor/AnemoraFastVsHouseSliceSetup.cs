@@ -356,7 +356,7 @@ namespace Anemora.EditorTools
         private const int Hd2dAutonomousP1AreaCameraLivePriority = 120;
         private const float Stage7jCentralPlazaShadowStrengthMin = 0.48f;
         private const float Stage7jCentralPlazaShadowStrengthMax = 0.56f;
-        private const float Stage7jCentralPlazaShadowReceiveStrengthMax = 0.46f;
+        private const float Stage7jCentralPlazaShadowReceiveStrengthMax = 0.62f;
         private const float Stage7jCentralPlazaShadowTextureStrengthMax = 0.22f;
         private const float Stage7jCentralPlazaSideShadeMin = 0.60f;
         private const float Stage7jCentralPlazaFloorShadeMin = 0.56f;
@@ -69798,7 +69798,7 @@ namespace Anemora.EditorTools
                 renderer.GetPropertyBlock(block);
                 if (block.GetFloat("_DirectionalLightStrength") >= 0.90f &&
                     block.GetFloat("_ShadowReceiveStrength") > 0f &&
-                    block.GetFloat("_ShadowReceiveStrength") <= 0.32f &&
+                    block.GetFloat("_ShadowReceiveStrength") <= Stage7jCentralPlazaShadowReceiveStrengthMax &&
                     block.GetFloat("_ShadowTextureStrength") <= 0.13f)
                 {
                     receiverCount++;
@@ -69818,8 +69818,8 @@ namespace Anemora.EditorTools
             if (IsMainDirectionalLightManagedBySunCycleForReview())
             {
                 ValidateHd2dPhaseAPaintedOverlayRemovalSource();
-                if (!source.Contains("private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;", StringComparison.Ordinal) ||
-                    !source.Contains("private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;", StringComparison.Ordinal) ||
+                if (!source.Contains("private const float CentralPlazaStage7jShadowReceiveStrength = 0.58f;", StringComparison.Ordinal) ||
+                    !source.Contains("private const float RealtimeOutdoorShadowReceiveStrength = 0.58f;", StringComparison.Ordinal) ||
                     !source.Contains("ApplyRealtimeSurfaceGrade(renderer, activeArea);", StringComparison.Ordinal))
                 {
                     throw new InvalidOperationException("House slice validation failed: Stage 7 public review shadow legibility Phase A source guards are missing.");
@@ -69829,8 +69829,8 @@ namespace Anemora.EditorTools
                      !source.Contains("private const float ExteriorReviewShadowStrength = 0.42f;", StringComparison.Ordinal) ||
                      !source.Contains("private const float LibraryReviewShadowStrength = 0.30f;", StringComparison.Ordinal) ||
                      !source.Contains("private const float CentralPlazaStage7jShadowStrength = 0.52f;", StringComparison.Ordinal) ||
-                     !source.Contains("private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;", StringComparison.Ordinal) ||
-                     !source.Contains("private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;", StringComparison.Ordinal) ||
+                     !source.Contains("private const float CentralPlazaStage7jShadowReceiveStrength = 0.58f;", StringComparison.Ordinal) ||
+                     !source.Contains("private const float RealtimeOutdoorShadowReceiveStrength = 0.58f;", StringComparison.Ordinal) ||
                      !source.Contains("Mathf.Min(alpha, 0.10f)", StringComparison.Ordinal) ||
                      !source.Contains("Mathf.Min(alpha, 0.11f)", StringComparison.Ordinal))
             {

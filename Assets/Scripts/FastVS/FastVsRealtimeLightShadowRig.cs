@@ -36,10 +36,10 @@ namespace Anemora.FastVS
         private static readonly Color CentralPlazaTopLight = new Color(1.06f, 1.04f, 0.94f, 1f);
         private static readonly Color RealtimeOutdoorSideShade = new Color(0.68f, 0.69f, 0.66f, 1f);
         private static readonly Color RealtimeOutdoorFloorShade = new Color(0.64f, 0.65f, 0.61f, 1f);
-        private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;
+        private const float CentralPlazaStage7jShadowReceiveStrength = 0.58f;
         private const float CentralPlazaStage7jFacadeShadowTextureStrength = 0.20f;
         private const float CentralPlazaStage7jFloorShadowTextureStrength = 0.18f;
-        private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;
+        private const float RealtimeOutdoorShadowReceiveStrength = 0.58f;
         private const float RealtimeOutdoorFacadeShadowTextureStrength = 0.12f;
         private const float RealtimeOutdoorFloorShadowTextureStrength = 0.10f;
         private const float OutdoorContactHardeningShadowBias = 0.010f;

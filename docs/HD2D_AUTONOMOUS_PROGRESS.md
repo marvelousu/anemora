@@ -1826,3 +1826,19 @@ All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PN
 R2/viewer propagation: upload confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T04-37_hd2d_p3_fix1_shadow_restore`; the Pages deploy hook returned success id `515bdfb5-89e2-4820-9d48-0e7f57d42077`.
 
 Next action: continue to Fix 2 (shadow strength) on the same P3 branch, with real-player verification, all-map capture/upload, commit, and push at the next accepted milestone.
+
+## 2026-06-05T05:08+09:00 - Fix 2 P3 Realtime Shadow Strength
+
+Status: Fix 2 accepted on the correct P3 continuous branch. The wrong-line `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 source diffs were not used as implementation input.
+
+What changed: strengthened runtime realtime shadow receiving for Central Plaza and outdoor HD-2D surfaces in `FastVsRealtimeLightShadowRig` by changing `CentralPlazaStage7jShadowReceiveStrength` from `0.44` to `0.58` and `RealtimeOutdoorShadowReceiveStrength` from `0.30` to `0.58`. Shader/readability floor and baked receiver state were left untouched. Branch-local editor source guards and receiver validation ceilings were updated to match the new runtime MPB values.
+
+Validation: `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_fix2_build_validate_20260605.log` with `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 04:54:49`). Windowed runtime perf `Logs/hd2d_p3_fix2_perf_window_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.033 frames=614 avgMs=32.63 minMs=16.65 maxMs=433.34 avgFps=30.6 activeRenderers=1959 visibleRenderers=727`. Step0 baseline was `avgFps=25.9`; Fix1 was `avgFps=28.9`; Fix2 showed no runtime perf regression in this acceptance run. Runtime smoke `Logs/hd2d_p3_fix2_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T05-05_hd2d_p3_fix2_shadow_strength` with 13 PNGs, four logs, and `REPORT.md`. The capture log is `Logs/hd2d_p3_fix2_allmaps_capture_20260605.log`; it completed with `Fast VS chapter 1 all maps screenshots captured` and also recorded URP/Lit shader compiler `out of memory during compilation` entries, matching the Step0/Fix1 capture-log noise pattern. All 13 PNGs were checked at `1280x720`; spot review confirmed stronger contact/floor shadows while path, roof, and side-view readability remained intact.
+
+R2/viewer propagation: upload confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T05-05_hd2d_p3_fix2_shadow_strength`; the Pages deploy hook returned success id `cd4d05c1-58ac-4622-b69b-4f721a287741`.
+
+Next action: continue to Fix 3 (near + SMAA) on the same P3 branch, with real-player A/B performance and all-map capture/upload before the next commit and push.
