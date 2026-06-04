@@ -108303,7 +108303,42 @@ namespace Anemora.EditorTools
             SerializedSet(landmark, "landmarkId", landmarkId);
             SerializedSet(landmark, "kind", kind);
             SerializedSet(landmark, "countsForArrival", true);
+            if (ShouldHidePastChapter1RuinsDebrisForReview(objectName, landmarkId))
+            {
+                cube.SetActive(false);
+            }
+
             return cube;
+        }
+
+        private static bool ShouldHidePastChapter1RuinsDebrisForReview(string objectName, string landmarkId)
+        {
+            if (string.IsNullOrEmpty(objectName) ||
+                !objectName.StartsWith("Past_CentralPlaza_Chapter1_F", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            return IsPastChapter1RuinsDebrisToken(objectName) ||
+                   (!string.IsNullOrEmpty(landmarkId) && IsPastChapter1RuinsDebrisToken(landmarkId));
+        }
+
+        private static bool IsPastChapter1RuinsDebrisToken(string value)
+        {
+            return value.Contains("Rubble", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("Debris", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("Broken", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("RoofFragment", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("RoofBreak", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("RoofShard", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("DustShoulder", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("Caved", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("FallenTile", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("FenceShard", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("WallBreak", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("DoorVoid", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("WindowVoid", StringComparison.OrdinalIgnoreCase) ||
+                   value.Contains("Collapsed", StringComparison.OrdinalIgnoreCase);
         }
 
         private static GameObject CreateInvisibleColliderBox(string objectName, Transform parent, Vector3 localPosition, Vector3 localScale, string landmarkId)
