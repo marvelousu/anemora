@@ -68306,6 +68306,21 @@ namespace Anemora.EditorTools
             var directionalSunObject = FindSceneObjectIncludingInactive("Directional Light");
             return directionalSunObject != null && directionalSunObject.GetComponent<OccaSoftware.Buto.Runtime.ButoLight>() != null;
         }
+#else
+        private static bool IsHd2dPhaseBBetaButoRendererFeatureActive()
+        {
+            return false;
+        }
+
+        private static bool IsHd2dPhaseBBetaButoVolumeOverrideConfigured()
+        {
+            return false;
+        }
+
+        private static bool IsHd2dPhaseBBetaButoLightOnDirectionalSun()
+        {
+            return false;
+        }
 #endif
 
         private static List<string> CollectHd2dPhaseBBetaButoAssetPathMatches()

@@ -1786,3 +1786,15 @@ Push policy: the correct branch was published to `origin/wip/snapshot-repair-pro
 Docs read for restart: canonical runtime recovery prompt `docs/HD2D_RUNTIME_RECOVERY_AND_PERF_AUTONOMOUS_PROMPT_20260604.md` and Tier-2 plan `docs/HD2D_TIER2_COMPLETION_AND_PERF_PLAN_20260604.md` were read from the provided prompt-document worktree because they are not present on this branch; branch-local operating rules `docs/CHAPTER1_HD2D_AUTONOMOUS_BACKLOG.md` and this progress log were read from the P3 worktree.
 
 Next action: start over from Step 0 on this P3 branch: all-map baseline capture, R2 upload with viewer slug `work/chapter1-continuation-map-vs-20260524`, deploy hook, then investigate and implement Fix 1 from the current P3 source only.
+
+## 2026-06-05T03:34+09:00 - P3 Continuous Clean-Checkout Runtime Build Gate
+
+Status: operational gate repair only; still no Step 0 visual/runtime baseline or recovery fix is accepted in this entry.
+
+What changed: repaired the P3 continuous checkout so runtime build generation can proceed without locally installed optional Buto/Fronkon packages. Static Standalone defines for `FRONKON_TILTSHIFT`, `OCCASOFTWARE`, and `BUTO` were removed from `ProjectSettings/ProjectSettings.asset`; the existing Fronkon define injector remains responsible for Fronkon, and a matching Buto define injector now adds/removes `BUTO` and `OCCASOFTWARE` only when Buto runtime/editor types are actually loaded. The P1 RenderGraph atmosphere audit now keeps the strict Buto RenderGraph/reduced-resolution checks when Buto is present, but accepts the branch's fallback atmospheric perspective ordering contract when Buto is absent. Phase B Buto diagnostics now also compile on the fallback path.
+
+Validation: `BuildAndValidateBatch` succeeded on the correct P3 worktree after this gate repair. Log: `Logs/hd2d_p3_step0_build_validate_20260605_r4.log` contains `Build Finished, Result: Success.` and `Fast VS house slice player built`.
+
+Latest generated exe: `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`.
+
+Next action: run Step 0 all-map baseline capture/upload from this P3 build, propagate to the viewer, then commit each accepted recovery milestone with push.

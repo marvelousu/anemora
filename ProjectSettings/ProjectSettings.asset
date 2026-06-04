@@ -589,7 +589,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Standalone: FRONKON_TILTSHIFT;OCCASOFTWARE;BUTO
+    Standalone:
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

@@ -168,29 +168,49 @@ namespace Anemora.EditorTools
         private static void ValidateHd2dAutonomousP1RenderGraphAtmosphereAudit()
         {
             var stats = AnalyzeHd2dAutonomousP1RenderGraphAtmosphereStats();
-            if (!stats.RenderGraphSourceReady ||
-                !stats.DepthAwareButoUpscaleReady ||
-                !stats.MergeAfterIsolatedButoReady ||
-                !stats.DepthTextureRequired ||
-                !stats.OpaqueTextureRequired ||
-                stats.ButoFeatureIndex < 0 ||
-                stats.AtmosphericFogFeatureIndex < 0 ||
-                stats.ButoFeatureIndex >= stats.AtmosphericFogFeatureIndex ||
-                stats.AtmosphericFogInjectionPoint != FullScreenPassRendererFeature.InjectionPoint.BeforeRenderingPostProcessing.ToString() ||
-                stats.AtmosphericFogRequirementsHasColorDepth != true ||
-                stats.ButoGridPixelSize > Hd2dAutonomousP1RenderGraphButoGridPixelSize ||
-                stats.ButoGridSizeZ > Hd2dAutonomousP1RenderGraphButoGridSizeZ ||
-                stats.ButoVolumeWidthFor720p > 180 ||
-                stats.ButoVolumeHeightFor720p > 100 ||
-                stats.PostProcessFeatureIndex <= stats.AtmosphericFogFeatureIndex)
+            var ready = stats.ButoProviderAvailable
+                ? IsHd2dAutonomousP1RenderGraphButoAtmosphereAuditReady(stats)
+                : IsHd2dAutonomousP1RenderGraphFallbackAtmosphereAuditReady(stats);
+            if (!ready)
             {
                 throw new InvalidOperationException(
                     "House slice validation failed: P1-51 RenderGraph atmosphere ordering/reduced-resolution audit is not ready. " +
-                    $"renderGraph={stats.RenderGraphSourceReady}, depthAware={stats.DepthAwareButoUpscaleReady}, merge={stats.MergeAfterIsolatedButoReady}, " +
+                    $"butoProvider={stats.ButoProviderAvailable}, butoDefine={stats.ButoCompileSymbolActive}, renderGraph={stats.RenderGraphSourceReady}, " +
+                    $"depthAware={stats.DepthAwareButoUpscaleReady}, merge={stats.MergeAfterIsolatedButoReady}, " +
                     $"depthTex={stats.DepthTextureRequired}, opaqueTex={stats.OpaqueTextureRequired}, butoIndex={stats.ButoFeatureIndex}, fogIndex={stats.AtmosphericFogFeatureIndex}, " +
                     $"postIndex={stats.PostProcessFeatureIndex}, fogInjection={stats.AtmosphericFogInjectionPoint}, fogReqColorDepth={stats.AtmosphericFogRequirementsHasColorDepth}, " +
                     $"grid={stats.ButoGridPixelSize}/{stats.ButoGridSizeZ}, volume720={stats.ButoVolumeWidthFor720p}x{stats.ButoVolumeHeightFor720p}x{stats.ButoVolumeDepthFor720p}.");
             }
+        }
+
+        private static bool IsHd2dAutonomousP1RenderGraphButoAtmosphereAuditReady(Hd2dAutonomousP1RenderGraphAtmosphereStats stats)
+        {
+            return stats.ButoCompileSymbolActive &&
+                   stats.RenderGraphSourceReady &&
+                   stats.DepthAwareButoUpscaleReady &&
+                   stats.MergeAfterIsolatedButoReady &&
+                   stats.DepthTextureRequired &&
+                   stats.OpaqueTextureRequired &&
+                   stats.ButoFeatureIndex >= 0 &&
+                   stats.AtmosphericFogFeatureIndex >= 0 &&
+                   stats.ButoFeatureIndex < stats.AtmosphericFogFeatureIndex &&
+                   stats.AtmosphericFogInjectionPoint == FullScreenPassRendererFeature.InjectionPoint.BeforeRenderingPostProcessing.ToString() &&
+                   stats.AtmosphericFogRequirementsHasColorDepth == true &&
+                   stats.ButoGridPixelSize <= Hd2dAutonomousP1RenderGraphButoGridPixelSize &&
+                   stats.ButoGridSizeZ <= Hd2dAutonomousP1RenderGraphButoGridSizeZ &&
+                   stats.ButoVolumeWidthFor720p <= 180 &&
+                   stats.ButoVolumeHeightFor720p <= 100 &&
+                   stats.PostProcessFeatureIndex > stats.AtmosphericFogFeatureIndex;
+        }
+
+        private static bool IsHd2dAutonomousP1RenderGraphFallbackAtmosphereAuditReady(Hd2dAutonomousP1RenderGraphAtmosphereStats stats)
+        {
+            return stats.DepthTextureRequired &&
+                   stats.OpaqueTextureRequired &&
+                   stats.AtmosphericFogFeatureIndex >= 0 &&
+                   stats.AtmosphericFogInjectionPoint == FullScreenPassRendererFeature.InjectionPoint.BeforeRenderingPostProcessing.ToString() &&
+                   stats.AtmosphericFogRequirementsHasColorDepth == true &&
+                   stats.PostProcessFeatureIndex > stats.AtmosphericFogFeatureIndex;
         }
 
         private static Hd2dAutonomousP1RenderGraphAtmosphereStats AnalyzeHd2dAutonomousP1RenderGraphAtmosphereStats()
@@ -207,6 +227,9 @@ namespace Anemora.EditorTools
             var pipelineAssetText = File.Exists(UniversalRenderPipelineAssetPath) ? File.ReadAllText(UniversalRenderPipelineAssetPath) : string.Empty;
             stats.DepthTextureRequired = pipelineAssetText.Contains("m_RequireDepthTexture: 1", StringComparison.Ordinal);
             stats.OpaqueTextureRequired = pipelineAssetText.Contains("m_RequireOpaqueTexture: 1", StringComparison.Ordinal);
+#if BUTO
+            stats.ButoCompileSymbolActive = true;
+#endif
 
             if (rendererData != null && rendererData.rendererFeatures != null)
             {
@@ -262,6 +285,7 @@ namespace Anemora.EditorTools
                 }
             }
 
+            stats.ButoProviderAvailable = IsHd2dAutonomousP1RenderGraphButoProviderAvailable(rendererData);
             stats.RenderGraphSourceReady =
                 SourceHasToken(Hd2dAutonomousP1RenderGraphButoRenderPassPath, "RecordRenderGraph") &&
                 SourceHasToken(Hd2dAutonomousP1RenderGraphButoRenderPassPath, "AddUnsafePass") &&
@@ -305,6 +329,34 @@ namespace Anemora.EditorTools
         private static bool SourceHasToken(string path, string token)
         {
             return File.Exists(path) && File.ReadAllText(path).Contains(token, StringComparison.Ordinal);
+        }
+
+        private static bool IsHd2dAutonomousP1RenderGraphButoProviderAvailable(UniversalRendererData rendererData)
+        {
+#if BUTO
+            return true;
+#else
+            if (File.Exists(Hd2dAutonomousP1RenderGraphButoRenderPassPath) ||
+                File.Exists(Hd2dAutonomousP1RenderGraphButoFeaturePath))
+            {
+                return true;
+            }
+
+            if (rendererData == null || rendererData.rendererFeatures == null)
+            {
+                return false;
+            }
+
+            foreach (var feature in rendererData.rendererFeatures)
+            {
+                if (feature != null && string.Equals(feature.name, "Buto Volumetric Fog", StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+#endif
         }
 
 #if BUTO
@@ -450,6 +502,7 @@ namespace Anemora.EditorTools
                 $"| Feature order | {stats.FeatureOrder} |",
                 $"| Renderer mode / Depth Priming | {stats.RendererMode} / {stats.DepthPrimingMode} |",
                 $"| Depth texture / Opaque texture | {FormatBool(stats.DepthTextureRequired)} / {FormatBool(stats.OpaqueTextureRequired)} |",
+                $"| Buto provider available / compile symbol | {FormatBool(stats.ButoProviderAvailable)} / {FormatBool(stats.ButoCompileSymbolActive)} |",
                 $"| Buto feature index / active / event | {stats.ButoFeatureIndex} / {FormatBool(stats.ButoFeatureActive)} / {stats.ButoRenderPassEvent} |",
                 $"| Atmospheric fog index / active / injection | {stats.AtmosphericFogFeatureIndex} / {FormatBool(stats.AtmosphericFogActive)} / {stats.AtmosphericFogInjectionPoint} |",
                 $"| Fog feature fetches Color+Depth | {FormatBool(stats.AtmosphericFogRequirementsHasColorDepth)} |",
@@ -494,6 +547,8 @@ namespace Anemora.EditorTools
             public bool DepthTextureRequired;
             public bool OpaqueTextureRequired;
             public int SsaoFeatureIndex;
+            public bool ButoProviderAvailable;
+            public bool ButoCompileSymbolActive;
             public int ButoFeatureIndex;
             public bool ButoFeatureActive;
             public string ButoRenderPassEvent;

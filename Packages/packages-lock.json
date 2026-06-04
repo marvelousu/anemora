@@ -11,14 +11,6 @@
       },
       "hash": "a32e47d4ec8731685394dd562aa6f4f119f2bf79"
     },
-    "com.occasoftware.buto": {
-      "version": "file:com.occasoftware.buto",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.render-pipelines.universal": "14.0.7"
-      }
-    },
     "com.unity.addressables": {
       "version": "2.9.1",
       "depth": 1,
