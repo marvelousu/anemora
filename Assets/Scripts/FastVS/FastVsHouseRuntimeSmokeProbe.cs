@@ -8,12 +8,21 @@ namespace Anemora.FastVS
     public sealed class FastVsHouseRuntimeSmokeProbe : MonoBehaviour
     {
         private const string EnableArgument = "--anemora-house-slice-smoke";
+        private const string PerformanceArgument = "--anemora-house-slice-perf";
         private const string PassMarker = "ANEMORA_HOUSE_SLICE_SMOKE_PASS";
         private const string FailMarker = "ANEMORA_HOUSE_SLICE_SMOKE_FAIL";
+        private const string PerformanceMarker = "ANEMORA_HOUSE_SLICE_PERF";
+        private static readonly Vector3 CentralPlazaPerformanceStartLocal = new Vector3(20.46f, 0.02f, 19.06f);
 
         private IEnumerator Start()
         {
-            if (!ShouldRun())
+            if (ShouldRun(PerformanceArgument))
+            {
+                yield return RunPerformanceProbe();
+                yield break;
+            }
+
+            if (!ShouldRun(EnableArgument))
             {
                 yield break;
             }
@@ -34,18 +43,113 @@ namespace Anemora.FastVS
             }
         }
 
-        private static bool ShouldRun()
+        private static bool ShouldRun(string argument)
         {
             var args = Environment.GetCommandLineArgs();
             for (var i = 0; i < args.Length; i++)
             {
-                if (string.Equals(args[i], EnableArgument, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(args[i], argument, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private static IEnumerator RunPerformanceProbe()
+        {
+            Application.runInBackground = true;
+            PreparePerformanceProbeArea();
+            yield return null;
+            yield return new WaitForSecondsRealtime(2.0f);
+
+            var player = FindFirstObjectByType<CharacterController>();
+            var visibility = FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            PreparePerformanceProbeArea();
+            var elapsed = 0f;
+            var frameCount = 0;
+            var sumDelta = 0f;
+            var minDelta = float.PositiveInfinity;
+            var maxDelta = 0f;
+
+            while (elapsed < 20f)
+            {
+                var delta = Mathf.Max(Time.unscaledDeltaTime, 0.0001f);
+                MovePerformanceProbePlayer(player, elapsed, delta);
+                elapsed += delta;
+                frameCount++;
+                sumDelta += delta;
+                minDelta = Mathf.Min(minDelta, delta);
+                maxDelta = Mathf.Max(maxDelta, delta);
+                yield return null;
+            }
+
+            CountActiveRenderers(out var activeRenderers, out var visibleRenderers);
+            var safeFrames = Mathf.Max(1, frameCount);
+            var safeSum = Mathf.Max(0.0001f, sumDelta);
+            var area = visibility != null ? visibility.ActiveAreaForReview.ToString() : "unknown";
+            Debug.Log(
+                $"{PerformanceMarker}: area={area} seconds={elapsed:0.000} frames={frameCount} " +
+                $"avgMs={(safeSum / safeFrames) * 1000f:0.00} minMs={minDelta * 1000f:0.00} " +
+                $"maxMs={maxDelta * 1000f:0.00} avgFps={safeFrames / safeSum:0.0} " +
+                $"activeRenderers={activeRenderers} visibleRenderers={visibleRenderers}");
+            Application.Quit(0);
+        }
+
+        private static void PreparePerformanceProbeArea()
+        {
+            var visibility = FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            if (visibility != null)
+            {
+                visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            }
+
+            var controller = FindFirstObjectByType<TimeWindowPairedSpacePortalController>();
+            if (controller != null)
+            {
+                controller.SetRuntimeInputEnabledForReview(true);
+                controller.ForcePlayerCurrentLocalForReview(CentralPlazaPerformanceStartLocal);
+            }
+        }
+
+        private static void MovePerformanceProbePlayer(CharacterController player, float elapsed, float delta)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            var phase = Mathf.Repeat(elapsed, 8f);
+            var direction = phase < 2f
+                ? new Vector3(1f, 0f, 0.25f)
+                : phase < 4f
+                    ? new Vector3(-1f, 0f, -0.25f)
+                    : phase < 6f
+                        ? new Vector3(0.25f, 0f, 1f)
+                        : new Vector3(-0.25f, 0f, -1f);
+            player.Move(direction.normalized * (1.15f * delta));
+        }
+
+        private static void CountActiveRenderers(out int activeRenderers, out int visibleRenderers)
+        {
+            activeRenderers = 0;
+            visibleRenderers = 0;
+            var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            for (var index = 0; index < renderers.Length; index++)
+            {
+                var renderer = renderers[index];
+                if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                activeRenderers++;
+                if (renderer.isVisible)
+                {
+                    visibleRenderers++;
+                }
+            }
         }
 
         private static void RunChecks()
