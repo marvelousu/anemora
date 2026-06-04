@@ -72,7 +72,7 @@ namespace Anemora.EditorTools
 
             Debug.Log(
                 "Shading Foundation v1 applied: " +
-                "shadowDistance=32, mainShadowmap=4096, cascades=0.08/0.24/0.55, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
+                "shadowDistance=24, mainShadowmap=2048, cascades=0.12/0.38, ssao=PortalStencilFeature+BlueNoise/DepthNormals, " +
                 "volumeProfile=reference Bloom/ColorAdjustments/Vignette/DepthOfField with ACES tonemapping.");
         }
 
@@ -91,18 +91,19 @@ namespace Anemora.EditorTools
             TrySetBool(serialized, "m_UseSRPBatcher", true, "useSRPBatcher");
             TrySetBool(serialized, "m_SupportsDynamicBatching", false, "supportsDynamicBatching");
             TrySetEnumByPreferredNames(serialized, "m_GPUResidentDrawerMode", new[] { "InstancedDrawing" }, "gpuResidentDrawerMode");
-            TrySetFloat(serialized, "m_ShadowDistance", 32f, "shadowDistance");
+            TrySetFloat(serialized, "m_ShadowDistance", 24f, "shadowDistance");
             TrySetBool(serialized, "m_MainLightShadowsSupported", true, "mainLightShadowsSupported");
-            TrySetInt(serialized, "m_MainLightShadowmapResolution", 4096, "mainLightShadowmapResolution");
+            TrySetInt(serialized, "m_MainLightShadowmapResolution", 2048, "mainLightShadowmapResolution");
             TrySetInt(serialized, "m_AdditionalLightsRenderingMode", 1, "additionalLightsRenderingMode");
-            TrySetInt(serialized, "m_AdditionalLightsPerObjectLimit", 4, "additionalLightsPerObjectLimit");
+            TrySetInt(serialized, "m_AdditionalLightsPerObjectLimit", 2, "additionalLightsPerObjectLimit");
             TrySetBool(serialized, "m_AdditionalLightShadowsSupported", true, "additionalLightShadowsSupported");
+            TrySetInt(serialized, "m_AdditionalLightsShadowmapResolution", 1024, "additionalLightsShadowmapResolution");
             TrySetBool(serialized, "m_RequireDepthTexture", true, "requireDepthTexture");
             TrySetBool(serialized, "m_RequireOpaqueTexture", true, "requireOpaqueTexture");
             TrySetBool(serialized, "m_SoftShadowsSupported", true, "softShadowsSupported");
-            TrySetInt(serialized, "m_SoftShadowQuality", 3, "softShadowQuality");
-            TrySetInt(serialized, "m_ShadowCascadeCount", 4, "shadowCascadeCount");
-            TrySetVector3(serialized, "m_Cascade4Split", new Vector3(0.08f, 0.24f, 0.55f), "cascade4Split");
+            TrySetInt(serialized, "m_SoftShadowQuality", 2, "softShadowQuality");
+            TrySetInt(serialized, "m_ShadowCascadeCount", 3, "shadowCascadeCount");
+            TrySetVector2(serialized, "m_Cascade3Split", new Vector2(0.12f, 0.38f), "cascade3Split");
             TrySetFloat(serialized, "m_CascadeBorder", 0.15f, "cascadeBorder");
             TrySetFloat(serialized, "m_ShadowDepthBias", 0.8f, "shadowDepthBias");
             TrySetFloat(serialized, "m_ShadowNormalBias", 1f, "shadowNormalBias");
@@ -131,6 +132,7 @@ namespace Anemora.EditorTools
         private static void ApplyRendererSettings(UniversalRendererData rendererData)
         {
             rendererData.renderingMode = RenderingMode.ForwardPlus;
+            rendererData.shadowTransparentReceive = false;
             // RecoveryV3 (2026-06-03): DepthPrimingMode.Auto + ForwardPlus skips the early depth
             // pre-pass and conflicts with PortalStencilFeature's stencil/depth sequencing, leaving
             // portal-stencil-dependent opaque geometry (ground/buildings) invisible and the time-window
@@ -1249,6 +1251,17 @@ namespace Anemora.EditorTools
             }
 
             property.floatValue = value;
+            return true;
+        }
+
+        private static bool TrySetVector2(SerializedObject serialized, string fieldName, Vector2 value, params string[] fallbackNames)
+        {
+            if (!TryFindProperty(serialized, fieldName, out var property, fallbackNames))
+            {
+                return false;
+            }
+
+            property.vector2Value = value;
             return true;
         }
 

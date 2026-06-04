@@ -58668,15 +58668,15 @@ namespace Anemora.EditorTools
             var urpAsset = File.Exists(UniversalRenderPipelineAssetPath) ? File.ReadAllText(UniversalRenderPipelineAssetPath) : string.Empty;
             foreach (var token in new[]
             {
-                "m_MainLightShadowmapResolution: 4096",
-                "m_ShadowDistance: 32",
-                "m_ShadowCascadeCount: 4",
-                "m_Cascade4Split: {x: 0.08, y: 0.24, z: 0.55}",
+                "m_MainLightShadowmapResolution: 2048",
+                "m_ShadowDistance: 24",
+                "m_ShadowCascadeCount: 3",
+                "m_Cascade3Split: {x: 0.12, y: 0.38}",
                 "m_CascadeBorder: 0.15",
                 "m_ShadowDepthBias: 0.8",
                 "m_ShadowNormalBias: 1",
                 "m_SoftShadowsSupported: 1",
-                "m_SoftShadowQuality: 3"
+                "m_SoftShadowQuality: 2"
             })
             {
                 ValidateSourceToken(urpAsset, token, UniversalRenderPipelineAssetPath);

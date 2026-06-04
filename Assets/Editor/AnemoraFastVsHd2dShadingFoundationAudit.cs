@@ -60,18 +60,18 @@ namespace Anemora.EditorTools
         {
             var serialized = new SerializedObject(pipelineAsset);
 
-            RequireFloat(serialized, "m_ShadowDistance", 32f, 0.01f, issues, "Pipeline shadow distance must be 32 for the P1 contact-hardening review profile.", "shadowDistance");
+            RequireFloat(serialized, "m_ShadowDistance", 24f, 0.01f, issues, "Pipeline shadow distance must be 24 for the Tier-2 performance review profile.", "shadowDistance");
             RequireBool(serialized, "m_MainLightShadowsSupported", true, issues, "Main light shadows must be supported.", "mainLightShadowsSupported");
-            RequireInt(serialized, "m_MainLightShadowmapResolution", 4096, issues, "Main light shadowmap resolution must be 4096.", "mainLightShadowmapResolution");
+            RequireInt(serialized, "m_MainLightShadowmapResolution", 2048, issues, "Main light shadowmap resolution must be 2048 for the Tier-2 performance profile.", "mainLightShadowmapResolution");
             RequireInt(serialized, "m_AdditionalLightsRenderingMode", 1, issues, "Additional lights rendering mode must be enabled.", "additionalLightsRenderingMode");
-            RequireInt(serialized, "m_AdditionalLightsPerObjectLimit", 4, issues, "Additional lights per-object limit must be 4.", "additionalLightsPerObjectLimit");
+            RequireInt(serialized, "m_AdditionalLightsPerObjectLimit", 2, issues, "Additional lights per-object limit must be 2 for the Tier-2 performance profile.", "additionalLightsPerObjectLimit");
             RequireBool(serialized, "m_AdditionalLightShadowsSupported", true, issues, "Additional light shadows must be supported.", "additionalLightShadowsSupported");
             RequireBool(serialized, "m_RequireDepthTexture", true, issues, "Depth texture must be required.", "requireDepthTexture");
             RequireBool(serialized, "m_RequireOpaqueTexture", true, issues, "Opaque texture must be required.", "requireOpaqueTexture");
             RequireBool(serialized, "m_SoftShadowsSupported", true, issues, "Soft shadows must be enabled.", "softShadowsSupported");
-            RequireInt(serialized, "m_SoftShadowQuality", 3, issues, "Soft shadow quality must be high.", "softShadowQuality");
-            RequireInt(serialized, "m_ShadowCascadeCount", 4, issues, "Shadow cascade count must be 4.", "shadowCascadeCount");
-            RequireVector3(serialized, "m_Cascade4Split", new Vector3(0.08f, 0.24f, 0.55f), 0.01f, issues, "Cascade 4 split must be near 0.08 / 0.24 / 0.55 for the P1 contact-hardening review profile.", "cascade4Split");
+            RequireInt(serialized, "m_SoftShadowQuality", 2, issues, "Soft shadow quality must be medium for the Tier-2 performance profile.", "softShadowQuality");
+            RequireInt(serialized, "m_ShadowCascadeCount", 3, issues, "Shadow cascade count must be 3 for the Tier-2 performance profile.", "shadowCascadeCount");
+            RequireVector2(serialized, "m_Cascade3Split", new Vector2(0.12f, 0.38f), 0.01f, issues, "Cascade 3 split must be near 0.12 / 0.38 for the Tier-2 performance profile.", "cascade3Split");
             RequireFloat(serialized, "m_CascadeBorder", 0.15f, 0.01f, issues, "Cascade border must stay at 0.15 for the P1 contact-hardening review profile.", "cascadeBorder");
             RequireFloat(serialized, "m_ShadowDepthBias", 0.8f, 0.01f, issues, "Shadow depth bias must stay at 0.8 for the P1 contact-hardening review profile.", "shadowDepthBias");
             RequireFloat(serialized, "m_ShadowNormalBias", 1f, 0.01f, issues, "Shadow normal bias must stay at 1 for the P1 contact-hardening review profile.", "shadowNormalBias");
@@ -412,7 +412,7 @@ namespace Anemora.EditorTools
             builder.AppendLine($"| Soft shadows | {FormatBool(FindBool(pipeline, "m_SoftShadowsSupported", "softShadowsSupported"))} |");
             builder.AppendLine($"| Soft shadow quality | {FormatInt(FindInt(pipeline, "m_SoftShadowQuality", "softShadowQuality"))} |");
             builder.AppendLine($"| Cascade count | {FormatInt(FindInt(pipeline, "m_ShadowCascadeCount", "shadowCascadeCount"))} |");
-            builder.AppendLine($"| Cascade 4 split | {FormatVector3(FindVector3(pipeline, "m_Cascade4Split", "cascade4Split"))} |");
+            builder.AppendLine($"| Cascade 3 split | {FormatVector2(FindVector2(pipeline, "m_Cascade3Split", "cascade3Split"))} |");
             builder.AppendLine($"| Cascade border | {FormatFloat(FindFloat(pipeline, "m_CascadeBorder", "cascadeBorder"))} |");
             builder.AppendLine($"| Shadow depth bias | {FormatFloat(FindFloat(pipeline, "m_ShadowDepthBias", "shadowDepthBias"))} |");
             builder.AppendLine($"| Shadow normal bias | {FormatFloat(FindFloat(pipeline, "m_ShadowNormalBias", "shadowNormalBias"))} |");
@@ -712,6 +712,20 @@ namespace Anemora.EditorTools
                 value.Value.z);
         }
 
+        private static string FormatVector2(Vector2? value)
+        {
+            if (!value.HasValue)
+            {
+                return "n/a";
+            }
+
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "({0:0.###}, {1:0.###})",
+                value.Value.x,
+                value.Value.y);
+        }
+
         private static string FormatFloat(float? value)
         {
             return value.HasValue ? value.Value.ToString("0.###", CultureInfo.InvariantCulture) : "n/a";
@@ -755,6 +769,16 @@ namespace Anemora.EditorTools
         private static Vector3? FindVector3(SerializedObject serialized, string fieldName, params string[] fallbackNames)
         {
             if (!TryGetVector3(serialized, fieldName, out var value, fallbackNames))
+            {
+                return null;
+            }
+
+            return value;
+        }
+
+        private static Vector2? FindVector2(SerializedObject serialized, string fieldName, params string[] fallbackNames)
+        {
+            if (!TryGetVector2(serialized, fieldName, out var value, fallbackNames))
             {
                 return null;
             }
@@ -884,6 +908,21 @@ namespace Anemora.EditorTools
             if (Mathf.Abs(actual.x - expected.x) > tolerance ||
                 Mathf.Abs(actual.y - expected.y) > tolerance ||
                 Mathf.Abs(actual.z - expected.z) > tolerance)
+            {
+                issues.Add(message + $" (found {actual} on '{fieldName}').");
+            }
+        }
+
+        private static void RequireVector2(SerializedObject serialized, string fieldName, Vector2 expected, float tolerance, List<string> issues, string message, params string[] fallbackNames)
+        {
+            if (!TryGetVector2(serialized, fieldName, out var actual, fallbackNames))
+            {
+                issues.Add(message + $" (missing property '{fieldName}').");
+                return;
+            }
+
+            if (Mathf.Abs(actual.x - expected.x) > tolerance ||
+                Mathf.Abs(actual.y - expected.y) > tolerance)
             {
                 issues.Add(message + $" (found {actual} on '{fieldName}').");
             }
@@ -1027,6 +1066,18 @@ namespace Anemora.EditorTools
             }
 
             value = property.vector3Value;
+            return true;
+        }
+
+        private static bool TryGetVector2(SerializedObject serialized, string fieldName, out Vector2 value, params string[] fallbackNames)
+        {
+            value = default;
+            if (!TryFindProperty(serialized, fieldName, out var property, fallbackNames))
+            {
+                return false;
+            }
+
+            value = property.vector2Value;
             return true;
         }
 
