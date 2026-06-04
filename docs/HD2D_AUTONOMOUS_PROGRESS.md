@@ -1798,3 +1798,15 @@ Validation: `BuildAndValidateBatch` succeeded on the correct P3 worktree after t
 Latest generated exe: `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`.
 
 Next action: run Step 0 all-map baseline capture/upload from this P3 build, propagate to the viewer, then commit each accepted recovery milestone with push.
+
+## 2026-06-05T03:51+09:00 - Step 0 P3 Baseline Capture / Runtime Baseline
+
+Status: Step 0 baseline accepted on the correct P3 continuous branch; no recovery fix has been applied yet.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T03-42_hd2d_p3_step0_allmaps_baseline` with 13 PNGs plus baseline/runtime reports. The capture log is `Logs/hd2d_p3_step0_allmaps_capture_20260605.log`; it completed with `Fast VS chapter 1 all maps screenshots captured` and also recorded two URP/Lit shader compiler `out of memory during compilation` entries, so the PNG dimensions and nonblank output were checked before upload.
+
+Runtime baseline: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe`. The accepted windowed perf baseline is `Logs/hd2d_p3_step0_perf_baseline_window_20260605.log`: `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.049 frames=520 avgMs=38.56 minMs=33.08 maxMs=323.67 avgFps=25.9 activeRenderers=1959 visibleRenderers=729`. The earlier hidden `-batchmode` perf attempt is not used because it reported `visibleRenderers=0`. Runtime smoke `Logs/hd2d_p3_step0_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`.
+
+R2/viewer propagation: first upload was `uploaded 14 files`; after adding runtime perf/smoke logs and summary, the final Step 0 upload was `uploaded 17 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T03-42_hd2d_p3_step0_allmaps_baseline`. Deploy hook ids were `87833d28-1bd2-42c9-b358-ed05404276e1` and final `22cfc64e-3b95-46d7-9168-7a8ec64afcba`.
+
+Next action: investigate and implement Fix 1 from the current P3 source only, then rebuild, run real-player verification, capture/upload all maps again, commit, and push.
