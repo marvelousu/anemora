@@ -1874,3 +1874,23 @@ All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PN
 R2/viewer propagation: first upload reached `17/18` files and failed only `07_d1_d3_current.png`; immediate retry confirmed `uploaded 18 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T05-51_hd2d_p3_fix4_copy_depth_after_opaques`. The Pages deploy hook returned success id `6a4d9d26-7262-4752-bf30-42d69488c5b4`.
 
 Next action: continue to Fix R-5 (library table checker/grid texture sampler fix) on the same P3 branch, using current P3 source only and revalidating with real-player runtime proof, all-map capture/upload, commit, and push.
+
+## 2026-06-05T09:04+09:00 - R-5 P3 Library Table Grid Sampler
+
+Status: R-5 accepted on the correct P3 continuous branch. The wrong-line `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 source diffs were not used as implementation input.
+
+What changed: replaced the visible `lamp` material checker with a non-grid `GlowNoise` sampler and narrower warm color range; replaced `sign_paint` hard `Planks` content with a non-grid `Paper` sampler; removed hard board seams and `%41/%37` cross-grid logic from `SampleFurnitureWoodPlatePixel`; and added a generated repeat-texture stale-asset guard so accidental mipmap leftovers are recreated as no-mip repeat textures.
+
+Validation: `ValidateHouseSliceBatch` succeeded in `Logs/hd2d_p3_r5_table_grid_validate_pass10_20260605.log` with `HD2D surface texture metric audit passed` and `Fast VS house slice validation passed.` `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_r5_table_grid_build_validate_20260605.log` with `Fast VS house slice validation passed.`, `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 08:56:57`). Windowed runtime perf `Logs/hd2d_p3_r5_table_grid_perf_window_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.033 frames=646 avgMs=31.01 minMs=16.65 maxMs=466.67 avgFps=32.2 activeRenderers=1959 visibleRenderers=727`. A/B FPS so far: Step0 `25.9`, Fix1 `28.9`, Fix2 `30.6`, Fix3 `28.0`, Fix4 `29.1`, R-5 `32.2`. Runtime smoke `Logs/hd2d_p3_r5_table_grid_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`; runtime scan found `0` `Exception/Error/Crash/Light.shadowResolution` hits.
+
+Visual proof: library close-up capture `Logs/hd2d_p3_r5_table_grid_library_close_capture_pass10_20260605.log` generated three PNGs at `docs/devlog/screenshots/fast_vs_hd2d_library_reading_tables_20260520`. Manual review confirmed the previous large yellow checker blocks are gone, the current side table now reads as a continuous dark surface with fine texture instead of rectangular table-grid lines, and past library tables retain paper/book readability.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T09-04_hd2d_p3_r5_table_grid_sampler` with 13 all-map PNGs, 3 library close-up PNGs, 6 logs, and `REPORT.md`. The capture log `Logs/hd2d_p3_r5_table_grid_allmaps_capture_20260605.log` completed with `Fast VS chapter 1 all maps screenshots captured` and retained the known URP/Lit shader compiler OOM noise pattern. All 13 PNGs were checked at `1280x720`; spot review confirmed the existing magenta debug/error materials and side-view frame remain unchanged and no R-5-wide transparency/disappearance regression was introduced.
+
+R2/viewer propagation: upload confirmed `uploaded 23 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T09-04_hd2d_p3_r5_table_grid_sampler`; the Pages deploy hook returned `HTTP_STATUS=200` with id `2bafce94-3f03-4a37-ae1d-b1fbd62d8bf9`.
+
+Devlog: `docs/devlog/2026-06-05_hd2d_p3_r5_table_grid_sampler.md` records the accepted R-5 implementation, runtime proof, captures, R2 upload, and deploy evidence.
+
+Next action: continue to R-2/R-3/R-6 recheck on the same P3 branch before moving to the higher-risk SetActive and depth-priming work.

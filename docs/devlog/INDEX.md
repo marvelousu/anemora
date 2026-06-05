@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.34 fast VS exterior exit tree clearance index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.35 HD-2D P3 R-5 table grid sampler update (2026-06-05). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 512 files including INDEX.md and README.md.
-- Dated devlog records: 510 files.
+- Root-level Markdown coverage: 513 files including INDEX.md and README.md.
+- Dated devlog records: 511 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1332 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -36,8 +36,15 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
 | 2026-05-25 | 37 |
+| 2026-06-05 | 1 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-05
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-05_hd2d_p3_r5_table_grid_sampler.md](2026-06-05_hd2d_p3_r5_table_grid_sampler.md) | Fast VS / HD2D | HD-2D P3 R-5 Table Grid Sampler |
 
 ### 2026-05-25
 
@@ -668,6 +675,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.35 | 2026-06-05 | Added HD-2D P3 R-5 table grid sampler record with current-P3-only implementation, runtime perf/smoke proof, all-map and library close-up captures, R2 upload, and viewer deploy evidence. |
 | v8.33 | 2026-05-25 | Added Fast VS HD2D global realtime exterior anchor cycle record with Exterior follow-anchor clamping, exterior road/ground shadow receiver capture, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.32 | 2026-05-25 | Added Fast VS HD2D global realtime camera/exposure cycle record with Exterior/Library VS camera profiles, exterior procedural skybox, stronger global receiver direct-light response, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.31 | 2026-05-25 | Added Fast VS HD2D global realtime lighting cycle record with Exterior, CentralPlaza, and Library receiver/caster lighting policy, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |

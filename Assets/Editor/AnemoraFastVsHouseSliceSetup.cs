@@ -106430,7 +106430,10 @@ namespace Anemora.EditorTools
         {
             var path = $"{TextureDirectory}/FastVS_House_{id}.asset";
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-            if (texture != null && (texture.width != width || texture.height != height))
+            if (texture != null &&
+                (texture.width != width ||
+                 texture.height != height ||
+                 texture.mipmapCount != 1))
             {
                 AssetDatabase.DeleteAsset(path);
                 texture = null;
@@ -106613,7 +106616,7 @@ namespace Anemora.EditorTools
                 new Color(0.43f, 0.26f, 0.13f, 1f),
                 new Color(0.54f, 0.34f, 0.18f, 1f),
                 new Color(0.20f, 0.13f, 0.08f, 1f),
-                new Color(0.64f, 0.41f, 0.24f, 1f),
+                new Color(0.74f, 0.50f, 0.30f, 1f),
                 97,
                 false);
         }
@@ -107930,43 +107933,47 @@ namespace Anemora.EditorTools
 
         private static Color SampleFurnitureWoodPlatePixel(int x, int y, int width, int height, Color woodA, Color woodB, Color seamColor, Color highlightColor, int seed, bool darkerUnderside)
         {
-            var boardW = 32;
-            var boardIndex = x / boardW;
-            var withinX = x % boardW;
-            var tone = LerpColor(woodA, woodB, Hash01(boardIndex, y / 6, seed));
-            var grain = Mathf.Sin((y * 0.22f) + (boardIndex * 1.2f) + seed * 0.015f) * 0.5f + 0.5f;
-            tone = LerpColor(tone, highlightColor, grain * 0.22f);
+            var u = width <= 1 ? 0f : x / (float)(width - 1);
+            var v = height <= 1 ? 0f : y / (float)(height - 1);
+            var fiberA = Mathf.Sin((x * 1.37f) + (y * 0.51f) + seed * 0.031f) * 0.5f + 0.5f;
+            var fiberB = Mathf.Sin((x * -0.83f) + (y * 1.69f) + seed * 0.047f) * 0.5f + 0.5f;
+            var fiberC = Mathf.Sin((x * 2.31f) + (y * -1.17f) + seed * 0.019f) * 0.5f + 0.5f;
+            var microBlock = Hash01(x / 2, y / 2, seed + 43) - 0.5f;
+            var microStreak = Hash01(x / 3, y / 2, seed + 47) - 0.5f;
+            var softChip = Hash01(x / 5, y / 3, seed + 53) - 0.5f;
+            var lift =
+                ((fiberA - 0.5f) * 0.26f) +
+                ((fiberB - 0.5f) * 0.20f) +
+                ((fiberC - 0.5f) * 0.10f) +
+                (microBlock * 0.52f) +
+                (microStreak * 0.20f) +
+                (softChip * 0.10f);
 
-            if (withinX <= 1 || withinX >= boardW - 2 || x == 0 || x == width - 1)
+            var tone = LerpColor(woodA, woodB, Mathf.Clamp01(0.52f + lift * 0.52f));
+            var currentShadowBias = darkerUnderside ? 0.04f : 0f;
+            if (lift > 0f)
             {
-                tone = LerpColor(tone, seamColor, 0.82f);
+                tone = LerpColor(tone, highlightColor, Mathf.Clamp01(lift * 0.40f));
+            }
+            else
+            {
+                var darkTone = LerpColor(Darken(tone, 0.34f + currentShadowBias), seamColor, 0.10f + currentShadowBias);
+                tone = LerpColor(tone, darkTone, Mathf.Clamp01(-lift * 0.58f));
             }
 
-            if (Mathf.Abs(((x + seed) % 41) - 20) <= 1 || Mathf.Abs(((y + seed) % 37) - 18) <= 1)
+            var woodPore = Hash01(x, y, seed + 31);
+            if (woodPore > 0.91f && u > 0.02f && u < 0.98f && v > 0.02f && v < 0.98f)
             {
-                tone = LerpColor(tone, Darken(seamColor, 0.18f), 0.62f);
+                tone = LerpColor(tone, LerpColor(Darken(tone, 0.30f), seamColor, 0.08f), 0.24f);
             }
 
-            var knotChance = Hash01(boardIndex, y / 18, seed + 7);
-            if (knotChance > 0.66f)
+            var brightFiber = Hash01(x / 2, y, seed + 37);
+            if (brightFiber > 0.84f && u > 0.02f && u < 0.98f && v > 0.02f && v < 0.98f)
             {
-                var knotCx = boardIndex * boardW + 8 + (int)(Hash01(boardIndex, y, seed + 9) * 14f);
-                var knotCy = 24 + (int)(Hash01(boardIndex, y, seed + 11) * 80f);
-                var knotDx = Mathf.Abs(x - knotCx) / 8f;
-                var knotDy = Mathf.Abs(y - knotCy) / 6f;
-                var knot = Mathf.Clamp01(1f - (knotDx + knotDy));
-                if (knot > 0f)
-                {
-                    tone = LerpColor(tone, Darken(highlightColor, 0.55f), knot * 0.34f);
-                }
+                tone = LerpColor(tone, Lighten(highlightColor, 0.05f), 0.15f);
             }
 
-            if (darkerUnderside)
-            {
-                tone = LerpColor(tone, seamColor, Mathf.Clamp01((y / (float)(height - 1)) * 0.42f));
-            }
-
-            return ShadeSurface(tone, x, y, width, height, 0.20f, 0.12f);
+            return tone;
         }
 
         private static Color SampleBookShelfTexturePixel(int x, int y, int width, int height, int rowCount, int seed, bool bookshelfFront)
@@ -108418,7 +108425,7 @@ namespace Anemora.EditorTools
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("current_rubble_detail", "current_rubble_detail_hd2d_plate", 128, 64, SampleCurrentRubbleDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PaintedSurfaceMaterial("book", "book_spines_hd2d_plate", 128, 64, SampleBookSpinesHd2dPixel, false, new Vector2(1f, 1f)),
-                PixelMaterial("lamp", new Color32(255, 204, 88, 255), new Color32(255, 236, 150, 255), new Color32(197, 126, 38, 255), PixelPattern.Checker, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.OverlayGlow),
+                PixelMaterial("lamp", new Color32(238, 183, 74, 255), new Color32(255, 218, 111, 255), new Color32(205, 143, 55, 255), PixelPattern.GlowNoise, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.OverlayGlow),
                 FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
                 FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
                 PaintedSurfaceMaterial("window_light", "window_light_hd2d_plate", 96, 96, SampleWindowLightHd2dPixel, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.PortalWindow),
@@ -108430,7 +108437,7 @@ namespace Anemora.EditorTools
                 PixelMaterial("flower_blue", new Color32(75, 104, 185, 255), new Color32(121, 157, 229, 255), new Color32(45, 61, 125, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
                 PixelMaterial("laundry_bright", new Color32(218, 219, 196, 255), new Color32(242, 238, 210, 255), new Color32(151, 165, 161, 255), PixelPattern.Cloth, true, new Vector2(1f, 1f)),
                 PixelMaterial("laundry_accent", new Color32(109, 145, 192, 255), new Color32(151, 185, 222, 255), new Color32(65, 90, 141, 255), PixelPattern.Cloth, true, new Vector2(1f, 1f)),
-                PixelMaterial("sign_paint", new Color32(178, 127, 61, 255), new Color32(211, 161, 82, 255), new Color32(92, 65, 43, 255), PixelPattern.Planks, false, new Vector2(1f, 1f)),
+                PixelMaterial("sign_paint", new Color32(178, 127, 61, 255), new Color32(211, 161, 82, 255), new Color32(146, 100, 54, 255), PixelPattern.Paper, false, new Vector2(1f, 1f)),
                 FlatMaterial("shadow", new Color(0.10f, 0.10f, 0.11f, 1f), true, FastVsHd2dMaterialRole.ContactShadow),
                 FlatMaterial("doorway_dark", new Color(0.035f, 0.032f, 0.038f, 1f), true, FastVsHd2dMaterialRole.SurfaceLit),
                 FlatMaterial("current_frame", Stage7pCurrentFrameColor, false, FastVsHd2dMaterialRole.PortalWindow),
@@ -109467,6 +109474,20 @@ namespace Anemora.EditorTools
                     return (x * 5 + y * 3) % 23 < 3 ? c : a;
                 case PixelPattern.Checker:
                     return ((x / 4) + (y / 4)) % 2 == 0 ? a : b;
+                case PixelPattern.GlowNoise:
+                    if (((x * 197 + y * 331 + x * y * 17) & 31) < 5)
+                    {
+                        return b;
+                    }
+
+                    return (x * 11 + y * 7) % 29 < 4 ? c : a;
+                case PixelPattern.Paper:
+                    if (((x * 173 + y * 97 + x * y * 5) & 31) < 4)
+                    {
+                        return b;
+                    }
+
+                    return (x * 5 + y * 13 + x * y) % 37 < 5 ? c : a;
                 case PixelPattern.Water:
                     return (x + y * 2) % 10 < 2 ? b : ((x * 3 + y) % 17 < 3 ? c : a);
                 default:
@@ -112459,6 +112480,8 @@ namespace Anemora.EditorTools
             Book,
             Window,
             Checker,
+            GlowNoise,
+            Paper,
             Water
         }
 
