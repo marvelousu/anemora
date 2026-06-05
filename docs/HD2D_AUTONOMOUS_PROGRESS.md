@@ -1894,3 +1894,23 @@ R2/viewer propagation: upload confirmed `uploaded 23 files` for `chapter1-contin
 Devlog: `docs/devlog/2026-06-05_hd2d_p3_r5_table_grid_sampler.md` records the accepted R-5 implementation, runtime proof, captures, R2 upload, and deploy evidence.
 
 Next action: continue to R-2/R-3/R-6 recheck on the same P3 branch before moving to the higher-risk SetActive and depth-priming work.
+
+## 2026-06-05T09:50+09:00 - R-2/R-3/R-6 P3 Runtime Recheck
+
+Status: R-2/R-3/R-6 recheck accepted on the correct P3 continuous branch. No wrong-line `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 source diffs were used.
+
+What changed: added an opt-in built-player runtime probe argument, `--anemora-house-slice-r236-recheck`, to `FastVsHouseRuntimeSmokeProbe`. It does not affect normal startup, smoke, or perf paths. The probe verifies current P3 behavior for R-2 area root culling/visibility, R-3 library facade material opacity, and R-6 Time Window traversal/back-side behavior before the high-risk SetActive work.
+
+Validation: `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_r236_recheck_build_validate_pass2_20260605.log` with `Fast VS house slice validation passed.`, `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 09:44:00`). The accepted runtime recheck log is `Logs/hd2d_p3_r236_recheck_runtime_pass2_20260605.log` with `ANEMORA_HOUSE_SLICE_R236_RECHECK_PASS`. R-2 passed across probed current/past area roots with nonzero enabled, visible, and finite-bounds renderer counts; R-3 reported current/past library facade materials in opaque queue `2000` with alpha `1.000`; R-6 opened a live portal, enqueued two stencil passes, rejected current-side back entry, transferred to other time and back, and kept `wallCollidersOtherTime=5` while disabling them after return (`wallCollidersCurrent=0`). Runtime smoke `Logs/hd2d_p3_r236_recheck_runtime_smoke_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS`.
+
+Performance: latest runtime perf `Logs/hd2d_p3_r236_recheck_perf_window_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.033 frames=629 avgMs=31.85 minMs=16.65 maxMs=416.67 avgFps=31.4 activeRenderers=1959 visibleRenderers=727`. A/B FPS so far: Step0 `25.9`, Fix1 `28.9`, Fix2 `30.6`, Fix3 `28.0`, Fix4 `29.1`, R-5 `32.2`, R-2/R-3/R-6 recheck `31.4`.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T09-50_hd2d_p3_r236_recheck` with 13 all-map PNGs, five logs, and `REPORT.md`. The capture log `Logs/hd2d_p3_r236_recheck_allmaps_capture_20260605.log` completed with `Fast VS chapter 1 all maps screenshots captured` and retained the known URP/Lit shader compiler OOM noise pattern. All 13 PNGs were checked at `1280x720`.
+
+R2/viewer propagation: upload confirmed `uploaded 19 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T09-50_hd2d_p3_r236_recheck`; the Pages deploy hook returned `HTTP_STATUS=200` with id `31a47742-65ac-4530-8efd-b2530da1c0de`.
+
+Devlog: `docs/devlog/2026-06-05_hd2d_p3_r236_recheck.md` records the accepted recheck, runtime proof, captures, R2 upload, and deploy evidence.
+
+Next action: continue to Fix 5 SetActive lightweighting on the same P3 branch. The new R-6 runtime probe must be rerun after SetActive because that milestone is expected to stress the Time Window aperture and other-time visibility path.
