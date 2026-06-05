@@ -68,7 +68,7 @@ namespace Anemora.FastVS
             try
             {
                 RunChecks();
-                Debug.Log($"{PassMarker}: stable startup framing, MiaInterior and AriaInterior door travel, and indoor character activation verified.");
+                Debug.Log($"{PassMarker}: stable startup framing, MiaInterior and AriaInterior door travel, current-time indoor activation, and past-only NPC isolation verified.");
                 Application.Quit(0);
             }
             catch (Exception exception)
@@ -195,8 +195,10 @@ namespace Anemora.FastVS
                 var probe = R2AreaProbes[index];
                 try
                 {
+                    visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
                     visibility.SetActiveAreaForReview(probe.Area);
                     controller.ForcePlayerCurrentLocalForReview(probe.PlayerLocal);
+                    visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, false);
                     FrameCameraAtLocal(controller.CurrentSpaceRootForReview, probe.PlayerLocal, probe.CameraOffset, probe.LookAtOffset);
                 }
                 catch (Exception exception)
@@ -211,8 +213,12 @@ namespace Anemora.FastVS
                 try
                 {
                     var currentSummary = VerifyVisibleRoot(probe.CurrentRootName, $"{probe.Area} current", probe.MinEnabledRenderers);
-                    FrameCameraAtLocal(controller.OtherTimeSpaceRootForReview, probe.PlayerLocal, probe.CameraOffset, probe.LookAtOffset);
+                    var inactivePastSummary = VerifyInactiveRoot(probe.PastRootName, $"{probe.Area} past inactive-time");
                     Debug.Log($"[R236] R-2 area={probe.Area} currentRoot {currentSummary}");
+                    Debug.Log($"[R236] R-2 area={probe.Area} pastRoot {inactivePastSummary}");
+                    visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(true);
+                    visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, true);
+                    FrameCameraAtLocal(controller.OtherTimeSpaceRootForReview, probe.PlayerLocal, probe.CameraOffset, probe.LookAtOffset);
                 }
                 catch (Exception exception)
                 {
@@ -227,6 +233,7 @@ namespace Anemora.FastVS
                 {
                     var pastSummary = VerifyVisibleRoot(probe.PastRootName, $"{probe.Area} past", probe.MinEnabledRenderers);
                     Debug.Log($"[R236] R-2 area={probe.Area} pastRoot {pastSummary}");
+                    visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
                 }
                 catch (Exception exception)
                 {
@@ -240,6 +247,8 @@ namespace Anemora.FastVS
         {
             var visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
             visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+            visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(true);
+            visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, true);
 
             VerifyOpaqueFacadeRenderer("Current_CentralPlaza_LibraryNorthFacade", "current library north facade");
             VerifyOpaqueFacadeRenderer("Past_CentralPlaza_LibraryNorthFacade", "past library north facade");
@@ -251,14 +260,17 @@ namespace Anemora.FastVS
         private static IEnumerator RunR6PortalTraversalRecheck(Action<Exception> fail)
         {
             var controller = default(TimeWindowPairedSpacePortalController);
+            var visibility = default(FastVsHouseAreaVisibility);
             try
             {
                 controller = RequireObject<TimeWindowPairedSpacePortalController>("paired space controller");
-                var visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+                visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+                visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
                 visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
                 controller.SetRuntimeInputEnabledForReview(false);
                 controller.ClosePortal();
                 controller.ForcePlayerCurrentLocalForReview(CentralPlazaVsCenter + new Vector3(-0.34f, 0.02f, 3.26f));
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, false);
                 FrameCameraAtLocal(controller.CurrentSpaceRootForReview, CentralPlazaVsCenter + new Vector3(-0.34f, 0.02f, 3.26f), new Vector3(0f, 5.8f, -8.5f), new Vector3(0f, 0.28f, 1.10f));
             }
             catch (Exception exception)
@@ -277,6 +289,7 @@ namespace Anemora.FastVS
                     throw new InvalidOperationException("R-6 portal drag-open was rejected in runtime recheck.");
                 }
 
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(controller.PlayerInOtherTime, true);
                 if (!controller.HasPortalPair || !controller.HasLiveApertureViewForReview)
                 {
                     throw new InvalidOperationException("R-6 runtime recheck did not create a live aperture portal pair.");
@@ -297,6 +310,7 @@ namespace Anemora.FastVS
                 var portalLocal = controller.PortalLocalCenterForReview;
                 var enabledWallCollidersInOtherTime = 0;
                 controller.TransferCurrentToOtherForReview(new Vector3(portalLocal.x, 0.72f, portalLocal.z + 0.18f));
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(controller.PlayerInOtherTime, true);
                 controller.RenderPortalAperturesForReview();
                 if (!controller.PlayerInOtherTime)
                 {
@@ -318,6 +332,7 @@ namespace Anemora.FastVS
                 }
 
                 controller.TransferOtherToCurrentForReview(new Vector3(portalLocal.x, 0.72f, portalLocal.z - 0.18f));
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(controller.PlayerInOtherTime, true);
                 controller.RenderPortalAperturesForReview();
                 if (controller.PlayerInOtherTime)
                 {
@@ -330,6 +345,7 @@ namespace Anemora.FastVS
                     $"camera={PortalStencilFeature.LastCameraName}, wallCollidersOtherTime={enabledWallCollidersInOtherTime}, " +
                     $"wallCollidersCurrent={controller.EnabledOtherTimeWallVolumeColliderCountForReview}.");
                 controller.ClosePortal();
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(controller.PlayerInOtherTime, false);
             }
             catch (Exception exception)
             {
@@ -430,8 +446,15 @@ namespace Anemora.FastVS
                 FastVsHouseArea.AriaStreet,
                 FastVsHouseArea.AriaInterior,
                 "Aria street to Aria interior");
+            RequireActiveRenderer("Current_AriaInteriorMap_SeparateSpace", "current Aria interior");
+            var inactivePastSummary = VerifyInactiveRoot("Past_AriaInteriorMap_SeparateSpace", "AriaInterior past-only NPC root");
+            Debug.Log($"[SMOKE] AriaInterior past root inactive during current-time travel: {inactivePastSummary}");
+            visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(true);
+            visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, true);
             RequireActiveRenderer("FastVS_SpriteCharacter_Karla");
             RequireActiveRenderer("FastVS_SpriteCharacter_Aria");
+            visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
+            visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, false);
 
             VerifyTravel(
                 controller,
@@ -669,6 +692,22 @@ namespace Anemora.FastVS
             return $"enabled={enabledCount} visible={visibleCount} finiteBounds={boundsCount}";
         }
 
+        private static string VerifyInactiveRoot(string rootName, string label)
+        {
+            var root = FindSceneGameObjectByName(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"R-2 missing root {rootName} for {label}.");
+            }
+
+            if (root.activeInHierarchy)
+            {
+                throw new InvalidOperationException($"R-2 root {rootName} stayed active for inactive-time {label}.");
+            }
+
+            return $"activeSelf={root.activeSelf} activeInHierarchy={root.activeInHierarchy}";
+        }
+
         private static void VerifyOpaqueFacadeRenderer(string objectName, string label)
         {
             var renderer = RequireActiveRenderer(objectName, label);
@@ -727,6 +766,23 @@ namespace Anemora.FastVS
             return !float.IsNaN(value.x) && !float.IsInfinity(value.x) &&
                    !float.IsNaN(value.y) && !float.IsInfinity(value.y) &&
                    !float.IsNaN(value.z) && !float.IsInfinity(value.z);
+        }
+
+        private static GameObject FindSceneGameObjectByName(string objectName)
+        {
+            var objects = Resources.FindObjectsOfTypeAll<GameObject>();
+            for (var index = 0; index < objects.Length; index++)
+            {
+                var candidate = objects[index];
+                if (candidate != null &&
+                    candidate.scene.IsValid() &&
+                    string.Equals(candidate.name, objectName, StringComparison.Ordinal))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
         }
 
         private sealed class R2AreaProbe

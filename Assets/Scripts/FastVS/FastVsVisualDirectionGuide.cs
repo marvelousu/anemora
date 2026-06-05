@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Anemora.FastVS
 {
+    [DefaultExecutionOrder(-50)]
     public sealed class FastVsVisualDirectionGuide : MonoBehaviour
     {
         private const float Chapter1EndSideViewOrthographicSize = 2.80f;
@@ -68,6 +69,7 @@ namespace Anemora.FastVS
         private void LateUpdate()
         {
             ResolveReferences();
+            ApplyActiveTimeIsolation();
             UpdateCamera();
         }
 
@@ -404,6 +406,13 @@ namespace Anemora.FastVS
 
             portalController.ApplyReviewVisibilityLayersForReview();
             var otherTime = portalController.PlayerInOtherTime;
+            if (areaVisibility != null)
+            {
+                areaVisibility.ApplyRuntimeTimeSetActiveIsolationForReview(
+                    otherTime,
+                    portalController.HasPortalPair || portalController.HasPreviewPortal);
+            }
+
             ApplyCameraCulling(otherTime);
             ApplyPhysicsIsolation(otherTime);
         }

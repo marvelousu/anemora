@@ -1914,3 +1914,25 @@ R2/viewer propagation: upload confirmed `uploaded 19 files` for `chapter1-contin
 Devlog: `docs/devlog/2026-06-05_hd2d_p3_r236_recheck.md` records the accepted recheck, runtime proof, captures, R2 upload, and deploy evidence.
 
 Next action: continue to Fix 5 SetActive lightweighting on the same P3 branch. The new R-6 runtime probe must be rerun after SetActive because that milestone is expected to stress the Time Window aperture and other-time visibility path.
+
+## 2026-06-05T11:12+09:00 - Fix 5 P3 SetActive Lightweighting
+
+Status: Fix5 accepted on the correct P3 continuous branch. No wrong-line `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 source diffs were used.
+
+What changed: `FastVsHouseAreaVisibility` now isolates the active area root by runtime player time. During normal current-time play only the active current root remains active; during other-time play only the active past root remains active; when a portal preview/pair exists both roots remain active so Time Window aperture rendering can see both sides. `FastVsVisualDirectionGuide` applies this before camera/culling updates. The isolation state is guarded so unchanged frames do not reapply all 32 area roots. `FastVsHouseRuntimeSmokeProbe` and the R-2/R-3/R-6 probe were updated to verify inactive-time roots and keep-both portal behavior.
+
+Implementation note: the first Fix5 smoke failed because Karla/Aria are intentionally generated as past-only AriaInterior NPCs. The probe was corrected to require the AriaInterior past root inactive during current-time travel, then force review keep-both to verify the past-only NPC renderers still work. Production SetActive isolation was not relaxed.
+
+Validation: `BuildAndValidateBatch` succeeded in `Logs/hd2d_p3_fix5_setactive_build_validate_pass4_20260605.log` with `Fast VS house slice validation passed.`, `Build Finished, Result: Success.`, `Fast VS house slice player built`, and Unity return code `0`.
+
+Runtime proof: latest exe is `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` (timestamp `2026-06-05 10:59:11`). Runtime recheck `Logs/hd2d_p3_fix5_setactive_runtime_r236_pass4_20260605.log` passed with `ANEMORA_HOUSE_SLICE_R236_RECHECK_PASS`: CentralPlaza and AriaInterior inactive past roots reported `activeSelf=False activeInHierarchy=False`; keep-both still made past roots visible; R-3 library facades stayed opaque; R-6 portal traversal/back-side guard passed with `stencilPasses=2`, `wallCollidersOtherTime=5`, `wallCollidersCurrent=0`. Runtime smoke `Logs/hd2d_p3_fix5_setactive_runtime_smoke_pass4_20260605.log` passed with `ANEMORA_HOUSE_SLICE_SMOKE_PASS` and logged AriaInterior past root inactive during current-time travel.
+
+Performance: immediate pre-Fix5 baseline `Logs/hd2d_p3_r236_recheck_perf_window_20260605.log` was `avgFps=31.4 activeRenderers=1959 visibleRenderers=727`. Accepted Fix5 runtime perf `Logs/hd2d_p3_fix5_setactive_perf_window_pass5_20260605.log` recorded `ANEMORA_HOUSE_SLICE_PERF: area=CentralPlaza seconds=20.016 frames=650 avgMs=30.79 minMs=16.65 maxMs=416.65 avgFps=32.5 activeRenderers=1036 visibleRenderers=577`. Delta versus immediate baseline: `+1.1fps`, `-923 activeRenderers`, `-150 visibleRenderers`. Earlier Fix5 perf samples before the no-op guard were not accepted.
+
+All-map capture: `CaptureChapter1AllMapsCycle05ScreenshotsBatch` generated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`. The review copy is `docs/review/2026-06-05T11-06_hd2d_p3_fix5_setactive_lightweighting` with 13 all-map PNGs, six logs, and `REPORT.md`. The capture log `Logs/hd2d_p3_fix5_setactive_allmaps_capture_20260605.log` completed with `Fast VS chapter 1 all maps screenshots captured` and retained the known URP/Lit shader compiler OOM noise pattern. All 13 PNGs were checked at `1280x720`; spot review checked current plaza, past Aria street, and scene6 sideview as nonblank.
+
+R2/viewer propagation: first upload attempt failed one PNG due connectivity, then retry confirmed `uploaded 20 files` for `chapter1-continuation-map-vs-20260524/2026-06-05T11-06_hd2d_p3_fix5_setactive_lightweighting` in `Logs/hd2d_p3_fix5_setactive_r2_upload_retry_20260605.log`. The Pages deploy hook returned `HTTP_STATUS=200` with id `6f11bb57-2b9b-4bfc-ad43-f95d946b0dea`.
+
+Devlog: `docs/devlog/2026-06-05_hd2d_p3_fix5_setactive_lightweighting.md` records the accepted Fix5 implementation, runtime proof, captures, R2 upload, and deploy evidence.
+
+Next action: continue to Fix 6 (Portal DepthOnly plus depth-priming re-enable) on the same P3 branch, treating it as the highest-risk milestone and rerunning real built-player R-2/R-3/R-6, smoke, perf, and all-map capture/upload before commit/push.

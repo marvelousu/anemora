@@ -61,6 +61,11 @@ namespace Anemora.FastVS
         [SerializeField] private Color exteriorSkyClearColor = new Color(0.118f, 0.142f, 0.166f, 1f);
         [SerializeField] private Color centralPlazaSkyClearColor = new Color(0.220f, 0.286f, 0.340f, 1f);
 
+        private bool hasRuntimeTimeSetActiveIsolation;
+        private bool runtimeTimeSetActiveOtherTime;
+        private bool runtimeTimeSetActiveKeepBothTimes;
+        private bool runtimeTimeSetActiveForceKeepBothTimes;
+
         public FastVsHouseArea ActiveAreaForReview => activeArea;
         public bool InteriorActiveForReview => IsActive(currentInteriorMap) && IsActive(pastInteriorMap);
         public bool ExteriorActiveForReview => IsActive(currentExteriorMap) && IsActive(pastExteriorMap);
@@ -111,6 +116,11 @@ namespace Anemora.FastVS
             pastRuinsF5InteriorMap != null &&
             currentChapter1EndMap != null &&
             pastChapter1EndMap != null;
+        public bool RuntimeTimeSetActiveIsolationForReview => hasRuntimeTimeSetActiveIsolation;
+        public bool RuntimeTimeSetActiveOtherTimeForReview => runtimeTimeSetActiveOtherTime;
+        public bool RuntimeTimeSetActiveKeepBothTimesForReview => runtimeTimeSetActiveKeepBothTimes;
+        public bool RuntimeTimeSetActiveForceKeepBothTimesForReview => runtimeTimeSetActiveForceKeepBothTimes;
+        public int RuntimeActiveAreaRootCountForReview => CountRuntimeActiveAreaRoots();
 
         private void Awake()
         {
@@ -129,46 +139,143 @@ namespace Anemora.FastVS
             ApplyVisibility(true);
         }
 
+        public void ApplyRuntimeTimeSetActiveIsolationForReview(bool playerInOtherTime, bool keepBothTimesActive)
+        {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
+            if (hasRuntimeTimeSetActiveIsolation &&
+                runtimeTimeSetActiveOtherTime == playerInOtherTime &&
+                runtimeTimeSetActiveKeepBothTimes == keepBothTimesActive)
+            {
+                return;
+            }
+
+            hasRuntimeTimeSetActiveIsolation = true;
+            runtimeTimeSetActiveOtherTime = playerInOtherTime;
+            runtimeTimeSetActiveKeepBothTimes = keepBothTimesActive;
+            ApplyAreaMapVisibility(ShouldKeepCurrentTimeActive(), ShouldKeepPastTimeActive());
+        }
+
+        public void SetRuntimeTimeSetActiveForceKeepBothTimesForReview(bool forceKeepBothTimes)
+        {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
+            runtimeTimeSetActiveForceKeepBothTimes = forceKeepBothTimes;
+            if (hasRuntimeTimeSetActiveIsolation)
+            {
+                ApplyAreaMapVisibility(ShouldKeepCurrentTimeActive(), ShouldKeepPastTimeActive());
+            }
+        }
+
         private void ApplyVisibility(bool transitionLighting)
         {
-            SetActive(currentInteriorMap, activeArea == FastVsHouseArea.Interior);
-            SetActive(pastInteriorMap, activeArea == FastVsHouseArea.Interior);
-            SetActive(currentExteriorMap, activeArea == FastVsHouseArea.Exterior);
-            SetActive(pastExteriorMap, activeArea == FastVsHouseArea.Exterior);
-            SetActive(currentCentralPlazaMap, activeArea == FastVsHouseArea.CentralPlaza);
-            SetActive(pastCentralPlazaMap, activeArea == FastVsHouseArea.CentralPlaza);
-            SetActive(currentLibraryMap, activeArea == FastVsHouseArea.Library);
-            SetActive(pastLibraryMap, activeArea == FastVsHouseArea.Library);
-            SetActive(currentMiaHouseMap, activeArea == FastVsHouseArea.MiaHouse);
-            SetActive(pastMiaHouseMap, activeArea == FastVsHouseArea.MiaHouse);
-            SetActive(currentMiaInteriorMap, activeArea == FastVsHouseArea.MiaInterior);
-            SetActive(pastMiaInteriorMap, activeArea == FastVsHouseArea.MiaInterior);
-            SetActive(currentAriaStreetMap, activeArea == FastVsHouseArea.AriaStreet);
-            SetActive(pastAriaStreetMap, activeArea == FastVsHouseArea.AriaStreet);
-            SetActive(currentAriaInteriorMap, activeArea == FastVsHouseArea.AriaInterior);
-            SetActive(pastAriaInteriorMap, activeArea == FastVsHouseArea.AriaInterior);
-            SetActive(currentKaiaFarmMap, activeArea == FastVsHouseArea.KaiaFarm);
-            SetActive(pastKaiaFarmMap, activeArea == FastVsHouseArea.KaiaFarm);
-            SetActive(currentKaiaInteriorMap, activeArea == FastVsHouseArea.KaiaInterior);
-            SetActive(pastKaiaInteriorMap, activeArea == FastVsHouseArea.KaiaInterior);
-            SetActive(currentRuinsMap, activeArea == FastVsHouseArea.Ruins);
-            SetActive(pastRuinsMap, activeArea == FastVsHouseArea.Ruins);
-            SetActive(currentRuinsF4InteriorMap, activeArea == FastVsHouseArea.RuinsF4Interior);
-            SetActive(pastRuinsF4InteriorMap, activeArea == FastVsHouseArea.RuinsF4Interior);
-            SetActive(currentRuinsF2InteriorMap, activeArea == FastVsHouseArea.RuinsF2Interior);
-            SetActive(pastRuinsF2InteriorMap, activeArea == FastVsHouseArea.RuinsF2Interior);
-            SetActive(currentRuinsF3InteriorMap, activeArea == FastVsHouseArea.RuinsF3Interior);
-            SetActive(pastRuinsF3InteriorMap, activeArea == FastVsHouseArea.RuinsF3Interior);
-            SetActive(currentRuinsF5InteriorMap, activeArea == FastVsHouseArea.RuinsF5Interior);
-            SetActive(pastRuinsF5InteriorMap, activeArea == FastVsHouseArea.RuinsF5Interior);
-            SetActive(currentChapter1EndMap, activeArea == FastVsHouseArea.Chapter1End);
-            SetActive(pastChapter1EndMap, activeArea == FastVsHouseArea.Chapter1End);
+            ApplyAreaMapVisibility(ShouldKeepCurrentTimeActive(), ShouldKeepPastTimeActive());
             if (!ApplyLightingProfile(transitionLighting))
             {
                 ApplyCameraClearColor();
             }
 
             NotifyRealtimeShadowPolicyAreaTransition();
+        }
+
+        private void ApplyAreaMapVisibility(bool keepCurrentTimeActive, bool keepPastTimeActive)
+        {
+            SetAreaPairActive(currentInteriorMap, pastInteriorMap, FastVsHouseArea.Interior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentExteriorMap, pastExteriorMap, FastVsHouseArea.Exterior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentCentralPlazaMap, pastCentralPlazaMap, FastVsHouseArea.CentralPlaza, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentLibraryMap, pastLibraryMap, FastVsHouseArea.Library, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentMiaHouseMap, pastMiaHouseMap, FastVsHouseArea.MiaHouse, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentMiaInteriorMap, pastMiaInteriorMap, FastVsHouseArea.MiaInterior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentAriaStreetMap, pastAriaStreetMap, FastVsHouseArea.AriaStreet, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentAriaInteriorMap, pastAriaInteriorMap, FastVsHouseArea.AriaInterior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentKaiaFarmMap, pastKaiaFarmMap, FastVsHouseArea.KaiaFarm, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentKaiaInteriorMap, pastKaiaInteriorMap, FastVsHouseArea.KaiaInterior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentRuinsMap, pastRuinsMap, FastVsHouseArea.Ruins, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentRuinsF4InteriorMap, pastRuinsF4InteriorMap, FastVsHouseArea.RuinsF4Interior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentRuinsF2InteriorMap, pastRuinsF2InteriorMap, FastVsHouseArea.RuinsF2Interior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentRuinsF3InteriorMap, pastRuinsF3InteriorMap, FastVsHouseArea.RuinsF3Interior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentRuinsF5InteriorMap, pastRuinsF5InteriorMap, FastVsHouseArea.RuinsF5Interior, keepCurrentTimeActive, keepPastTimeActive);
+            SetAreaPairActive(currentChapter1EndMap, pastChapter1EndMap, FastVsHouseArea.Chapter1End, keepCurrentTimeActive, keepPastTimeActive);
+        }
+
+        private void SetAreaPairActive(
+            GameObject currentTimeMap,
+            GameObject pastTimeMap,
+            FastVsHouseArea area,
+            bool keepCurrentTimeActive,
+            bool keepPastTimeActive)
+        {
+            var areaActive = activeArea == area;
+            SetActive(currentTimeMap, areaActive && keepCurrentTimeActive);
+            SetActive(pastTimeMap, areaActive && keepPastTimeActive);
+        }
+
+        private bool ShouldKeepCurrentTimeActive()
+        {
+            return !hasRuntimeTimeSetActiveIsolation ||
+                   runtimeTimeSetActiveForceKeepBothTimes ||
+                   runtimeTimeSetActiveKeepBothTimes ||
+                   !runtimeTimeSetActiveOtherTime;
+        }
+
+        private bool ShouldKeepPastTimeActive()
+        {
+            return !hasRuntimeTimeSetActiveIsolation ||
+                   runtimeTimeSetActiveForceKeepBothTimes ||
+                   runtimeTimeSetActiveKeepBothTimes ||
+                   runtimeTimeSetActiveOtherTime;
+        }
+
+        private int CountRuntimeActiveAreaRoots()
+        {
+            var count = 0;
+            CountIfActive(currentInteriorMap, ref count);
+            CountIfActive(pastInteriorMap, ref count);
+            CountIfActive(currentExteriorMap, ref count);
+            CountIfActive(pastExteriorMap, ref count);
+            CountIfActive(currentCentralPlazaMap, ref count);
+            CountIfActive(pastCentralPlazaMap, ref count);
+            CountIfActive(currentLibraryMap, ref count);
+            CountIfActive(pastLibraryMap, ref count);
+            CountIfActive(currentMiaHouseMap, ref count);
+            CountIfActive(pastMiaHouseMap, ref count);
+            CountIfActive(currentMiaInteriorMap, ref count);
+            CountIfActive(pastMiaInteriorMap, ref count);
+            CountIfActive(currentAriaStreetMap, ref count);
+            CountIfActive(pastAriaStreetMap, ref count);
+            CountIfActive(currentAriaInteriorMap, ref count);
+            CountIfActive(pastAriaInteriorMap, ref count);
+            CountIfActive(currentKaiaFarmMap, ref count);
+            CountIfActive(pastKaiaFarmMap, ref count);
+            CountIfActive(currentKaiaInteriorMap, ref count);
+            CountIfActive(pastKaiaInteriorMap, ref count);
+            CountIfActive(currentRuinsMap, ref count);
+            CountIfActive(pastRuinsMap, ref count);
+            CountIfActive(currentRuinsF4InteriorMap, ref count);
+            CountIfActive(pastRuinsF4InteriorMap, ref count);
+            CountIfActive(currentRuinsF2InteriorMap, ref count);
+            CountIfActive(pastRuinsF2InteriorMap, ref count);
+            CountIfActive(currentRuinsF3InteriorMap, ref count);
+            CountIfActive(pastRuinsF3InteriorMap, ref count);
+            CountIfActive(currentRuinsF5InteriorMap, ref count);
+            CountIfActive(pastRuinsF5InteriorMap, ref count);
+            CountIfActive(currentChapter1EndMap, ref count);
+            CountIfActive(pastChapter1EndMap, ref count);
+            return count;
+        }
+
+        private static void CountIfActive(GameObject target, ref int count)
+        {
+            if (IsActive(target))
+            {
+                count++;
+            }
         }
 
         private void ApplyCameraClearColor()

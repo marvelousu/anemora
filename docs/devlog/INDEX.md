@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.36 HD-2D P3 R-2/R-3/R-6 runtime recheck update (2026-06-05). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.37 HD-2D P3 Fix5 SetActive lightweighting update (2026-06-05). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 514 files including INDEX.md and README.md.
-- Dated devlog records: 512 files.
+- Root-level Markdown coverage: 515 files including INDEX.md and README.md.
+- Dated devlog records: 513 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1332 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -36,7 +36,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
 | 2026-05-25 | 37 |
-| 2026-06-05 | 2 |
+| 2026-06-05 | 3 |
 
 ## 3. Date-Grouped Devlogs
 
@@ -44,6 +44,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-05_hd2d_p3_fix5_setactive_lightweighting.md](2026-06-05_hd2d_p3_fix5_setactive_lightweighting.md) | Fast VS / HD2D | HD-2D P3 Fix 5 SetActive Lightweighting |
 | [2026-06-05_hd2d_p3_r236_recheck.md](2026-06-05_hd2d_p3_r236_recheck.md) | Fast VS / HD2D | HD-2D P3 R-2/R-3/R-6 Runtime Recheck |
 | [2026-06-05_hd2d_p3_r5_table_grid_sampler.md](2026-06-05_hd2d_p3_r5_table_grid_sampler.md) | Fast VS / HD2D | HD-2D P3 R-5 Table Grid Sampler |
 
