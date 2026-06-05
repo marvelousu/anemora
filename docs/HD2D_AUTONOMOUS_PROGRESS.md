@@ -1936,3 +1936,21 @@ R2/viewer propagation: first upload attempt failed one PNG due connectivity, the
 Devlog: `docs/devlog/2026-06-05_hd2d_p3_fix5_setactive_lightweighting.md` records the accepted Fix5 implementation, runtime proof, captures, R2 upload, and deploy evidence.
 
 Next action: continue to Fix 6 (Portal DepthOnly plus depth-priming re-enable) on the same P3 branch, treating it as the highest-risk milestone and rerunning real built-player R-2/R-3/R-6, smoke, perf, and all-map capture/upload before commit/push.
+
+## 2026-06-05T12:42+09:00 - Fix 6 P3 Depth Priming Rejected
+
+Status: Fix6 rejected on the correct P3 continuous branch. No wrong-line `work/chapter1-continuation-map-vs-20260524` Fix1/Fix2 source diffs were used.
+
+What was attempted: added `DepthOnly` passes to the Time Window portal aperture/inside shaders and re-enabled URP `DepthPrimingMode.Auto`, while keeping `CopyDepthMode.AfterOpaques`. The attempt passed `BuildAndValidateBatch`, built-player R236, built-player smoke, and perf probes, but failed visual acceptance.
+
+Failure evidence: editor all-map capture `Logs/hd2d_p3_fix6_depth_priming_allmaps_capture_pass1_20260605.log` completed but produced the old Auto failure pattern: blue-gray/fogged frames with normal ground/building rendering missing. A temporary built-player all-map capture probe removed the editor-capture ambiguity and reproduced the same failure in `docs/review/2026-06-05T12-10_hd2d_p3_fix6_runtime_allmaps_probe`; representative bad frames were `03_b1_b3_current.png` and `08_d1_d3_past.png`. Auto perf samples were `30.9fps` and `31.3fps`, both below the accepted Fix5 sample of `32.5fps`.
+
+Revert: all unaccepted Fix6 source/shader/runtime-probe changes were removed. The renderer contract is back to `DepthPrimingMode.Disabled` plus `CopyDepthMode.AfterOpaques`; no accepted code change was committed for Fix6.
+
+Revert validation: rebuilt latest exe at `C:\Users\maro6\Documents\Unity\Anemora-p3-recovery\Builds\FastVS_HouseSlice\Anemora_FastVS_HouseSlice.exe` with timestamp `2026-06-05 12:25:27`. `BuildAndValidateBatch` passed in `Logs/hd2d_p3_fix6_rejected_revert_build_validate_pass1_20260605.log`. Built-player R236 passed in `Logs/hd2d_p3_fix6_rejected_revert_runtime_r236_pass1_20260605.log` with `ANEMORA_HOUSE_SLICE_R236_RECHECK_PASS`, `activeRenderers=1050`, `visibleRenderers=578`. Built-player smoke passed in `Logs/hd2d_p3_fix6_rejected_revert_runtime_smoke_pass1_20260605.log`. Runtime perf `Logs/hd2d_p3_fix6_rejected_revert_perf_window_pass1_20260605.log` recorded `avgFps=31.1 activeRenderers=1036 visibleRenderers=577`.
+
+All-map recovery capture: `Logs/hd2d_p3_fix6_rejected_revert_allmaps_capture_pass1_20260605.log` regenerated 13 PNGs at `docs/devlog/screenshots/chapter1_all_maps_cycle05`, all `1280x720`. Spot review confirmed `03_b1_b3_current.png` and `08_d1_d3_past.png` returned to normal geometry/color rather than the blue-gray Auto failure.
+
+R2/viewer propagation: rejected-evidence review bundle `docs/review/2026-06-05T12-34_hd2d_p3_fix6_depth_priming_rejected` contains 13 failed runtime PNGs, 13 reverted/disabled all-map PNGs, logs, and `REPORT.md`. Upload succeeded in `Logs/hd2d_p3_fix6_rejected_r2_upload_20260605.log` with `uploaded 41 files for chapter1-continuation-map-vs-20260524/2026-06-05T12-34_hd2d_p3_fix6_depth_priming_rejected`. Pages deploy returned `HTTP_STATUS=200`, id `bc39f61e-5e1b-4c6a-8643-4183b3c24239`.
+
+Decision: do not ship the current Fix6 approach. Portal-only `DepthOnly` additions are insufficient to make `DepthPrimingMode.Auto` safe for this P3 runtime. The continuous branch remains at accepted Fix5 behavior.
