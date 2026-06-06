@@ -1,8 +1,15 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using Anemora.TimeManagement;
 using Anemora.TimeManagement.Portal;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace Anemora.FastVS
 {
@@ -11,11 +18,18 @@ namespace Anemora.FastVS
         private const string EnableArgument = "--anemora-house-slice-smoke";
         private const string PerformanceArgument = "--anemora-house-slice-perf";
         private const string R236RecheckArgument = "--anemora-house-slice-r236-recheck";
+        private const string VisualDiagArgument = "--anemora-house-slice-visual-diag";
+        private const string LibraryTablePlainProofArgument = "--anemora-house-slice-library-table-plain-proof";
+        private const string ReviewDirArgument = "--anemora-house-slice-review-dir";
         private const string PassMarker = "ANEMORA_HOUSE_SLICE_SMOKE_PASS";
         private const string FailMarker = "ANEMORA_HOUSE_SLICE_SMOKE_FAIL";
         private const string PerformanceMarker = "ANEMORA_HOUSE_SLICE_PERF";
         private const string R236RecheckPassMarker = "ANEMORA_HOUSE_SLICE_R236_RECHECK_PASS";
         private const string R236RecheckFailMarker = "ANEMORA_HOUSE_SLICE_R236_RECHECK_FAIL";
+        private const string VisualDiagPassMarker = "ANEMORA_HOUSE_SLICE_VISUAL_DIAG_PASS";
+        private const string VisualDiagFailMarker = "ANEMORA_HOUSE_SLICE_VISUAL_DIAG_FAIL";
+        private const string LibraryTablePlainProofPassMarker = "ANEMORA_HOUSE_SLICE_LIBRARY_TABLE_PLAIN_PROOF_PASS";
+        private const string LibraryTablePlainProofFailMarker = "ANEMORA_HOUSE_SLICE_LIBRARY_TABLE_PLAIN_PROOF_FAIL";
         private static readonly Vector2 PortalDragStart = new Vector2(380f, 215f);
         private static readonly Vector2 PortalDragEnd = new Vector2(850f, 600f);
         private static readonly Vector3 HouseInteriorCenter = new Vector3(-8.35f, 0f, -8.35f);
@@ -26,7 +40,17 @@ namespace Anemora.FastVS
         private static readonly Vector3 AriaInteriorCenter = new Vector3(-32.95f, 0f, -8.35f);
         private static readonly Vector3 KaiaInteriorCenter = new Vector3(-44.70f, 0f, -8.35f);
         private static readonly Vector3 RuinsF4InteriorCenter = new Vector3(-56.45f, 0f, -8.35f);
+        private static readonly Vector3 Chapter1MiaHouseMapCenter = CentralPlazaVsCenter + new Vector3(3.70f, 0f, -1.55f);
+        private static readonly Vector3 Chapter1AriaStreetMapCenter = CentralPlazaVsCenter + new Vector3(25.50f, 0f, -1.75f);
+        private static readonly Vector3 Chapter1KaiaFarmMapCenter = CentralPlazaVsCenter + new Vector3(32.50f, 0f, -2.85f);
+        private static readonly Vector3 Chapter1RuinsMapCenter = CentralPlazaVsCenter + new Vector3(45.50f, 0f, 0.05f);
+        private static readonly Vector3 Chapter1EndSideViewCenter = CentralPlazaVsCenter + new Vector3(9.10f, 0f, -10.50f);
+        private static readonly Vector3 Chapter1EndSideViewCameraAnchor = Chapter1EndSideViewCenter + new Vector3(-1.05f, 1.45f, 0f);
+        private static readonly Vector3 Chapter1EndSideViewPreviewTarget = Chapter1EndSideViewCenter + new Vector3(-2.40f, 0.02f, 0f);
+        private const float Chapter1EndSideViewOrthographicSize = 2.80f;
         private static readonly Vector3 CentralPlazaPerformanceStartLocal = new Vector3(20.46f, 0.02f, 19.06f);
+        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        private static readonly int ColorId = Shader.PropertyToID("_Color");
         private static readonly R2AreaProbe[] R2AreaProbes =
         {
             new R2AreaProbe(FastVsHouseArea.Interior, "Current_HouseInteriorMap_SeparateSpace", "Past_HouseInteriorMap_SeparateSpace", HouseInteriorCenter + new Vector3(-2.42f, 0.02f, 0.90f), new Vector3(0f, 7.20f, -8.35f), new Vector3(0f, 0.18f, 0.72f), 6),
@@ -54,6 +78,18 @@ namespace Anemora.FastVS
             if (ShouldRun(R236RecheckArgument))
             {
                 yield return RunR236RecheckProbe();
+                yield break;
+            }
+
+            if (ShouldRun(VisualDiagArgument))
+            {
+                yield return RunVisualDiagProbe();
+                yield break;
+            }
+
+            if (ShouldRun(LibraryTablePlainProofArgument))
+            {
+                yield return RunLibraryTablePlainProofProbe();
                 yield break;
             }
 
@@ -90,6 +126,20 @@ namespace Anemora.FastVS
             }
 
             return false;
+        }
+
+        private static string GetArgumentValue(string argument)
+        {
+            var args = Environment.GetCommandLineArgs();
+            for (var i = 0; i < args.Length - 1; i++)
+            {
+                if (string.Equals(args[i], argument, StringComparison.OrdinalIgnoreCase))
+                {
+                    return args[i + 1];
+                }
+            }
+
+            return string.Empty;
         }
 
         private static IEnumerator RunPerformanceProbe()
@@ -168,6 +218,1231 @@ namespace Anemora.FastVS
                 $"{R236RecheckPassMarker}: R-2 area root culling, R-3 library facade opaque materials, " +
                 $"and R-6 portal traversal/back-side guard verified. activeRenderers={activeRenderers} visibleRenderers={visibleRenderers}");
             Application.Quit(0);
+        }
+
+        private static IEnumerator RunVisualDiagProbe()
+        {
+            Application.runInBackground = true;
+
+            var outputDirectory = ResolveVisualDiagOutputDirectory();
+            var logPath = Path.Combine(outputDirectory, "visual_diag.log");
+            var reportPath = Path.Combine(outputDirectory, "REPORT.md");
+            var builder = new StringBuilder(64 * 1024);
+            Exception failure = null;
+
+            try
+            {
+                Directory.CreateDirectory(outputDirectory);
+                foreach (var existingPng in Directory.GetFiles(outputDirectory, "*.png"))
+                {
+                    File.Delete(existingPng);
+                }
+
+                AppendLine(builder, "# Fast VS House Slice Visual Diag");
+                AppendLine(builder, $"timestampLocal={DateTime.Now:yyyy-MM-ddTHH:mm:ss.fff}");
+                AppendLine(builder, $"outputDirectory={Path.GetFullPath(outputDirectory)}");
+                AppendLine(builder, $"commandLine={string.Join(" ", Environment.GetCommandLineArgs())}");
+            }
+            catch (Exception exception)
+            {
+                FinishVisualDiagFailure(exception, logPath, builder);
+                yield break;
+            }
+
+            for (var frame = 0; frame < 140; frame++)
+            {
+                yield return null;
+            }
+
+            var nearSamples = new List<string>();
+            for (var sample = 0; sample < 8; sample++)
+            {
+                var camera = Camera.main;
+                nearSamples.Add(camera != null
+                    ? $"frame={Time.frameCount} near={camera.nearClipPlane:0.000} far={camera.farClipPlane:0.000} fov={camera.fieldOfView:0.000} orthographic={camera.orthographic}"
+                    : $"frame={Time.frameCount} Camera.main=null");
+
+                for (var wait = 0; wait < 15; wait++)
+                {
+                    yield return null;
+                }
+            }
+
+            try
+            {
+                AppendVisualRuntimeDiagnostics(builder, nearSamples);
+            }
+            catch (Exception exception)
+            {
+                FinishVisualDiagFailure(exception, logPath, builder);
+                yield break;
+            }
+
+            yield return CaptureVisualDiagAllMaps(outputDirectory, builder, exception => failure = exception);
+            if (failure != null)
+            {
+                FinishVisualDiagFailure(failure, logPath, builder);
+                yield break;
+            }
+
+            try
+            {
+                File.WriteAllText(logPath, builder.ToString(), Encoding.UTF8);
+                WriteVisualDiagReport(outputDirectory, reportPath, logPath);
+                Debug.Log(builder.ToString());
+                Debug.Log($"{VisualDiagPassMarker}: output={Path.GetFullPath(outputDirectory)} log={Path.GetFullPath(logPath)}");
+                Application.Quit(0);
+            }
+            catch (Exception exception)
+            {
+                FinishVisualDiagFailure(exception, logPath, builder);
+            }
+        }
+
+        private static string ResolveVisualDiagOutputDirectory()
+        {
+            var configured = GetArgumentValue(ReviewDirArgument);
+            if (!string.IsNullOrWhiteSpace(configured))
+            {
+                return configured.Trim('"');
+            }
+
+            return Path.Combine(
+                Application.persistentDataPath,
+                $"{DateTime.Now:yyyy-MM-ddTHH-mm}_visual_diag");
+        }
+
+        private static string ResolveReviewOutputDirectory(string fallbackSuffix)
+        {
+            var configured = GetArgumentValue(ReviewDirArgument);
+            if (!string.IsNullOrWhiteSpace(configured))
+            {
+                return configured.Trim('"');
+            }
+
+            return Path.Combine(
+                Application.persistentDataPath,
+                $"{DateTime.Now:yyyy-MM-ddTHH-mm}_{fallbackSuffix}");
+        }
+
+        private static IEnumerator RunLibraryTablePlainProofProbe()
+        {
+            Application.runInBackground = true;
+
+            var outputDirectory = ResolveReviewOutputDirectory("library_table_plain_proof");
+            var logPath = Path.Combine(outputDirectory, "library_table_plain_proof.log");
+            var reportPath = Path.Combine(outputDirectory, "REPORT.md");
+            var builder = new StringBuilder(32 * 1024);
+            Exception failure = null;
+
+            try
+            {
+                Directory.CreateDirectory(outputDirectory);
+                foreach (var existingPng in Directory.GetFiles(outputDirectory, "*.png"))
+                {
+                    File.Delete(existingPng);
+                }
+
+                AppendLine(builder, "# Fast VS House Slice Library Table Plain Proof");
+                AppendLine(builder, $"timestampLocal={DateTime.Now:yyyy-MM-ddTHH:mm:ss.fff}");
+                AppendLine(builder, $"outputDirectory={Path.GetFullPath(outputDirectory)}");
+                AppendLine(builder, $"commandLine={string.Join(" ", Environment.GetCommandLineArgs())}");
+            }
+            catch (Exception exception)
+            {
+                FinishLibraryTablePlainProofFailure(exception, logPath, builder);
+                yield break;
+            }
+
+            for (var frame = 0; frame < 140; frame++)
+            {
+                yield return null;
+            }
+
+            yield return CaptureLibraryTablePlainProof(outputDirectory, builder, exception => failure = exception);
+            if (failure != null)
+            {
+                FinishLibraryTablePlainProofFailure(failure, logPath, builder);
+                yield break;
+            }
+
+            try
+            {
+                AppendLibraryTableRendererProof(builder);
+                File.WriteAllText(logPath, builder.ToString(), Encoding.UTF8);
+                WriteLibraryTablePlainProofReport(outputDirectory, reportPath, logPath);
+                Debug.Log(builder.ToString());
+                Debug.Log($"{LibraryTablePlainProofPassMarker}: output={Path.GetFullPath(outputDirectory)} log={Path.GetFullPath(logPath)}");
+                Application.Quit(0);
+            }
+            catch (Exception exception)
+            {
+                FinishLibraryTablePlainProofFailure(exception, logPath, builder);
+            }
+        }
+
+        private static IEnumerator CaptureLibraryTablePlainProof(string outputDirectory, StringBuilder builder, Action<Exception> fail)
+        {
+            var controller = default(TimeWindowPairedSpacePortalController);
+            var visibility = default(FastVsHouseAreaVisibility);
+            var guide = default(FastVsVisualDirectionGuide);
+            var camera = default(Camera);
+
+            try
+            {
+                controller = RequireObject<TimeWindowPairedSpacePortalController>("paired space controller");
+                visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+                guide = RequireObject<FastVsVisualDirectionGuide>("visual direction guide");
+                camera = RequireObject<Camera>("main camera");
+                AppendLine(builder, string.Empty);
+                AppendLine(builder, "## Built Player Library Table Close Captures");
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            var captureFailure = default(Exception);
+            Action<Exception> captureFail = exception =>
+            {
+                captureFailure = exception;
+                fail(exception);
+            };
+
+            yield return CaptureLibraryTableCloseCurrent(
+                controller,
+                visibility,
+                guide,
+                camera,
+                LibraryVsCenter + new Vector3(1.12f, 0.02f, 0.12f),
+                LibraryVsCenter + new Vector3(1.12f, 0.40f, 0.10f),
+                new Vector3(-0.34f, 1.18f, -2.18f),
+                new Vector3(0f, 0.14f, 0.06f),
+                Path.Combine(outputDirectory, "01_current_library_reto_table_plain_close.png"),
+                builder,
+                captureFail);
+            if (captureFailure != null)
+            {
+                yield break;
+            }
+
+            yield return CaptureLibraryTableClosePast(
+                controller,
+                visibility,
+                guide,
+                camera,
+                LibraryVsCenter + new Vector3(0f, 0.02f, -0.92f),
+                LibraryVsCenter + new Vector3(0f, 0.40f, -0.88f),
+                new Vector3(-0.18f, 1.34f, -2.92f),
+                new Vector3(0f, 0.12f, -0.18f),
+                Path.Combine(outputDirectory, "02_past_library_clean_reading_tables_plain_close.png"),
+                builder,
+                captureFail);
+            if (captureFailure != null)
+            {
+                yield break;
+            }
+
+            yield return CaptureLibraryTableCloseCurrent(
+                controller,
+                visibility,
+                guide,
+                camera,
+                LibraryVsCenter + new Vector3(-1.72f, 0.02f, 1.42f),
+                LibraryVsCenter + new Vector3(-1.72f, 0.40f, 1.40f),
+                new Vector3(-0.08f, 1.16f, -2.02f),
+                new Vector3(0f, 0.16f, -0.04f),
+                Path.Combine(outputDirectory, "03_current_library_side_table_plain_close.png"),
+                builder,
+                captureFail);
+        }
+
+        private static IEnumerator CaptureLibraryTableCloseCurrent(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            Vector3 playerLocalPosition,
+            Vector3 anchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputPath,
+            StringBuilder builder,
+            Action<Exception> fail)
+        {
+            try
+            {
+                visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
+                visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                PositionCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(anchorLocalPosition), cameraOffset, lookOffset);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            try
+            {
+                CaptureCameraPng(camera, outputPath, builder);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+            }
+        }
+
+        private static IEnumerator CaptureLibraryTableClosePast(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            Vector3 playerLocalPosition,
+            Vector3 anchorLocalPosition,
+            Vector3 cameraOffset,
+            Vector3 lookOffset,
+            string outputPath,
+            StringBuilder builder,
+            Action<Exception> fail)
+        {
+            var previousMask = camera != null ? camera.cullingMask : 0;
+            try
+            {
+                visibility.SetActiveAreaForReview(FastVsHouseArea.Library);
+                visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(true);
+                controller.ForcePlayerOtherTimeLocalForReview(playerLocalPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+                var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+                var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+                camera.cullingMask = (previousMask & ~currentBit) | otherBit | playerBit;
+                PositionCamera(camera, controller.OtherTimeSpaceRootForReview.TransformPoint(anchorLocalPosition), cameraOffset, lookOffset);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            try
+            {
+                CaptureCameraPng(camera, outputPath, builder);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+            }
+            finally
+            {
+                if (camera != null)
+                {
+                    camera.cullingMask = previousMask;
+                }
+
+                controller.ForcePlayerCurrentLocalForReview(playerLocalPosition);
+                visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
+                guide.ApplyActiveTimeIsolationForReview();
+            }
+        }
+
+        private static void AppendLibraryTableRendererProof(StringBuilder builder)
+        {
+            AppendLine(builder, string.Empty);
+            AppendLine(builder, "## Library Table Renderer Materials");
+            var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var tableRendererCount = 0;
+            var seamRendererCount = 0;
+            var logged = 0;
+            foreach (var renderer in renderers)
+            {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                var path = RendererPath(renderer);
+                var isLibraryTable =
+                    path.Contains("Library_ReadingTable", StringComparison.OrdinalIgnoreCase) ||
+                    path.Contains("Library_ReadingTableClean", StringComparison.OrdinalIgnoreCase) ||
+                    path.Contains("Library_ServiceDesk", StringComparison.OrdinalIgnoreCase);
+                if (!isLibraryTable)
+                {
+                    continue;
+                }
+
+                tableRendererCount++;
+                if (path.Contains("TabletopPlankSeam", StringComparison.OrdinalIgnoreCase))
+                {
+                    seamRendererCount++;
+                }
+
+                if (logged >= 36)
+                {
+                    continue;
+                }
+
+                var material = renderer.sharedMaterial;
+                AppendLine(
+                    builder,
+                    $"libraryTableRenderer[{logged}] name={path} enabled={renderer.enabled} material={MaterialName(material)} shader={(material != null && material.shader != null ? material.shader.name : "null")} renderQueue={(material != null ? material.renderQueue.ToString(CultureInfo.InvariantCulture) : "n/a")} baseAlpha={(material != null ? MaterialAlpha(material).ToString("0.000", CultureInfo.InvariantCulture) : "n/a")} boundsCenter={FormatVector(renderer.bounds.center)} boundsSize={FormatVector(renderer.bounds.size)}");
+                logged++;
+            }
+
+            AppendLine(builder, $"libraryTableRenderer.count={tableRendererCount}");
+            AppendLine(builder, $"libraryTableRenderer.tabletopPlankSeamCount={seamRendererCount}");
+        }
+
+        private static void WriteLibraryTablePlainProofReport(string outputDirectory, string reportPath, string logPath)
+        {
+            var pngCount = Directory.GetFiles(outputDirectory, "*.png").Length;
+            var lines = new[]
+            {
+                "# HD-2D Library Table Plain Proof",
+                string.Empty,
+                "- Scope: Phase 1 built-player close-up proof for library table plain surfaces.",
+                $"- Log: `{Path.GetFileName(logPath)}`",
+                $"- Built-player PNG count: `{pngCount}`",
+                $"- Generated: `{DateTime.Now:yyyy-MM-ddTHH:mm:ss}`"
+            };
+            File.WriteAllLines(reportPath, lines, Encoding.UTF8);
+        }
+
+        private static void FinishLibraryTablePlainProofFailure(Exception exception, string logPath, StringBuilder builder)
+        {
+            try
+            {
+                AppendLine(builder, string.Empty);
+                AppendLine(builder, $"{LibraryTablePlainProofFailMarker}: {exception}");
+                var directory = Path.GetDirectoryName(logPath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllText(logPath, builder.ToString(), Encoding.UTF8);
+            }
+            catch
+            {
+            }
+
+            Debug.LogError($"{LibraryTablePlainProofFailMarker}: {exception}");
+            Application.Quit(34);
+        }
+
+        private static void AppendVisualRuntimeDiagnostics(StringBuilder builder, IReadOnlyList<string> nearSamples)
+        {
+            AppendLine(builder, string.Empty);
+            AppendLine(builder, "## A Lighting And Shadows");
+            AppendLights(builder);
+            AppendUrpAsset(builder);
+            AppendRenderSettings(builder);
+            AppendEnvironmentRendererShadowSummary(builder);
+            AppendRealtimeLightShadowRig(builder);
+
+            AppendLine(builder, string.Empty);
+            AppendLine(builder, "## B Camera And Z Fighting");
+            AppendCameraDiagnostics(builder, nearSamples);
+            AppendZFightCandidates(builder);
+
+            AppendLine(builder, string.Empty);
+            AppendLine(builder, "## C Transparency Candidates");
+            AppendTransparencyCandidates(builder);
+        }
+
+        private static void AppendLights(StringBuilder builder)
+        {
+            var lights = FindObjectsByType<Light>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            Array.Sort(lights, (left, right) => string.Compare(left != null ? left.name : string.Empty, right != null ? right.name : string.Empty, StringComparison.Ordinal));
+            var directionalCount = 0;
+            for (var i = 0; i < lights.Length; i++)
+            {
+                var light = lights[i];
+                if (light == null || light.type != LightType.Directional)
+                {
+                    continue;
+                }
+
+                directionalCount++;
+                AppendLine(
+                    builder,
+                    $"light[{directionalCount}] name={light.name} type={light.type} enabled={light.enabled} shadows={light.shadows} shadowStrength={light.shadowStrength:0.000} intensity={light.intensity:0.000} euler={FormatVector(light.transform.eulerAngles)} color={FormatColor(light.color)} shadowBias={light.shadowBias:0.000} shadowNormalBias={light.shadowNormalBias:0.000} shadowNearPlane={light.shadowNearPlane:0.000}");
+            }
+
+            if (directionalCount == 0)
+            {
+                AppendLine(builder, "light directional count=0");
+            }
+        }
+
+        private static void AppendUrpAsset(StringBuilder builder)
+        {
+            var pipeline = GraphicsSettings.currentRenderPipeline;
+            if (pipeline == null)
+            {
+                AppendLine(builder, "urpAsset=null");
+                return;
+            }
+
+            AppendLine(builder, $"urpAsset={pipeline.name} type={pipeline.GetType().FullName}");
+            AppendLine(builder, $"urp.supportsMainLightShadows={GetMemberValue(pipeline, "supportsMainLightShadows", "mainLightShadowsSupported", "m_MainLightShadowsSupported")}");
+            AppendLine(builder, $"urp.shadowDistance={GetMemberValue(pipeline, "shadowDistance", "m_ShadowDistance")}");
+            AppendLine(builder, $"urp.shadowCascadeCount={GetMemberValue(pipeline, "shadowCascadeCount", "m_ShadowCascadeCount")}");
+            AppendLine(builder, $"urp.mainLightShadowmapResolution={GetMemberValue(pipeline, "mainLightShadowmapResolution", "m_MainLightShadowmapResolution")}");
+            AppendLine(builder, $"urp.additionalLightsShadowmapResolution={GetMemberValue(pipeline, "additionalLightsShadowmapResolution", "m_AdditionalLightsShadowmapResolution")}");
+        }
+
+        private static void AppendRenderSettings(StringBuilder builder)
+        {
+            AppendLine(
+                builder,
+                $"renderSettings ambientMode={RenderSettings.ambientMode} ambientLight={FormatColor(RenderSettings.ambientLight)} ambientIntensity={RenderSettings.ambientIntensity:0.000} fog={RenderSettings.fog} fogMode={RenderSettings.fogMode} fogColor={FormatColor(RenderSettings.fogColor)} fogDensity={RenderSettings.fogDensity:0.0000} reflectionIntensity={RenderSettings.reflectionIntensity:0.000} skybox={(RenderSettings.skybox != null ? RenderSettings.skybox.name : "null")}");
+        }
+
+        private static void AppendEnvironmentRendererShadowSummary(StringBuilder builder)
+        {
+            var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            var shadowOn = 0;
+            var shadowOff = 0;
+            var receiveOn = 0;
+            var receiveOff = 0;
+            var envCount = 0;
+            var representative = new List<Renderer>();
+
+            Array.Sort(renderers, (left, right) => string.Compare(RendererPath(left), RendererPath(right), StringComparison.Ordinal));
+            for (var i = 0; i < renderers.Length; i++)
+            {
+                var renderer = renderers[i];
+                if (!IsEnvironmentRenderer(renderer))
+                {
+                    continue;
+                }
+
+                envCount++;
+                if (renderer.shadowCastingMode == ShadowCastingMode.On)
+                {
+                    shadowOn++;
+                }
+                else
+                {
+                    shadowOff++;
+                }
+
+                if (renderer.receiveShadows)
+                {
+                    receiveOn++;
+                }
+                else
+                {
+                    receiveOff++;
+                }
+
+                if (representative.Count < 10 && IsRepresentativeEnvironmentRendererName(renderer.gameObject.name))
+                {
+                    representative.Add(renderer);
+                }
+            }
+
+            AppendLine(builder, $"environmentRendererSummary activeEnvironmentRenderers={envCount} shadowCastingMode.On={shadowOn} shadowCastingMode.OtherOrOff={shadowOff} receiveShadows.true={receiveOn} receiveShadows.false={receiveOff}");
+            for (var i = 0; i < representative.Count; i++)
+            {
+                var renderer = representative[i];
+                AppendLine(builder, $"environmentRenderer[{i}] name={RendererPath(renderer)} shadowCastingMode={renderer.shadowCastingMode} receiveShadows={renderer.receiveShadows} material={MaterialName(renderer.sharedMaterial)} boundsCenter={FormatVector(renderer.bounds.center)} boundsSize={FormatVector(renderer.bounds.size)}");
+            }
+        }
+
+        private static void AppendRealtimeLightShadowRig(StringBuilder builder)
+        {
+            var rigs = FindObjectsByType<FastVsRealtimeLightShadowRig>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            AppendLine(builder, $"FastVsRealtimeLightShadowRig.count={rigs.Length}");
+            for (var i = 0; i < rigs.Length; i++)
+            {
+                var rig = rigs[i];
+                AppendLine(builder, $"FastVsRealtimeLightShadowRig[{i}] name={rig.name} active={rig.gameObject.activeInHierarchy} lateUpdateHeartbeat={rig.LateUpdateHeartbeatForReview} lastWrite={rig.LastRuntimeWriteSummaryForReview}");
+            }
+        }
+
+        private static void AppendCameraDiagnostics(StringBuilder builder, IReadOnlyList<string> nearSamples)
+        {
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                AppendLine(builder, "Camera.main=null");
+            }
+            else
+            {
+                AppendLine(builder, $"Camera.main name={camera.name} near={camera.nearClipPlane:0.000} far={camera.farClipPlane:0.000} fov={camera.fieldOfView:0.000} orthographic={camera.orthographic} orthographicSize={camera.orthographicSize:0.000} pos={FormatVector(camera.transform.position)} euler={FormatVector(camera.transform.eulerAngles)} cullingMask={camera.cullingMask}");
+                var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+                AppendLine(builder, additionalData != null
+                    ? $"Camera.main.urp antialiasing={additionalData.antialiasing} antialiasingQuality={FormatObjectValue(GetMemberValue(additionalData, "antialiasingQuality"))} renderPostProcessing={additionalData.renderPostProcessing} requiresDepthTexture={additionalData.requiresDepthTexture} requiresColorTexture={additionalData.requiresColorTexture}"
+                    : "Camera.main.urp=null");
+            }
+
+            for (var i = 0; i < nearSamples.Count; i++)
+            {
+                AppendLine(builder, $"nearSample[{i}] {nearSamples[i]}");
+            }
+
+            AppendCinemachineDiagnostics(builder);
+        }
+
+        private static void AppendCinemachineDiagnostics(StringBuilder builder)
+        {
+            var components = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            var count = 0;
+            for (var i = 0; i < components.Length; i++)
+            {
+                var component = components[i];
+                if (component == null)
+                {
+                    continue;
+                }
+
+                var typeName = component.GetType().FullName;
+                if (typeName == null || typeName.IndexOf("Cinemachine", StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
+
+                AppendLine(builder, $"cinemachine[{count}] object={component.gameObject.name} component={typeName} enabled={component.enabled}");
+                count++;
+                if (count >= 16)
+                {
+                    break;
+                }
+            }
+
+            if (count == 0)
+            {
+                AppendLine(builder, "cinemachine.count=0");
+            }
+        }
+
+        private static void AppendZFightCandidates(StringBuilder builder)
+        {
+            var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            Array.Sort(renderers, (left, right) => string.Compare(RendererPath(left), RendererPath(right), StringComparison.Ordinal));
+            var count = 0;
+            for (var i = 0; i < renderers.Length; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                var name = renderer.gameObject.name;
+                if (!name.Contains("PlazaFloor") &&
+                    !name.Contains("StoneSquare") &&
+                    !name.Contains("GroundBase") &&
+                    !name.Contains("Ground") &&
+                    !name.Contains("Floor"))
+                {
+                    continue;
+                }
+
+                var bounds = renderer.bounds;
+                AppendLine(builder, $"zFightCandidate[{count}] name={RendererPath(renderer)} worldYMin={bounds.min.y:0.0000} worldYMax={bounds.max.y:0.0000} thicknessY={bounds.size.y:0.0000} center={FormatVector(bounds.center)} size={FormatVector(bounds.size)} shadowCastingMode={renderer.shadowCastingMode} receiveShadows={renderer.receiveShadows} material={MaterialName(renderer.sharedMaterial)}");
+                count++;
+                if (count >= 30)
+                {
+                    break;
+                }
+            }
+
+            if (count == 0)
+            {
+                AppendLine(builder, "zFightCandidate.count=0");
+            }
+        }
+
+        private static void AppendTransparencyCandidates(StringBuilder builder)
+        {
+            var renderers = FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            Array.Sort(renderers, (left, right) => string.Compare(RendererPath(left), RendererPath(right), StringComparison.Ordinal));
+            var count = 0;
+            for (var i = 0; i < renderers.Length; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                var name = renderer.gameObject.name;
+                if (!IsTransparencyCandidateName(name))
+                {
+                    continue;
+                }
+
+                var materials = renderer.sharedMaterials;
+                for (var materialIndex = 0; materialIndex < materials.Length; materialIndex++)
+                {
+                    var material = materials[materialIndex];
+                    if (material == null)
+                    {
+                        continue;
+                    }
+
+                    var relevantMaterial =
+                        material.renderQueue >= 2450 ||
+                        MaterialFloatRounded(material, "_Surface") != "n/a" ||
+                        MaterialFloatRounded(material, "_Cull") == "0" ||
+                        MaterialFloatRounded(material, "_ZWrite") == "0" ||
+                        name.Contains("Library") ||
+                        name.Contains("Backdrop") ||
+                        name.Contains("Aperture") ||
+                        name.Contains("Portal");
+                    if (!relevantMaterial)
+                    {
+                        continue;
+                    }
+
+                    AppendLine(
+                        builder,
+                        $"transparentCandidate[{count}] renderer={RendererPath(renderer)} materialIndex={materialIndex} material={material.name} shader={(material.shader != null ? material.shader.name : "null")} renderQueue={material.renderQueue} _Surface={MaterialFloatRounded(material, "_Surface")} _Blend={MaterialFloatRounded(material, "_Blend")} _Cull={MaterialFloatRounded(material, "_Cull")} _ZWrite={MaterialFloatRounded(material, "_ZWrite")} baseAlpha={MaterialAlpha(material):0.000} keywords={string.Join("|", material.shaderKeywords)} shadowCastingMode={renderer.shadowCastingMode} receiveShadows={renderer.receiveShadows} boundsCenter={FormatVector(renderer.bounds.center)} boundsSize={FormatVector(renderer.bounds.size)}");
+                    count++;
+                    if (count >= 40)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            if (count == 0)
+            {
+                AppendLine(builder, "transparentCandidate.count=0");
+            }
+        }
+
+        private static IEnumerator CaptureVisualDiagAllMaps(string outputDirectory, StringBuilder builder, Action<Exception> fail)
+        {
+            var controller = default(TimeWindowPairedSpacePortalController);
+            var visibility = default(FastVsHouseAreaVisibility);
+            var guide = default(FastVsVisualDirectionGuide);
+            var camera = default(Camera);
+
+            try
+            {
+                controller = RequireObject<TimeWindowPairedSpacePortalController>("paired space controller");
+                visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+                guide = RequireObject<FastVsVisualDirectionGuide>("visual direction guide");
+                camera = RequireObject<Camera>("main camera");
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            AppendLine(builder, string.Empty);
+            AppendLine(builder, "## Built Player All Map Captures");
+            var captureFailure = default(Exception);
+            Action<Exception> captureFail = exception =>
+            {
+                captureFailure = exception;
+                fail(exception);
+            };
+
+            yield return CaptureVisualDiagAllMapPair(controller, visibility, guide, camera, FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(2.95f, 0.02f, 1.10f), new Vector3(0f, 13.80f, -18.20f), new Vector3(0f, 0.20f, 1.55f), Path.Combine(outputDirectory, "01_a1_a2_current.png"), Path.Combine(outputDirectory, "02_a1_a2_past.png"), builder, captureFail);
+            if (captureFailure != null)
+            {
+                yield break;
+            }
+
+            yield return CaptureVisualDiagAllMapPair(controller, visibility, guide, camera, FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(1.45f, 0.02f, -0.20f), new Vector3(0f, 13.80f, -18.20f), new Vector3(0f, 0.20f, 1.55f), Path.Combine(outputDirectory, "03_b1_b3_current.png"), Path.Combine(outputDirectory, "04_b1_b3_past.png"), builder, captureFail);
+            if (captureFailure != null) yield break;
+            yield return CaptureVisualDiagAllMapPair(controller, visibility, guide, camera, FastVsHouseArea.MiaHouse, Chapter1MiaHouseMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 17.90f, -25.20f), new Vector3(0.10f, 0.20f, 2.90f), Path.Combine(outputDirectory, "05_c1_c3_current.png"), Path.Combine(outputDirectory, "06_c1_c3_past.png"), builder, captureFail);
+            if (captureFailure != null) yield break;
+            yield return CaptureVisualDiagAllMapPair(controller, visibility, guide, camera, FastVsHouseArea.AriaStreet, Chapter1AriaStreetMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 20.35f, -27.80f), new Vector3(0.80f, 0.22f, 4.10f), Path.Combine(outputDirectory, "07_d1_d3_current.png"), Path.Combine(outputDirectory, "08_d1_d3_past.png"), builder, captureFail);
+            if (captureFailure != null) yield break;
+            yield return CaptureVisualDiagAllMapPair(controller, visibility, guide, camera, FastVsHouseArea.KaiaFarm, Chapter1KaiaFarmMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 20.95f, -28.90f), new Vector3(0.85f, 0.24f, 4.60f), Path.Combine(outputDirectory, "09_e1_e3_current.png"), Path.Combine(outputDirectory, "10_e1_e3_past.png"), builder, captureFail);
+            if (captureFailure != null) yield break;
+            yield return CaptureVisualDiagAllMapPair(controller, visibility, guide, camera, FastVsHouseArea.Ruins, Chapter1RuinsMapCenter + new Vector3(0f, 0.02f, -0.45f), new Vector3(-0.08f, 25.35f, -40.30f), new Vector3(0.44f, 0.28f, 5.84f), Path.Combine(outputDirectory, "11_f1_f6_current.png"), Path.Combine(outputDirectory, "12_f1_f6_past.png"), builder, captureFail);
+            if (captureFailure != null) yield break;
+            yield return CaptureVisualDiagEndSideView(controller, visibility, guide, camera, Path.Combine(outputDirectory, "13_scene6_sideview_auto.png"), builder, captureFail);
+        }
+
+        private static IEnumerator CaptureVisualDiagAllMapPair(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            FastVsHouseArea area,
+            Vector3 localPosition,
+            Vector3 positionOffset,
+            Vector3 lookAtOffset,
+            string currentOutputPath,
+            string pastOutputPath,
+            StringBuilder builder,
+            Action<Exception> fail)
+        {
+            var previousMask = camera != null ? camera.cullingMask : 0;
+            try
+            {
+                visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
+                visibility.SetActiveAreaForReview(area);
+                controller.ForcePlayerCurrentLocalForReview(localPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                PositionCamera(camera, controller.CurrentSpaceRootForReview.TransformPoint(localPosition), positionOffset, lookAtOffset);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            try
+            {
+                CaptureCameraPng(camera, currentOutputPath, builder);
+                controller.ForcePlayerOtherTimeLocalForReview(localPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+                var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+                var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+                var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+                camera.cullingMask = (previousMask & ~currentBit) | otherBit | playerBit;
+                PositionCamera(camera, controller.OtherTimeSpaceRootForReview.TransformPoint(localPosition), positionOffset, lookAtOffset);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            try
+            {
+                CaptureCameraPng(camera, pastOutputPath, builder);
+                camera.cullingMask = previousMask;
+                controller.ForcePlayerCurrentLocalForReview(localPosition);
+                guide.ApplyActiveTimeIsolationForReview();
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+            }
+        }
+
+        private static IEnumerator CaptureVisualDiagEndSideView(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            Camera camera,
+            string outputPath,
+            StringBuilder builder,
+            Action<Exception> fail)
+        {
+            var previousOrthographic = camera.orthographic;
+            var previousOrthographicSize = camera.orthographicSize;
+            try
+            {
+                visibility.SetActiveAreaForReview(FastVsHouseArea.Chapter1End);
+                controller.ForcePlayerCurrentLocalForReview(Chapter1EndSideViewPreviewTarget);
+                guide.ApplyActiveTimeIsolationForReview();
+                camera.orthographic = true;
+                camera.orthographicSize = Chapter1EndSideViewOrthographicSize;
+                var anchor = controller.CurrentSpaceRootForReview.TransformPoint(Chapter1EndSideViewCameraAnchor);
+                camera.transform.SetPositionAndRotation(anchor + new Vector3(0f, 0f, -13.0f), Quaternion.LookRotation(Vector3.forward, Vector3.up));
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            try
+            {
+                CaptureCameraPng(camera, outputPath, builder);
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+            }
+            finally
+            {
+                camera.orthographic = previousOrthographic;
+                camera.orthographicSize = previousOrthographicSize;
+            }
+        }
+
+        private static void CaptureCameraPng(Camera camera, string outputPath, StringBuilder builder)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+            EnsureCaptureCamera(camera);
+            var previousTarget = camera.targetTexture;
+            var previousActive = RenderTexture.active;
+            var renderTexture = new RenderTexture(1280, 720, 24, RenderTextureFormat.ARGB32);
+            var texture = new Texture2D(1280, 720, TextureFormat.RGBA32, false);
+            try
+            {
+                camera.targetTexture = renderTexture;
+                RenderTexture.active = renderTexture;
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+                texture.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
+                texture.Apply(false, false);
+                ForceOpaqueAlpha(texture);
+                File.WriteAllBytes(outputPath, texture.EncodeToPNG());
+                AppendLine(builder, BuildImageStatsLine(outputPath, texture));
+            }
+            finally
+            {
+                camera.targetTexture = previousTarget;
+                RenderTexture.active = previousActive;
+                renderTexture.Release();
+                UnityEngine.Object.Destroy(renderTexture);
+                UnityEngine.Object.Destroy(texture);
+            }
+        }
+
+        private static string BuildImageStatsLine(string outputPath, Texture2D texture)
+        {
+            var pixels = texture.GetPixels32();
+            var count = Math.Max(1, pixels.Length);
+            var sumR = 0d;
+            var sumG = 0d;
+            var sumB = 0d;
+            var sumLuma = 0d;
+            var sumLumaSq = 0d;
+            var sumChroma = 0d;
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var pixel = pixels[i];
+                sumR += pixel.r;
+                sumG += pixel.g;
+                sumB += pixel.b;
+                var luma = (0.2126d * pixel.r) + (0.7152d * pixel.g) + (0.0722d * pixel.b);
+                sumLuma += luma;
+                sumLumaSq += luma * luma;
+                var max = Math.Max(pixel.r, Math.Max(pixel.g, pixel.b));
+                var min = Math.Min(pixel.r, Math.Min(pixel.g, pixel.b));
+                sumChroma += max - min;
+            }
+
+            var meanLuma = sumLuma / count;
+            var variance = Math.Max(0d, (sumLumaSq / count) - (meanLuma * meanLuma));
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "[ALLMAPS] saved {0} size={1}x{2} meanRgb=({3:0.0},{4:0.0},{5:0.0}) stdLum={6:0.0} avgChroma={7:0.0}",
+                Path.GetFileName(outputPath),
+                texture.width,
+                texture.height,
+                sumR / count,
+                sumG / count,
+                sumB / count,
+                Math.Sqrt(variance),
+                sumChroma / count);
+        }
+
+        private static void WriteVisualDiagReport(string outputDirectory, string reportPath, string logPath)
+        {
+            File.WriteAllText(
+                Path.Combine(outputDirectory, "devlog.txt"),
+                "docs/HD2D_RUNTIME_INSTRUMENT_FIRST_DIAG_20260606.md" + Environment.NewLine,
+                Encoding.UTF8);
+
+            var pngCount = Directory.GetFiles(outputDirectory, "*.png").Length;
+            var lines = new[]
+            {
+                "# HD-2D Runtime Visual Diag",
+                string.Empty,
+                "- Scope: Phase 0 measurement only. No shadow/flicker/transparency fix is claimed here.",
+                $"- Log: `{Path.GetFileName(logPath)}`",
+                $"- Built-player PNG count: `{pngCount}`",
+                $"- Generated: `{DateTime.Now:yyyy-MM-ddTHH:mm:ss}`"
+            };
+            File.WriteAllLines(reportPath, lines, Encoding.UTF8);
+        }
+
+        private static void FinishVisualDiagFailure(Exception exception, string logPath, StringBuilder builder)
+        {
+            try
+            {
+                AppendLine(builder, $"{VisualDiagFailMarker}: {exception}");
+                var directory = Path.GetDirectoryName(logPath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllText(logPath, builder.ToString(), Encoding.UTF8);
+            }
+            catch
+            {
+                // Best effort: Debug.LogError below is the authoritative failure path if writing fails.
+            }
+
+            Debug.LogError($"{VisualDiagFailMarker}: {exception}");
+            Application.Quit(33);
+        }
+
+        private static void EnsureCaptureCamera(Camera camera)
+        {
+            if (camera == null)
+            {
+                throw new InvalidOperationException("Visual diag capture camera is missing.");
+            }
+
+            camera.allowHDR = true;
+            var additionalData = camera.GetComponent<UniversalAdditionalCameraData>();
+            if (additionalData == null)
+            {
+                additionalData = camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
+            }
+
+            additionalData.renderPostProcessing = true;
+            additionalData.requiresDepthTexture = true;
+            additionalData.requiresColorTexture = true;
+            additionalData.volumeLayerMask = ~0;
+        }
+
+        private static void PositionCamera(Camera camera, Vector3 anchor, Vector3 positionOffset, Vector3 lookAtOffset)
+        {
+            camera.orthographic = false;
+            camera.fieldOfView = Mathf.Max(camera.fieldOfView, 38f);
+            var position = anchor + positionOffset;
+            var lookAt = anchor + lookAtOffset;
+            camera.transform.SetPositionAndRotation(position, Quaternion.LookRotation(lookAt - position, Vector3.up));
+        }
+
+        private static void ForceOpaqueAlpha(Texture2D texture)
+        {
+            var pixels = texture.GetPixels32();
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                pixels[i].a = 255;
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, false);
+        }
+
+        private static string GetMemberValue(object target, params string[] names)
+        {
+            if (target == null)
+            {
+                return "null";
+            }
+
+            var type = target.GetType();
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            for (var i = 0; i < names.Length; i++)
+            {
+                var property = type.GetProperty(names[i], flags);
+                if (property != null && property.CanRead && property.GetIndexParameters().Length == 0)
+                {
+                    try
+                    {
+                        return FormatObjectValue(property.GetValue(target, null));
+                    }
+                    catch (Exception exception)
+                    {
+                        return $"property-error:{exception.GetType().Name}";
+                    }
+                }
+
+                var field = type.GetField(names[i], flags);
+                if (field != null)
+                {
+                    try
+                    {
+                        return FormatObjectValue(field.GetValue(target));
+                    }
+                    catch (Exception exception)
+                    {
+                        return $"field-error:{exception.GetType().Name}";
+                    }
+                }
+            }
+
+            return "missing";
+        }
+
+        private static string FormatObjectValue(object value)
+        {
+            if (value == null)
+            {
+                return "null";
+            }
+
+            switch (value)
+            {
+                case float f:
+                    return f.ToString("0.###", CultureInfo.InvariantCulture);
+                case double d:
+                    return d.ToString("0.###", CultureInfo.InvariantCulture);
+                case int i:
+                    return i.ToString(CultureInfo.InvariantCulture);
+                case bool b:
+                    return b ? "true" : "false";
+                case Vector2 v2:
+                    return FormatVector(v2);
+                case Vector3 v3:
+                    return FormatVector(v3);
+                case Vector4 v4:
+                    return string.Format(CultureInfo.InvariantCulture, "({0:0.###},{1:0.###},{2:0.###},{3:0.###})", v4.x, v4.y, v4.z, v4.w);
+                case Color c:
+                    return FormatColor(c);
+                default:
+                    return value.ToString();
+            }
+        }
+
+        private static bool IsEnvironmentRenderer(Renderer renderer)
+        {
+            if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+            {
+                return false;
+            }
+
+            var name = renderer.gameObject.name;
+            if (name.Contains("FastVS_SpriteCharacter") ||
+                name.Contains("PlayerVisual") ||
+                name.Contains("Prompt") ||
+                name.Contains("HUD") ||
+                name.Contains("Canvas") ||
+                name.Contains("Shadow") ||
+                name.Contains("LightPool") ||
+                name.Contains("Glow") ||
+                name.Contains("OpenCue") ||
+                name.Contains("Portal") ||
+                name.Contains("Aperture") ||
+                name.Contains("TimeWindow"))
+            {
+                return false;
+            }
+
+            return name.Contains("Current_") ||
+                   name.Contains("Past_") ||
+                   name.Contains("House") ||
+                   name.Contains("Plaza") ||
+                   name.Contains("Library") ||
+                   name.Contains("Ground") ||
+                   name.Contains("Floor") ||
+                   name.Contains("Wall") ||
+                   name.Contains("Facade") ||
+                   name.Contains("Building") ||
+                   name.Contains("Road") ||
+                   name.Contains("Path");
+        }
+
+        private static bool IsRepresentativeEnvironmentRendererName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            if (!name.Contains("Current_") && !name.Contains("Past_"))
+            {
+                return false;
+            }
+
+            return name.Contains("Current_CentralPlaza") ||
+                   name.Contains("Current_HouseExterior") ||
+                   name.Contains("Current_Library") ||
+                   name.Contains("Past_CentralPlaza") ||
+                   name.Contains("Past_Library");
+        }
+
+        private static bool IsTransparencyCandidateName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            return name.Contains("Library") ||
+                   name.Contains("Facade") ||
+                   name.Contains("Backdrop") ||
+                   name.Contains("BackPlate") ||
+                   name.Contains("BackVolume") ||
+                   name.Contains("Occlusion") ||
+                   name.Contains("Sky") ||
+                   name.Contains("Haze") ||
+                   name.Contains("Window") ||
+                   name.Contains("Aperture") ||
+                   name.Contains("Portal");
+        }
+
+        private static string RendererPath(Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return "null";
+            }
+
+            var names = new List<string>();
+            var current = renderer.transform;
+            for (var i = 0; i < 6 && current != null; i++)
+            {
+                names.Add(current.name);
+                current = current.parent;
+            }
+
+            names.Reverse();
+            return string.Join("/", names);
+        }
+
+        private static string MaterialName(Material material)
+        {
+            return material != null ? material.name : "null";
+        }
+
+        private static string MaterialFloatRounded(Material material, string propertyName)
+        {
+            if (material == null || !material.HasProperty(propertyName))
+            {
+                return "n/a";
+            }
+
+            return material.GetFloat(propertyName).ToString("0.###", CultureInfo.InvariantCulture);
+        }
+
+        private static float MaterialAlpha(Material material)
+        {
+            if (material == null)
+            {
+                return 1f;
+            }
+
+            if (material.HasProperty(BaseColorId))
+            {
+                return material.GetColor(BaseColorId).a;
+            }
+
+            return material.HasProperty(ColorId) ? material.GetColor(ColorId).a : 1f;
+        }
+
+        private static string FormatVector(Vector2 value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "({0:0.###},{1:0.###})", value.x, value.y);
+        }
+
+        private static string FormatVector(Vector3 value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "({0:0.###},{1:0.###},{2:0.###})", value.x, value.y, value.z);
+        }
+
+        private static string FormatColor(Color value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "({0:0.###},{1:0.###},{2:0.###},{3:0.###})", value.r, value.g, value.b, value.a);
+        }
+
+        private static void AppendLine(StringBuilder builder, string line)
+        {
+            builder.AppendLine(line);
         }
 
         private static IEnumerator RunR2AreaVisibilityRecheck(Action<Exception> fail)

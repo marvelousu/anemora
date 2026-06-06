@@ -68,6 +68,8 @@ namespace Anemora.FastVS
         private int _visDiagFrameCounter;
         private bool _visDiagLogged;
         private bool _washSuppressionLogged;
+        private int _lateUpdateHeartbeat;
+        private string _lastRuntimeWriteSummary = "not-applied";
 
         private void Awake()
         {
@@ -87,6 +89,7 @@ namespace Anemora.FastVS
 
         private void LateUpdate()
         {
+            _lateUpdateHeartbeat++;
             ResolveReferences();
             ApplyLightAndSky();
 
@@ -150,6 +153,8 @@ namespace Anemora.FastVS
         public static float P1ContactHardeningOutdoorShadowBiasForReview => OutdoorContactHardeningShadowBias;
         public static float P1ContactHardeningOutdoorShadowNormalBiasForReview => OutdoorContactHardeningNormalBias;
         public static float P1ContactHardeningOutdoorShadowNearPlaneForReview => OutdoorContactHardeningNearPlane;
+        public int LateUpdateHeartbeatForReview => _lateUpdateHeartbeat;
+        public string LastRuntimeWriteSummaryForReview => _lastRuntimeWriteSummary;
 
         private void HandleSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
@@ -222,6 +227,11 @@ namespace Anemora.FastVS
             {
                 ApplyP1ContactHardeningShadowOverlaysForReview();
             }
+
+            var keyLightForReview = mainLight;
+            _lastRuntimeWriteSummary = keyLightForReview != null
+                ? $"area={area}, isRealtimeOutdoor={isRealtimeOutdoor}, mainLight.enabled={keyLightForReview.enabled}, type={keyLightForReview.type}, shadows={keyLightForReview.shadows}, shadowStrength={keyLightForReview.shadowStrength:0.000}, intensity={keyLightForReview.intensity:0.000}, shadowBias={keyLightForReview.shadowBias:0.000}, shadowNormalBias={keyLightForReview.shadowNormalBias:0.000}, shadowNearPlane={keyLightForReview.shadowNearPlane:0.000}, euler={keyLightForReview.transform.eulerAngles}, cameraClearFlags={(sceneCamera != null ? sceneCamera.clearFlags.ToString() : "null")}, cameraBackground={(sceneCamera != null ? sceneCamera.backgroundColor.ToString() : "null")}, reflectionIntensity={RenderSettings.reflectionIntensity:0.000}"
+                : $"area={area}, isRealtimeOutdoor={isRealtimeOutdoor}, mainLight=null, cameraClearFlags={(sceneCamera != null ? sceneCamera.clearFlags.ToString() : "null")}, reflectionIntensity={RenderSettings.reflectionIntensity:0.000}";
         }
 
         public static float GetP1ContactHardeningShadowYawDegreesForReview(Light keyLight)
