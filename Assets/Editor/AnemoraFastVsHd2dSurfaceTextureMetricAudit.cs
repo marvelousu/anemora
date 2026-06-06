@@ -19,8 +19,10 @@ namespace Anemora.EditorTools
         private const float AverageLuminanceMax = 0.92f;
         private const float LuminanceRangeMin = 0.015f;
         private const float WallColorFallbackLuminanceRangeMin = 0.005f;
+        private const float FurniturePlainLuminanceRangeMin = 0.005f;
         private const float TextureLocalContrastMin = 0.015f;
         private const float GroundTextureLocalContrastMin = 0.014f;
+        private const float FurniturePlainTextureLocalContrastMin = 0.0003f;
         private const float BandLowerPadding = 0.12f;
         private const float BandUpperPadding = 0.18f;
         private static readonly string OutputDirectory = Path.GetFullPath(Path.Combine(
@@ -274,24 +276,29 @@ namespace Anemora.EditorTools
                 issues.Add($"{surfaceId} on {gameObjectName} average luminance {measurement.AverageLuminance:0.000} is outside {AverageLuminanceMin:0.000}-{AverageLuminanceMax:0.000}.");
             }
 
-            var rangeMin = profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall && measurement.UsedColorFallback
-                ? WallColorFallbackLuminanceRangeMin
-                : LuminanceRangeMin;
+            var rangeMin = profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Furniture
+                ? FurniturePlainLuminanceRangeMin
+                : profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall && measurement.UsedColorFallback
+                    ? WallColorFallbackLuminanceRangeMin
+                    : LuminanceRangeMin;
             if (measurement.LuminanceRange < rangeMin)
             {
                 issues.Add($"{surfaceId} on {gameObjectName} luminance range {measurement.LuminanceRange:0.000} is below {rangeMin:0.000}.");
             }
 
-            if (measurement.DistinctBuckets < 3 && !measurement.UsedColorFallback)
+            var distinctBucketMin = profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Furniture ? 1 : 3;
+            if (measurement.DistinctBuckets < distinctBucketMin && !measurement.UsedColorFallback)
             {
-                issues.Add($"{surfaceId} on {gameObjectName} distinct luminance buckets {measurement.DistinctBuckets} is below 3.");
+                issues.Add($"{surfaceId} on {gameObjectName} distinct luminance buckets {measurement.DistinctBuckets} is below {distinctBucketMin}.");
             }
 
             if (measurement.UsedTexture && !measurement.UsedColorFallback)
             {
-                var localContrastMin = profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Ground
-                    ? GroundTextureLocalContrastMin
-                    : TextureLocalContrastMin;
+                var localContrastMin = profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Furniture
+                    ? FurniturePlainTextureLocalContrastMin
+                    : profile.SurfaceKindForReview == FastVsHd2dSurfaceKind.Ground
+                        ? GroundTextureLocalContrastMin
+                        : TextureLocalContrastMin;
                 if (measurement.LocalContrast < localContrastMin)
                 {
                     issues.Add($"{surfaceId} on {gameObjectName} local contrast {measurement.LocalContrast:0.0000} is below {localContrastMin:0.0000}.");

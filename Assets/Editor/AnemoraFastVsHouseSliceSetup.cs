@@ -44971,30 +44971,6 @@ namespace Anemora.EditorTools
                 trim);
 
             CreateLibraryReadingTablePart(
-                $"{objectName}_TabletopPlankSeamA",
-                tableRoot.transform,
-                localScale,
-                new Vector3(-localScale.x * 0.24f, localScale.y * 0.39f, 0f),
-                new Vector3(0.03f, Mathf.Max(0.015f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.18f)),
-                trim);
-
-            CreateLibraryReadingTablePart(
-                $"{objectName}_TabletopPlankSeamB",
-                tableRoot.transform,
-                localScale,
-                new Vector3(0f, localScale.y * 0.40f, 0f),
-                new Vector3(0.03f, Mathf.Max(0.015f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.18f)),
-                shadow);
-
-            CreateLibraryReadingTablePart(
-                $"{objectName}_TabletopPlankSeamC",
-                tableRoot.transform,
-                localScale,
-                new Vector3(localScale.x * 0.24f, localScale.y * 0.39f, 0f),
-                new Vector3(0.03f, Mathf.Max(0.015f, localScale.y * 0.08f), Mathf.Max(0.06f, localScale.z - 0.18f)),
-                trim);
-
-            CreateLibraryReadingTablePart(
                 $"{objectName}_LeftEdgeHighlight",
                 tableRoot.transform,
                 localScale,
@@ -62739,6 +62715,14 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void ValidateLibraryReadingTablePlainTopSeamAbsent(string objectName)
+        {
+            if (FindSceneObjectIncludingInactive(objectName) != null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: library reading table must stay plain without tabletop seam object {objectName}.");
+            }
+        }
+
         private static void ValidateLibraryReadingSeatVisualObject(string objectName, string expectedParentName)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -75304,9 +75288,9 @@ namespace Anemora.EditorTools
             foreach (var tableRoot in currentTableRoots)
             {
                 ValidateInvisibleDropGuard($"{tableRoot}_NoStepCollider");
-                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamA", tableRoot);
-                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamB", tableRoot);
-                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamC", tableRoot);
+                ValidateLibraryReadingTablePlainTopSeamAbsent($"{tableRoot}_TabletopPlankSeamA");
+                ValidateLibraryReadingTablePlainTopSeamAbsent($"{tableRoot}_TabletopPlankSeamB");
+                ValidateLibraryReadingTablePlainTopSeamAbsent($"{tableRoot}_TabletopPlankSeamC");
                 ValidateLibraryReadingTableDetailObject($"{tableRoot}_LeftEdgeHighlight", tableRoot);
                 ValidateLibraryReadingTableDetailObject($"{tableRoot}_RightEdgeHighlight", tableRoot);
                 ValidateLibraryReadingTableDetailObject($"{tableRoot}_FrontThicknessRim", tableRoot);
@@ -75320,9 +75304,9 @@ namespace Anemora.EditorTools
             foreach (var tableRoot in pastTableRoots)
             {
                 ValidateInvisibleDropGuard($"{tableRoot}_NoStepCollider");
-                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamA", tableRoot);
-                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamB", tableRoot);
-                ValidateLibraryReadingTableDetailObject($"{tableRoot}_TabletopPlankSeamC", tableRoot);
+                ValidateLibraryReadingTablePlainTopSeamAbsent($"{tableRoot}_TabletopPlankSeamA");
+                ValidateLibraryReadingTablePlainTopSeamAbsent($"{tableRoot}_TabletopPlankSeamB");
+                ValidateLibraryReadingTablePlainTopSeamAbsent($"{tableRoot}_TabletopPlankSeamC");
                 ValidateLibraryReadingTableDetailObject($"{tableRoot}_LeftEdgeHighlight", tableRoot);
                 ValidateLibraryReadingTableDetailObject($"{tableRoot}_RightEdgeHighlight", tableRoot);
                 ValidateLibraryReadingTableDetailObject($"{tableRoot}_FrontThicknessRim", tableRoot);
@@ -77017,8 +77001,8 @@ namespace Anemora.EditorTools
             ValidateGeneratedRepeatTextureAsset("past_wood_floor_hd2d_plate", 128, 128, 18);
             ValidateGeneratedRepeatTextureAsset("current_interior_wall_hd2d_plate", 128, 128, 18);
             ValidateGeneratedRepeatTextureAsset("past_interior_wall_hd2d_plate", 128, 128, 18);
-            ValidateGeneratedRepeatTextureAsset("current_furniture_hd2d_plate", 128, 128, 18);
-            ValidateGeneratedRepeatTextureAsset("past_furniture_hd2d_plate", 128, 128, 18);
+            ValidateGeneratedRepeatTextureAsset("current_furniture_hd2d_plate", 128, 128, 1);
+            ValidateGeneratedRepeatTextureAsset("past_furniture_hd2d_plate", 128, 128, 1);
             ValidateGeneratedRepeatTextureAsset("book_spines_hd2d_plate", 128, 64, 30);
             ValidateGeneratedRepeatTextureAsset("bookshelf_front_painted_hd2d", 256, 128, 17);
 
@@ -107935,45 +107919,18 @@ namespace Anemora.EditorTools
         {
             var u = width <= 1 ? 0f : x / (float)(width - 1);
             var v = height <= 1 ? 0f : y / (float)(height - 1);
-            var fiberA = Mathf.Sin((x * 1.37f) + (y * 0.51f) + seed * 0.031f) * 0.5f + 0.5f;
-            var fiberB = Mathf.Sin((x * -0.83f) + (y * 1.69f) + seed * 0.047f) * 0.5f + 0.5f;
-            var fiberC = Mathf.Sin((x * 2.31f) + (y * -1.17f) + seed * 0.019f) * 0.5f + 0.5f;
-            var microBlock = Hash01(x / 2, y / 2, seed + 43) - 0.5f;
-            var microStreak = Hash01(x / 3, y / 2, seed + 47) - 0.5f;
-            var softChip = Hash01(x / 5, y / 3, seed + 53) - 0.5f;
-            var lift =
-                ((fiberA - 0.5f) * 0.26f) +
-                ((fiberB - 0.5f) * 0.20f) +
-                ((fiberC - 0.5f) * 0.10f) +
-                (microBlock * 0.52f) +
-                (microStreak * 0.20f) +
-                (softChip * 0.10f);
+            var baseMix = darkerUnderside ? 0.42f : 0.50f;
+            var tone = LerpColor(woodA, woodB, baseMix);
+            var softNoise = SampleSmoothValueNoise2D((x * 0.032f) + (seed * 0.071f), (y * 0.032f) + (seed * 0.113f), seed + 607) - 0.5f;
+            var fineNoise = Hash01(x, y, seed + 613) - 0.5f;
+            var lightFalloff = ((1f - v) * 0.006f) + ((0.5f - u) * 0.004f);
+            var lift = (softNoise * 0.006f) + (fineNoise * 0.004f) + lightFalloff - (darkerUnderside ? 0.006f : 0f);
 
-            var tone = LerpColor(woodA, woodB, Mathf.Clamp01(0.52f + lift * 0.52f));
-            var currentShadowBias = darkerUnderside ? 0.04f : 0f;
-            if (lift > 0f)
-            {
-                tone = LerpColor(tone, highlightColor, Mathf.Clamp01(lift * 0.40f));
-            }
-            else
-            {
-                var darkTone = LerpColor(Darken(tone, 0.34f + currentShadowBias), seamColor, 0.10f + currentShadowBias);
-                tone = LerpColor(tone, darkTone, Mathf.Clamp01(-lift * 0.58f));
-            }
-
-            var woodPore = Hash01(x, y, seed + 31);
-            if (woodPore > 0.91f && u > 0.02f && u < 0.98f && v > 0.02f && v < 0.98f)
-            {
-                tone = LerpColor(tone, LerpColor(Darken(tone, 0.30f), seamColor, 0.08f), 0.24f);
-            }
-
-            var brightFiber = Hash01(x / 2, y, seed + 37);
-            if (brightFiber > 0.84f && u > 0.02f && u < 0.98f && v > 0.02f && v < 0.98f)
-            {
-                tone = LerpColor(tone, Lighten(highlightColor, 0.05f), 0.15f);
-            }
-
-            return tone;
+            return new Color(
+                Mathf.Clamp01(tone.r + lift),
+                Mathf.Clamp01(tone.g + lift * 0.92f),
+                Mathf.Clamp01(tone.b + lift * 0.78f),
+                1f);
         }
 
         private static Color SampleBookShelfTexturePixel(int x, int y, int width, int height, int rowCount, int seed, bool bookshelfFront)
@@ -108425,7 +108382,7 @@ namespace Anemora.EditorTools
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("current_rubble_detail", "current_rubble_detail_hd2d_plate", 128, 64, SampleCurrentRubbleDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PaintedSurfaceMaterial("book", "book_spines_hd2d_plate", 128, 64, SampleBookSpinesHd2dPixel, false, new Vector2(1f, 1f)),
-                PixelMaterial("lamp", new Color32(238, 183, 74, 255), new Color32(255, 218, 111, 255), new Color32(205, 143, 55, 255), PixelPattern.GlowNoise, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.OverlayGlow),
+                FlatMaterial("lamp", new Color(0.93f, 0.72f, 0.29f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
                 FlatMaterial("timewindow_cue_yellow_light", new Color(1.00f, 0.86f, 0.20f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
                 FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
                 PaintedSurfaceMaterial("window_light", "window_light_hd2d_plate", 96, 96, SampleWindowLightHd2dPixel, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.PortalWindow),
@@ -108437,7 +108394,7 @@ namespace Anemora.EditorTools
                 PixelMaterial("flower_blue", new Color32(75, 104, 185, 255), new Color32(121, 157, 229, 255), new Color32(45, 61, 125, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
                 PixelMaterial("laundry_bright", new Color32(218, 219, 196, 255), new Color32(242, 238, 210, 255), new Color32(151, 165, 161, 255), PixelPattern.Cloth, true, new Vector2(1f, 1f)),
                 PixelMaterial("laundry_accent", new Color32(109, 145, 192, 255), new Color32(151, 185, 222, 255), new Color32(65, 90, 141, 255), PixelPattern.Cloth, true, new Vector2(1f, 1f)),
-                PixelMaterial("sign_paint", new Color32(178, 127, 61, 255), new Color32(211, 161, 82, 255), new Color32(146, 100, 54, 255), PixelPattern.Paper, false, new Vector2(1f, 1f)),
+                FlatMaterial("sign_paint", new Color(0.70f, 0.50f, 0.25f, 1f), false),
                 FlatMaterial("shadow", new Color(0.10f, 0.10f, 0.11f, 1f), true, FastVsHd2dMaterialRole.ContactShadow),
                 FlatMaterial("doorway_dark", new Color(0.035f, 0.032f, 0.038f, 1f), true, FastVsHd2dMaterialRole.SurfaceLit),
                 FlatMaterial("current_frame", Stage7pCurrentFrameColor, false, FastVsHd2dMaterialRole.PortalWindow),
