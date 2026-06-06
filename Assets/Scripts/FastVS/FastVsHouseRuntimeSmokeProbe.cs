@@ -20,6 +20,7 @@ namespace Anemora.FastVS
         private const string R236RecheckArgument = "--anemora-house-slice-r236-recheck";
         private const string VisualDiagArgument = "--anemora-house-slice-visual-diag";
         private const string LibraryTablePlainProofArgument = "--anemora-house-slice-library-table-plain-proof";
+        private const string PortalBacksideDiagArgument = "--anemora-house-slice-portal-backside-diag";
         private const string ReviewDirArgument = "--anemora-house-slice-review-dir";
         private const string PassMarker = "ANEMORA_HOUSE_SLICE_SMOKE_PASS";
         private const string FailMarker = "ANEMORA_HOUSE_SLICE_SMOKE_FAIL";
@@ -30,6 +31,8 @@ namespace Anemora.FastVS
         private const string VisualDiagFailMarker = "ANEMORA_HOUSE_SLICE_VISUAL_DIAG_FAIL";
         private const string LibraryTablePlainProofPassMarker = "ANEMORA_HOUSE_SLICE_LIBRARY_TABLE_PLAIN_PROOF_PASS";
         private const string LibraryTablePlainProofFailMarker = "ANEMORA_HOUSE_SLICE_LIBRARY_TABLE_PLAIN_PROOF_FAIL";
+        private const string PortalBacksideDiagPassMarker = "ANEMORA_HOUSE_SLICE_PORTAL_BACKSIDE_DIAG_PASS";
+        private const string PortalBacksideDiagFailMarker = "ANEMORA_HOUSE_SLICE_PORTAL_BACKSIDE_DIAG_FAIL";
         private static readonly Vector2 PortalDragStart = new Vector2(380f, 215f);
         private static readonly Vector2 PortalDragEnd = new Vector2(850f, 600f);
         private static readonly Vector3 HouseInteriorCenter = new Vector3(-8.35f, 0f, -8.35f);
@@ -90,6 +93,12 @@ namespace Anemora.FastVS
             if (ShouldRun(LibraryTablePlainProofArgument))
             {
                 yield return RunLibraryTablePlainProofProbe();
+                yield break;
+            }
+
+            if (ShouldRun(PortalBacksideDiagArgument))
+            {
+                yield return RunPortalBacksideDiagProbe();
                 yield break;
             }
 
@@ -634,6 +643,243 @@ namespace Anemora.FastVS
 
             Debug.LogError($"{LibraryTablePlainProofFailMarker}: {exception}");
             Application.Quit(34);
+        }
+
+        private static IEnumerator RunPortalBacksideDiagProbe()
+        {
+            Application.runInBackground = true;
+
+            var outputDirectory = ResolveReviewOutputDirectory("portal_backside_diag");
+            var logPath = Path.Combine(outputDirectory, "portal_backside_diag.log");
+            var reportPath = Path.Combine(outputDirectory, "REPORT.md");
+            var builder = new StringBuilder(32 * 1024);
+            Exception failure = null;
+
+            try
+            {
+                Directory.CreateDirectory(outputDirectory);
+                foreach (var existingPng in Directory.GetFiles(outputDirectory, "*.png"))
+                {
+                    File.Delete(existingPng);
+                }
+
+                AppendLine(builder, "# Fast VS House Slice Portal Backside Diag");
+                AppendLine(builder, $"timestampLocal={DateTime.Now:yyyy-MM-ddTHH:mm:ss.fff}");
+                AppendLine(builder, $"outputDirectory={Path.GetFullPath(outputDirectory)}");
+                AppendLine(builder, $"commandLine={string.Join(" ", Environment.GetCommandLineArgs())}");
+            }
+            catch (Exception exception)
+            {
+                FinishPortalBacksideDiagFailure(exception, logPath, builder);
+                yield break;
+            }
+
+            for (var frame = 0; frame < 140; frame++)
+            {
+                yield return null;
+            }
+
+            yield return CapturePortalBacksideDiag(outputDirectory, builder, exception => failure = exception);
+            if (failure != null)
+            {
+                FinishPortalBacksideDiagFailure(failure, logPath, builder);
+                yield break;
+            }
+
+            try
+            {
+                File.WriteAllText(logPath, builder.ToString(), Encoding.UTF8);
+                WritePortalBacksideDiagReport(outputDirectory, reportPath, logPath);
+                Debug.Log(builder.ToString());
+                Debug.Log($"{PortalBacksideDiagPassMarker}: output={Path.GetFullPath(outputDirectory)} log={Path.GetFullPath(logPath)}");
+                Application.Quit(0);
+            }
+            catch (Exception exception)
+            {
+                FinishPortalBacksideDiagFailure(exception, logPath, builder);
+            }
+        }
+
+        private static IEnumerator CapturePortalBacksideDiag(string outputDirectory, StringBuilder builder, Action<Exception> fail)
+        {
+            var controller = default(TimeWindowPairedSpacePortalController);
+            var visibility = default(FastVsHouseAreaVisibility);
+            var camera = default(Camera);
+            var player = default(CharacterController);
+
+            try
+            {
+                controller = RequireObject<TimeWindowPairedSpacePortalController>("paired space controller");
+                visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+                camera = RequireObject<Camera>("main camera");
+                player = RequireObject<CharacterController>("player controller");
+                visibility.SetRuntimeTimeSetActiveForceKeepBothTimesForReview(false);
+                visibility.SetActiveAreaForReview(FastVsHouseArea.CentralPlaza);
+                controller.SetRuntimeInputEnabledForReview(false);
+                controller.ClosePortal();
+                controller.ForcePlayerCurrentLocalForReview(CentralPlazaVsCenter + new Vector3(-0.34f, 0.02f, 3.26f));
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, false);
+                PositionCamera(
+                    camera,
+                    controller.CurrentSpaceRootForReview.TransformPoint(CentralPlazaVsCenter + new Vector3(-0.34f, 0.72f, 3.26f)),
+                    new Vector3(0f, 5.8f, -8.5f),
+                    new Vector3(0f, 0.28f, 1.10f));
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+                yield break;
+            }
+
+            yield return null;
+            yield return new WaitForEndOfFrame();
+
+            try
+            {
+                AppendLine(builder, string.Empty);
+                AppendLine(builder, "## Portal Open Runtime State");
+                var opened = controller.TryOpenPortalForTests(PortalDragStart, PortalDragEnd);
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(controller.PlayerInOtherTime, true);
+                controller.RenderPortalAperturesForReview();
+                AppendPortalBacksideState(builder, controller, "afterOpen", player);
+                AppendLine(builder, $"openResult={opened}");
+                CaptureCameraPng(camera, Path.Combine(outputDirectory, "01_portal_current_front_open.png"), builder);
+
+                AppendLine(builder, string.Empty);
+                AppendLine(builder, "## Current Backside Traversal Attempt");
+                var portalLocal = controller.PortalLocalCenterForReview;
+                var portalSize = controller.PortalSizeForReview;
+                var blockDepth = Mathf.Max(controller.CurrentBackSideBlockDepthForReview, 0.18f);
+                var currentStartLocal = new Vector3(
+                    portalLocal.x + portalSize.x * 0.5f + 0.08f,
+                    0.72f,
+                    portalLocal.z + blockDepth + 0.18f);
+                var currentMoveLocalDelta = new Vector3(0f, 0f, -blockDepth - 0.42f);
+                controller.ForcePlayerCurrentLocalForReview(currentStartLocal);
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(false, true);
+                AppendLine(builder, $"currentBackAttempt.startLocal={FormatVector(currentStartLocal)} insideBackZone={IsInsidePortalBackBlockZoneForDiag(controller, currentStartLocal)}");
+                AppendLine(builder, $"currentBackAttempt.moveLocalDelta={FormatVector(currentMoveLocalDelta)} expectedDepthPlane={portalLocal.z + controller.CurrentBackSideBlockDepthForReview:0.0000}");
+                controller.MovePlayerWorldForReview(controller.CurrentSpaceRootForReview.TransformVector(currentMoveLocalDelta));
+                var currentAfterLocal = controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position);
+                AppendLine(builder, $"currentBackAttempt.afterLocal={FormatVector(currentAfterLocal)} insideBackZone={IsInsidePortalBackBlockZoneForDiag(controller, currentAfterLocal)}");
+                AppendLine(builder, $"currentBackAttempt.rejected={controller.BackSideCrossingRejected} outsideRejected={controller.OutsideCrossingRejected} lastTransition={controller.LastTransitionForReview}");
+                AppendLine(builder, $"currentBackAttempt.inferredStopZ={currentAfterLocal.z:0.0000} portalZ={portalLocal.z:0.0000} deltaFromPortalZ={currentAfterLocal.z - portalLocal.z:0.0000}");
+                PositionCamera(
+                    camera,
+                    controller.CurrentSpaceRootForReview.TransformPoint(currentAfterLocal + new Vector3(0f, 0.28f, 0f)),
+                    new Vector3(0f, 5.2f, -7.6f),
+                    new Vector3(0f, 0.20f, 0.88f));
+                CaptureCameraPng(camera, Path.Combine(outputDirectory, "02_portal_current_back_attempt.png"), builder);
+
+                AppendLine(builder, string.Empty);
+                AppendLine(builder, "## Other-Time Wall Volume Traversal Attempt");
+                controller.TransferCurrentToOtherForReview(new Vector3(portalLocal.x, 0.72f, portalLocal.z + 0.18f));
+                visibility.ApplyRuntimeTimeSetActiveIsolationForReview(controller.PlayerInOtherTime, true);
+                controller.RenderPortalAperturesForReview();
+                AppendPortalBacksideState(builder, controller, "afterTransferOtherTime", player);
+                var otherBeforeLocal = controller.OtherTimeSpaceRootForReview.InverseTransformPoint(player.transform.position);
+                var otherMoveLocalDelta = new Vector3(0f, 0f, controller.OtherTimeWallVolumeDepthForReview + 0.85f);
+                AppendLine(builder, $"otherTimeWallAttempt.beforeLocal={FormatVector(otherBeforeLocal)} moveLocalDelta={FormatVector(otherMoveLocalDelta)} enabledWallColliders={controller.EnabledOtherTimeWallVolumeColliderCountForReview}");
+                controller.MovePlayerWorldForReview(controller.OtherTimeSpaceRootForReview.TransformVector(otherMoveLocalDelta));
+                var otherAfterLocal = controller.OtherTimeSpaceRootForReview.InverseTransformPoint(player.transform.position);
+                AppendLine(builder, $"otherTimeWallAttempt.afterLocal={FormatVector(otherAfterLocal)} movedZ={otherAfterLocal.z - otherBeforeLocal.z:0.0000} requestedZ={otherMoveLocalDelta.z:0.0000} playerInOtherTime={controller.PlayerInOtherTime} lastTransition={controller.LastTransitionForReview}");
+                SetCameraMaskForOtherTime(controller, camera);
+                PositionCamera(
+                    camera,
+                    controller.OtherTimeSpaceRootForReview.TransformPoint(otherAfterLocal + new Vector3(0f, 0.28f, 0f)),
+                    new Vector3(0f, 5.2f, -7.6f),
+                    new Vector3(0f, 0.20f, 0.88f));
+                CaptureCameraPng(camera, Path.Combine(outputDirectory, "03_portal_other_time_wall_attempt.png"), builder);
+                camera.cullingMask = ~0;
+            }
+            catch (Exception exception)
+            {
+                fail(exception);
+            }
+        }
+
+        private static void AppendPortalBacksideState(StringBuilder builder, TimeWindowPairedSpacePortalController controller, string label, CharacterController player)
+        {
+            var playerLocal = controller.PlayerInOtherTime && controller.OtherTimeSpaceRootForReview != null
+                ? controller.OtherTimeSpaceRootForReview.InverseTransformPoint(player.transform.position)
+                : controller.CurrentSpaceRootForReview != null
+                    ? controller.CurrentSpaceRootForReview.InverseTransformPoint(player.transform.position)
+                    : Vector3.zero;
+            var portalLocal = controller.PortalLocalCenterForReview;
+            var portalSize = controller.PortalSizeForReview;
+            AppendLine(builder, $"{label}.hasPortalPair={controller.HasPortalPair} hasLiveAperture={controller.HasLiveApertureViewForReview} playerInOtherTime={controller.PlayerInOtherTime}");
+            AppendLine(builder, $"{label}.portalLocal={FormatVector(portalLocal)} portalSize=({portalSize.x:0.000},{portalSize.y:0.000}) portalBottom={controller.PortalBottomLocalYForReview:0.0000}");
+            AppendLine(builder, $"{label}.currentBackSideBlockDepth={controller.CurrentBackSideBlockDepthForReview:0.0000} expectedDepthPlane={portalLocal.z + controller.CurrentBackSideBlockDepthForReview:0.0000}");
+            AppendLine(builder, $"{label}.stencilPasses={PortalStencilFeature.LastEnqueuedPassCount} stencilCamera={PortalStencilFeature.LastCameraName}");
+            AppendLine(builder, $"{label}.currentFrameRenderers={controller.CurrentFrameRendererCountForReview} otherFrameRenderers={controller.OtherTimeFrameRendererCountForReview} apertureRenderers={controller.EnabledApertureRendererCountForReview}");
+            AppendLine(builder, $"{label}.currentApertureQueue={controller.CurrentApertureMaterialRenderQueueForReview} currentViewport={controller.CurrentApertureViewportRectForReview} otherViewport={controller.OtherTimeApertureViewportRectForReview}");
+            AppendLine(builder, $"{label}.currentToOtherMask={controller.CurrentToOtherPortalCameraCullingMaskForReview} otherToCurrentMask={controller.OtherToCurrentPortalCameraCullingMaskForReview} playerLayer={controller.PlayerRenderLayerForReview}");
+            AppendLine(builder, $"{label}.wallVolumeSummary={controller.OtherTimeWallVolumeSummaryForReview}");
+            AppendLine(builder, $"{label}.wallVolumeColliders total={controller.OtherTimeWallVolumeColliderCountForReview} enabled={controller.EnabledOtherTimeWallVolumeColliderCountForReview} center={FormatVector(controller.OtherTimeWallVolumeLocalCenterForReview)} size={FormatVector(controller.OtherTimeWallVolumeLocalSizeForReview)} depth={controller.OtherTimeWallVolumeDepthForReview:0.0000}");
+            AppendLine(builder, $"{label}.playerLocal={FormatVector(playerLocal)} backRejected={controller.BackSideCrossingRejected} outsideRejected={controller.OutsideCrossingRejected} lastTransition={controller.LastTransitionForReview}");
+        }
+
+        private static bool IsInsidePortalBackBlockZoneForDiag(TimeWindowPairedSpacePortalController controller, Vector3 local)
+        {
+            var portalLocal = controller.PortalLocalCenterForReview;
+            var portalSize = controller.PortalSizeForReview;
+            var sideMargin = Mathf.Max(controller.OtherTimeWallVolumeSideMarginForReview + controller.OtherTimeWallVolumeThicknessForReview, 0.20f);
+            var verticalMargin = Mathf.Max(controller.OtherTimeWallVolumeSideMarginForReview, 0.18f);
+            var halfWidth = portalSize.x * 0.5f + sideMargin;
+            var halfHeight = portalSize.y * 0.5f + verticalMargin;
+            return Mathf.Abs(local.x - portalLocal.x) <= halfWidth &&
+                   local.y >= portalLocal.y - halfHeight - 0.35f &&
+                   local.y <= portalLocal.y + halfHeight + 1.25f;
+        }
+
+        private static void SetCameraMaskForOtherTime(TimeWindowPairedSpacePortalController controller, Camera camera)
+        {
+            if (controller == null || camera == null)
+            {
+                return;
+            }
+
+            var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
+            var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            camera.cullingMask = (camera.cullingMask & ~currentBit) | otherBit | playerBit;
+        }
+
+        private static void WritePortalBacksideDiagReport(string outputDirectory, string reportPath, string logPath)
+        {
+            var pngCount = Directory.GetFiles(outputDirectory, "*.png").Length;
+            var lines = new[]
+            {
+                "# HD-2D Portal Backside Diag",
+                string.Empty,
+                "- Scope: Phase 2 built-player measurement only. No traversal/collider/stencil fix is claimed here.",
+                $"- Log: `{Path.GetFileName(logPath)}`",
+                $"- Built-player PNG count: `{pngCount}`",
+                $"- Generated: `{DateTime.Now:yyyy-MM-ddTHH:mm:ss}`"
+            };
+            File.WriteAllLines(reportPath, lines, Encoding.UTF8);
+        }
+
+        private static void FinishPortalBacksideDiagFailure(Exception exception, string logPath, StringBuilder builder)
+        {
+            try
+            {
+                AppendLine(builder, string.Empty);
+                AppendLine(builder, $"{PortalBacksideDiagFailMarker}: {exception}");
+                var directory = Path.GetDirectoryName(logPath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllText(logPath, builder.ToString(), Encoding.UTF8);
+            }
+            catch
+            {
+            }
+
+            Debug.LogError($"{PortalBacksideDiagFailMarker}: {exception}");
+            Application.Quit(35);
         }
 
         private static void AppendVisualRuntimeDiagnostics(StringBuilder builder, IReadOnlyList<string> nearSamples)
