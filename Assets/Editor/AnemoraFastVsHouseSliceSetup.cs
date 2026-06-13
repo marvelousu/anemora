@@ -488,6 +488,7 @@ namespace Anemora.EditorTools
         private const float Chapter1EndSideViewOrthographicSize = 2.80f;
         private const int DistantPanoramaVistaSegmentCount = 14;
         private const int DistantPanoramaVistaBandCount = 3;
+        private const string AuthoredVegetationMeshNamePrefix = "AuthoredVegetation";
         private static readonly Vector3 DistantPanoramaVistaReviewPositionOffset = new Vector3(0f, 14.00f, -25.20f);
         private static readonly Vector3 DistantPanoramaVistaReviewLookAtOffset = new Vector3(0.10f, 3.50f, 2.90f);
         private static readonly FastVsHouseArea[] DistantPanoramaVistaAreas =
@@ -816,6 +817,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
             ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
+            ValidateFastVsHd2dHouseExteriorAuthoredVegetationPrototype();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
             ValidateChapter1ContinuationTimeWindowRightSidePlacement(controller);
@@ -19666,9 +19668,245 @@ namespace Anemora.EditorTools
 
         private static void CreateChapter1Tree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial)
         {
+            if (IsHouseExteriorAuthoredVegetationPrototype(objectPrefix))
+            {
+                CreateAuthoredLowPolyTree(root, objectPrefix, trunkCenter, trunkMaterial, crownMaterial);
+                return;
+            }
+
             CreateLandmarkCube($"{objectPrefix}_Trunk", root, trunkCenter, new Vector3(0.22f, 1.24f, 0.22f), Quaternion.identity, trunkMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.trunk");
             CreateLandmarkCube($"{objectPrefix}_Crown", root, trunkCenter + new Vector3(0f, 1.02f, 0f), new Vector3(1.08f, 0.92f, 1.08f), Quaternion.identity, crownMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.crown");
             CreateLandmarkCube($"{objectPrefix}_LowerCanopy", root, trunkCenter + new Vector3(-0.12f, 0.86f, 0.10f), new Vector3(0.72f, 0.54f, 0.72f), Quaternion.identity, crownMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.lower_canopy");
+        }
+
+        private static bool IsHouseExteriorAuthoredVegetationPrototype(string objectPrefix)
+        {
+            return !string.IsNullOrEmpty(objectPrefix) &&
+                objectPrefix.Contains("_HouseExterior_", StringComparison.Ordinal);
+        }
+
+        private static void CreateAuthoredLowPolyTree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial)
+        {
+            var yaw = AuthoredVegetationSigned(objectPrefix, 11, 11f);
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_Trunk",
+                root,
+                trunkCenter,
+                new Vector3(0.22f, 1.24f, 0.22f),
+                Quaternion.Euler(0f, yaw, 0f),
+                trunkMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.trunk",
+                CreateAuthoredVegetationTrunkMesh($"{objectPrefix}_Trunk_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", objectPrefix));
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_Crown",
+                root,
+                trunkCenter + new Vector3(0f, 1.02f, 0f),
+                new Vector3(1.08f, 0.92f, 1.08f),
+                Quaternion.Euler(0f, yaw - 8f, 0f),
+                crownMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.crown",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_Crown_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", objectPrefix, 0.50f, 0.42f));
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_LowerCanopy",
+                root,
+                trunkCenter + new Vector3(-0.12f, 0.86f, 0.10f),
+                new Vector3(0.72f, 0.54f, 0.72f),
+                Quaternion.Euler(0f, yaw + 19f, 0f),
+                crownMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.lower_canopy",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_LowerCanopy_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", objectPrefix, 0.44f, 0.36f));
+        }
+
+        private static GameObject CreateAuthoredVegetationMesh(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, TimeWindowPairedSpaceLandmarkKind kind, string landmarkId, Mesh mesh)
+        {
+            var sceneObject = new GameObject(objectName);
+            sceneObject.transform.SetParent(root, false);
+            sceneObject.transform.localPosition = localPosition;
+            sceneObject.transform.localRotation = localRotation;
+            sceneObject.transform.localScale = localScale;
+
+            var filter = sceneObject.AddComponent<MeshFilter>();
+            filter.sharedMesh = mesh;
+            var renderer = sceneObject.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.On;
+            renderer.receiveShadows = false;
+
+            var landmark = sceneObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", kind);
+            SerializedSet(landmark, "countsForArrival", true);
+            return sceneObject;
+        }
+
+        private static Mesh CreateAuthoredVegetationTrunkMesh(string meshName, string seedKey)
+        {
+            const int sideCount = 6;
+            var bottomRadius = 0.42f + AuthoredVegetationSigned(seedKey, 21, 0.035f);
+            var topRadius = 0.25f + AuthoredVegetationSigned(seedKey, 23, 0.025f);
+            var bendX = AuthoredVegetationSigned(seedKey, 29, 0.035f);
+            var bendZ = AuthoredVegetationSigned(seedKey, 31, 0.035f);
+            var vertices = new Vector3[sideCount * 2 + 2];
+            var uvs = new Vector2[vertices.Length];
+
+            for (var i = 0; i < sideCount; i++)
+            {
+                var angle = (i / (float)sideCount) * Mathf.PI * 2f;
+                var x = Mathf.Cos(angle);
+                var z = Mathf.Sin(angle);
+                vertices[i] = new Vector3(x * bottomRadius, -0.50f, z * bottomRadius);
+                vertices[i + sideCount] = new Vector3(x * topRadius + bendX, 0.50f, z * topRadius + bendZ);
+                uvs[i] = new Vector2(i / (float)sideCount, 0f);
+                uvs[i + sideCount] = new Vector2(i / (float)sideCount, 1f);
+            }
+
+            var bottomCenter = sideCount * 2;
+            var topCenter = bottomCenter + 1;
+            vertices[bottomCenter] = new Vector3(0f, -0.50f, 0f);
+            vertices[topCenter] = new Vector3(bendX, 0.50f, bendZ);
+            uvs[bottomCenter] = new Vector2(0.5f, 0f);
+            uvs[topCenter] = new Vector2(0.5f, 1f);
+
+            var triangles = new List<int>(sideCount * 12);
+            for (var i = 0; i < sideCount; i++)
+            {
+                var next = (i + 1) % sideCount;
+                var top = i + sideCount;
+                var nextTop = next + sideCount;
+                triangles.Add(i);
+                triangles.Add(next);
+                triangles.Add(top);
+                triangles.Add(top);
+                triangles.Add(next);
+                triangles.Add(nextTop);
+                triangles.Add(bottomCenter);
+                triangles.Add(i);
+                triangles.Add(next);
+                triangles.Add(topCenter);
+                triangles.Add(nextTop);
+                triangles.Add(top);
+            }
+
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationCanopyMesh(string meshName, string seedKey, float upperRadius, float lowerRadius)
+        {
+            const int sideCount = 8;
+            var vertices = new Vector3[sideCount * 2 + 2];
+            var uvs = new Vector2[vertices.Length];
+            var topIndex = sideCount * 2;
+            var bottomIndex = topIndex + 1;
+
+            for (var i = 0; i < sideCount; i++)
+            {
+                var upperAngle = (i / (float)sideCount) * Mathf.PI * 2f;
+                var lowerAngle = upperAngle + 0.22f;
+                var upperJitter = 0.90f + AuthoredVegetationHash01(seedKey, 41 + i) * 0.24f;
+                var lowerJitter = 0.88f + AuthoredVegetationHash01(seedKey, 71 + i) * 0.18f;
+                vertices[i] = new Vector3(Mathf.Cos(upperAngle) * upperRadius * upperJitter, 0.18f, Mathf.Sin(upperAngle) * upperRadius * upperJitter);
+                vertices[i + sideCount] = new Vector3(Mathf.Cos(lowerAngle) * lowerRadius * lowerJitter, -0.32f, Mathf.Sin(lowerAngle) * lowerRadius * lowerJitter);
+                uvs[i] = new Vector2(i / (float)sideCount, 0.72f);
+                uvs[i + sideCount] = new Vector2(i / (float)sideCount, 0.18f);
+            }
+
+            vertices[topIndex] = new Vector3(AuthoredVegetationSigned(seedKey, 83, 0.035f), 0.52f, AuthoredVegetationSigned(seedKey, 89, 0.035f));
+            vertices[bottomIndex] = new Vector3(AuthoredVegetationSigned(seedKey, 97, 0.025f), -0.50f, AuthoredVegetationSigned(seedKey, 101, 0.025f));
+            uvs[topIndex] = new Vector2(0.5f, 1f);
+            uvs[bottomIndex] = new Vector2(0.5f, 0f);
+
+            var triangles = new List<int>(sideCount * 18);
+            for (var i = 0; i < sideCount; i++)
+            {
+                var next = (i + 1) % sideCount;
+                var lower = i + sideCount;
+                var nextLower = next + sideCount;
+                triangles.Add(topIndex);
+                triangles.Add(i);
+                triangles.Add(next);
+                triangles.Add(i);
+                triangles.Add(lower);
+                triangles.Add(next);
+                triangles.Add(next);
+                triangles.Add(lower);
+                triangles.Add(nextLower);
+                triangles.Add(bottomIndex);
+                triangles.Add(nextLower);
+                triangles.Add(lower);
+            }
+
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationGrassBladeMesh(string meshName, string seedKey)
+        {
+            var tipBend = AuthoredVegetationSigned(seedKey, 131, 0.14f);
+            var sideBend = AuthoredVegetationSigned(seedKey, 137, 0.08f);
+            var vertices = new[]
+            {
+                new Vector3(-0.34f, -0.50f, 0f),
+                new Vector3(0.34f, -0.50f, 0f),
+                new Vector3(0.08f + sideBend, 0.05f, 0.03f),
+                new Vector3(tipBend, 0.50f, 0.06f),
+                new Vector3(-0.08f + sideBend * 0.5f, -0.05f, -0.03f)
+            };
+            var uvs = new[]
+            {
+                new Vector2(0f, 0f),
+                new Vector2(1f, 0f),
+                new Vector2(0.65f, 0.55f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.35f, 0.45f)
+            };
+            var triangles = new List<int>
+            {
+                0, 2, 4,
+                1, 3, 2,
+                0, 4, 2,
+                1, 2, 3,
+                0, 1, 2,
+                0, 2, 1
+            };
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationMeshAsset(string meshName, Vector3[] vertices, Vector2[] uvs, List<int> triangles)
+        {
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static float AuthoredVegetationHash01(string seedKey, int salt)
+        {
+            unchecked
+            {
+                var hash = 2166136261u ^ (uint)salt;
+                for (var i = 0; i < seedKey.Length; i++)
+                {
+                    hash ^= seedKey[i];
+                    hash *= 16777619u;
+                }
+
+                hash ^= hash >> 13;
+                hash *= 1274126177u;
+                return (hash & 0x00FFFFFFu) / 16777215f;
+            }
+        }
+
+        private static float AuthoredVegetationSigned(string seedKey, int salt, float magnitude)
+        {
+            return (AuthoredVegetationHash01(seedKey, salt) * 2f - 1f) * magnitude;
         }
 
         private static void CreateFarmNutTree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial, Material nutMaterial)
@@ -38947,9 +39185,33 @@ namespace Anemora.EditorTools
 
         private static void CreateGrassTuft(Transform root, string prefix, Vector3 center, Material material, int index)
         {
+            if (IsHouseExteriorAuthoredVegetationPrototype(prefix))
+            {
+                CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_A", center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, $"{prefix}.house_exterior.grass_tuft.{index}.a");
+                CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_B", center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, $"{prefix}.house_exterior.grass_tuft.{index}.b");
+                CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_C", center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, $"{prefix}.house_exterior.grass_tuft.{index}.c");
+                return;
+            }
+
             CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_A", root, center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.a");
             CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_B", root, center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.b");
             CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_C", root, center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.c");
+        }
+
+        private static GameObject CreateAuthoredGrassBlade(Transform root, string objectName, Vector3 center, Vector3 scale, Quaternion rotation, Material material, string landmarkId)
+        {
+            var yaw = AuthoredVegetationSigned(objectName, 149, 18f);
+            var combinedRotation = Quaternion.Euler(0f, yaw, 0f) * rotation;
+            return CreateAuthoredVegetationMesh(
+                objectName,
+                root,
+                center,
+                scale,
+                combinedRotation,
+                material,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                landmarkId,
+                CreateAuthoredVegetationGrassBladeMesh($"{objectName}_{AuthoredVegetationMeshNamePrefix}_GrassBlade", objectName));
         }
 
         private static void CreateOutdoorGroundDetailCluster(Transform root, string objectName, Vector3 center, Vector3 mainScale, Vector3 accentScale, Vector3 shadowScale, float yaw, Material mainMaterial, Material accentMaterial, Material shadowMaterial, string landmarkIdBase)
@@ -45143,6 +45405,106 @@ namespace Anemora.EditorTools
             if (target != null && target.activeSelf)
             {
                 throw new InvalidOperationException($"House slice validation failed: visual cleanup target remains active: {objectName}");
+            }
+        }
+
+        private static void ValidateFastVsHd2dHouseExteriorAuthoredVegetationPrototype()
+        {
+            ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Current", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Past", "Past_HouseExteriorMap_SeparateSpace");
+        }
+
+        private static void ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix(string prefix, string expectedParentName)
+        {
+            var primaryTreePrefixes = new[]
+            {
+                $"{prefix}_HouseExterior_Chapter1_A_LeftTree",
+                $"{prefix}_HouseExterior_Chapter1_A_RightTree",
+                $"{prefix}_HouseExterior_Chapter1_A_OuterTree"
+            };
+            var secondaryTreePrefixes = new[]
+            {
+                $"{prefix}_HouseExterior_Chapter1_A_LeftTreeDenseA",
+                $"{prefix}_HouseExterior_Chapter1_A_TopTreeDenseA",
+                $"{prefix}_HouseExterior_Chapter1_A_RightOuterTreeB",
+                $"{prefix}_HouseExterior_Chapter1_A_LowerRightTreeB"
+            };
+
+            foreach (var treePrefix in primaryTreePrefixes)
+            {
+                ValidateAuthoredVegetationMeshObject($"{treePrefix}_Trunk", expectedParentName, "LowPolyTrunk", 14, 72);
+                ValidateAuthoredVegetationMeshObject($"{treePrefix}_Crown", expectedParentName, "LowPolyCanopy", 18, 96);
+                ValidateAuthoredVegetationMeshObject($"{treePrefix}_LowerCanopy", expectedParentName, "LowPolyCanopy", 18, 96);
+            }
+
+            foreach (var treePrefix in secondaryTreePrefixes)
+            {
+                ValidateAuthoredVegetationMeshObject($"{treePrefix}_Trunk", expectedParentName, "LowPolyTrunk", 14, 72);
+                ValidateAuthoredVegetationMeshObject($"{treePrefix}_Crown", expectedParentName, "LowPolyCanopy", 18, 96, false);
+                ValidateAuthoredVegetationMeshObject($"{treePrefix}_LowerCanopy", expectedParentName, "LowPolyCanopy", 18, 96, false);
+            }
+
+            for (var i = 0; i < 5; i++)
+            {
+                var tuftPrefix = $"{prefix}_HouseExterior_Chapter1_A_NaturalScatter_HouseExterior_GrassTuft{i}";
+                ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_A", expectedParentName, "GrassBlade", 5, 18);
+                ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_B", expectedParentName, "GrassBlade", 5, 18);
+                ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_C", expectedParentName, "GrassBlade", 5, 18);
+            }
+        }
+
+        private static void ValidateAuthoredVegetationMeshObject(string objectName, string expectedParentName, string requiredMeshToken, int minVertexCount, int minTriangleIndexCount, bool requireActive = true)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing authored vegetation object {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must be parented under {expectedParentName}.");
+            }
+
+            if (requireActive && !sceneObject.activeSelf)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must remain active.");
+            }
+
+            var filter = sceneObject.GetComponent<MeshFilter>();
+            if (filter == null || filter.sharedMesh == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must use a MeshFilter.");
+            }
+
+            var meshName = filter.sharedMesh.name ?? string.Empty;
+            if (meshName.IndexOf(AuthoredVegetationMeshNamePrefix, StringComparison.Ordinal) < 0 ||
+                meshName.IndexOf(requiredMeshToken, StringComparison.Ordinal) < 0 ||
+                meshName.IndexOf("Cube", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                meshName.IndexOf("Sphere", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must use an authored low-poly mesh, found {meshName}.");
+            }
+
+            if (filter.sharedMesh.vertexCount < minVertexCount || filter.sharedMesh.triangles.Length < minTriangleIndexCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} mesh is too primitive: vertices={filter.sharedMesh.vertexCount}, triangleIndices={filter.sharedMesh.triangles.Length}.");
+            }
+
+            var renderer = sceneObject.GetComponent<MeshRenderer>();
+            if (renderer == null || !renderer.enabled || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must keep an enabled MeshRenderer and material.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must not add primitive collision.");
+            }
+
+            if (sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>() == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored vegetation {objectName} must keep its landmark marker.");
             }
         }
 
