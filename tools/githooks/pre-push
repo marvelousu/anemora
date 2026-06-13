@@ -24,3 +24,16 @@ while read -r _lref lsha _rref rsha; do
 done
 
 [ "$fail" = 0 ] || { echo "pre-push: bloat guard FAILED (override only in emergencies: git push --no-verify)." >&2; exit 1; }
+
+# STATUS freshness guard: pushing work whose docs/STATUS.md is >7 days older than
+# HEAD usually means the frontier doc has drifted (2026-06-13: 3-week drift incident).
+# Override for emergencies: ANEMORA_SKIP_STATUS_CHECK=1 git push ...
+if [ "${ANEMORA_SKIP_STATUS_CHECK:-0}" != "1" ]; then
+  status_ts=$(git log -1 --format=%ct -- docs/STATUS.md 2>/dev/null || echo 0)
+  head_ts=$(git log -1 --format=%ct HEAD 2>/dev/null || echo 0)
+  if [ "$status_ts" -gt 0 ] && [ "$head_ts" -gt 0 ] && [ $((head_ts - status_ts)) -gt $((7*24*3600)) ]; then
+    echo "pre-push: docs/STATUS.md is >7 days older than HEAD — update the frontier in STATUS.md first." >&2
+    echo "pre-push: (override: ANEMORA_SKIP_STATUS_CHECK=1 git push ...)" >&2
+    exit 1
+  fi
+fi
