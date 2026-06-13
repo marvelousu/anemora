@@ -490,6 +490,15 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaBandCount = 3;
         private static readonly Vector3 DistantPanoramaVistaReviewPositionOffset = new Vector3(0f, 14.00f, -25.20f);
         private static readonly Vector3 DistantPanoramaVistaReviewLookAtOffset = new Vector3(0.10f, 3.50f, 2.90f);
+        private static readonly FastVsHouseArea[] DistantPanoramaVistaAreas =
+        {
+            FastVsHouseArea.Exterior,
+            FastVsHouseArea.CentralPlaza,
+            FastVsHouseArea.MiaHouse,
+            FastVsHouseArea.AriaStreet,
+            FastVsHouseArea.KaiaFarm,
+            FastVsHouseArea.Ruins
+        };
         private static readonly Vector3 PastLibraryBookCueLocalPosition = LibraryVsCenter + new Vector3(0.00f, 0.405f, -0.92f);
         private static readonly Vector3 CurrentLibraryRetoDeskBookInitialLocalPosition = LibraryVsCenter + new Vector3(1.36f, 0.405f, 0.42f);
         private static readonly Vector3 CurrentLibraryReturnedBookLocalPosition = LibraryVsCenter + new Vector3(1.08f, 0.405f, 0.06f);
@@ -1124,12 +1133,12 @@ namespace Anemora.EditorTools
 
             var audiencePrefix = GetCycleAudienceFilePrefix();
 
-            CaptureChapter1AllMapsPair(controller, visibility, guide, camera, FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(2.95f, 0.02f, 1.10f), $"{outputDirectory}/{audiencePrefix}01_a1_a2_current.png", $"{outputDirectory}/{audiencePrefix}02_a1_a2_past.png");
-            CaptureChapter1AllMapsPair(controller, visibility, guide, camera, FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(1.45f, 0.02f, -0.20f), $"{outputDirectory}/{audiencePrefix}03_b1_b3_current.png", $"{outputDirectory}/{audiencePrefix}04_b1_b3_past.png");
-            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.MiaHouse, Chapter1MiaHouseMapCenter + new Vector3(0f, 0.02f, 0f), DistantPanoramaVistaReviewPositionOffset, DistantPanoramaVistaReviewLookAtOffset, $"{outputDirectory}/{audiencePrefix}05_c1_c3_current.png", $"{outputDirectory}/{audiencePrefix}06_c1_c3_past.png");
-            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.AriaStreet, Chapter1AriaStreetMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 20.35f, -27.80f), new Vector3(0.80f, 0.22f, 4.10f), $"{outputDirectory}/{audiencePrefix}07_d1_d3_current.png", $"{outputDirectory}/{audiencePrefix}08_d1_d3_past.png");
-            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.KaiaFarm, Chapter1KaiaFarmMapCenter + new Vector3(0f, 0.02f, 0f), new Vector3(0f, 20.95f, -28.90f), new Vector3(0.85f, 0.24f, 4.60f), $"{outputDirectory}/{audiencePrefix}09_e1_e3_current.png", $"{outputDirectory}/{audiencePrefix}10_e1_e3_past.png");
-            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.Ruins, Chapter1RuinsMapCenter + new Vector3(0f, 0.02f, -0.45f), new Vector3(-0.08f, 25.35f, -40.30f), new Vector3(0.44f, 0.28f, 5.84f), $"{outputDirectory}/{audiencePrefix}11_f1_f6_current.png", $"{outputDirectory}/{audiencePrefix}12_f1_f6_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.Exterior, HouseExteriorCenter + new Vector3(2.95f, 0.02f, 1.10f), GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.Exterior), GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.Exterior), $"{outputDirectory}/{audiencePrefix}01_a1_a2_current.png", $"{outputDirectory}/{audiencePrefix}02_a1_a2_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.CentralPlaza, CentralPlazaVsCenter + new Vector3(1.45f, 0.02f, -0.20f), GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.CentralPlaza), GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.CentralPlaza), $"{outputDirectory}/{audiencePrefix}03_b1_b3_current.png", $"{outputDirectory}/{audiencePrefix}04_b1_b3_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.MiaHouse, Chapter1MiaHouseMapCenter + new Vector3(0f, 0.02f, 0f), GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.MiaHouse), GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.MiaHouse), $"{outputDirectory}/{audiencePrefix}05_c1_c3_current.png", $"{outputDirectory}/{audiencePrefix}06_c1_c3_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.AriaStreet, Chapter1AriaStreetMapCenter + new Vector3(0f, 0.02f, 0f), GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.AriaStreet), GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.AriaStreet), $"{outputDirectory}/{audiencePrefix}07_d1_d3_current.png", $"{outputDirectory}/{audiencePrefix}08_d1_d3_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.KaiaFarm, Chapter1KaiaFarmMapCenter + new Vector3(0f, 0.02f, 0f), GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.KaiaFarm), GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.KaiaFarm), $"{outputDirectory}/{audiencePrefix}09_e1_e3_current.png", $"{outputDirectory}/{audiencePrefix}10_e1_e3_past.png");
+            CaptureChapter1AllMapsPairCycle05Wide(controller, visibility, guide, camera, FastVsHouseArea.Ruins, Chapter1RuinsMapCenter + new Vector3(0f, 0.02f, -0.45f), GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.Ruins), GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.Ruins), $"{outputDirectory}/{audiencePrefix}11_f1_f6_current.png", $"{outputDirectory}/{audiencePrefix}12_f1_f6_past.png");
             CaptureChapter1EndSideViewPreview(controller, visibility, guide, camera, $"{outputDirectory}/{audiencePrefix}13_scene6_sideview_auto.png");
 
             AssetDatabase.Refresh();
@@ -10026,7 +10035,6 @@ namespace Anemora.EditorTools
             CreateChapter1Cycle101MiaLowerPlantBandScatterDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle108MiaPastLowerVergeCleanupDetails(miaHouseRoot, prefix, past, materials);
             CreateChapter1Cycle118MiaPastLowerGardenOffsetDetails(miaHouseRoot, prefix, past, materials);
-            CreateDistantPanoramaVista(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
             CreateChapter1Cycle90AriaLowerVergeDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle105AriaPastCleanVergeDetails(ariaStreetRoot, prefix, past, materials);
             CreateChapter1Cycle110AriaPastLowerScatterCleanupDetails(ariaStreetRoot, prefix, past, materials);
@@ -10051,6 +10059,16 @@ namespace Anemora.EditorTools
             ApplyCentralPlazaRealtimeDappleCasterCycle138(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeMeshCasterCycle140(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeCasterShapeRewriteCycle141(plazaRoot, prefix, past, materials);
+            CreateDistantPanoramaVistasForChapter1OutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
 
             return new HouseMapAreas(
                 interiorRoot.gameObject,
@@ -21692,7 +21710,27 @@ namespace Anemora.EditorTools
                 renderer.receiveShadows = false;
             }
 
+            ApplyDistantPanoramaVistaLegacyFlatSurfaceSuppression(slab);
             return slab;
+        }
+
+        private static void CreateDistantPanoramaVistasForChapter1OutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateDistantPanoramaVista(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateDistantPanoramaVista(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateDistantPanoramaVista(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateDistantPanoramaVista(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateDistantPanoramaVista(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateDistantPanoramaVista(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
         }
 
         private static void CreateDistantPanoramaVista(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
@@ -21769,7 +21807,7 @@ namespace Anemora.EditorTools
         private static void CreateDistantPanoramaVistaTerrainApron(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
         {
             var outerRadius = 58f;
-            var innerRadius = 11.5f;
+            var innerRadius = GetDistantPanoramaVistaTerrainApronInnerRadius(area);
             var outerWidth = 2f * outerRadius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.10f;
             var innerWidth = 2f * innerRadius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.18f;
             var material = EnsureDistantPanoramaVistaApronMaterial(past);
@@ -21847,7 +21885,7 @@ namespace Anemora.EditorTools
                 }
             }
 
-            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 6);
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 12);
             for (var row = 0; row < rowCount - 1; row++)
             {
                 for (var column = 0; column < columnCount - 1; column++)
@@ -21863,6 +21901,13 @@ namespace Anemora.EditorTools
                     triangles.Add(b);
                     triangles.Add(c);
                     triangles.Add(d);
+
+                    triangles.Add(b);
+                    triangles.Add(c);
+                    triangles.Add(a);
+                    triangles.Add(d);
+                    triangles.Add(c);
+                    triangles.Add(b);
                 }
             }
 
@@ -22012,7 +22057,75 @@ namespace Anemora.EditorTools
 
         private static bool HasDistantPanoramaVista(FastVsHouseArea area)
         {
-            return area == FastVsHouseArea.MiaHouse;
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                if (DistantPanoramaVistaAreas[i] == area)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static float GetDistantPanoramaVistaTerrainApronInnerRadius(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.AriaStreet:
+                    return 8.5f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 8.5f;
+                case FastVsHouseArea.Ruins:
+                    return 8.5f;
+                case FastVsHouseArea.CentralPlaza:
+                    return 8.5f;
+                case FastVsHouseArea.MiaHouse:
+                    return 7.5f;
+                case FastVsHouseArea.Exterior:
+                default:
+                    return 7.5f;
+            }
+        }
+
+        private static Vector3 GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return new Vector3(0f, 11.50f, -19.50f);
+                case FastVsHouseArea.CentralPlaza:
+                    return new Vector3(0f, 13.50f, -22.50f);
+                case FastVsHouseArea.AriaStreet:
+                    return new Vector3(0f, 17.50f, -31.50f);
+                case FastVsHouseArea.KaiaFarm:
+                    return new Vector3(0f, 18.00f, -32.50f);
+                case FastVsHouseArea.Ruins:
+                    return new Vector3(-0.08f, 21.50f, -42.00f);
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    return DistantPanoramaVistaReviewPositionOffset;
+            }
+        }
+
+        private static Vector3 GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return new Vector3(0.10f, 2.80f, 2.40f);
+                case FastVsHouseArea.CentralPlaza:
+                    return new Vector3(0.10f, 3.20f, 2.80f);
+                case FastVsHouseArea.AriaStreet:
+                    return new Vector3(0.80f, 5.00f, 4.10f);
+                case FastVsHouseArea.KaiaFarm:
+                    return new Vector3(0.85f, 5.20f, 4.60f);
+                case FastVsHouseArea.Ruins:
+                    return new Vector3(0.44f, 6.00f, 5.84f);
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    return DistantPanoramaVistaReviewLookAtOffset;
+            }
         }
 
         private static Vector3 GetDistantPanoramaVistaCenter(FastVsHouseArea area)
@@ -25526,7 +25639,59 @@ namespace Anemora.EditorTools
                 renderer.receiveShadows = false;
             }
 
+            ApplyDistantPanoramaVistaLegacyFlatSurfaceSuppression(quad);
             return quad;
+        }
+
+        private static void ApplyDistantPanoramaVistaLegacyFlatSurfaceSuppression(GameObject surface)
+        {
+            if (surface == null ||
+                !TryGetDistantPanoramaVistaAreaForObjectName(surface.name, out var area) ||
+                !HasDistantPanoramaVista(area) ||
+                !IsDistantPanoramaVistaLegacyFlatSurfaceName(surface.name))
+            {
+                return;
+            }
+
+            surface.SetActive(false);
+        }
+
+        private static bool TryGetDistantPanoramaVistaAreaForObjectName(string objectName, out FastVsHouseArea area)
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var candidate = DistantPanoramaVistaAreas[i];
+                var token = GetDistantPanoramaVistaAreaToken(candidate);
+                if (objectName.Contains($"_{token}_", StringComparison.Ordinal))
+                {
+                    area = candidate;
+                    return true;
+                }
+            }
+
+            area = FastVsHouseArea.Exterior;
+            return false;
+        }
+
+        private static bool IsDistantPanoramaVistaLegacyFlatSurfaceName(string objectName)
+        {
+            return objectName.Contains("OutdoorVoidBackground", StringComparison.Ordinal) ||
+                objectName.Contains("OutdoorSkyWash", StringComparison.Ordinal) ||
+                objectName.Contains("OutdoorSkyDetail", StringComparison.Ordinal) ||
+                objectName.Contains("OutdoorSkyHorizonLayering", StringComparison.Ordinal) ||
+                objectName.Contains("BackdropFoundation", StringComparison.Ordinal) ||
+                objectName.Contains("ScenicBackdrop", StringComparison.Ordinal) ||
+                objectName.Contains("OutdoorBackgroundSkyDepth", StringComparison.Ordinal) ||
+                objectName.Contains("CompositionSkyBackdrop", StringComparison.Ordinal) ||
+                objectName.Contains("HorizonDepthCleanup", StringComparison.Ordinal) ||
+                objectName.Contains("CinematicSkyVeil", StringComparison.Ordinal) ||
+                objectName.Contains("CinematicSunDisc", StringComparison.Ordinal) ||
+                objectName.Contains("DuskSkyMood", StringComparison.Ordinal) ||
+                objectName.Contains("VisibleSunDisc", StringComparison.Ordinal) ||
+                objectName.Contains("SkyBarMask", StringComparison.Ordinal) ||
+                objectName.Contains("FacadeBackdropReadability_LowHazeBand", StringComparison.Ordinal) ||
+                objectName.Contains("FacadeBackdropReadability_LeftDistantFoliage", StringComparison.Ordinal) ||
+                objectName.Contains("FacadeBackdropReadability_RightEdgeWash", StringComparison.Ordinal);
         }
 
         private static void CreateOutdoorCinematicSunGradeCycle84(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
@@ -44983,8 +45148,12 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dDistantPanoramaVista()
         {
-            ValidateDistantPanoramaVistaRoot("Current", FastVsHouseArea.MiaHouse);
-            ValidateDistantPanoramaVistaRoot("Past", FastVsHouseArea.MiaHouse);
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateDistantPanoramaVistaRoot("Current", area);
+                ValidateDistantPanoramaVistaRoot("Past", area);
+            }
 
             var camera = Camera.main;
             if (camera == null)
@@ -44997,24 +45166,28 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: distant panorama vista needs the far clip to stay at least 220, but was {camera.farClipPlane:0.000}.");
             }
 
-            ApplyDistantPanoramaVistaAtmosphereForReview(camera, FastVsHouseArea.MiaHouse, false);
-            if (!RenderSettings.fog || RenderSettings.fogMode != FogMode.Linear)
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
             {
-                throw new InvalidOperationException("House slice validation failed: distant panorama vista fog must be enabled and Linear.");
-            }
+                var area = DistantPanoramaVistaAreas[i];
+                ApplyDistantPanoramaVistaAtmosphereForReview(camera, area, false);
+                if (!RenderSettings.fog || RenderSettings.fogMode != FogMode.Linear)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: distant panorama vista fog must be enabled and Linear for {area}.");
+                }
 
-            if (RenderSettings.fogStartDistance < 34f || RenderSettings.fogStartDistance > 52f || RenderSettings.fogEndDistance < 168f || RenderSettings.fogEndDistance > 204f)
-            {
-                throw new InvalidOperationException($"House slice validation failed: distant panorama vista fog range must cover the map edge before the ring, found start={RenderSettings.fogStartDistance:0.000}, end={RenderSettings.fogEndDistance:0.000}.");
-            }
+                if (RenderSettings.fogStartDistance < 34f || RenderSettings.fogStartDistance > 52f || RenderSettings.fogEndDistance < 168f || RenderSettings.fogEndDistance > 204f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: distant panorama vista fog range must cover the map edge before the ring for {area}, found start={RenderSettings.fogStartDistance:0.000}, end={RenderSettings.fogEndDistance:0.000}.");
+                }
 
-            if (camera.backgroundColor.maxColorComponent < 0.220f)
-            {
-                throw new InvalidOperationException($"House slice validation failed: distant panorama vista camera background must replace the black void, found {camera.backgroundColor}.");
-            }
+                if (camera.backgroundColor.maxColorComponent < 0.220f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: distant panorama vista camera background must replace the black void for {area}, found {camera.backgroundColor}.");
+                }
 
-            ValidateDistantPanoramaVistaCameraCoverage(camera, "Current", FastVsHouseArea.MiaHouse);
-            ValidateDistantPanoramaVistaCameraCoverage(camera, "Past", FastVsHouseArea.MiaHouse);
+                ValidateDistantPanoramaVistaCameraCoverage(camera, "Current", area);
+                ValidateDistantPanoramaVistaCameraCoverage(camera, "Past", area);
+            }
         }
 
         private static void ValidateDistantPanoramaVistaRoot(string prefix, FastVsHouseArea area)
@@ -45040,7 +45213,7 @@ namespace Anemora.EditorTools
             }
 
             var filters = root.GetComponentsInChildren<MeshFilter>(true);
-            var expectedSegments = DistantPanoramaVistaSegmentCount * DistantPanoramaVistaBandCount;
+            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 1);
             if (filters.Length < expectedSegments)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} has {filters.Length} distant vista segments, expected at least {expectedSegments}.");
@@ -45096,6 +45269,32 @@ namespace Anemora.EditorTools
                     throw new InvalidOperationException($"House slice validation failed: flat void background slab remained inside distant vista root: {child.name}.");
                 }
             }
+
+            ValidateDistantPanoramaVistaLegacyFlatSurfacesSuppressed(prefix, area);
+        }
+
+        private static void ValidateDistantPanoramaVistaLegacyFlatSurfacesSuppressed(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var mapRootName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            var mapRoot = FindSceneObjectIncludingInactive(mapRootName);
+            if (mapRoot == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing map root for distant vista flat-surface suppression: {mapRootName}.");
+            }
+
+            foreach (var child in mapRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (child == mapRoot.transform || !child.gameObject.activeSelf)
+                {
+                    continue;
+                }
+
+                if (IsDistantPanoramaVistaLegacyFlatSurfaceName(child.name))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: legacy flat backdrop surface must be inactive while distant panorama vista is authored: {child.name}.");
+                }
+            }
         }
 
         private static void ValidateDistantPanoramaVistaCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
@@ -45110,8 +45309,8 @@ namespace Anemora.EditorTools
             PositionChapter1AllMapsCamera(
                 camera,
                 center,
-                DistantPanoramaVistaReviewPositionOffset,
-                DistantPanoramaVistaReviewLookAtOffset);
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
 
             var visibleCount = 0;
             var horizonCount = 0;
