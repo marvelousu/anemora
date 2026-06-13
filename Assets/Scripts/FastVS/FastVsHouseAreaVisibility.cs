@@ -1,3 +1,4 @@
+using Anemora.FastVS.SunCycle;
 using UnityEngine;
 
 namespace Anemora.FastVS
@@ -123,12 +124,24 @@ namespace Anemora.FastVS
             SetActive(pastRuinsMap, activeArea == FastVsHouseArea.Ruins);
             SetActive(currentChapter1EndMap, activeArea == FastVsHouseArea.Chapter1End);
             SetActive(pastChapter1EndMap, activeArea == FastVsHouseArea.Chapter1End);
+            NotifySunCycleAreaPolicy();
             if (!ApplyLightingProfile(transitionLighting))
             {
                 ApplyCameraClearColor();
             }
 
             NotifyRealtimeShadowPolicyAreaTransition();
+        }
+
+        private void NotifySunCycleAreaPolicy()
+        {
+            var driver = AnemoraSunCycleDriver.Instance != null
+                ? AnemoraSunCycleDriver.Instance
+                : FindFirstObjectByType<AnemoraSunCycleDriver>();
+            if (driver != null)
+            {
+                driver.ReapplyCurrentValuesForReview();
+            }
         }
 
         private void ApplyCameraClearColor()

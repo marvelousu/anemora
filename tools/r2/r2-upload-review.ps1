@@ -50,6 +50,30 @@ foreach ($f in Get-ChildItem $CycleDir -File) {
   $rels += $rel
 }
 
+# (b.5) If devlog.txt points at a repo-root devlog markdown file, mirror that too.
+# Review images stay out of git, so this lets anemora-viewer open the matching
+# devlog without requiring an Anemora push.
+$DevlogTxt = Join-Path $CycleDir 'devlog.txt'
+if (Test-Path $DevlogTxt) {
+  $DevlogRel = Get-Content $DevlogTxt |
+    ForEach-Object { $_.Trim() } |
+    Where-Object { $_ -and -not $_.StartsWith('#') } |
+    Select-Object -First 1
+  if ($DevlogRel -and ($DevlogRel -match '^docs/devlog/[^/]+\.md$')) {
+    $DevlogLocal = Join-Path (Get-Location) ($DevlogRel -replace '/', [IO.Path]::DirectorySeparatorChar)
+    if (Test-Path $DevlogLocal) {
+      $ArchiveDevlog = Join-Path $ArchiveRoot "tree\$Slug\$($DevlogRel -replace '/', '\')"
+      New-Item -ItemType Directory -Force (Split-Path $ArchiveDevlog -Parent) | Out-Null
+      Copy-Item $DevlogLocal $ArchiveDevlog -Force
+      wrangler r2 object put "$Bucket/tree/$Slug/$DevlogRel" --file $DevlogLocal --remote | Out-Null
+      if ($LASTEXITCODE -ne 0) { Write-Warning "devlog upload FAILED (kept in local archive): $DevlogRel" }
+      else { $rels += $DevlogRel }
+    } else {
+      Write-Warning "devlog ref not found locally; viewer devlog link may 404: $DevlogRel"
+    }
+  }
+}
+
 # (c) Rebuild manifests/<slug>.json from the never-pruned local archive (authoritative;
 #     it holds every uploaded cycle). Replaces a fragile download-union round-trip whose
 #     ConvertTo-Json/ConvertFrom-Json compounding corrupted the manifest into nested
@@ -60,7 +84,7 @@ $allRels = @()
 if (Test-Path $ArchiveSlugRoot) {
   $allRels = Get-ChildItem $ArchiveSlugRoot -Recurse -File |
     ForEach-Object { ($_.FullName.Substring($ArchiveSlugRoot.Length + 1) -replace '\\', '/') } |
-    Where-Object { $_ -like 'docs/review/*' -or $_ -like 'docs/devlog/screenshots/*' } |
+    Where-Object { $_ -like 'docs/review/*' -or $_ -like 'docs/devlog/screenshots/*' -or $_ -match '^docs/devlog/[^/]+\.md$' } |
     Sort-Object -Unique
 }
 $items = $allRels | ForEach-Object { '"' + ($_ -replace '\\', '\\' -replace '"', '\"') + '"' }

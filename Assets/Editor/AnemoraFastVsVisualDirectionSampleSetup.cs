@@ -314,7 +314,7 @@ namespace Anemora.EditorTools
             SerializedSet(controller, "enablePortalApertureView", true);
             SerializedSet(controller, "apertureTextureSize", 1024);
             SerializedSet(controller, "portalApertureMaterial", materials.Aperture);
-            SerializedSet(controller, "enableBackSideBlocking", true);
+            SerializedSet(controller, "enableBackSideBlocking", false);
             SerializedSet(controller, "enableGeneratedOtherTimeWallVolume", true);
             SerializedSet(controller, "wallVolumeDepth", 8.0f);
             SerializedSet(controller, "wallVolumeSideMargin", 0.22f);

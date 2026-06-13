@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ namespace Anemora.TimeManagement
     /// </summary>
     public sealed class TimeWindowPairedSpacePortalController : MonoBehaviour
     {
+        private const float PortalApertureCompositeAlpha = 0.60f;
+        private const int PortalApertureRenderQueue = 2990;
+
         [Header("Spaces")]
         [SerializeField] private Transform currentSpaceRoot;
         [SerializeField] private Transform otherTimeSpaceRoot;
@@ -35,7 +39,8 @@ namespace Anemora.TimeManagement
         [SerializeField] private float transferExitOffset = 0.18f;
 
         [Header("Review collision")]
-        [SerializeField] private bool enableBackSideBlocking = true;
+        [SerializeField] private bool enableBackSideBlocking;
+        [SerializeField] private bool enableCurrentBackSidePhysicalBlock = true;
         [SerializeField] private bool enableGeneratedOtherTimeWallVolume = true;
         [SerializeField] private float wallVolumeDepth = 8.0f;
         [SerializeField] private float wallVolumeSideMargin = 0.22f;
@@ -66,6 +71,7 @@ namespace Anemora.TimeManagement
 
         private readonly List<Renderer> currentFrameRenderers = new List<Renderer>();
         private readonly List<Renderer> otherTimeFrameRenderers = new List<Renderer>();
+        private readonly List<Collider> currentBackSideBlockColliders = new List<Collider>();
         private readonly List<Collider> otherTimeWallVolumeColliders = new List<Collider>();
         private readonly List<Renderer> apertureSuppressedRenderers = new List<Renderer>();
         private GameObject currentPortalRoot;
@@ -101,6 +107,8 @@ namespace Anemora.TimeManagement
         private Vector3 lastOtherTimeWallVolumeLocalSize;
         private float lastFarBackWallLocalZ;
         private string lastTransition = "No portal generated.";
+        private string lastApertureSuppressedRendererSummary = "none";
+        private string lastApertureVisualOverlayExemptionSummary = "none";
 
         public bool HasPortalPair => currentPortalRoot != null && otherTimePortalRoot != null && committed;
         public bool HasPreviewPortal => currentPortalRoot != null && otherTimePortalRoot != null && !committed;
@@ -156,7 +164,12 @@ namespace Anemora.TimeManagement
         public bool CurrentToOtherApertureIncludesPlayerForReview => MaskIncludesLayer(CurrentToOtherPortalCameraCullingMaskForReview, playerVisibleRenderLayer);
         public bool OtherToCurrentApertureIncludesPlayerForReview => MaskIncludesLayer(OtherToCurrentPortalCameraCullingMaskForReview, playerVisibleRenderLayer);
         public int ApertureSuppressedRendererCountForReview => apertureSuppressedRenderers.Count;
+        public string ApertureSuppressedRendererSummaryForReview => lastApertureSuppressedRendererSummary;
+        public string ApertureVisualOverlayExemptionSummaryForReview => lastApertureVisualOverlayExemptionSummary;
         public bool HasGeneratedOtherTimeWallVolumeForReview => enableGeneratedOtherTimeWallVolume && otherTimeWallVolumeColliders.Count >= 5;
+        public bool HasCurrentBackSidePhysicalBlockForReview => enableCurrentBackSidePhysicalBlock && currentBackSideBlockColliders.Count > 0;
+        public int CurrentBackSidePhysicalBlockColliderCountForReview => currentBackSideBlockColliders.Count;
+        public int EnabledCurrentBackSidePhysicalBlockColliderCountForReview => CountEnabledColliders(currentBackSideBlockColliders);
         public int OtherTimeWallVolumeColliderCountForReview => otherTimeWallVolumeColliders.Count;
         public int EnabledOtherTimeWallVolumeColliderCountForReview => CountEnabledColliders(otherTimeWallVolumeColliders);
         public Vector3 OtherTimeWallVolumeLocalCenterForReview => lastOtherTimeWallVolumeLocalCenter;
@@ -268,6 +281,7 @@ namespace Anemora.TimeManagement
             }
 
             RestoreApertureSuppressedRenderers();
+            ClearCurrentBackSidePhysicalBlock();
             DestroyRoot(currentPortalRoot);
             DestroyRoot(otherTimePortalRoot);
             currentPortalRoot = null;
@@ -410,6 +424,31 @@ namespace Anemora.TimeManagement
                 player.position += worldDelta;
             }
 
+            EvaluateCrossing();
+        }
+
+        public void MovePlayerLocalForReview(Vector3 localDelta, bool useCharacterController)
+        {
+            ResolveReferences();
+            if (player == null)
+            {
+                return;
+            }
+
+            var root = playerInOtherTime ? otherTimeSpaceRoot : currentSpaceRoot;
+            if (root == null)
+            {
+                return;
+            }
+
+            if (useCharacterController)
+            {
+                MovePlayerWorldForReview(root.TransformVector(localDelta));
+                return;
+            }
+
+            var localPosition = root.InverseTransformPoint(player.position);
+            SetPlayerWorldPosition(root.TransformPoint(localPosition + localDelta));
             EvaluateCrossing();
         }
 
@@ -649,6 +688,7 @@ namespace Anemora.TimeManagement
             HideOtherTimePortalVisualInCurrentView();
             SuppressApertureIntersectingRenderers(commit);
             RebuildOtherTimeWallVolume(commit);
+            RebuildCurrentBackSidePhysicalBlock(commit);
             SyncOtherTimeWallVolumeColliderState();
 
             RenderPortalAperturesForReview();
@@ -756,16 +796,27 @@ namespace Anemora.TimeManagement
 
         private void SuppressApertureIntersectingRenderers(bool commit)
         {
+            lastApertureSuppressedRendererSummary = "none";
+            lastApertureVisualOverlayExemptionSummary = "none";
             if (!commit)
             {
                 return;
             }
 
-            SuppressApertureIntersectingRenderers(currentSpaceRoot);
-            SuppressApertureIntersectingRenderers(otherTimeSpaceRoot);
+            var suppressed = new List<string>();
+            var visualExemptions = new List<string>();
+            SuppressApertureIntersectingRenderers(currentSpaceRoot, suppressed, visualExemptions);
+            SuppressApertureIntersectingRenderers(otherTimeSpaceRoot, suppressed, visualExemptions);
+            lastApertureSuppressedRendererSummary = BuildPathSummary(suppressed, 18);
+            lastApertureVisualOverlayExemptionSummary = BuildPathSummary(visualExemptions, 18);
+            Debug.Log(
+                "ANEMORA_TIME_WINDOW_APERTURE_SUPPRESSION: " +
+                $"suppressed={suppressed.Count} exemptedVisualOverlay={visualExemptions.Count} " +
+                $"suppressedSample=[{lastApertureSuppressedRendererSummary}] " +
+                $"exemptedSample=[{lastApertureVisualOverlayExemptionSummary}]");
         }
 
-        private void SuppressApertureIntersectingRenderers(Transform root)
+        private void SuppressApertureIntersectingRenderers(Transform root, List<string> suppressed, List<string> visualExemptions)
         {
             if (root == null)
             {
@@ -776,16 +827,22 @@ namespace Anemora.TimeManagement
             for (var index = 0; index < renderers.Length; index++)
             {
                 var renderer = renderers[index];
-                if (ShouldSuppressRendererForAperture(root, renderer))
+                if (ShouldSuppressRendererForAperture(root, renderer, out var exemptedVisualOverlay))
                 {
                     renderer.enabled = false;
                     apertureSuppressedRenderers.Add(renderer);
+                    suppressed.Add(BuildHierarchyPath(renderer.transform));
+                }
+                else if (exemptedVisualOverlay)
+                {
+                    visualExemptions.Add(BuildHierarchyPath(renderer.transform));
                 }
             }
         }
 
-        private bool ShouldSuppressRendererForAperture(Transform root, Renderer renderer)
+        private bool ShouldSuppressRendererForAperture(Transform root, Renderer renderer, out bool exemptedVisualOverlay)
         {
+            exemptedVisualOverlay = false;
             if (renderer == null ||
                 !renderer.enabled ||
                 IsChildOf(renderer.transform, currentPortalRoot != null ? currentPortalRoot.transform : null) ||
@@ -801,7 +858,82 @@ namespace Anemora.TimeManagement
                 return false;
             }
 
-            return RendererBoundsIntersectPortal(root, renderer.bounds, Mathf.Max(0.04f, apertureObjectSuppressionDepth));
+            if (!RendererBoundsIntersectPortal(root, renderer.bounds, Mathf.Max(0.04f, apertureObjectSuppressionDepth)))
+            {
+                return false;
+            }
+
+            if (IsApertureVisualOverlayRenderer(renderer))
+            {
+                exemptedVisualOverlay = true;
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsApertureVisualOverlayRenderer(Renderer renderer)
+        {
+            var path = BuildHierarchyPath(renderer != null ? renderer.transform : null);
+            if (ContainsAny(
+                    path,
+                    "DynamicSunShaft",
+                    "BroadSunshaftReceiver",
+                    "LightComposition_",
+                    "FramedLightPlanes_",
+                    "ReferenceLightColumn_",
+                    "ShadowFoundation",
+                    "DioramaShadow",
+                    "CloseShadowBarMute",
+                    "AerialLift",
+                    "OutdoorSky",
+                    "SkyWash",
+                    "Atmosphere",
+                    "AirDepth",
+                    "Vignette",
+                    "Glow",
+                    "Sun",
+                    "Shadow",
+                    "OcclusionReadability",
+                    "LightColumn",
+                    "Wash",
+                    "Veil",
+                    "Dust"))
+            {
+                return true;
+            }
+
+            var materials = renderer != null ? renderer.sharedMaterials : null;
+            if (materials == null)
+            {
+                return false;
+            }
+
+            for (var index = 0; index < materials.Length; index++)
+            {
+                var material = materials[index];
+                if (material == null)
+                {
+                    continue;
+                }
+
+                if (ContainsAny(
+                        material.name,
+                        "light",
+                        "glow",
+                        "shadow",
+                        "occlusion",
+                        "atmosphere",
+                        "air",
+                        "wash",
+                        "veil",
+                        "dust"))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private bool RendererBoundsIntersectPortal(Transform root, Bounds worldBounds, float depth)
@@ -847,11 +979,64 @@ namespace Anemora.TimeManagement
             }
 
             apertureSuppressedRenderers.Clear();
+            lastApertureSuppressedRendererSummary = "none";
+            lastApertureVisualOverlayExemptionSummary = "none";
         }
 
         private static bool IsChildOf(Transform target, Transform parent)
         {
             return target != null && parent != null && target.IsChildOf(parent);
+        }
+
+        private static string BuildHierarchyPath(Transform transform)
+        {
+            if (transform == null)
+            {
+                return "<null>";
+            }
+
+            var names = new List<string>();
+            var current = transform;
+            while (current != null)
+            {
+                names.Add(current.name);
+                current = current.parent;
+            }
+
+            names.Reverse();
+            return string.Join("/", names.ToArray());
+        }
+
+        private static bool ContainsAny(string value, params string[] needles)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
+            for (var index = 0; index < needles.Length; index++)
+            {
+                if (value.IndexOf(needles[index], StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static string BuildPathSummary(List<string> paths, int maxItems)
+        {
+            if (paths == null || paths.Count == 0)
+            {
+                return "none";
+            }
+
+            var count = Mathf.Min(paths.Count, Mathf.Max(1, maxItems));
+            var summary = string.Join(" | ", paths.GetRange(0, count).ToArray());
+            return paths.Count > count
+                ? $"{summary} | ...+{paths.Count - count}"
+                : summary;
         }
 
         private void RebuildOtherTimeWallVolume(bool commit)
@@ -909,6 +1094,29 @@ namespace Anemora.TimeManagement
             lastFarBackWallLocalZ = farBackZ;
         }
 
+        private void RebuildCurrentBackSidePhysicalBlock(bool commit)
+        {
+            ClearCurrentBackSidePhysicalBlock();
+            if (!commit || !enableCurrentBackSidePhysicalBlock || currentSpaceRoot == null)
+            {
+                return;
+            }
+
+            var safeMargin = Mathf.Max(0f, wallVolumeSideMargin);
+            var safeThickness = Mathf.Max(0.04f, wallVolumeThickness);
+            var blockDepth = Mathf.Max(currentBackSideBlockDepth, transferExitOffset + crossingHalfDepth);
+            var volumeWidth = portalSize.x + safeMargin * 2f + safeThickness * 2f;
+            var volumeHeight = portalSize.y + safeMargin * 2f;
+            CreateInvisibleCollider(
+                "TW_V25_CurrentSide_BackEntryPhysicalBlocker",
+                currentSpaceRoot,
+                new Vector3(portalLocalCenter.x, portalLocalCenter.y, portalLocalCenter.z + blockDepth),
+                new Vector3(volumeWidth, volumeHeight, safeThickness),
+                currentBackSideBlockColliders,
+                !playerInOtherTime);
+            Physics.SyncTransforms();
+        }
+
         private float CalculateFarBackWallLocalZ(float portalHeight, float wallThickness)
         {
             var visibleDepthEstimate = Mathf.Max(
@@ -919,25 +1127,30 @@ namespace Anemora.TimeManagement
 
         private void CreateInvisibleWallCollider(string objectName, Transform root, Vector3 localPosition, Vector3 localScale)
         {
-            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            var wall = new GameObject(objectName);
             wall.name = objectName;
             wall.transform.SetParent(root, false);
             wall.transform.localPosition = localPosition;
             wall.transform.localScale = localScale;
             wall.layer = 0;
 
-            var renderer = wall.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                DestroySafe(renderer);
-            }
+            var collider = wall.AddComponent<BoxCollider>();
+            otherTimeWallVolumeColliders.Add(collider);
+            collider.enabled = playerInOtherTime;
+        }
 
-            var collider = wall.GetComponent<BoxCollider>();
-            if (collider != null)
-            {
-                otherTimeWallVolumeColliders.Add(collider);
-                collider.enabled = playerInOtherTime;
-            }
+        private void CreateInvisibleCollider(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, List<Collider> targetList, bool enabled)
+        {
+            var wall = new GameObject(objectName);
+            wall.name = objectName;
+            wall.transform.SetParent(root, false);
+            wall.transform.localPosition = localPosition;
+            wall.transform.localScale = localScale;
+            wall.layer = 0;
+
+            var collider = wall.AddComponent<BoxCollider>();
+            targetList.Add(collider);
+            collider.enabled = enabled;
         }
 
         private void SyncOtherTimeWallVolumeColliderState()
@@ -953,6 +1166,18 @@ namespace Anemora.TimeManagement
 
                 collider.enabled = playerInOtherTime;
             }
+
+            for (var index = currentBackSideBlockColliders.Count - 1; index >= 0; index--)
+            {
+                var collider = currentBackSideBlockColliders[index];
+                if (collider == null)
+                {
+                    currentBackSideBlockColliders.RemoveAt(index);
+                    continue;
+                }
+
+                collider.enabled = !playerInOtherTime;
+            }
         }
 
         private void ClearOtherTimeWallVolume()
@@ -967,6 +1192,20 @@ namespace Anemora.TimeManagement
             }
 
             otherTimeWallVolumeColliders.Clear();
+        }
+
+        private void ClearCurrentBackSidePhysicalBlock()
+        {
+            for (var index = currentBackSideBlockColliders.Count - 1; index >= 0; index--)
+            {
+                var collider = currentBackSideBlockColliders[index];
+                if (collider != null)
+                {
+                    DestroyRoot(collider.gameObject);
+                }
+            }
+
+            currentBackSideBlockColliders.Clear();
         }
 
         private void CreateFramePart(string objectName, Transform root, List<Renderer> frameRenderers, Vector3 localPosition, Vector3 localScale, Material material)
@@ -1236,12 +1475,12 @@ namespace Anemora.TimeManagement
 
             if (material.HasProperty("_BaseColor"))
             {
-                material.SetColor("_BaseColor", Color.white);
+                material.SetColor("_BaseColor", ClampApertureTintAlpha(material.GetColor("_BaseColor")));
             }
 
             if (material.HasProperty("_Color"))
             {
-                material.SetColor("_Color", Color.white);
+                material.SetColor("_Color", ClampApertureTintAlpha(material.GetColor("_Color")));
             }
 
             if (material.HasProperty("_Cull"))
@@ -1249,8 +1488,14 @@ namespace Anemora.TimeManagement
                 material.SetFloat("_Cull", 0f);
             }
 
-            material.renderQueue = 2010;
+            material.renderQueue = PortalApertureRenderQueue;
             return material;
+        }
+
+        private static Color ClampApertureTintAlpha(Color color)
+        {
+            color.a = Mathf.Min(color.a > 0f ? color.a : 1f, PortalApertureCompositeAlpha);
+            return color;
         }
 
         private void EvaluateCrossing()
@@ -1280,12 +1525,6 @@ namespace Anemora.TimeManagement
 
                     outsideCrossingRejected = true;
                     lastTransition = $"Rejected non-portal crossing at current local {Format(currentLocal)}.";
-                }
-
-                if (ShouldBlockCurrentBackSideCrossing(previousCurrentLocal, currentLocal))
-                {
-                    BlockCurrentBackSideCrossing(currentLocal);
-                    return;
                 }
 
                 previousCurrentLocal = currentLocal;
@@ -1423,6 +1662,8 @@ namespace Anemora.TimeManagement
             {
                 playerController.enabled = true;
             }
+
+            Physics.SyncTransforms();
         }
 
         private void ApplyPlayerMaterial(bool otherTime)
@@ -1643,7 +1884,7 @@ namespace Anemora.TimeManagement
             }
         }
 
-        private static void DestroySafe(Object target)
+        private static void DestroySafe(UnityEngine.Object target)
         {
             if (target == null)
             {

@@ -45,28 +45,28 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 2
   neutralHDRRangeReductionMode:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 2
   acesPreset:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 3
   hueShiftAmount:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   detectPaperWhite:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   paperWhite:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 300
   detectBrightnessLimits:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   minNits:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.005
   maxNits:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1000
 --- !u!114 &-5474377879093407540
 MonoBehaviour:
@@ -405,7 +405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   skipIterations:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   threshold:
     m_OverrideState: 1
@@ -426,7 +426,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 1
   filter:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0
   downscale:
     m_OverrideState: 1
@@ -492,8 +492,6 @@ MonoBehaviour:
   - {fileID: -930468367761123344}
   - {fileID: 538979347352623535}
   - {fileID: -4320265201207610681}
-  - {fileID: 4753709331720075544}
-  - {fileID: 9090027181472131333}
 --- !u!114 &538979347352623535
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -868,13 +866,13 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 2
   gaussianStart:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 10
   gaussianEnd:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 30
   gaussianMaxRadius:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   highQualitySampling:
     m_OverrideState: 1

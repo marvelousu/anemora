@@ -53,6 +53,8 @@ namespace Anemora.FastVS.SunCycle
         private float transitionElapsed;
         private MapSunAnchor activeAnchor;
         private FastVsHouseAreaVisibility areaVisibility;
+        private bool hasAppliedAreaPolicy;
+        private FastVsHouseArea lastAppliedAreaPolicy;
 
         public static AnemoraSunCycleDriver Instance { get; private set; }
 
@@ -99,6 +101,8 @@ namespace Anemora.FastVS.SunCycle
 
         private void Update()
         {
+            ReapplyCurrentValuesIfActiveAreaPolicyChanged();
+
             if (!IsTransitioning)
             {
                 return;
@@ -205,6 +209,18 @@ namespace Anemora.FastVS.SunCycle
 
             activeAnchor = anchor;
             ApplyPreset(anchor.SunPreset, !anchor.TransitionFromPrevious);
+        }
+
+        public void ReapplyCurrentValuesForReview()
+        {
+            ResolveSceneReferences();
+            if (!hasAppliedValues)
+            {
+                ApplySceneAnchorOrDefault(true);
+                return;
+            }
+
+            ApplyValues(currentValues);
         }
 
         public SunPresetData GetPresetData(SunPreset preset)
@@ -354,6 +370,8 @@ namespace Anemora.FastVS.SunCycle
             currentValues = values;
             hasAppliedValues = true;
             var effectiveValues = ApplyActiveAreaSunPolicy(values);
+            hasAppliedAreaPolicy = true;
+            lastAppliedAreaPolicy = areaVisibility != null ? areaVisibility.ActiveAreaForReview : FastVsHouseArea.Interior;
 
             if (directionalSunLight != null)
             {
@@ -392,6 +410,32 @@ namespace Anemora.FastVS.SunCycle
             {
                 skybox.SetFloat("_SunSizeConvergence", effectiveValues.skySunSizeConvergence);
             }
+        }
+
+        private void ReapplyCurrentValuesIfActiveAreaPolicyChanged()
+        {
+            if (!hasAppliedValues || IsTransitioning)
+            {
+                return;
+            }
+
+            if (areaVisibility == null)
+            {
+                areaVisibility = FindFirstObjectByType<FastVsHouseAreaVisibility>();
+            }
+
+            if (areaVisibility == null)
+            {
+                return;
+            }
+
+            var activeArea = areaVisibility.ActiveAreaForReview;
+            if (hasAppliedAreaPolicy && activeArea == lastAppliedAreaPolicy)
+            {
+                return;
+            }
+
+            ApplyValues(currentValues);
         }
 
         private SunRuntimeValues ApplyActiveAreaSunPolicy(SunRuntimeValues values)

@@ -10,14 +10,15 @@ Shader "Anemora/Review/PortalApertureOverlay"
     {
         Tags
         {
-            "Queue" = "Geometry+10"
-            "RenderType" = "Opaque"
+            "Queue" = "Transparent-10"
+            "RenderType" = "Transparent"
         }
 
         Pass
         {
+            Blend SrcAlpha OneMinusSrcAlpha
             Cull Off
-            ZWrite On
+            ZWrite Off
             ZTest LEqual
 
             HLSLPROGRAM

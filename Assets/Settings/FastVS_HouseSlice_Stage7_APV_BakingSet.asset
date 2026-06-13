@@ -15,13 +15,25 @@ MonoBehaviour:
   m_SceneBakeData:
     m_Keys:
     - 5c2c1333e7d65ba4eac9369f107a6118
+    - 868435185eb15c447802a6e8eb8f7342
+    - e98760a75333c5b4a9df1c7dc712e474
     m_Values:
     - hasProbeVolume: 1
       bakeScene: 1
       bounds:
         m_Center: {x: 14, y: 0, z: 14}
         m_Extent: {x: 40.5, y: 27, z: 40.5}
-  singleSceneMode: 1
+    - hasProbeVolume: 1
+      bakeScene: 1
+      bounds:
+        m_Center: {x: 14, y: 0, z: 14}
+        m_Extent: {x: 40.5, y: 27, z: 40.5}
+    - hasProbeVolume: 1
+      bakeScene: 1
+      bounds:
+        m_Center: {x: 14, y: 0, z: 14}
+        m_Extent: {x: 40.5, y: 27, z: 40.5}
+  singleSceneMode: 0
   dialogNoProbeVolumeInSetShown: 0
   settings:
     m_Version: 1
@@ -42,6 +54,8 @@ MonoBehaviour:
         m_Bits: 4294967291
   m_SceneGUIDs:
   - 5c2c1333e7d65ba4eac9369f107a6118
+  - 868435185eb15c447802a6e8eb8f7342
+  - e98760a75333c5b4a9df1c7dc712e474
   obsoleteScenesToNotBake: []
   m_LightingScenarios:
   - Default

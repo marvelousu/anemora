@@ -315,10 +315,20 @@ namespace Anemora.FastVS
         private void ApplyRendererShadowPolicy(FastVsHouseArea activeArea)
         {
             var isRealtimeOutdoor = IsRealtimeOutdoorArea(activeArea);
+            var libraryFrontPaleWashDisabledCount = 0;
             foreach (var renderer in FindObjectsByType<Renderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (renderer == null || !renderer.gameObject.scene.IsValid())
                 {
+                    continue;
+                }
+
+                if (Application.isPlaying && IsLibraryFrontPaleWashRenderer(renderer))
+                {
+                    renderer.enabled = false;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                    libraryFrontPaleWashDisabledCount++;
                     continue;
                 }
 
@@ -403,6 +413,11 @@ namespace Anemora.FastVS
                     renderer.receiveShadows = false;
                 }
             }
+
+            if (Application.isPlaying)
+            {
+                Debug.Log($"[Point15Recovery] ApplyRendererShadowPolicy area={activeArea}: disabled {libraryFrontPaleWashDisabledCount} library-front pale wash renderer(s).");
+            }
         }
 
         private static void ApplySurfaceShadowPolicy(Renderer renderer, bool isRealtimeOutdoor, FastVsHouseArea activeArea)
@@ -475,6 +490,52 @@ namespace Anemora.FastVS
         {
             return renderer != null &&
                    renderer.GetComponentInParent<FastVsHd2dOverlayProfile>(true) != null;
+        }
+
+        private static bool IsLibraryFrontPaleWashRenderer(Renderer renderer)
+        {
+            if (renderer == null)
+            {
+                return false;
+            }
+
+            var name = renderer.gameObject.name;
+            if (!name.Contains("Current_CentralPlaza_"))
+            {
+                return false;
+            }
+
+            if (name.Contains("ContactShadow") ||
+                name.Contains("DirectionalCastShadow") ||
+                name.Contains("RealtimeShadowCasterCycle") ||
+                name.Contains("PlayerReferenceContact") ||
+                name.Contains("ShortStepContact") ||
+                name.Contains("ShadowPlayer") ||
+                name.Contains("ShadowFacadePocket") ||
+                name.Contains("ShadowBackCanopy"))
+            {
+                return false;
+            }
+
+            if (name.Contains("Cycle120_ReferenceLightColumn_AirDepthForegroundWashA") ||
+                name.Contains("Cycle120_ReferenceLightColumn_AirDepthTopVeilA") ||
+                name.Contains("Cycle123_ReferenceAerialLift_FacadePaleStoneBloomA") ||
+                name.Contains("Cycle123_ReferenceAerialLift_GroundAtmosphericWashA") ||
+                name.Contains("Cycle123_ReferenceAerialLift_PlayerLanePaleCatchA") ||
+                name.Contains("Cycle123_ReferenceAerialLift_WholeFacadeDepthWashA") ||
+                name.Contains("Cycle125_ReferenceDioramaShadow_BackStepPaleSunA") ||
+                name.Contains("Cycle125_ReferenceDioramaShadow_CloseSeamSunMuteA") ||
+                name.Contains("Cycle125_ReferenceDioramaShadow_FacadeReferenceSunPatchA") ||
+                name.Contains("Cycle125_ReferenceDioramaShadow_ReferenceReceiverLiftA") ||
+                name.Contains("Cycle125_ReferenceDioramaShadow_StoneSunMatteFieldA") ||
+                name.Contains("Cycle126_CloseShadowBarMute_CloseGridWashA") ||
+                name.Contains("Cycle126_CloseShadowBarMute_GroundAirUnifierA") ||
+                name.Contains("Cycle126_CloseShadowBarMute_StepAirLiftA"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static bool IsStage7VfxRenderer(Renderer renderer)
