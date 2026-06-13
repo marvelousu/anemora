@@ -1,0 +1,7 @@
+# Anemora renderer contract fingerprint
+renderer_asset=Assets/Settings/UniversalRenderPipeline_Renderer.asset
+feature_count=4
+feature[0] type=Anemora.TimeManagement.Portal.PortalStencilFeature active=True name=PortalStencilFeature
+feature[1] type=UnityEngine.Rendering.Universal.ScreenSpaceAmbientOcclusion active=True name=FastVS HD2D Soft Contact Occlusion
+feature[2] type=UnityEngine.Rendering.Universal.FullScreenPassRendererFeature active=True name=FastVS HD2D Stage7 TiltShift
+feature[3] type=UnityEngine.Rendering.Universal.FullScreenPassRendererFeature active=True name=FastVS HD2D Stage7 Outline
