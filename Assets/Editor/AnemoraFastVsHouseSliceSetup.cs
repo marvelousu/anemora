@@ -55,6 +55,7 @@ namespace Anemora.EditorTools
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const int Chapter1ProductionSurfaceTextureSize = 2048;
         private const string CharacterDirectory = "Assets/Art/Characters/FastVS";
         private const string OutdoorOcclusionGradientMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient.mat";
         private const string OutdoorOcclusionGradientTexturePath = TextureDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient_soft.asset";
@@ -555,6 +556,15 @@ namespace Anemora.EditorTools
             PortalWindow
         }
 
+        private enum Chapter1ProductionSurfaceKind
+        {
+            SoilGrass,
+            GrassEdge,
+            StonePath,
+            AgedPlaster,
+            WeatheredRoof
+        }
+
         [MenuItem("Anemora/Fast VS/Create House Slice")]
         public static void CreateHouseSliceScene()
         {
@@ -818,6 +828,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
             ValidateFastVsHd2dChapter1AllMapAuthoredVegetation();
+            ValidateFastVsHd2dChapter1HouseExteriorProductionSurfaces();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
             ValidateChapter1ContinuationTimeWindowRightSidePlacement(controller);
@@ -20284,7 +20295,198 @@ namespace Anemora.EditorTools
             CreateHouseExteriorGroundShadowBreakupCycle96(root, prefix, past, materials);
             CreateHouseExteriorFacadeArtifactConsolidationCycle97(root, prefix, past, materials);
             CreateHouseExteriorGroundContinuityArtifactCleanupCycle98(root, prefix, past, materials);
+            ApplyChapter1Phase3HouseExteriorProductionSurfaces(root, prefix, past);
 
+        }
+
+        private static void ApplyChapter1Phase3HouseExteriorProductionSurfaces(Transform root, string prefix, bool past)
+        {
+            var scope = past ? "PastHouseExterior" : "CurrentHouseExterior";
+            var yardMaterial = EnsureChapter1ProductionSurfaceMaterial($"Ch1Ground_{scope}_SoilGrass2K", Chapter1ProductionSurfaceKind.SoilGrass, past, Vector2.one);
+            var grassEdgeMaterial = EnsureChapter1ProductionSurfaceMaterial($"Ch1Ground_{scope}_GrassEdge2K", Chapter1ProductionSurfaceKind.GrassEdge, past, Vector2.one);
+            var pathMaterial = EnsureChapter1ProductionSurfaceMaterial($"Ch1Ground_{scope}_StonePath2K", Chapter1ProductionSurfaceKind.StonePath, past, Vector2.one);
+            var wallMaterial = EnsureChapter1ProductionSurfaceMaterial($"Ch1Surface_{scope}_AgedPlaster2K", Chapter1ProductionSurfaceKind.AgedPlaster, past, Vector2.one);
+            var roofMaterial = EnsureChapter1ProductionSurfaceMaterial($"Ch1Surface_{scope}_WeatheredRoof2K", Chapter1ProductionSurfaceKind.WeatheredRoof, past, Vector2.one);
+
+            CreateChapter1Phase3HouseExteriorSurfaceOverlays(root, prefix, past, yardMaterial, grassEdgeMaterial, pathMaterial, wallMaterial, roofMaterial);
+        }
+
+        private static void CreateChapter1Phase3HouseExteriorSurfaceOverlays(Transform root, string prefix, bool past, Material yardMaterial, Material grassEdgeMaterial, Material pathMaterial, Material wallMaterial, Material roofMaterial)
+        {
+            var c = HouseExteriorCenter;
+            var objectPrefix = $"{prefix}_HouseExterior_Phase3Surface";
+            var landmarkPrefix = $"{prefix}.house_exterior.phase3_surface";
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundSoilBreakupA",
+                root,
+                c + new Vector3(-3.22f, 0.119f, -0.82f),
+                new Vector3(1.48f, 0.018f, 0.42f),
+                Quaternion.Euler(0f, -12f, 0f),
+                yardMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_soil_breakup_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundSoilBreakupB",
+                root,
+                c + new Vector3(2.92f, 0.118f, 1.66f),
+                new Vector3(1.22f, 0.018f, 0.36f),
+                Quaternion.Euler(0f, 28f, 0f),
+                yardMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_soil_breakup_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundSoilBreakupC",
+                root,
+                c + new Vector3(0.74f, 0.119f, -3.12f),
+                new Vector3(2.36f, 0.018f, 0.52f),
+                Quaternion.Euler(0f, 8f, 0f),
+                yardMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_soil_breakup_c");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundSoilBreakupD",
+                root,
+                c + new Vector3(4.86f, 0.118f, -0.92f),
+                new Vector3(1.90f, 0.018f, 0.42f),
+                Quaternion.Euler(0f, -22f, 0f),
+                yardMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_soil_breakup_d");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundEdgeBreakupA",
+                root,
+                c + new Vector3(-5.32f, 0.118f, -3.74f),
+                new Vector3(1.38f, 0.018f, 0.34f),
+                Quaternion.Euler(0f, 16f, 0f),
+                grassEdgeMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_edge_breakup_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundEdgeBreakupB",
+                root,
+                c + new Vector3(5.18f, 0.116f, -2.34f),
+                new Vector3(1.56f, 0.018f, 0.36f),
+                Quaternion.Euler(0f, -18f, 0f),
+                grassEdgeMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_edge_breakup_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_GroundEdgeBreakupC",
+                root,
+                c + new Vector3(-4.82f, 0.118f, 2.68f),
+                new Vector3(2.22f, 0.018f, 0.42f),
+                Quaternion.Euler(0f, -9f, 0f),
+                grassEdgeMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.ground_edge_breakup_c");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_StonePathJointA",
+                root,
+                c + new Vector3(-1.02f, 0.104f, -2.20f),
+                new Vector3(1.76f, 0.016f, 0.18f),
+                Quaternion.Euler(0f, -6f, 0f),
+                pathMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.stone_path_joint_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_StonePathJointB",
+                root,
+                c + new Vector3(4.62f, 0.106f, 0.52f),
+                new Vector3(1.34f, 0.016f, 0.20f),
+                Quaternion.Euler(0f, -35f, 0f),
+                pathMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.stone_path_joint_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_StonePathJointC",
+                root,
+                c + new Vector3(-0.74f, 0.106f, -1.18f),
+                new Vector3(1.68f, 0.016f, 0.34f),
+                Quaternion.Euler(0f, -5f, 0f),
+                pathMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.stone_path_joint_c");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_StonePathJointD",
+                root,
+                c + new Vector3(3.48f, 0.106f, -1.26f),
+                new Vector3(1.92f, 0.016f, 0.28f),
+                Quaternion.Euler(0f, 18f, 0f),
+                pathMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.stone_path_joint_d");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_StonePathJointE",
+                root,
+                c + new Vector3(6.25f, 0.107f, 1.20f),
+                new Vector3(1.70f, 0.016f, 0.25f),
+                Quaternion.Euler(0f, -38f, 0f),
+                pathMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.stone_path_joint_e");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadeAgeStainA",
+                root,
+                c + new Vector3(-2.64f, 1.08f, -1.345f),
+                new Vector3(0.30f, 1.28f, 0.018f),
+                Quaternion.identity,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_age_stain_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadeBaseMaterialBreakA",
+                root,
+                c + new Vector3(-0.18f, 0.48f, -1.340f),
+                new Vector3(1.46f, 0.20f, 0.018f),
+                Quaternion.identity,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_base_material_break_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadeAgeStainB",
+                root,
+                c + new Vector3(0.58f, 1.16f, -1.338f),
+                new Vector3(0.36f, 1.12f, 0.018f),
+                Quaternion.identity,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_age_stain_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadePlasterPatchA",
+                root,
+                c + new Vector3(-1.74f, 0.78f, -1.336f),
+                new Vector3(0.84f, 0.34f, 0.018f),
+                Quaternion.identity,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_plaster_patch_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofTileWearBandA",
+                root,
+                c + new Vector3(-1.58f, 2.335f, -1.18f),
+                new Vector3(2.04f, 0.026f, 0.22f),
+                Quaternion.Euler(8f, 0f, -2f),
+                roofMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_tile_wear_band_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofTileWearBandB",
+                root,
+                c + new Vector3(0.82f, 2.345f, -1.06f),
+                new Vector3(1.42f, 0.026f, 0.20f),
+                Quaternion.Euler(8f, 0f, 5f),
+                roofMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_tile_wear_band_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofTileWearBandC",
+                root,
+                c + new Vector3(-1.02f, 2.355f, -1.34f),
+                new Vector3(3.25f, 0.026f, 0.18f),
+                Quaternion.Euler(8f, 0f, 1f),
+                roofMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_tile_wear_band_c");
         }
 
         private static void CreateHouseExteriorPathPorchDressing(Transform root, string prefix, bool past, Materials materials)
@@ -45578,6 +45780,104 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: visual cleanup target remains active: {objectName}");
             }
+        }
+
+        private static void ValidateFastVsHd2dChapter1HouseExteriorProductionSurfaces()
+        {
+            ValidateChapter1HouseExteriorProductionSurfacesForPrefix("Current", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateChapter1HouseExteriorProductionSurfacesForPrefix("Past", "Past_HouseExteriorMap_SeparateSpace");
+        }
+
+        private static void ValidateChapter1HouseExteriorProductionSurfacesForPrefix(string prefix, string expectedParentName)
+        {
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_GroundSoilBreakupA", expectedParentName, "Ch1Ground_", "SoilGrass2K");
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_GroundEdgeBreakupA", expectedParentName, "Ch1Ground_", "GrassEdge2K");
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_StonePathJointA", expectedParentName, "Ch1Ground_", "StonePath2K");
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_FacadeAgeStainA", expectedParentName, "Ch1Surface_", "AgedPlaster2K");
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_FacadeBaseMaterialBreakA", expectedParentName, "Ch1Surface_", "AgedPlaster2K");
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_RoofTileWearBandA", expectedParentName, "Ch1Surface_", "WeatheredRoof2K");
+            ValidateChapter1ProductionSurfaceObject($"{prefix}_HouseExterior_Phase3Surface_RoofTileWearBandB", expectedParentName, "Ch1Surface_", "WeatheredRoof2K");
+        }
+
+        private static void ValidateChapter1ProductionSurfaceObject(string objectName, string expectedParentName, string requiredMaterialPrefix, string requiredMaterialToken)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase 3 production surface object {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} must be parented under {expectedParentName}.");
+            }
+
+            if (!sceneObject.activeSelf)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} must remain active.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} must keep a material.");
+            }
+
+            var material = renderer.sharedMaterial;
+            var materialName = material.name ?? string.Empty;
+            if (materialName.IndexOf(requiredMaterialPrefix, StringComparison.Ordinal) < 0 ||
+                materialName.IndexOf(requiredMaterialToken, StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} expected {requiredMaterialPrefix} / {requiredMaterialToken}, got {materialName}.");
+            }
+
+            var materialPath = AssetDatabase.GetAssetPath(material);
+            if (string.IsNullOrEmpty(materialPath) ||
+                materialPath.IndexOf($"/FastVS_House_{requiredMaterialPrefix}", StringComparison.Ordinal) < 0 ||
+                !materialPath.EndsWith(".mat", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} material must be a generated FastVS_House_{requiredMaterialPrefix} asset, got {materialPath}.");
+            }
+
+            var texture = GetMaterialPrimaryTexture(material);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} must use a 2K texture.");
+            }
+
+            if (texture.width != Chapter1ProductionSurfaceTextureSize || texture.height != Chapter1ProductionSurfaceTextureSize)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} texture must be {Chapter1ProductionSurfaceTextureSize}x{Chapter1ProductionSurfaceTextureSize}, got {texture.width}x{texture.height}.");
+            }
+
+            var texturePath = AssetDatabase.GetAssetPath(texture);
+            if (string.IsNullOrEmpty(texturePath) ||
+                texturePath.IndexOf($"/FastVS_House_{requiredMaterialPrefix}", StringComparison.Ordinal) < 0 ||
+                !texturePath.EndsWith("_2k.png", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} texture must be a named 2K PNG asset, got {texturePath}.");
+            }
+
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            if (importer == null || importer.mipmapEnabled || !importer.isReadable || importer.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface {objectName} texture importer must stay readable, non-mipped, and uncompressed.");
+            }
+        }
+
+        private static Texture2D GetMaterialPrimaryTexture(Material material)
+        {
+            if (material.HasProperty("_BaseMap"))
+            {
+                return material.GetTexture("_BaseMap") as Texture2D;
+            }
+
+            if (material.HasProperty("_MainTex"))
+            {
+                return material.GetTexture("_MainTex") as Texture2D;
+            }
+
+            return null;
         }
 
         private static void ValidateFastVsHd2dChapter1AllMapAuthoredVegetation()
@@ -91330,6 +91630,257 @@ namespace Anemora.EditorTools
             var texture = EnsureGeneratedRepeatTexture("current_empty_bookshelf_front_hd2d", 256, 128, SampleCurrentEmptyBookshelfFrontHd2dPixel);
             AssignMaterialTexture(material, texture, textureScale);
             return material;
+        }
+
+        private static Material EnsureChapter1ProductionSurfaceMaterial(string id, Chapter1ProductionSurfaceKind kind, bool past, Vector2 tiling)
+        {
+            if (!id.StartsWith("Ch1Ground_", StringComparison.Ordinal) &&
+                !id.StartsWith("Ch1Surface_", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface material must use Ch1Ground_/Ch1Surface_ naming, got {id}.");
+            }
+
+            var material = FlatMaterial(id, Color.white, false, FastVsHd2dMaterialRole.SurfaceLit);
+            var texture = EnsureChapter1ProductionSurfaceTexture(id, kind, past);
+            AssignMaterialTexture(material, texture, tiling);
+
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", kind == Chapter1ProductionSurfaceKind.WeatheredRoof ? 0.20f : 0.13f);
+            }
+
+            if (material.HasProperty("_SpecularHighlights"))
+            {
+                material.SetFloat("_SpecularHighlights", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Texture2D EnsureChapter1ProductionSurfaceTexture(string id, Chapter1ProductionSurfaceKind kind, bool past)
+        {
+            EnsureFolder(TextureDirectory);
+            var path = $"{TextureDirectory}/FastVS_House_{id}_2k.png";
+            var imported = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (imported != null && imported.width == Chapter1ProductionSurfaceTextureSize && imported.height == Chapter1ProductionSurfaceTextureSize)
+            {
+                ConfigureChapter1ProductionSurfaceTextureImporter(path);
+                return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            }
+
+            var texture = new Texture2D(Chapter1ProductionSurfaceTextureSize, Chapter1ProductionSurfaceTextureSize, TextureFormat.RGBA32, false)
+            {
+                name = $"FastVS_House_{id}_2k",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Repeat
+            };
+            var pixels = new Color32[Chapter1ProductionSurfaceTextureSize * Chapter1ProductionSurfaceTextureSize];
+            for (var y = 0; y < Chapter1ProductionSurfaceTextureSize; y++)
+            {
+                for (var x = 0; x < Chapter1ProductionSurfaceTextureSize; x++)
+                {
+                    pixels[y * Chapter1ProductionSurfaceTextureSize + x] = SampleChapter1ProductionSurfacePixel(x, y, kind, past);
+                }
+            }
+
+            texture.SetPixels32(pixels);
+            texture.Apply(false, false);
+            File.WriteAllBytes(path, texture.EncodeToPNG());
+            UnityEngine.Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            ConfigureChapter1ProductionSurfaceTextureImporter(path);
+            imported = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (imported == null || imported.width != Chapter1ProductionSurfaceTextureSize || imported.height != Chapter1ProductionSurfaceTextureSize)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 3 production texture generation failed for {path}.");
+            }
+
+            return imported;
+        }
+
+        private static void ConfigureChapter1ProductionSurfaceTextureImporter(string path)
+        {
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+            {
+                return;
+            }
+
+            importer.textureType = TextureImporterType.Default;
+            importer.alphaIsTransparency = false;
+            importer.isReadable = true;
+            importer.mipmapEnabled = false;
+            importer.npotScale = TextureImporterNPOTScale.None;
+            importer.filterMode = FilterMode.Bilinear;
+            importer.wrapMode = TextureWrapMode.Repeat;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            importer.SaveAndReimport();
+        }
+
+        private static Color32 SampleChapter1ProductionSurfacePixel(int x, int y, Chapter1ProductionSurfaceKind kind, bool past)
+        {
+            var u = x / (float)(Chapter1ProductionSurfaceTextureSize - 1);
+            var v = y / (float)(Chapter1ProductionSurfaceTextureSize - 1);
+            var fine = Chapter1SurfaceHash01(x, y, 31) - 0.5f;
+            var medium = Chapter1SurfaceHash01(x / 12, y / 12, 47) - 0.5f;
+            var broad = Chapter1SurfaceHash01(x / 96, y / 96, 61) - 0.5f;
+
+            Color color;
+            switch (kind)
+            {
+                case Chapter1ProductionSurfaceKind.GrassEdge:
+                    color = SampleChapter1GrassEdgeSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.StonePath:
+                    color = SampleChapter1StonePathSurface(x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.AgedPlaster:
+                    color = SampleChapter1AgedPlasterSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.WeatheredRoof:
+                    color = SampleChapter1WeatheredRoofSurface(x, y, fine, medium, broad, past);
+                    break;
+                default:
+                    color = SampleChapter1SoilGrassSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
+            }
+
+            return (Color32)color;
+        }
+
+        private static Color SampleChapter1SoilGrassSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var soil = past ? new Color(0.30f, 0.32f, 0.20f, 1f) : new Color(0.22f, 0.21f, 0.17f, 1f);
+            var grass = past ? new Color(0.34f, 0.47f, 0.23f, 1f) : new Color(0.20f, 0.31f, 0.22f, 1f);
+            var dry = past ? new Color(0.43f, 0.41f, 0.26f, 1f) : new Color(0.36f, 0.31f, 0.23f, 1f);
+            var grassMask = Mathf.Clamp01(0.48f + broad * 0.52f + Mathf.Sin((u * 14.0f) + (v * 7.4f)) * 0.10f);
+            var color = Color.Lerp(soil, grass, grassMask);
+            var scuff = Mathf.Clamp01(0.34f + medium * 0.62f + Mathf.Sin((u * 25.0f) - (v * 12.0f)) * 0.08f);
+            color = Color.Lerp(color, dry, past ? scuff * 0.18f : scuff * 0.30f);
+
+            if ((x + y * 3) % 127 < 3 || Chapter1SurfaceHash01(x / 6, y / 6, 71) > 0.965f)
+            {
+                color = Color.Lerp(color, past ? new Color(0.50f, 0.49f, 0.36f, 1f) : new Color(0.46f, 0.42f, 0.34f, 1f), 0.36f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.13f + medium * 0.08f);
+        }
+
+        private static Color SampleChapter1GrassEdgeSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var baseGrass = past ? new Color(0.30f, 0.49f, 0.22f, 1f) : new Color(0.19f, 0.33f, 0.22f, 1f);
+            var darkGrass = past ? new Color(0.18f, 0.34f, 0.18f, 1f) : new Color(0.12f, 0.22f, 0.17f, 1f);
+            var soil = past ? new Color(0.36f, 0.34f, 0.21f, 1f) : new Color(0.26f, 0.23f, 0.18f, 1f);
+            var clump = Mathf.Clamp01(0.52f + broad * 0.44f + Mathf.Sin((u * 31f) + (v * 5f)) * 0.13f);
+            var color = Color.Lerp(darkGrass, baseGrass, clump);
+            var dirtThread = (y + Mathf.FloorToInt(Mathf.Sin(u * 18f) * 24f)) % 181;
+            if (dirtThread < 7 || Chapter1SurfaceHash01(x / 10, y / 10, 83) > 0.952f)
+            {
+                color = Color.Lerp(color, soil, past ? 0.18f : 0.34f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.16f + medium * 0.09f);
+        }
+
+        private static Color SampleChapter1StonePathSurface(int x, int y, float fine, float medium, float broad, bool past)
+        {
+            const int tileWidth = 148;
+            const int tileHeight = 94;
+            var row = y / tileHeight;
+            var offsetX = (row % 2) * (tileWidth / 2);
+            var localX = (x + offsetX) % tileWidth;
+            var localY = y % tileHeight;
+            var baseStone = past ? new Color(0.48f, 0.44f, 0.34f, 1f) : new Color(0.35f, 0.34f, 0.30f, 1f);
+            var warmStone = past ? new Color(0.62f, 0.56f, 0.42f, 1f) : new Color(0.45f, 0.41f, 0.34f, 1f);
+            var mortar = past ? new Color(0.27f, 0.25f, 0.21f, 1f) : new Color(0.18f, 0.18f, 0.17f, 1f);
+            var color = Color.Lerp(baseStone, warmStone, Mathf.Clamp01(0.46f + broad * 0.42f + fine * 0.16f));
+            if (localX < 5 || localX > tileWidth - 5 || localY < 5 || localY > tileHeight - 5)
+            {
+                color = Color.Lerp(color, mortar, 0.76f);
+            }
+
+            if (Chapter1SurfaceHash01((x + 19) / 18, (y + 7) / 18, 97) > (past ? 0.970f : 0.935f))
+            {
+                color = Color.Lerp(color, past ? new Color(0.30f, 0.38f, 0.24f, 1f) : new Color(0.20f, 0.24f, 0.18f, 1f), 0.34f);
+            }
+
+            return Chapter1SurfaceAdjust(color, medium * 0.10f);
+        }
+
+        private static Color SampleChapter1AgedPlasterSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var plaster = past ? new Color(0.39f, 0.36f, 0.29f, 1f) : new Color(0.34f, 0.31f, 0.26f, 1f);
+            var lime = past ? new Color(0.52f, 0.47f, 0.36f, 1f) : new Color(0.46f, 0.42f, 0.34f, 1f);
+            var stain = past ? new Color(0.23f, 0.22f, 0.18f, 1f) : new Color(0.18f, 0.17f, 0.15f, 1f);
+            var color = Color.Lerp(plaster, lime, Mathf.Clamp01(0.38f + broad * 0.32f + fine * 0.18f + medium * 0.12f));
+            var verticalStain = Mathf.Clamp01(1f - Mathf.Abs(Mathf.Sin((u * 23f) + broad * 1.5f)) * 2.8f) * Mathf.Clamp01(1f - v);
+            color = Color.Lerp(color, stain, verticalStain * (past ? 0.26f : 0.38f));
+            if ((x + y * 2) % 251 < 3 || Chapter1SurfaceHash01(x / 11, y / 11, 109) > 0.975f)
+            {
+                color = Color.Lerp(color, stain, past ? 0.24f : 0.40f);
+            }
+
+            if (Chapter1SurfaceHash01(x / 8, y / 8, 113) > 0.76f)
+            {
+                color = Color.Lerp(color, stain, past ? 0.16f : 0.22f);
+            }
+
+            if (Chapter1SurfaceHash01((x + 5) / 16, (y + 3) / 16, 131) > 0.82f)
+            {
+                color = Color.Lerp(color, lime, past ? 0.12f : 0.16f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.18f + medium * 0.15f + broad * 0.05f);
+        }
+
+        private static Color SampleChapter1WeatheredRoofSurface(int x, int y, float fine, float medium, float broad, bool past)
+        {
+            const int tileWidth = 112;
+            const int tileHeight = 72;
+            var row = y / tileHeight;
+            var localX = (x + (row % 2) * (tileWidth / 2)) % tileWidth;
+            var localY = y % tileHeight;
+            var roof = past ? new Color(0.56f, 0.27f, 0.15f, 1f) : new Color(0.34f, 0.16f, 0.11f, 1f);
+            var warm = past ? new Color(0.80f, 0.42f, 0.20f, 1f) : new Color(0.48f, 0.22f, 0.14f, 1f);
+            var dark = past ? new Color(0.28f, 0.18f, 0.13f, 1f) : new Color(0.12f, 0.09f, 0.08f, 1f);
+            var color = Color.Lerp(roof, warm, Mathf.Clamp01(0.36f + broad * 0.44f + fine * 0.10f));
+            if (localY < 5 || localX < 4 || localX > tileWidth - 4)
+            {
+                color = Color.Lerp(color, dark, 0.68f);
+            }
+
+            if (Chapter1SurfaceHash01(x / 20, y / 20, 127) > (past ? 0.970f : 0.925f))
+            {
+                color = Color.Lerp(color, dark, past ? 0.24f : 0.44f);
+            }
+
+            return Chapter1SurfaceAdjust(color, medium * 0.12f);
+        }
+
+        private static Color Chapter1SurfaceAdjust(Color color, float amount)
+        {
+            var scale = Mathf.Clamp(1f + amount, 0.62f, 1.34f);
+            return new Color(
+                Mathf.Clamp01(color.r * scale),
+                Mathf.Clamp01(color.g * scale),
+                Mathf.Clamp01(color.b * scale),
+                1f);
+        }
+
+        private static float Chapter1SurfaceHash01(int x, int y, int salt)
+        {
+            unchecked
+            {
+                var hash = 2166136261u ^ (uint)salt;
+                hash ^= (uint)x + 0x9E3779B9u + (hash << 6) + (hash >> 2);
+                hash *= 16777619u;
+                hash ^= (uint)y + 0x85EBCA6Bu + (hash << 6) + (hash >> 2);
+                hash *= 2246822519u;
+                hash ^= hash >> 13;
+                hash *= 3266489917u;
+                return (hash & 0x00FFFFFFu) / 16777215f;
+            }
         }
 
         private static Material PixelMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, bool unlit, Vector2 tiling, FastVsHd2dMaterialRole role = FastVsHd2dMaterialRole.SurfaceLit)
