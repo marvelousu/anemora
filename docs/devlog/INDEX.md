@@ -1,14 +1,14 @@
 ﻿# Devlog Index
 
-> Status: v8.34 fast VS exterior exit tree clearance index update (2026-05-25). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.67 point15 portal aperture alpha 0.60 safe-pause index update (2026-06-13). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 512 files including INDEX.md and README.md.
-- Dated devlog records: 510 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1332 files.
+- Root-level Markdown coverage: 766 files including INDEX.md and README.md.
+- Dated devlog records: 764 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
@@ -36,8 +36,65 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-05-23 | 40 |
 | 2026-05-24 | 37 |
 | 2026-05-25 | 37 |
+| 2026-06-13 | 10 |
+| 2026-06-12 | 9 |
+| 2026-06-10 | 2 |
+| 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-13
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-13_hd2d_point15_portal_aperture_alpha060_safe_pause.md](2026-06-13_hd2d_point15_portal_aperture_alpha060_safe_pause.md) | Fast VS / HD2D | point15 portal aperture alpha 0.60 safe pause |
+| [2026-06-13_hd2d_point15_cycle125_air_alpha060.md](2026-06-13_hd2d_point15_cycle125_air_alpha060.md) | Fast VS / HD2D | point15 Cycle125 air alpha 0.60 |
+| [2026-06-13_hd2d_point15_library_facade_occlusion_gradient_removal.md](2026-06-13_hd2d_point15_library_facade_occlusion_gradient_removal.md) | Fast VS / HD2D | point15 library facade occlusion gradient removal |
+| [2026-06-13_hd2d_point15_library_roof_under_thin_band_removal.md](2026-06-13_hd2d_point15_library_roof_under_thin_band_removal.md) | Fast VS / HD2D | point15 library roof-under thin band removal |
+| [2026-06-13_hd2d_point15_renderer_motion_after_paver_removed.md](2026-06-13_hd2d_point15_renderer_motion_after_paver_removed.md) | Fast VS / HD2D | point15 renderer motion after paver removal |
+| [2026-06-13_hd2d_point15_allmap_lower_front_paver_removal.md](2026-06-13_hd2d_point15_allmap_lower_front_paver_removal.md) | Fast VS / HD2D | point15 all-map lower/front paver removal |
+| [2026-06-13_hd2d_point15_far_right_strip_removal.md](2026-06-13_hd2d_point15_far_right_strip_removal.md) | Fast VS / HD2D | point15 far-right strip removal |
+| [2026-06-13_hd2d_point15_rightmost_detached_renderer_probe.md](2026-06-13_hd2d_point15_rightmost_detached_renderer_probe.md) | Fast VS / HD2D | point15 rightmost detached renderer probe |
+| [2026-06-13_hd2d_point15_renderer_static_flicker_probe.md](2026-06-13_hd2d_point15_renderer_static_flicker_probe.md) | Fast VS / HD2D | point15 renderer static flicker probe |
+| [2026-06-13_hd2d_point15_central_plaza_eastfield_removal.md](2026-06-13_hd2d_point15_central_plaza_eastfield_removal.md) | Fast VS / HD2D | point15 CentralPlaza EastField removal |
+
+### 2026-06-12
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-12_hd2d_point15_upper_brow_removed_allmaps_waited.md](2026-06-12_hd2d_point15_upper_brow_removed_allmaps_waited.md) | Fast VS / HD2D | point15 upper brow removed all-map waited capture |
+| [2026-06-12_hd2d_point15_renderer_library_rear_upper_brow_removal.md](2026-06-12_hd2d_point15_renderer_library_rear_upper_brow_removal.md) | Fast VS / HD2D | point15 renderer library rear upper brow removal |
+| [2026-06-12_hd2d_point15_renderer_flicker_motion_probe_rendernosave.md](2026-06-12_hd2d_point15_renderer_flicker_motion_probe_rendernosave.md) | Fast VS / HD2D | point15 renderer flicker motion probe RenderNoSave |
+| [2026-06-12_hd2d_point15_renderer_motion_candidate_isolation_noplayer.md](2026-06-12_hd2d_point15_renderer_motion_candidate_isolation_noplayer.md) | Fast VS / HD2D | point15 renderer motion candidate isolation without player |
+| [2026-06-12_hd2d_point15_renderer_outdoor_void_background_pose_isolation.md](2026-06-12_hd2d_point15_renderer_outdoor_void_background_pose_isolation.md) | Fast VS / HD2D | point15 OutdoorVoidBackground pose isolation |
+| [2026-06-12_hd2d_point15_high_sunbeam_soften_alpha072.md](2026-06-12_hd2d_point15_high_sunbeam_soften_alpha072.md) | Fast VS / HD2D | point15 HighSunbeam soften alpha 0.72 |
+| [2026-06-12_hd2d_point15_window_aperture_alpha072.md](2026-06-12_hd2d_point15_window_aperture_alpha072.md) | Fast VS / HD2D | point15 window aperture alpha 0.72 |
+| [2026-06-12_hd2d_point15_window_sunbeam_state_probe.md](2026-06-12_hd2d_point15_window_sunbeam_state_probe.md) | Fast VS / HD2D | point15 window sunbeam state probe |
+| [2026-06-12_hd2d_point15_renderer_cycle125_object_split.md](2026-06-12_hd2d_point15_renderer_cycle125_object_split.md) | Fast VS / HD2D | point15 renderer Cycle125 object split |
+
+### 2026-06-10
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-10_hd2d_point15_renderer_background_isolation.md](2026-06-10_hd2d_point15_renderer_background_isolation.md) | Fast VS / HD2D | point15 renderer background isolation |
+| [2026-06-10_hd2d_point15_library_front_marker_removal.md](2026-06-10_hd2d_point15_library_front_marker_removal.md) | Fast VS / HD2D | point15 library front marker removal |
+
+### 2026-06-09
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-09_hd2d_point15_window_light_door_plank_fix.md](2026-06-09_hd2d_point15_window_light_door_plank_fix.md) | Fast VS / HD2D | point15 window light and door plank fix |
+| [2026-06-09_hd2d_point15_library_front_pale_wash_fix.md](2026-06-09_hd2d_point15_library_front_pale_wash_fix.md) | Fast VS / HD2D | point15 library front pale wash fix |
+| [2026-06-09_hd2d_point15_renderer_flicker_probe.md](2026-06-09_hd2d_point15_renderer_flicker_probe.md) | Fast VS / HD2D | point15 renderer flicker probe |
+| [2026-06-09_hd2d_point15_time_window_current_back_block_fix.md](2026-06-09_hd2d_point15_time_window_current_back_block_fix.md) | Fast VS / HD2D | point15 time window current back block fix |
+| [2026-06-09_hd2d_point15_time_window_visual_physics_probe.md](2026-06-09_hd2d_point15_time_window_visual_physics_probe.md) | Fast VS / HD2D | point15 time window visual physics probe |
+| [2026-06-09_hd2d_point15_renderer_isolation_probe.md](2026-06-09_hd2d_point15_renderer_isolation_probe.md) | Fast VS / HD2D | point15 renderer isolation probe |
+| [2026-06-09_hd2d_point15_shadow_rebalance_a_firstpass.md](2026-06-09_hd2d_point15_shadow_rebalance_a_firstpass.md) | Fast VS / HD2D | point15 shadow rebalance A firstpass |
+| [2026-06-09_hd2d_point15_renderer_diagnostics_data_only.md](2026-06-09_hd2d_point15_renderer_diagnostics_data_only.md) | Fast VS / HD2D | point15 renderer diagnostics data only |
+| [2026-06-09_hd2d_point15_time_window_back_passthrough_fix.md](2026-06-09_hd2d_point15_time_window_back_passthrough_fix.md) | Fast VS / HD2D | point15 time window back passthrough fix |
+| [2026-06-09_hd2d_point15_time_window_probe.md](2026-06-09_hd2d_point15_time_window_probe.md) | Fast VS / HD2D | point15 time window probe |
+| [2026-06-09_hd2d_point15_table_object_removal.md](2026-06-09_hd2d_point15_table_object_removal.md) | Fast VS / HD2D | point15 table object removal |
+| [2026-06-09_hd2d_point15_contract_runtime_capture.md](2026-06-09_hd2d_point15_contract_runtime_capture.md) | Fast VS / HD2D | point15 renderer contract and runtime capture |
 
 ### 2026-05-25
 
@@ -668,6 +725,13 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.59 | 2026-06-13 | Added point15 renderer static flicker probe record with code-only probe build, discarded no-graphics capture note, exit-coded built-player static evidence, and motion-vs-static flicker classification. |
+| v8.58 | 2026-06-13 | Added point15 CentralPlaza EastField removal record with right-outer-road ROI proof, eastPerimeterFieldOff isolation, BuildAndValidateBatch regeneration, fixed isolation proof, and all-map built-player evidence. |
+| v8.57 | 2026-06-12 | Added point15 upper brow removed all-map waited capture record with explicit player exit, 13 all-map PNGs, renderer contract proof, CentralPlaza lighting sample, and carry-forward long-road sideview diagnostic note. |
+| v8.56 | 2026-06-12 | Added point15 renderer library rear upper brow removal record with individual built-player isolation, invalid non-regenerated build hazard, correct BuildAndValidateBatch evidence, removal proof, and post-removal residual measurements. |
+| v8.52 | 2026-06-12 | Added point15 HighSunbeam soften alpha 0.72 record with metadata-only no-op proof, Cycle125 air material alpha reduction, built-player renderer isolation deltas, and review capture evidence. |
+| v8.47 | 2026-06-10 | Added point15 library-front marker removal record with built-player isolation proof, validation, final capture, and viewer update evidence. |
+| v8.40 | 2026-06-09 | Added point15 HD2D shadow rebalance A firstpass record with SunCycle area-policy reapply, lowered cool rim, ambient profile adjustment, built-player all-map capture, lighting-state logs, and viewer propagation requirement. |
 | v8.33 | 2026-05-25 | Added Fast VS HD2D global realtime exterior anchor cycle record with Exterior follow-anchor clamping, exterior road/ground shadow receiver capture, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.32 | 2026-05-25 | Added Fast VS HD2D global realtime camera/exposure cycle record with Exterior/Library VS camera profiles, exterior procedural skybox, stronger global receiver direct-light response, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
 | v8.31 | 2026-05-25 | Added Fast VS HD2D global realtime lighting cycle record with Exterior, CentralPlaza, and Library receiver/caster lighting policy, validation, build, smoke, review-directory output, and parent-review screenshot evidence. |
