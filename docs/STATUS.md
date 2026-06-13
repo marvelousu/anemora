@@ -25,7 +25,7 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 ## 3. 現在の frontier (アクティブな一手)
 
 - **point15 レンダラループ**: cycle125 (air alpha 0.60) のアブレーション切り分けが進行中 (動作中アーティファクトの犯人探し)。
-- **2026-06-13 環境監査の提案**: ①cycle125 でレンダラ設定を凍結し契約テスト化 ②エネルギーを環境アセット (テクスチャ/植生/空/ライティング) へ転換 ③authored file (81k行) の段階的減量。適用物は incoming ステージング (監査 devlog 参照) に準備済みで、**ループ一時停止時に適用**。
+- **2026-06-13 環境監査の提案と着地**: ①✅レンダラ凍結=`Assets/Tests/RendererContract/` のゴールデン契約テストで実装済 (Unity検証: 初回ベースライン生成→2回目 36 EditMode緑/freeze=Passed)。renderer feature を変えるとテストが落ちる。意図的変更時は `ANEMORA_RENDERER_REBASELINE=1` で再生成しコミット。②✅アセット検収=`Assets/Editor/AnemoraAssetValidation.cs` の `ValidateImportedAssetsBatch` (missing ref/review_only混入/ポリ数、実走OK)。③authored file (81k行) 減量は **cycle 方式が当ファイルを毎サイクル編集する間は未着手** (再開時 merge 衝突を避けるため。cycle 方式を畳む時に実施)。環境アセット物量 (テクスチャ/植生/空) は Tier 目標確定後。
 - Chapter 1 設計トラックは S3 詳細設計で停止中 (canon は `docs/canon/chapter1.md`)。
 
 ## 4. 次に来るもの (frontier 候補)
