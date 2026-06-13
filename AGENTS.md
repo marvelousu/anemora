@@ -50,3 +50,10 @@
 ## 確定 canon の優先
 - `docs/canon/` 配下が物語の正 (living state)。実装ビルドの provisional 台詞より canon doc を優先。
 - `docs/STORY_BIBLE_v1.md` は legacy (全章骨格)、`docs/canon/` 未整備の章は参照可だが矛盾時は `docs/canon/` 優先。
+
+## 運用ガード (2026-06-13 環境監査で導入)
+- **承認アセットは即保全**: レビューで承認が出たアセットはその場で git 管理パスへ移して commit+push してから次へ (v57/v58 紛失の再発防止)。worktree/レビュー置き場に承認版を残置しない。
+- **微調整の止め時**: 同一対象への微調整サイクルが10連続で閾値未満の差分しか生まないなら停止して方針を見直す (cycle-start skill の Project gates にも明記)。
+- **視覚レビューは3段**: shotdiff (機械、変化なし→自動パス) → Claude 一次レビュー (変化分のみ所見付き) → 人間最終。全数目視をしない。
+- **STATUS 鮮度**: pre-push hook が docs/STATUS.md の7日超漂流を fail させる (緊急時のみ ANEMORA_SKIP_STATUS_CHECK=1)。
+- **バックアップ**: ローカル定期タスク AnemoraNightlyBackup が毎晩 bundle+dirty.patch+untracked を退避する (コミットの代替ではない)。
