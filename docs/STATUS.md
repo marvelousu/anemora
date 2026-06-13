@@ -31,7 +31,7 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 ## 4. 次に来るもの (frontier 候補)
 
 - ループ一時停止時: 未コミット devlog+INDEX のコミット → incoming ステージング適用 (レンダラ契約テスト / ValidateImportedAssetsBatch / dispatcher+shotdiff 配線) → 検証
-- **ビジュアルターゲットの確定 (要ユーザー判断)**: 設計文書の「Tier 2 意図的選択」と目標「DQ3R級/Tier 4」の矛盾解消。広場1枚のターゲット合成画を正とする
+- **ビジュアルターゲットの確定 (要ユーザー判断)**: 設計文書の「Tier 2 意図的選択」と目標「最高ティア (Tier 4)」の矛盾解消。広場1枚のターゲット合成画を正とする
 - 環境アセット物量フェーズ (PolyHaven/meshy/PixelLab パイプライン、512アトラスの2K化)
 - Chapter 1 設計トラック再開 (S3 詳細設計 → S4-6 台詞 refine → 通し確認)
 
@@ -63,4 +63,4 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 | 2026-05-22 | Linux Claude | エリュトリアを シーン 5-6 地理から除去 (3-4 章の台詞伏線に留め)。**シーン 6 v1 確定** (章を閉じる 2D 真横・夕焼け自動シーケンス)。**Chapter 1 全 6 シーン v1 設計完了**。frontier = Codex reconcile + 台詞 refine |
 | 2026-05-22 | Linux Claude | 設計 8 commit を public main → `work/chapter1-continuation-20260520` branch へ移送、main を VS baseline (e9d61c2) に復帰。reconciliation devlog で Codex 実装との divergence 引継ぎ |
 | 2026-05-24 | Linux Claude | **S2 詳細設計 v1.2 + 過去建物 canon 確定 + `docs/canon/` 新設** (consolidated 原本、他セッション引き渡し用)。S2 構造改訂 (camera south 整合、ミア前庭出会い、建物 transition、時の窓 S2 不使用)、台詞 refine (ミアの語り [2.D] + 種の依頼 [2.E] + 出発 [2.F] のカメラ演出)。過去建物 = 全て見た目変える (図書館除く、内部仕様で同形を許容)。**canon/devlog 運用ルール確立**: canon = `docs/canon/` のみ mutable、devlog は immutable、CLAUDE.md + canon/README.md 明文化。frontier を S3 詳細設計へ |
-| 2026-06-13 | Win Claude (Fable 5) | **3週間の漂流を解消**: 現在地を point15 レンダラループ (cycle125) に更新。branch push / chapter1 bundle 復元 / バックアップ自動化 (AnemoraNightlyBackup) / pre-push STATUS 鮮度ガード導入。レンダラ凍結+環境アセット転換を提案 (`2026-06-13_env_audit_renderer_freeze_proposal.md`)。frontier 候補に「ビジュアルターゲット確定 (Tier 2 vs DQ3R)」を明示 |
+| 2026-06-13 | Win Claude (Fable 5) | **3週間の漂流を解消**: 現在地を point15 レンダラループ (cycle125) に更新。branch push / chapter1 bundle 復元 / バックアップ自動化 (AnemoraNightlyBackup) / pre-push STATUS 鮮度ガード導入。レンダラ凍結+環境アセット転換を提案 (`2026-06-13_env_audit_renderer_freeze_proposal.md`)。frontier 候補に「ビジュアルターゲット確定 (Tier 2 vs Tier 4)」を明示 |
