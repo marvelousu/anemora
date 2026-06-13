@@ -817,7 +817,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
             ValidateFastVsHd2dTwentyFirstCycleCurrentLibraryAtmosphere();
             ValidateFastVsHd2dSeventhCycleDepthFraming();
-            ValidateFastVsHd2dHouseExteriorAuthoredVegetationPrototype();
+            ValidateFastVsHd2dChapter1AllMapAuthoredVegetation();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
             ValidateChapter1ContinuationTimeWindowRightSidePlacement(controller);
@@ -19668,21 +19668,7 @@ namespace Anemora.EditorTools
 
         private static void CreateChapter1Tree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial)
         {
-            if (IsHouseExteriorAuthoredVegetationPrototype(objectPrefix))
-            {
-                CreateAuthoredLowPolyTree(root, objectPrefix, trunkCenter, trunkMaterial, crownMaterial);
-                return;
-            }
-
-            CreateLandmarkCube($"{objectPrefix}_Trunk", root, trunkCenter, new Vector3(0.22f, 1.24f, 0.22f), Quaternion.identity, trunkMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.trunk");
-            CreateLandmarkCube($"{objectPrefix}_Crown", root, trunkCenter + new Vector3(0f, 1.02f, 0f), new Vector3(1.08f, 0.92f, 1.08f), Quaternion.identity, crownMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.crown");
-            CreateLandmarkCube($"{objectPrefix}_LowerCanopy", root, trunkCenter + new Vector3(-0.12f, 0.86f, 0.10f), new Vector3(0.72f, 0.54f, 0.72f), Quaternion.identity, crownMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.lower_canopy");
-        }
-
-        private static bool IsHouseExteriorAuthoredVegetationPrototype(string objectPrefix)
-        {
-            return !string.IsNullOrEmpty(objectPrefix) &&
-                objectPrefix.Contains("_HouseExterior_", StringComparison.Ordinal);
+            CreateAuthoredLowPolyTree(root, objectPrefix, trunkCenter, trunkMaterial, crownMaterial);
         }
 
         private static void CreateAuthoredLowPolyTree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial)
@@ -19873,6 +19859,114 @@ namespace Anemora.EditorTools
             return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
         }
 
+        private static Mesh CreateAuthoredVegetationLeafClusterMesh(string meshName, string seedKey)
+        {
+            var sideLean = AuthoredVegetationSigned(seedKey, 151, 0.08f);
+            var frontLean = AuthoredVegetationSigned(seedKey, 157, 0.06f);
+            var vertices = new[]
+            {
+                new Vector3(0f, -0.46f, 0f),
+                new Vector3(-0.46f, -0.40f, 0.08f),
+                new Vector3(-0.18f + sideLean, 0.10f, 0.18f + frontLean),
+                new Vector3(0.08f, -0.34f, 0.42f),
+                new Vector3(0.44f, -0.39f, -0.02f),
+                new Vector3(0.16f + sideLean * 0.5f, 0.12f, -0.22f),
+                new Vector3(-0.10f, -0.10f, -0.34f)
+            };
+            var uvs = new[]
+            {
+                new Vector2(0.50f, 0.10f),
+                new Vector2(0.10f, 0.20f),
+                new Vector2(0.28f, 0.92f),
+                new Vector2(0.56f, 0.28f),
+                new Vector2(0.92f, 0.22f),
+                new Vector2(0.74f, 0.90f),
+                new Vector2(0.36f, 0.32f)
+            };
+            var triangles = new List<int>
+            {
+                0, 1, 2,
+                0, 2, 3,
+                0, 3, 5,
+                0, 5, 4,
+                0, 4, 6,
+                0, 6, 1,
+                1, 6, 2,
+                2, 6, 5
+            };
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationBlossomMesh(string meshName, string seedKey)
+        {
+            const int sideCount = 6;
+            var centerLift = AuthoredVegetationSigned(seedKey, 167, 0.035f);
+            var vertices = new Vector3[sideCount + 2];
+            var uvs = new Vector2[vertices.Length];
+            vertices[0] = new Vector3(0f, centerLift, 0f);
+            vertices[sideCount + 1] = new Vector3(0f, -0.32f, 0f);
+            uvs[0] = new Vector2(0.5f, 0.5f);
+            uvs[sideCount + 1] = new Vector2(0.5f, 0.1f);
+
+            for (var i = 0; i < sideCount; i++)
+            {
+                var angle = (i / (float)sideCount) * Mathf.PI * 2f + AuthoredVegetationSigned(seedKey, 173, 0.08f);
+                var radius = 0.38f + AuthoredVegetationHash01(seedKey, 181 + i) * 0.12f;
+                vertices[i + 1] = new Vector3(Mathf.Cos(angle) * radius, 0.04f + (i % 2) * 0.035f, Mathf.Sin(angle) * radius);
+                uvs[i + 1] = new Vector2(0.5f + Mathf.Cos(angle) * 0.42f, 0.5f + Mathf.Sin(angle) * 0.42f);
+            }
+
+            var triangles = new List<int>(sideCount * 6);
+            for (var i = 0; i < sideCount; i++)
+            {
+                var current = i + 1;
+                var next = i == sideCount - 1 ? 1 : i + 2;
+                triangles.Add(0);
+                triangles.Add(current);
+                triangles.Add(next);
+                triangles.Add(sideCount + 1);
+                triangles.Add(next);
+                triangles.Add(current);
+            }
+
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationFruitMesh(string meshName, string seedKey)
+        {
+            var sideLean = AuthoredVegetationSigned(seedKey, 191, 0.04f);
+            var vertices = new[]
+            {
+                new Vector3(sideLean, 0.50f, 0f),
+                new Vector3(-sideLean * 0.5f, -0.50f, 0f),
+                new Vector3(-0.42f, 0.00f, 0f),
+                new Vector3(0.42f, 0.02f, 0f),
+                new Vector3(0f, 0.00f, 0.42f),
+                new Vector3(0f, -0.02f, -0.42f)
+            };
+            var uvs = new[]
+            {
+                new Vector2(0.5f, 1.0f),
+                new Vector2(0.5f, 0.0f),
+                new Vector2(0.1f, 0.5f),
+                new Vector2(0.9f, 0.5f),
+                new Vector2(0.5f, 0.9f),
+                new Vector2(0.5f, 0.1f)
+            };
+            var triangles = new List<int>
+            {
+                0, 2, 4,
+                0, 4, 3,
+                0, 3, 5,
+                0, 5, 2,
+                1, 4, 2,
+                1, 3, 4,
+                1, 5, 3,
+                1, 2, 5
+            };
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
         private static Mesh CreateAuthoredVegetationMeshAsset(string meshName, Vector3[] vertices, Vector2[] uvs, List<int> triangles)
         {
             var mesh = new Mesh
@@ -19911,11 +20005,57 @@ namespace Anemora.EditorTools
 
         private static void CreateFarmNutTree(Transform root, string objectPrefix, Vector3 trunkCenter, Material trunkMaterial, Material crownMaterial, Material nutMaterial)
         {
-            CreateLandmarkCube($"{objectPrefix}_Trunk", root, trunkCenter, new Vector3(0.24f, 1.32f, 0.24f), Quaternion.identity, trunkMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.trunk");
-            CreateLandmarkCube($"{objectPrefix}_Crown", root, trunkCenter + new Vector3(0f, 1.08f, 0f), new Vector3(1.18f, 0.92f, 1.18f), Quaternion.identity, crownMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.crown");
-            CreateLandmarkCube($"{objectPrefix}_NutA", root, trunkCenter + new Vector3(-0.18f, 0.92f, 0.18f), new Vector3(0.06f, 0.06f, 0.06f), Quaternion.identity, nutMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.nut_a");
-            CreateLandmarkCube($"{objectPrefix}_NutB", root, trunkCenter + new Vector3(0.18f, 0.90f, -0.12f), new Vector3(0.06f, 0.06f, 0.06f), Quaternion.identity, nutMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.nut_b");
-            CreateLandmarkCube($"{objectPrefix}_NutC", root, trunkCenter + new Vector3(0.02f, 0.84f, 0.24f), new Vector3(0.05f, 0.05f, 0.05f), Quaternion.identity, nutMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{objectPrefix}.nut_c");
+            var yaw = AuthoredVegetationSigned(objectPrefix, 199, 13f);
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_Trunk",
+                root,
+                trunkCenter,
+                new Vector3(0.24f, 1.32f, 0.24f),
+                Quaternion.Euler(0f, yaw, 0f),
+                trunkMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.trunk",
+                CreateAuthoredVegetationTrunkMesh($"{objectPrefix}_Trunk_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", objectPrefix));
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_Crown",
+                root,
+                trunkCenter + new Vector3(0f, 1.08f, 0f),
+                new Vector3(1.18f, 0.92f, 1.18f),
+                Quaternion.Euler(0f, yaw - 6f, 0f),
+                crownMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.crown",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_Crown_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", objectPrefix, 0.52f, 0.44f));
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_NutA",
+                root,
+                trunkCenter + new Vector3(-0.18f, 0.92f, 0.18f),
+                new Vector3(0.075f, 0.075f, 0.075f),
+                Quaternion.Euler(0f, yaw + 18f, 0f),
+                nutMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.nut_a",
+                CreateAuthoredVegetationFruitMesh($"{objectPrefix}_NutA_{AuthoredVegetationMeshNamePrefix}_FacetedFruit", $"{objectPrefix}.nut_a"));
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_NutB",
+                root,
+                trunkCenter + new Vector3(0.18f, 0.90f, -0.12f),
+                new Vector3(0.070f, 0.070f, 0.070f),
+                Quaternion.Euler(0f, yaw - 23f, 0f),
+                nutMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.nut_b",
+                CreateAuthoredVegetationFruitMesh($"{objectPrefix}_NutB_{AuthoredVegetationMeshNamePrefix}_FacetedFruit", $"{objectPrefix}.nut_b"));
+            CreateAuthoredVegetationMesh(
+                $"{objectPrefix}_NutC",
+                root,
+                trunkCenter + new Vector3(0.02f, 0.84f, 0.24f),
+                new Vector3(0.060f, 0.060f, 0.060f),
+                Quaternion.Euler(0f, yaw + 41f, 0f),
+                nutMaterial,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{objectPrefix}.nut_c",
+                CreateAuthoredVegetationFruitMesh($"{objectPrefix}_NutC_{AuthoredVegetationMeshNamePrefix}_FacetedFruit", $"{objectPrefix}.nut_c"));
         }
 
         private static void CreateRouteGlowPad(Transform root, string objectName, Vector3 triggerCenter, Material glow, string landmarkId)
@@ -39177,25 +39317,57 @@ namespace Anemora.EditorTools
 
         private static void CreateFlowerPatch(Transform root, string prefix, Vector3 center, Material leaf, Material flowerA, Material flowerB)
         {
-            CreateLandmarkCube($"{prefix}_FlowerPatch_LeafA_{center.x:0.0}_{center.z:0.0}", root, center + new Vector3(-0.15f, -0.04f, 0.02f), new Vector3(0.20f, 0.16f, 0.20f), Quaternion.identity, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.flower.leaf.a");
-            CreateLandmarkCube($"{prefix}_FlowerPatch_LeafB_{center.x:0.0}_{center.z:0.0}", root, center + new Vector3(0.10f, -0.03f, -0.04f), new Vector3(0.22f, 0.16f, 0.22f), Quaternion.identity, leaf, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.flower.leaf.b");
-            CreateLandmarkCube($"{prefix}_FlowerPatch_BloomA_{center.x:0.0}_{center.z:0.0}", root, center + new Vector3(-0.16f, 0.08f, 0.04f), new Vector3(0.12f, 0.12f, 0.12f), Quaternion.identity, flowerA, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.flower.bloom.a");
-            CreateLandmarkCube($"{prefix}_FlowerPatch_BloomB_{center.x:0.0}_{center.z:0.0}", root, center + new Vector3(0.12f, 0.09f, -0.05f), new Vector3(0.12f, 0.12f, 0.12f), Quaternion.identity, flowerB, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.flower.bloom.b");
+            var leafAName = $"{prefix}_FlowerPatch_LeafA_{center.x:0.0}_{center.z:0.0}";
+            var leafBName = $"{prefix}_FlowerPatch_LeafB_{center.x:0.0}_{center.z:0.0}";
+            var bloomAName = $"{prefix}_FlowerPatch_BloomA_{center.x:0.0}_{center.z:0.0}";
+            var bloomBName = $"{prefix}_FlowerPatch_BloomB_{center.x:0.0}_{center.z:0.0}";
+            CreateAuthoredVegetationMesh(
+                leafAName,
+                root,
+                center + new Vector3(-0.15f, -0.04f, 0.02f),
+                new Vector3(0.20f, 0.16f, 0.20f),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(leafAName, 211, 18f), 0f),
+                leaf,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{prefix}.flower.leaf.a",
+                CreateAuthoredVegetationLeafClusterMesh($"{leafAName}_{AuthoredVegetationMeshNamePrefix}_LeafCluster", leafAName));
+            CreateAuthoredVegetationMesh(
+                leafBName,
+                root,
+                center + new Vector3(0.10f, -0.03f, -0.04f),
+                new Vector3(0.22f, 0.16f, 0.22f),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(leafBName, 213, 18f), 0f),
+                leaf,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{prefix}.flower.leaf.b",
+                CreateAuthoredVegetationLeafClusterMesh($"{leafBName}_{AuthoredVegetationMeshNamePrefix}_LeafCluster", leafBName));
+            CreateAuthoredVegetationMesh(
+                bloomAName,
+                root,
+                center + new Vector3(-0.16f, 0.08f, 0.04f),
+                new Vector3(0.12f, 0.12f, 0.12f),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(bloomAName, 217, 24f), 0f),
+                flowerA,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{prefix}.flower.bloom.a",
+                CreateAuthoredVegetationBlossomMesh($"{bloomAName}_{AuthoredVegetationMeshNamePrefix}_LowPolyBlossom", bloomAName));
+            CreateAuthoredVegetationMesh(
+                bloomBName,
+                root,
+                center + new Vector3(0.12f, 0.09f, -0.05f),
+                new Vector3(0.12f, 0.12f, 0.12f),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(bloomBName, 219, 24f), 0f),
+                flowerB,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{prefix}.flower.bloom.b",
+                CreateAuthoredVegetationBlossomMesh($"{bloomBName}_{AuthoredVegetationMeshNamePrefix}_LowPolyBlossom", bloomBName));
         }
 
         private static void CreateGrassTuft(Transform root, string prefix, Vector3 center, Material material, int index)
         {
-            if (IsHouseExteriorAuthoredVegetationPrototype(prefix))
-            {
-                CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_A", center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, $"{prefix}.house_exterior.grass_tuft.{index}.a");
-                CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_B", center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, $"{prefix}.house_exterior.grass_tuft.{index}.b");
-                CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_C", center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, $"{prefix}.house_exterior.grass_tuft.{index}.c");
-                return;
-            }
-
-            CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_A", root, center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.a");
-            CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_B", root, center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.b");
-            CreateLandmarkCube($"{prefix}_HouseExterior_GrassTuft{index}_C", root, center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.grass_tuft.{index}.c");
+            CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_A", center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, $"{prefix}.house_exterior.grass_tuft.{index}.a");
+            CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_B", center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, $"{prefix}.house_exterior.grass_tuft.{index}.b");
+            CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_C", center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, $"{prefix}.house_exterior.grass_tuft.{index}.c");
         }
 
         private static GameObject CreateAuthoredGrassBlade(Transform root, string objectName, Vector3 center, Vector3 scale, Quaternion rotation, Material material, string landmarkId)
@@ -45408,10 +45580,27 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static void ValidateFastVsHd2dHouseExteriorAuthoredVegetationPrototype()
+        private static void ValidateFastVsHd2dChapter1AllMapAuthoredVegetation()
         {
             ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Current", "Current_HouseExteriorMap_SeparateSpace");
             ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Past", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix("Current");
+            ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix("Past");
+        }
+
+        private static void ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix(string prefix)
+        {
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA_Trunk", $"{prefix}_CentralPlazaMap_SeparateSpace", "LowPolyTrunk", 14, 72);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftPlant_HouseExterior_GrassTuft0_A", $"{prefix}_CentralPlazaMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_Trunk", $"{prefix}_MiaHouseMap_SeparateSpace", "LowPolyTrunk", 14, 72);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0_A", $"{prefix}_MiaHouseMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_Trunk", $"{prefix}_AriaStreetMap_SeparateSpace", "LowPolyTrunk", 14, 72);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10_A", $"{prefix}_AriaStreetMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_LivingScatter_HouseExterior_GrassTuft0_A", $"{prefix}_KaiaFarmMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Trunk", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyTrunk", 14, 72, false);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Crown", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyCanopy", 18, 96, false);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_NutA", $"{prefix}_KaiaFarmMap_SeparateSpace", "FacetedFruit", 6, 24, false);
+            ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0_A", $"{prefix}_RuinsMap_SeparateSpace", "GrassBlade", 5, 18);
         }
 
         private static void ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix(string prefix, string expectedParentName)
