@@ -77,12 +77,34 @@ cycle 方式（`tools/cycle-runner.ps1`）で進める。authored file は `Asse
    - 平面 void スラブが遠景の手前に残っていない（撤去または背面）。
    失敗時は `throw new InvalidOperationException(...)`（既存 Validate と同形式、例: `:50974`）。
 
-## 4. 二次改善（ビスタ確立後、優先度順）
+## 4. 環境アップリフト全体（フェーズ。これがゴールの本体、遠景はその Phase 1）
 
-監査が挙げた環境のブロックアウト性。ビスタの後に着手:
-1. **植生の実体化**: 緑のキューブ/球プレースホルダ → 低ポリの木・草モデル（Meshy image→3D）。`ValidateImportedAssetsBatch` でポリ数検収。
-2. **地面の質感**: 均一タイル → PolyHaven の CC0 PBR（blender-mcp 経由で取得）で土/石畳/草の塗り分け。**`Assets/Art/.../Anemora_Zone1_Atlas_512.png`（512px）を 2K 化**してテクセル密度を上げる。
-3. **ライティング**: current/past の Volume プリセット化 + APV 再ベイク。renderer feature は触らない（凍結）。
+監査の核心は「環境がブロックアウト水準（植生=プリミティブ、地面=均一タイル、マップ端=void、フラットライト）で、キャラのドット絵の品質に背景が追いついていない」こと。遠景パノラマ（§3）はその**最も目につく穴を塞ぐ Phase 1** にすぎない。本タスクのゴールは環境全体を「authored production 品質」へ引き上げること。各 Phase は前 Phase の見えが立ってから着手し、plateau ガードを効かせる。
+
+### Phase 1 — 遠景パノラマ（§3、最優先・最も可視）
+マップ端の void を遠景3Dリング + fog で開けたパノラマに。受入は §5-4。
+
+### Phase 2 — 植生の実体化
+- 現状: 緑のキューブ/球のプレースホルダ。
+- 手: 低ポリの木・草・茂みモデルを Meshy（`mcp__meshy__meshy_text_to_3d_preview` "low poly stylized tree, flat shaded" → refine、または image→3D）で生成し `Assets/Art/Models/Vegetation/` へ。種別を3〜5種に絞り、配置はインスタンス再利用（決定論配置、Random 不使用）。current/past で密度・枯れ具合を変える。
+- 罠: プレースホルダの GameObject を新モデルに差し替える時、既存の配置ロジック（座標）は流用し、メッシュ/マテリアル参照だけ替える。
+- 受入: 俯瞰キャプチャでキューブ/球が消え、樹形が読める。`ValidateImportedAssetsBatch` 緑（over-tris なし）。
+
+### Phase 3 — 地面・建物サーフェスの情報量
+- 現状: 均一タイル地面、`Anemora_Zone1_Atlas_512.png`（512px）でテクセル密度不足。建物は面ごとの変化・経年なし。
+- 手: (a) **512アトラスを 2K（2048）へ再生成**しテクセル密度を上げる。(b) PolyHaven の CC0 PBR（blender-mcp: `mcp__blender__search_polyhaven_assets` / `download_polyhaven_asset` で土/石畳/草/漆喰）を取り込み、地面・建物面の素材言語を分離（基石と縁石、土と草の境目、壁の経年）。(c) 地面の繰り返し感を法線/ディテールで割る。
+- 罠: マテリアルは 530+ 既存（cycle 命名）あり dead が多い。**新規は `Ch1Ground_*`/`Ch1Surface_*` 等で命名**し既存 cycle マテリアルに混ぜない。アトラス2K化は参照している全マテリアルの再割当てを伴うので1サイクルに収める。
+- 受入: 地面の反復が目立たず、建物面に素材差が出る。近接キャプチャで判定。
+
+### Phase 4 — ライティング（凍結内で可能な範囲）
+- 手: current/past の Volume プロファイルをプリセット化（露出・色温度・bloom/DoF は Volume の Override で。**Volume / APV / RenderSettings は Renderer Feature ではないので凍結に抵触しない**）。APV を環境変更後に再ベイク。時間帯の対比（暖↔冷、明↔翳り）を強める。
+- 罠: **新しい Renderer Feature を足さない**（例: 新規 FullScreenPass）。それは凍結テストが落ちる。ポスト効果は既存 feature の範囲 + Volume Override で出す。
+- 受入: current/past で空気感の差が明確。§5-2 の凍結テストが緑のまま。
+
+### 各 Phase 共通
+- 1マップで見えを確立 → 全マップ（HouseSlice / Mia / Aria / Kaia / Ruins の current+past）展開。
+- アセットは生成のたび `ValidateImportedAssetsBatch`。承認できたアセットは即 commit（紛失防止、AGENTS.md 規律）。
+- 「authored production 品質」が目標。見えが出ないまま定数 polish を重ねない（plateau ガード、§6）。
 
 ## 5. Smoke / Acceptance
 
