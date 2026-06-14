@@ -3,8 +3,8 @@ name: r2-mirror-review
 # Mirrors review/devlog imagery from git to Cloudflare R2 on Linux (no Windows
 # MAX_PATH limit, parallel upload via rclone). Two uses:
 #   - workflow_dispatch: one-time backfill of existing imagery for the active
-#     work/* branches (run this BEFORE the Phase D history purge).
-#   - push to work/**: keep R2 in sync while imagery still lives in git.
+#     work/* and wip/* branches (run this BEFORE the Phase D history purge).
+#   - push to work/** or wip/**: keep R2 in sync while imagery still lives in git.
 # After Phase D removes imagery from git, ongoing NEW cycles are uploaded
 # directly to R2 by tools/r2/r2-upload-review.ps1 (the AI loop), not this action.
 #
@@ -20,11 +20,11 @@ on:
   workflow_dispatch:
     inputs:
       branches:
-        description: "space-separated work/* branches (empty = all active within 30 days)"
+        description: "space-separated work/* or wip/* branches (empty = all active within 30 days)"
         required: false
         default: ""
   push:
-    branches: ['work/**']
+    branches: ['work/**', 'wip/**']
     paths:
       - 'docs/review/**'
       - 'docs/devlog/screenshots/**'
@@ -74,7 +74,7 @@ jobs:
             list="${{ github.event.inputs.branches }}"
           else
             cutoff=$(( $(date +%s) - 30*86400 ))
-            list=$(git for-each-ref --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/work \
+            list=$(git for-each-ref --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/work refs/remotes/origin/wip \
               | awk -v c="$cutoff" '$2>=c{ sub(/^origin\//,"",$1); print $1 }' | tr '\n' ' ')
           fi
           echo "list=$list" >> "$GITHUB_OUTPUT"

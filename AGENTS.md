@@ -22,13 +22,14 @@
 ## レビュー画像ワークフロー (R2 移行済 2026-05-30、Codex 主担当)
 - レビュー画像は従来どおり `docs/review/<YYYY-MM-DDTHH-MM>/` (JST、ISO 8601、`:`→`-`) に **ローカル生成**。1 サイクル = 1 ディレクトリ、`devlog.txt` 必須 (最初の非空・非コメント行 = 対応 devlog .md のリポ相対パス)。
 - ただし **git にはコミットしない**。`bloat-guard` (pre-commit/pre-push + CI) が `docs/review/`・`docs/devlog/screenshots/` を拒否する。代わりに R2 へ:
-  `tools/r2/r2-upload-review.ps1 -CycleDir docs/review/<ts> -Branch work/<branch>` (画像は `git add` しない)。
-- `work/*` を origin へ push すると Action `r2-mirror-review` が R2 を同期。viewer は R2 から取得して Review タブに表示。詳細 `tools/r2/README.md`。
+  `tools/r2/r2-upload-review.ps1 -CycleDir docs/review/<ts> -Branch <actual-branch>` (画像は `git add` しない)。
+- `work/*` / `wip/*` が viewer 対象。R2 upload 後に同じ Anemora branch を push して viewer rebuild を発火 (upload だけで完了扱いにしない)。詳細 `tools/r2/README.md`。
 - 生成シーン `Assets/Scenes/Anemora_FastVS_HouseSlice.unity` と APV ベイク `Assets/Settings/*.Cell*.bytes` は gitignore (再生成/再ベイク)。**Git LFS 禁止** (viewer の git archive を壊す)。
-- 新 clone/worktree は `tools/githooks/install.ps1` (= `git config core.hooksPath tools/githooks`) でガード有効化。詳細 `../anemora-repo-hygiene-cicd-plan.md`。
+- 新 clone/worktree は `tools/githooks/install.ps1` (= `git config core.hooksPath tools/githooks`) でガード有効化。`review-sync-guard` が devlog/INDEX/review cycle 漏れを pre-push + CI で止める。詳細 `../anemora-repo-hygiene-cicd-plan.md`。
 
 ## branch / 公開規律
 - `main` = **public 安定 VS baseline**。コード変更は continuation branch 経由が原則、`main` 直編集はしない。
+- 現在の実装 branch は常に `docs/STATUS.md` が正。2026-06-14 時点の環境/HD2D 回復線は `wip/hd2d-point15-recovery-20260612`、`work/chapter1-continuation-*` は Chapter 1 continuation 履歴/内容線。
 - devlog/doc-only commit は `main` で可 (established practice)。物語 doc commit は user 確認推奨。
 - `work/post-vs-public-20260518` は main と分岐 + DotGothic16 atlas 欠落。branch 整合判断は Codex 領域。
 

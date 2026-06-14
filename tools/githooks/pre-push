@@ -25,6 +25,27 @@ done
 
 [ "$fail" = 0 ] || { echo "pre-push: bloat guard FAILED (override only in emergencies: git push --no-verify)." >&2; exit 1; }
 
+# Devlog/review discipline guard: implementation/workflow commits need a devlog,
+# new devlogs need INDEX, and recent local review cycles need devlog.txt + images.
+# Override for emergencies: ANEMORA_SKIP_REVIEW_SYNC_CHECK=1 git push ...
+if [ "${ANEMORA_SKIP_REVIEW_SYNC_CHECK:-0}" != "1" ]; then
+  ROOT="$(git rev-parse --show-toplevel)"
+  if command -v pwsh >/dev/null 2>&1; then
+    PS_BIN=pwsh
+  elif command -v powershell.exe >/dev/null 2>&1; then
+    PS_BIN=powershell.exe
+  elif command -v powershell >/dev/null 2>&1; then
+    PS_BIN=powershell
+  else
+    echo "pre-push: PowerShell not found; cannot run review sync guard." >&2
+    exit 1
+  fi
+  "$PS_BIN" -NoProfile -ExecutionPolicy Bypass -File "$ROOT/tools/review/validate-devlog-review-sync.ps1" || {
+    echo "pre-push: review/devlog sync guard FAILED (override: ANEMORA_SKIP_REVIEW_SYNC_CHECK=1 git push ...)." >&2
+    exit 1
+  }
+fi
+
 # STATUS freshness guard: pushing work whose docs/STATUS.md is >7 days older than
 # HEAD usually means the frontier doc has drifted (2026-06-13: 3-week drift incident).
 # Override for emergencies: ANEMORA_SKIP_STATUS_CHECK=1 git push ...

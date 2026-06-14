@@ -7,6 +7,7 @@
 #
 # Usage:
 #   tools\r2\r2-upload-review.ps1 -CycleDir docs/review/2026-05-30T10-00 -Branch work/<branch>
+#   tools\r2\r2-upload-review.ps1 -CycleDir docs/review/2026-06-14T11-09 -Branch wip/hd2d-point15-recovery-20260612
 param(
   [Parameter(Mandatory = $true)][string]$CycleDir,
   [Parameter(Mandatory = $true)][string]$Branch,
@@ -94,3 +95,15 @@ wrangler r2 object put "$Bucket/manifests/$Slug.json" --file $mTmp --content-typ
 if ($LASTEXITCODE -ne 0) { Write-Warning "manifest upload FAILED for $Slug (viewer may miss this cycle until re-run)" }
 
 Write-Host "uploaded $($rels.Count) files for $Slug/$Ts (bucket TTL ${TtlDays}d); manifest now lists $($allRels.Count) paths"
+$PublicR2Base = 'https://pub-d14764d639a647339a6b0d81de923abf.r2.dev'
+$ViewerBase = 'https://anemora-viewer.pages.dev'
+$ManifestUrl = "$PublicR2Base/manifests/$Slug.json"
+$ViewerUrl = "$ViewerBase/$Slug/review"
+try {
+  Invoke-WebRequest -Method Head -Uri $ManifestUrl -UseBasicParsing -TimeoutSec 20 | Out-Null
+  Write-Host "manifest HEAD OK: $ManifestUrl"
+} catch {
+  Write-Warning "manifest HEAD check failed; verify before closing the cycle: $ManifestUrl"
+}
+Write-Host "viewer review URL: $ViewerUrl"
+Write-Host "If the Anemora branch was already pushed before this upload, push the same branch again to trigger anemora-viewer rebuild."

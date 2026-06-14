@@ -13,8 +13,9 @@ during its Cloudflare Pages build. After running `tools/r2/r2-upload-review.ps1`
 also push the Anemora branch that owns the review/devlog cycle so the Anemora
 push webhook triggers an `anemora-viewer` rebuild.
 
-The viewer tracks active `work/*` and `wip/*` branches. The R2 slug is the branch
-name with `work/` removed and non-alphanumeric separators converted to `-`, so
+The viewer tracks active `work/*` and `wip/*` branches. Pass the actual branch
+name to the upload script. The R2 slug is the branch name with `work/` removed
+and non-alphanumeric separators converted to `-`, so
 `wip/hd2d-point15-recovery-20260612` maps to:
 
 ```text
@@ -70,8 +71,9 @@ One-time setup (needs Tom): create an **R2 S3 API token** and add it as repo sec
 3. Run the backfill: Actions tab -> **r2-mirror-review** -> Run workflow
    (leave `branches` empty to mirror all work/* active within 30 days, or pass specific ones).
 
-The action also runs automatically on pushes to `work/**` that touch the imagery
-paths, keeping R2 in sync while the images still live in git (i.e. before Phase D).
+The action also runs automatically on pushes to `work/**` and `wip/**` that touch
+the imagery paths, keeping R2 in sync while the images still live in git (i.e.
+before Phase D).
 
 ## Ongoing per-cycle upload (after Phase D, images no longer in git)
 
@@ -80,11 +82,13 @@ The AI review loop uploads each new cycle directly to R2 (small, shallow paths) 
 paths into `manifests/<slug>.json`:
 
 ```powershell
-tools\r2\r2-upload-review.ps1 -CycleDir docs/review/2026-05-30T10-00 -Branch work/<branch>
+tools\r2\r2-upload-review.ps1 -CycleDir docs/review/2026-05-30T10-00 -Branch <actual-branch>
 ```
 
 Do **not** `git add` the images. The pre-commit guard (`tools/githooks`) blocks
-`docs/review/` and `docs/devlog/screenshots/` from ever being committed.
+`docs/review/` and `docs/devlog/screenshots/` from ever being committed. The
+`review-sync-guard` hook/CI check also requires implementation/workflow changes
+to carry a devlog entry and new devlogs to be listed in `docs/devlog/INDEX.md`.
 
 ## Auth / notes
 

@@ -12,6 +12,11 @@ publication cycle is:
    R2 upload. The live viewer imports R2 manifests at Cloudflare Pages build time,
    so R2 upload alone is not enough.
 
+The global guard is `tools/review/validate-devlog-review-sync.ps1`, wired through
+`tools/githooks/pre-push` and `.github/workflows/review-sync-guard.yml`. It blocks
+implementation/workflow changes without a devlog, new devlogs missing from
+`docs/devlog/INDEX.md`, and malformed recent local review cycles.
+
 The live viewer tracks active `work/*` and `wip/*` branches. For `wip/*`, pass the
 real branch name to the R2 script, for example:
 

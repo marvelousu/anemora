@@ -1,0 +1,33 @@
+name: review-sync-guard
+
+# Enforces Anemora project-wide devlog discipline in tracked history.
+# Local git hooks additionally validate recent ignored docs/review/<cycle>/ dirs.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  guard:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+
+      - name: Resolve comparison base
+        shell: pwsh
+        run: |
+          if ('${{ github.event_name }}' -eq 'pull_request') {
+            "ANEMORA_REVIEW_SYNC_BASE=${{ github.event.pull_request.base.sha }}" >> $env:GITHUB_ENV
+          } else {
+            "ANEMORA_REVIEW_SYNC_BASE=${{ github.event.before }}" >> $env:GITHUB_ENV
+          }
+
+      - name: Validate devlog/review sync
+        shell: pwsh
+        run: |
+          ./tools/review/validate-devlog-review-sync.ps1 -Ci -BaseRef $env:ANEMORA_REVIEW_SYNC_BASE
