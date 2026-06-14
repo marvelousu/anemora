@@ -14135,15 +14135,16 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeShadowOnChannel", root, c + new Vector3(0f, 0.122f, -0.04f), new Vector3(4.20f, 0.025f, 0.20f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_shadow_on_channel");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_Chapter1_F1_UpperGorgeNoStepCollider", root, c + new Vector3(0f, 0.72f, 4.58f), new Vector3(5.40f, 1.42f, 5.70f), $"{prefix}.central_plaza.chapter1.f1.upper_gorge_no_step");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_Chapter1_F1_LowerGorgeNoStepCollider", root, c + new Vector3(0f, 0.72f, -5.10f), new Vector3(5.40f, 1.42f, 5.44f), $"{prefix}.central_plaza.chapter1.f1.lower_gorge_no_step");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeDeck", root, c + new Vector3(0f, 0.40f, 0f), new Vector3(12.60f, 0.12f, 1.24f), Quaternion.identity, bridgeMaterial, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_deck");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeDeck", root, c + new Vector3(0f, 0.40f, 0f), new Vector3(12.60f, 0.12f, 1.24f), Quaternion.identity, bridgeMaterial, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_deck");
             for (var i = 0; i < 12; i++)
             {
                 var plankX = -5.78f + i * 1.06f;
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgePlank_{i}", root, c + new Vector3(plankX, 0.49f, 0.01f), new Vector3(0.11f, 0.06f, 1.14f), Quaternion.Euler(0f, 0f, i % 2 == 0 ? 1.5f : -1.5f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_plank.{i}");
             }
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeOpenWalkLine", root, c + new Vector3(0f, 0.535f, -0.02f), new Vector3(10.20f, 0.030f, 0.26f), Quaternion.identity, path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_open_walk_line");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold", root, c + new Vector3(-6.28f, 0.51f, -0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, 2f, 0f), past ? materials.PastStone : materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_left_threshold");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRightThreshold", root, c + new Vector3(6.28f, 0.51f, 0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, -2f, 0f), past ? materials.PastStone : materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_right_threshold");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeOpenWalkLine", root, c + new Vector3(0f, 0.535f, -0.02f), new Vector3(10.20f, 0.030f, 0.26f), Quaternion.identity, path, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_open_walk_line");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold", root, c + new Vector3(-6.28f, 0.51f, -0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, 2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_left_threshold");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeMidPierSurvives", root, c + new Vector3(0f, 0.315f, 0f), new Vector3(1.34f, 0.20f, 1.10f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_mid_pier_survives");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRightThreshold", root, c + new Vector3(6.28f, 0.51f, 0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, -2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_right_threshold");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRopeLeft", root, c + new Vector3(-6.35f, 0.82f, 0.32f), new Vector3(0.10f, 0.56f, 0.08f), Quaternion.Euler(0f, 0f, 4f), materials.Rope, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_rope_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRopeRight", root, c + new Vector3(6.35f, 0.82f, -0.28f), new Vector3(0.10f, 0.56f, 0.08f), Quaternion.Euler(0f, 0f, -4f), materials.Rope, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_rope_right");
             CreateRuinsBridgeElevationCues(root, prefix, past, materials);
@@ -46375,10 +46376,18 @@ namespace Anemora.EditorTools
                 controller,
                 visibility,
                 FastVsHouseArea.Ruins,
-                "F1 arrival to F6",
+                "F1 arrival to bridge midpoint pier",
                 Chapter1F1FromE3Target,
                 CentralPlazaVsCenter + new Vector3(34.70f, 0.02f, 0.18f),
                 CentralPlazaVsCenter + new Vector3(38.60f, 0.02f, 0.16f),
+                Chapter1RuinsMapCenter + new Vector3(0.00f, 0.54f, -0.02f));
+
+            ValidateWalkableRoute(
+                controller,
+                visibility,
+                FastVsHouseArea.Ruins,
+                "bridge midpoint pier to F6",
+                Chapter1RuinsMapCenter + new Vector3(0.00f, 0.54f, -0.02f),
                 CentralPlazaVsCenter + new Vector3(42.20f, 0.02f, 0.14f),
                 CentralPlazaVsCenter + new Vector3(46.20f, 0.02f, 0.18f),
                 CentralPlazaVsCenter + new Vector3(50.30f, 0.02f, 0.20f),
@@ -48044,6 +48053,7 @@ namespace Anemora.EditorTools
             ValidateChapter1ContinuationPair("Current_CentralPlaza_Chapter1_F_BridgeBankFill", "Past_CentralPlaza_Chapter1_F_BridgeBankFill", "current_grass", "past_grass");
             ValidateChapter1ContinuationPair("Current_CentralPlaza_Chapter1_F_LowerRightBankGround", "Past_CentralPlaza_Chapter1_F_LowerRightBankGround", "current_grass", "past_grass");
             ValidateChapter1ContinuationPair("Current_CentralPlaza_Chapter1_F_RightSettlementRoadFill", "Past_CentralPlaza_Chapter1_F_RightSettlementRoadFill", "current_path", "past_path");
+            ValidateChapter1BridgeTraversalScaffold();
             ValidateInvisibleDropGuard("Current_CentralPlaza_Chapter1_F1_UpperGorgeNoStepCollider");
             ValidateInvisibleDropGuard("Past_CentralPlaza_Chapter1_F1_UpperGorgeNoStepCollider");
             ValidateInvisibleDropGuard("Current_CentralPlaza_Chapter1_F1_LowerGorgeNoStepCollider");
@@ -48103,6 +48113,98 @@ namespace Anemora.EditorTools
             ValidateSeparatedOnGroundPlane("chapter 1 E route span", Chapter1E1RouteTriggerCenter, Chapter1E3RouteTriggerCenter, Chapter1ContinuationMinimumESpan);
             ValidateSeparatedOnGroundPlane("chapter 1 F route span", Chapter1F1RouteTriggerCenter, Chapter1F6RouteTriggerCenter, Chapter1ContinuationMinimumFSpan);
             ValidateSeparatedOnGroundPlane("chapter 1 F settlement span", Chapter1F2RouteTriggerCenter, Chapter1F5RouteTriggerCenter, 9.50f);
+        }
+
+        private static void ValidateChapter1BridgeTraversalScaffold()
+        {
+            ValidateChapter1BridgeWalkableSurface(
+                "Current_CentralPlaza_Chapter1_F1_BridgeDeck",
+                "current_furniture",
+                new Vector3(12.00f, 0.10f, 1.10f),
+                new Vector3(13.20f, 0.16f, 1.40f),
+                0.36f,
+                0.46f);
+            ValidateChapter1BridgeWalkableSurface(
+                "Past_CentralPlaza_Chapter1_F1_BridgeDeck",
+                "past_path",
+                new Vector3(12.00f, 0.10f, 1.10f),
+                new Vector3(13.20f, 0.16f, 1.40f),
+                0.36f,
+                0.46f);
+
+            foreach (var prefix in new[] { "Current", "Past" })
+            {
+                var pathToken = prefix == "Current" ? "current_path" : "past_path";
+                var stoneToken = prefix == "Current" ? "current_stone" : "past_stone";
+                ValidateChapter1BridgeWalkableSurface(
+                    $"{prefix}_CentralPlaza_Chapter1_F1_BridgeOpenWalkLine",
+                    pathToken,
+                    new Vector3(9.80f, 0.020f, 0.20f),
+                    new Vector3(10.60f, 0.045f, 0.34f),
+                    0.50f,
+                    0.56f);
+                ValidateChapter1BridgeWalkableSurface(
+                    $"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold",
+                    stoneToken,
+                    new Vector3(0.50f, 0.030f, 0.52f),
+                    new Vector3(0.82f, 0.065f, 0.82f),
+                    0.48f,
+                    0.54f);
+                ValidateChapter1BridgeWalkableSurface(
+                    $"{prefix}_CentralPlaza_Chapter1_F1_BridgeMidPierSurvives",
+                    stoneToken,
+                    new Vector3(1.10f, 0.16f, 0.90f),
+                    new Vector3(1.60f, 0.26f, 1.30f),
+                    0.27f,
+                    0.36f);
+                ValidateChapter1BridgeWalkableSurface(
+                    $"{prefix}_CentralPlaza_Chapter1_F1_BridgeRightThreshold",
+                    stoneToken,
+                    new Vector3(0.50f, 0.030f, 0.52f),
+                    new Vector3(0.82f, 0.065f, 0.82f),
+                    0.48f,
+                    0.54f);
+            }
+        }
+
+        private static void ValidateChapter1BridgeWalkableSurface(string objectName, string materialToken, Vector3 minScale, Vector3 maxScale, float minLocalY, float maxLocalY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing bridge traversal surface {objectName}.");
+            }
+
+            var collider = sceneObject.GetComponent<Collider>();
+            if (collider == null || !collider.enabled)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge traversal surface {objectName} must keep an enabled collider.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null || landmark.Kind != TimeWindowPairedSpaceLandmarkKind.PathOrFloor)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge traversal surface {objectName} must remain a PathOrFloor landmark.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge traversal surface {objectName} must keep a visible material.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(materialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge traversal surface {objectName} must use a material containing {materialToken}.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} bridge traversal scale", sceneObject.transform.localScale, minScale, maxScale);
+            var localY = sceneObject.transform.localPosition.y;
+            if (localY < minLocalY || localY > maxLocalY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge traversal surface {objectName} local Y {localY:0.000} is outside {minLocalY:0.000}-{maxLocalY:0.000}.");
+            }
         }
 
         private static void ValidateChapter1ContinuationTimeWindowRegion()
