@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.87 HD2D distant composition all-map rollout (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.88 HD2D midground edge closure prototype (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 784 files including INDEX.md and README.md.
-- Dated devlog records: 782 files.
+- Root-level Markdown coverage: 785 files including INDEX.md and README.md.
+- Dated devlog records: 783 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-15 | 5 |
+| 2026-06-15 | 6 |
 | 2026-06-14 | 12 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-15_hd2d_midground_edge_closure_prototype.md](2026-06-15_hd2d_midground_edge_closure_prototype.md) | Fast VS / HD2D | HD2D midground edge closure prototype |
 | [2026-06-15_hd2d_distant_composition_all_maps.md](2026-06-15_hd2d_distant_composition_all_maps.md) | Fast VS / HD2D | HD2D distant composition all-map rollout |
 | [2026-06-15_hd2d_distant_composition_prototype.md](2026-06-15_hd2d_distant_composition_prototype.md) | Fast VS / HD2D | HD2D distant composition prototype |
 | [2026-06-15_hd2d_bridge_character_traversal_and_graphics_plan.md](2026-06-15_hd2d_bridge_character_traversal_and_graphics_plan.md) | Fast VS / HD2D | HD2D bridge character traversal and graphics plan |
@@ -754,6 +755,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.88 | 2026-06-15 | Added HD2D midground edge closure prototype with House Exterior edge-skirt geometry, rejected far-water shelf iterations, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
 | v8.87 | 2026-06-15 | Added HD2D distant composition all-map rollout with area-specific horizon prototype meshes across all outdoor maps, radius/shadow validation fixes, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
 | v8.86 | 2026-06-15 | Added HD2D distant composition prototype with Ruins-only authored terrain/treeline/peak/valley silhouette meshes, rejected spike and cold-capture iterations, parallax proof capture, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
 | v8.85 | 2026-06-15 | Added HD2D bridge character traversal and graphics plan with current/past CharacterController bridge crossing validation, bridge collision-layer cleanup, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |

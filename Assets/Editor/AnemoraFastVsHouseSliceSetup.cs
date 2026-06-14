@@ -497,6 +497,8 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaAreaLandmarkCount = 5;
         private const int DistantPanoramaVistaAreaSignatureCount = 4;
         private const int DistantPanoramaVistaCompositionPrototypeCount = 9;
+        private const int MidgroundEdgeClosurePrototypeMeshCount = 12;
+        private const int MidgroundEdgeClosurePrototypeVisibleMinimum = 5;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -933,6 +935,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7SpriteCardCutoutDepth();
             ValidateHd2dStage7RoutePadSilhouette();
             ValidateFastVsHd2dDistantPanoramaVista();
+            ValidateFastVsHd2dMidgroundEdgeClosurePrototype();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10164,6 +10167,11 @@ namespace Anemora.EditorTools
                 ariaStreetRoot,
                 kaiaFarmRoot,
                 ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseCMidgroundEdgeClosurePrototype(
+                exteriorRoot,
                 prefix,
                 past,
                 materials);
@@ -23297,6 +23305,177 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVista(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
             CreateDistantPanoramaVista(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
             CreateDistantPanoramaVista(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1PhaseCMidgroundEdgeClosurePrototype(
+            Transform exteriorRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(FastVsHouseArea.Exterior);
+            var parent = new GameObject($"{prefix}_{areaToken}_MidgroundEdgeClosure").transform;
+            parent.SetParent(exteriorRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var center = HouseExteriorCenter;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.midground_edge_closure";
+            var ground = past ? materials.PastGrass : materials.CurrentGrass;
+            var bank = past ? materials.PastGrass : materials.CurrentGrass;
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_BackShoreShelfA",
+                parent,
+                center + new Vector3(-4.52f, 0.032f, 6.18f),
+                new Vector3(6.30f, 0.035f, 1.04f),
+                Quaternion.Euler(0f, -4f, 0f),
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.back_shore_shelf_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_BackShoreShelfB",
+                parent,
+                center + new Vector3(1.62f, 0.030f, 6.34f),
+                new Vector3(6.85f, 0.035f, 1.00f),
+                Quaternion.Euler(0f, 5f, 0f),
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.back_shore_shelf_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_LeftBankShelfA",
+                parent,
+                center + new Vector3(-7.52f, 0.026f, 0.62f),
+                new Vector3(1.25f, 0.035f, 7.95f),
+                Quaternion.Euler(0f, -2f, 0f),
+                bank,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.left_bank_shelf_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_RightBankShelfA",
+                parent,
+                center + new Vector3(8.28f, 0.026f, -0.92f),
+                new Vector3(3.45f, 0.035f, 6.60f),
+                Quaternion.Euler(0f, -6f, 0f),
+                bank,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.right_bank_shelf_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_FrontShoreShelfA",
+                parent,
+                center + new Vector3(-3.10f, 0.024f, -5.62f),
+                new Vector3(5.35f, 0.035f, 0.72f),
+                Quaternion.Euler(0f, 6f, 0f),
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.front_shore_shelf_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_FrontShoreShelfB",
+                parent,
+                center + new Vector3(3.48f, 0.024f, -5.46f),
+                new Vector3(5.20f, 0.035f, 0.68f),
+                Quaternion.Euler(0f, -7f, 0f),
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.front_shore_shelf_b");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_RoadContinuationA",
+                parent,
+                center + new Vector3(6.38f, 0.060f, 5.58f),
+                new Vector3(4.95f, 0.040f, 0.72f),
+                Quaternion.Euler(0f, -31f, 0f),
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.road_continuation_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_RoadContinuationB",
+                parent,
+                center + new Vector3(8.34f, 0.056f, 6.94f),
+                new Vector3(3.65f, 0.035f, 0.48f),
+                Quaternion.Euler(0f, -36f, 0f),
+                trim,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.road_continuation_b");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_LowCliffFaceA",
+                parent,
+                center + new Vector3(-3.12f, -0.002f, 6.96f),
+                new Vector3(4.80f, 0.055f, 0.16f),
+                Quaternion.Euler(0f, -4f, 0f),
+                stone,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.low_cliff_face_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_LowCliffFaceB",
+                parent,
+                center + new Vector3(3.20f, -0.002f, 7.00f),
+                new Vector3(4.95f, 0.055f, 0.16f),
+                Quaternion.Euler(0f, 5f, 0f),
+                stone,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.low_cliff_face_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_WaterlineStoneA",
+                parent,
+                center + new Vector3(-6.58f, 0.020f, -4.85f),
+                new Vector3(1.18f, 0.080f, 0.26f),
+                Quaternion.Euler(0f, 18f, 4f),
+                stone,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.waterline_stone_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_WaterlineStoneB",
+                parent,
+                center + new Vector3(6.88f, 0.020f, -4.52f),
+                new Vector3(1.12f, 0.075f, 0.26f),
+                Quaternion.Euler(0f, -16f, -3f),
+                stone,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.waterline_stone_b");
+
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_TreelineMassA",
+                parent,
+                center + new Vector3(-6.08f, 0.295f, 5.72f),
+                new Vector3(1.60f, 0.72f, 0.52f),
+                Quaternion.Euler(0f, -12f, 0f),
+                leaf,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.treeline_mass_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{prefix}_{areaToken}_MidgroundEdgeClosure_TreelineMassB",
+                parent,
+                center + new Vector3(4.92f, 0.310f, 5.92f),
+                new Vector3(1.72f, 0.76f, 0.54f),
+                Quaternion.Euler(0f, 15f, 0f),
+                leaf,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.treeline_mass_b");
+
+            ApplyMidgroundEdgeClosureRendererPolicy(parent);
+        }
+
+        private static void ApplyMidgroundEdgeClosureRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
         }
 
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
@@ -49818,6 +49997,145 @@ namespace Anemora.EditorTools
 
                 ValidateDistantPanoramaVistaCameraCoverage(camera, "Current", area);
                 ValidateDistantPanoramaVistaCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateFastVsHd2dMidgroundEdgeClosurePrototype()
+        {
+            ValidateMidgroundEdgeClosurePrototypeRoot("Current");
+            ValidateMidgroundEdgeClosurePrototypeRoot("Past");
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: midground edge closure prototype requires a main camera for visibility validation.");
+            }
+
+            ValidateMidgroundEdgeClosurePrototypeCameraCoverage(camera, "Current");
+            ValidateMidgroundEdgeClosurePrototypeCameraCoverage(camera, "Past");
+        }
+
+        private static void ValidateMidgroundEdgeClosurePrototypeRoot(string prefix)
+        {
+            const FastVsHouseArea area = FastVsHouseArea.Exterior;
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_MidgroundEdgeClosure";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing midground edge closure root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: midground edge closure root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: midground edge closure root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyMidgroundEdgeClosureRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < MidgroundEdgeClosurePrototypeMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {MidgroundEdgeClosurePrototypeMeshCount} authored midground edge closure meshes, found {filters.Length}.");
+            }
+
+            var center = HouseExteriorCenter;
+            var pathOrFloorCount = 0;
+            var propCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 16 || filter.sharedMesh.triangles.Length < 36)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.gameObject.name.Contains("DistantVista", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh must not be folded into distant vista validation: {filter.gameObject.name}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh {filter.gameObject.name} must use a non-shadow renderer with material.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                if (localOffset.z < -6.4f || localOffset.z > 8.2f || Mathf.Abs(localOffset.x) > 10.2f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh {filter.gameObject.name} left the intended House Exterior edge skirt band at offset {localOffset}.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: midground edge closure mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("Shelf", StringComparison.Ordinal) ||
+                    filter.gameObject.name.Contains("RoadContinuation", StringComparison.Ordinal))
+                {
+                    pathOrFloorCount++;
+                }
+                else
+                {
+                    propCount++;
+                }
+            }
+
+            if (pathOrFloorCount < 6 || propCount < 4)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine terrain/path closure and prop silhouette closure, pathOrFloor={pathOrFloorCount}, prop={propCount}.");
+            }
+        }
+
+        private static void ValidateMidgroundEdgeClosurePrototypeCameraCoverage(Camera camera, string prefix)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(FastVsHouseArea.Exterior)}_MidgroundEdgeClosure");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing midground edge closure root for camera coverage: {prefix}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                HouseExteriorCenter + new Vector3(2.95f, 0.02f, 1.10f),
+                GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.Exterior),
+                GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.Exterior));
+
+            var visibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    visibleCount++;
+                }
+            }
+
+            if (visibleCount < MidgroundEdgeClosurePrototypeVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: midground edge closure {prefix} House Exterior must be visible in the wide review camera, visible={visibleCount}.");
             }
         }
 
