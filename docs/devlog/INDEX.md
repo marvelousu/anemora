@@ -1,6 +1,6 @@
 ﻿# Devlog Index
 
-> Status: v8.79 HD2D bridge support viewer propagation (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.80 HD2D bridge support viewer marker propagation (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
@@ -741,6 +741,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.80 | 2026-06-14 | Updated the HD2D bridge support validation record with R2 retry evidence, recovered review-image hydration, anemora-viewer deploy marker commit, and local 6-cycle/84-image viewer proof. |
 | v8.79 | 2026-06-14 | Updated the HD2D bridge support validation record with R2 upload evidence, anemora-viewer refresh commit, local viewer build proof, and public viewer album verification. |
 | v8.78 | 2026-06-14 | Added HD2D bridge support validation for the ruins F1-to-F6 corridor, including colliding PathOrFloor support guards, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
 | v8.77 | 2026-06-14 | Added HD2D distant area landmarks with per-area horizon identity profiles, plateau rejection evidence, all-map review capture, shotdiff, and renderer-freeze validation. |
