@@ -10193,6 +10193,13 @@ namespace Anemora.EditorTools
                 ruinsRoot,
                 prefix,
                 past);
+            ApplyDistantPanoramaVistaRendererPolicyForOutdoorRoots(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot);
 
             return new HouseMapAreas(
                 interiorRoot.gameObject,
@@ -23750,11 +23757,45 @@ namespace Anemora.EditorTools
                     SerializedSet(landmark, "countsForArrival", false);
                 }
             }
+
+            ApplyDistantPanoramaVistaRendererPolicy(parent);
         }
 
         private static float GetDistantPanoramaVistaBandRadius(int band)
         {
             return band == 0 ? DistantPanoramaVistaNearRadius : (band == 1 ? DistantPanoramaVistaMidRadius : DistantPanoramaVistaFarRadius);
+        }
+
+        private static void ApplyDistantPanoramaVistaRendererPolicy(Transform parent)
+        {
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
+        private static void ApplyDistantPanoramaVistaRendererPolicyForOutdoorRoots(params Transform[] roots)
+        {
+            foreach (var root in roots)
+            {
+                if (root == null)
+                {
+                    continue;
+                }
+
+                foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+                {
+                    if (renderer == null ||
+                        !renderer.gameObject.name.Contains("DistantVista", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+                }
+            }
         }
 
         private static void CreateDistantPanoramaVistaFoothillForest(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
@@ -24025,11 +24066,11 @@ namespace Anemora.EditorTools
                 var angle = GetDistantPanoramaVistaCompositionPrototypeAngle(area, index, seed);
                 var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
                 var tangent = new Vector3(radial.z, 0f, -radial.x);
-                var radius = GetDistantPanoramaVistaCompositionPrototypeRadius(profile) + DistantPanoramaVistaSigned(seed + 5, profile == 2 ? 4.8f : 1.8f);
+                var radius = GetDistantPanoramaVistaCompositionPrototypeRadius(area, profile) + DistantPanoramaVistaSigned(seed + 5, profile == 2 ? 4.8f : 1.8f);
                 var localPosition = center +
                     radial * radius +
                     tangent * DistantPanoramaVistaSigned(seed + 13, profile == 2 ? 4.6f : 2.6f) +
-                    new Vector3(0f, GetDistantPanoramaVistaCompositionPrototypeY(profile, past, seed), 0f);
+                    new Vector3(0f, GetDistantPanoramaVistaCompositionPrototypeY(area, profile, past, seed), 0f);
                 var faceDirection = center - localPosition;
                 faceDirection.y = 0f;
                 if (faceDirection.sqrMagnitude < 0.01f)
@@ -24046,14 +24087,14 @@ namespace Anemora.EditorTools
                 prototypeObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
 
                 var filter = prototypeObject.AddComponent<MeshFilter>();
-                var height = GetDistantPanoramaVistaCompositionPrototypeHeight(profile, past, seed);
+                var height = GetDistantPanoramaVistaCompositionPrototypeHeight(area, profile, past, seed);
                 filter.sharedMesh = CreateDistantPanoramaVistaCompositionPrototypeMesh(
                     $"{prototypeObject.name}_Mesh",
                     seed,
                     profile,
-                    GetDistantPanoramaVistaCompositionPrototypeWidth(profile, seed),
+                    GetDistantPanoramaVistaCompositionPrototypeWidth(area, profile, seed),
                     height,
-                    GetDistantPanoramaVistaCompositionPrototypeDepth(profile, seed),
+                    GetDistantPanoramaVistaCompositionPrototypeDepth(area, profile, seed),
                     past);
 
                 var renderer = prototypeObject.AddComponent<MeshRenderer>();
@@ -24070,41 +24111,172 @@ namespace Anemora.EditorTools
 
         private static bool HasDistantPanoramaVistaCompositionPrototype(FastVsHouseArea area)
         {
-            return area == FastVsHouseArea.Ruins;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                case FastVsHouseArea.CentralPlaza:
+                case FastVsHouseArea.MiaHouse:
+                case FastVsHouseArea.AriaStreet:
+                case FastVsHouseArea.KaiaFarm:
+                case FastVsHouseArea.Ruins:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private static float GetDistantPanoramaVistaCompositionPrototypeAngle(FastVsHouseArea area, int index, int seed)
         {
-            var centerDegrees = area == FastVsHouseArea.Ruins ? -3.5f : 0f;
-            var spread = (index - (DistantPanoramaVistaCompositionPrototypeCount - 1) * 0.5f) * 10.4f;
+            var centerDegrees = -3.5f;
+            var spreadDegrees = 10.4f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    centerDegrees = -5.5f;
+                    spreadDegrees = 9.2f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    centerDegrees = 3.0f;
+                    spreadDegrees = 10.8f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                    centerDegrees = -7.5f;
+                    spreadDegrees = 9.8f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    centerDegrees = 7.5f;
+                    spreadDegrees = 10.6f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    centerDegrees = 8.0f;
+                    spreadDegrees = 10.2f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                    centerDegrees = -3.5f;
+                    spreadDegrees = 10.4f;
+                    break;
+            }
+
+            var spread = (index - (DistantPanoramaVistaCompositionPrototypeCount - 1) * 0.5f) * spreadDegrees;
             var jitter = DistantPanoramaVistaSigned(seed + 43, 1.7f);
             return (centerDegrees + spread + jitter) * Mathf.Deg2Rad;
         }
 
         private static int GetDistantPanoramaVistaCompositionPrototypeProfile(FastVsHouseArea area, int index)
         {
-            if (area == FastVsHouseArea.Ruins)
+            switch (area)
             {
-                switch (index)
-                {
-                    case 0:
-                    case 2:
-                    case 6:
-                        return 0;
-                    case 1:
-                    case 5:
-                    case 8:
-                        return 1;
-                    case 3:
-                    case 7:
-                        return 2;
-                    case 4:
-                    default:
-                        return 3;
-                }
+                case FastVsHouseArea.Exterior:
+                    switch (index)
+                    {
+                        case 0:
+                        case 3:
+                        case 6:
+                            return 0;
+                        case 1:
+                        case 2:
+                        case 5:
+                        case 7:
+                            return 1;
+                        case 8:
+                            return 2;
+                        case 4:
+                        default:
+                            return 3;
+                    }
+                case FastVsHouseArea.CentralPlaza:
+                    switch (index)
+                    {
+                        case 0:
+                        case 5:
+                            return 0;
+                        case 2:
+                        case 6:
+                            return 1;
+                        case 1:
+                        case 4:
+                        case 8:
+                            return 2;
+                        case 3:
+                        case 7:
+                        default:
+                            return 3;
+                    }
+                case FastVsHouseArea.MiaHouse:
+                    switch (index)
+                    {
+                        case 1:
+                        case 3:
+                        case 6:
+                            return 0;
+                        case 0:
+                        case 2:
+                        case 5:
+                        case 7:
+                            return 1;
+                        case 8:
+                            return 2;
+                        case 4:
+                        default:
+                            return 3;
+                    }
+                case FastVsHouseArea.AriaStreet:
+                    switch (index)
+                    {
+                        case 1:
+                        case 5:
+                            return 0;
+                        case 2:
+                        case 7:
+                            return 1;
+                        case 4:
+                        case 8:
+                            return 2;
+                        case 0:
+                        case 3:
+                        case 6:
+                        default:
+                            return 3;
+                    }
+                case FastVsHouseArea.KaiaFarm:
+                    switch (index)
+                    {
+                        case 0:
+                        case 2:
+                        case 5:
+                            return 0;
+                        case 1:
+                        case 4:
+                        case 6:
+                            return 1;
+                        case 8:
+                            return 2;
+                        case 3:
+                        case 7:
+                        default:
+                            return 3;
+                    }
+                case FastVsHouseArea.Ruins:
+                    switch (index)
+                    {
+                        case 0:
+                        case 2:
+                        case 6:
+                            return 0;
+                        case 1:
+                        case 5:
+                        case 8:
+                            return 1;
+                        case 3:
+                        case 7:
+                            return 2;
+                        case 4:
+                        default:
+                            return 3;
+                    }
+                default:
+                    return index % 4;
             }
-
-            return index % 4;
         }
 
         private static string GetDistantPanoramaVistaCompositionPrototypeToken(int profile)
@@ -24123,45 +24295,115 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static float GetDistantPanoramaVistaCompositionPrototypeRadius(int profile)
+        private static float GetDistantPanoramaVistaCompositionPrototypeRadius(FastVsHouseArea area, int profile)
         {
+            var areaOffset = 0f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    areaOffset = 0f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    areaOffset = 0f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                    areaOffset = 0f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    areaOffset = 0f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    areaOffset = 0f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                default:
+                    areaOffset = 0f;
+                    break;
+            }
+
             switch (profile)
             {
                 case 0:
-                    return 63.8f;
+                    return 63.8f + areaOffset;
                 case 1:
-                    return 67.2f;
+                    return 67.2f + areaOffset;
                 case 2:
-                    return 91.5f;
+                    return 91.5f + areaOffset * 0.45f;
                 case 3:
                 default:
-                    return 65.4f;
+                    return 65.4f + areaOffset;
             }
         }
 
-        private static float GetDistantPanoramaVistaCompositionPrototypeY(int profile, bool past, int seed)
+        private static float GetDistantPanoramaVistaCompositionPrototypeY(FastVsHouseArea area, int profile, bool past, int seed)
         {
+            var areaOffset = 0f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    areaOffset = -0.12f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                    areaOffset = -0.16f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    areaOffset = -0.08f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    areaOffset = -0.04f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                case FastVsHouseArea.Ruins:
+                default:
+                    areaOffset = 0f;
+                    break;
+            }
+
             var baseY = profile == 2 ? 0.42f : (profile == 1 ? 0.18f : -0.08f);
-            return baseY + (past ? 0.12f : 0f) + DistantPanoramaVistaHash01(seed + 17) * 0.16f;
+            return baseY + areaOffset + (past ? 0.12f : 0f) + DistantPanoramaVistaHash01(seed + 17) * 0.16f;
         }
 
-        private static float GetDistantPanoramaVistaCompositionPrototypeWidth(int profile, int seed)
+        private static float GetDistantPanoramaVistaCompositionPrototypeWidth(FastVsHouseArea area, int profile, int seed)
         {
+            var areaScale = 1f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    areaScale = 0.92f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    areaScale = 1.08f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                    areaScale = 0.90f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    areaScale = 1.03f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    areaScale = 1.12f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                default:
+                    areaScale = 1f;
+                    break;
+            }
+
             switch (profile)
             {
                 case 0:
-                    return Mathf.Lerp(28.0f, 40.0f, DistantPanoramaVistaHash01(seed + 23));
+                    return Mathf.Lerp(28.0f, 40.0f, DistantPanoramaVistaHash01(seed + 23)) * areaScale;
                 case 1:
-                    return Mathf.Lerp(18.0f, 30.0f, DistantPanoramaVistaHash01(seed + 23));
+                    return Mathf.Lerp(18.0f, 30.0f, DistantPanoramaVistaHash01(seed + 23)) * areaScale;
                 case 2:
-                    return Mathf.Lerp(38.0f, 56.0f, DistantPanoramaVistaHash01(seed + 23));
+                    return Mathf.Lerp(38.0f, 56.0f, DistantPanoramaVistaHash01(seed + 23)) * areaScale;
                 case 3:
                 default:
-                    return Mathf.Lerp(24.0f, 36.0f, DistantPanoramaVistaHash01(seed + 23));
+                    return Mathf.Lerp(24.0f, 36.0f, DistantPanoramaVistaHash01(seed + 23)) * areaScale;
             }
         }
 
-        private static float GetDistantPanoramaVistaCompositionPrototypeHeight(int profile, bool past, int seed)
+        private static float GetDistantPanoramaVistaCompositionPrototypeHeight(FastVsHouseArea area, int profile, bool past, int seed)
         {
             var height = profile == 0
                 ? Mathf.Lerp(5.8f, 9.2f, DistantPanoramaVistaHash01(seed + 31))
@@ -24170,22 +24412,47 @@ namespace Anemora.EditorTools
                     : (profile == 2
                         ? Mathf.Lerp(15.0f, 24.0f, DistantPanoramaVistaHash01(seed + 31))
                         : Mathf.Lerp(7.2f, 11.2f, DistantPanoramaVistaHash01(seed + 31))));
-            return height * (past ? 1.10f : 1f);
+            var areaScale = 1f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    areaScale = 0.82f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    areaScale = 1.05f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                    areaScale = 0.78f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    areaScale = 0.98f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    areaScale = 0.86f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                default:
+                    areaScale = 1f;
+                    break;
+            }
+
+            return height * areaScale * (past ? 1.10f : 1f);
         }
 
-        private static float GetDistantPanoramaVistaCompositionPrototypeDepth(int profile, int seed)
+        private static float GetDistantPanoramaVistaCompositionPrototypeDepth(FastVsHouseArea area, int profile, int seed)
         {
+            var areaScale = area == FastVsHouseArea.CentralPlaza || area == FastVsHouseArea.Ruins ? 1f : 0.92f;
             switch (profile)
             {
                 case 0:
-                    return Mathf.Lerp(6.0f, 9.0f, DistantPanoramaVistaHash01(seed + 37));
+                    return Mathf.Lerp(6.0f, 9.0f, DistantPanoramaVistaHash01(seed + 37)) * areaScale;
                 case 1:
-                    return Mathf.Lerp(2.6f, 4.2f, DistantPanoramaVistaHash01(seed + 37));
+                    return Mathf.Lerp(2.6f, 4.2f, DistantPanoramaVistaHash01(seed + 37)) * areaScale;
                 case 2:
-                    return Mathf.Lerp(3.2f, 5.0f, DistantPanoramaVistaHash01(seed + 37));
+                    return Mathf.Lerp(3.2f, 5.0f, DistantPanoramaVistaHash01(seed + 37)) * areaScale;
                 case 3:
                 default:
-                    return Mathf.Lerp(5.4f, 7.8f, DistantPanoramaVistaHash01(seed + 37));
+                    return Mathf.Lerp(5.4f, 7.8f, DistantPanoramaVistaHash01(seed + 37)) * areaScale;
             }
         }
 
@@ -49576,6 +49843,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: distant panorama vista root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
             }
 
+            ApplyDistantPanoramaVistaRendererPolicy(root.transform);
             var filters = root.GetComponentsInChildren<MeshFilter>(true);
             if (DistantPanoramaVistaSegmentCount < 24)
             {
