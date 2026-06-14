@@ -6,6 +6,30 @@ Tom's machine. The repo stays small; the viewer still shows recent imagery.
 See `../../../anemora-repo-hygiene-cicd-plan.md` for the rationale (decision: case
 B; no Git LFS).
 
+## Viewer propagation rule (2026-06-14)
+
+R2 upload alone does not update the live viewer. The viewer imports R2 manifests
+during its Cloudflare Pages build. After running `tools/r2/r2-upload-review.ps1`,
+also push the Anemora branch that owns the review/devlog cycle so the Anemora
+push webhook triggers an `anemora-viewer` rebuild.
+
+The viewer tracks active `work/*` and `wip/*` branches. The R2 slug is the branch
+name with `work/` removed and non-alphanumeric separators converted to `-`, so
+`wip/hd2d-point15-recovery-20260612` maps to:
+
+```text
+wip-hd2d-point15-recovery-20260612
+```
+
+Verify propagation by checking:
+
+```powershell
+Invoke-WebRequest -Method Head `
+  https://pub-d14764d639a647339a6b0d81de923abf.r2.dev/manifests/<slug>.json
+Invoke-WebRequest -Method Head `
+  https://anemora-viewer.pages.dev/<slug>/review
+```
+
 ## Provisioned (2026-05-29)
 
 Account `Maro6052@gmail.com's Account` (ID `fefd0ce0171bfcedbfc4e244876be220`):

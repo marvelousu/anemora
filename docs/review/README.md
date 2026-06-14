@@ -1,5 +1,26 @@
 # Review workflow
 
+## 2026-06-14 R2 / viewer update rule
+
+Review images are local + R2 artifacts, not git artifacts. A correct review
+publication cycle is:
+
+1. Write `docs/review/<YYYY-MM-DDTHH-MM...>/` with `devlog.txt`.
+2. Commit and push the matching `docs/devlog/*.md` entry and any source changes.
+3. Run `tools/r2/r2-upload-review.ps1 -CycleDir docs/review/<ts> -Branch <branch>`.
+4. Push the same Anemora branch if that push has not already happened after the
+   R2 upload. The live viewer imports R2 manifests at Cloudflare Pages build time,
+   so R2 upload alone is not enough.
+
+The live viewer tracks active `work/*` and `wip/*` branches. For `wip/*`, pass the
+real branch name to the R2 script, for example:
+
+```powershell
+tools\r2\r2-upload-review.ps1 `
+  -CycleDir docs\review\2026-06-14T11-09_environment_uplift_phase1_4_apv_rebake `
+  -Branch wip/hd2d-point15-recovery-20260612
+```
+
 `docs/review/` は **viewer (https://anemora-viewer.pages.dev/) のためにキュレーションしたレビュー対象画像**を入れる場所。Codex の作業ログ (`docs/devlog/screenshots/`) とは役割が違う (並存)。
 
 このディレクトリの規律は **全セッション (Codex / Claude 含む)** が守る。違反は PR check (GitHub Actions) で fail する。
