@@ -499,6 +499,8 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaCompositionPrototypeCount = 9;
         private const int MidgroundEdgeClosurePrototypeMeshCount = 12;
         private const int MidgroundEdgeClosurePrototypeVisibleMinimum = 5;
+        private const int MapEdgeTerrainApronPrototypeMeshCount = 12;
+        private const int MapEdgeTerrainApronPrototypeVisibleMinimum = 6;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -936,6 +938,7 @@ namespace Anemora.EditorTools
             ValidateHd2dStage7RoutePadSilhouette();
             ValidateFastVsHd2dDistantPanoramaVista();
             ValidateFastVsHd2dMidgroundEdgeClosurePrototype();
+            ValidateFastVsHd2dMapEdgeTerrainApronPrototype();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10171,6 +10174,11 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseCMidgroundEdgeClosurePrototype(
+                exteriorRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseDMapEdgeTerrainApronPrototype(
                 exteriorRoot,
                 prefix,
                 past,
@@ -23464,6 +23472,357 @@ namespace Anemora.EditorTools
         }
 
         private static void ApplyMidgroundEdgeClosureRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
+        private static void CreateChapter1PhaseDMapEdgeTerrainApronPrototype(
+            Transform exteriorRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(FastVsHouseArea.Exterior);
+            var parent = new GameObject($"{prefix}_{areaToken}_MapEdgeTerrainApron").transform;
+            parent.SetParent(exteriorRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var center = HouseExteriorCenter;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.map_edge_terrain_apron";
+            var ground = past ? materials.PastGrass : materials.CurrentGrass;
+            var bank = past ? materials.PastGrass : materials.CurrentGrass;
+            var path = past ? materials.PastPath : materials.CurrentPath;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_BackShoreA",
+                parent,
+                center + new Vector3(-5.42f, 0.074f, 6.62f),
+                Quaternion.Euler(0f, -5f, 0f),
+                6.80f,
+                1.92f,
+                101,
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.back_shore_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_BackShoreB",
+                parent,
+                center + new Vector3(1.48f, 0.076f, 6.78f),
+                Quaternion.Euler(0f, 5f, 0f),
+                7.60f,
+                2.08f,
+                127,
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.back_shore_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_BackShoreC",
+                parent,
+                center + new Vector3(6.98f, 0.074f, 6.46f),
+                Quaternion.Euler(0f, -14f, 0f),
+                4.65f,
+                1.72f,
+                149,
+                bank,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.back_shore_c");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_LeftPromontoryA",
+                parent,
+                center + new Vector3(-7.72f, 0.072f, 1.92f),
+                Quaternion.Euler(0f, 91f, 0f),
+                7.25f,
+                1.52f,
+                173,
+                bank,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.left_promontory_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_LeftPromontoryB",
+                parent,
+                center + new Vector3(-7.46f, 0.072f, -3.34f),
+                Quaternion.Euler(0f, 95f, 0f),
+                4.85f,
+                1.42f,
+                197,
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.left_promontory_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_RightPromontoryA",
+                parent,
+                center + new Vector3(8.54f, 0.078f, 1.72f),
+                Quaternion.Euler(0f, 87f, 0f),
+                6.30f,
+                1.82f,
+                223,
+                bank,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.right_promontory_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_RightPromontoryB",
+                parent,
+                center + new Vector3(8.82f, 0.076f, -3.36f),
+                Quaternion.Euler(0f, 92f, 0f),
+                5.70f,
+                1.84f,
+                251,
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.right_promontory_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_FrontShoreA",
+                parent,
+                center + new Vector3(-4.88f, 0.070f, -5.72f),
+                Quaternion.Euler(0f, 4f, 0f),
+                5.95f,
+                1.36f,
+                277,
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.front_shore_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_FrontShoreB",
+                parent,
+                center + new Vector3(1.42f, 0.070f, -5.94f),
+                Quaternion.Euler(0f, -3f, 0f),
+                6.45f,
+                1.38f,
+                307,
+                bank,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.front_shore_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_FrontShoreC",
+                parent,
+                center + new Vector3(6.62f, 0.070f, -5.48f),
+                Quaternion.Euler(0f, -12f, 0f),
+                3.55f,
+                1.24f,
+                331,
+                ground,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.front_shore_c");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_RoadFanA",
+                parent,
+                center + new Vector3(7.12f, 0.088f, 5.58f),
+                Quaternion.Euler(0f, -31f, 0f),
+                5.85f,
+                1.18f,
+                359,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.road_fan_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_RoadFanB",
+                parent,
+                center + new Vector3(8.48f, 0.094f, 6.42f),
+                Quaternion.Euler(0f, -36f, 0f),
+                3.85f,
+                0.48f,
+                367,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{scope}.road_fan_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleA",
+                parent,
+                center + new Vector3(6.25f, 0.074f, -5.18f),
+                Quaternion.Euler(0f, 16f, 0f),
+                1.60f,
+                0.42f,
+                383,
+                stone,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleBackA",
+                parent,
+                center + new Vector3(-4.80f, 0.092f, 7.26f),
+                Quaternion.Euler(0f, -5f, 0f),
+                3.35f,
+                0.28f,
+                401,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_back_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleBackB",
+                parent,
+                center + new Vector3(2.42f, 0.092f, 7.36f),
+                Quaternion.Euler(0f, 5f, 0f),
+                3.90f,
+                0.28f,
+                421,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_back_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleRightA",
+                parent,
+                center + new Vector3(9.12f, 0.088f, 2.05f),
+                Quaternion.Euler(0f, 90f, 0f),
+                2.65f,
+                0.28f,
+                443,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_right_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleRightB",
+                parent,
+                center + new Vector3(9.20f, 0.088f, -2.48f),
+                Quaternion.Euler(0f, 92f, 0f),
+                2.45f,
+                0.28f,
+                467,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_right_b");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleFrontA",
+                parent,
+                center + new Vector3(-2.30f, 0.086f, -6.26f),
+                Quaternion.Euler(0f, 3f, 0f),
+                3.30f,
+                0.24f,
+                491,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_front_a");
+            CreateHouseExteriorMapEdgeTerrainApronPiece(
+                $"{prefix}_{areaToken}_MapEdgeTerrainApron_StoneShingleLeftA",
+                parent,
+                center + new Vector3(-8.16f, 0.086f, 2.02f),
+                Quaternion.Euler(0f, 90f, 0f),
+                2.70f,
+                0.24f,
+                503,
+                path,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{scope}.stone_shingle_left_a");
+
+            ApplyMapEdgeTerrainApronRendererPolicy(parent);
+        }
+
+        private static void CreateHouseExteriorMapEdgeTerrainApronPiece(
+            string objectName,
+            Transform parent,
+            Vector3 localPosition,
+            Quaternion localRotation,
+            float length,
+            float depth,
+            int seed,
+            Material material,
+            TimeWindowPairedSpaceLandmarkKind kind,
+            string landmarkId)
+        {
+            var sceneObject = new GameObject(objectName);
+            sceneObject.transform.SetParent(parent, false);
+            sceneObject.transform.localPosition = localPosition;
+            sceneObject.transform.localRotation = localRotation;
+            sceneObject.transform.localScale = Vector3.one;
+            sceneObject.layer = parent.gameObject.layer;
+
+            var filter = sceneObject.AddComponent<MeshFilter>();
+            filter.sharedMesh = CreateHouseExteriorMapEdgeTerrainApronMesh(
+                $"{objectName}_Mesh",
+                seed,
+                length,
+                depth);
+
+            var renderer = sceneObject.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+
+            var landmark = sceneObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", kind);
+            SerializedSet(landmark, "countsForArrival", false);
+        }
+
+        private static Mesh CreateHouseExteriorMapEdgeTerrainApronMesh(string meshName, int seed, float length, float depth)
+        {
+            const int columnCount = 9;
+            const int rowCount = 5;
+            var vertices = new Vector3[columnCount * rowCount];
+            var uvs = new Vector2[vertices.Length];
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                var v = row / (float)(rowCount - 1);
+                var rowLength = length * Mathf.Lerp(0.70f, 1.08f, Mathf.Sin(v * Mathf.PI * 0.82f));
+                var rowDrift = DistantPanoramaVistaSigned(seed + row * 31 + 5, length * 0.045f);
+                var z = Mathf.Lerp(-depth * 0.50f, depth * 0.50f, v) +
+                    DistantPanoramaVistaSigned(seed + row * 37 + 11, depth * 0.055f);
+
+                for (var column = 0; column < columnCount; column++)
+                {
+                    var u = column / (float)(columnCount - 1);
+                    var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                    var endNotch = (column == 0 || column == columnCount - 1)
+                        ? DistantPanoramaVistaSigned(seed + row * 43 + column * 17, length * 0.070f)
+                        : 0f;
+                    var lateralBreak = DistantPanoramaVistaSigned(seed + row * 53 + column * 19, length * 0.035f) * edgeFalloff;
+                    var y = 0.012f +
+                        Mathf.Sin(v * Mathf.PI) * 0.044f +
+                        DistantPanoramaVistaSigned(seed + row * 59 + column * 23, 0.012f) * edgeFalloff;
+                    var index = row * columnCount + column;
+                    vertices[index] = new Vector3(
+                        Mathf.Lerp(-rowLength * 0.5f, rowLength * 0.5f, u) + rowDrift + lateralBreak + endNotch,
+                        y,
+                        z);
+                    uvs[index] = new Vector2(u, v);
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 12);
+            for (var row = 0; row < rowCount - 1; row++)
+            {
+                for (var column = 0; column < columnCount - 1; column++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    triangles.Add(a);
+                    triangles.Add(c);
+                    triangles.Add(b);
+                    triangles.Add(b);
+                    triangles.Add(c);
+                    triangles.Add(d);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static void ApplyMapEdgeTerrainApronRendererPolicy(Transform parent)
         {
             var expectedLayer = parent.gameObject.layer;
             foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
@@ -50136,6 +50495,150 @@ namespace Anemora.EditorTools
             if (visibleCount < MidgroundEdgeClosurePrototypeVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: midground edge closure {prefix} House Exterior must be visible in the wide review camera, visible={visibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dMapEdgeTerrainApronPrototype()
+        {
+            ValidateMapEdgeTerrainApronPrototypeRoot("Current");
+            ValidateMapEdgeTerrainApronPrototypeRoot("Past");
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: map-edge terrain apron prototype requires a main camera for visibility validation.");
+            }
+
+            ValidateMapEdgeTerrainApronPrototypeCameraCoverage(camera, "Current");
+            ValidateMapEdgeTerrainApronPrototypeCameraCoverage(camera, "Past");
+        }
+
+        private static void ValidateMapEdgeTerrainApronPrototypeRoot(string prefix)
+        {
+            const FastVsHouseArea area = FastVsHouseArea.Exterior;
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_MapEdgeTerrainApron";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing map-edge terrain apron root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyMapEdgeTerrainApronRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < MapEdgeTerrainApronPrototypeMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {MapEdgeTerrainApronPrototypeMeshCount} authored terrain apron meshes, found {filters.Length}.");
+            }
+
+            var center = HouseExteriorCenter;
+            var terrainCount = 0;
+            var roadOrStoneCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 40 || filter.sharedMesh.triangles.Length < 180)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter?.gameObject.name ?? "<null>"} must keep authored grid density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.gameObject.name.Contains("DistantVista", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh must stay separate from distant vista validation: {filter.gameObject.name}.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 0.18f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter.gameObject.name} must remain a top-surface terrain mesh, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter.gameObject.name} must use a non-shadow renderer with material.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                if (localOffset.z < -6.7f || localOffset.z > 8.3f || Mathf.Abs(localOffset.x) > 10.2f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter.gameObject.name} left the intended House Exterior terrain apron band at offset {localOffset}.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("RoadFan", StringComparison.Ordinal) ||
+                    filter.gameObject.name.Contains("StoneShingle", StringComparison.Ordinal))
+                {
+                    roadOrStoneCount++;
+                }
+                else
+                {
+                    terrainCount++;
+                }
+            }
+
+            if (terrainCount < 10 || roadOrStoneCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine irregular terrain apron with road/stone breakup, terrain={terrainCount}, roadOrStone={roadOrStoneCount}.");
+            }
+        }
+
+        private static void ValidateMapEdgeTerrainApronPrototypeCameraCoverage(Camera camera, string prefix)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(FastVsHouseArea.Exterior)}_MapEdgeTerrainApron");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing map-edge terrain apron root for camera coverage: {prefix}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                HouseExteriorCenter + new Vector3(2.95f, 0.02f, 1.10f),
+                GetDistantPanoramaVistaReviewPositionOffset(FastVsHouseArea.Exterior),
+                GetDistantPanoramaVistaReviewLookAtOffset(FastVsHouseArea.Exterior));
+
+            var visibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    visibleCount++;
+                }
+            }
+
+            if (visibleCount < MapEdgeTerrainApronPrototypeVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron {prefix} House Exterior must be visible in the wide review camera, visible={visibleCount}.");
             }
         }
 
