@@ -10101,6 +10101,16 @@ namespace Anemora.EditorTools
                 prefix,
                 past,
                 materials);
+            CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
             ApplyChapter1Phase3AllMapProductionSurfaces(
                 plazaRoot,
                 miaHouseRoot,
@@ -23214,6 +23224,388 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVista(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
             CreateDistantPanoramaVista(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
             CreateDistantPanoramaVista(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1Phase2VegetationVolumeMap(
+                exteriorRoot,
+                prefix,
+                past,
+                materials,
+                "HouseExterior",
+                HouseExteriorCenter,
+                new[]
+                {
+                    new Vector3(-5.90f, 0f, 3.62f),
+                    new Vector3(-3.78f, 0f, -4.08f),
+                    new Vector3(1.96f, 0f, -4.58f),
+                    new Vector3(5.74f, 0f, -2.06f),
+                    new Vector3(7.82f, 0f, 2.18f),
+                    new Vector3(-1.18f, 0f, 4.46f)
+                },
+                new[]
+                {
+                    new Vector3(-7.20f, 0f, 2.95f),
+                    new Vector3(6.92f, 0f, 2.72f),
+                    new Vector3(2.80f, 0f, -4.90f)
+                });
+
+            CreateChapter1Phase2VegetationVolumeMap(
+                plazaRoot,
+                prefix,
+                past,
+                materials,
+                "CentralPlaza",
+                CentralPlazaVsCenter,
+                new[]
+                {
+                    new Vector3(-8.04f, 0f, -5.82f),
+                    new Vector3(-7.18f, 0f, 4.54f),
+                    new Vector3(7.34f, 0f, 4.08f),
+                    new Vector3(8.06f, 0f, -4.74f),
+                    new Vector3(0.92f, 0f, -5.72f),
+                    new Vector3(-5.76f, 0f, 2.76f)
+                },
+                new[]
+                {
+                    new Vector3(-8.40f, 0f, 6.20f),
+                    new Vector3(8.55f, 0f, 5.80f),
+                    new Vector3(-5.20f, 0f, -5.55f)
+                });
+
+            CreateChapter1Phase2VegetationVolumeMap(
+                miaHouseRoot,
+                prefix,
+                past,
+                materials,
+                "MiaHouse",
+                Chapter1MiaHouseMapCenter,
+                new[]
+                {
+                    new Vector3(-6.28f, 0f, -5.34f),
+                    new Vector3(-1.02f, 0f, -5.34f),
+                    new Vector3(4.94f, 0f, -5.28f),
+                    new Vector3(-7.18f, 0f, 3.54f),
+                    new Vector3(6.52f, 0f, 2.78f),
+                    new Vector3(1.18f, 0f, 0.92f)
+                },
+                new[]
+                {
+                    new Vector3(-8.20f, 0f, 4.40f),
+                    new Vector3(8.48f, 0f, 3.82f),
+                    new Vector3(-3.84f, 0f, -5.82f)
+                });
+
+            CreateChapter1Phase2VegetationVolumeMap(
+                ariaStreetRoot,
+                prefix,
+                past,
+                materials,
+                "AriaStreet",
+                Chapter1AriaStreetMapCenter,
+                new[]
+                {
+                    new Vector3(-17.62f, 0f, 2.54f),
+                    new Vector3(-12.12f, 0f, -5.46f),
+                    new Vector3(3.34f, 0f, 2.38f),
+                    new Vector3(14.42f, 0f, -4.28f),
+                    new Vector3(18.26f, 0f, 3.10f),
+                    new Vector3(6.10f, 0f, -5.96f)
+                },
+                new[]
+                {
+                    new Vector3(-18.80f, 0f, 3.70f),
+                    new Vector3(16.80f, 0f, 3.22f),
+                    new Vector3(5.80f, 0f, -6.20f)
+                });
+
+            CreateChapter1Phase2VegetationVolumeMap(
+                kaiaFarmRoot,
+                prefix,
+                past,
+                materials,
+                "KaiaFarm",
+                Chapter1KaiaFarmMapCenter,
+                new[]
+                {
+                    new Vector3(-7.22f, 0f, -6.92f),
+                    new Vector3(-1.86f, 0f, -6.68f),
+                    new Vector3(2.06f, 0f, -6.94f),
+                    new Vector3(6.58f, 0f, 5.62f),
+                    new Vector3(12.46f, 0f, 2.72f),
+                    new Vector3(9.26f, 0f, -2.68f)
+                },
+                new[]
+                {
+                    new Vector3(4.90f, 0f, 6.25f),
+                    new Vector3(10.82f, 0f, 3.34f),
+                    new Vector3(7.24f, 0f, -4.20f)
+                });
+
+            CreateChapter1Phase2VegetationVolumeMap(
+                ruinsRoot,
+                prefix,
+                past,
+                materials,
+                "Ruins",
+                Chapter1RuinsMapCenter,
+                new[]
+                {
+                    new Vector3(-4.54f, 0f, 5.26f),
+                    new Vector3(4.52f, 0f, 4.96f),
+                    new Vector3(-4.62f, 0f, -5.92f),
+                    new Vector3(4.60f, 0f, -5.72f),
+                    new Vector3(15.58f, 0f, -5.66f),
+                    new Vector3(18.72f, 0f, -4.86f)
+                },
+                new[]
+                {
+                    new Vector3(-5.80f, 0f, 5.82f),
+                    new Vector3(5.64f, 0f, 5.56f),
+                    new Vector3(17.40f, 0f, -5.28f)
+                });
+        }
+
+        private static void CreateChapter1Phase2VegetationVolumeMap(
+            Transform root,
+            string prefix,
+            bool past,
+            Materials materials,
+            string areaToken,
+            Vector3 mapCenter,
+            Vector3[] offsets,
+            Vector3[] groveOffsets)
+        {
+            var leaf = past ? materials.Leaf : materials.CurrentLeaf;
+            var groveLeaf = materials.Leaf;
+            var grass = past ? materials.PastGrass : materials.CurrentGrass;
+            var trunk = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var dryOrStem = past ? materials.PastFurniture : materials.Dust;
+            var flower = past ? materials.FlowerYellow : materials.CurrentLeaf;
+
+            for (var i = 0; i < offsets.Length; i++)
+            {
+                var objectPrefix = $"{prefix}_{areaToken}_Phase2VegetationVolume_{i + 1:00}";
+                var center = mapCenter + offsets[i] + new Vector3(0f, 0.36f + AuthoredVegetationHash01(objectPrefix, 307) * 0.10f, 0f);
+                var scale = Mathf.Lerp(1.28f, 1.72f, AuthoredVegetationHash01(objectPrefix, 311)) * (past ? 1.12f : 1.02f);
+                CreateChapter1Phase2VegetationVolumeCluster(root, objectPrefix, center, scale, past, leaf, grass, dryOrStem, flower);
+            }
+
+            for (var i = 0; i < groveOffsets.Length; i++)
+            {
+                var objectPrefix = $"{prefix}_{areaToken}_Phase2VegetationGrove_{i + 1:00}";
+                var center = mapCenter + groveOffsets[i] + new Vector3(0f, 0.50f + AuthoredVegetationHash01(objectPrefix, 367) * 0.08f, 0f);
+                var scale = Mathf.Lerp(1.38f, 1.82f, AuthoredVegetationHash01(objectPrefix, 371)) * (past ? 1.12f : 1.0f);
+                if (!past && string.Equals(areaToken, "HouseExterior", StringComparison.Ordinal))
+                {
+                    center += new Vector3(0f, -0.24f, 0f);
+                    scale *= 0.72f;
+                }
+
+                CreateChapter1Phase2VegetationGrove(root, objectPrefix, center, scale, groveLeaf, grass, trunk);
+            }
+        }
+
+        private static void CreateChapter1Phase2VegetationVolumeCluster(
+            Transform root,
+            string objectPrefix,
+            Vector3 center,
+            float scale,
+            bool past,
+            Material leaf,
+            Material grass,
+            Material dryOrStem,
+            Material flower)
+        {
+            var yaw = AuthoredVegetationSigned(objectPrefix, 313, 24f);
+            var coreScale = new Vector3(0.94f * scale, (past ? 0.90f : 0.78f) * scale, 0.84f * scale);
+            var topScale = new Vector3(0.66f * scale, (past ? 0.62f : 0.52f) * scale, 0.62f * scale);
+            var sideScale = new Vector3(0.72f * scale, (past ? 0.68f : 0.58f) * scale, 0.64f * scale);
+            var bladeScale = new Vector3(0.22f * scale, (past ? 0.88f : 0.70f) * scale, 0.22f * scale);
+            var material = past ? leaf : (AuthoredVegetationHash01(objectPrefix, 317) > 0.42f ? leaf : dryOrStem);
+
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_Core",
+                root,
+                center + new Vector3(0f, 0.08f, 0f),
+                coreScale,
+                Quaternion.Euler(0f, yaw, 0f),
+                material,
+                $"{objectPrefix}.core",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_Core_{AuthoredVegetationMeshNamePrefix}_LeafCluster", objectPrefix));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_Top",
+                root,
+                center + new Vector3(AuthoredVegetationSigned(objectPrefix, 319, 0.08f), 0.34f * scale, AuthoredVegetationSigned(objectPrefix, 323, 0.08f)),
+                topScale,
+                Quaternion.Euler(0f, yaw + 18f, 0f),
+                leaf,
+                $"{objectPrefix}.top",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_Top_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.top"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_SideA",
+                root,
+                center + new Vector3(-0.26f * scale, -0.02f, 0.12f * scale),
+                sideScale,
+                Quaternion.Euler(0f, yaw - 33f, 0f),
+                leaf,
+                $"{objectPrefix}.side_a",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_SideA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.side_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_SideB",
+                root,
+                center + new Vector3(0.24f * scale, -0.03f, -0.10f * scale),
+                sideScale * 0.94f,
+                Quaternion.Euler(0f, yaw + 39f, 0f),
+                material,
+                $"{objectPrefix}.side_b",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_SideB_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.side_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_BladeA",
+                root,
+                center + new Vector3(-0.10f * scale, -0.05f, -0.24f * scale),
+                bladeScale,
+                Quaternion.Euler(0f, yaw - 8f, -13f),
+                grass,
+                $"{objectPrefix}.blade_a",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_BladeA_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.blade_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_BladeB",
+                root,
+                center + new Vector3(0.18f * scale, -0.06f, 0.22f * scale),
+                bladeScale * 0.90f,
+                Quaternion.Euler(0f, yaw + 17f, 11f),
+                grass,
+                $"{objectPrefix}.blade_b",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_BladeB_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.blade_b"));
+
+            if (past || AuthoredVegetationHash01(objectPrefix, 331) > 0.55f)
+            {
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_Stem",
+                    root,
+                    center + new Vector3(AuthoredVegetationSigned(objectPrefix, 337, 0.08f), 0.02f, AuthoredVegetationSigned(objectPrefix, 341, 0.08f)),
+                    new Vector3(0.070f * scale, 0.52f * scale, 0.070f * scale),
+                    Quaternion.Euler(0f, yaw + 11f, AuthoredVegetationSigned(objectPrefix, 347, 8f)),
+                    dryOrStem,
+                    $"{objectPrefix}.stem",
+                    CreateAuthoredVegetationTrunkMesh($"{objectPrefix}_Stem_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", $"{objectPrefix}.stem"));
+            }
+
+            if (past)
+            {
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_Bloom",
+                    root,
+                    center + new Vector3(AuthoredVegetationSigned(objectPrefix, 353, 0.16f), 0.20f * scale, AuthoredVegetationSigned(objectPrefix, 359, 0.16f)),
+                    new Vector3(0.11f * scale, 0.11f * scale, 0.11f * scale),
+                    Quaternion.Euler(0f, yaw + 21f, 0f),
+                    flower,
+                    $"{objectPrefix}.bloom",
+                    CreateAuthoredVegetationBlossomMesh($"{objectPrefix}_Bloom_{AuthoredVegetationMeshNamePrefix}_LowPolyBlossom", $"{objectPrefix}.bloom"));
+            }
+        }
+
+        private static void CreateChapter1Phase2VegetationGrove(
+            Transform root,
+            string objectPrefix,
+            Vector3 center,
+            float scale,
+            Material leaf,
+            Material grass,
+            Material trunk)
+        {
+            var yaw = AuthoredVegetationSigned(objectPrefix, 373, 28f);
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_Trunk",
+                root,
+                center,
+                new Vector3(0.30f * scale, 1.64f * scale, 0.30f * scale),
+                Quaternion.Euler(0f, yaw, AuthoredVegetationSigned(objectPrefix, 379, 3.5f)),
+                trunk,
+                $"{objectPrefix}.trunk",
+                CreateAuthoredVegetationTrunkMesh($"{objectPrefix}_Trunk_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", $"{objectPrefix}.trunk"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_CrownA",
+                root,
+                center + new Vector3(AuthoredVegetationSigned(objectPrefix, 383, 0.08f), 1.18f * scale, AuthoredVegetationSigned(objectPrefix, 389, 0.08f)),
+                new Vector3(1.34f * scale, 0.98f * scale, 1.22f * scale),
+                Quaternion.Euler(0f, yaw - 12f, 0f),
+                leaf,
+                $"{objectPrefix}.crown_a",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_CrownA_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectPrefix}.crown_a", 0.56f, 0.44f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_CrownB",
+                root,
+                center + new Vector3(-0.34f * scale, 0.96f * scale, 0.18f * scale),
+                new Vector3(1.04f * scale, 0.78f * scale, 0.94f * scale),
+                Quaternion.Euler(0f, yaw + 21f, 0f),
+                leaf,
+                $"{objectPrefix}.crown_b",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_CrownB_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectPrefix}.crown_b", 0.52f, 0.40f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_LowerCanopy",
+                root,
+                center + new Vector3(0.30f * scale, 0.72f * scale, -0.20f * scale),
+                new Vector3(0.92f * scale, 0.58f * scale, 0.86f * scale),
+                Quaternion.Euler(0f, yaw - 38f, 0f),
+                leaf,
+                $"{objectPrefix}.lower_canopy",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_LowerCanopy_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectPrefix}.lower_canopy", 0.48f, 0.36f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_CanopyBase",
+                root,
+                center + new Vector3(0.06f * scale, 0.36f * scale, 0.08f * scale),
+                new Vector3(1.08f * scale, 0.46f * scale, 1.00f * scale),
+                Quaternion.Euler(0f, yaw + 8f, 0f),
+                leaf,
+                $"{objectPrefix}.canopy_base",
+                CreateAuthoredVegetationCanopyMesh($"{objectPrefix}_CanopyBase_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectPrefix}.canopy_base", 0.50f, 0.38f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_UnderstoryA",
+                root,
+                center + new Vector3(-0.52f * scale, -0.10f, -0.18f * scale),
+                new Vector3(0.70f * scale, 0.52f * scale, 0.66f * scale),
+                Quaternion.Euler(0f, yaw + 49f, 0f),
+                leaf,
+                $"{objectPrefix}.understory_a",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_UnderstoryA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.understory_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_UnderstoryB",
+                root,
+                center + new Vector3(0.46f * scale, -0.16f, 0.30f * scale),
+                new Vector3(0.28f * scale, 0.92f * scale, 0.26f * scale),
+                Quaternion.Euler(0f, yaw - 18f, 10f),
+                grass,
+                $"{objectPrefix}.understory_b",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_UnderstoryB_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.understory_b"));
+        }
+
+        private static GameObject CreateAuthoredVegetationFeatureMesh(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId, Mesh mesh)
+        {
+            var sceneObject = CreateAuthoredVegetationMesh(
+                objectName,
+                root,
+                localPosition,
+                localScale,
+                localRotation,
+                material,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                landmarkId,
+                mesh);
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "countsForArrival", false);
+            return sceneObject;
         }
 
         private static void CreateDistantPanoramaVista(Transform root, string prefix, bool past, FastVsHouseArea area, Materials materials)
@@ -48381,6 +48773,8 @@ namespace Anemora.EditorTools
             ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Past", "Past_HouseExteriorMap_SeparateSpace");
             ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix("Current");
             ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix("Past");
+            ValidateChapter1Phase2VegetationVolumeForPrefix("Current");
+            ValidateChapter1Phase2VegetationVolumeForPrefix("Past");
         }
 
         private static void ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix(string prefix)
@@ -48396,6 +48790,48 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Crown", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyCanopy", 18, 96, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_NutA", $"{prefix}_KaiaFarmMap_SeparateSpace", "FacetedFruit", 6, 24, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0_A", $"{prefix}_RuinsMap_SeparateSpace", "GrassBlade", 5, 18);
+        }
+
+        private static void ValidateChapter1Phase2VegetationVolumeForPrefix(string prefix)
+        {
+            ValidateChapter1Phase2VegetationVolumeMap(prefix, "HouseExterior", $"{prefix}_HouseExteriorMap_SeparateSpace");
+            ValidateChapter1Phase2VegetationVolumeMap(prefix, "CentralPlaza", $"{prefix}_CentralPlazaMap_SeparateSpace");
+            ValidateChapter1Phase2VegetationVolumeMap(prefix, "MiaHouse", $"{prefix}_MiaHouseMap_SeparateSpace");
+            ValidateChapter1Phase2VegetationVolumeMap(prefix, "AriaStreet", $"{prefix}_AriaStreetMap_SeparateSpace");
+            ValidateChapter1Phase2VegetationVolumeMap(prefix, "KaiaFarm", $"{prefix}_KaiaFarmMap_SeparateSpace");
+            ValidateChapter1Phase2VegetationVolumeMap(prefix, "Ruins", $"{prefix}_RuinsMap_SeparateSpace");
+        }
+
+        private static void ValidateChapter1Phase2VegetationVolumeMap(string prefix, string areaToken, string expectedParentName)
+        {
+            for (var i = 1; i <= 6; i++)
+            {
+                var objectPrefix = $"{prefix}_{areaToken}_Phase2VegetationVolume_{i:00}";
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_Core", expectedParentName, "LeafCluster", 7, 24);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_Top", expectedParentName, "LeafCluster", 7, 24);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_SideA", expectedParentName, "LeafCluster", 7, 24);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_SideB", expectedParentName, "LeafCluster", 7, 24);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BladeA", expectedParentName, "GrassBlade", 5, 18);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BladeB", expectedParentName, "GrassBlade", 5, 18);
+
+                if (string.Equals(prefix, "Past", StringComparison.Ordinal))
+                {
+                    ValidateAuthoredVegetationMeshObject($"{objectPrefix}_Stem", expectedParentName, "LowPolyTrunk", 14, 72);
+                    ValidateAuthoredVegetationMeshObject($"{objectPrefix}_Bloom", expectedParentName, "LowPolyBlossom", 8, 36);
+                }
+            }
+
+            for (var i = 1; i <= 3; i++)
+            {
+                var objectPrefix = $"{prefix}_{areaToken}_Phase2VegetationGrove_{i:00}";
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_Trunk", expectedParentName, "LowPolyTrunk", 14, 72);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_CrownA", expectedParentName, "LowPolyCanopy", 18, 96);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_CrownB", expectedParentName, "LowPolyCanopy", 18, 96);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_LowerCanopy", expectedParentName, "LowPolyCanopy", 18, 96);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_CanopyBase", expectedParentName, "LowPolyCanopy", 18, 96);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryA", expectedParentName, "LeafCluster", 7, 24);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryB", expectedParentName, "GrassBlade", 5, 18);
+            }
         }
 
         private static void ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix(string prefix, string expectedParentName)

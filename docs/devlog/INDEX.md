@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.83 HD2D distant area signatures (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.84 HD2D Phase2 vegetation volume (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 778 files including INDEX.md and README.md.
-- Dated devlog records: 776 files.
+- Root-level Markdown coverage: 779 files including INDEX.md and README.md.
+- Dated devlog records: 777 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-15 | 1 |
+| 2026-06-15 | 2 |
 | 2026-06-14 | 12 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-15_hd2d_phase2_vegetation_volume.md](2026-06-15_hd2d_phase2_vegetation_volume.md) | Fast VS / HD2D | HD2D Phase2 vegetation volume |
 | [2026-06-15_hd2d_distant_area_signatures.md](2026-06-15_hd2d_distant_area_signatures.md) | Fast VS / HD2D | HD2D distant area signatures |
 
 ### 2026-06-14
