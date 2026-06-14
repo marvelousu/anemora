@@ -14152,16 +14152,16 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeShadowOnChannel", root, c + new Vector3(0f, 0.122f, -0.04f), new Vector3(4.20f, 0.025f, 0.20f), Quaternion.identity, materials.Shadow, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_shadow_on_channel");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_Chapter1_F1_UpperGorgeNoStepCollider", root, c + new Vector3(0f, 0.72f, 4.58f), new Vector3(5.40f, 1.42f, 5.70f), $"{prefix}.central_plaza.chapter1.f1.upper_gorge_no_step");
             CreateInvisibleColliderBox($"{prefix}_CentralPlaza_Chapter1_F1_LowerGorgeNoStepCollider", root, c + new Vector3(0f, 0.72f, -5.10f), new Vector3(5.40f, 1.42f, 5.44f), $"{prefix}.central_plaza.chapter1.f1.lower_gorge_no_step");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeDeck", root, c + new Vector3(0f, 0.40f, 0f), new Vector3(12.60f, 0.12f, 1.24f), Quaternion.identity, bridgeMaterial, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_deck");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeDeck", root, c + new Vector3(0f, 0.40f, 0f), new Vector3(12.60f, 0.12f, 1.24f), Quaternion.identity, bridgeMaterial, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_deck");
             for (var i = 0; i < 12; i++)
             {
                 var plankX = -5.78f + i * 1.06f;
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgePlank_{i}", root, c + new Vector3(plankX, 0.49f, 0.01f), new Vector3(0.11f, 0.06f, 1.14f), Quaternion.Euler(0f, 0f, i % 2 == 0 ? 1.5f : -1.5f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_plank.{i}");
             }
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeOpenWalkLine", root, c + new Vector3(0f, 0.535f, -0.02f), new Vector3(10.20f, 0.030f, 0.26f), Quaternion.identity, path, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_open_walk_line");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold", root, c + new Vector3(-6.28f, 0.51f, -0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, 2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_left_threshold");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeMidPierSurvives", root, c + new Vector3(0f, 0.315f, 0f), new Vector3(1.34f, 0.20f, 1.10f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_mid_pier_survives");
-            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRightThreshold", root, c + new Vector3(6.28f, 0.51f, 0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, -2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_right_threshold");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeOpenWalkLine", root, c + new Vector3(0f, 0.105f, -0.02f), new Vector3(10.20f, 0.030f, 0.26f), Quaternion.identity, path, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_open_walk_line");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold", root, c + new Vector3(-6.28f, 0.112f, -0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, 2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_left_threshold");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeMidPierSurvives", root, c + new Vector3(0f, 0.102f, 0f), new Vector3(1.34f, 0.080f, 1.10f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_mid_pier_survives");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRightThreshold", root, c + new Vector3(6.28f, 0.112f, 0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, -2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_right_threshold");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRopeLeft", root, c + new Vector3(-6.35f, 0.82f, 0.32f), new Vector3(0.10f, 0.56f, 0.08f), Quaternion.Euler(0f, 0f, 4f), materials.Rope, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_rope_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeRopeRight", root, c + new Vector3(6.35f, 0.82f, -0.28f), new Vector3(0.10f, 0.56f, 0.08f), Quaternion.Euler(0f, 0f, -4f), materials.Rope, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_rope_right");
             CreateRuinsBridgeElevationCues(root, prefix, past, materials);
@@ -47659,6 +47659,9 @@ namespace Anemora.EditorTools
                 CentralPlazaVsCenter + new Vector3(50.30f, 0.02f, 0.20f),
                 Chapter1F6RouteTriggerCenter);
 
+            ValidateChapter1BridgeCharacterControllerTraversal(controller, visibility, false);
+            ValidateChapter1BridgeCharacterControllerTraversal(controller, visibility, true);
+
             ValidateBlockedContinuationPoint(
                 controller,
                 visibility,
@@ -47741,6 +47744,149 @@ namespace Anemora.EditorTools
             }
 
             throw new InvalidOperationException($"House slice validation failed: {label} must be blocked so the bridge remains the intended crossing.");
+        }
+
+        private static void ValidateChapter1BridgeCharacterControllerTraversal(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            bool otherTime)
+        {
+            var player = UnityEngine.Object.FindFirstObjectByType<CharacterController>();
+            if (player == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: player controller missing for bridge traversal validation.");
+            }
+
+            var route = new[]
+            {
+                BridgeTraversalProbePoint(Chapter1F1FromE3Target),
+                Chapter1RuinsMapCenter + new Vector3(-10.80f, 0.18f, 0.02f),
+                Chapter1RuinsMapCenter + new Vector3(-6.72f, 0.18f, 0.04f),
+                Chapter1RuinsMapCenter + new Vector3(-2.20f, 0.18f, -0.01f),
+                Chapter1RuinsMapCenter + new Vector3(0.00f, 0.18f, -0.02f),
+                Chapter1RuinsMapCenter + new Vector3(2.20f, 0.18f, 0.01f),
+                Chapter1RuinsMapCenter + new Vector3(6.72f, 0.18f, 0.04f),
+                Chapter1RuinsMapCenter + new Vector3(10.80f, 0.18f, 0.02f),
+                BridgeTraversalProbePoint(Chapter1F6RouteTriggerCenter)
+            };
+
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Ruins);
+            if (otherTime)
+            {
+                controller.ForcePlayerOtherTimeLocalForReview(route[0]);
+            }
+            else
+            {
+                controller.ForcePlayerCurrentLocalForReview(route[0]);
+            }
+
+            UnityEngine.Object.FindFirstObjectByType<FastVsVisualDirectionGuide>(FindObjectsInactive.Include)?.ApplyActiveTimeIsolationForReview();
+            Physics.SyncTransforms();
+
+            var sideLabel = otherTime ? "past" : "current";
+            for (var i = 0; i < route.Length; i++)
+            {
+                ValidateBridgeTraversalSupportPoint(controller, route[i], $"{sideLabel} bridge route support {i + 1}");
+            }
+
+            for (var i = 1; i < route.Length; i++)
+            {
+                MoveCharacterControllerAlongBridgeSegment(controller, player, route[i], otherTime, $"{sideLabel} bridge traversal segment {i}");
+            }
+
+            var finalLocal = controller.GetPlayerLocalCoordinateForReview();
+            var finalDelta = new Vector2(finalLocal.x - route[route.Length - 1].x, finalLocal.z - route[route.Length - 1].z).magnitude;
+            if (finalDelta > 0.38f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {sideLabel} bridge traversal did not reach F6. final={finalLocal}, target={route[route.Length - 1]}, delta={finalDelta:0.000}.");
+            }
+        }
+
+        private static Vector3 BridgeTraversalProbePoint(Vector3 localPoint)
+        {
+            return new Vector3(localPoint.x, 0.18f, localPoint.z);
+        }
+
+        private static void ValidateBridgeTraversalSupportPoint(TimeWindowPairedSpacePortalController controller, Vector3 localPoint, string label)
+        {
+            var root = controller.PlayerInOtherTime ? controller.OtherTimeSpaceRootForReview : controller.CurrentSpaceRootForReview;
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing active root for {label}.");
+            }
+
+            var origin = root.TransformPoint(localPoint + Vector3.up * 1.25f);
+            var hits = Physics.RaycastAll(origin, Vector3.down, 1.70f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            foreach (var hit in hits)
+            {
+                if (hit.collider == null ||
+                    hit.collider.GetComponentInParent<CharacterController>() != null)
+                {
+                    continue;
+                }
+
+                if (IsBlockingContinuationRouteCollider(hit.collider))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} is covered by blocking collider {hit.collider.name}.");
+                }
+
+                var landmark = hit.collider.GetComponentInParent<TimeWindowPairedSpaceLandmark>();
+                if (landmark != null && landmark.Kind == TimeWindowPairedSpaceLandmarkKind.PathOrFloor)
+                {
+                    return;
+                }
+            }
+
+            throw new InvalidOperationException($"House slice validation failed: {label} has no PathOrFloor support below the player capsule.");
+        }
+
+        private static void MoveCharacterControllerAlongBridgeSegment(
+            TimeWindowPairedSpacePortalController controller,
+            CharacterController player,
+            Vector3 targetLocal,
+            bool otherTime,
+            string label)
+        {
+            const float StepDistance = 0.18f;
+            const float GroundingDrop = 0.035f;
+            const int MaxSteps = 180;
+
+            for (var stepIndex = 0; stepIndex < MaxSteps; stepIndex++)
+            {
+                if (controller.PlayerInOtherTime != otherTime)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} changed the active time side during movement.");
+                }
+
+                var beforeLocal = controller.GetPlayerLocalCoordinateForReview();
+                var horizontal = new Vector2(targetLocal.x - beforeLocal.x, targetLocal.z - beforeLocal.z);
+                if (horizontal.magnitude <= 0.22f)
+                {
+                    return;
+                }
+
+                var beforeXZ = new Vector2(beforeLocal.x, beforeLocal.z);
+                var step = new Vector3(horizontal.x, 0f, horizontal.y).normalized * Mathf.Min(StepDistance, horizontal.magnitude);
+                step.y = -GroundingDrop;
+                controller.MovePlayerLocalForReview(step, true);
+                Physics.SyncTransforms();
+
+                var afterLocal = controller.GetPlayerLocalCoordinateForReview();
+                var afterXZ = new Vector2(afterLocal.x, afterLocal.z);
+                var moved = Vector2.Distance(beforeXZ, afterXZ);
+                if (moved < 0.035f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} was blocked before reaching the next bridge waypoint. before={beforeLocal}, after={afterLocal}, target={targetLocal}, player={player.name}.");
+                }
+
+                if (afterLocal.y < -0.12f || afterLocal.y > 0.82f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {label} left the playable bridge height band. local={afterLocal}, target={targetLocal}.");
+                }
+            }
+
+            throw new InvalidOperationException($"House slice validation failed: {label} exceeded the step budget before reaching {targetLocal}.");
         }
 
         private static void ValidateWalkableRoute(
@@ -49497,14 +49643,14 @@ namespace Anemora.EditorTools
 
         private static void ValidateChapter1BridgeTraversalScaffold()
         {
-            ValidateChapter1BridgeWalkableSurface(
+            ValidateChapter1BridgePresentationSurface(
                 "Current_CentralPlaza_Chapter1_F1_BridgeDeck",
                 "current_furniture",
                 new Vector3(12.00f, 0.10f, 1.10f),
                 new Vector3(13.20f, 0.16f, 1.40f),
                 0.36f,
                 0.46f);
-            ValidateChapter1BridgeWalkableSurface(
+            ValidateChapter1BridgePresentationSurface(
                 "Past_CentralPlaza_Chapter1_F1_BridgeDeck",
                 "past_path",
                 new Vector3(12.00f, 0.10f, 1.10f),
@@ -49521,31 +49667,64 @@ namespace Anemora.EditorTools
                     pathToken,
                     new Vector3(9.80f, 0.020f, 0.20f),
                     new Vector3(10.60f, 0.045f, 0.34f),
-                    0.50f,
-                    0.56f);
+                    0.080f,
+                    0.130f);
                 ValidateChapter1BridgeWalkableSurface(
                     $"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold",
                     stoneToken,
                     new Vector3(0.50f, 0.030f, 0.52f),
                     new Vector3(0.82f, 0.065f, 0.82f),
-                    0.48f,
-                    0.54f);
+                    0.085f,
+                    0.135f);
                 ValidateChapter1BridgeWalkableSurface(
                     $"{prefix}_CentralPlaza_Chapter1_F1_BridgeMidPierSurvives",
                     stoneToken,
-                    new Vector3(1.10f, 0.16f, 0.90f),
-                    new Vector3(1.60f, 0.26f, 1.30f),
-                    0.27f,
-                    0.36f);
+                    new Vector3(1.10f, 0.060f, 0.90f),
+                    new Vector3(1.60f, 0.110f, 1.30f),
+                    0.080f,
+                    0.130f);
                 ValidateChapter1BridgeWalkableSurface(
                     $"{prefix}_CentralPlaza_Chapter1_F1_BridgeRightThreshold",
                     stoneToken,
                     new Vector3(0.50f, 0.030f, 0.52f),
                     new Vector3(0.82f, 0.065f, 0.82f),
-                    0.48f,
-                    0.54f);
+                    0.085f,
+                    0.135f);
 
                 ValidateChapter1BridgeContinuousSupport(prefix);
+            }
+        }
+
+        private static void ValidateChapter1BridgePresentationSurface(string objectName, string materialToken, Vector3 minScale, Vector3 maxScale, float minLocalY, float maxLocalY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing bridge presentation surface {objectName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge presentation surface {objectName} must stay non-blocking so the player can cross the bridge lane.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge presentation surface {objectName} must keep a visible material.");
+            }
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(materialToken, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge presentation surface {objectName} must use a material containing {materialToken}.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} bridge presentation scale", sceneObject.transform.localScale, minScale, maxScale);
+            var localY = sceneObject.transform.localPosition.y;
+            if (localY < minLocalY || localY > maxLocalY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: bridge presentation surface {objectName} local Y {localY:0.000} is outside {minLocalY:0.000}-{maxLocalY:0.000}.");
             }
         }
 
