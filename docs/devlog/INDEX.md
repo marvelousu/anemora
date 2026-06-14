@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.80 HD2D bridge support viewer marker propagation (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.81 HD2D distant valley threads (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 775 files including INDEX.md and README.md.
-- Dated devlog records: 773 files.
+- Root-level Markdown coverage: 776 files including INDEX.md and README.md.
+- Dated devlog records: 774 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-14 | 10 |
+| 2026-06-14 | 11 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
 | 2026-05-06 | 12 |
@@ -48,6 +48,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-14_hd2d_distant_valley_threads.md](2026-06-14_hd2d_distant_valley_threads.md) | Fast VS / HD2D | HD2D distant valley threads |
 | [2026-06-14_hd2d_bridge_support_validation.md](2026-06-14_hd2d_bridge_support_validation.md) | Fast VS / HD2D | HD2D bridge support validation |
 | [2026-06-14_hd2d_distant_area_landmarks.md](2026-06-14_hd2d_distant_area_landmarks.md) | Fast VS / HD2D | HD2D distant area landmarks |
 | [2026-06-14_hd2d_distant_midground_valley_breaks.md](2026-06-14_hd2d_distant_midground_valley_breaks.md) | Fast VS / HD2D | HD2D distant midground valley breaks |
@@ -741,6 +742,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.81 | 2026-06-14 | Added HD2D distant valley threads with rejected plateau evidence, visible vertical valley-wall cuts, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
 | v8.80 | 2026-06-14 | Updated the HD2D bridge support validation record with R2 retry evidence, recovered review-image hydration, anemora-viewer deploy marker commit, and local 6-cycle/84-image viewer proof. |
 | v8.79 | 2026-06-14 | Updated the HD2D bridge support validation record with R2 upload evidence, anemora-viewer refresh commit, local viewer build proof, and public viewer album verification. |
 | v8.78 | 2026-06-14 | Added HD2D bridge support validation for the ruins F1-to-F6 corridor, including colliding PathOrFloor support guards, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
