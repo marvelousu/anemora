@@ -495,11 +495,13 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaSegmentCount = 28;
         private const int DistantPanoramaVistaBandCount = 3;
         private const int DistantPanoramaVistaAreaLandmarkCount = 5;
+        private const int DistantPanoramaVistaAreaSignatureCount = 4;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
         private const float DistantPanoramaVistaForegroundCoppiceRadius = 62.8f;
         private const float DistantPanoramaVistaAreaLandmarkRadius = 78f;
+        private const float DistantPanoramaVistaAreaSignatureRadius = 70.5f;
         private const float DistantPanoramaVistaNearRadius = 72f;
         private const float DistantPanoramaVistaMidRadius = 94f;
         private const float DistantPanoramaVistaFarRadius = 118f;
@@ -23233,6 +23235,7 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaForegroundCoppices(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaFoothillForest(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaAreaLandmarks(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaAreaSignatures(parent, prefix, past, area, areaToken, center);
 
             for (var band = 0; band < DistantPanoramaVistaBandCount; band++)
             {
@@ -23496,6 +23499,59 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateDistantPanoramaVistaAreaSignatures(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            var material = EnsureDistantPanoramaVistaAreaSignatureMaterial(past);
+
+            for (var index = 0; index < DistantPanoramaVistaAreaSignatureCount; index++)
+            {
+                var seed = 4019 + (int)area * 229 + (past ? 1031 : 0) + index * 47;
+                var angle = GetDistantPanoramaVistaAreaSignatureAngle(area, index, seed);
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = DistantPanoramaVistaAreaSignatureRadius + DistantPanoramaVistaSigned(seed + 5, 4.8f);
+                var localY = (past ? 0.46f : 0.36f) + DistantPanoramaVistaHash01(seed + 17) * (past ? 0.34f : 0.28f);
+                var localPosition = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, 3.4f) +
+                    new Vector3(0f, localY, 0f);
+                var faceDirection = center - localPosition;
+                faceDirection.y = 0f;
+                if (faceDirection.sqrMagnitude < 0.01f)
+                {
+                    faceDirection = -radial;
+                }
+
+                var profile = GetDistantPanoramaVistaAreaSignatureProfile(area, index);
+                var signatureObject = new GameObject($"{prefix}_{areaToken}_DistantVista_AreaSignature_S{index + 1:00}");
+                signatureObject.transform.SetParent(parent, false);
+                signatureObject.transform.localPosition = localPosition;
+                signatureObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                signatureObject.transform.localScale = Vector3.one;
+                signatureObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                var filter = signatureObject.AddComponent<MeshFilter>();
+                var signatureHeight = Mathf.Lerp(8.8f, 19.0f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.22f : 1f);
+                filter.sharedMesh = CreateDistantPanoramaVistaAreaSignatureMesh(
+                    $"{signatureObject.name}_Mesh",
+                    seed,
+                    profile,
+                    Mathf.Lerp(26.0f, 44.0f, DistantPanoramaVistaHash01(seed + 23)),
+                    signatureHeight,
+                    Mathf.Lerp(2.10f, 3.80f, DistantPanoramaVistaHash01(seed + 37)));
+
+                var renderer = signatureObject.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+
+                var landmark = signatureObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.area_signature.s{index + 1:00}");
+                SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                SerializedSet(landmark, "countsForArrival", false);
+            }
+        }
+
         private static float GetDistantPanoramaVistaAreaLandmarkAngle(FastVsHouseArea area, int index, int seed)
         {
             var centerDegrees = 0f;
@@ -23527,6 +23583,37 @@ namespace Anemora.EditorTools
             return (centerDegrees + spread + jitter) * Mathf.Deg2Rad;
         }
 
+        private static float GetDistantPanoramaVistaAreaSignatureAngle(FastVsHouseArea area, int index, int seed)
+        {
+            var centerDegrees = 0f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    centerDegrees = -9f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    centerDegrees = -1f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    centerDegrees = 11f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    centerDegrees = 5f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                    centerDegrees = -7f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    centerDegrees = -4f;
+                    break;
+            }
+
+            var spread = (index - (DistantPanoramaVistaAreaSignatureCount - 1) * 0.5f) * 15.5f;
+            var jitter = DistantPanoramaVistaSigned(seed + 43, 2.0f);
+            return (centerDegrees + spread + jitter) * Mathf.Deg2Rad;
+        }
+
         private static int GetDistantPanoramaVistaAreaLandmarkProfile(FastVsHouseArea area, int index)
         {
             switch (area)
@@ -23543,6 +23630,26 @@ namespace Anemora.EditorTools
                 case FastVsHouseArea.MiaHouse:
                 default:
                     return index == 0 ? 3 : 0;
+            }
+        }
+
+        private static int GetDistantPanoramaVistaAreaSignatureProfile(FastVsHouseArea area, int index)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                case FastVsHouseArea.CentralPlaza:
+                    return index % 2 == 0 ? 0 : 1;
+                case FastVsHouseArea.MiaHouse:
+                    return index == 0 ? 0 : 2;
+                case FastVsHouseArea.AriaStreet:
+                    return index == 1 ? 1 : 2;
+                case FastVsHouseArea.KaiaFarm:
+                    return index == 3 ? 1 : 3;
+                case FastVsHouseArea.Ruins:
+                    return index == 2 ? 0 : 4;
+                default:
+                    return 0;
             }
         }
 
@@ -23945,6 +24052,98 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
+        private static Mesh CreateDistantPanoramaVistaAreaSignatureMesh(string meshName, int seed, int profile, float width, float maxHeight, float depth)
+        {
+            const int columnCount = 16;
+            const int rowCount = 5;
+            const int sideCount = 2;
+            var vertices = new Vector3[columnCount * rowCount * sideCount];
+            var uvs = new Vector2[vertices.Length];
+            var frontZ = -depth * 0.5f;
+            var backZ = depth * 0.5f;
+
+            for (var column = 0; column < columnCount; column++)
+            {
+                var u = column / (float)(columnCount - 1);
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u) +
+                    DistantPanoramaVistaSigned(seed + column * 19, 0.22f) * edgeFalloff;
+                var topHeight = GetDistantPanoramaVistaAreaSignatureColumnHeight(profile, seed, column, u, maxHeight);
+                var shelfHeight = GetDistantPanoramaVistaAreaSignatureShelfHeight(profile, seed, column, u, topHeight);
+                var baseLift = DistantPanoramaVistaSigned(seed + column * 31 + 11, 0.06f) * edgeFalloff;
+
+                for (var side = 0; side < sideCount; side++)
+                {
+                    var z = side == 0 ? frontZ : backZ;
+                    var sideHeightScale = side == 0 ? 1f : Mathf.Lerp(0.86f, 0.96f, DistantPanoramaVistaHash01(seed + column * 37 + 17));
+                    for (var row = 0; row < rowCount; row++)
+                    {
+                        var v = row / (float)(rowCount - 1);
+                        var y = 0f;
+                        if (row == 1)
+                        {
+                            y = Mathf.Max(0.04f, topHeight * 0.14f + baseLift);
+                        }
+                        else if (row == 2)
+                        {
+                            y = Mathf.Max(0.08f, shelfHeight + baseLift * 0.65f);
+                        }
+                        else if (row == 3)
+                        {
+                            y = Mathf.Max(0.12f, Mathf.Lerp(shelfHeight, topHeight, 0.58f) + baseLift * 0.35f);
+                        }
+                        else if (row == 4)
+                        {
+                            y = topHeight * sideHeightScale;
+                        }
+
+                        var vertexIndex = ((side * rowCount) + row) * columnCount + column;
+                        vertices[vertexIndex] = new Vector3(x, y, z);
+                        uvs[vertexIndex] = new Vector2(u, v);
+                    }
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 24);
+            for (var column = 0; column < columnCount - 1; column++)
+            {
+                for (var row = 0; row < rowCount - 1; row++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+
+                    var backOffset = rowCount * columnCount;
+                    AddDoubleSidedQuad(triangles, backOffset + a, backOffset + c, backOffset + b, backOffset + d);
+                }
+
+                var frontTopA = (rowCount - 1) * columnCount + column;
+                var frontTopB = (rowCount - 1) * columnCount + column + 1;
+                var backTopA = rowCount * columnCount + frontTopA;
+                var backTopB = rowCount * columnCount + frontTopB;
+                AddDoubleSidedQuad(triangles, frontTopA, frontTopB, backTopA, backTopB);
+
+                var frontBaseA = column;
+                var frontBaseB = column + 1;
+                var backBaseA = rowCount * columnCount + frontBaseA;
+                var backBaseB = rowCount * columnCount + frontBaseB;
+                AddDoubleSidedQuad(triangles, frontBaseA, backBaseA, frontBaseB, backBaseB);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static float GetDistantPanoramaVistaAreaLandmarkColumnHeight(int profile, int seed, int column, float u, float maxHeight)
         {
             var edgeFalloff = Mathf.Sin(u * Mathf.PI);
@@ -23970,6 +24169,59 @@ namespace Anemora.EditorTools
             var blockPulse = (column % 4 == 0 || column % 4 == 3) ? 0.62f : 1.0f;
             var roofPeak = column % 6 == 2 ? 1.20f : 0.86f;
             return maxHeight * Mathf.Lerp(0.48f, 1.04f, edgeFalloff) * blockPulse * roofPeak;
+        }
+
+        private static float GetDistantPanoramaVistaAreaSignatureColumnHeight(int profile, int seed, int column, float u, float maxHeight)
+        {
+            var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+            var centerDip = Mathf.Abs(u - 0.5f) * 2f;
+            var pulse = Mathf.Lerp(0.86f, 1.18f, DistantPanoramaVistaHash01(seed + column * 41 + 3));
+            if (profile == 0)
+            {
+                var sideWall = Mathf.Lerp(0.26f, 1.05f, centerDip);
+                var lowNotch = column == 7 || column == 8 ? 0.46f : 1f;
+                return maxHeight * Mathf.Lerp(0.30f, 0.94f, edgeFalloff) * sideWall * lowNotch * pulse;
+            }
+
+            if (profile == 1)
+            {
+                var roofPeak = column % 5 == 2 ? 1.20f : 0.72f;
+                var block = column % 4 == 0 ? 0.52f : 0.92f;
+                return maxHeight * Mathf.Lerp(0.36f, 0.98f, edgeFalloff) * roofPeak * block * pulse;
+            }
+
+            if (profile == 2)
+            {
+                var roofRhythm = column % 6 == 1 || column % 6 == 4 ? 1.06f : 0.70f;
+                return maxHeight * Mathf.Lerp(0.32f, 0.88f, edgeFalloff) * roofRhythm * pulse;
+            }
+
+            if (profile == 3)
+            {
+                var terraceStep = 0.42f + (column % 4) * 0.13f;
+                return maxHeight * Mathf.Lerp(0.20f, 0.62f, edgeFalloff) * terraceStep * pulse;
+            }
+
+            var tooth = (column % 3 == 1 || column % 7 == 3) ? 1.18f : 0.42f;
+            var brokenSide = column == 0 || column == 15 ? 0.35f : 1f;
+            return maxHeight * Mathf.Lerp(0.38f, 1.10f, edgeFalloff) * tooth * brokenSide * pulse;
+        }
+
+        private static float GetDistantPanoramaVistaAreaSignatureShelfHeight(int profile, int seed, int column, float u, float topHeight)
+        {
+            if (profile == 3)
+            {
+                var step = column % 4;
+                return topHeight * Mathf.Lerp(0.18f, 0.52f, step / 3f);
+            }
+
+            if (profile == 4)
+            {
+                return topHeight * Mathf.Lerp(0.24f, 0.46f, DistantPanoramaVistaHash01(seed + column * 43 + 19));
+            }
+
+            var centralShelf = 0.30f + Mathf.Sin(u * Mathf.PI) * 0.26f;
+            return topHeight * centralShelf;
         }
 
         private static Mesh CreateDistantPanoramaVistaForestMesh(string meshName, int seed, float width, float maxHeight, float thickness)
@@ -24222,6 +24474,27 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.11f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaAreaSignatureMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastAreaSignature" : "Ch1Distant_CurrentAreaSignature";
+            var color = past
+                ? new Color(0.346f, 0.276f, 0.112f, 1f)
+                : new Color(0.078f, 0.158f, 0.092f, 1f);
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.10f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -48296,7 +48569,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: distant panorama vista far radius must stay beyond 112m for parallax depth, found {DistantPanoramaVistaFarRadius:0.000}.");
             }
 
-            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 5) + DistantPanoramaVistaAreaLandmarkCount;
+            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 5) + DistantPanoramaVistaAreaLandmarkCount + DistantPanoramaVistaAreaSignatureCount;
             if (filters.Length < expectedSegments)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} has {filters.Length} distant vista segments, expected at least {expectedSegments}.");
@@ -48356,6 +48629,20 @@ namespace Anemora.EditorTools
             if (areaLandmarkCount < DistantPanoramaVistaAreaLandmarkCount)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaAreaLandmarkCount} authored area landmarks, found {areaLandmarkCount}.");
+            }
+
+            var areaSignatureCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_AreaSignature", StringComparison.Ordinal))
+                {
+                    areaSignatureCount++;
+                }
+            }
+
+            if (areaSignatureCount < DistantPanoramaVistaAreaSignatureCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaAreaSignatureCount} authored area signatures, found {areaSignatureCount}.");
             }
 
             var center = GetDistantPanoramaVistaCenter(area);
