@@ -10,15 +10,18 @@
     - implementation/workflow commits without a matching docs/devlog entry
     - new devlog files that were not added to docs/devlog/INDEX.md
     - recent local docs/review/<cycle>/ folders without devlog.txt or images
+    - recent local docs/review/<cycle>/ folders missing from the public R2 manifest
 
     CI mode validates only tracked git history. Local hook mode also validates
-    recent ignored review-image cycle directories.
+    recent ignored review-image cycle directories and their public R2 propagation.
 #>
 [CmdletBinding()]
 param(
     [string]$BaseRef = '',
     [switch]$Ci,
-    [int]$RecentReviewDays = 1
+    [int]$RecentReviewDays = 1,
+    [string]$R2PublicBase = 'https://pub-d14764d639a647339a6b0d81de923abf.r2.dev',
+    [switch]$SkipR2ManifestCheck
 )
 
 # PS 5.1 can wrap native stderr as NativeCommandError even when we inspect
@@ -51,6 +54,38 @@ function Get-FirstDevlogLine {
 function Add-Failure {
     param([string]$Message)
     $script:Failures += $Message
+}
+
+function Convert-BranchToR2Slug {
+    param([string]$Branch)
+    return (($Branch -replace '^work/', '') -replace '[^a-zA-Z0-9._-]+', '-').Trim('-')
+}
+
+function Get-R2ManifestPathSet {
+    param(
+        [string]$Slug,
+        [string]$BaseUrl
+    )
+    $base = $BaseUrl.TrimEnd('/')
+    $uri = "$base/manifests/$Slug.json?guard=review-sync"
+    try {
+        $response = Invoke-WebRequest -Uri $uri -UseBasicParsing -TimeoutSec 20
+        if ($response.StatusCode -lt 200 -or $response.StatusCode -gt 299) {
+            Add-Failure "R2 manifest fetch failed for $Slug (HTTP $($response.StatusCode)): $uri"
+            return $null
+        }
+        $parsed = $response.Content | ConvertFrom-Json
+        $set = @{}
+        foreach ($entry in @($parsed)) {
+            if ($entry -is [string] -and $entry.StartsWith('docs/')) {
+                $set[$entry] = $true
+            }
+        }
+        return $set
+    } catch {
+        Add-Failure "R2 manifest fetch/parse failed for ${Slug}: $($_.Exception.Message)"
+        return $null
+    }
 }
 
 $RepoRoot = (Invoke-Git rev-parse --show-toplevel | Select-Object -First 1).Trim()
@@ -148,6 +183,19 @@ if (-not $Ci) {
                 }
                 $include
             })
+        $r2Manifest = $null
+        $r2Slug = $null
+        $runR2Check = (-not $SkipR2ManifestCheck) -and ($env:ANEMORA_SKIP_R2_MANIFEST_CHECK -ne '1')
+        if ($runR2Check -and $cycleDirs.Count -gt 0) {
+            $currentBranch = (& git branch --show-current 2>$null | Select-Object -First 1).Trim()
+            if ($currentBranch) {
+                $r2Slug = Convert-BranchToR2Slug -Branch $currentBranch
+                $r2Manifest = Get-R2ManifestPathSet -Slug $r2Slug -BaseUrl $R2PublicBase
+            } else {
+                Add-Failure "Cannot resolve current branch for R2 review manifest validation."
+            }
+        }
+
         foreach ($dir in $cycleDirs) {
             if ($dir.Name -notmatch '^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}([_-][A-Za-z0-9._-]+)?$') {
                 Add-Failure "Review cycle dir must be ISO-like and URL-safe: docs/review/$($dir.Name)"
@@ -171,6 +219,19 @@ if (-not $Ci) {
                 Where-Object { $_.Extension.ToLowerInvariant() -in @('.png', '.jpg', '.jpeg', '.webp') })
             if ($images.Count -eq 0) {
                 Add-Failure "Review cycle has no review image files: docs/review/$($dir.Name)"
+            }
+
+            if ($runR2Check -and $r2Manifest) {
+                $cycleFiles = @(Get-ChildItem -LiteralPath $dir.FullName -File -ErrorAction SilentlyContinue)
+                foreach ($file in $cycleFiles) {
+                    $rel = "docs/review/$($dir.Name)/$($file.Name)"
+                    if (-not $r2Manifest.ContainsKey($rel)) {
+                        Add-Failure "Review cycle file is missing from R2 manifest ${r2Slug}: $rel"
+                    }
+                }
+                if ($devlogRel -and $devlogRel -match '^docs/devlog/[^/]+\.md$' -and -not $r2Manifest.ContainsKey($devlogRel)) {
+                    Add-Failure "Review cycle devlog is missing from R2 manifest ${r2Slug}: docs/review/$($dir.Name) -> $devlogRel"
+                }
             }
         }
     }

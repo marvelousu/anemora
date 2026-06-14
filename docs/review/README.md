@@ -11,11 +11,16 @@ publication cycle is:
 4. Push the same Anemora branch if that push has not already happened after the
    R2 upload. The live viewer imports R2 manifests at Cloudflare Pages build time,
    so R2 upload alone is not enough.
+5. Verify the public viewer route for the branch, the new gallery route, and the
+   linked devlog route. If the Anemora push does not trigger a Pages rebuild,
+   refresh `anemora-viewer`'s deploy marker and push `main`, then verify again.
 
 The global guard is `tools/review/validate-devlog-review-sync.ps1`, wired through
 `tools/githooks/pre-push` and `.github/workflows/review-sync-guard.yml`. It blocks
 implementation/workflow changes without a devlog, new devlogs missing from
-`docs/devlog/INDEX.md`, and malformed recent local review cycles.
+`docs/devlog/INDEX.md`, malformed recent local review cycles, and recent local
+review cycles whose files or linked devlog are missing from the public R2 manifest.
+Use `ANEMORA_SKIP_R2_MANIFEST_CHECK=1` only for an explicit emergency/offline push.
 
 The live viewer tracks active `work/*` and `wip/*` branches. For `wip/*`, pass the
 real branch name to the R2 script, for example:

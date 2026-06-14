@@ -106,4 +106,4 @@ try {
   Write-Warning "manifest HEAD check failed; verify before closing the cycle: $ManifestUrl"
 }
 Write-Host "viewer review URL: $ViewerUrl"
-Write-Host "If the Anemora branch was already pushed before this upload, push the same branch again to trigger anemora-viewer rebuild."
+Write-Host "After upload, push the Anemora branch or refresh anemora-viewer/public/deploy-refresh.txt, then verify review, gallery, and linked devlog routes."

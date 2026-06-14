@@ -11,7 +11,15 @@ B; no Git LFS).
 R2 upload alone does not update the live viewer. The viewer imports R2 manifests
 during its Cloudflare Pages build. After running `tools/r2/r2-upload-review.ps1`,
 also push the Anemora branch that owns the review/devlog cycle so the Anemora
-push webhook triggers an `anemora-viewer` rebuild.
+push webhook can trigger an `anemora-viewer` rebuild. If the public viewer stays
+stale after that push, update and push `anemora-viewer/public/deploy-refresh.txt`
+to trigger the Pages build, then verify the branch review page, gallery page, and
+linked devlog page.
+
+The local pre-push review guard also reads the public R2 manifest for the current
+branch slug. A recent `docs/review/<cycle>/` directory is not push-clean until each
+file in that cycle and the linked `docs/devlog/*.md` are present in the manifest.
+Use `ANEMORA_SKIP_R2_MANIFEST_CHECK=1` only for an explicit emergency/offline push.
 
 The viewer tracks active `work/*` and `wip/*` branches. Pass the actual branch
 name to the upload script. The R2 slug is the branch name with `work/` removed
