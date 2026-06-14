@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.67 point15 portal aperture alpha 0.60 safe-pause index update (2026-06-13). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.68 environment uplift Phase 1-4 and APV closeout index update (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 766 files including INDEX.md and README.md.
-- Dated devlog records: 764 files.
+- Root-level Markdown coverage: 767 files including INDEX.md and README.md.
+- Dated devlog records: 765 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,6 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
+| 2026-06-14 | 1 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
 | 2026-05-06 | 12 |
@@ -42,6 +43,12 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-14
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-14_hd2d_environment_uplift_phase1_4_apv_rebake_closeout.md](2026-06-14_hd2d_environment_uplift_phase1_4_apv_rebake_closeout.md) | Fast VS / HD2D | environment uplift Phase 1-4 and APV closeout |
 
 ### 2026-06-13
 
@@ -725,6 +732,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.68 | 2026-06-14 | Added environment uplift Phase 1-4 and APV closeout record with final review-image directory, APV rebake evidence, validation, renderer-freeze proof, asset validation, capture evidence, and R2/git hygiene notes. |
 | v8.59 | 2026-06-13 | Added point15 renderer static flicker probe record with code-only probe build, discarded no-graphics capture note, exit-coded built-player static evidence, and motion-vs-static flicker classification. |
 | v8.58 | 2026-06-13 | Added point15 CentralPlaza EastField removal record with right-outer-road ROI proof, eastPerimeterFieldOff isolation, BuildAndValidateBatch regeneration, fixed isolation proof, and all-map built-player evidence. |
 | v8.57 | 2026-06-12 | Added point15 upper brow removed all-map waited capture record with explicit player exit, 13 all-map PNGs, renderer contract proof, CentralPlaza lighting sample, and carry-forward long-road sideview diagnostic note. |
