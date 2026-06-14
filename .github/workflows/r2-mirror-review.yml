@@ -26,7 +26,13 @@ on:
   push:
     branches: ['work/**', 'wip/**']
     paths:
-      - 'docs/review/**'
+      - 'docs/review/**/*.png'
+      - 'docs/review/**/*.jpg'
+      - 'docs/review/**/*.jpeg'
+      - 'docs/review/**/*.webp'
+      - 'docs/review/**/*.gif'
+      - 'docs/review/**/*.svg'
+      - 'docs/review/**/devlog.txt'
       - 'docs/devlog/screenshots/**'
 
 concurrency:
