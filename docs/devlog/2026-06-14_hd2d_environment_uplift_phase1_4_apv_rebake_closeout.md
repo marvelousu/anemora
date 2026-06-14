@@ -110,6 +110,28 @@ Fast VS chapter 1 all maps screenshots captured: docs/devlog/screenshots/chapter
 - APV `*.Cell*.bytes` payloads remain ignored per `.gitignore`; the committed APV source change is the `FastVS_HouseSlice_Stage7_APV_BakingSet.asset` update from `d552daae`.
 - Unity batch side effects such as `Assets/AddressableAssetsData/link.xml`, material whitespace reserialization, texture meta whitespace, tracked screenshot churn, and `DefaultVolumeProfile.asset` were restored before commits.
 
+## Viewer Propagation Follow-Up
+
+The first R2 upload was valid, but the live viewer did not update because the viewer build only enumerated `work/*` branches and the R2 hydration path was not documented for the current `wip/*` recovery branch.
+
+Fixes pushed:
+
+- `anemora-viewer` `9e845f9 fix: include wip branches in review viewer`
+- `anemora-viewer` `4327348 fix: cap active viewer branches per prefix`
+- `anemora-viewer` `2f5f72f fix: hydrate wip review branches lightly`
+- Anemora `f5c3c73f docs: clarify review viewer propagation`
+
+Verification:
+
+- Local viewer full build passed with lightweight `wip/*` hydration in `1075.5` seconds, under the 20 minute Cloudflare Pages free-tier timeout.
+- Build log evidence included `FULL_CONTENT_PREFIXES=work`, `content mode: lightweight` for `wip/hd2d-point15-recovery-20260612`, and `fetched 16/16 safe files`.
+- Public viewer checks passed after deploy hook `750eafcc-8d8e-4e88-831f-6e19eed29081`:
+  - `https://anemora-viewer.pages.dev/wip-hd2d-point15-recovery-20260612/review/`
+  - `https://anemora-viewer.pages.dev/wip-hd2d-point15-recovery-20260612/gallery/docs/review/2026-06-14T11-09_environment_uplift_phase1_4_apv_rebake/`
+  - `https://anemora-viewer.pages.dev/thumbs/wip-hd2d-point15-recovery-20260612/docs/review/2026-06-14T11-09_environment_uplift_phase1_4_apv_rebake/00_contact_sheet.webp`
+  - `https://anemora-viewer.pages.dev/originals/wip-hd2d-point15-recovery-20260612/docs/review/2026-06-14T11-09_environment_uplift_phase1_4_apv_rebake/00_contact_sheet.png`
+  - `https://anemora-viewer.pages.dev/wip-hd2d-point15-recovery-20260612/docs/docs/devlog/2026-06-14_hd2d_environment_uplift_phase1_4_apv_rebake_closeout/`
+
 ## Closeout
 
 The environment uplift reached authored production quality for the current review target across all outdoor maps and both time spaces. The final committed branch head before this devlog cycle was:

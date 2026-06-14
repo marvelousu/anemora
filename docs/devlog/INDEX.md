@@ -1,6 +1,6 @@
 ﻿# Devlog Index
 
-> Status: v8.68 environment uplift Phase 1-4 and APV closeout index update (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.69 environment uplift viewer propagation update (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
@@ -732,6 +732,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.69 | 2026-06-14 | Updated the environment uplift closeout record with anemora-viewer propagation fixes, lightweight wip branch hydration, deploy hook id, and public viewer verification URLs. |
 | v8.68 | 2026-06-14 | Added environment uplift Phase 1-4 and APV closeout record with final review-image directory, APV rebake evidence, validation, renderer-freeze proof, asset validation, capture evidence, and R2/git hygiene notes. |
 | v8.59 | 2026-06-13 | Added point15 renderer static flicker probe record with code-only probe build, discarded no-graphics capture note, exit-coded built-player static evidence, and motion-vs-static flicker classification. |
 | v8.58 | 2026-06-13 | Added point15 CentralPlaza EastField removal record with right-outer-road ROI proof, eastPerimeterFieldOff isolation, BuildAndValidateBatch regeneration, fixed isolation proof, and all-map built-player evidence. |
