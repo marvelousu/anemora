@@ -40,7 +40,15 @@ if [ "${ANEMORA_SKIP_REVIEW_SYNC_CHECK:-0}" != "1" ]; then
     echo "pre-push: PowerShell not found; cannot run review sync guard." >&2
     exit 1
   fi
-  "$PS_BIN" -NoProfile -ExecutionPolicy Bypass -File "$ROOT/tools/review/validate-devlog-review-sync.ps1" || {
+  PS_ROOT="$ROOT"
+  if [ "$PS_BIN" = "powershell.exe" ] || [ "$PS_BIN" = "powershell" ]; then
+    if command -v cygpath >/dev/null 2>&1; then
+      PS_ROOT="$(cygpath -w "$ROOT")"
+    elif command -v wslpath >/dev/null 2>&1; then
+      PS_ROOT="$(wslpath -w "$ROOT")"
+    fi
+  fi
+  "$PS_BIN" -NoProfile -ExecutionPolicy Bypass -File "$PS_ROOT/tools/review/validate-devlog-review-sync.ps1" || {
     echo "pre-push: review/devlog sync guard FAILED (override: ANEMORA_SKIP_REVIEW_SYNC_CHECK=1 git push ...)." >&2
     exit 1
   }
