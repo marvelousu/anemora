@@ -1,6 +1,6 @@
 ﻿# Devlog Index
 
-> Status: v8.73 R2 mirror review README trigger guard (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.74 HD2D distant panorama authored depth uplift (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-14 | 5 |
+| 2026-06-14 | 6 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
 | 2026-05-06 | 12 |
@@ -48,6 +48,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-14_hd2d_distant_panorama_quality_uplift.md](2026-06-14_hd2d_distant_panorama_quality_uplift.md) | Fast VS / HD2D | HD2D distant panorama authored depth uplift |
 | [2026-06-14_r2_mirror_review_readme_trigger_guard.md](2026-06-14_r2_mirror_review_readme_trigger_guard.md) | Repo workflow | R2 mirror review README trigger guard |
 | [2026-06-14_bloat_guard_review_readme_allowlist.md](2026-06-14_bloat_guard_review_readme_allowlist.md) | Repo workflow | bloat guard review README allowlist |
 | [2026-06-14_review_sync_hook_path_fix.md](2026-06-14_review_sync_hook_path_fix.md) | Repo workflow | review sync hook path fix |

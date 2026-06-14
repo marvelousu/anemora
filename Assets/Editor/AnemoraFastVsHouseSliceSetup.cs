@@ -492,8 +492,12 @@ namespace Anemora.EditorTools
         private const float Chapter1ContinuationMinimumESpan = 13.40f;
         private const float Chapter1ContinuationMinimumFSpan = 20.80f;
         private const float Chapter1EndSideViewOrthographicSize = 2.80f;
-        private const int DistantPanoramaVistaSegmentCount = 14;
+        private const int DistantPanoramaVistaSegmentCount = 28;
         private const int DistantPanoramaVistaBandCount = 3;
+        private const float DistantPanoramaVistaForestRadius = 66f;
+        private const float DistantPanoramaVistaNearRadius = 72f;
+        private const float DistantPanoramaVistaMidRadius = 94f;
+        private const float DistantPanoramaVistaFarRadius = 118f;
         private const string AuthoredVegetationMeshNamePrefix = "AuthoredVegetation";
         private static readonly Vector3 DistantPanoramaVistaReviewPositionOffset = new Vector3(0f, 14.00f, -25.20f);
         private static readonly Vector3 DistantPanoramaVistaReviewLookAtOffset = new Vector3(0.10f, 3.50f, 2.90f);
@@ -23218,12 +23222,13 @@ namespace Anemora.EditorTools
             parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
 
             CreateDistantPanoramaVistaTerrainApron(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaFoothillForest(parent, prefix, past, area, areaToken, center);
 
             for (var band = 0; band < DistantPanoramaVistaBandCount; band++)
             {
-                var radius = band == 0 ? 58f : (band == 1 ? 76f : 94f);
-                var height = band == 0 ? 5.20f : (band == 1 ? 7.60f : 10.80f);
-                var thickness = band == 0 ? 0.65f : (band == 1 ? 0.50f : 0.38f);
+                var radius = GetDistantPanoramaVistaBandRadius(band);
+                var height = band == 0 ? 3.10f : (band == 1 ? 5.85f : 8.90f);
+                var thickness = band == 0 ? 0.92f : (band == 1 ? 0.76f : 0.58f);
                 var material = EnsureDistantPanoramaVistaMaterial(past, band);
                 var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.08f;
 
@@ -23275,10 +23280,65 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static float GetDistantPanoramaVistaBandRadius(int band)
+        {
+            return band == 0 ? DistantPanoramaVistaNearRadius : (band == 1 ? DistantPanoramaVistaMidRadius : DistantPanoramaVistaFarRadius);
+        }
+
+        private static void CreateDistantPanoramaVistaFoothillForest(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            var radius = DistantPanoramaVistaForestRadius;
+            var material = EnsureDistantPanoramaVistaMaterial(past, 1);
+            var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.16f;
+
+            for (var segment = 0; segment < DistantPanoramaVistaSegmentCount; segment++)
+            {
+                var seed = 2311 + (int)area * 157 + (past ? 719 : 0) + segment * 29;
+                var angle = ((segment + 0.5f) / DistantPanoramaVistaSegmentCount) * Mathf.PI * 2f;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var localPosition = center +
+                    radial * (radius + DistantPanoramaVistaSigned(seed + 5, 1.35f)) +
+                    tangent * DistantPanoramaVistaSigned(seed + 11, 0.92f) +
+                    new Vector3(0f, 0.06f + DistantPanoramaVistaHash01(seed + 17) * 0.08f, 0f);
+                var faceDirection = center - localPosition;
+                faceDirection.y = 0f;
+                if (faceDirection.sqrMagnitude < 0.01f)
+                {
+                    faceDirection = -radial;
+                }
+
+                var segmentObject = new GameObject($"{prefix}_{areaToken}_DistantVista_FoothillForest_S{segment + 1:00}");
+                segmentObject.transform.SetParent(parent, false);
+                segmentObject.transform.localPosition = localPosition;
+                segmentObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                segmentObject.transform.localScale = Vector3.one;
+                segmentObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                var filter = segmentObject.AddComponent<MeshFilter>();
+                filter.sharedMesh = CreateDistantPanoramaVistaForestMesh(
+                    $"{segmentObject.name}_Mesh",
+                    seed,
+                    chordWidth * Mathf.Lerp(0.76f, 1.08f, DistantPanoramaVistaHash01(seed + 23)),
+                    Mathf.Lerp(1.05f, 2.10f, DistantPanoramaVistaHash01(seed + 31)),
+                    0.42f);
+
+                var renderer = segmentObject.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+
+                var landmark = segmentObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.foothill_forest.s{segment + 1:00}");
+                SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                SerializedSet(landmark, "countsForArrival", false);
+            }
+        }
+
         private static void CreateDistantPanoramaVistaTerrainApron(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
         {
-            var outerRadius = 58f;
-            var innerRadius = GetDistantPanoramaVistaTerrainApronInnerRadius(area);
+            var outerRadius = DistantPanoramaVistaForestRadius;
+            var innerRadius = Mathf.Max(outerRadius - 8f, GetDistantPanoramaVistaTerrainApronInnerRadius(area));
             var outerWidth = 2f * outerRadius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.10f;
             var innerWidth = 2f * innerRadius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.18f;
             var material = EnsureDistantPanoramaVistaApronMaterial(past);
@@ -23331,8 +23391,8 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaTerrainApronMesh(string meshName, int seed, float outerWidth, float innerWidth, float depth)
         {
-            const int columnCount = 7;
-            const int rowCount = 4;
+            const int columnCount = 11;
+            const int rowCount = 5;
             var vertices = new Vector3[columnCount * rowCount];
             var uvs = new Vector2[columnCount * rowCount];
 
@@ -23345,8 +23405,8 @@ namespace Anemora.EditorTools
                 {
                     var u = column / (float)(columnCount - 1);
                     var edgeFalloff = Mathf.Sin(u * Mathf.PI);
-                    var lowRise = Mathf.Lerp(0.16f, -0.06f, v);
-                    var surfaceBreak = DistantPanoramaVistaSigned(seed + row * 41 + column * 13, 0.055f) * edgeFalloff;
+                    var lowRise = Mathf.Lerp(0.10f, -0.18f, v);
+                    var surfaceBreak = DistantPanoramaVistaSigned(seed + row * 41 + column * 13, 0.085f) * edgeFalloff;
                     var index = row * columnCount + column;
                     vertices[index] = new Vector3(
                         Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u),
@@ -23394,9 +23454,9 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
-        private static Mesh CreateDistantPanoramaVistaReliefMesh(string meshName, int seed, float width, float maxHeight, float thickness, bool lowTreeLine)
+        private static Mesh CreateDistantPanoramaVistaForestMesh(string meshName, int seed, float width, float maxHeight, float thickness)
         {
-            const int columnCount = 7;
+            const int columnCount = 11;
             var vertices = new Vector3[columnCount * 4];
             var uvs = new Vector2[columnCount * 4];
             var frontZ = -thickness * 0.5f;
@@ -23406,44 +23466,34 @@ namespace Anemora.EditorTools
             {
                 var u = i / (float)(columnCount - 1);
                 var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u);
-                var edgeTaper = 0.52f + Mathf.Sin(u * Mathf.PI) * 0.48f;
-                var step = DistantPanoramaVistaHash01(seed + i * 37);
-                var peakHeight = maxHeight * edgeTaper * Mathf.Lerp(lowTreeLine ? 0.52f : 0.62f, lowTreeLine ? 0.86f : 1.16f, step);
+                var crownPulse = 0.48f + Mathf.Sin(u * Mathf.PI) * 0.42f;
+                var spire = DistantPanoramaVistaHash01(seed + i * 43);
+                var height = maxHeight * crownPulse * Mathf.Lerp(0.68f, 1.28f, spire);
                 if (i == 0 || i == columnCount - 1)
                 {
-                    peakHeight = Mathf.Min(peakHeight, maxHeight * 0.38f);
+                    height = Mathf.Min(height, maxHeight * 0.38f);
                 }
 
                 var baseIndex = i * 4;
                 vertices[baseIndex] = new Vector3(x, 0f, frontZ);
-                vertices[baseIndex + 1] = new Vector3(x, peakHeight, frontZ);
+                vertices[baseIndex + 1] = new Vector3(x, height, frontZ);
                 vertices[baseIndex + 2] = new Vector3(x, 0f, backZ);
-                vertices[baseIndex + 3] = new Vector3(x, peakHeight * 0.96f, backZ);
+                vertices[baseIndex + 3] = new Vector3(x, height * 0.92f, backZ);
                 uvs[baseIndex] = new Vector2(u, 0f);
                 uvs[baseIndex + 1] = new Vector2(u, 1f);
                 uvs[baseIndex + 2] = new Vector2(u, 0f);
                 uvs[baseIndex + 3] = new Vector2(u, 1f);
             }
 
-            var triangles = new List<int>((columnCount - 1) * 12);
+            var triangles = new List<int>((columnCount - 1) * 24);
             for (var i = 0; i < columnCount - 1; i++)
             {
                 var a = i * 4;
                 var b = (i + 1) * 4;
 
-                triangles.Add(a);
-                triangles.Add(b);
-                triangles.Add(a + 1);
-                triangles.Add(a + 1);
-                triangles.Add(b);
-                triangles.Add(b + 1);
-
-                triangles.Add(a + 2);
-                triangles.Add(a + 3);
-                triangles.Add(b + 2);
-                triangles.Add(a + 3);
-                triangles.Add(b + 3);
-                triangles.Add(b + 2);
+                AddDoubleSidedQuad(triangles, a, b, a + 1, b + 1);
+                AddDoubleSidedQuad(triangles, a + 2, a + 3, b + 2, b + 3);
+                AddDoubleSidedQuad(triangles, a + 1, b + 1, a + 3, b + 3);
             }
 
             var mesh = new Mesh
@@ -23456,6 +23506,85 @@ namespace Anemora.EditorTools
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             return mesh;
+        }
+
+        private static Mesh CreateDistantPanoramaVistaReliefMesh(string meshName, int seed, float width, float maxHeight, float thickness, bool lowTreeLine)
+        {
+            const int columnCount = 13;
+            var vertices = new Vector3[columnCount * 6];
+            var uvs = new Vector2[columnCount * 6];
+            var frontZ = -thickness * 0.5f;
+            var backZ = thickness * 0.5f;
+
+            for (var i = 0; i < columnCount; i++)
+            {
+                var u = i / (float)(columnCount - 1);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u);
+                var edgeTaper = 0.52f + Mathf.Sin(u * Mathf.PI) * 0.48f;
+                var step = DistantPanoramaVistaHash01(seed + i * 37);
+                var peakHeight = maxHeight * edgeTaper * Mathf.Lerp(lowTreeLine ? 0.46f : 0.58f, lowTreeLine ? 0.92f : 1.22f, step);
+                if (i == 0 || i == columnCount - 1)
+                {
+                    peakHeight = Mathf.Min(peakHeight, maxHeight * 0.34f);
+                }
+
+                var shoulderHeight = peakHeight * Mathf.Lerp(0.34f, 0.58f, DistantPanoramaVistaHash01(seed + i * 53 + 11));
+                var baseLift = DistantPanoramaVistaSigned(seed + i * 19 + 7, 0.06f);
+                var baseIndex = i * 6;
+                vertices[baseIndex] = new Vector3(x, 0f, frontZ);
+                vertices[baseIndex + 1] = new Vector3(x, shoulderHeight + baseLift, Mathf.Lerp(frontZ, backZ, 0.24f));
+                vertices[baseIndex + 2] = new Vector3(x, peakHeight, frontZ);
+                vertices[baseIndex + 3] = new Vector3(x, 0f, backZ);
+                vertices[baseIndex + 4] = new Vector3(x, shoulderHeight * 0.92f + baseLift, Mathf.Lerp(frontZ, backZ, 0.76f));
+                vertices[baseIndex + 5] = new Vector3(x, peakHeight * 0.94f, backZ);
+                uvs[baseIndex] = new Vector2(u, 0f);
+                uvs[baseIndex + 1] = new Vector2(u, 0.42f);
+                uvs[baseIndex + 2] = new Vector2(u, 1f);
+                uvs[baseIndex + 3] = new Vector2(u, 0f);
+                uvs[baseIndex + 4] = new Vector2(u, 0.42f);
+                uvs[baseIndex + 5] = new Vector2(u, 1f);
+            }
+
+            var triangles = new List<int>((columnCount - 1) * 48);
+            for (var i = 0; i < columnCount - 1; i++)
+            {
+                var a = i * 6;
+                var b = (i + 1) * 6;
+
+                AddDoubleSidedQuad(triangles, a, b, a + 1, b + 1);
+                AddDoubleSidedQuad(triangles, a + 1, b + 1, a + 2, b + 2);
+                AddDoubleSidedQuad(triangles, a + 3, a + 4, b + 3, b + 4);
+                AddDoubleSidedQuad(triangles, a + 4, a + 5, b + 4, b + 5);
+                AddDoubleSidedQuad(triangles, a + 2, b + 2, a + 5, b + 5);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static void AddDoubleSidedQuad(List<int> triangles, int a, int b, int c, int d)
+        {
+            triangles.Add(a);
+            triangles.Add(c);
+            triangles.Add(b);
+            triangles.Add(b);
+            triangles.Add(c);
+            triangles.Add(d);
+
+            triangles.Add(a);
+            triangles.Add(b);
+            triangles.Add(c);
+            triangles.Add(b);
+            triangles.Add(d);
+            triangles.Add(c);
         }
 
         private static Material EnsureDistantPanoramaVistaMaterial(bool past, int band)
@@ -23514,8 +23643,8 @@ namespace Anemora.EditorTools
             RenderSettings.fogColor = past
                 ? new Color(0.310f, 0.292f, 0.238f, 1f)
                 : new Color(0.232f, 0.292f, 0.330f, 1f);
-            RenderSettings.fogStartDistance = 42f;
-            RenderSettings.fogEndDistance = 188f;
+            RenderSettings.fogStartDistance = 36f;
+            RenderSettings.fogEndDistance = 210f;
 
             if (camera != null)
             {
@@ -47509,7 +47638,7 @@ namespace Anemora.EditorTools
                     throw new InvalidOperationException($"House slice validation failed: distant panorama vista fog must be enabled and Linear for {area}.");
                 }
 
-                if (RenderSettings.fogStartDistance < 34f || RenderSettings.fogStartDistance > 52f || RenderSettings.fogEndDistance < 168f || RenderSettings.fogEndDistance > 204f)
+                if (RenderSettings.fogStartDistance < 30f || RenderSettings.fogStartDistance > 48f || RenderSettings.fogEndDistance < 196f || RenderSettings.fogEndDistance > 226f)
                 {
                     throw new InvalidOperationException($"House slice validation failed: distant panorama vista fog range must cover the map edge before the ring for {area}, found start={RenderSettings.fogStartDistance:0.000}, end={RenderSettings.fogEndDistance:0.000}.");
                 }
@@ -47547,7 +47676,17 @@ namespace Anemora.EditorTools
             }
 
             var filters = root.GetComponentsInChildren<MeshFilter>(true);
-            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 1);
+            if (DistantPanoramaVistaSegmentCount < 24)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant panorama vista needs at least 24 radial segments for authored silhouette continuity, found {DistantPanoramaVistaSegmentCount}.");
+            }
+
+            if (DistantPanoramaVistaFarRadius < 112f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant panorama vista far radius must stay beyond 112m for parallax depth, found {DistantPanoramaVistaFarRadius:0.000}.");
+            }
+
+            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 2);
             if (filters.Length < expectedSegments)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} has {filters.Length} distant vista segments, expected at least {expectedSegments}.");
@@ -47556,14 +47695,14 @@ namespace Anemora.EditorTools
             var center = GetDistantPanoramaVistaCenter(area);
             foreach (var filter in filters)
             {
-                if (filter.sharedMesh == null || filter.sharedMesh.vertexCount < 24 || filter.sharedMesh.triangles.Length < 72)
+                if (filter.sharedMesh == null || filter.sharedMesh.vertexCount < 36 || filter.sharedMesh.triangles.Length < 108)
                 {
-                    throw new InvalidOperationException($"House slice validation failed: distant vista segment {filter.gameObject.name} must keep a low-poly relief mesh.");
+                    throw new InvalidOperationException($"House slice validation failed: distant vista segment {filter.gameObject.name} must keep authored relief density.");
                 }
 
                 var localPosition = filter.transform.localPosition;
                 var horizontalDistance = Vector2.Distance(new Vector2(localPosition.x, localPosition.z), new Vector2(center.x, center.z));
-                if (horizontalDistance < 54f || horizontalDistance > 100f)
+                if (horizontalDistance < 62f || horizontalDistance > 124f)
                 {
                     throw new InvalidOperationException($"House slice validation failed: distant vista segment {filter.gameObject.name} radius {horizontalDistance:0.000} is outside the intended ring.");
                 }
