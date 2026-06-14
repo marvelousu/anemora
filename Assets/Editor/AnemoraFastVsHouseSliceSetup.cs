@@ -58,6 +58,8 @@ namespace Anemora.EditorTools
         private const string Chapter1LightingSettingsDirectory = "Assets/Settings/Chapter1Lighting";
         private const string Chapter1Phase4HouseExteriorCurrentVolumeProfilePath = Chapter1LightingSettingsDirectory + "/FastVS_House_Ch1Lighting_HouseExterior_CurrentVolumeProfile.asset";
         private const string Chapter1Phase4HouseExteriorPastVolumeProfilePath = Chapter1LightingSettingsDirectory + "/FastVS_House_Ch1Lighting_HouseExterior_PastVolumeProfile.asset";
+        private const string Chapter1Phase4OutdoorCurrentVolumeProfilePath = Chapter1LightingSettingsDirectory + "/FastVS_House_Ch1Lighting_Outdoor_CurrentVolumeProfile.asset";
+        private const string Chapter1Phase4OutdoorPastVolumeProfilePath = Chapter1LightingSettingsDirectory + "/FastVS_House_Ch1Lighting_Outdoor_PastVolumeProfile.asset";
         private const int Chapter1ProductionSurfaceTextureSize = 2048;
         private const string CharacterDirectory = "Assets/Art/Characters/FastVS";
         private const string OutdoorOcclusionGradientMaterialPath = MaterialDirectory + "/FastVS_House_hd2d_outdoor_occlusion_gradient.mat";
@@ -834,6 +836,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dChapter1HouseExteriorProductionSurfaces();
             ValidateFastVsHd2dChapter1AllMapProductionSurfaces();
             ValidateFastVsHd2dChapter1HouseExteriorLightingUplift();
+            ValidateFastVsHd2dChapter1AllMapLightingUplift();
             ValidateFastVsStoryFlow();
             ValidateCameraStaysOnSameCoordinateRoot(controller);
             ValidateChapter1ContinuationTimeWindowRightSidePlacement(controller);
@@ -10088,6 +10091,14 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             ApplyChapter1Phase3AllMapProductionSurfaces(
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past);
+            ApplyChapter1Phase4AllMapLightingUplift(
                 plazaRoot,
                 miaHouseRoot,
                 ariaStreetRoot,
@@ -20700,9 +20711,21 @@ namespace Anemora.EditorTools
             float intensity,
             int renderLayer)
         {
+            CreateChapter1Phase4DirectionalFillLight(root, name, HouseExteriorCenter + new Vector3(0f, 10.0f, 0f), localRotation, color, intensity, renderLayer);
+        }
+
+        private static void CreateChapter1Phase4DirectionalFillLight(
+            Transform root,
+            string name,
+            Vector3 localPosition,
+            Quaternion localRotation,
+            Color color,
+            float intensity,
+            int renderLayer)
+        {
             var lightObject = new GameObject(name, typeof(Light));
             lightObject.transform.SetParent(root, false);
-            lightObject.transform.localPosition = HouseExteriorCenter + new Vector3(0f, 10.0f, 0f);
+            lightObject.transform.localPosition = localPosition;
             lightObject.transform.localRotation = localRotation;
             lightObject.transform.localScale = Vector3.one;
 
@@ -20857,6 +20880,277 @@ namespace Anemora.EditorTools
             vignette.active = true;
             vignette.intensity.overrideState = true;
             vignette.intensity.value = past ? 0.18f : 0.18f;
+            vignette.smoothness.overrideState = true;
+            vignette.smoothness.value = past ? 0.52f : 0.46f;
+            vignette.color.overrideState = true;
+            vignette.color.value = past
+                ? new Color(0.34f, 0.18f, 0.08f, 1f)
+                : new Color(0.05f, 0.08f, 0.16f, 1f);
+
+            EditorUtility.SetDirty(profile);
+            AssetDatabase.SaveAssets();
+            return profile;
+        }
+
+        private static void ApplyChapter1Phase4AllMapLightingUplift(
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past)
+        {
+            CreateChapter1Phase4OutdoorMapLightingUplift(plazaRoot, prefix, past, "CentralPlaza", "central_plaza", CentralPlazaVsCenter, new Vector3(124f, 118f, 164f), 1.16f);
+            CreateChapter1Phase4OutdoorMapLightingUplift(miaHouseRoot, prefix, past, "MiaHouse", "mia_house", Chapter1MiaHouseMapCenter, new Vector3(92f, 108f, 138f), 0.92f);
+            CreateChapter1Phase4OutdoorMapLightingUplift(ariaStreetRoot, prefix, past, "AriaStreet", "aria_street", Chapter1AriaStreetMapCenter, new Vector3(122f, 118f, 166f), 1.08f);
+            CreateChapter1Phase4OutdoorMapLightingUplift(kaiaFarmRoot, prefix, past, "KaiaFarm", "kaia_farm", Chapter1KaiaFarmMapCenter, new Vector3(142f, 122f, 178f), 1.24f);
+            CreateChapter1Phase4OutdoorMapLightingUplift(ruinsRoot, prefix, past, "Ruins", "ruins", Chapter1RuinsMapCenter, new Vector3(166f, 132f, 210f), 1.34f);
+        }
+
+        private static void CreateChapter1Phase4OutdoorMapLightingUplift(
+            Transform root,
+            string prefix,
+            bool past,
+            string mapToken,
+            string landmarkMapToken,
+            Vector3 center,
+            Vector3 volumeSize,
+            float scale)
+        {
+            var volumeProfile = EnsureChapter1Phase4OutdoorVolumeProfile(past);
+            CreateChapter1Phase4LightingVolume(
+                root,
+                $"{prefix}_{mapToken}_Phase4Lighting_Volume",
+                center + new Vector3(0f, 32.0f, 0f),
+                volumeSize,
+                volumeProfile,
+                past);
+
+            var atmosphere = EnsureChapter1Phase4OutdoorAtmosphereMaterial(past);
+            var objectPrefix = $"{prefix}_{mapToken}_Phase4Lighting";
+            var landmarkPrefix = $"{prefix}.{landmarkMapToken}.phase4_lighting";
+            if (past)
+            {
+                CreateChapter1Phase4AtmosphereCard(
+                    root,
+                    $"{objectPrefix}_WarmCanopyAirVeilA",
+                    center + new Vector3(0.28f * scale, 3.20f, 5.40f * scale),
+                    new Vector3(9.60f * scale, 2.50f, 1f),
+                    new Color(1.00f, 0.72f, 0.36f, 0.20f),
+                    atmosphere,
+                    $"{landmarkPrefix}.warm_canopy_air_veil_a");
+                CreateChapter1Phase4AtmosphereCard(
+                    root,
+                    $"{objectPrefix}_AmberGroundBreathA",
+                    center + new Vector3(0.72f * scale, 0.56f, 1.84f * scale),
+                    new Vector3(8.40f * scale, 0.78f, 1f),
+                    new Color(1.00f, 0.78f, 0.44f, 0.16f),
+                    atmosphere,
+                    $"{landmarkPrefix}.amber_ground_breath_a");
+                CreateChapter1Phase4PointLight(
+                    root,
+                    $"{objectPrefix}_WarmMemoryFill",
+                    center + new Vector3(-1.20f * scale, 2.50f, -1.60f * scale),
+                    new Color(1.00f, 0.62f, 0.32f, 1f),
+                    1.12f,
+                    9.30f * scale,
+                    OtherTimeSpaceRenderLayer);
+
+                var sunBounce = EnsureChapter1Phase4OutdoorSurfaceBounceMaterial(true);
+                CreateChapter1Phase4LightingLiftSlab(
+                    root,
+                    $"{objectPrefix}_WarmSurfaceSunBounceA",
+                    center + new Vector3(-4.60f * scale, 0.34f, -2.80f * scale),
+                    new Vector3(7.20f * scale, 0.018f, 1.22f * scale),
+                    Quaternion.Euler(0f, -10f, 0f),
+                    sunBounce,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{landmarkPrefix}.warm_surface_sun_bounce_a");
+                CreateChapter1Phase4LightingLiftSlab(
+                    root,
+                    $"{objectPrefix}_WarmSurfaceSunBounceB",
+                    center + new Vector3(4.80f * scale, 0.34f, 2.20f * scale),
+                    new Vector3(6.80f * scale, 0.018f, 1.10f * scale),
+                    Quaternion.Euler(0f, 14f, 0f),
+                    sunBounce,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{landmarkPrefix}.warm_surface_sun_bounce_b");
+                return;
+            }
+
+            CreateChapter1Phase4AtmosphereCard(
+                root,
+                $"{objectPrefix}_CoolCanopyAirVeilA",
+                center + new Vector3(0.28f * scale, 3.20f, 5.40f * scale),
+                new Vector3(9.60f * scale, 2.50f, 1f),
+                new Color(0.56f, 0.68f, 1.00f, 0.20f),
+                atmosphere,
+                $"{landmarkPrefix}.cool_canopy_air_veil_a");
+            CreateChapter1Phase4AtmosphereCard(
+                root,
+                $"{objectPrefix}_CoolGroundHazeA",
+                center + new Vector3(0.72f * scale, 0.56f, 1.84f * scale),
+                new Vector3(8.40f * scale, 0.78f, 1f),
+                new Color(0.50f, 0.62f, 0.95f, 0.15f),
+                atmosphere,
+                $"{landmarkPrefix}.cool_ground_haze_a");
+            CreateChapter1Phase4PointLight(
+                root,
+                $"{objectPrefix}_CoolOpenShadeFill",
+                center + new Vector3(2.60f * scale, 2.72f, 2.36f * scale),
+                new Color(0.60f, 0.74f, 1.00f, 1f),
+                0.72f,
+                10.40f * scale,
+                CurrentSpaceRenderLayer);
+            CreateChapter1Phase4DirectionalFillLight(
+                root,
+                $"{objectPrefix}_CoolSkyFill",
+                center + new Vector3(0f, 13.80f, 0f),
+                Quaternion.Euler(52f, -28f, 0f),
+                new Color(0.68f, 0.80f, 1.00f, 1f),
+                0.42f,
+                CurrentSpaceRenderLayer);
+
+            var skyBounce = EnsureChapter1Phase4OutdoorSurfaceBounceMaterial(false);
+            CreateChapter1Phase4LightingLiftSlab(
+                root,
+                $"{objectPrefix}_CoolSurfaceSkyBounceA",
+                center + new Vector3(-4.80f * scale, 0.34f, -3.10f * scale),
+                new Vector3(7.40f * scale, 0.018f, 1.24f * scale),
+                Quaternion.Euler(0f, -12f, 0f),
+                skyBounce,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.cool_surface_sky_bounce_a");
+            CreateChapter1Phase4LightingLiftSlab(
+                root,
+                $"{objectPrefix}_CoolSurfaceSkyBounceB",
+                center + new Vector3(4.90f * scale, 0.34f, 1.80f * scale),
+                new Vector3(6.90f * scale, 0.018f, 1.12f * scale),
+                Quaternion.Euler(0f, 12f, 0f),
+                skyBounce,
+                TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                $"{landmarkPrefix}.cool_surface_sky_bounce_b");
+        }
+
+        private static Material EnsureChapter1Phase4OutdoorAtmosphereMaterial(bool past)
+        {
+            var id = past ? "Ch1Lighting_Outdoor_PastWarmAir" : "Ch1Lighting_Outdoor_CurrentCoolAir";
+            var tint = past
+                ? new Color(1.00f, 0.74f, 0.38f, 0.20f)
+                : new Color(0.56f, 0.68f, 1.00f, 0.20f);
+            var material = FlatMaterial(id, tint, true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3032);
+            AssignMaterialTexture(material, EnsureHd2dAtmosphereParticleTexture(), Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
+        private static Material EnsureChapter1Phase4OutdoorSurfaceBounceMaterial(bool past)
+        {
+            var id = past ? "Ch1Lighting_Outdoor_PastSunBounce" : "Ch1Lighting_Outdoor_CurrentSkyBounce";
+            var tint = past
+                ? new Color(1.00f, 0.78f, 0.48f, 0.09f)
+                : new Color(0.64f, 0.76f, 1.00f, 0.09f);
+            var material = FlatMaterial(id, tint, true, FastVsHd2dMaterialRole.OverlayGlow);
+            ConfigureTransparentUnlitMaterial(material, 3034);
+            AssignMaterialTexture(material, EnsureHd2dAtmosphereParticleTexture(), Vector2.one);
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
+
+            EditorUtility.SetDirty(material);
+            AssetDatabase.SaveAssets();
+            return material;
+        }
+
+        private static VolumeProfile EnsureChapter1Phase4OutdoorVolumeProfile(bool past)
+        {
+            EnsureFolder(Chapter1LightingSettingsDirectory);
+            var path = past ? Chapter1Phase4OutdoorPastVolumeProfilePath : Chapter1Phase4OutdoorCurrentVolumeProfilePath;
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(path);
+            if (profile == null)
+            {
+                profile = ScriptableObject.CreateInstance<VolumeProfile>();
+                AssetDatabase.CreateAsset(profile, path);
+            }
+
+            profile.name = past
+                ? "FastVS_House_Ch1Lighting_Outdoor_PastVolumeProfile"
+                : "FastVS_House_Ch1Lighting_Outdoor_CurrentVolumeProfile";
+
+            if (!profile.TryGet<ColorAdjustments>(out var colorAdjustments))
+            {
+                colorAdjustments = profile.Add<ColorAdjustments>(true);
+            }
+
+            if (!profile.TryGet<WhiteBalance>(out var whiteBalance))
+            {
+                whiteBalance = profile.Add<WhiteBalance>(true);
+            }
+
+            if (!profile.TryGet<Bloom>(out var bloom))
+            {
+                bloom = profile.Add<Bloom>(true);
+            }
+
+            if (!profile.TryGet<Vignette>(out var vignette))
+            {
+                vignette = profile.Add<Vignette>(true);
+            }
+
+            colorAdjustments.active = true;
+            colorAdjustments.postExposure.overrideState = true;
+            colorAdjustments.postExposure.value = past ? 0.10f : 0.38f;
+            colorAdjustments.contrast.overrideState = true;
+            colorAdjustments.contrast.value = past ? 16f : 12f;
+            colorAdjustments.saturation.overrideState = true;
+            colorAdjustments.saturation.value = past ? 6f : -2f;
+            colorAdjustments.colorFilter.overrideState = true;
+            colorAdjustments.colorFilter.value = past
+                ? new Color(1.12f, 0.94f, 0.76f, 1f)
+                : new Color(0.90f, 0.98f, 1.10f, 1f);
+
+            whiteBalance.active = true;
+            whiteBalance.temperature.overrideState = true;
+            whiteBalance.temperature.value = past ? 22f : -12f;
+            whiteBalance.tint.overrideState = true;
+            whiteBalance.tint.value = past ? 4f : -3f;
+
+            bloom.active = true;
+            bloom.threshold.overrideState = true;
+            bloom.threshold.value = past ? 0.78f : 0.94f;
+            bloom.intensity.overrideState = true;
+            bloom.intensity.value = past ? 0.64f : 0.36f;
+            bloom.scatter.overrideState = true;
+            bloom.scatter.value = past ? 0.70f : 0.50f;
+            bloom.tint.overrideState = true;
+            bloom.tint.value = past
+                ? new Color(1.00f, 0.80f, 0.50f, 1f)
+                : new Color(0.62f, 0.78f, 1.00f, 1f);
+
+            vignette.active = true;
+            vignette.intensity.overrideState = true;
+            vignette.intensity.value = past ? 0.16f : 0.16f;
             vignette.smoothness.overrideState = true;
             vignette.smoothness.value = past ? 0.52f : 0.46f;
             vignette.color.overrideState = true;
@@ -46725,6 +47019,244 @@ namespace Anemora.EditorTools
             if (color.a < 0.16f || color.a > 0.21f || color.b <= color.r)
             {
                 throw new InvalidOperationException($"House slice validation failed: Phase 4 lighting lift slab {objectName} must keep visible cool sky-bounce tint, found {color}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dChapter1AllMapLightingUplift()
+        {
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Current", "CentralPlaza", "Current_CentralPlazaMap_SeparateSpace", false, CentralPlazaVsCenter, new Vector3(124f, 118f, 164f), 1.16f, CurrentSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Current", "MiaHouse", "Current_MiaHouseMap_SeparateSpace", false, Chapter1MiaHouseMapCenter, new Vector3(92f, 108f, 138f), 0.92f, CurrentSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Current", "AriaStreet", "Current_AriaStreetMap_SeparateSpace", false, Chapter1AriaStreetMapCenter, new Vector3(122f, 118f, 166f), 1.08f, CurrentSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Current", "KaiaFarm", "Current_KaiaFarmMap_SeparateSpace", false, Chapter1KaiaFarmMapCenter, new Vector3(142f, 122f, 178f), 1.24f, CurrentSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Current", "Ruins", "Current_RuinsMap_SeparateSpace", false, Chapter1RuinsMapCenter, new Vector3(166f, 132f, 210f), 1.34f, CurrentSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Past", "CentralPlaza", "Past_CentralPlazaMap_SeparateSpace", true, CentralPlazaVsCenter, new Vector3(124f, 118f, 164f), 1.16f, OtherTimeSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Past", "MiaHouse", "Past_MiaHouseMap_SeparateSpace", true, Chapter1MiaHouseMapCenter, new Vector3(92f, 108f, 138f), 0.92f, OtherTimeSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Past", "AriaStreet", "Past_AriaStreetMap_SeparateSpace", true, Chapter1AriaStreetMapCenter, new Vector3(122f, 118f, 166f), 1.08f, OtherTimeSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Past", "KaiaFarm", "Past_KaiaFarmMap_SeparateSpace", true, Chapter1KaiaFarmMapCenter, new Vector3(142f, 122f, 178f), 1.24f, OtherTimeSpaceRenderLayer);
+            ValidateChapter1Phase4OutdoorMapLightingForPrefix("Past", "Ruins", "Past_RuinsMap_SeparateSpace", true, Chapter1RuinsMapCenter, new Vector3(166f, 132f, 210f), 1.34f, OtherTimeSpaceRenderLayer);
+        }
+
+        private static void ValidateChapter1Phase4OutdoorMapLightingForPrefix(
+            string prefix,
+            string mapToken,
+            string expectedParentName,
+            bool past,
+            Vector3 center,
+            Vector3 expectedVolumeSize,
+            float scale,
+            int expectedRenderLayer)
+        {
+            var objectPrefix = $"{prefix}_{mapToken}_Phase4Lighting";
+            var profilePath = past ? Chapter1Phase4OutdoorPastVolumeProfilePath : Chapter1Phase4OutdoorCurrentVolumeProfilePath;
+            ValidateChapter1Phase4OutdoorLightingVolume($"{objectPrefix}_Volume", expectedParentName, profilePath, past, center, expectedVolumeSize);
+
+            var canopyToken = past ? "WarmCanopyAirVeilA" : "CoolCanopyAirVeilA";
+            var groundToken = past ? "AmberGroundBreathA" : "CoolGroundHazeA";
+            ValidateChapter1Phase4OutdoorAtmosphereCard($"{objectPrefix}_{canopyToken}", expectedParentName, past, center, new Vector3(0.28f * scale, 3.20f, 5.40f * scale), new Vector3(9.60f * scale, 2.50f, 1f));
+            ValidateChapter1Phase4OutdoorAtmosphereCard($"{objectPrefix}_{groundToken}", expectedParentName, past, center, new Vector3(0.72f * scale, 0.56f, 1.84f * scale), new Vector3(8.40f * scale, 0.78f, 1f));
+
+            ValidateChapter1Phase4PointLight(
+                $"{objectPrefix}_{(past ? "WarmMemoryFill" : "CoolOpenShadeFill")}",
+                expectedParentName,
+                past,
+                expectedRenderLayer);
+
+            if (past)
+            {
+                ValidateChapter1Phase4OutdoorSurfaceBounce($"{objectPrefix}_WarmSurfaceSunBounceA", expectedParentName, true, center, new Vector3(-4.60f * scale, 0.34f, -2.80f * scale), new Vector3(7.20f * scale, 0.018f, 1.22f * scale));
+                ValidateChapter1Phase4OutdoorSurfaceBounce($"{objectPrefix}_WarmSurfaceSunBounceB", expectedParentName, true, center, new Vector3(4.80f * scale, 0.34f, 2.20f * scale), new Vector3(6.80f * scale, 0.018f, 1.10f * scale));
+                return;
+            }
+
+            ValidateChapter1Phase4OutdoorDirectionalFill($"{objectPrefix}_CoolSkyFill", expectedParentName, center, expectedRenderLayer);
+            ValidateChapter1Phase4OutdoorSurfaceBounce($"{objectPrefix}_CoolSurfaceSkyBounceA", expectedParentName, false, center, new Vector3(-4.80f * scale, 0.34f, -3.10f * scale), new Vector3(7.40f * scale, 0.018f, 1.24f * scale));
+            ValidateChapter1Phase4OutdoorSurfaceBounce($"{objectPrefix}_CoolSurfaceSkyBounceB", expectedParentName, false, center, new Vector3(4.90f * scale, 0.34f, 1.80f * scale), new Vector3(6.90f * scale, 0.018f, 1.12f * scale));
+        }
+
+        private static void ValidateChapter1Phase4OutdoorLightingVolume(
+            string objectName,
+            string expectedParentName,
+            string expectedProfilePath,
+            bool past,
+            Vector3 center,
+            Vector3 expectedSize)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase 4 outdoor lighting volume {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor lighting volume {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = Mathf.Clamp(past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer, 0, 31);
+            if (sceneObject.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor lighting volume {objectName} must be on the active time-space volume layer.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - center, new Vector3(-0.20f, 31.70f, -0.20f), new Vector3(0.20f, 32.30f, 0.20f));
+            var collider = sceneObject.GetComponent<BoxCollider>();
+            var volume = sceneObject.GetComponent<Volume>();
+            if (collider == null || volume == null || !collider.isTrigger || volume.isGlobal || volume.sharedProfile == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor lighting volume {objectName} must be a local BoxCollider-backed Volume.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} collider size", collider.size, expectedSize - new Vector3(0.75f, 0.75f, 0.75f), expectedSize + new Vector3(0.75f, 0.75f, 0.75f));
+            if (Mathf.Abs(volume.priority - (past ? 42f : 41f)) > 0.01f ||
+                Mathf.Abs(volume.weight - (past ? 0.62f : 0.58f)) > 0.01f ||
+                Mathf.Abs(volume.blendDistance - 24f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor lighting volume {objectName} has drifted priority/weight/blend.");
+            }
+
+            var profilePath = AssetDatabase.GetAssetPath(volume.sharedProfile);
+            if (!string.Equals(profilePath, expectedProfilePath, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor lighting volume {objectName} must use {expectedProfilePath}, got {profilePath}.");
+            }
+
+            ValidateChapter1Phase4OutdoorVolumeProfile(volume.sharedProfile, past, objectName);
+        }
+
+        private static void ValidateChapter1Phase4OutdoorVolumeProfile(VolumeProfile profile, bool past, string context)
+        {
+            if (!profile.TryGet<ColorAdjustments>(out var colorAdjustments) ||
+                !profile.TryGet<WhiteBalance>(out var whiteBalance) ||
+                !profile.TryGet<Bloom>(out var bloom) ||
+                !profile.TryGet<Vignette>(out var vignette))
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor profile {context} must include ColorAdjustments, WhiteBalance, Bloom, and Vignette.");
+            }
+
+            var expectedFilter = past ? new Color(1.12f, 0.94f, 0.76f, 1f) : new Color(0.90f, 0.98f, 1.10f, 1f);
+            if (!colorAdjustments.active || !whiteBalance.active || !bloom.active || !vignette.active ||
+                Mathf.Abs(colorAdjustments.postExposure.value - (past ? 0.10f : 0.38f)) > 0.01f ||
+                Mathf.Abs(colorAdjustments.contrast.value - (past ? 16f : 12f)) > 0.01f ||
+                Mathf.Abs(colorAdjustments.saturation.value - (past ? 6f : -2f)) > 0.01f ||
+                Mathf.Abs(whiteBalance.temperature.value - (past ? 22f : -12f)) > 0.01f ||
+                Mathf.Abs(whiteBalance.tint.value - (past ? 4f : -3f)) > 0.01f ||
+                Mathf.Abs(bloom.intensity.value - (past ? 0.64f : 0.36f)) > 0.01f ||
+                Mathf.Abs(vignette.intensity.value - 0.16f) > 0.01f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor profile {context} current/past camera grade values drifted.");
+            }
+
+            ValidateColorApproximately(colorAdjustments.colorFilter.value, expectedFilter, $"{context} Phase 4 outdoor color filter");
+        }
+
+        private static void ValidateChapter1Phase4OutdoorAtmosphereCard(
+            string objectName,
+            string expectedParentName,
+            bool past,
+            Vector3 center,
+            Vector3 expectedOffset,
+            Vector3 expectedScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<MeshRenderer>() : null;
+            if (sceneObject == null || renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase 4 outdoor atmosphere card {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName ||
+                sceneObject.GetComponent<Collider>() != null ||
+                sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>() == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor atmosphere card {objectName} must be a non-colliding landmark under {expectedParentName}.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - center, expectedOffset - new Vector3(0.40f, 0.40f, 0.40f), expectedOffset + new Vector3(0.40f, 0.40f, 0.40f));
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, expectedScale - new Vector3(0.50f, 0.30f, 0.10f), expectedScale + new Vector3(0.50f, 0.30f, 0.10f));
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf("Ch1Lighting_Outdoor_", StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor atmosphere card {objectName} must use a Ch1Lighting_Outdoor material.");
+            }
+
+            var material = renderer.sharedMaterial;
+            var color = material.HasProperty("_BaseColor") ? material.GetColor("_BaseColor") : material.GetColor("_Color");
+            if (color.a < 0.14f || color.a > 0.23f ||
+                past && color.r <= color.b ||
+                !past && color.b <= color.r)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor atmosphere card {objectName} must keep visible warm/cool air tint, found {color}.");
+            }
+        }
+
+        private static void ValidateChapter1Phase4OutdoorDirectionalFill(string objectName, string expectedParentName, Vector3 center, int expectedRenderLayer)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var light = sceneObject != null ? sceneObject.GetComponent<Light>() : null;
+            if (sceneObject == null || light == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase 4 outdoor directional fill {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor directional fill {objectName} must be parented under {expectedParentName}.");
+            }
+
+            if (light.type != LightType.Directional ||
+                light.shadows != LightShadows.None ||
+                light.cullingMask != (1 << Mathf.Clamp(expectedRenderLayer, 0, 31)) ||
+                light.intensity < 0.38f ||
+                light.intensity > 0.46f ||
+                light.color.b <= light.color.r)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor directional fill {objectName} must keep cool layer-scoped non-shadow sky fill.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - center, new Vector3(-0.20f, 13.40f, -0.20f), new Vector3(0.20f, 14.20f, 0.20f));
+        }
+
+        private static void ValidateChapter1Phase4OutdoorSurfaceBounce(
+            string objectName,
+            string expectedParentName,
+            bool past,
+            Vector3 center,
+            Vector3 expectedOffset,
+            Vector3 expectedScale)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var renderer = sceneObject != null ? sceneObject.GetComponent<Renderer>() : null;
+            if (sceneObject == null || renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing Phase 4 outdoor surface bounce {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName ||
+                sceneObject.GetComponent<Collider>() != null ||
+                sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>() == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor surface bounce {objectName} must be a non-colliding landmark under {expectedParentName}.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} local position", sceneObject.transform.localPosition - center, expectedOffset - new Vector3(0.40f, 0.10f, 0.40f), expectedOffset + new Vector3(0.40f, 0.10f, 0.40f));
+            ValidateVectorWithinRange($"{objectName} local scale", sceneObject.transform.localScale, expectedScale - new Vector3(0.50f, 0.010f, 0.20f), expectedScale + new Vector3(0.50f, 0.010f, 0.20f));
+
+            var materialName = renderer.sharedMaterial.name ?? string.Empty;
+            if (materialName.IndexOf(past ? "Ch1Lighting_Outdoor_PastSunBounce" : "Ch1Lighting_Outdoor_CurrentSkyBounce", StringComparison.Ordinal) < 0 ||
+                renderer.shadowCastingMode != ShadowCastingMode.Off ||
+                renderer.receiveShadows)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor surface bounce {objectName} must use the non-shadow outdoor bounce material.");
+            }
+
+            var material = renderer.sharedMaterial;
+            var color = material.HasProperty("_BaseColor") ? material.GetColor("_BaseColor") : material.GetColor("_Color");
+            if (color.a < 0.07f || color.a > 0.11f ||
+                past && color.r <= color.b ||
+                !past && color.b <= color.r)
+            {
+                throw new InvalidOperationException($"House slice validation failed: Phase 4 outdoor surface bounce {objectName} must keep warm/cool tint, found {color}.");
             }
         }
 
