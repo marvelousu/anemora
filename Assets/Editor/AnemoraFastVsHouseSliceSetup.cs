@@ -48662,7 +48662,35 @@ namespace Anemora.EditorTools
                     new Vector3(0.82f, 0.065f, 0.82f),
                     0.48f,
                     0.54f);
+
+                ValidateChapter1BridgeContinuousSupport(prefix);
             }
+        }
+
+        private static void ValidateChapter1BridgeContinuousSupport(string prefix)
+        {
+            var pathToken = prefix == "Current" ? "current_path" : "past_path";
+            ValidateChapter1BridgeWalkableSurface(
+                $"{prefix}_CentralPlaza_Chapter1_F1_To_F6_Path",
+                pathToken,
+                new Vector3(1.20f, 0.060f, 45.00f),
+                new Vector3(1.70f, 0.110f, 48.00f),
+                0.030f,
+                0.100f);
+            ValidateChapter1BridgeWalkableSurface(
+                $"{prefix}_CentralPlaza_Chapter1_F1_LeftBridgeRoadJoin",
+                pathToken,
+                new Vector3(2.80f, 0.060f, 1.20f),
+                new Vector3(3.40f, 0.110f, 1.80f),
+                0.050f,
+                0.140f);
+            ValidateChapter1BridgeWalkableSurface(
+                $"{prefix}_CentralPlaza_Chapter1_F1_RightBridgeRoadJoin",
+                pathToken,
+                new Vector3(2.80f, 0.060f, 1.20f),
+                new Vector3(3.40f, 0.110f, 1.80f),
+                0.050f,
+                0.140f);
         }
 
         private static void ValidateChapter1BridgeWalkableSurface(string objectName, string materialToken, Vector3 minScale, Vector3 maxScale, float minLocalY, float maxLocalY)
