@@ -494,9 +494,11 @@ namespace Anemora.EditorTools
         private const float Chapter1EndSideViewOrthographicSize = 2.80f;
         private const int DistantPanoramaVistaSegmentCount = 28;
         private const int DistantPanoramaVistaBandCount = 3;
+        private const int DistantPanoramaVistaAreaLandmarkCount = 5;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
         private const float DistantPanoramaVistaForegroundCoppiceRadius = 62.8f;
+        private const float DistantPanoramaVistaAreaLandmarkRadius = 78f;
         private const float DistantPanoramaVistaNearRadius = 72f;
         private const float DistantPanoramaVistaMidRadius = 94f;
         private const float DistantPanoramaVistaFarRadius = 118f;
@@ -23228,6 +23230,7 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaMidgroundValleyBreaks(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaForegroundCoppices(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaFoothillForest(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaAreaLandmarks(parent, prefix, past, area, areaToken, center);
 
             for (var band = 0; band < DistantPanoramaVistaBandCount; band++)
             {
@@ -23440,6 +23443,107 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateDistantPanoramaVistaAreaLandmarks(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            var material = EnsureDistantPanoramaVistaAreaLandmarkMaterial(past);
+
+            for (var index = 0; index < DistantPanoramaVistaAreaLandmarkCount; index++)
+            {
+                var seed = 3571 + (int)area * 211 + (past ? 977 : 0) + index * 43;
+                var angle = GetDistantPanoramaVistaAreaLandmarkAngle(area, index, seed);
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = DistantPanoramaVistaAreaLandmarkRadius + DistantPanoramaVistaSigned(seed + 5, 5.8f);
+                var localPosition = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, 2.8f) +
+                    new Vector3(0f, 0.20f + DistantPanoramaVistaHash01(seed + 17) * 0.18f, 0f);
+                var faceDirection = center - localPosition;
+                faceDirection.y = 0f;
+                if (faceDirection.sqrMagnitude < 0.01f)
+                {
+                    faceDirection = -radial;
+                }
+
+                var profile = GetDistantPanoramaVistaAreaLandmarkProfile(area, index);
+                var segmentObject = new GameObject($"{prefix}_{areaToken}_DistantVista_AreaLandmark_S{index + 1:00}");
+                segmentObject.transform.SetParent(parent, false);
+                segmentObject.transform.localPosition = localPosition;
+                segmentObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                segmentObject.transform.localScale = Vector3.one;
+                segmentObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                var filter = segmentObject.AddComponent<MeshFilter>();
+                filter.sharedMesh = CreateDistantPanoramaVistaAreaLandmarkMesh(
+                    $"{segmentObject.name}_Mesh",
+                    seed,
+                    profile,
+                    Mathf.Lerp(16.0f, 27.0f, DistantPanoramaVistaHash01(seed + 23)),
+                    Mathf.Lerp(6.2f, 11.4f, DistantPanoramaVistaHash01(seed + 31)),
+                    Mathf.Lerp(1.30f, 2.15f, DistantPanoramaVistaHash01(seed + 37)));
+
+                var renderer = segmentObject.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+
+                var landmark = segmentObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.area_landmark.s{index + 1:00}");
+                SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                SerializedSet(landmark, "countsForArrival", false);
+            }
+        }
+
+        private static float GetDistantPanoramaVistaAreaLandmarkAngle(FastVsHouseArea area, int index, int seed)
+        {
+            var centerDegrees = 0f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    centerDegrees = -4f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    centerDegrees = 3f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    centerDegrees = 7f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    centerDegrees = 8f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                    centerDegrees = -2f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    centerDegrees = -6f;
+                    break;
+            }
+
+            var spread = (index - (DistantPanoramaVistaAreaLandmarkCount - 1) * 0.5f) * 13.5f;
+            var jitter = DistantPanoramaVistaSigned(seed + 41, 2.2f);
+            return (centerDegrees + spread + jitter) * Mathf.Deg2Rad;
+        }
+
+        private static int GetDistantPanoramaVistaAreaLandmarkProfile(FastVsHouseArea area, int index)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.KaiaFarm:
+                    return 1;
+                case FastVsHouseArea.Ruins:
+                    return 2;
+                case FastVsHouseArea.CentralPlaza:
+                    return index == 1 ? 3 : 0;
+                case FastVsHouseArea.AriaStreet:
+                    return index == 2 ? 3 : 0;
+                case FastVsHouseArea.Exterior:
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    return index == 0 ? 3 : 0;
+            }
+        }
+
         private static void CreateDistantPanoramaVistaTerrainApron(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
         {
             var outerRadius = DistantPanoramaVistaForestRadius;
@@ -23635,6 +23739,113 @@ namespace Anemora.EditorTools
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             return mesh;
+        }
+
+        private static Mesh CreateDistantPanoramaVistaAreaLandmarkMesh(string meshName, int seed, int profile, float width, float maxHeight, float depth)
+        {
+            const int columnCount = 14;
+            const int rowCount = 4;
+            const int sideCount = 2;
+            var vertices = new Vector3[columnCount * rowCount * sideCount];
+            var uvs = new Vector2[columnCount * rowCount * sideCount];
+            var frontZ = -depth * 0.5f;
+            var backZ = depth * 0.5f;
+
+            for (var column = 0; column < columnCount; column++)
+            {
+                var u = column / (float)(columnCount - 1);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u);
+                var height = GetDistantPanoramaVistaAreaLandmarkColumnHeight(profile, seed, column, u, maxHeight);
+                var shoulderHeight = height * Mathf.Lerp(0.42f, 0.66f, DistantPanoramaVistaHash01(seed + column * 29 + 7));
+                var baseLift = DistantPanoramaVistaSigned(seed + column * 31 + 11, 0.08f);
+
+                for (var side = 0; side < sideCount; side++)
+                {
+                    var z = side == 0 ? frontZ : backZ;
+                    var sideHeightScale = side == 0 ? 1f : 0.92f;
+                    for (var row = 0; row < rowCount; row++)
+                    {
+                        var v = row / (float)(rowCount - 1);
+                        var y = 0f;
+                        if (row == 1)
+                        {
+                            y = Mathf.Max(0.06f, height * 0.22f + baseLift);
+                        }
+                        else if (row == 2)
+                        {
+                            y = Mathf.Max(0.12f, shoulderHeight + baseLift * 0.5f);
+                        }
+                        else if (row == 3)
+                        {
+                            y = height * sideHeightScale;
+                        }
+
+                        var vertexIndex = ((side * rowCount) + row) * columnCount + column;
+                        vertices[vertexIndex] = new Vector3(x, y, z);
+                        uvs[vertexIndex] = new Vector2(u, v);
+                    }
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 24);
+            for (var column = 0; column < columnCount - 1; column++)
+            {
+                for (var row = 0; row < rowCount - 1; row++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+
+                    var backOffset = rowCount * columnCount;
+                    AddDoubleSidedQuad(triangles, backOffset + a, backOffset + c, backOffset + b, backOffset + d);
+                }
+
+                var frontTopA = (rowCount - 1) * columnCount + column;
+                var frontTopB = (rowCount - 1) * columnCount + column + 1;
+                var backTopA = rowCount * columnCount + frontTopA;
+                var backTopB = rowCount * columnCount + frontTopB;
+                AddDoubleSidedQuad(triangles, frontTopA, frontTopB, backTopA, backTopB);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static float GetDistantPanoramaVistaAreaLandmarkColumnHeight(int profile, int seed, int column, float u, float maxHeight)
+        {
+            var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+            if (profile == 1)
+            {
+                var terrace = column % 3 == 1 ? 1.0f : 0.64f;
+                return maxHeight * Mathf.Lerp(0.26f, 0.52f, edgeFalloff) * terrace;
+            }
+
+            if (profile == 2)
+            {
+                var tooth = (column % 4 == 1 || column % 5 == 2) ? 1.0f : 0.36f;
+                var breakNoise = Mathf.Lerp(0.72f, 1.24f, DistantPanoramaVistaHash01(seed + column * 53));
+                return maxHeight * Mathf.Lerp(0.35f, 1.18f, edgeFalloff) * tooth * breakNoise;
+            }
+
+            if (profile == 3)
+            {
+                var roofPulse = column % 5 == 2 ? 1.18f : 0.78f;
+                return maxHeight * Mathf.Lerp(0.42f, 0.98f, edgeFalloff) * roofPulse;
+            }
+
+            var blockPulse = (column % 4 == 0 || column % 4 == 3) ? 0.62f : 1.0f;
+            var roofPeak = column % 6 == 2 ? 1.20f : 0.86f;
+            return maxHeight * Mathf.Lerp(0.48f, 1.04f, edgeFalloff) * blockPulse * roofPeak;
         }
 
         private static Mesh CreateDistantPanoramaVistaForestMesh(string meshName, int seed, float width, float maxHeight, float thickness)
@@ -23845,6 +24056,27 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.10f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaAreaLandmarkMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastAreaLandmark" : "Ch1Distant_CurrentAreaLandmark";
+            var color = past
+                ? new Color(0.174f, 0.204f, 0.118f, 1f)
+                : new Color(0.118f, 0.202f, 0.146f, 1f);
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.11f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -47919,7 +48151,7 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: distant panorama vista far radius must stay beyond 112m for parallax depth, found {DistantPanoramaVistaFarRadius:0.000}.");
             }
 
-            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 4);
+            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 4) + DistantPanoramaVistaAreaLandmarkCount;
             if (filters.Length < expectedSegments)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} has {filters.Length} distant vista segments, expected at least {expectedSegments}.");
@@ -47951,6 +48183,20 @@ namespace Anemora.EditorTools
             if (foregroundCoppiceCount < DistantPanoramaVistaSegmentCount)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} needs one authored foreground coppice per distant vista segment, found {foregroundCoppiceCount}.");
+            }
+
+            var areaLandmarkCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_AreaLandmark", StringComparison.Ordinal))
+                {
+                    areaLandmarkCount++;
+                }
+            }
+
+            if (areaLandmarkCount < DistantPanoramaVistaAreaLandmarkCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaAreaLandmarkCount} authored area landmarks, found {areaLandmarkCount}.");
             }
 
             var center = GetDistantPanoramaVistaCenter(area);

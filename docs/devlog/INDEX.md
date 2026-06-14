@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.76 HD2D distant midground valley breaks (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.77 HD2D distant area landmarks (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 773 files including INDEX.md and README.md.
-- Dated devlog records: 771 files.
+- Root-level Markdown coverage: 774 files including INDEX.md and README.md.
+- Dated devlog records: 772 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-14 | 8 |
+| 2026-06-14 | 9 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
 | 2026-05-06 | 12 |
@@ -48,6 +48,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-14_hd2d_distant_area_landmarks.md](2026-06-14_hd2d_distant_area_landmarks.md) | Fast VS / HD2D | HD2D distant area landmarks |
 | [2026-06-14_hd2d_distant_midground_valley_breaks.md](2026-06-14_hd2d_distant_midground_valley_breaks.md) | Fast VS / HD2D | HD2D distant midground valley breaks |
 | [2026-06-14_hd2d_bridge_traversal_scaffold_and_uplift_plan.md](2026-06-14_hd2d_bridge_traversal_scaffold_and_uplift_plan.md) | Fast VS / HD2D | HD2D bridge traversal scaffold and uplift plan |
 | [2026-06-14_hd2d_distant_panorama_quality_uplift.md](2026-06-14_hd2d_distant_panorama_quality_uplift.md) | Fast VS / HD2D | HD2D distant panorama authored depth uplift |
@@ -739,6 +740,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.77 | 2026-06-14 | Added HD2D distant area landmarks with per-area horizon identity profiles, plateau rejection evidence, all-map review capture, shotdiff, and renderer-freeze validation. |
 | v8.76 | 2026-06-14 | Added HD2D distant midground valley breaks with deterministic foreground coppice and valley-break layers, plateau rejection evidence, all-map review capture, shotdiff, and renderer-freeze validation. |
 | v8.75 | 2026-06-14 | Added HD2D bridge traversal scaffold and graphics uplift plan with midpoint-pier route validation, bridge support surface guards, and review/update discipline notes. |
 | v8.74 | 2026-06-14 | Added HD2D distant panorama authored depth uplift record with wider real-geometry vista rings, deterministic foothill forest, validation, review upload, and viewer rebuild evidence. |
