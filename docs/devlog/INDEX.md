@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.71 review sync hook path fix (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.72 bloat guard review README allowlist (2026-06-14). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 769 files including INDEX.md and README.md.
-- Dated devlog records: 767 files.
+- Root-level Markdown coverage: 770 files including INDEX.md and README.md.
+- Dated devlog records: 768 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-14 | 3 |
+| 2026-06-14 | 4 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
 | 2026-05-06 | 12 |
@@ -48,6 +48,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-14_bloat_guard_review_readme_allowlist.md](2026-06-14_bloat_guard_review_readme_allowlist.md) | Repo workflow | bloat guard review README allowlist |
 | [2026-06-14_review_sync_hook_path_fix.md](2026-06-14_review_sync_hook_path_fix.md) | Repo workflow | review sync hook path fix |
 | [2026-06-14_branch_frontier_review_sync_guard.md](2026-06-14_branch_frontier_review_sync_guard.md) | Repo workflow | branch frontier and review sync guard |
 | [2026-06-14_hd2d_environment_uplift_phase1_4_apv_rebake_closeout.md](2026-06-14_hd2d_environment_uplift_phase1_4_apv_rebake_closeout.md) | Fast VS / HD2D | environment uplift Phase 1-4 and APV closeout |
@@ -734,6 +735,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.72 | 2026-06-14 | Added bloat guard exact allowlist for docs/review/README.md so review workflow documentation can be updated while review images remain blocked. |
 | v8.71 | 2026-06-14 | Added review-sync hook path fix record after validating WSL/Git Bash path conversion for Windows PowerShell pre-push execution. |
 | v8.70 | 2026-06-14 | Added branch-frontier clarification and review-sync guard record, covering continuation integration evidence, point15 current frontier, pre-push/CI devlog guard, and wip-aware R2/viewer update wiring. |
 | v8.69 | 2026-06-14 | Updated the environment uplift closeout record with anemora-viewer propagation fixes, lightweight wip branch hydration, deploy hook id, and public viewer verification URLs. |
