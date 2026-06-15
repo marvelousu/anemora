@@ -505,6 +505,10 @@ namespace Anemora.EditorTools
         private const int MidgroundEdgeClosurePrototypeVisibleMinimum = 5;
         private const int MapEdgeTerrainApronPrototypeMeshCount = 12;
         private const int MapEdgeTerrainApronPrototypeVisibleMinimum = 6;
+        private const int MidDistanceLandformClosureSegmentCount = 18;
+        private const int MidDistanceLandformClosurePathThreadCount = 6;
+        private const int MidDistanceLandformClosureMeshCount = MidDistanceLandformClosureSegmentCount * 3 + MidDistanceLandformClosurePathThreadCount;
+        private const int MidDistanceLandformClosureVisibleMinimum = 5;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -943,6 +947,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dDistantPanoramaVista();
             ValidateFastVsHd2dMidgroundEdgeClosurePrototype();
             ValidateFastVsHd2dMapEdgeTerrainApronPrototype();
+            ValidateFastVsHd2dMidDistanceLandformClosureAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10184,6 +10189,16 @@ namespace Anemora.EditorTools
                 materials);
             CreateChapter1PhaseDMapEdgeTerrainApronPrototype(
                 exteriorRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseEMidDistanceLandformClosureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
                 prefix,
                 past,
                 materials);
@@ -23841,6 +23856,442 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1PhaseEMidDistanceLandformClosureForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            _ = materials;
+
+            CreateChapter1PhaseEMidDistanceLandformClosure(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseEMidDistanceLandformClosure(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseEMidDistanceLandformClosure(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseEMidDistanceLandformClosure(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseEMidDistanceLandformClosure(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseEMidDistanceLandformClosure(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseEMidDistanceLandformClosure(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_MidDistanceLandformClosure").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var radiusScale = GetMidDistanceLandformClosureRadiusScale(area);
+            var phase = GetMidDistanceLandformClosureAreaPhase(area);
+            var shelfMaterial = EnsureMidDistanceLandformClosureTerrainMaterial(past);
+            var bankMaterial = EnsureMidDistanceLandformClosureBankMaterial(past);
+            var pathMaterial = EnsureMidDistanceLandformClosurePathMaterial(past);
+            var coppiceMaterial = EnsureMidDistanceLandformClosureCoppiceMaterial(past);
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.mid_distance_landform_closure";
+
+            for (var segment = 0; segment < MidDistanceLandformClosureSegmentCount; segment++)
+            {
+                var seed = 6211 + (int)area * 337 + (past ? 1459 : 0) + segment * 71;
+                var angle = ((segment + 0.5f) / MidDistanceLandformClosureSegmentCount) * Mathf.PI * 2f + phase;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+
+                var shelfRadius = (18.6f + DistantPanoramaVistaSigned(seed + 5, 1.75f)) * radiusScale;
+                var shelfPosition = center +
+                    radial * shelfRadius +
+                    tangent * DistantPanoramaVistaSigned(seed + 11, 1.10f) +
+                    new Vector3(0f, 0.045f + DistantPanoramaVistaHash01(seed + 17) * 0.030f, 0f);
+                var shelfRotation = MidDistanceLandformClosureFacingRotation(center, shelfPosition, -radial);
+                var shelfWidth = 2f * shelfRadius * Mathf.Tan(Mathf.PI / MidDistanceLandformClosureSegmentCount) *
+                    Mathf.Lerp(1.20f, 1.62f, DistantPanoramaVistaHash01(seed + 23));
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_MidDistanceLandformClosure_TerrainShelf_S{segment + 1:00}",
+                    parent,
+                    shelfPosition,
+                    shelfRotation,
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_MidDistanceLandformClosure_TerrainShelf_S{segment + 1:00}_Mesh",
+                        seed,
+                        shelfWidth,
+                        Mathf.Lerp(4.6f, 7.2f, DistantPanoramaVistaHash01(seed + 29)) * radiusScale,
+                        Mathf.Lerp(0.16f, 0.32f, DistantPanoramaVistaHash01(seed + 31))),
+                    shelfMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.terrain_shelf.s{segment + 1:00}");
+
+                var bankSeed = seed + 4009;
+                var bankRadius = (27.5f + DistantPanoramaVistaSigned(bankSeed + 5, 2.30f)) * radiusScale;
+                var bankPosition = center +
+                    radial * bankRadius +
+                    tangent * DistantPanoramaVistaSigned(bankSeed + 11, 1.85f) +
+                    new Vector3(0f, 0.12f + DistantPanoramaVistaHash01(bankSeed + 17) * 0.12f, 0f);
+                var bankWidth = 2f * bankRadius * Mathf.Tan(Mathf.PI / MidDistanceLandformClosureSegmentCount) *
+                    Mathf.Lerp(1.04f, 1.40f, DistantPanoramaVistaHash01(bankSeed + 23));
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_MidDistanceLandformClosure_LowBank_S{segment + 1:00}",
+                    parent,
+                    bankPosition,
+                    MidDistanceLandformClosureFacingRotation(center, bankPosition, -radial),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_MidDistanceLandformClosure_LowBank_S{segment + 1:00}_Mesh",
+                        bankSeed,
+                        bankWidth,
+                        Mathf.Lerp(1.25f, 2.55f, DistantPanoramaVistaHash01(bankSeed + 31)) * (past ? 1.08f : 1f),
+                        Mathf.Lerp(1.10f, 1.75f, DistantPanoramaVistaHash01(bankSeed + 37))),
+                    bankMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.low_bank.s{segment + 1:00}");
+
+                var coppiceSeed = seed + 8011;
+                var coppiceRadius = (23.0f + DistantPanoramaVistaSigned(coppiceSeed + 5, 1.80f)) * radiusScale;
+                var coppicePosition = center +
+                    radial * coppiceRadius +
+                    tangent * DistantPanoramaVistaSigned(coppiceSeed + 11, 1.65f) +
+                    new Vector3(0f, 0.18f + DistantPanoramaVistaHash01(coppiceSeed + 17) * 0.18f, 0f);
+                var coppiceWidth = 2f * coppiceRadius * Mathf.Tan(Mathf.PI / MidDistanceLandformClosureSegmentCount) *
+                    Mathf.Lerp(0.82f, 1.24f, DistantPanoramaVistaHash01(coppiceSeed + 23));
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_MidDistanceLandformClosure_CoppiceFold_S{segment + 1:00}",
+                    parent,
+                    coppicePosition,
+                    MidDistanceLandformClosureFacingRotation(center, coppicePosition, -radial),
+                    CreateDistantPanoramaVistaTreelineFoldMesh(
+                        $"{prefix}_{areaToken}_MidDistanceLandformClosure_CoppiceFold_S{segment + 1:00}_Mesh",
+                        coppiceSeed,
+                        coppiceWidth,
+                        Mathf.Lerp(2.2f, 4.4f, DistantPanoramaVistaHash01(coppiceSeed + 31)) * (past ? 1.08f : 1f),
+                        0.78f),
+                    coppiceMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.coppice_fold.s{segment + 1:00}");
+            }
+
+            var pathCenter = GetMidDistanceLandformClosurePathCenterAngle(area);
+            for (var index = 0; index < MidDistanceLandformClosurePathThreadCount; index++)
+            {
+                var seed = 14891 + (int)area * 379 + (past ? 1609 : 0) + index * 83;
+                var angle = pathCenter +
+                    (index - (MidDistanceLandformClosurePathThreadCount - 1) * 0.5f) * 5.2f * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.25f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (16.2f + index * 1.95f + DistantPanoramaVistaSigned(seed + 11, 0.55f)) *
+                    GetMidDistanceLandformClosurePathRadiusScale(area);
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, 0.62f) +
+                    new Vector3(0f, 0.082f + index * 0.006f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_MidDistanceLandformClosure_PathThread_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_MidDistanceLandformClosure_PathThread_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(3.4f, 5.6f, DistantPanoramaVistaHash01(seed + 23)) * GetMidDistanceLandformClosurePathRadiusScale(area),
+                        Mathf.Lerp(2.8f, 4.8f, DistantPanoramaVistaHash01(seed + 29)),
+                        Mathf.Lerp(0.07f, 0.16f, DistantPanoramaVistaHash01(seed + 31))),
+                    pathMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.path_thread.s{index + 1:00}");
+            }
+
+            ApplyMidDistanceLandformClosureRendererPolicy(parent);
+        }
+
+        private static void CreateMidDistanceLandformClosurePiece(
+            string objectName,
+            Transform parent,
+            Vector3 localPosition,
+            Quaternion localRotation,
+            Mesh mesh,
+            Material material,
+            TimeWindowPairedSpaceLandmarkKind kind,
+            string landmarkId)
+        {
+            var sceneObject = new GameObject(objectName);
+            sceneObject.transform.SetParent(parent, false);
+            sceneObject.transform.localPosition = localPosition;
+            sceneObject.transform.localRotation = localRotation;
+            sceneObject.transform.localScale = Vector3.one;
+            sceneObject.layer = parent.gameObject.layer;
+
+            var filter = sceneObject.AddComponent<MeshFilter>();
+            filter.sharedMesh = mesh;
+
+            var renderer = sceneObject.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+
+            var landmark = sceneObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", kind);
+            SerializedSet(landmark, "countsForArrival", false);
+        }
+
+        private static Quaternion MidDistanceLandformClosureFacingRotation(Vector3 center, Vector3 localPosition, Vector3 fallbackDirection)
+        {
+            var faceDirection = center - localPosition;
+            faceDirection.y = 0f;
+            if (faceDirection.sqrMagnitude < 0.01f)
+            {
+                faceDirection = fallbackDirection;
+            }
+
+            return Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+        }
+
+        private static Mesh CreateMidDistanceLandformClosureShelfMesh(string meshName, int seed, float width, float depth, float relief)
+        {
+            const int columnCount = 13;
+            const int rowCount = 6;
+            var vertices = new Vector3[columnCount * rowCount];
+            var uvs = new Vector2[vertices.Length];
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                var v = row / (float)(rowCount - 1);
+                var rowWidth = width * Mathf.Lerp(0.72f, 1.12f, Mathf.Sin(v * Mathf.PI * 0.92f));
+                var rowDrift = DistantPanoramaVistaSigned(seed + row * 37 + 5, width * 0.048f);
+                var z = Mathf.Lerp(-depth * 0.52f, depth * 0.52f, v) +
+                    DistantPanoramaVistaSigned(seed + row * 41 + 11, depth * 0.052f);
+
+                for (var column = 0; column < columnCount; column++)
+                {
+                    var u = column / (float)(columnCount - 1);
+                    var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                    var centerLift = Mathf.Sin(v * Mathf.PI) * relief;
+                    var terrace = (row == 1 || row == rowCount - 2) ? relief * 0.38f : 0f;
+                    var notch = (column == 0 || column == columnCount - 1)
+                        ? DistantPanoramaVistaSigned(seed + row * 47 + column * 17, width * 0.065f)
+                        : 0f;
+                    var x = Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u) +
+                        rowDrift +
+                        DistantPanoramaVistaSigned(seed + row * 53 + column * 19, width * 0.030f) * edgeFalloff +
+                        notch;
+                    var y = 0.010f + centerLift + terrace +
+                        DistantPanoramaVistaSigned(seed + row * 59 + column * 23, relief * 0.34f) * edgeFalloff;
+                    var index = row * columnCount + column;
+                    vertices[index] = new Vector3(x, y, z);
+                    uvs[index] = new Vector2(u, v);
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 12);
+            for (var row = 0; row < rowCount - 1; row++)
+            {
+                for (var column = 0; column < columnCount - 1; column++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static Mesh CreateMidDistanceLandformClosureLowBankMesh(string meshName, int seed, float width, float height, float thickness)
+        {
+            const int columnCount = 14;
+            const int rowCount = 4;
+            const int sideCount = 2;
+            var vertices = new Vector3[columnCount * rowCount * sideCount];
+            var uvs = new Vector2[vertices.Length];
+            var frontZ = -thickness * 0.5f;
+            var backZ = thickness * 0.5f;
+
+            for (var column = 0; column < columnCount; column++)
+            {
+                var u = column / (float)(columnCount - 1);
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u) +
+                    DistantPanoramaVistaSigned(seed + column * 23 + 5, 0.18f) * edgeFalloff;
+                var moundA = Mathf.Clamp01(1f - Mathf.Abs(u - 0.26f) * 4.6f);
+                var moundB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.58f) * 5.0f);
+                var moundC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.82f) * 5.4f);
+                var mound = Mathf.Max(moundA * 0.76f, Mathf.Max(moundB, moundC * 0.70f));
+                var crown = height * Mathf.Clamp(0.42f + edgeFalloff * 0.22f + mound * 0.44f, 0.34f, 1.08f);
+                var shoulder = crown * Mathf.Lerp(0.42f, 0.64f, DistantPanoramaVistaHash01(seed + column * 37 + 11));
+                if (column == 0 || column == columnCount - 1)
+                {
+                    crown *= 0.42f;
+                    shoulder *= 0.48f;
+                }
+
+                for (var side = 0; side < sideCount; side++)
+                {
+                    var z = side == 0 ? frontZ : backZ;
+                    var sideHeightScale = side == 0 ? 1f : Mathf.Lerp(0.86f, 0.96f, DistantPanoramaVistaHash01(seed + column * 43 + 17));
+                    for (var row = 0; row < rowCount; row++)
+                    {
+                        var v = row / (float)(rowCount - 1);
+                        var y = 0f;
+                        if (row == 1)
+                        {
+                            y = Mathf.Max(0.04f, shoulder * 0.54f);
+                        }
+                        else if (row == 2)
+                        {
+                            y = Mathf.Max(0.08f, shoulder);
+                        }
+                        else if (row == 3)
+                        {
+                            y = crown * sideHeightScale;
+                        }
+
+                        var vertexIndex = ((side * rowCount) + row) * columnCount + column;
+                        vertices[vertexIndex] = new Vector3(x, y, z);
+                        uvs[vertexIndex] = new Vector2(u, v);
+                    }
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 24);
+            for (var column = 0; column < columnCount - 1; column++)
+            {
+                for (var row = 0; row < rowCount - 1; row++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+
+                    var backOffset = rowCount * columnCount;
+                    AddDoubleSidedQuad(triangles, backOffset + a, backOffset + c, backOffset + b, backOffset + d);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static float GetMidDistanceLandformClosureRadiusScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.12f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.96f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.24f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.26f;
+                case FastVsHouseArea.Ruins:
+                    return 1.52f;
+                case FastVsHouseArea.Exterior:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static float GetMidDistanceLandformClosurePathRadiusScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.AriaStreet:
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.18f;
+                case FastVsHouseArea.Ruins:
+                    return 1.42f;
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.08f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.95f;
+                case FastVsHouseArea.Exterior:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static float GetMidDistanceLandformClosureAreaPhase(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 3.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.CentralPlaza:
+                    return -4.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.MiaHouse:
+                    return 5.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.AriaStreet:
+                    return -2.5f * Mathf.Deg2Rad;
+                case FastVsHouseArea.KaiaFarm:
+                    return 6.5f * Mathf.Deg2Rad;
+                case FastVsHouseArea.Ruins:
+                    return -6.0f * Mathf.Deg2Rad;
+                default:
+                    return 0f;
+            }
+        }
+
+        private static float GetMidDistanceLandformClosurePathCenterAngle(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 32.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.CentralPlaza:
+                    return -6.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.MiaHouse:
+                    return -14.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.AriaStreet:
+                    return 10.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.KaiaFarm:
+                    return 13.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.Ruins:
+                    return -5.0f * Mathf.Deg2Rad;
+                default:
+                    return 0f;
+            }
+        }
+
+        private static void ApplyMidDistanceLandformClosureRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -26464,6 +26915,59 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.08f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureMidDistanceLandformClosureTerrainMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastMidDistanceLandformTerrain" : "Ch1Distant_CurrentMidDistanceLandformTerrain";
+            var color = past
+                ? new Color(0.294f, 0.286f, 0.172f, 1f)
+                : new Color(0.156f, 0.294f, 0.164f, 1f);
+            return EnsureMidDistanceLandformClosureMaterial(id, color, 0.10f);
+        }
+
+        private static Material EnsureMidDistanceLandformClosureBankMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastMidDistanceLandformBank" : "Ch1Distant_CurrentMidDistanceLandformBank";
+            var color = past
+                ? new Color(0.250f, 0.236f, 0.132f, 1f)
+                : new Color(0.116f, 0.230f, 0.124f, 1f);
+            return EnsureMidDistanceLandformClosureMaterial(id, color, 0.09f);
+        }
+
+        private static Material EnsureMidDistanceLandformClosurePathMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastMidDistanceLandformPath" : "Ch1Distant_CurrentMidDistanceLandformPath";
+            var color = past
+                ? new Color(0.372f, 0.318f, 0.186f, 1f)
+                : new Color(0.302f, 0.284f, 0.176f, 1f);
+            return EnsureMidDistanceLandformClosureMaterial(id, color, 0.12f);
+        }
+
+        private static Material EnsureMidDistanceLandformClosureCoppiceMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastMidDistanceLandformCoppice" : "Ch1Distant_CurrentMidDistanceLandformCoppice";
+            var color = past
+                ? new Color(0.126f, 0.178f, 0.074f, 1f)
+                : new Color(0.046f, 0.166f, 0.074f, 1f);
+            return EnsureMidDistanceLandformClosureMaterial(id, color, 0.08f);
+        }
+
+        private static Material EnsureMidDistanceLandformClosureMaterial(string id, Color color, float smoothness)
+        {
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -50975,6 +51479,199 @@ namespace Anemora.EditorTools
             if (visibleCount < MapEdgeTerrainApronPrototypeVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: map-edge terrain apron {prefix} House Exterior must be visible in the wide review camera, visible={visibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dMidDistanceLandformClosureAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateMidDistanceLandformClosureRoot("Current", area);
+                ValidateMidDistanceLandformClosureRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: mid-distance landform closure requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateMidDistanceLandformClosureCameraCoverage(camera, "Current", area);
+                ValidateMidDistanceLandformClosureCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateMidDistanceLandformClosureRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_MidDistanceLandformClosure";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing mid-distance landform closure root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyMidDistanceLandformClosureRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < MidDistanceLandformClosureMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {MidDistanceLandformClosureMeshCount} authored mid-distance landform closure meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var minRadius = 12.8f * Mathf.Min(GetMidDistanceLandformClosurePathRadiusScale(area), GetMidDistanceLandformClosureRadiusScale(area));
+            var maxRadius = Mathf.Max(40.5f, 34.5f * GetMidDistanceLandformClosureRadiusScale(area) + 5.5f);
+            var terrainShelfCount = 0;
+            var lowBankCount = 0;
+            var coppiceFoldCount = 0;
+            var pathThreadCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 52 || filter.sharedMesh.triangles.Length < 180)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.gameObject.name.Contains("DistantVista", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure must stay separate from distant vista validation: {filter.gameObject.name}.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 5.40f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} must remain low landform geometry, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var localPosition = filter.transform.localPosition;
+                var horizontalDistance = Vector2.Distance(new Vector2(localPosition.x, localPosition.z), new Vector2(center.x, center.z));
+                if (horizontalDistance < minRadius || horizontalDistance > maxRadius)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} radius {horizontalDistance:0.000} is outside the intended middle-distance band {minRadius:0.000}-{maxRadius:0.000}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("MidDistanceLandform", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} must use a MidDistanceLandform material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("TerrainShelf", StringComparison.Ordinal))
+                {
+                    terrainShelfCount++;
+                }
+                else if (filter.gameObject.name.Contains("LowBank", StringComparison.Ordinal))
+                {
+                    lowBankCount++;
+                }
+                else if (filter.gameObject.name.Contains("CoppiceFold", StringComparison.Ordinal))
+                {
+                    coppiceFoldCount++;
+                }
+                else if (filter.gameObject.name.Contains("PathThread", StringComparison.Ordinal))
+                {
+                    pathThreadCount++;
+                }
+            }
+
+            if (terrainShelfCount < MidDistanceLandformClosureSegmentCount ||
+                lowBankCount < MidDistanceLandformClosureSegmentCount ||
+                coppiceFoldCount < MidDistanceLandformClosureSegmentCount ||
+                pathThreadCount < MidDistanceLandformClosurePathThreadCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine terrain shelves, low banks, coppice folds, and path threads; terrain={terrainShelfCount}, banks={lowBankCount}, coppice={coppiceFoldCount}, paths={pathThreadCount}.");
+            }
+        }
+
+        private static void ValidateMidDistanceLandformClosureCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_MidDistanceLandformClosure");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing mid-distance landform closure root for camera coverage: {prefix} {area}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            PositionChapter1AllMapsCamera(
+                camera,
+                center,
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var terrainVisibleCount = 0;
+            var silhouetteVisibleCount = 0;
+            var pathVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("TerrainShelf", StringComparison.Ordinal))
+                {
+                    terrainVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("LowBank", StringComparison.Ordinal) ||
+                    renderer.gameObject.name.Contains("CoppiceFold", StringComparison.Ordinal))
+                {
+                    silhouetteVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("PathThread", StringComparison.Ordinal))
+                {
+                    pathVisibleCount++;
+                }
+            }
+
+            if (visibleCount < MidDistanceLandformClosureVisibleMinimum ||
+                terrainVisibleCount < 2 ||
+                silhouetteVisibleCount < 2 ||
+                pathVisibleCount < 1)
+            {
+                throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure {prefix} {area} must fill the wide camera middle distance, visible={visibleCount}, terrain={terrainVisibleCount}, silhouette={silhouetteVisibleCount}, path={pathVisibleCount}.");
             }
         }
 

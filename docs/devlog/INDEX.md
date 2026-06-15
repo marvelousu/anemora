@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.90 HD2D distant quality refinement (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.91 HD2D mid-distance landform closure (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 787 files including INDEX.md and README.md.
-- Dated devlog records: 785 files.
+- Root-level Markdown coverage: 788 files including INDEX.md and README.md.
+- Dated devlog records: 786 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-15 | 8 |
+| 2026-06-15 | 9 |
 | 2026-06-14 | 12 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-15_hd2d_mid_distance_landform_closure.md](2026-06-15_hd2d_mid_distance_landform_closure.md) | Fast VS / HD2D | HD2D mid-distance landform closure |
 | [2026-06-15_hd2d_distant_quality_refinement.md](2026-06-15_hd2d_distant_quality_refinement.md) | Fast VS / HD2D | HD2D distant quality refinement |
 | [2026-06-15_hd2d_map_edge_terrain_apron_prototype.md](2026-06-15_hd2d_map_edge_terrain_apron_prototype.md) | Fast VS / HD2D | HD2D map-edge terrain apron prototype |
 | [2026-06-15_hd2d_midground_edge_closure_prototype.md](2026-06-15_hd2d_midground_edge_closure_prototype.md) | Fast VS / HD2D | HD2D midground edge closure prototype |
