@@ -529,6 +529,14 @@ namespace Anemora.EditorTools
             ForegroundEdgeBreakupPathPatchCount +
             ForegroundEdgeBreakupDetailPatchCount;
         private const int ForegroundEdgeBreakupVisibleMinimum = 7;
+        private const int FarShoreHoleClosureShelfCount = 7;
+        private const int FarShoreHoleClosureBankCount = 4;
+        private const int FarShoreHoleClosureCoppiceCount = 5;
+        private const int FarShoreHoleClosureMeshCount =
+            FarShoreHoleClosureShelfCount +
+            FarShoreHoleClosureBankCount +
+            FarShoreHoleClosureCoppiceCount;
+        private const int FarShoreHoleClosureVisibleMinimum = 5;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -970,6 +978,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dMidDistanceLandformClosureAllMaps();
             ValidateFastVsHd2dForegroundShorelineClosureAllMaps();
             ValidateFastVsHd2dForegroundEdgeBreakupAllMaps();
+            ValidateFastVsHd2dFarShoreHoleClosureAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10235,6 +10244,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseGForegroundEdgeBreakupForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseHFarShoreHoleClosureForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -24703,6 +24722,217 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1PhaseHFarShoreHoleClosureForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            _ = materials;
+
+            CreateChapter1PhaseHFarShoreHoleClosure(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseHFarShoreHoleClosure(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseHFarShoreHoleClosure(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseHFarShoreHoleClosure(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseHFarShoreHoleClosure(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseHFarShoreHoleClosure(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseHFarShoreHoleClosure(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_FarShoreHoleClosure").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var baseAngle = GetFarShoreHoleClosureBaseAngle(area);
+            var radiusScale = GetFarShoreHoleClosureRadiusScale(area);
+            var widthScale = GetFarShoreHoleClosureWidthScale(area);
+            var terrainMaterial = EnsureFarShoreHoleClosureTerrainMaterial(past);
+            var bankMaterial = EnsureFarShoreHoleClosureBankMaterial(past);
+            var coppiceMaterial = EnsureFarShoreHoleClosureCoppiceMaterial(past);
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.far_shore_hole_closure";
+
+            for (var index = 0; index < FarShoreHoleClosureShelfCount; index++)
+            {
+                var seed = 31847 + (int)area * 631 + (past ? 2309 : 0) + index * 139;
+                var t = index / (float)(FarShoreHoleClosureShelfCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-16.0f, 18.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.9f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (20.6f + index * 1.12f + DistantPanoramaVistaSigned(seed + 11, 0.82f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 0.92f * widthScale) +
+                    new Vector3(0f, 0.145f + DistantPanoramaVistaHash01(seed + 23) * 0.055f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_FarShoreHoleClosure_TerrainShelf_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_FarShoreHoleClosure_TerrainShelf_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(5.6f, 9.2f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(3.8f, 6.4f, DistantPanoramaVistaHash01(seed + 31)) * radiusScale,
+                        Mathf.Lerp(0.10f, 0.24f, DistantPanoramaVistaHash01(seed + 37))),
+                    terrainMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.terrain_shelf.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < FarShoreHoleClosureBankCount; index++)
+            {
+                var seed = 33971 + (int)area * 653 + (past ? 2371 : 0) + index * 149;
+                var t = index / (float)(FarShoreHoleClosureBankCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-11.0f, 15.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.4f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (24.4f + index * 1.55f + DistantPanoramaVistaSigned(seed + 11, 0.74f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 0.72f * widthScale) +
+                    new Vector3(0f, 0.215f + DistantPanoramaVistaHash01(seed + 23) * 0.075f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_FarShoreHoleClosure_LowBank_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_FarShoreHoleClosure_LowBank_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(4.2f, 7.4f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(0.62f, 1.22f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.05f : 1f),
+                        Mathf.Lerp(0.55f, 0.98f, DistantPanoramaVistaHash01(seed + 37)) * radiusScale),
+                    bankMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.low_bank.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < FarShoreHoleClosureCoppiceCount; index++)
+            {
+                var seed = 36109 + (int)area * 677 + (past ? 2441 : 0) + index * 157;
+                var t = index / (float)(FarShoreHoleClosureCoppiceCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-18.0f, 20.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.6f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (26.2f + DistantPanoramaVistaSigned(seed + 11, 1.20f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 1.05f * widthScale) +
+                    new Vector3(0f, 0.295f + DistantPanoramaVistaHash01(seed + 23) * 0.110f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_FarShoreHoleClosure_CoppiceFold_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateDistantPanoramaVistaTreelineFoldMesh(
+                        $"{prefix}_{areaToken}_FarShoreHoleClosure_CoppiceFold_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(4.0f, 7.8f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(1.28f, 2.42f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.04f : 1f),
+                        Mathf.Lerp(0.42f, 0.72f, DistantPanoramaVistaHash01(seed + 37)) * radiusScale),
+                    coppiceMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.coppice_fold.s{index + 1:00}");
+            }
+
+            ApplyFarShoreHoleClosureRendererPolicy(parent);
+        }
+
+        private static float GetFarShoreHoleClosureBaseAngle(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 16.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.CentralPlaza:
+                    return 2.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.MiaHouse:
+                    return -10.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.AriaStreet:
+                    return 9.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.KaiaFarm:
+                    return 13.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.Ruins:
+                    return -2.0f * Mathf.Deg2Rad;
+                default:
+                    return 0f;
+            }
+        }
+
+        private static float GetFarShoreHoleClosureRadiusScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.10f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.94f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.22f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.24f;
+                case FastVsHouseArea.Ruins:
+                    return 1.48f;
+                case FastVsHouseArea.Exterior:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static float GetFarShoreHoleClosureWidthScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 1.18f;
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.12f;
+                case FastVsHouseArea.AriaStreet:
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.22f;
+                case FastVsHouseArea.Ruins:
+                    return 1.34f;
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static void ApplyFarShoreHoleClosureRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -27358,10 +27588,37 @@ namespace Anemora.EditorTools
         private static Material EnsureMidDistanceLandformClosurePathMaterial(bool past)
         {
             var id = past ? "Ch1Distant_PastMidDistanceLandformPath" : "Ch1Distant_CurrentMidDistanceLandformPath";
-            var color = past
-                ? new Color(0.372f, 0.318f, 0.186f, 1f)
-                : new Color(0.302f, 0.284f, 0.176f, 1f);
-            return EnsureMidDistanceLandformClosureMaterial(id, color, 0.12f);
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(72, 57, 33, 255),
+                    new Color32(94, 72, 38, 255),
+                    new Color32(42, 34, 25, 255),
+                    PixelPattern.Stone,
+                    true,
+                    new Vector2(4.2f, 2.6f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(54, 49, 32, 255),
+                    new Color32(72, 63, 37, 255),
+                    new Color32(32, 29, 23, 255),
+                    PixelPattern.Stone,
+                    true,
+                    new Vector2(4.2f, 2.6f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.10f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
         }
 
         private static Material EnsureMidDistanceLandformClosureCoppiceMaterial(bool past)
@@ -27562,6 +27819,89 @@ namespace Anemora.EditorTools
         }
 
         private static Material EnsureForegroundEdgeBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
+        {
+            var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureFarShoreHoleClosureTerrainMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastFarShoreHoleClosureTerrain" : "Ch1Distant_CurrentFarShoreHoleClosureTerrain";
+            return past
+                ? EnsureFarShoreHoleClosureMaterial(
+                    id,
+                    new Color32(65, 59, 34, 255),
+                    new Color32(86, 77, 42, 255),
+                    new Color32(39, 37, 27, 255),
+                    PixelPattern.Grass,
+                    0.10f,
+                    new Vector2(5.2f, 2.8f))
+                : EnsureFarShoreHoleClosureMaterial(
+                    id,
+                    new Color32(22, 54, 29, 255),
+                    new Color32(37, 76, 37, 255),
+                    new Color32(12, 34, 22, 255),
+                    PixelPattern.Grass,
+                    0.10f,
+                    new Vector2(5.2f, 2.8f));
+        }
+
+        private static Material EnsureFarShoreHoleClosureBankMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastFarShoreHoleClosureBank" : "Ch1Distant_CurrentFarShoreHoleClosureBank";
+            return past
+                ? EnsureFarShoreHoleClosureMaterial(
+                    id,
+                    new Color32(55, 50, 33, 255),
+                    new Color32(78, 68, 41, 255),
+                    new Color32(31, 31, 25, 255),
+                    PixelPattern.Stone,
+                    0.09f,
+                    new Vector2(3.4f, 1.8f))
+                : EnsureFarShoreHoleClosureMaterial(
+                    id,
+                    new Color32(18, 42, 26, 255),
+                    new Color32(36, 58, 37, 255),
+                    new Color32(11, 26, 20, 255),
+                    PixelPattern.Stone,
+                    0.09f,
+                    new Vector2(3.4f, 1.8f));
+        }
+
+        private static Material EnsureFarShoreHoleClosureCoppiceMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastFarShoreHoleClosureCoppice" : "Ch1Distant_CurrentFarShoreHoleClosureCoppice";
+            return past
+                ? EnsureFarShoreHoleClosureMaterial(
+                    id,
+                    new Color32(31, 42, 20, 255),
+                    new Color32(51, 64, 26, 255),
+                    new Color32(20, 28, 15, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.4f, 3.4f))
+                : EnsureFarShoreHoleClosureMaterial(
+                    id,
+                    new Color32(7, 31, 16, 255),
+                    new Color32(18, 55, 24, 255),
+                    new Color32(5, 22, 12, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.4f, 3.4f));
+        }
+
+        private static Material EnsureFarShoreHoleClosureMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
         {
             var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
@@ -29313,8 +29653,8 @@ namespace Anemora.EditorTools
                     new Vector3(5.90f, 0.032f, 13.04f),
                     new Vector3(4.50f, 0.050f, 0.84f),
                     6f,
-                    materials.CurrentPath,
-                    materials.PastPath,
+                    EnsureFarShoreHoleClosureTerrainMaterial(false),
+                    EnsureFarShoreHoleClosureTerrainMaterial(true),
                     TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
                     $"{prefix}.house_exterior.cycle55.horizon_silhouette.back_path_band_a");
 
@@ -52679,6 +53019,202 @@ namespace Anemora.EditorTools
                 pathVisibleCount < 2)
             {
                 throw new InvalidOperationException($"House slice validation failed: foreground edge breakup {prefix} {area} must visibly interrupt the bright front surface band, visible={visibleCount}, ground={groundVisibleCount}, path={pathVisibleCount}, detail={detailVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dFarShoreHoleClosureAllMaps()
+        {
+            ValidateFarShoreHoleClosureTexture("Ch1Distant_CurrentFarShoreHoleClosureTerrain", 0.045f);
+            ValidateFarShoreHoleClosureTexture("Ch1Distant_PastFarShoreHoleClosureTerrain", 0.045f);
+            ValidateFarShoreHoleClosureTexture("Ch1Distant_CurrentFarShoreHoleClosureBank", 0.040f);
+            ValidateFarShoreHoleClosureTexture("Ch1Distant_PastFarShoreHoleClosureBank", 0.040f);
+            ValidateFarShoreHoleClosureTexture("Ch1Distant_CurrentFarShoreHoleClosureCoppice", 0.040f);
+            ValidateFarShoreHoleClosureTexture("Ch1Distant_PastFarShoreHoleClosureCoppice", 0.040f);
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateFarShoreHoleClosureRoot("Current", area);
+                ValidateFarShoreHoleClosureRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: far-shore hole closure requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateFarShoreHoleClosureCameraCoverage(camera, "Current", area);
+                ValidateFarShoreHoleClosureCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateFarShoreHoleClosureTexture(string textureId, float minLuminanceRange)
+        {
+            ValidateGeneratedRepeatTextureAsset(textureId, 32, 32, 3);
+            ValidateTextureLuminanceRange(textureId, minLuminanceRange, $"{textureId} far-shore hole closure texture");
+        }
+
+        private static void ValidateFarShoreHoleClosureRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_FarShoreHoleClosure";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing far-shore hole closure root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: far-shore hole closure root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: far-shore hole closure root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyFarShoreHoleClosureRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < FarShoreHoleClosureMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {FarShoreHoleClosureMeshCount} authored far-shore closure meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var minRadius = 16.0f * GetFarShoreHoleClosureRadiusScale(area);
+            var maxRadius = 45.5f * GetFarShoreHoleClosureRadiusScale(area);
+            var shelfCount = 0;
+            var bankCount = 0;
+            var coppiceCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 28 || filter.sharedMesh.triangles.Length < 72)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                var flatRadius = new Vector2(localOffset.x, localOffset.z).magnitude;
+                if (flatRadius < minRadius ||
+                    flatRadius > maxRadius ||
+                    localOffset.y < 0.10f ||
+                    localOffset.y > 0.52f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} left the intended middle-distance shore band at offset {localOffset}, radius={flatRadius:0.000}.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 2.75f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must remain low shore geometry, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("FarShoreHoleClosure", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must use a FarShoreHoleClosure material.");
+                }
+
+                if (ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: far-shore hole closure mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("TerrainShelf", StringComparison.Ordinal))
+                {
+                    shelfCount++;
+                }
+                else if (filter.gameObject.name.Contains("LowBank", StringComparison.Ordinal))
+                {
+                    bankCount++;
+                }
+                else if (filter.gameObject.name.Contains("CoppiceFold", StringComparison.Ordinal))
+                {
+                    coppiceCount++;
+                }
+            }
+
+            if (shelfCount < FarShoreHoleClosureShelfCount ||
+                bankCount < FarShoreHoleClosureBankCount ||
+                coppiceCount < FarShoreHoleClosureCoppiceCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine shelves, low banks, and coppice folds; shelves={shelfCount}, banks={bankCount}, coppice={coppiceCount}.");
+            }
+        }
+
+        private static void ValidateFarShoreHoleClosureCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_FarShoreHoleClosure");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing far-shore hole closure root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var shelfVisibleCount = 0;
+            var silhouetteVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("TerrainShelf", StringComparison.Ordinal))
+                {
+                    shelfVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("LowBank", StringComparison.Ordinal) ||
+                    renderer.gameObject.name.Contains("CoppiceFold", StringComparison.Ordinal))
+                {
+                    silhouetteVisibleCount++;
+                }
+            }
+
+            if (visibleCount < FarShoreHoleClosureVisibleMinimum ||
+                shelfVisibleCount < 2 ||
+                silhouetteVisibleCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: far-shore hole closure {prefix} {area} must visibly close distant waterline holes, visible={visibleCount}, shelves={shelfVisibleCount}, silhouettes={silhouetteVisibleCount}.");
             }
         }
 
@@ -83132,8 +83668,8 @@ namespace Anemora.EditorTools
 
             Validate("Current_HouseExterior_Cycle55_HorizonSilhouette_BackGrassBandA", currentHouseParent, HouseExteriorCenter, "current_grass", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-7.80f, 0.030f, 13.10f), new Vector3(4.80f, 0.050f, 0.92f));
             Validate("Past_HouseExterior_Cycle55_HorizonSilhouette_BackGrassBandA", pastHouseParent, HouseExteriorCenter, "past_grass", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(-7.80f, 0.030f, 13.10f), new Vector3(4.80f, 0.050f, 0.92f));
-            Validate("Current_HouseExterior_Cycle55_HorizonSilhouette_BackPathBandA", currentHouseParent, HouseExteriorCenter, "current_path", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(5.90f, 0.032f, 13.04f), new Vector3(4.50f, 0.050f, 0.84f));
-            Validate("Past_HouseExterior_Cycle55_HorizonSilhouette_BackPathBandA", pastHouseParent, HouseExteriorCenter, "past_path", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(5.90f, 0.032f, 13.04f), new Vector3(4.50f, 0.050f, 0.84f));
+            Validate("Current_HouseExterior_Cycle55_HorizonSilhouette_BackPathBandA", currentHouseParent, HouseExteriorCenter, "FarShoreHoleClosureTerrain", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(5.90f, 0.032f, 13.04f), new Vector3(4.50f, 0.050f, 0.84f));
+            Validate("Past_HouseExterior_Cycle55_HorizonSilhouette_BackPathBandA", pastHouseParent, HouseExteriorCenter, "FarShoreHoleClosureTerrain", TimeWindowPairedSpaceLandmarkKind.PathOrFloor, new Vector3(5.90f, 0.032f, 13.04f), new Vector3(4.50f, 0.050f, 0.84f));
             Validate("Current_HouseExterior_Cycle55_HorizonSilhouette_BackStoneRiseA", currentHouseParent, HouseExteriorCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.60f, 0.36f, 13.36f), new Vector3(2.70f, 0.44f, 0.46f));
             Validate("Past_HouseExterior_Cycle55_HorizonSilhouette_BackStoneRiseA", pastHouseParent, HouseExteriorCenter, "past_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(-2.60f, 0.36f, 13.36f), new Vector3(2.70f, 0.44f, 0.46f));
             Validate("Current_HouseExterior_Cycle55_HorizonSilhouette_BackStoneRiseB", currentHouseParent, HouseExteriorCenter, "current_stone", TimeWindowPairedSpaceLandmarkKind.PropOrFeature, new Vector3(2.20f, 0.30f, 13.26f), new Vector3(2.10f, 0.34f, 0.40f));

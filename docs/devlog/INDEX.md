@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.93 HD2D foreground edge breakup (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.94 HD2D far-shore hole closure (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 790 files including INDEX.md and README.md.
-- Dated devlog records: 788 files.
+- Root-level Markdown coverage: 791 files including INDEX.md and README.md.
+- Dated devlog records: 789 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-15 | 11 |
+| 2026-06-15 | 12 |
 | 2026-06-14 | 12 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-15_hd2d_far_shore_hole_closure.md](2026-06-15_hd2d_far_shore_hole_closure.md) | Fast VS / HD2D | HD2D far-shore hole closure |
 | [2026-06-15_hd2d_foreground_edge_breakup.md](2026-06-15_hd2d_foreground_edge_breakup.md) | Fast VS / HD2D | HD2D foreground edge breakup |
 | [2026-06-15_hd2d_foreground_shoreline_closure.md](2026-06-15_hd2d_foreground_shoreline_closure.md) | Fast VS / HD2D | HD2D foreground shoreline closure |
 | [2026-06-15_hd2d_mid_distance_landform_closure.md](2026-06-15_hd2d_mid_distance_landform_closure.md) | Fast VS / HD2D | HD2D mid-distance landform closure |
