@@ -26,6 +26,7 @@ namespace Anemora.FastVS
         private const string LibraryRearCloseProbeDirectoryArgument = "--anemora-house-slice-library-rear-close-dir";
         private const string RendererStaticProbeDirectoryArgument = "--anemora-house-slice-renderer-static-dir";
         private const string WindowDoorReviewDirectoryArgument = "--anemora-house-slice-window-door-review-dir";
+        private const string BridgeTraversalProofDirectoryArgument = "--anemora-house-slice-bridge-proof-dir";
         private const string PassMarker = "ANEMORA_HOUSE_SLICE_SMOKE_PASS";
         private const string FailMarker = "ANEMORA_HOUSE_SLICE_SMOKE_FAIL";
         private const string CaptureMarker = "ANEMORA_HOUSE_SLICE_CAPTURE";
@@ -38,6 +39,7 @@ namespace Anemora.FastVS
         private const string RendererMotionProbeMarker = "ANEMORA_HOUSE_SLICE_RENDERER_MOTION_PROBE";
         private const string LibraryRearCloseProbeMarker = "ANEMORA_HOUSE_SLICE_LIBRARY_REAR_CLOSE_PROBE";
         private const string WindowDoorReviewMarker = "ANEMORA_HOUSE_SLICE_WINDOW_DOOR_REVIEW";
+        private const string BridgeTraversalProofMarker = "ANEMORA_HOUSE_SLICE_BRIDGE_TRAVERSAL";
         private const string RendererContractMarker = "ANEMORA_HOUSE_SLICE_RENDERER_CONTRACT";
         private const string LightingStateMarker = "ANEMORA_HOUSE_SLICE_LIGHTING_STATE";
         private const float RuntimeVsFollowCameraFov = 38f;
@@ -51,7 +53,10 @@ namespace Anemora.FastVS
         private static readonly Vector3 Chapter1MiaHouseMapCenter = CentralPlazaVsCenter + new Vector3(3.70f, 0f, -1.55f);
         private static readonly Vector3 Chapter1AriaStreetMapCenter = CentralPlazaVsCenter + new Vector3(25.50f, 0f, -1.75f);
         private static readonly Vector3 Chapter1KaiaFarmMapCenter = CentralPlazaVsCenter + new Vector3(32.50f, 0f, -2.85f);
+        private static readonly Vector3 Chapter1F1RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(21.00f, 0.70f, 0.15f);
+        private static readonly Vector3 Chapter1F6RouteTriggerCenter = CentralPlazaVsCenter + new Vector3(68.10f, 0.70f, 0.15f);
         private static readonly Vector3 Chapter1RuinsMapCenter = CentralPlazaVsCenter + new Vector3(45.50f, 0f, 0.05f);
+        private static readonly Vector3 Chapter1F1FromE3Target = Chapter1F1RouteTriggerCenter + new Vector3(-0.08f, -0.68f, -1.70f);
         private static readonly Vector3 Chapter1EndSideViewCenter = CentralPlazaVsCenter + new Vector3(9.10f, 0f, -10.50f);
         private static readonly Vector3 Chapter1EndSideViewCameraAnchor = Chapter1EndSideViewCenter + new Vector3(-1.05f, 1.45f, 0f);
         private static readonly Vector3 Chapter1EndSideViewPreviewTarget = Chapter1EndSideViewCenter + new Vector3(-2.40f, 0.02f, 0f);
@@ -206,6 +211,13 @@ namespace Anemora.FastVS
                 yield break;
             }
 
+            var bridgeTraversalProofDirectory = GetArgumentValue(BridgeTraversalProofDirectoryArgument);
+            if (!string.IsNullOrEmpty(bridgeTraversalProofDirectory))
+            {
+                yield return RunBridgeTraversalProof(bridgeTraversalProofDirectory, rendererContract);
+                yield break;
+            }
+
             if (!ShouldRun())
             {
                 yield break;
@@ -312,6 +324,69 @@ namespace Anemora.FastVS
             guide.ApplyActiveTimeIsolationForReview();
 
             Debug.Log($"{CaptureMarker}: end count={count}");
+            Application.Quit(0);
+        }
+
+        private static IEnumerator RunBridgeTraversalProof(string outputDirectory, RendererContractSnapshot rendererContract)
+        {
+            Debug.Log($"{BridgeTraversalProofMarker}: begin outputDirectory={outputDirectory}");
+            Directory.CreateDirectory(outputDirectory);
+            VerifyRendererContract(rendererContract);
+
+            var controller = RequireObject<TimeWindowPairedSpacePortalController>("paired space controller");
+            var visibility = RequireObject<FastVsHouseAreaVisibility>("area visibility");
+            var guide = RequireObject<FastVsVisualDirectionGuide>("visual direction guide");
+            var player = RequireObject<CharacterController>("player character controller");
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("Missing main camera.");
+            }
+
+            yield return null;
+            yield return new WaitForSecondsRealtime(0.5f);
+
+            foreach (var existingPng in Directory.GetFiles(outputDirectory, "*.png"))
+            {
+                File.Delete(existingPng);
+            }
+
+            var previousMask = camera.cullingMask;
+            var previousOrthographic = camera.orthographic;
+            var previousOrthographicSize = camera.orthographicSize;
+            var previousFieldOfView = camera.fieldOfView;
+            var count = 0;
+            Exception failure = null;
+
+            try
+            {
+                controller.ClosePortal();
+                controller.SetRuntimeInputEnabledForReview(false);
+                RunBridgeTraversalProofSide(controller, visibility, guide, player, camera, outputDirectory, false, previousMask, ref count);
+                RunBridgeTraversalProofSide(controller, visibility, guide, player, camera, outputDirectory, true, previousMask, ref count);
+            }
+            catch (Exception exception)
+            {
+                failure = exception;
+                Debug.LogError($"{BridgeTraversalProofMarker}: fail {exception}");
+            }
+            finally
+            {
+                camera.cullingMask = previousMask;
+                camera.orthographic = previousOrthographic;
+                camera.orthographicSize = previousOrthographicSize;
+                camera.fieldOfView = previousFieldOfView;
+                controller.ForcePlayerCurrentLocalForReview(HouseExteriorCenter + new Vector3(0f, 0.02f, 0f));
+                guide.ApplyActiveTimeIsolationForReview();
+            }
+
+            if (failure != null)
+            {
+                Application.Quit(42);
+                yield break;
+            }
+
+            Debug.Log($"{BridgeTraversalProofMarker}: pass count={count}");
             Application.Quit(0);
         }
 
@@ -2119,6 +2194,215 @@ namespace Anemora.FastVS
             var currentBit = 1 << Mathf.Clamp(controller.CurrentSpaceRenderLayerForReview, 0, 31);
             var otherBit = 1 << Mathf.Clamp(controller.OtherTimeSpaceRenderLayerForReview, 0, 31);
             return (previousMask & ~otherBit) | currentBit;
+        }
+
+        private static int BuildBridgeTraversalProofCameraMask(int previousMask, TimeWindowPairedSpacePortalController controller, bool otherTime)
+        {
+            var mask = otherTime
+                ? BuildOtherTimeCameraMask(previousMask, controller)
+                : BuildCurrentTimeCameraMask(previousMask, controller);
+            var playerBit = 1 << Mathf.Clamp(controller.PlayerVisibleRenderLayerForReview, 0, 31);
+            return mask | playerBit;
+        }
+
+        private static void RunBridgeTraversalProofSide(
+            TimeWindowPairedSpacePortalController controller,
+            FastVsHouseAreaVisibility visibility,
+            FastVsVisualDirectionGuide guide,
+            CharacterController player,
+            Camera camera,
+            string outputDirectory,
+            bool otherTime,
+            int previousMask,
+            ref int count)
+        {
+            var route = BuildBridgeTraversalRoute();
+            var sideLabel = otherTime ? "past" : "current";
+            visibility.SetActiveAreaForReview(FastVsHouseArea.Ruins);
+            if (otherTime)
+            {
+                controller.ForcePlayerOtherTimeLocalForReview(route[0]);
+            }
+            else
+            {
+                controller.ForcePlayerCurrentLocalForReview(route[0]);
+            }
+
+            guide.ApplyActiveTimeIsolationForReview();
+            camera.cullingMask = BuildBridgeTraversalProofCameraMask(previousMask, controller, otherTime);
+            Physics.SyncTransforms();
+            Debug.Log($"{BridgeTraversalProofMarker}: side={sideLabel} start local={controller.GetPlayerLocalCoordinateForReview()}");
+
+            for (var i = 0; i < route.Length; i++)
+            {
+                ValidateBridgeTraversalSupportPoint(controller, route[i], $"{sideLabel} route support {i + 1}");
+            }
+
+            CaptureBridgeTraversalProofFrame(controller, camera, outputDirectory, $"{sideLabel}_01_start.png", otherTime, route[0], ref count);
+
+            for (var i = 1; i < route.Length; i++)
+            {
+                MoveCharacterControllerAlongBridgeSegment(controller, player, route[i], otherTime, $"{sideLabel} segment {i}");
+                guide.ApplyActiveTimeIsolationForReview();
+                if (i == 4)
+                {
+                    CaptureBridgeTraversalProofFrame(controller, camera, outputDirectory, $"{sideLabel}_02_midspan.png", otherTime, route[i], ref count);
+                }
+
+                Debug.Log($"{BridgeTraversalProofMarker}: side={sideLabel} waypoint={i + 1}/{route.Length} local={controller.GetPlayerLocalCoordinateForReview()}");
+            }
+
+            var finalLocal = controller.GetPlayerLocalCoordinateForReview();
+            var targetLocal = route[route.Length - 1];
+            var finalDelta = new Vector2(finalLocal.x - targetLocal.x, finalLocal.z - targetLocal.z).magnitude;
+            if (finalDelta > 0.38f)
+            {
+                throw new InvalidOperationException($"{sideLabel} bridge traversal did not reach F6. final={finalLocal}, target={targetLocal}, delta={finalDelta:0.000}.");
+            }
+
+            CaptureBridgeTraversalProofFrame(controller, camera, outputDirectory, $"{sideLabel}_03_f6_exit.png", otherTime, targetLocal, ref count);
+            Debug.Log($"{BridgeTraversalProofMarker}: side={sideLabel} pass final={finalLocal} delta={finalDelta:0.000}");
+        }
+
+        private static Vector3[] BuildBridgeTraversalRoute()
+        {
+            return new[]
+            {
+                BridgeTraversalProbePoint(Chapter1F1FromE3Target),
+                Chapter1RuinsMapCenter + new Vector3(-10.80f, 0.18f, 0.02f),
+                Chapter1RuinsMapCenter + new Vector3(-6.72f, 0.18f, 0.04f),
+                Chapter1RuinsMapCenter + new Vector3(-2.20f, 0.18f, -0.01f),
+                Chapter1RuinsMapCenter + new Vector3(0.00f, 0.18f, -0.02f),
+                Chapter1RuinsMapCenter + new Vector3(2.20f, 0.18f, 0.01f),
+                Chapter1RuinsMapCenter + new Vector3(6.72f, 0.18f, 0.04f),
+                Chapter1RuinsMapCenter + new Vector3(10.80f, 0.18f, 0.02f),
+                BridgeTraversalProbePoint(Chapter1F6RouteTriggerCenter)
+            };
+        }
+
+        private static Vector3 BridgeTraversalProbePoint(Vector3 localPoint)
+        {
+            return new Vector3(localPoint.x, 0.18f, localPoint.z);
+        }
+
+        private static void ValidateBridgeTraversalSupportPoint(TimeWindowPairedSpacePortalController controller, Vector3 localPoint, string label)
+        {
+            var root = controller.PlayerInOtherTime ? controller.OtherTimeSpaceRootForReview : controller.CurrentSpaceRootForReview;
+            if (root == null)
+            {
+                throw new InvalidOperationException($"Missing active root for {label}.");
+            }
+
+            var origin = root.TransformPoint(localPoint + Vector3.up * 1.25f);
+            var hits = Physics.RaycastAll(origin, Vector3.down, 1.70f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            foreach (var hit in hits)
+            {
+                if (hit.collider == null ||
+                    hit.collider.GetComponentInParent<CharacterController>() != null)
+                {
+                    continue;
+                }
+
+                if (IsBlockingContinuationRouteCollider(hit.collider))
+                {
+                    throw new InvalidOperationException($"{label} is covered by blocking collider {hit.collider.name}.");
+                }
+
+                var landmark = hit.collider.GetComponentInParent<TimeWindowPairedSpaceLandmark>();
+                if (landmark != null && landmark.Kind == TimeWindowPairedSpaceLandmarkKind.PathOrFloor)
+                {
+                    return;
+                }
+            }
+
+            throw new InvalidOperationException($"{label} has no PathOrFloor support below the player capsule.");
+        }
+
+        private static void MoveCharacterControllerAlongBridgeSegment(
+            TimeWindowPairedSpacePortalController controller,
+            CharacterController player,
+            Vector3 targetLocal,
+            bool otherTime,
+            string label)
+        {
+            const float StepDistance = 0.18f;
+            const float GroundingDrop = 0.035f;
+            const int MaxSteps = 180;
+
+            for (var stepIndex = 0; stepIndex < MaxSteps; stepIndex++)
+            {
+                if (controller.PlayerInOtherTime != otherTime)
+                {
+                    throw new InvalidOperationException($"{label} changed the active time side during movement.");
+                }
+
+                var beforeLocal = controller.GetPlayerLocalCoordinateForReview();
+                var horizontal = new Vector2(targetLocal.x - beforeLocal.x, targetLocal.z - beforeLocal.z);
+                if (horizontal.magnitude <= 0.22f)
+                {
+                    return;
+                }
+
+                var beforeXZ = new Vector2(beforeLocal.x, beforeLocal.z);
+                var step = new Vector3(horizontal.x, 0f, horizontal.y).normalized * Mathf.Min(StepDistance, horizontal.magnitude);
+                step.y = -GroundingDrop;
+                controller.MovePlayerLocalForReview(step, true);
+                Physics.SyncTransforms();
+
+                var afterLocal = controller.GetPlayerLocalCoordinateForReview();
+                var afterXZ = new Vector2(afterLocal.x, afterLocal.z);
+                var moved = Vector2.Distance(beforeXZ, afterXZ);
+                if (moved < 0.035f)
+                {
+                    throw new InvalidOperationException($"{label} was blocked before reaching the next bridge waypoint. before={beforeLocal}, after={afterLocal}, target={targetLocal}, player={player.name}.");
+                }
+
+                if (afterLocal.y < -0.12f || afterLocal.y > 0.82f)
+                {
+                    throw new InvalidOperationException($"{label} left the playable bridge height band. local={afterLocal}, target={targetLocal}.");
+                }
+            }
+
+            throw new InvalidOperationException($"{label} exceeded the step budget before reaching {targetLocal}.");
+        }
+
+        private static bool IsBlockingContinuationRouteCollider(Collider collider)
+        {
+            if (collider == null ||
+                collider.GetComponentInParent<CharacterController>() != null)
+            {
+                return false;
+            }
+
+            var landmark = collider.GetComponentInParent<TimeWindowPairedSpaceLandmark>();
+            return landmark == null || landmark.Kind != TimeWindowPairedSpaceLandmarkKind.PathOrFloor;
+        }
+
+        private static void CaptureBridgeTraversalProofFrame(
+            TimeWindowPairedSpacePortalController controller,
+            Camera camera,
+            string outputDirectory,
+            string fileName,
+            bool otherTime,
+            Vector3 anchorLocal,
+            ref int count)
+        {
+            var root = otherTime ? controller.OtherTimeSpaceRootForReview : controller.CurrentSpaceRootForReview;
+            if (root == null)
+            {
+                throw new InvalidOperationException($"Missing root while capturing bridge traversal frame {fileName}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                root.TransformPoint(anchorLocal),
+                new Vector3(0f, 7.80f, -11.60f),
+                new Vector3(0f, 0.26f, 1.35f));
+            var path = Path.Combine(outputDirectory, fileName);
+            WriteCameraPng(camera, path);
+            count++;
+            Debug.Log($"{BridgeTraversalProofMarker}: saved side={(otherTime ? "past" : "current")} path={path} local={anchorLocal}");
         }
 
         private static string BuildTableObjectStatus()
