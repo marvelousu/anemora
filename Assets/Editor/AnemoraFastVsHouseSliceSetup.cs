@@ -497,6 +497,10 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaAreaLandmarkCount = 5;
         private const int DistantPanoramaVistaAreaSignatureCount = 4;
         private const int DistantPanoramaVistaCompositionPrototypeCount = 9;
+        private const int DistantPanoramaVistaRidgeFacetBandCount = 2;
+        private const int DistantPanoramaVistaRidgeFacetMeshCount = DistantPanoramaVistaSegmentCount * DistantPanoramaVistaRidgeFacetBandCount;
+        private const int DistantPanoramaVistaTreelineFoldMeshCount = DistantPanoramaVistaSegmentCount;
+        private const int DistantPanoramaVistaQualityDetailVisibleMinimum = 3;
         private const int MidgroundEdgeClosurePrototypeMeshCount = 12;
         private const int MidgroundEdgeClosurePrototypeVisibleMinimum = 5;
         private const int MapEdgeTerrainApronPrototypeMeshCount = 12;
@@ -24240,6 +24244,8 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaAreaLandmarks(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaAreaSignatures(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaCompositionPrototype(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaRidgeFacets(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaTreelineFolds(parent, prefix, past, area, areaToken, center);
 
             for (var band = 0; band < DistantPanoramaVistaBandCount; band++)
             {
@@ -24642,6 +24648,113 @@ namespace Anemora.EditorTools
 
                 var landmark = prototypeObject.AddComponent<TimeWindowPairedSpaceLandmark>();
                 SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.composition_prototype.{token.ToLowerInvariant()}.s{index + 1:00}");
+                SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                SerializedSet(landmark, "countsForArrival", false);
+            }
+        }
+
+        private static void CreateDistantPanoramaVistaRidgeFacets(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            for (var detailBand = 0; detailBand < DistantPanoramaVistaRidgeFacetBandCount; detailBand++)
+            {
+                var radius = detailBand == 0 ? DistantPanoramaVistaForestRadius + 8.5f : DistantPanoramaVistaMidRadius + 9.0f;
+                var material = EnsureDistantPanoramaVistaRidgeFacetMaterial(past, detailBand);
+                var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * (detailBand == 0 ? 1.42f : 1.24f);
+
+                for (var segment = 0; segment < DistantPanoramaVistaSegmentCount; segment++)
+                {
+                    var seed = 4931 + (int)area * 271 + (past ? 1187 : 0) + detailBand * 149 + segment * 59;
+                    var angleOffset = detailBand == 0 ? 0.06f : -0.05f;
+                    var angle = ((segment + 0.5f + angleOffset) / DistantPanoramaVistaSegmentCount) * Mathf.PI * 2f;
+                    var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                    var tangent = new Vector3(radial.z, 0f, -radial.x);
+                    var localPosition = center +
+                        radial * (radius + DistantPanoramaVistaSigned(seed + 5, detailBand == 0 ? 1.35f : 2.05f)) +
+                        tangent * DistantPanoramaVistaSigned(seed + 13, detailBand == 0 ? 1.95f : 2.60f) +
+                        new Vector3(0f, detailBand == 0 ? 0.58f : 1.10f, 0f);
+                    var faceDirection = center - localPosition;
+                    faceDirection.y = 0f;
+                    if (faceDirection.sqrMagnitude < 0.01f)
+                    {
+                        faceDirection = -radial;
+                    }
+
+                    var facetObject = new GameObject($"{prefix}_{areaToken}_DistantVista_RidgeFacet_B{detailBand + 1}_S{segment + 1:00}");
+                    facetObject.transform.SetParent(parent, false);
+                    facetObject.transform.localPosition = localPosition;
+                    facetObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                    facetObject.transform.localScale = Vector3.one;
+                    facetObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                    var filter = facetObject.AddComponent<MeshFilter>();
+                    filter.sharedMesh = CreateDistantPanoramaVistaRidgeFacetMesh(
+                        $"{facetObject.name}_Mesh",
+                        seed,
+                        detailBand,
+                        chordWidth * Mathf.Lerp(0.86f, 1.34f, DistantPanoramaVistaHash01(seed + 23)),
+                        detailBand == 0
+                            ? Mathf.Lerp(5.8f, 10.6f, DistantPanoramaVistaHash01(seed + 31))
+                            : Mathf.Lerp(8.0f, 15.0f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.06f : 1f),
+                        detailBand == 0 ? 0.58f : 0.42f);
+
+                    var renderer = facetObject.AddComponent<MeshRenderer>();
+                    renderer.sharedMaterial = material;
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+
+                    var landmark = facetObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                    SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.ridge_facet.b{detailBand + 1}.s{segment + 1:00}");
+                    SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                    SerializedSet(landmark, "countsForArrival", false);
+                }
+            }
+        }
+
+        private static void CreateDistantPanoramaVistaTreelineFolds(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            var radius = DistantPanoramaVistaForegroundCoppiceRadius - 0.38f;
+            var material = EnsureDistantPanoramaVistaTreelineFoldMaterial(past);
+            var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.40f;
+
+            for (var segment = 0; segment < DistantPanoramaVistaSegmentCount; segment++)
+            {
+                var seed = 5419 + (int)area * 293 + (past ? 1277 : 0) + segment * 61;
+                var angle = ((segment + 0.5f + (segment % 2 == 0 ? -0.04f : 0.04f)) / DistantPanoramaVistaSegmentCount) * Mathf.PI * 2f;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var localPosition = center +
+                    radial * (radius + DistantPanoramaVistaSigned(seed + 5, 0.22f)) +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, 2.35f) +
+                    new Vector3(0f, 0.42f + DistantPanoramaVistaHash01(seed + 19) * 0.18f, 0f);
+                var faceDirection = center - localPosition;
+                faceDirection.y = 0f;
+                if (faceDirection.sqrMagnitude < 0.01f)
+                {
+                    faceDirection = -radial;
+                }
+
+                var foldObject = new GameObject($"{prefix}_{areaToken}_DistantVista_TreelineFold_S{segment + 1:00}");
+                foldObject.transform.SetParent(parent, false);
+                foldObject.transform.localPosition = localPosition;
+                foldObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                foldObject.transform.localScale = Vector3.one;
+                foldObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                var filter = foldObject.AddComponent<MeshFilter>();
+                filter.sharedMesh = CreateDistantPanoramaVistaTreelineFoldMesh(
+                    $"{foldObject.name}_Mesh",
+                    seed,
+                    chordWidth * Mathf.Lerp(0.88f, 1.24f, DistantPanoramaVistaHash01(seed + 23)),
+                    Mathf.Lerp(3.80f, 7.10f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.08f : 1f),
+                    0.94f);
+
+                var renderer = foldObject.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+
+                var landmark = foldObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.treeline_fold.s{segment + 1:00}");
                 SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
                 SerializedSet(landmark, "countsForArrival", false);
             }
@@ -25857,9 +25970,175 @@ namespace Anemora.EditorTools
             return topHeight * centralShelf;
         }
 
+        private static Mesh CreateDistantPanoramaVistaRidgeFacetMesh(string meshName, int seed, int detailBand, float width, float maxHeight, float depth)
+        {
+            const int columnCount = 19;
+            const int rowCount = 5;
+            var sideVertexCount = columnCount * rowCount;
+            var vertices = new Vector3[sideVertexCount * 2];
+            var uvs = new Vector2[vertices.Length];
+
+            for (var side = 0; side < 2; side++)
+            {
+                var sideOffset = side * sideVertexCount;
+                var sideZ = side == 0 ? -depth * 0.5f : depth * 0.5f;
+                for (var row = 0; row < rowCount; row++)
+                {
+                    var v = row / (float)(rowCount - 1);
+                    for (var column = 0; column < columnCount; column++)
+                    {
+                        var u = column / (float)(columnCount - 1);
+                        var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                        var ridgeA = Mathf.Clamp01(1f - Mathf.Abs(u - 0.22f) * (detailBand == 0 ? 4.6f : 3.8f));
+                        var ridgeB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.50f) * (detailBand == 0 ? 3.7f : 4.4f));
+                        var ridgeC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.78f) * (detailBand == 0 ? 4.2f : 3.5f));
+                        var saddle = Mathf.Clamp01(1f - Mathf.Abs(u - (detailBand == 0 ? 0.64f : 0.38f)) * 5.4f);
+                        var ridgeMass = Mathf.Max(ridgeA * 0.84f, Mathf.Max(ridgeB, ridgeC * 0.76f));
+                        var columnNoise = DistantPanoramaVistaSigned(seed + column * 47 + 5, 0.12f) * edgeFalloff;
+                        var topHeight = maxHeight * Mathf.Clamp(0.36f + edgeFalloff * 0.20f + ridgeMass * 0.42f - saddle * 0.16f + columnNoise, 0.22f, 1.08f);
+                        var lowerCut = topHeight * Mathf.Clamp(0.07f + DistantPanoramaVistaHash01(seed + column * 53 + 17) * 0.12f + saddle * 0.08f, 0.06f, 0.34f);
+                        var shelf = row == 1 || row == 2
+                            ? DistantPanoramaVistaSigned(seed + row * 79 + column * 29, 0.045f) * maxHeight * edgeFalloff
+                            : 0f;
+                        var y = Mathf.Lerp(lowerCut, topHeight, Mathf.Pow(v, 0.76f)) + shelf;
+                        if (row == 0)
+                        {
+                            y = lowerCut;
+                        }
+                        else if (row == rowCount - 1)
+                        {
+                            y = topHeight;
+                        }
+
+                        var rowWidth = width * Mathf.Lerp(1.05f, detailBand == 0 ? 0.78f : 0.70f, v);
+                        var xDrift = DistantPanoramaVistaSigned(seed + row * 61 + column * 31 + side * 7, 0.26f) * edgeFalloff * (0.25f + v * 0.75f);
+                        var zDrift = DistantPanoramaVistaSigned(seed + row * 67 + column * 37 + side * 11, depth * 0.16f) * edgeFalloff;
+                        var index = sideOffset + row * columnCount + column;
+                        vertices[index] = new Vector3(
+                            Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u) + xDrift,
+                            y,
+                            sideZ + zDrift);
+                        uvs[index] = new Vector2(u, v);
+                    }
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 24);
+            var backOffset = sideVertexCount;
+            for (var row = 0; row < rowCount - 1; row++)
+            {
+                for (var column = 0; column < columnCount - 1; column++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+                    AddDoubleSidedQuad(triangles, backOffset + a, backOffset + c, backOffset + b, backOffset + d);
+                }
+            }
+
+            for (var column = 0; column < columnCount - 1; column++)
+            {
+                var frontTopA = (rowCount - 1) * columnCount + column;
+                var frontTopB = frontTopA + 1;
+                var backTopA = backOffset + frontTopA;
+                var backTopB = backOffset + frontTopB;
+                AddDoubleSidedQuad(triangles, frontTopA, frontTopB, backTopA, backTopB);
+
+                var frontBaseA = column;
+                var frontBaseB = column + 1;
+                var backBaseA = backOffset + frontBaseA;
+                var backBaseB = backOffset + frontBaseB;
+                AddDoubleSidedQuad(triangles, frontBaseA, backBaseA, frontBaseB, backBaseB);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static Mesh CreateDistantPanoramaVistaTreelineFoldMesh(string meshName, int seed, float width, float maxHeight, float thickness)
+        {
+            const int columnCount = 19;
+            var vertices = new Vector3[columnCount * 6];
+            var uvs = new Vector2[columnCount * 6];
+            var frontZ = -thickness * 0.5f;
+            var backZ = thickness * 0.5f;
+
+            for (var i = 0; i < columnCount; i++)
+            {
+                var u = i / (float)(columnCount - 1);
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u) +
+                    DistantPanoramaVistaSigned(seed + i * 31 + 11, 0.12f) * edgeFalloff;
+                var clumpA = Mathf.Clamp01(1f - Mathf.Abs(u - 0.18f) * 5.2f);
+                var clumpB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.42f) * 4.8f);
+                var clumpC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.68f) * 5.0f);
+                var clumpD = Mathf.Clamp01(1f - Mathf.Abs(u - 0.86f) * 5.4f);
+                var clump = Mathf.Max(Mathf.Max(clumpA * 0.78f, clumpB), Mathf.Max(clumpC * 0.92f, clumpD * 0.70f));
+                var gap = i % 5 == 0 || i % 7 == 3 ? 0.72f : 1f;
+                var crown = maxHeight * Mathf.Clamp(0.24f + edgeFalloff * 0.20f + clump * 0.58f, 0.18f, 1.02f) * gap;
+                var shoulder = crown * Mathf.Lerp(0.36f, 0.62f, DistantPanoramaVistaHash01(seed + i * 43 + 17));
+                var backCrown = crown * Mathf.Lerp(0.82f, 1.08f, DistantPanoramaVistaHash01(seed + i * 47 + 19));
+                if (i == 0 || i == columnCount - 1)
+                {
+                    crown = Mathf.Min(crown, maxHeight * 0.30f);
+                    shoulder = Mathf.Min(shoulder, maxHeight * 0.20f);
+                    backCrown = Mathf.Min(backCrown, maxHeight * 0.26f);
+                }
+
+                var baseLift = DistantPanoramaVistaSigned(seed + i * 29 + 23, 0.055f);
+                var baseIndex = i * 6;
+                vertices[baseIndex] = new Vector3(x, baseLift, frontZ);
+                vertices[baseIndex + 1] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 37 + 5, 0.10f), shoulder, Mathf.Lerp(frontZ, backZ, 0.22f));
+                vertices[baseIndex + 2] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 41 + 7, 0.18f), crown, frontZ);
+                vertices[baseIndex + 3] = new Vector3(x, baseLift * 0.75f, backZ);
+                vertices[baseIndex + 4] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 53 + 13, 0.09f), shoulder * 0.90f, Mathf.Lerp(frontZ, backZ, 0.78f));
+                vertices[baseIndex + 5] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 59 + 17, 0.16f), backCrown, backZ);
+                uvs[baseIndex] = new Vector2(u, 0f);
+                uvs[baseIndex + 1] = new Vector2(u, 0.45f);
+                uvs[baseIndex + 2] = new Vector2(u, 1f);
+                uvs[baseIndex + 3] = new Vector2(u, 0f);
+                uvs[baseIndex + 4] = new Vector2(u, 0.45f);
+                uvs[baseIndex + 5] = new Vector2(u, 1f);
+            }
+
+            var triangles = new List<int>((columnCount - 1) * 60);
+            for (var i = 0; i < columnCount - 1; i++)
+            {
+                var a = i * 6;
+                var b = (i + 1) * 6;
+
+                AddDoubleSidedQuad(triangles, a, b, a + 1, b + 1);
+                AddDoubleSidedQuad(triangles, a + 1, b + 1, a + 2, b + 2);
+                AddDoubleSidedQuad(triangles, a + 3, a + 4, b + 3, b + 4);
+                AddDoubleSidedQuad(triangles, a + 4, a + 5, b + 4, b + 5);
+                AddDoubleSidedQuad(triangles, a + 2, b + 2, a + 5, b + 5);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static Mesh CreateDistantPanoramaVistaForestMesh(string meshName, int seed, float width, float maxHeight, float thickness)
         {
-            const int columnCount = 11;
+            const int columnCount = 17;
             var vertices = new Vector3[columnCount * 4];
             var uvs = new Vector2[columnCount * 4];
             var frontZ = -thickness * 0.5f;
@@ -25868,10 +26147,15 @@ namespace Anemora.EditorTools
             for (var i = 0; i < columnCount; i++)
             {
                 var u = i / (float)(columnCount - 1);
-                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u);
-                var crownPulse = 0.48f + Mathf.Sin(u * Mathf.PI) * 0.42f;
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u) +
+                    DistantPanoramaVistaSigned(seed + i * 23 + 5, 0.10f) * edgeFalloff;
+                var clumpA = Mathf.Clamp01(1f - Mathf.Abs(u - 0.24f) * 4.4f);
+                var clumpB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.52f) * 5.0f);
+                var clumpC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.80f) * 4.6f);
+                var crownPulse = 0.34f + edgeFalloff * 0.22f + Mathf.Max(clumpA * 0.72f, Mathf.Max(clumpB, clumpC * 0.82f)) * 0.42f;
                 var spire = DistantPanoramaVistaHash01(seed + i * 43);
-                var height = maxHeight * crownPulse * Mathf.Lerp(0.68f, 1.28f, spire);
+                var height = maxHeight * crownPulse * Mathf.Lerp(0.70f, 1.22f, spire);
                 if (i == 0 || i == columnCount - 1)
                 {
                     height = Mathf.Min(height, maxHeight * 0.38f);
@@ -25913,7 +26197,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaReliefMesh(string meshName, int seed, float width, float maxHeight, float thickness, bool lowTreeLine)
         {
-            const int columnCount = 13;
+            const int columnCount = 19;
             var vertices = new Vector3[columnCount * 6];
             var uvs = new Vector2[columnCount * 6];
             var frontZ = -thickness * 0.5f;
@@ -25922,24 +26206,32 @@ namespace Anemora.EditorTools
             for (var i = 0; i < columnCount; i++)
             {
                 var u = i / (float)(columnCount - 1);
-                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u);
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u) +
+                    DistantPanoramaVistaSigned(seed + i * 29 + 11, 0.10f) * edgeFalloff;
                 var edgeTaper = 0.52f + Mathf.Sin(u * Mathf.PI) * 0.48f;
                 var step = DistantPanoramaVistaHash01(seed + i * 37);
-                var peakHeight = maxHeight * edgeTaper * Mathf.Lerp(lowTreeLine ? 0.46f : 0.58f, lowTreeLine ? 0.92f : 1.22f, step);
+                var peakA = Mathf.Clamp01(1f - Mathf.Abs(u - 0.20f) * (lowTreeLine ? 4.8f : 3.8f));
+                var peakB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.48f) * (lowTreeLine ? 5.2f : 4.5f));
+                var peakC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.76f) * (lowTreeLine ? 4.4f : 4.0f));
+                var saddle = Mathf.Clamp01(1f - Mathf.Abs(u - 0.62f) * 5.6f);
+                var authoredRhythm = Mathf.Max(peakA * 0.78f, Mathf.Max(peakB, peakC * 0.86f)) - saddle * 0.16f;
+                var peakHeight = maxHeight * edgeTaper * Mathf.Lerp(lowTreeLine ? 0.40f : 0.50f, lowTreeLine ? 0.86f : 1.15f, step);
+                peakHeight *= Mathf.Clamp(0.88f + authoredRhythm * 0.28f, 0.72f, 1.18f);
                 if (i == 0 || i == columnCount - 1)
                 {
                     peakHeight = Mathf.Min(peakHeight, maxHeight * 0.34f);
                 }
 
-                var shoulderHeight = peakHeight * Mathf.Lerp(0.34f, 0.58f, DistantPanoramaVistaHash01(seed + i * 53 + 11));
+                var shoulderHeight = peakHeight * Mathf.Lerp(0.28f, lowTreeLine ? 0.50f : 0.62f, DistantPanoramaVistaHash01(seed + i * 53 + 11));
                 var baseLift = DistantPanoramaVistaSigned(seed + i * 19 + 7, 0.06f);
                 var baseIndex = i * 6;
                 vertices[baseIndex] = new Vector3(x, 0f, frontZ);
-                vertices[baseIndex + 1] = new Vector3(x, shoulderHeight + baseLift, Mathf.Lerp(frontZ, backZ, 0.24f));
+                vertices[baseIndex + 1] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 31 + 13, 0.08f) * edgeFalloff, shoulderHeight + baseLift, Mathf.Lerp(frontZ, backZ, 0.24f));
                 vertices[baseIndex + 2] = new Vector3(x, peakHeight, frontZ);
                 vertices[baseIndex + 3] = new Vector3(x, 0f, backZ);
-                vertices[baseIndex + 4] = new Vector3(x, shoulderHeight * 0.92f + baseLift, Mathf.Lerp(frontZ, backZ, 0.76f));
-                vertices[baseIndex + 5] = new Vector3(x, peakHeight * 0.94f, backZ);
+                vertices[baseIndex + 4] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 41 + 17, 0.07f) * edgeFalloff, shoulderHeight * 0.92f + baseLift, Mathf.Lerp(frontZ, backZ, 0.76f));
+                vertices[baseIndex + 5] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 47 + 19, 0.10f) * edgeFalloff, peakHeight * Mathf.Lerp(0.90f, 0.99f, DistantPanoramaVistaHash01(seed + i * 59 + 23)), backZ);
                 uvs[baseIndex] = new Vector2(u, 0f);
                 uvs[baseIndex + 1] = new Vector2(u, 0.42f);
                 uvs[baseIndex + 2] = new Vector2(u, 1f);
@@ -26128,6 +26420,50 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.10f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaRidgeFacetMaterial(bool past, int detailBand)
+        {
+            var id = past
+                ? (detailBand == 0 ? "Ch1Distant_PastRidgeFacetMid" : "Ch1Distant_PastRidgeFacetFar")
+                : (detailBand == 0 ? "Ch1Distant_CurrentRidgeFacetMid" : "Ch1Distant_CurrentRidgeFacetFar");
+            var color = past
+                ? (detailBand == 0 ? new Color(0.186f, 0.214f, 0.104f, 1f) : new Color(0.184f, 0.162f, 0.094f, 1f))
+                : (detailBand == 0 ? new Color(0.094f, 0.220f, 0.136f, 1f) : new Color(0.122f, 0.170f, 0.242f, 1f));
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.08f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaTreelineFoldMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastTreelineFold" : "Ch1Distant_CurrentTreelineFold";
+            var color = past
+                ? new Color(0.144f, 0.196f, 0.086f, 1f)
+                : new Color(0.052f, 0.178f, 0.092f, 1f);
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.08f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -50676,7 +51012,11 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: distant panorama vista far radius must stay beyond 112m for parallax depth, found {DistantPanoramaVistaFarRadius:0.000}.");
             }
 
-            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 5) + DistantPanoramaVistaAreaLandmarkCount + DistantPanoramaVistaAreaSignatureCount;
+            var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 5) +
+                DistantPanoramaVistaRidgeFacetMeshCount +
+                DistantPanoramaVistaTreelineFoldMeshCount +
+                DistantPanoramaVistaAreaLandmarkCount +
+                DistantPanoramaVistaAreaSignatureCount;
             if (filters.Length < expectedSegments)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} has {filters.Length} distant vista segments, expected at least {expectedSegments}.");
@@ -50764,6 +51104,34 @@ namespace Anemora.EditorTools
             if (HasDistantPanoramaVistaCompositionPrototype(area) && compositionPrototypeCount < DistantPanoramaVistaCompositionPrototypeCount)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaCompositionPrototypeCount} authored composition prototype meshes, found {compositionPrototypeCount}.");
+            }
+
+            var ridgeFacetCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_RidgeFacet", StringComparison.Ordinal))
+                {
+                    ridgeFacetCount++;
+                }
+            }
+
+            if (ridgeFacetCount < DistantPanoramaVistaRidgeFacetMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaRidgeFacetMeshCount} authored ridge facet detail meshes, found {ridgeFacetCount}.");
+            }
+
+            var treelineFoldCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_TreelineFold", StringComparison.Ordinal))
+                {
+                    treelineFoldCount++;
+                }
+            }
+
+            if (treelineFoldCount < DistantPanoramaVistaTreelineFoldMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaTreelineFoldMeshCount} authored treeline fold detail meshes, found {treelineFoldCount}.");
             }
 
             var center = GetDistantPanoramaVistaCenter(area);
@@ -50862,6 +51230,7 @@ namespace Anemora.EditorTools
             var visibleCount = 0;
             var horizonCount = 0;
             var compositionPrototypeVisibleCount = 0;
+            var qualityDetailVisibleCount = 0;
             foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
                 if (renderer == null || !renderer.enabled)
@@ -50882,6 +51251,12 @@ namespace Anemora.EditorTools
                     {
                         compositionPrototypeVisibleCount++;
                     }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_RidgeFacet", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_TreelineFold", StringComparison.Ordinal))
+                    {
+                        qualityDetailVisibleCount++;
+                    }
                 }
             }
 
@@ -50893,6 +51268,11 @@ namespace Anemora.EditorTools
             if (HasDistantPanoramaVistaCompositionPrototype(area) && compositionPrototypeVisibleCount < 3)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} composition prototype must be visible in the wide camera, visible={compositionPrototypeVisibleCount}.");
+            }
+
+            if (qualityDetailVisibleCount < DistantPanoramaVistaQualityDetailVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} ridge/treeline quality details must be visible in the wide camera, visible={qualityDetailVisibleCount}.");
             }
         }
 
