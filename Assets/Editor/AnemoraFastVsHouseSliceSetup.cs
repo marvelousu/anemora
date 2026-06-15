@@ -496,11 +496,13 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaBandCount = 3;
         private const int DistantPanoramaVistaAreaLandmarkCount = 5;
         private const int DistantPanoramaVistaAreaSignatureCount = 4;
+        private const int DistantPanoramaVistaLandformFacetCount = 8;
         private const int DistantPanoramaVistaCompositionPrototypeCount = 9;
         private const int DistantPanoramaVistaRidgeFacetBandCount = 2;
         private const int DistantPanoramaVistaRidgeFacetMeshCount = DistantPanoramaVistaSegmentCount * DistantPanoramaVistaRidgeFacetBandCount;
         private const int DistantPanoramaVistaTreelineFoldMeshCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaQualityDetailVisibleMinimum = 3;
+        private const int DistantPanoramaVistaLandformFacetVisibleMinimum = 4;
         private const int MidgroundEdgeClosurePrototypeMeshCount = 12;
         private const int MidgroundEdgeClosurePrototypeVisibleMinimum = 5;
         private const int MapEdgeTerrainApronPrototypeMeshCount = 12;
@@ -25565,6 +25567,7 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaFoothillForest(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaAreaLandmarks(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaAreaSignatures(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaLandformFacets(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaCompositionPrototype(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaRidgeFacets(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaTreelineFolds(parent, prefix, past, area, areaToken, center);
@@ -25913,6 +25916,67 @@ namespace Anemora.EditorTools
 
                 var landmark = signatureObject.AddComponent<TimeWindowPairedSpaceLandmark>();
                 SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.area_signature.s{index + 1:00}");
+                SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                SerializedSet(landmark, "countsForArrival", false);
+            }
+        }
+
+        private static void CreateDistantPanoramaVistaLandformFacets(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            for (var index = 0; index < DistantPanoramaVistaLandformFacetCount; index++)
+            {
+                var seed = 6047 + (int)area * 331 + (past ? 1447 : 0) + index * 67;
+                var profile = GetDistantPanoramaVistaLandformFacetProfile(area, index);
+                var angle = GetDistantPanoramaVistaLandformFacetAngle(area, index, seed);
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var farLayer = index % 3 == 0 || index == DistantPanoramaVistaLandformFacetCount - 1;
+                var radius = (farLayer ? 82.0f : 68.5f) + DistantPanoramaVistaSigned(seed + 5, farLayer ? 3.0f : 1.9f);
+                var localPosition = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, farLayer ? 5.4f : 3.8f) +
+                    new Vector3(0f, (past ? 1.05f : 0.86f) + DistantPanoramaVistaHash01(seed + 19) * (farLayer ? 0.55f : 0.42f), 0f);
+                var faceDirection = center - localPosition;
+                faceDirection.y = 0f;
+                if (faceDirection.sqrMagnitude < 0.01f)
+                {
+                    faceDirection = -radial;
+                }
+
+                var token = farLayer ? "BackRidge" : "FrontTreeMass";
+                var facetObject = new GameObject($"{prefix}_{areaToken}_DistantVista_LandformFacet_{token}_S{index + 1:00}");
+                facetObject.transform.SetParent(parent, false);
+                facetObject.transform.localPosition = localPosition;
+                facetObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                facetObject.transform.localScale = Vector3.one;
+                facetObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                var filter = facetObject.AddComponent<MeshFilter>();
+                var width = (farLayer
+                    ? Mathf.Lerp(52.0f, 78.0f, DistantPanoramaVistaHash01(seed + 23))
+                    : Mathf.Lerp(44.0f, 66.0f, DistantPanoramaVistaHash01(seed + 23)));
+                var height = (farLayer
+                    ? Mathf.Lerp(20.0f, 34.0f, DistantPanoramaVistaHash01(seed + 31))
+                    : Mathf.Lerp(16.0f, 26.0f, DistantPanoramaVistaHash01(seed + 31))) * (past ? 1.12f : 1f);
+                var depth = farLayer
+                    ? Mathf.Lerp(4.2f, 6.2f, DistantPanoramaVistaHash01(seed + 37))
+                    : Mathf.Lerp(3.0f, 5.0f, DistantPanoramaVistaHash01(seed + 37));
+                filter.sharedMesh = CreateDistantPanoramaVistaCompositionPrototypeMesh(
+                    $"{facetObject.name}_Mesh",
+                    seed,
+                    profile,
+                    width,
+                    height,
+                    depth,
+                    past);
+
+                var renderer = facetObject.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = EnsureDistantPanoramaVistaLandformFacetMaterial(past, farLayer);
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+
+                var landmark = facetObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.landform_facet.{token.ToLowerInvariant()}.s{index + 1:00}");
                 SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
                 SerializedSet(landmark, "countsForArrival", false);
             }
@@ -26507,6 +26571,38 @@ namespace Anemora.EditorTools
             return (centerDegrees + spread + jitter) * Mathf.Deg2Rad;
         }
 
+        private static float GetDistantPanoramaVistaLandformFacetAngle(FastVsHouseArea area, int index, int seed)
+        {
+            var centerDegrees = 0f;
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    centerDegrees = -7f;
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    centerDegrees = 2f;
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    centerDegrees = 10f;
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    centerDegrees = 6f;
+                    break;
+                case FastVsHouseArea.Ruins:
+                    centerDegrees = -5f;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    centerDegrees = -3f;
+                    break;
+            }
+
+            var spread = (index - (DistantPanoramaVistaLandformFacetCount - 1) * 0.5f) * 6.6f;
+            var layerNudge = (index % 3 == 0 || index == DistantPanoramaVistaLandformFacetCount - 1) ? 1.6f : -1.2f;
+            var jitter = DistantPanoramaVistaSigned(seed + 47, 1.35f);
+            return (centerDegrees + spread + layerNudge + jitter) * Mathf.Deg2Rad;
+        }
+
         private static int GetDistantPanoramaVistaAreaLandmarkProfile(FastVsHouseArea area, int index)
         {
             switch (area)
@@ -26541,6 +26637,27 @@ namespace Anemora.EditorTools
                     return index == 3 ? 1 : 3;
                 case FastVsHouseArea.Ruins:
                     return index == 2 ? 0 : 4;
+                default:
+                    return 0;
+            }
+        }
+
+        private static int GetDistantPanoramaVistaLandformFacetProfile(FastVsHouseArea area, int index)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return index % 3 == 0 ? 2 : 0;
+                case FastVsHouseArea.CentralPlaza:
+                    return index % 2 == 0 ? 0 : 3;
+                case FastVsHouseArea.MiaHouse:
+                    return index == 1 || index == 4 ? 1 : 2;
+                case FastVsHouseArea.AriaStreet:
+                    return index == 0 || index == 3 ? 3 : 1;
+                case FastVsHouseArea.KaiaFarm:
+                    return index % 3 == 2 ? 0 : 1;
+                case FastVsHouseArea.Ruins:
+                    return index % 2 == 0 ? 2 : 3;
                 default:
                     return 0;
             }
@@ -27742,6 +27859,64 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.10f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaLandformFacetMaterial(bool past, bool farLayer)
+        {
+            var id = past
+                ? (farLayer ? "Ch1Distant_PastLandformFacetBackRidge" : "Ch1Distant_PastLandformFacetFrontTree")
+                : (farLayer ? "Ch1Distant_CurrentLandformFacetBackRidge" : "Ch1Distant_CurrentLandformFacetFrontTree");
+            var material = past
+                ? (farLayer
+                    ? PixelMaterial(
+                        id,
+                        new Color32(86, 67, 35, 255),
+                        new Color32(122, 88, 39, 255),
+                        new Color32(49, 38, 25, 255),
+                        PixelPattern.Stone,
+                        true,
+                        new Vector2(5.4f, 2.2f),
+                        FastVsHd2dMaterialRole.SurfaceLit)
+                    : PixelMaterial(
+                        id,
+                        new Color32(24, 40, 13, 255),
+                        new Color32(52, 66, 20, 255),
+                        new Color32(12, 22, 10, 255),
+                        PixelPattern.Grass,
+                        true,
+                        new Vector2(2.8f, 3.6f),
+                        FastVsHd2dMaterialRole.SurfaceLit))
+                : (farLayer
+                    ? PixelMaterial(
+                        id,
+                        new Color32(40, 64, 86, 255),
+                        new Color32(71, 102, 112, 255),
+                        new Color32(25, 35, 53, 255),
+                        PixelPattern.Stone,
+                        true,
+                        new Vector2(5.4f, 2.2f),
+                        FastVsHd2dMaterialRole.SurfaceLit)
+                    : PixelMaterial(
+                        id,
+                        new Color32(3, 31, 13, 255),
+                        new Color32(16, 68, 24, 255),
+                        new Color32(2, 17, 9, 255),
+                        PixelPattern.Grass,
+                        true,
+                        new Vector2(2.8f, 3.6f),
+                        FastVsHd2dMaterialRole.SurfaceLit));
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", farLayer ? 0.11f : 0.08f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -52409,6 +52584,11 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dDistantPanoramaVista()
         {
+            ValidateDistantPanoramaVistaLandformFacetTexture("Ch1Distant_CurrentLandformFacetBackRidge", 0.036f);
+            ValidateDistantPanoramaVistaLandformFacetTexture("Ch1Distant_PastLandformFacetBackRidge", 0.036f);
+            ValidateDistantPanoramaVistaLandformFacetTexture("Ch1Distant_CurrentLandformFacetFrontTree", 0.034f);
+            ValidateDistantPanoramaVistaLandformFacetTexture("Ch1Distant_PastLandformFacetFrontTree", 0.034f);
+
             for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
             {
                 var area = DistantPanoramaVistaAreas[i];
@@ -52449,6 +52629,12 @@ namespace Anemora.EditorTools
                 ValidateDistantPanoramaVistaCameraCoverage(camera, "Current", area);
                 ValidateDistantPanoramaVistaCameraCoverage(camera, "Past", area);
             }
+        }
+
+        private static void ValidateDistantPanoramaVistaLandformFacetTexture(string textureId, float minLuminanceRange)
+        {
+            ValidateGeneratedRepeatTextureAsset(textureId, 32, 32, 3);
+            ValidateTextureLuminanceRange(textureId, minLuminanceRange, $"{textureId} landform facet texture");
         }
 
         private static void ValidateFastVsHd2dMidgroundEdgeClosurePrototype()
@@ -53770,7 +53956,8 @@ namespace Anemora.EditorTools
                 DistantPanoramaVistaRidgeFacetMeshCount +
                 DistantPanoramaVistaTreelineFoldMeshCount +
                 DistantPanoramaVistaAreaLandmarkCount +
-                DistantPanoramaVistaAreaSignatureCount;
+                DistantPanoramaVistaAreaSignatureCount +
+                DistantPanoramaVistaLandformFacetCount;
             if (filters.Length < expectedSegments)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} has {filters.Length} distant vista segments, expected at least {expectedSegments}.");
@@ -53846,6 +54033,20 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaAreaSignatureCount} authored area signatures, found {areaSignatureCount}.");
             }
 
+            var landformFacetCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_LandformFacet", StringComparison.Ordinal))
+                {
+                    landformFacetCount++;
+                }
+            }
+
+            if (landformFacetCount < DistantPanoramaVistaLandformFacetCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaLandformFacetCount} authored landform facet meshes, found {landformFacetCount}.");
+            }
+
             var compositionPrototypeCount = 0;
             foreach (var filter in filters)
             {
@@ -53919,6 +54120,12 @@ namespace Anemora.EditorTools
                     throw new InvalidOperationException($"House slice validation failed: distant vista segment {filter.gameObject.name} must use a Ch1Distant material.");
                 }
 
+                if (filter.gameObject.name.Contains("DistantVista_LandformFacet", StringComparison.Ordinal) &&
+                    ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: distant vista landform facet {filter.gameObject.name} must use a textured material.");
+                }
+
                 if (renderer.shadowCastingMode != ShadowCastingMode.Off)
                 {
                     throw new InvalidOperationException($"House slice validation failed: distant vista segment {filter.gameObject.name} must not cast shadows.");
@@ -53985,6 +54192,7 @@ namespace Anemora.EditorTools
             var horizonCount = 0;
             var compositionPrototypeVisibleCount = 0;
             var qualityDetailVisibleCount = 0;
+            var landformFacetVisibleCount = 0;
             foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
                 if (renderer == null || !renderer.enabled)
@@ -54007,9 +54215,15 @@ namespace Anemora.EditorTools
                     }
 
                     if (renderer.gameObject.name.Contains("DistantVista_RidgeFacet", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_LandformFacet", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_TreelineFold", StringComparison.Ordinal))
                     {
                         qualityDetailVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_LandformFacet", StringComparison.Ordinal))
+                    {
+                        landformFacetVisibleCount++;
                     }
                 }
             }
@@ -54027,6 +54241,11 @@ namespace Anemora.EditorTools
             if (qualityDetailVisibleCount < DistantPanoramaVistaQualityDetailVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} ridge/treeline quality details must be visible in the wide camera, visible={qualityDetailVisibleCount}.");
+            }
+
+            if (landformFacetVisibleCount < DistantPanoramaVistaLandformFacetVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} landform facets must visibly break the upper panorama silhouette, visible={landformFacetVisibleCount}.");
             }
         }
 
