@@ -537,6 +537,14 @@ namespace Anemora.EditorTools
             FarShoreHoleClosureBankCount +
             FarShoreHoleClosureCoppiceCount;
         private const int FarShoreHoleClosureVisibleMinimum = 5;
+        private const int WaterlineBreakupBankShelfCount = 8;
+        private const int WaterlineBreakupReedShadowCount = 6;
+        private const int WaterlineBreakupShallowRunCount = 5;
+        private const int WaterlineBreakupMeshCount =
+            WaterlineBreakupBankShelfCount +
+            WaterlineBreakupReedShadowCount +
+            WaterlineBreakupShallowRunCount;
+        private const int WaterlineBreakupVisibleMinimum = 6;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -979,6 +987,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dForegroundShorelineClosureAllMaps();
             ValidateFastVsHd2dForegroundEdgeBreakupAllMaps();
             ValidateFastVsHd2dFarShoreHoleClosureAllMaps();
+            ValidateFastVsHd2dWaterlineBreakupAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10254,6 +10263,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseHFarShoreHoleClosureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseIWaterlineBreakupForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -24933,6 +24952,217 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1PhaseIWaterlineBreakupForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            _ = materials;
+
+            CreateChapter1PhaseIWaterlineBreakup(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseIWaterlineBreakup(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseIWaterlineBreakup(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseIWaterlineBreakup(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseIWaterlineBreakup(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseIWaterlineBreakup(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseIWaterlineBreakup(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_WaterlineBreakup").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var baseAngle = GetWaterlineBreakupBaseAngle(area);
+            var radiusScale = GetWaterlineBreakupRadiusScale(area);
+            var widthScale = GetWaterlineBreakupWidthScale(area);
+            var bankMaterial = EnsureWaterlineBreakupBankMaterial(past);
+            var reedMaterial = EnsureWaterlineBreakupReedMaterial(past);
+            var shallowMaterial = EnsureWaterlineBreakupShallowMaterial(past);
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.waterline_breakup";
+
+            for (var index = 0; index < WaterlineBreakupBankShelfCount; index++)
+            {
+                var seed = 38567 + (int)area * 701 + (past ? 2689 : 0) + index * 163;
+                var t = index / (float)(WaterlineBreakupBankShelfCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-42.0f, 43.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 2.15f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (21.8f + DistantPanoramaVistaSigned(seed + 11, 1.55f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 1.90f * widthScale) +
+                    new Vector3(0f, 0.060f + DistantPanoramaVistaHash01(seed + 23) * 0.055f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_WaterlineBreakup_BankShelf_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_WaterlineBreakup_BankShelf_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(8.4f, 13.8f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(2.35f, 4.45f, DistantPanoramaVistaHash01(seed + 31)) * radiusScale,
+                        Mathf.Lerp(0.075f, 0.160f, DistantPanoramaVistaHash01(seed + 37))),
+                    bankMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.bank_shelf.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < WaterlineBreakupReedShadowCount; index++)
+            {
+                var seed = 40789 + (int)area * 719 + (past ? 2753 : 0) + index * 173;
+                var t = index / (float)(WaterlineBreakupReedShadowCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-36.0f, 38.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.80f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (23.6f + DistantPanoramaVistaSigned(seed + 11, 1.90f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 2.10f * widthScale) +
+                    new Vector3(0f, 0.170f + DistantPanoramaVistaHash01(seed + 23) * 0.090f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_WaterlineBreakup_ReedShadow_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateDistantPanoramaVistaTreelineFoldMesh(
+                        $"{prefix}_{areaToken}_WaterlineBreakup_ReedShadow_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(5.2f, 9.4f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(1.05f, 1.95f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.04f : 1f),
+                        Mathf.Lerp(0.32f, 0.56f, DistantPanoramaVistaHash01(seed + 37)) * radiusScale),
+                    reedMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.reed_shadow.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < WaterlineBreakupShallowRunCount; index++)
+            {
+                var seed = 43103 + (int)area * 733 + (past ? 2819 : 0) + index * 181;
+                var t = index / (float)(WaterlineBreakupShallowRunCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-30.0f, 32.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.55f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radius = (19.8f + DistantPanoramaVistaSigned(seed + 11, 1.25f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 1.55f * widthScale) +
+                    new Vector3(0f, 0.032f + DistantPanoramaVistaHash01(seed + 23) * 0.022f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_WaterlineBreakup_ShallowRun_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_WaterlineBreakup_ShallowRun_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(5.4f, 9.6f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(1.10f, 2.35f, DistantPanoramaVistaHash01(seed + 31)) * radiusScale,
+                        Mathf.Lerp(0.024f, 0.052f, DistantPanoramaVistaHash01(seed + 37))),
+                    shallowMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.shallow_run.s{index + 1:00}");
+            }
+
+            ApplyWaterlineBreakupRendererPolicy(parent);
+        }
+
+        private static float GetWaterlineBreakupBaseAngle(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 0.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.CentralPlaza:
+                    return -4.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.MiaHouse:
+                    return -8.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.AriaStreet:
+                    return 6.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.KaiaFarm:
+                    return 10.0f * Mathf.Deg2Rad;
+                case FastVsHouseArea.Ruins:
+                    return -2.0f * Mathf.Deg2Rad;
+                default:
+                    return 0f;
+            }
+        }
+
+        private static float GetWaterlineBreakupRadiusScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.08f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.94f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.20f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.22f;
+                case FastVsHouseArea.Ruins:
+                    return 1.44f;
+                case FastVsHouseArea.Exterior:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static float GetWaterlineBreakupWidthScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 1.16f;
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.10f;
+                case FastVsHouseArea.AriaStreet:
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.20f;
+                case FastVsHouseArea.Ruins:
+                    return 1.30f;
+                case FastVsHouseArea.MiaHouse:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static void ApplyWaterlineBreakupRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -27902,6 +28132,89 @@ namespace Anemora.EditorTools
         }
 
         private static Material EnsureFarShoreHoleClosureMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
+        {
+            var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureWaterlineBreakupBankMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastWaterlineBreakupBank" : "Ch1Distant_CurrentWaterlineBreakupBank";
+            return past
+                ? EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(58, 54, 35, 255),
+                    new Color32(82, 74, 43, 255),
+                    new Color32(35, 34, 27, 255),
+                    PixelPattern.Stone,
+                    0.10f,
+                    new Vector2(4.4f, 1.8f))
+                : EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(19, 45, 30, 255),
+                    new Color32(37, 63, 39, 255),
+                    new Color32(12, 29, 24, 255),
+                    PixelPattern.Stone,
+                    0.10f,
+                    new Vector2(4.4f, 1.8f));
+        }
+
+        private static Material EnsureWaterlineBreakupReedMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastWaterlineBreakupReed" : "Ch1Distant_CurrentWaterlineBreakupReed";
+            return past
+                ? EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(34, 42, 20, 255),
+                    new Color32(55, 65, 28, 255),
+                    new Color32(22, 29, 16, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.0f, 3.2f))
+                : EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(7, 30, 17, 255),
+                    new Color32(19, 52, 25, 255),
+                    new Color32(5, 21, 13, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.0f, 3.2f));
+        }
+
+        private static Material EnsureWaterlineBreakupShallowMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastWaterlineBreakupShallow" : "Ch1Distant_CurrentWaterlineBreakupShallow";
+            return past
+                ? EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(66, 72, 53, 255),
+                    new Color32(86, 92, 62, 255),
+                    new Color32(42, 48, 39, 255),
+                    PixelPattern.Water,
+                    0.14f,
+                    new Vector2(5.0f, 1.2f))
+                : EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(36, 68, 78, 255),
+                    new Color32(55, 89, 96, 255),
+                    new Color32(27, 48, 60, 255),
+                    PixelPattern.Water,
+                    0.14f,
+                    new Vector2(5.0f, 1.2f));
+        }
+
+        private static Material EnsureWaterlineBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
         {
             var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
@@ -53215,6 +53528,207 @@ namespace Anemora.EditorTools
                 silhouetteVisibleCount < 2)
             {
                 throw new InvalidOperationException($"House slice validation failed: far-shore hole closure {prefix} {area} must visibly close distant waterline holes, visible={visibleCount}, shelves={shelfVisibleCount}, silhouettes={silhouetteVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dWaterlineBreakupAllMaps()
+        {
+            ValidateWaterlineBreakupTexture("Ch1Distant_CurrentWaterlineBreakupBank", 0.038f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_PastWaterlineBreakupBank", 0.038f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_CurrentWaterlineBreakupReed", 0.036f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_PastWaterlineBreakupReed", 0.036f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_CurrentWaterlineBreakupShallow", 0.036f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_PastWaterlineBreakupShallow", 0.036f);
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateWaterlineBreakupRoot("Current", area);
+                ValidateWaterlineBreakupRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: waterline breakup requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateWaterlineBreakupCameraCoverage(camera, "Current", area);
+                ValidateWaterlineBreakupCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateWaterlineBreakupTexture(string textureId, float minLuminanceRange)
+        {
+            ValidateGeneratedRepeatTextureAsset(textureId, 32, 32, 3);
+            ValidateTextureLuminanceRange(textureId, minLuminanceRange, $"{textureId} waterline breakup texture");
+        }
+
+        private static void ValidateWaterlineBreakupRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_WaterlineBreakup";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing waterline breakup root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: waterline breakup root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: waterline breakup root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyWaterlineBreakupRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < WaterlineBreakupMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {WaterlineBreakupMeshCount} authored waterline breakup meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var minRadius = 18.0f * GetWaterlineBreakupRadiusScale(area);
+            var maxRadius = 39.5f * GetWaterlineBreakupRadiusScale(area);
+            var bankCount = 0;
+            var reedCount = 0;
+            var shallowCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 28 || filter.sharedMesh.triangles.Length < 72)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                var flatRadius = new Vector2(localOffset.x, localOffset.z).magnitude;
+                if (flatRadius < minRadius ||
+                    flatRadius > maxRadius ||
+                    localOffset.y < 0.020f ||
+                    localOffset.y > 0.360f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} left the intended river-edge band at offset {localOffset}, radius={flatRadius:0.000}.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 2.30f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must remain low river-edge geometry, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("WaterlineBreakup", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must use a WaterlineBreakup material.");
+                }
+
+                if (ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: waterline breakup mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("BankShelf", StringComparison.Ordinal))
+                {
+                    bankCount++;
+                }
+                else if (filter.gameObject.name.Contains("ReedShadow", StringComparison.Ordinal))
+                {
+                    reedCount++;
+                }
+                else if (filter.gameObject.name.Contains("ShallowRun", StringComparison.Ordinal))
+                {
+                    shallowCount++;
+                }
+            }
+
+            if (bankCount < WaterlineBreakupBankShelfCount ||
+                reedCount < WaterlineBreakupReedShadowCount ||
+                shallowCount < WaterlineBreakupShallowRunCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine bank shelves, reed shadows, and shallow runs; bank={bankCount}, reed={reedCount}, shallow={shallowCount}.");
+            }
+        }
+
+        private static void ValidateWaterlineBreakupCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_WaterlineBreakup");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing waterline breakup root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var bankVisibleCount = 0;
+            var reedVisibleCount = 0;
+            var shallowVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("BankShelf", StringComparison.Ordinal))
+                {
+                    bankVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("ReedShadow", StringComparison.Ordinal))
+                {
+                    reedVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("ShallowRun", StringComparison.Ordinal))
+                {
+                    shallowVisibleCount++;
+                }
+            }
+
+            if (visibleCount < WaterlineBreakupVisibleMinimum ||
+                bankVisibleCount < 2 ||
+                reedVisibleCount < 2 ||
+                shallowVisibleCount < 1)
+            {
+                throw new InvalidOperationException($"House slice validation failed: waterline breakup {prefix} {area} must visibly interrupt the horizontal water ribbon, visible={visibleCount}, bank={bankVisibleCount}, reed={reedVisibleCount}, shallow={shallowVisibleCount}.");
             }
         }
 
