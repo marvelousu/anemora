@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.98 HD2D vegetation branching detail (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.99 HD2D distant vista production-depth prototype (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 795 files including INDEX.md and README.md.
-- Dated devlog records: 793 files.
+- Root-level Markdown coverage: 796 files including INDEX.md and README.md.
+- Dated devlog records: 794 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-15 | 16 |
+| 2026-06-15 | 17 |
 | 2026-06-14 | 12 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-15_hd2d_distant_vista_production_depth.md](2026-06-15_hd2d_distant_vista_production_depth.md) | Fast VS / HD2D | HD2D distant vista production-depth prototype |
 | [2026-06-15_hd2d_vegetation_branching.md](2026-06-15_hd2d_vegetation_branching.md) | Fast VS / HD2D | HD2D vegetation branching detail |
 | [2026-06-15_hd2d_nearfield_dressing.md](2026-06-15_hd2d_nearfield_dressing.md) | Fast VS / HD2D | HD2D nearfield dressing |
 | [2026-06-15_hd2d_distant_landform_facets.md](2026-06-15_hd2d_distant_landform_facets.md) | Fast VS / HD2D | HD2D distant landform facets |
