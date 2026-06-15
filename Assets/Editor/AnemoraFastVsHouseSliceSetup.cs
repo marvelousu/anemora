@@ -509,6 +509,18 @@ namespace Anemora.EditorTools
         private const int MidDistanceLandformClosurePathThreadCount = 6;
         private const int MidDistanceLandformClosureMeshCount = MidDistanceLandformClosureSegmentCount * 3 + MidDistanceLandformClosurePathThreadCount;
         private const int MidDistanceLandformClosureVisibleMinimum = 5;
+        private const int ForegroundShorelineClosureFrontSkirtCount = 6;
+        private const int ForegroundShorelineClosureSideReturnCount = 4;
+        private const int ForegroundShorelineClosurePathTongueCount = 3;
+        private const int ForegroundShorelineClosureStoneBreakCount = 6;
+        private const int ForegroundShorelineClosureReedFoldCount = 6;
+        private const int ForegroundShorelineClosureMeshCount =
+            ForegroundShorelineClosureFrontSkirtCount +
+            ForegroundShorelineClosureSideReturnCount +
+            ForegroundShorelineClosurePathTongueCount +
+            ForegroundShorelineClosureStoneBreakCount +
+            ForegroundShorelineClosureReedFoldCount;
+        private const int ForegroundShorelineClosureVisibleMinimum = 6;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -948,6 +960,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dMidgroundEdgeClosurePrototype();
             ValidateFastVsHd2dMapEdgeTerrainApronPrototype();
             ValidateFastVsHd2dMidDistanceLandformClosureAllMaps();
+            ValidateFastVsHd2dForegroundShorelineClosureAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10193,6 +10206,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseEMidDistanceLandformClosureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseFForegroundShorelineClosureForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -24292,6 +24315,251 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1PhaseFForegroundShorelineClosureForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            _ = materials;
+
+            CreateChapter1PhaseFForegroundShorelineClosure(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseFForegroundShorelineClosure(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseFForegroundShorelineClosure(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseFForegroundShorelineClosure(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseFForegroundShorelineClosure(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseFForegroundShorelineClosure(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseFForegroundShorelineClosure(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_ForegroundShorelineClosure").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetForegroundShorelineClosureScale(area);
+            var terrainMaterial = EnsureForegroundShorelineClosureTerrainMaterial(past);
+            var pathMaterial = EnsureForegroundShorelineClosurePathMaterial(past);
+            var stoneMaterial = EnsureForegroundShorelineClosureStoneMaterial(past);
+            var reedMaterial = EnsureForegroundShorelineClosureReedMaterial(past);
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.foreground_shoreline_closure";
+
+            for (var index = 0; index < ForegroundShorelineClosureFrontSkirtCount; index++)
+            {
+                var seed = 17891 + (int)area * 421 + (past ? 1693 : 0) + index * 89;
+                var spread = (index - (ForegroundShorelineClosureFrontSkirtCount - 1) * 0.5f) * 3.45f * scale;
+                var position = center + new Vector3(
+                    spread + DistantPanoramaVistaSigned(seed + 5, 0.34f * scale),
+                    0.238f + DistantPanoramaVistaHash01(seed + 11) * 0.034f,
+                    -7.35f * scale + DistantPanoramaVistaSigned(seed + 17, 0.42f * scale));
+                var width = Mathf.Lerp(4.2f, 5.8f, DistantPanoramaVistaHash01(seed + 23)) * scale;
+                var depth = Mathf.Lerp(2.2f, 3.4f, DistantPanoramaVistaHash01(seed + 29)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundShorelineClosure_FrontSkirt_S{index + 1:00}",
+                    parent,
+                    position,
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 31, 5.5f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_ForegroundShorelineClosure_FrontSkirt_S{index + 1:00}_Mesh",
+                        seed,
+                        width,
+                        depth,
+                        Mathf.Lerp(0.12f, 0.24f, DistantPanoramaVistaHash01(seed + 37))),
+                    terrainMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.front_skirt.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < ForegroundShorelineClosureSideReturnCount; index++)
+            {
+                var seed = 19319 + (int)area * 443 + (past ? 1747 : 0) + index * 97;
+                var leftSide = index < ForegroundShorelineClosureSideReturnCount / 2;
+                var sideIndex = leftSide ? index : index - ForegroundShorelineClosureSideReturnCount / 2;
+                var sideSign = leftSide ? -1f : 1f;
+                var position = center + new Vector3(
+                    sideSign * (9.70f * scale + DistantPanoramaVistaSigned(seed + 5, 0.32f * scale)),
+                    0.226f + DistantPanoramaVistaHash01(seed + 11) * 0.032f,
+                    Mathf.Lerp(-5.4f, 2.8f, sideIndex / 1f) * scale + DistantPanoramaVistaSigned(seed + 17, 0.50f * scale));
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundShorelineClosure_SideReturn_S{index + 1:00}",
+                    parent,
+                    position,
+                    Quaternion.Euler(0f, 90f + sideSign * DistantPanoramaVistaSigned(seed + 23, 5.0f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_ForegroundShorelineClosure_SideReturn_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(4.8f, 6.4f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(1.8f, 2.8f, DistantPanoramaVistaHash01(seed + 31)) * scale,
+                        Mathf.Lerp(0.10f, 0.22f, DistantPanoramaVistaHash01(seed + 37))),
+                    terrainMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.side_return.s{index + 1:00}");
+            }
+
+            var pathX = GetForegroundShorelineClosurePathX(area) * scale;
+            for (var index = 0; index < ForegroundShorelineClosurePathTongueCount; index++)
+            {
+                var seed = 20903 + (int)area * 467 + (past ? 1811 : 0) + index * 101;
+                var position = center + new Vector3(
+                    pathX + (index - 1) * 0.58f * scale + DistantPanoramaVistaSigned(seed + 5, 0.18f * scale),
+                    0.268f + index * 0.010f,
+                    (-5.45f - index * 0.84f) * scale + DistantPanoramaVistaSigned(seed + 11, 0.18f * scale));
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundShorelineClosure_PathTongue_S{index + 1:00}",
+                    parent,
+                    position,
+                    Quaternion.Euler(0f, GetForegroundShorelineClosurePathYaw(area) + DistantPanoramaVistaSigned(seed + 17, 4.0f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_ForegroundShorelineClosure_PathTongue_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(2.80f, 4.10f, DistantPanoramaVistaHash01(seed + 23)) * scale,
+                        Mathf.Lerp(3.80f, 5.80f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.055f, 0.120f, DistantPanoramaVistaHash01(seed + 31))),
+                    pathMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.path_tongue.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < ForegroundShorelineClosureStoneBreakCount; index++)
+            {
+                var seed = 22511 + (int)area * 487 + (past ? 1873 : 0) + index * 103;
+                var frontT = index / (float)(ForegroundShorelineClosureStoneBreakCount - 1);
+                var sideBias = index % 3 == 0 ? -1f : (index % 3 == 1 ? 1f : 0f);
+                var position = center + new Vector3(
+                    Mathf.Lerp(-7.8f, 7.8f, frontT) * scale + sideBias * DistantPanoramaVistaHash01(seed + 5) * 0.64f * scale,
+                    0.286f + DistantPanoramaVistaHash01(seed + 11) * 0.044f,
+                    (-6.76f + DistantPanoramaVistaSigned(seed + 17, 0.54f)) * scale);
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundShorelineClosure_StoneBreak_S{index + 1:00}",
+                    parent,
+                    position,
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 28f), 0f),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_ForegroundShorelineClosure_StoneBreak_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.20f, 2.35f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.28f, 0.62f, DistantPanoramaVistaHash01(seed + 31)),
+                        Mathf.Lerp(0.32f, 0.74f, DistantPanoramaVistaHash01(seed + 37)) * scale),
+                    stoneMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.stone_break.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < ForegroundShorelineClosureReedFoldCount; index++)
+            {
+                var seed = 24169 + (int)area * 503 + (past ? 1931 : 0) + index * 107;
+                var leftCluster = index < ForegroundShorelineClosureReedFoldCount / 2;
+                var clusterIndex = leftCluster ? index : index - ForegroundShorelineClosureReedFoldCount / 2;
+                var sideSign = leftCluster ? -1f : 1f;
+                var position = center + new Vector3(
+                    sideSign * (6.0f + clusterIndex * 1.15f) * scale + DistantPanoramaVistaSigned(seed + 5, 0.34f * scale),
+                    0.292f + DistantPanoramaVistaHash01(seed + 11) * 0.050f,
+                    (-6.12f - clusterIndex * 0.52f) * scale + DistantPanoramaVistaSigned(seed + 17, 0.24f * scale));
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundShorelineClosure_ReedFold_S{index + 1:00}",
+                    parent,
+                    position,
+                    Quaternion.Euler(0f, sideSign * 7.0f + DistantPanoramaVistaSigned(seed + 23, 8.0f), 0f),
+                    CreateDistantPanoramaVistaTreelineFoldMesh(
+                        $"{prefix}_{areaToken}_ForegroundShorelineClosure_ReedFold_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.80f, 3.20f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.85f, 1.75f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.06f : 1f),
+                        0.42f),
+                    reedMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.reed_fold.s{index + 1:00}");
+            }
+
+            ApplyForegroundShorelineClosureRendererPolicy(parent);
+        }
+
+        private static float GetForegroundShorelineClosureScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.12f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.96f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.34f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.40f;
+                case FastVsHouseArea.Ruins:
+                    return 1.84f;
+                case FastVsHouseArea.Exterior:
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static float GetForegroundShorelineClosurePathX(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 2.8f;
+                case FastVsHouseArea.CentralPlaza:
+                    return -0.8f;
+                case FastVsHouseArea.MiaHouse:
+                    return -1.6f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.8f;
+                case FastVsHouseArea.KaiaFarm:
+                    return -3.2f;
+                case FastVsHouseArea.Ruins:
+                    return 0.8f;
+                default:
+                    return 0f;
+            }
+        }
+
+        private static float GetForegroundShorelineClosurePathYaw(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return -14f;
+                case FastVsHouseArea.MiaHouse:
+                    return 8f;
+                case FastVsHouseArea.AriaStreet:
+                    return -7f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 12f;
+                case FastVsHouseArea.Ruins:
+                    return -4f;
+                case FastVsHouseArea.CentralPlaza:
+                default:
+                    return 0f;
+            }
+        }
+
+        private static void ApplyForegroundShorelineClosureRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -26963,6 +27231,59 @@ namespace Anemora.EditorTools
         }
 
         private static Material EnsureMidDistanceLandformClosureMaterial(string id, Color color, float smoothness)
+        {
+            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureForegroundShorelineClosureTerrainMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastForegroundShorelineTerrain" : "Ch1Distant_CurrentForegroundShorelineTerrain";
+            var color = past
+                ? new Color(0.314f, 0.292f, 0.164f, 1f)
+                : new Color(0.128f, 0.260f, 0.126f, 1f);
+            return EnsureForegroundShorelineClosureMaterial(id, color, 0.10f);
+        }
+
+        private static Material EnsureForegroundShorelineClosurePathMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastForegroundShorelinePath" : "Ch1Distant_CurrentForegroundShorelinePath";
+            var color = past
+                ? new Color(0.392f, 0.320f, 0.176f, 1f)
+                : new Color(0.324f, 0.296f, 0.166f, 1f);
+            return EnsureForegroundShorelineClosureMaterial(id, color, 0.12f);
+        }
+
+        private static Material EnsureForegroundShorelineClosureStoneMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastForegroundShorelineStone" : "Ch1Distant_CurrentForegroundShorelineStone";
+            var color = past
+                ? new Color(0.354f, 0.306f, 0.212f, 1f)
+                : new Color(0.280f, 0.304f, 0.232f, 1f);
+            return EnsureForegroundShorelineClosureMaterial(id, color, 0.16f);
+        }
+
+        private static Material EnsureForegroundShorelineClosureReedMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastForegroundShorelineReed" : "Ch1Distant_CurrentForegroundShorelineReed";
+            var color = past
+                ? new Color(0.128f, 0.176f, 0.072f, 1f)
+                : new Color(0.038f, 0.146f, 0.060f, 1f);
+            return EnsureForegroundShorelineClosureMaterial(id, color, 0.08f);
+        }
+
+        private static Material EnsureForegroundShorelineClosureMaterial(string id, Color color, float smoothness)
         {
             var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
@@ -51672,6 +51993,208 @@ namespace Anemora.EditorTools
                 pathVisibleCount < 1)
             {
                 throw new InvalidOperationException($"House slice validation failed: mid-distance landform closure {prefix} {area} must fill the wide camera middle distance, visible={visibleCount}, terrain={terrainVisibleCount}, silhouette={silhouetteVisibleCount}, path={pathVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dForegroundShorelineClosureAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateForegroundShorelineClosureRoot("Current", area);
+                ValidateForegroundShorelineClosureRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: foreground shoreline closure requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateForegroundShorelineClosureCameraCoverage(camera, "Current", area);
+                ValidateForegroundShorelineClosureCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateForegroundShorelineClosureRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_ForegroundShorelineClosure";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing foreground shoreline closure root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyForegroundShorelineClosureRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < ForegroundShorelineClosureMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {ForegroundShorelineClosureMeshCount} authored foreground shoreline closure meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var scale = GetForegroundShorelineClosureScale(area);
+            var frontSkirtCount = 0;
+            var sideReturnCount = 0;
+            var pathTongueCount = 0;
+            var stoneBreakCount = 0;
+            var reedFoldCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 52 || filter.sharedMesh.triangles.Length < 180)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.gameObject.name.Contains("DistantVista", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure must stay separate from distant vista validation: {filter.gameObject.name}.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 2.35f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must remain low foreground geometry, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                if (Mathf.Abs(localOffset.x) > 12.6f * scale ||
+                    localOffset.z < -11.8f * scale ||
+                    localOffset.z > 3.8f * scale ||
+                    localOffset.y < 0.04f ||
+                    localOffset.y > 0.35f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} left the intended foreground edge band at offset {localOffset}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("ForegroundShoreline", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must use a ForegroundShoreline material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("FrontSkirt", StringComparison.Ordinal))
+                {
+                    frontSkirtCount++;
+                }
+                else if (filter.gameObject.name.Contains("SideReturn", StringComparison.Ordinal))
+                {
+                    sideReturnCount++;
+                }
+                else if (filter.gameObject.name.Contains("PathTongue", StringComparison.Ordinal))
+                {
+                    pathTongueCount++;
+                }
+                else if (filter.gameObject.name.Contains("StoneBreak", StringComparison.Ordinal))
+                {
+                    stoneBreakCount++;
+                }
+                else if (filter.gameObject.name.Contains("ReedFold", StringComparison.Ordinal))
+                {
+                    reedFoldCount++;
+                }
+            }
+
+            if (frontSkirtCount < ForegroundShorelineClosureFrontSkirtCount ||
+                sideReturnCount < ForegroundShorelineClosureSideReturnCount ||
+                pathTongueCount < ForegroundShorelineClosurePathTongueCount ||
+                stoneBreakCount < ForegroundShorelineClosureStoneBreakCount ||
+                reedFoldCount < ForegroundShorelineClosureReedFoldCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine foreground skirts, side returns, path tongues, stones, and reed folds; skirts={frontSkirtCount}, sides={sideReturnCount}, paths={pathTongueCount}, stones={stoneBreakCount}, reeds={reedFoldCount}.");
+            }
+        }
+
+        private static void ValidateForegroundShorelineClosureCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_ForegroundShorelineClosure");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing foreground shoreline closure root for camera coverage: {prefix} {area}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            PositionChapter1AllMapsCamera(
+                camera,
+                center,
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var skirtVisibleCount = 0;
+            var pathVisibleCount = 0;
+            var detailVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("FrontSkirt", StringComparison.Ordinal) ||
+                    renderer.gameObject.name.Contains("SideReturn", StringComparison.Ordinal))
+                {
+                    skirtVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("PathTongue", StringComparison.Ordinal))
+                {
+                    pathVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("StoneBreak", StringComparison.Ordinal) ||
+                    renderer.gameObject.name.Contains("ReedFold", StringComparison.Ordinal))
+                {
+                    detailVisibleCount++;
+                }
+            }
+
+            if (visibleCount < ForegroundShorelineClosureVisibleMinimum ||
+                skirtVisibleCount < 3 ||
+                pathVisibleCount < 1 ||
+                detailVisibleCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure {prefix} {area} must visibly break the near map edge, visible={visibleCount}, skirts={skirtVisibleCount}, paths={pathVisibleCount}, details={detailVisibleCount}.");
             }
         }
 
