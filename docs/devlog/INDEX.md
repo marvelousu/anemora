@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.96 HD2D distant landform facets (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.97 HD2D nearfield dressing (2026-06-15). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 793 files including INDEX.md and README.md.
-- Dated devlog records: 791 files.
+- Root-level Markdown coverage: 794 files including INDEX.md and README.md.
+- Dated devlog records: 792 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-15 | 14 |
+| 2026-06-15 | 15 |
 | 2026-06-14 | 12 |
 | 2026-05-04 | 3 |
 | 2026-05-05 | 38 |
@@ -49,6 +49,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-15_hd2d_nearfield_dressing.md](2026-06-15_hd2d_nearfield_dressing.md) | Fast VS / HD2D | HD2D nearfield dressing |
 | [2026-06-15_hd2d_distant_landform_facets.md](2026-06-15_hd2d_distant_landform_facets.md) | Fast VS / HD2D | HD2D distant landform facets |
 | [2026-06-15_hd2d_waterline_breakup.md](2026-06-15_hd2d_waterline_breakup.md) | Fast VS / HD2D | HD2D waterline breakup |
 | [2026-06-15_hd2d_far_shore_hole_closure.md](2026-06-15_hd2d_far_shore_hole_closure.md) | Fast VS / HD2D | HD2D far-shore hole closure |

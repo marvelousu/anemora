@@ -547,6 +547,18 @@ namespace Anemora.EditorTools
             WaterlineBreakupReedShadowCount +
             WaterlineBreakupShallowRunCount;
         private const int WaterlineBreakupVisibleMinimum = 6;
+        private const int NearfieldDressingTerracePatchCount = 6;
+        private const int NearfieldDressingPathShardCount = 5;
+        private const int NearfieldDressingFrontCurbCount = 4;
+        private const int NearfieldDressingStoneMarkerCount = 8;
+        private const int NearfieldDressingHedgeRimCount = 7;
+        private const int NearfieldDressingMeshCount =
+            NearfieldDressingTerracePatchCount +
+            NearfieldDressingPathShardCount +
+            NearfieldDressingFrontCurbCount +
+            NearfieldDressingStoneMarkerCount +
+            NearfieldDressingHedgeRimCount;
+        private const int NearfieldDressingVisibleMinimum = 9;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -990,6 +1002,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dForegroundEdgeBreakupAllMaps();
             ValidateFastVsHd2dFarShoreHoleClosureAllMaps();
             ValidateFastVsHd2dWaterlineBreakupAllMaps();
+            ValidateFastVsHd2dNearfieldDressingAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10275,6 +10288,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseIWaterlineBreakupForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseJNearfieldDressingForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -25165,6 +25188,197 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1PhaseJNearfieldDressingForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            _ = materials;
+
+            CreateChapter1PhaseJNearfieldDressing(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseJNearfieldDressing(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseJNearfieldDressing(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseJNearfieldDressing(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseJNearfieldDressing(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseJNearfieldDressing(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseJNearfieldDressing(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_NearfieldDressing").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetNearfieldDressingScale(area);
+            var groundMaterial = EnsureNearfieldDressingGroundMaterial(past);
+            var pathMaterial = EnsureNearfieldDressingPathMaterial(past);
+            var stoneMaterial = EnsureNearfieldDressingStoneMaterial(past);
+            var hedgeMaterial = EnsureNearfieldDressingHedgeMaterial(past);
+            var pathX = GetForegroundShorelineClosurePathX(area) * scale;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.nearfield_dressing";
+
+            for (var index = 0; index < NearfieldDressingTerracePatchCount; index++)
+            {
+                var seed = 45247 + (int)area * 761 + (past ? 2917 : 0) + index * 191;
+                var t = index / (float)(NearfieldDressingTerracePatchCount - 1);
+                var x = Mathf.Lerp(-8.9f, 8.9f, t) * scale + DistantPanoramaVistaSigned(seed + 5, 0.54f * scale);
+                var z = Mathf.Lerp(-4.65f, -7.35f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_NearfieldDressing_TerracePatch_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.442f + DistantPanoramaVistaHash01(seed + 17) * 0.050f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 11.5f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_NearfieldDressing_TerracePatch_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(3.8f, 6.4f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(1.15f, 2.15f, DistantPanoramaVistaHash01(seed + 31)) * scale,
+                        Mathf.Lerp(0.055f, 0.120f, DistantPanoramaVistaHash01(seed + 37))),
+                    groundMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.terrace_patch.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < NearfieldDressingPathShardCount; index++)
+            {
+                var seed = 47629 + (int)area * 787 + (past ? 3001 : 0) + index * 197;
+                var x = pathX + (index - (NearfieldDressingPathShardCount - 1) * 0.5f) * 0.72f * scale +
+                    DistantPanoramaVistaSigned(seed + 5, 0.30f * scale);
+                var z = (-3.92f - index * 0.48f) * scale + DistantPanoramaVistaSigned(seed + 11, 0.24f * scale);
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_NearfieldDressing_PathShard_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.500f + index * 0.006f, z),
+                    Quaternion.Euler(0f, GetForegroundShorelineClosurePathYaw(area) + DistantPanoramaVistaSigned(seed + 17, 8.0f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_NearfieldDressing_PathShard_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.65f, 3.20f, DistantPanoramaVistaHash01(seed + 23)) * scale,
+                        Mathf.Lerp(1.00f, 2.05f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.035f, 0.075f, DistantPanoramaVistaHash01(seed + 31))),
+                    pathMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.path_shard.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < NearfieldDressingFrontCurbCount; index++)
+            {
+                var seed = 48983 + (int)area * 797 + (past ? 3023 : 0) + index * 193;
+                var t = index / (float)(NearfieldDressingFrontCurbCount - 1);
+                var x = Mathf.Lerp(-5.7f, 5.7f, t) * scale + DistantPanoramaVistaSigned(seed + 5, 0.38f * scale);
+                var z = Mathf.Lerp(-3.15f, -4.18f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_NearfieldDressing_FrontCurb_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.548f + DistantPanoramaVistaHash01(seed + 17) * 0.052f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 18.0f), 0f),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_NearfieldDressing_FrontCurb_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.45f, 2.65f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.20f, 0.42f, DistantPanoramaVistaHash01(seed + 31)),
+                        Mathf.Lerp(0.42f, 0.82f, DistantPanoramaVistaHash01(seed + 37)) * scale),
+                    stoneMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.front_curb.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < NearfieldDressingStoneMarkerCount; index++)
+            {
+                var seed = 50101 + (int)area * 811 + (past ? 3067 : 0) + index * 199;
+                var t = index / (float)(NearfieldDressingStoneMarkerCount - 1);
+                var sideBias = index % 2 == 0 ? -1f : 1f;
+                var x = Mathf.Lerp(-6.6f, 6.6f, t) * scale + sideBias * DistantPanoramaVistaHash01(seed + 5) * 0.64f * scale;
+                var z = Mathf.Lerp(-4.05f, -6.85f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_NearfieldDressing_StoneMarker_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.528f + DistantPanoramaVistaHash01(seed + 17) * 0.060f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 26.0f), 0f),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_NearfieldDressing_StoneMarker_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.05f, 2.35f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.26f, 0.56f, DistantPanoramaVistaHash01(seed + 31)),
+                        Mathf.Lerp(0.32f, 0.70f, DistantPanoramaVistaHash01(seed + 37)) * scale),
+                    stoneMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.stone_marker.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < NearfieldDressingHedgeRimCount; index++)
+            {
+                var seed = 52711 + (int)area * 829 + (past ? 3121 : 0) + index * 211;
+                var t = index / (float)(NearfieldDressingHedgeRimCount - 1);
+                var side = index < 3 ? -1f : (index > 3 ? 1f : 0f);
+                var x = Mathf.Lerp(-6.9f, 6.9f, t) * scale + side * DistantPanoramaVistaHash01(seed + 5) * 0.54f * scale;
+                var z = Mathf.Lerp(-4.72f, -7.18f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_NearfieldDressing_HedgeRim_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.566f + DistantPanoramaVistaHash01(seed + 17) * 0.070f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 14.0f), 0f),
+                    CreateDistantPanoramaVistaTreelineFoldMesh(
+                        $"{prefix}_{areaToken}_NearfieldDressing_HedgeRim_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(2.10f, 4.20f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.95f, 1.80f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.06f : 1f),
+                        Mathf.Lerp(0.34f, 0.62f, DistantPanoramaVistaHash01(seed + 37))),
+                    hedgeMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.hedge_rim.s{index + 1:00}");
+            }
+
+            ApplyNearfieldDressingRendererPolicy(parent);
+        }
+
+        private static float GetNearfieldDressingScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 1.14f;
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.22f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.98f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.26f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.32f;
+                case FastVsHouseArea.Ruins:
+                    return 1.52f;
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static void ApplyNearfieldDressingRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -28390,6 +28604,111 @@ namespace Anemora.EditorTools
         }
 
         private static Material EnsureWaterlineBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
+        {
+            var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureNearfieldDressingGroundMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastNearfieldDressingGround" : "Ch1Surface_CurrentNearfieldDressingGround";
+            return past
+                ? EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(72, 65, 38, 255),
+                    new Color32(96, 82, 43, 255),
+                    new Color32(43, 39, 28, 255),
+                    PixelPattern.Grass,
+                    0.09f,
+                    new Vector2(4.8f, 3.0f))
+                : EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(22, 55, 30, 255),
+                    new Color32(40, 82, 40, 255),
+                    new Color32(12, 34, 23, 255),
+                    PixelPattern.Grass,
+                    0.09f,
+                    new Vector2(4.8f, 3.0f));
+        }
+
+        private static Material EnsureNearfieldDressingPathMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastNearfieldDressingPath" : "Ch1Surface_CurrentNearfieldDressingPath";
+            return past
+                ? EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(92, 72, 40, 255),
+                    new Color32(120, 92, 46, 255),
+                    new Color32(54, 43, 30, 255),
+                    PixelPattern.Stone,
+                    0.11f,
+                    new Vector2(3.6f, 2.4f))
+                : EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(62, 57, 38, 255),
+                    new Color32(91, 80, 46, 255),
+                    new Color32(35, 32, 26, 255),
+                    PixelPattern.Stone,
+                    0.11f,
+                    new Vector2(3.6f, 2.4f));
+        }
+
+        private static Material EnsureNearfieldDressingStoneMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastNearfieldDressingStone" : "Ch1Surface_CurrentNearfieldDressingStone";
+            return past
+                ? EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(76, 66, 48, 255),
+                    new Color32(106, 90, 62, 255),
+                    new Color32(44, 39, 33, 255),
+                    PixelPattern.Stone,
+                    0.15f,
+                    new Vector2(2.4f, 1.8f))
+                : EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(50, 62, 54, 255),
+                    new Color32(76, 84, 64, 255),
+                    new Color32(30, 38, 36, 255),
+                    PixelPattern.Stone,
+                    0.15f,
+                    new Vector2(2.4f, 1.8f));
+        }
+
+        private static Material EnsureNearfieldDressingHedgeMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastNearfieldDressingHedge" : "Ch1Surface_CurrentNearfieldDressingHedge";
+            return past
+                ? EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(34, 45, 20, 255),
+                    new Color32(56, 70, 28, 255),
+                    new Color32(21, 29, 15, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.0f, 3.4f))
+                : EnsureNearfieldDressingMaterial(
+                    id,
+                    new Color32(7, 31, 16, 255),
+                    new Color32(18, 58, 24, 255),
+                    new Color32(5, 22, 12, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.0f, 3.4f));
+        }
+
+        private static Material EnsureNearfieldDressingMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
         {
             var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
@@ -53915,6 +54234,225 @@ namespace Anemora.EditorTools
                 shallowVisibleCount < 1)
             {
                 throw new InvalidOperationException($"House slice validation failed: waterline breakup {prefix} {area} must visibly interrupt the horizontal water ribbon, visible={visibleCount}, bank={bankVisibleCount}, reed={reedVisibleCount}, shallow={shallowVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dNearfieldDressingAllMaps()
+        {
+            ValidateNearfieldDressingTexture("Ch1Surface_CurrentNearfieldDressingGround", 0.045f);
+            ValidateNearfieldDressingTexture("Ch1Surface_PastNearfieldDressingGround", 0.045f);
+            ValidateNearfieldDressingTexture("Ch1Surface_CurrentNearfieldDressingPath", 0.045f);
+            ValidateNearfieldDressingTexture("Ch1Surface_PastNearfieldDressingPath", 0.045f);
+            ValidateNearfieldDressingTexture("Ch1Surface_CurrentNearfieldDressingStone", 0.040f);
+            ValidateNearfieldDressingTexture("Ch1Surface_PastNearfieldDressingStone", 0.040f);
+            ValidateNearfieldDressingTexture("Ch1Surface_CurrentNearfieldDressingHedge", 0.038f);
+            ValidateNearfieldDressingTexture("Ch1Surface_PastNearfieldDressingHedge", 0.038f);
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateNearfieldDressingRoot("Current", area);
+                ValidateNearfieldDressingRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: nearfield dressing requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateNearfieldDressingCameraCoverage(camera, "Current", area);
+                ValidateNearfieldDressingCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateNearfieldDressingTexture(string textureId, float minLuminanceRange)
+        {
+            ValidateGeneratedRepeatTextureAsset(textureId, 32, 32, 3);
+            ValidateTextureLuminanceRange(textureId, minLuminanceRange, $"{textureId} nearfield dressing texture");
+        }
+
+        private static void ValidateNearfieldDressingRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_NearfieldDressing";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing nearfield dressing root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: nearfield dressing root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: nearfield dressing root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyNearfieldDressingRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < NearfieldDressingMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {NearfieldDressingMeshCount} authored nearfield dressing meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var scale = GetNearfieldDressingScale(area);
+            var terraceCount = 0;
+            var pathCount = 0;
+            var curbCount = 0;
+            var stoneCount = 0;
+            var hedgeCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 52 || filter.sharedMesh.triangles.Length < 180)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 2.15f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must remain low authored edge dressing, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                if (Mathf.Abs(localOffset.x) > 11.8f * scale ||
+                    localOffset.z < -9.2f * scale ||
+                    localOffset.z > -2.8f * scale ||
+                    localOffset.y < 0.38f ||
+                    localOffset.y > 0.72f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} left the intended nearfield dressing band at offset {localOffset}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("NearfieldDressing", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must use a NearfieldDressing material.");
+                }
+
+                if (ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: nearfield dressing mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("TerracePatch", StringComparison.Ordinal))
+                {
+                    terraceCount++;
+                }
+                else if (filter.gameObject.name.Contains("PathShard", StringComparison.Ordinal))
+                {
+                    pathCount++;
+                }
+                else if (filter.gameObject.name.Contains("FrontCurb", StringComparison.Ordinal))
+                {
+                    curbCount++;
+                }
+                else if (filter.gameObject.name.Contains("StoneMarker", StringComparison.Ordinal))
+                {
+                    stoneCount++;
+                }
+                else if (filter.gameObject.name.Contains("HedgeRim", StringComparison.Ordinal))
+                {
+                    hedgeCount++;
+                }
+            }
+
+            if (terraceCount < NearfieldDressingTerracePatchCount ||
+                pathCount < NearfieldDressingPathShardCount ||
+                curbCount < NearfieldDressingFrontCurbCount ||
+                stoneCount < NearfieldDressingStoneMarkerCount ||
+                hedgeCount < NearfieldDressingHedgeRimCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine terrace, path, curb, stone, and hedge dressing; terrace={terraceCount}, path={pathCount}, curb={curbCount}, stone={stoneCount}, hedge={hedgeCount}.");
+            }
+        }
+
+        private static void ValidateNearfieldDressingCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_NearfieldDressing");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing nearfield dressing root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var terraceVisibleCount = 0;
+            var pathVisibleCount = 0;
+            var raisedVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("TerracePatch", StringComparison.Ordinal))
+                {
+                    terraceVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("PathShard", StringComparison.Ordinal))
+                {
+                    pathVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("FrontCurb", StringComparison.Ordinal))
+                {
+                    raisedVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("StoneMarker", StringComparison.Ordinal) ||
+                    renderer.gameObject.name.Contains("HedgeRim", StringComparison.Ordinal))
+                {
+                    raisedVisibleCount++;
+                }
+            }
+
+            if (visibleCount < NearfieldDressingVisibleMinimum ||
+                terraceVisibleCount < 2 ||
+                pathVisibleCount < 1 ||
+                raisedVisibleCount < 3)
+            {
+                throw new InvalidOperationException($"House slice validation failed: nearfield dressing {prefix} {area} must visibly add authored near/mid detail, visible={visibleCount}, terrace={terraceVisibleCount}, path={pathVisibleCount}, raised={raisedVisibleCount}.");
             }
         }
 
