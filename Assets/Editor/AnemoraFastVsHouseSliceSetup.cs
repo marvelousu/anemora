@@ -521,6 +521,14 @@ namespace Anemora.EditorTools
             ForegroundShorelineClosureStoneBreakCount +
             ForegroundShorelineClosureReedFoldCount;
         private const int ForegroundShorelineClosureVisibleMinimum = 6;
+        private const int ForegroundEdgeBreakupGroundPatchCount = 7;
+        private const int ForegroundEdgeBreakupPathPatchCount = 5;
+        private const int ForegroundEdgeBreakupDetailPatchCount = 5;
+        private const int ForegroundEdgeBreakupMeshCount =
+            ForegroundEdgeBreakupGroundPatchCount +
+            ForegroundEdgeBreakupPathPatchCount +
+            ForegroundEdgeBreakupDetailPatchCount;
+        private const int ForegroundEdgeBreakupVisibleMinimum = 7;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -961,6 +969,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dMapEdgeTerrainApronPrototype();
             ValidateFastVsHd2dMidDistanceLandformClosureAllMaps();
             ValidateFastVsHd2dForegroundShorelineClosureAllMaps();
+            ValidateFastVsHd2dForegroundEdgeBreakupAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10216,6 +10225,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseFForegroundShorelineClosureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseGForegroundEdgeBreakupForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -24560,6 +24579,130 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1PhaseGForegroundEdgeBreakupForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1PhaseGForegroundEdgeBreakup(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseGForegroundEdgeBreakup(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseGForegroundEdgeBreakup(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseGForegroundEdgeBreakup(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseGForegroundEdgeBreakup(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseGForegroundEdgeBreakup(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseGForegroundEdgeBreakup(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_ForegroundEdgeBreakup").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetForegroundShorelineClosureScale(area);
+            var terrainMaterial = EnsureForegroundEdgeBreakupTerrainMaterial(past);
+            var pathMaterial = EnsureForegroundEdgeBreakupPathMaterial(past);
+            var detailMaterial = EnsureForegroundEdgeBreakupDetailMaterial(past);
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.foreground_edge_breakup";
+
+            for (var index = 0; index < ForegroundEdgeBreakupGroundPatchCount; index++)
+            {
+                var seed = 25703 + (int)area * 557 + (past ? 2069 : 0) + index * 109;
+                var t = index / (float)(ForegroundEdgeBreakupGroundPatchCount - 1);
+                var x = Mathf.Lerp(-8.8f, 8.8f, t) * scale + DistantPanoramaVistaSigned(seed + 5, 0.44f * scale);
+                var z = Mathf.Lerp(-7.10f, -5.50f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                var width = Mathf.Lerp(3.1f, 5.2f, DistantPanoramaVistaHash01(seed + 17)) * scale;
+                var depth = Mathf.Lerp(1.5f, 2.5f, DistantPanoramaVistaHash01(seed + 23)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundEdgeBreakup_GroundPatch_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.365f + DistantPanoramaVistaHash01(seed + 29) * 0.026f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 31, 10.5f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_ForegroundEdgeBreakup_GroundPatch_S{index + 1:00}_Mesh",
+                        seed,
+                        width,
+                        depth,
+                        Mathf.Lerp(0.035f, 0.075f, DistantPanoramaVistaHash01(seed + 37))),
+                    terrainMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.ground_patch.s{index + 1:00}");
+            }
+
+            var pathX = GetForegroundShorelineClosurePathX(area) * scale;
+            for (var index = 0; index < ForegroundEdgeBreakupPathPatchCount; index++)
+            {
+                var seed = 27329 + (int)area * 577 + (past ? 2111 : 0) + index * 113;
+                var x = pathX + (index - (ForegroundEdgeBreakupPathPatchCount - 1) * 0.5f) * 0.86f * scale +
+                    DistantPanoramaVistaSigned(seed + 5, 0.24f * scale);
+                var z = (-5.78f - index * 0.22f) * scale + DistantPanoramaVistaSigned(seed + 11, 0.22f * scale);
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundEdgeBreakup_PathPatch_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.388f + index * 0.004f, z),
+                    Quaternion.Euler(0f, GetForegroundShorelineClosurePathYaw(area) + DistantPanoramaVistaSigned(seed + 17, 7.0f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_ForegroundEdgeBreakup_PathPatch_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.45f, 2.65f, DistantPanoramaVistaHash01(seed + 23)) * scale,
+                        Mathf.Lerp(1.20f, 2.40f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.025f, 0.060f, DistantPanoramaVistaHash01(seed + 31))),
+                    pathMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.path_patch.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < ForegroundEdgeBreakupDetailPatchCount; index++)
+            {
+                var seed = 29101 + (int)area * 593 + (past ? 2161 : 0) + index * 127;
+                var side = index % 2 == 0 ? -1f : 1f;
+                var band = index / (float)(ForegroundEdgeBreakupDetailPatchCount - 1);
+                var x = side * Mathf.Lerp(3.2f, 7.0f, band) * scale + DistantPanoramaVistaSigned(seed + 5, 0.32f * scale);
+                var z = Mathf.Lerp(-6.98f, -5.26f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_ForegroundEdgeBreakup_DetailPatch_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.405f + DistantPanoramaVistaHash01(seed + 17) * 0.030f, z),
+                    Quaternion.Euler(0f, side * 12f + DistantPanoramaVistaSigned(seed + 23, 18f), 0f),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_ForegroundEdgeBreakup_DetailPatch_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(1.35f, 2.75f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.22f, 0.44f, DistantPanoramaVistaHash01(seed + 31)),
+                        Mathf.Lerp(0.28f, 0.58f, DistantPanoramaVistaHash01(seed + 37)) * scale),
+                    detailMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.detail_patch.s{index + 1:00}");
+            }
+
+            ApplyForegroundEdgeBreakupRendererPolicy(parent);
+        }
+
+        private static void ApplyForegroundEdgeBreakupRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -27250,42 +27393,177 @@ namespace Anemora.EditorTools
         private static Material EnsureForegroundShorelineClosureTerrainMaterial(bool past)
         {
             var id = past ? "Ch1Distant_PastForegroundShorelineTerrain" : "Ch1Distant_CurrentForegroundShorelineTerrain";
-            var color = past
-                ? new Color(0.314f, 0.292f, 0.164f, 1f)
-                : new Color(0.128f, 0.260f, 0.126f, 1f);
-            return EnsureForegroundShorelineClosureMaterial(id, color, 0.10f);
+            return past
+                ? EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(75, 68, 39, 255),
+                    new Color32(96, 87, 48, 255),
+                    new Color32(49, 45, 29, 255),
+                    PixelPattern.Grass,
+                    0.10f,
+                    new Vector2(5.5f, 3.0f))
+                : EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(26, 58, 30, 255),
+                    new Color32(43, 82, 39, 255),
+                    new Color32(15, 39, 25, 255),
+                    PixelPattern.Grass,
+                    0.10f,
+                    new Vector2(5.5f, 3.0f));
         }
 
         private static Material EnsureForegroundShorelineClosurePathMaterial(bool past)
         {
             var id = past ? "Ch1Distant_PastForegroundShorelinePath" : "Ch1Distant_CurrentForegroundShorelinePath";
-            var color = past
-                ? new Color(0.392f, 0.320f, 0.176f, 1f)
-                : new Color(0.324f, 0.296f, 0.166f, 1f);
-            return EnsureForegroundShorelineClosureMaterial(id, color, 0.12f);
+            return past
+                ? EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(93, 74, 41, 255),
+                    new Color32(118, 92, 48, 255),
+                    new Color32(55, 44, 30, 255),
+                    PixelPattern.Stone,
+                    0.12f,
+                    new Vector2(4.5f, 3.5f))
+                : EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(72, 65, 39, 255),
+                    new Color32(99, 88, 51, 255),
+                    new Color32(42, 37, 29, 255),
+                    PixelPattern.Stone,
+                    0.12f,
+                    new Vector2(4.5f, 3.5f));
         }
 
         private static Material EnsureForegroundShorelineClosureStoneMaterial(bool past)
         {
             var id = past ? "Ch1Distant_PastForegroundShorelineStone" : "Ch1Distant_CurrentForegroundShorelineStone";
-            var color = past
-                ? new Color(0.354f, 0.306f, 0.212f, 1f)
-                : new Color(0.280f, 0.304f, 0.232f, 1f);
-            return EnsureForegroundShorelineClosureMaterial(id, color, 0.16f);
+            return past
+                ? EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(78, 68, 49, 255),
+                    new Color32(104, 91, 63, 255),
+                    new Color32(45, 40, 34, 255),
+                    PixelPattern.Stone,
+                    0.16f,
+                    new Vector2(3.0f, 2.0f))
+                : EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(61, 70, 56, 255),
+                    new Color32(83, 90, 68, 255),
+                    new Color32(35, 43, 39, 255),
+                    PixelPattern.Stone,
+                    0.16f,
+                    new Vector2(3.0f, 2.0f));
         }
 
         private static Material EnsureForegroundShorelineClosureReedMaterial(bool past)
         {
             var id = past ? "Ch1Distant_PastForegroundShorelineReed" : "Ch1Distant_CurrentForegroundShorelineReed";
-            var color = past
-                ? new Color(0.128f, 0.176f, 0.072f, 1f)
-                : new Color(0.038f, 0.146f, 0.060f, 1f);
-            return EnsureForegroundShorelineClosureMaterial(id, color, 0.08f);
+            return past
+                ? EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(35, 47, 20, 255),
+                    new Color32(55, 72, 28, 255),
+                    new Color32(24, 34, 16, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.0f, 3.0f))
+                : EnsureForegroundShorelineClosureMaterial(
+                    id,
+                    new Color32(10, 37, 17, 255),
+                    new Color32(20, 60, 25, 255),
+                    new Color32(7, 28, 14, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(2.0f, 3.0f));
         }
 
-        private static Material EnsureForegroundShorelineClosureMaterial(string id, Color color, float smoothness)
+        private static Material EnsureForegroundShorelineClosureMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
         {
-            var material = FlatMaterial(id, color, true, FastVsHd2dMaterialRole.SurfaceLit);
+            var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureForegroundEdgeBreakupTerrainMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastForegroundEdgeBreakupTerrain" : "Ch1Surface_CurrentForegroundEdgeBreakupTerrain";
+            return past
+                ? EnsureForegroundEdgeBreakupMaterial(
+                    id,
+                    new Color32(64, 58, 36, 255),
+                    new Color32(89, 79, 44, 255),
+                    new Color32(38, 36, 27, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(4.0f, 2.5f))
+                : EnsureForegroundEdgeBreakupMaterial(
+                    id,
+                    new Color32(19, 48, 25, 255),
+                    new Color32(36, 73, 35, 255),
+                    new Color32(12, 32, 21, 255),
+                    PixelPattern.Grass,
+                    0.08f,
+                    new Vector2(4.0f, 2.5f));
+        }
+
+        private static Material EnsureForegroundEdgeBreakupPathMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastForegroundEdgeBreakupPath" : "Ch1Surface_CurrentForegroundEdgeBreakupPath";
+            return past
+                ? EnsureForegroundEdgeBreakupMaterial(
+                    id,
+                    new Color32(80, 63, 37, 255),
+                    new Color32(105, 82, 43, 255),
+                    new Color32(45, 36, 28, 255),
+                    PixelPattern.Stone,
+                    0.10f,
+                    new Vector2(3.2f, 2.2f))
+                : EnsureForegroundEdgeBreakupMaterial(
+                    id,
+                    new Color32(57, 52, 35, 255),
+                    new Color32(82, 73, 43, 255),
+                    new Color32(34, 31, 26, 255),
+                    PixelPattern.Stone,
+                    0.10f,
+                    new Vector2(3.2f, 2.2f));
+        }
+
+        private static Material EnsureForegroundEdgeBreakupDetailMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastForegroundEdgeBreakupDetail" : "Ch1Surface_CurrentForegroundEdgeBreakupDetail";
+            return past
+                ? EnsureForegroundEdgeBreakupMaterial(
+                    id,
+                    new Color32(52, 49, 36, 255),
+                    new Color32(76, 68, 44, 255),
+                    new Color32(29, 30, 25, 255),
+                    PixelPattern.Stone,
+                    0.08f,
+                    new Vector2(2.0f, 1.5f))
+                : EnsureForegroundEdgeBreakupMaterial(
+                    id,
+                    new Color32(20, 38, 26, 255),
+                    new Color32(42, 57, 38, 255),
+                    new Color32(14, 25, 20, 255),
+                    PixelPattern.Stone,
+                    0.08f,
+                    new Vector2(2.0f, 1.5f));
+        }
+
+        private static Material EnsureForegroundEdgeBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
+        {
+            var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", smoothness);
@@ -52098,6 +52376,11 @@ namespace Anemora.EditorTools
                     throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must use a ForegroundShoreline material.");
                 }
 
+                if (ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must use a textured material to avoid flat bright edge surfaces.");
+                }
+
                 if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
                 {
                     throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure mesh {filter.gameObject.name} must use a non-shadow renderer.");
@@ -52195,6 +52478,207 @@ namespace Anemora.EditorTools
                 detailVisibleCount < 2)
             {
                 throw new InvalidOperationException($"House slice validation failed: foreground shoreline closure {prefix} {area} must visibly break the near map edge, visible={visibleCount}, skirts={skirtVisibleCount}, paths={pathVisibleCount}, details={detailVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dForegroundEdgeBreakupAllMaps()
+        {
+            ValidateForegroundEdgeBreakupTexture("Ch1Distant_CurrentForegroundShorelineTerrain", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Distant_PastForegroundShorelineTerrain", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Distant_CurrentForegroundShorelinePath", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Distant_PastForegroundShorelinePath", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Surface_CurrentForegroundEdgeBreakupTerrain", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Surface_PastForegroundEdgeBreakupTerrain", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Surface_CurrentForegroundEdgeBreakupPath", 0.045f);
+            ValidateForegroundEdgeBreakupTexture("Ch1Surface_PastForegroundEdgeBreakupPath", 0.045f);
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateForegroundEdgeBreakupRoot("Current", area);
+                ValidateForegroundEdgeBreakupRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: foreground edge breakup requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateForegroundEdgeBreakupCameraCoverage(camera, "Current", area);
+                ValidateForegroundEdgeBreakupCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateForegroundEdgeBreakupTexture(string textureId, float minLuminanceRange)
+        {
+            ValidateGeneratedRepeatTextureAsset(textureId, 32, 32, 3);
+            ValidateTextureLuminanceRange(textureId, minLuminanceRange, $"{textureId} foreground edge breakup texture");
+        }
+
+        private static void ValidateForegroundEdgeBreakupRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_ForegroundEdgeBreakup";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing foreground edge breakup root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: foreground edge breakup root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: foreground edge breakup root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyForegroundEdgeBreakupRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < ForegroundEdgeBreakupMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {ForegroundEdgeBreakupMeshCount} authored foreground edge breakup meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var scale = GetForegroundShorelineClosureScale(area);
+            var groundPatchCount = 0;
+            var pathPatchCount = 0;
+            var detailPatchCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 52 || filter.sharedMesh.triangles.Length < 180)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 1.50f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must remain low foreground surface relief, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                if (Mathf.Abs(localOffset.x) > 10.4f * scale ||
+                    localOffset.z < -8.8f * scale ||
+                    localOffset.z > -5.0f * scale ||
+                    localOffset.y < 0.32f ||
+                    localOffset.y > 0.47f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} left the intended bright-front-surface breakup band at offset {localOffset}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("ForegroundEdgeBreakup", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must use a ForegroundEdgeBreakup material.");
+                }
+
+                if (ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: foreground edge breakup mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("GroundPatch", StringComparison.Ordinal))
+                {
+                    groundPatchCount++;
+                }
+                else if (filter.gameObject.name.Contains("PathPatch", StringComparison.Ordinal))
+                {
+                    pathPatchCount++;
+                }
+                else if (filter.gameObject.name.Contains("DetailPatch", StringComparison.Ordinal))
+                {
+                    detailPatchCount++;
+                }
+            }
+
+            if (groundPatchCount < ForegroundEdgeBreakupGroundPatchCount ||
+                pathPatchCount < ForegroundEdgeBreakupPathPatchCount ||
+                detailPatchCount < ForegroundEdgeBreakupDetailPatchCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine ground, path, and detail breakup patches; ground={groundPatchCount}, path={pathPatchCount}, detail={detailPatchCount}.");
+            }
+        }
+
+        private static void ValidateForegroundEdgeBreakupCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_ForegroundEdgeBreakup");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing foreground edge breakup root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var groundVisibleCount = 0;
+            var pathVisibleCount = 0;
+            var detailVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("GroundPatch", StringComparison.Ordinal))
+                {
+                    groundVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("PathPatch", StringComparison.Ordinal))
+                {
+                    pathVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("DetailPatch", StringComparison.Ordinal))
+                {
+                    detailVisibleCount++;
+                }
+            }
+
+            if (visibleCount < ForegroundEdgeBreakupVisibleMinimum ||
+                groundVisibleCount < 3 ||
+                pathVisibleCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: foreground edge breakup {prefix} {area} must visibly interrupt the bright front surface band, visible={visibleCount}, ground={groundVisibleCount}, path={pathVisibleCount}, detail={detailVisibleCount}.");
             }
         }
 
