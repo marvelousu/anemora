@@ -565,6 +565,16 @@ namespace Anemora.EditorTools
             NearfieldDressingStoneMarkerCount +
             NearfieldDressingHedgeRimCount;
         private const int NearfieldDressingVisibleMinimum = 9;
+        private const int TerrainSurfaceQuiltGroundPanelCount = 9;
+        private const int TerrainSurfaceQuiltFieldBandCount = 8;
+        private const int TerrainSurfaceQuiltPathShoulderCount = 6;
+        private const int TerrainSurfaceQuiltGrassSeamCount = 8;
+        private const int TerrainSurfaceQuiltMeshCount =
+            TerrainSurfaceQuiltGroundPanelCount +
+            TerrainSurfaceQuiltFieldBandCount +
+            TerrainSurfaceQuiltPathShoulderCount +
+            TerrainSurfaceQuiltGrassSeamCount;
+        private const int TerrainSurfaceQuiltVisibleMinimum = 14;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -644,8 +654,13 @@ namespace Anemora.EditorTools
         private enum Chapter1ProductionSurfaceKind
         {
             SoilGrass,
+            FieldFurrow,
             GrassEdge,
             StonePath,
+            TerrainQuiltSoilGrass,
+            TerrainQuiltFieldFurrow,
+            TerrainQuiltGrassEdge,
+            TerrainQuiltStonePath,
             AgedPlaster,
             WeatheredRoof
         }
@@ -1009,6 +1024,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dFarShoreHoleClosureAllMaps();
             ValidateFastVsHd2dWaterlineBreakupAllMaps();
             ValidateFastVsHd2dNearfieldDressingAllMaps();
+            ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10324,6 +10340,15 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             ApplyChapter1Phase3AllMapProductionSurfaces(
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past);
+            CreateChapter1PhaseKTerrainSurfaceQuiltForOutdoorMaps(
+                exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
                 ariaStreetRoot,
@@ -25510,6 +25535,192 @@ namespace Anemora.EditorTools
         }
 
         private static void ApplyNearfieldDressingRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
+        private static void CreateChapter1PhaseKTerrainSurfaceQuiltForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past)
+        {
+            CreateChapter1PhaseKTerrainSurfaceQuilt(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseKTerrainSurfaceQuilt(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseKTerrainSurfaceQuilt(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseKTerrainSurfaceQuilt(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseKTerrainSurfaceQuilt(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseKTerrainSurfaceQuilt(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseKTerrainSurfaceQuilt(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_TerrainSurfaceQuilt").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetTerrainSurfaceQuiltScale(area);
+            var surfaceScope = past ? "PastOutdoor" : "CurrentOutdoor";
+            var groundMaterial = EnsureChapter1ProductionSurfaceMaterial(
+                $"Ch1Ground_{surfaceScope}_TerrainSurfaceQuiltSoilGrass2K",
+                Chapter1ProductionSurfaceKind.TerrainQuiltSoilGrass,
+                past,
+                new Vector2(1.15f, 1.00f));
+            var furrowMaterial = EnsureChapter1ProductionSurfaceMaterial(
+                $"Ch1Ground_{surfaceScope}_TerrainSurfaceQuiltFieldFurrow2K",
+                Chapter1ProductionSurfaceKind.TerrainQuiltFieldFurrow,
+                past,
+                new Vector2(1.10f, 1.85f));
+            var pathMaterial = EnsureChapter1ProductionSurfaceMaterial(
+                $"Ch1Ground_{surfaceScope}_TerrainSurfaceQuiltStonePath2K",
+                Chapter1ProductionSurfaceKind.TerrainQuiltStonePath,
+                past,
+                new Vector2(1.00f, 0.80f));
+            var grassMaterial = EnsureChapter1ProductionSurfaceMaterial(
+                $"Ch1Ground_{surfaceScope}_TerrainSurfaceQuiltGrassEdge2K",
+                Chapter1ProductionSurfaceKind.TerrainQuiltGrassEdge,
+                past,
+                new Vector2(1.25f, 1.20f));
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.terrain_surface_quilt";
+
+            for (var index = 0; index < TerrainSurfaceQuiltGroundPanelCount; index++)
+            {
+                var seed = 61231 + (int)area * 967 + (past ? 4099 : 0) + index * 229;
+                var column = index % 3;
+                var row = index / 3;
+                var x = Mathf.Lerp(-7.9f, 7.9f, column / 2f) * scale + DistantPanoramaVistaSigned(seed + 5, 0.72f * scale);
+                var z = Mathf.Lerp(-5.7f, 5.9f, row / 2f) * scale + DistantPanoramaVistaSigned(seed + 11, 0.62f * scale);
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_TerrainSurfaceQuilt_GroundPanel_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.158f + DistantPanoramaVistaHash01(seed + 17) * 0.026f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 16f), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_TerrainSurfaceQuilt_GroundPanel_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(2.0f, 3.6f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.55f, 1.15f, DistantPanoramaVistaHash01(seed + 31)) * scale,
+                        Mathf.Lerp(0.025f, 0.052f, DistantPanoramaVistaHash01(seed + 37))),
+                    groundMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.ground_panel.s{index + 1:00}");
+            }
+
+            var baseYaw = GetForegroundShorelineClosurePathYaw(area);
+            for (var index = 0; index < TerrainSurfaceQuiltFieldBandCount; index++)
+            {
+                var seed = 64217 + (int)area * 991 + (past ? 4211 : 0) + index * 241;
+                var t = index / (float)(TerrainSurfaceQuiltFieldBandCount - 1);
+                var x = Mathf.Lerp(-8.6f, 8.6f, t) * scale + DistantPanoramaVistaSigned(seed + 5, 0.58f * scale);
+                var z = Mathf.Lerp(5.9f, -5.9f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_TerrainSurfaceQuilt_FieldBand_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.176f + DistantPanoramaVistaHash01(seed + 17) * 0.028f, z),
+                    Quaternion.Euler(0f, baseYaw + Mathf.Lerp(-18f, 18f, DistantPanoramaVistaHash01(seed + 23)), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_TerrainSurfaceQuilt_FieldBand_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(2.6f, 4.4f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.22f, 0.42f, DistantPanoramaVistaHash01(seed + 31)) * scale,
+                        Mathf.Lerp(0.018f, 0.042f, DistantPanoramaVistaHash01(seed + 37))),
+                    furrowMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.field_band.s{index + 1:00}");
+            }
+
+            var pathX = GetForegroundShorelineClosurePathX(area) * scale;
+            for (var index = 0; index < TerrainSurfaceQuiltPathShoulderCount; index++)
+            {
+                var seed = 67547 + (int)area * 1013 + (past ? 4337 : 0) + index * 251;
+                var side = index % 2 == 0 ? -1f : 1f;
+                var step = index / (float)(TerrainSurfaceQuiltPathShoulderCount - 1);
+                var x = pathX + side * Mathf.Lerp(0.82f, 1.72f, DistantPanoramaVistaHash01(seed + 5)) * scale +
+                    DistantPanoramaVistaSigned(seed + 11, 0.24f * scale);
+                var z = Mathf.Lerp(-5.4f, 4.6f, step) * scale + DistantPanoramaVistaSigned(seed + 17, 0.34f * scale);
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_TerrainSurfaceQuilt_PathShoulder_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.190f + index * 0.004f, z),
+                    Quaternion.Euler(0f, baseYaw + side * Mathf.Lerp(5f, 13f, DistantPanoramaVistaHash01(seed + 23)), 0f),
+                    CreateMidDistanceLandformClosureShelfMesh(
+                        $"{prefix}_{areaToken}_TerrainSurfaceQuilt_PathShoulder_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(0.9f, 1.8f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.25f, 0.62f, DistantPanoramaVistaHash01(seed + 31)) * scale,
+                        Mathf.Lerp(0.018f, 0.044f, DistantPanoramaVistaHash01(seed + 37))),
+                    pathMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.path_shoulder.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < TerrainSurfaceQuiltGrassSeamCount; index++)
+            {
+                var seed = 70139 + (int)area * 1031 + (past ? 4447 : 0) + index * 263;
+                var t = index / (float)(TerrainSurfaceQuiltGrassSeamCount - 1);
+                var sideBias = index % 2 == 0 ? -1f : 1f;
+                var x = Mathf.Lerp(-8.4f, 8.4f, t) * scale + sideBias * DistantPanoramaVistaHash01(seed + 5) * 0.54f * scale;
+                var z = Mathf.Lerp(-6.2f, 5.8f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_TerrainSurfaceQuilt_GrassSeam_S{index + 1:00}",
+                    parent,
+                    center + new Vector3(x, 0.202f + DistantPanoramaVistaHash01(seed + 17) * 0.040f, z),
+                    Quaternion.Euler(0f, DistantPanoramaVistaSigned(seed + 23, 28f), 0f),
+                    CreateMidDistanceLandformClosureLowBankMesh(
+                        $"{prefix}_{areaToken}_TerrainSurfaceQuilt_GrassSeam_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(0.9f, 2.2f, DistantPanoramaVistaHash01(seed + 29)) * scale,
+                        Mathf.Lerp(0.10f, 0.22f, DistantPanoramaVistaHash01(seed + 31)),
+                        Mathf.Lerp(0.18f, 0.42f, DistantPanoramaVistaHash01(seed + 37)) * scale),
+                    grassMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{scope}.grass_seam.s{index + 1:00}");
+            }
+
+            ApplyTerrainSurfaceQuiltRendererPolicy(parent);
+        }
+
+        private static float GetTerrainSurfaceQuiltScale(FastVsHouseArea area)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return 1.08f;
+                case FastVsHouseArea.CentralPlaza:
+                    return 1.20f;
+                case FastVsHouseArea.MiaHouse:
+                    return 0.98f;
+                case FastVsHouseArea.AriaStreet:
+                    return 1.34f;
+                case FastVsHouseArea.KaiaFarm:
+                    return 1.46f;
+                case FastVsHouseArea.Ruins:
+                    return 1.72f;
+                default:
+                    return 1.00f;
+            }
+        }
+
+        private static void ApplyTerrainSurfaceQuiltRendererPolicy(Transform parent)
         {
             var expectedLayer = parent.gameObject.layer;
             foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
@@ -55263,6 +55474,245 @@ namespace Anemora.EditorTools
                 raisedVisibleCount < 3)
             {
                 throw new InvalidOperationException($"House slice validation failed: nearfield dressing {prefix} {area} must visibly add authored near/mid detail, visible={visibleCount}, terrace={terraceVisibleCount}, path={pathVisibleCount}, raised={raisedVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateTerrainSurfaceQuiltRoot("Current", area);
+                ValidateTerrainSurfaceQuiltRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: terrain surface quilt requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateTerrainSurfaceQuiltCameraCoverage(camera, "Current", area);
+                ValidateTerrainSurfaceQuiltCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateTerrainSurfaceQuiltRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_TerrainSurfaceQuilt";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing terrain surface quilt root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyTerrainSurfaceQuiltRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < TerrainSurfaceQuiltMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {TerrainSurfaceQuiltMeshCount} authored terrain surface quilt meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var scale = GetTerrainSurfaceQuiltScale(area);
+            var groundPanelCount = 0;
+            var fieldBandCount = 0;
+            var pathShoulderCount = 0;
+            var grassSeamCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 78 || filter.sharedMesh.triangles.Length < 360)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 0.62f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} must remain low surface relief, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                if (Mathf.Abs(localOffset.x) > 14.2f * scale ||
+                    localOffset.z < -8.4f * scale ||
+                    localOffset.z > 7.1f * scale ||
+                    localOffset.y < 0.12f ||
+                    localOffset.y > 0.26f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} left the intended map-surface band at offset {localOffset}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} must use a material.");
+                }
+
+                ValidateTerrainSurfaceQuiltMaterial(filter.gameObject.name, renderer.sharedMaterial);
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: terrain surface quilt mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("GroundPanel", StringComparison.Ordinal))
+                {
+                    groundPanelCount++;
+                }
+                else if (filter.gameObject.name.Contains("FieldBand", StringComparison.Ordinal))
+                {
+                    fieldBandCount++;
+                }
+                else if (filter.gameObject.name.Contains("PathShoulder", StringComparison.Ordinal))
+                {
+                    pathShoulderCount++;
+                }
+                else if (filter.gameObject.name.Contains("GrassSeam", StringComparison.Ordinal))
+                {
+                    grassSeamCount++;
+                }
+            }
+
+            if (groundPanelCount < TerrainSurfaceQuiltGroundPanelCount ||
+                fieldBandCount < TerrainSurfaceQuiltFieldBandCount ||
+                pathShoulderCount < TerrainSurfaceQuiltPathShoulderCount ||
+                grassSeamCount < TerrainSurfaceQuiltGrassSeamCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine ground panels, field bands, path shoulders, and grass seams; ground={groundPanelCount}, field={fieldBandCount}, path={pathShoulderCount}, grass={grassSeamCount}.");
+            }
+        }
+
+        private static void ValidateTerrainSurfaceQuiltMaterial(string objectName, Material material)
+        {
+            var materialName = material.name ?? string.Empty;
+            if (materialName.IndexOf("Ch1Ground_", StringComparison.Ordinal) < 0 ||
+                materialName.IndexOf("TerrainSurfaceQuilt", StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {objectName} must use a Ch1Ground_*TerrainSurfaceQuilt material, got {materialName}.");
+            }
+
+            var materialPath = AssetDatabase.GetAssetPath(material);
+            if (string.IsNullOrEmpty(materialPath) ||
+                materialPath.IndexOf("/FastVS_House_Ch1Ground_", StringComparison.Ordinal) < 0 ||
+                !materialPath.EndsWith(".mat", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {objectName} material must be a generated Ch1Ground_ material asset, got {materialPath}.");
+            }
+
+            var shaderName = material.shader != null ? material.shader.name : string.Empty;
+            if (shaderName.IndexOf("Unlit", StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {objectName} material must stay unlit to avoid black low-angle terrain facets, got shader {shaderName}.");
+            }
+
+            var texture = GetMaterialPrimaryTexture(material);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {objectName} must use a 2K texture.");
+            }
+
+            if (texture.width != Chapter1ProductionSurfaceTextureSize || texture.height != Chapter1ProductionSurfaceTextureSize)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {objectName} texture must be {Chapter1ProductionSurfaceTextureSize}x{Chapter1ProductionSurfaceTextureSize}, got {texture.width}x{texture.height}.");
+            }
+
+            var texturePath = AssetDatabase.GetAssetPath(texture);
+            if (string.IsNullOrEmpty(texturePath) ||
+                texturePath.IndexOf("/FastVS_House_Ch1Ground_", StringComparison.Ordinal) < 0 ||
+                !texturePath.EndsWith("_2k.png", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {objectName} texture must be a named Ch1Ground_ 2K PNG asset, got {texturePath}.");
+            }
+        }
+
+        private static void ValidateTerrainSurfaceQuiltCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_TerrainSurfaceQuilt");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing terrain surface quilt root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var groundVisibleCount = 0;
+            var fieldVisibleCount = 0;
+            var pathVisibleCount = 0;
+            var grassVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("GroundPanel", StringComparison.Ordinal))
+                {
+                    groundVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("FieldBand", StringComparison.Ordinal))
+                {
+                    fieldVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("PathShoulder", StringComparison.Ordinal))
+                {
+                    pathVisibleCount++;
+                }
+                else if (renderer.gameObject.name.Contains("GrassSeam", StringComparison.Ordinal))
+                {
+                    grassVisibleCount++;
+                }
+            }
+
+            if (visibleCount < TerrainSurfaceQuiltVisibleMinimum ||
+                groundVisibleCount < 4 ||
+                fieldVisibleCount < 3 ||
+                pathVisibleCount < 2 ||
+                grassVisibleCount < 3)
+            {
+                throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {prefix} {area} must visibly break large map surfaces, visible={visibleCount}, ground={groundVisibleCount}, field={fieldVisibleCount}, path={pathVisibleCount}, grass={grassVisibleCount}.");
             }
         }
 
@@ -101258,7 +101708,8 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: Phase 3 production surface material must use Ch1Ground_/Ch1Surface_ naming, got {id}.");
             }
 
-            var material = FlatMaterial(id, Color.white, false, FastVsHd2dMaterialRole.SurfaceLit);
+            var unlitTerrainQuilt = IsTerrainQuiltProductionSurfaceKind(kind);
+            var material = FlatMaterial(id, Color.white, unlitTerrainQuilt, FastVsHd2dMaterialRole.SurfaceLit);
             var texture = EnsureChapter1ProductionSurfaceTexture(id, kind, past);
             AssignMaterialTexture(material, texture, tiling);
 
@@ -101274,6 +101725,14 @@ namespace Anemora.EditorTools
 
             EditorUtility.SetDirty(material);
             return material;
+        }
+
+        private static bool IsTerrainQuiltProductionSurfaceKind(Chapter1ProductionSurfaceKind kind)
+        {
+            return kind == Chapter1ProductionSurfaceKind.TerrainQuiltSoilGrass ||
+                   kind == Chapter1ProductionSurfaceKind.TerrainQuiltFieldFurrow ||
+                   kind == Chapter1ProductionSurfaceKind.TerrainQuiltGrassEdge ||
+                   kind == Chapter1ProductionSurfaceKind.TerrainQuiltStonePath;
         }
 
         private static Texture2D EnsureChapter1ProductionSurfaceTexture(string id, Chapter1ProductionSurfaceKind kind, bool past)
@@ -101348,11 +101807,26 @@ namespace Anemora.EditorTools
             Color color;
             switch (kind)
             {
+                case Chapter1ProductionSurfaceKind.FieldFurrow:
+                    color = SampleChapter1FieldFurrowSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
                 case Chapter1ProductionSurfaceKind.GrassEdge:
                     color = SampleChapter1GrassEdgeSurface(u, v, x, y, fine, medium, broad, past);
                     break;
                 case Chapter1ProductionSurfaceKind.StonePath:
                     color = SampleChapter1StonePathSurface(x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.TerrainQuiltSoilGrass:
+                    color = SampleChapter1TerrainQuiltSoilGrassSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.TerrainQuiltFieldFurrow:
+                    color = SampleChapter1TerrainQuiltFieldFurrowSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.TerrainQuiltGrassEdge:
+                    color = SampleChapter1TerrainQuiltGrassEdgeSurface(u, v, x, y, fine, medium, broad, past);
+                    break;
+                case Chapter1ProductionSurfaceKind.TerrainQuiltStonePath:
+                    color = SampleChapter1TerrainQuiltStonePathSurface(x, y, fine, medium, broad, past);
                     break;
                 case Chapter1ProductionSurfaceKind.AgedPlaster:
                     color = SampleChapter1AgedPlasterSurface(u, v, x, y, fine, medium, broad, past, outdoorSurface);
@@ -101384,6 +101858,28 @@ namespace Anemora.EditorTools
             }
 
             return Chapter1SurfaceAdjust(color, fine * 0.13f + medium * 0.08f);
+        }
+
+        private static Color SampleChapter1FieldFurrowSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var soil = past ? new Color(0.34f, 0.32f, 0.20f, 1f) : new Color(0.24f, 0.22f, 0.17f, 1f);
+            var ridge = past ? new Color(0.49f, 0.45f, 0.26f, 1f) : new Color(0.36f, 0.32f, 0.22f, 1f);
+            var crop = past ? new Color(0.36f, 0.49f, 0.21f, 1f) : new Color(0.18f, 0.32f, 0.20f, 1f);
+            var dark = past ? new Color(0.20f, 0.23f, 0.15f, 1f) : new Color(0.12f, 0.16f, 0.13f, 1f);
+            var wave = Mathf.Abs(Mathf.Sin((v * 78f) + Mathf.Sin(u * 12.5f) * 0.72f + broad * 1.6f));
+            var ridgeMask = Mathf.SmoothStep(0.32f, 0.92f, wave);
+            var cropMask = Mathf.Clamp01(0.30f + Mathf.Sin((u * 9.2f) - (v * 3.8f)) * 0.12f + medium * 0.42f);
+            var color = Color.Lerp(soil, ridge, ridgeMask * (past ? 0.62f : 0.54f));
+            color = Color.Lerp(color, crop, cropMask * (past ? 0.34f : 0.22f));
+            color = Color.Lerp(color, dark, (1f - ridgeMask) * (past ? 0.16f : 0.30f));
+
+            if ((y + Mathf.FloorToInt(Mathf.Sin(u * 21f) * 18f)) % 137 < 5 ||
+                Chapter1SurfaceHash01(x / 9, y / 9, 149) > (past ? 0.960f : 0.940f))
+            {
+                color = Color.Lerp(color, past ? new Color(0.58f, 0.54f, 0.34f, 1f) : new Color(0.43f, 0.38f, 0.27f, 1f), past ? 0.22f : 0.28f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.12f + medium * 0.13f + broad * 0.08f);
         }
 
         private static Color SampleChapter1GrassEdgeSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
@@ -101425,6 +101921,87 @@ namespace Anemora.EditorTools
             }
 
             return Chapter1SurfaceAdjust(color, medium * 0.10f);
+        }
+
+        private static Color SampleChapter1TerrainQuiltSoilGrassSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var soil = past ? new Color(0.39f, 0.37f, 0.25f, 1f) : new Color(0.29f, 0.30f, 0.25f, 1f);
+            var grass = past ? new Color(0.43f, 0.54f, 0.28f, 1f) : new Color(0.25f, 0.36f, 0.25f, 1f);
+            var dry = past ? new Color(0.55f, 0.49f, 0.32f, 1f) : new Color(0.39f, 0.36f, 0.28f, 1f);
+            var grassMask = Mathf.Clamp01(0.50f + broad * 0.30f + Mathf.Sin((u * 11.2f) + (v * 6.1f)) * 0.08f);
+            var color = Color.Lerp(soil, grass, grassMask);
+            var scuff = Mathf.Clamp01(0.30f + medium * 0.38f + Mathf.Sin((u * 18.0f) - (v * 9.0f)) * 0.05f);
+            color = Color.Lerp(color, dry, past ? scuff * 0.12f : scuff * 0.18f);
+
+            if ((x + y * 3) % 173 < 3 || Chapter1SurfaceHash01(x / 8, y / 8, 307) > 0.975f)
+            {
+                color = Color.Lerp(color, past ? new Color(0.58f, 0.54f, 0.38f, 1f) : new Color(0.44f, 0.41f, 0.33f, 1f), 0.22f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.06f + medium * 0.05f);
+        }
+
+        private static Color SampleChapter1TerrainQuiltFieldFurrowSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var soil = past ? new Color(0.40f, 0.37f, 0.24f, 1f) : new Color(0.28f, 0.27f, 0.22f, 1f);
+            var ridge = past ? new Color(0.55f, 0.50f, 0.31f, 1f) : new Color(0.39f, 0.34f, 0.25f, 1f);
+            var crop = past ? new Color(0.43f, 0.56f, 0.27f, 1f) : new Color(0.26f, 0.36f, 0.22f, 1f);
+            var shadowSoil = past ? new Color(0.29f, 0.31f, 0.20f, 1f) : new Color(0.23f, 0.26f, 0.20f, 1f);
+            var wave = Mathf.Abs(Mathf.Sin((v * 62f) + Mathf.Sin(u * 10.5f) * 0.58f + broad * 1.1f));
+            var ridgeMask = Mathf.SmoothStep(0.30f, 0.88f, wave);
+            var cropMask = Mathf.Clamp01(0.30f + Mathf.Sin((u * 8.0f) - (v * 3.2f)) * 0.08f + medium * 0.28f);
+            var color = Color.Lerp(soil, ridge, ridgeMask * (past ? 0.54f : 0.44f));
+            color = Color.Lerp(color, crop, cropMask * (past ? 0.26f : 0.18f));
+            color = Color.Lerp(color, shadowSoil, (1f - ridgeMask) * (past ? 0.08f : 0.10f));
+
+            if ((y + Mathf.FloorToInt(Mathf.Sin(u * 17f) * 14f)) % 149 < 4 ||
+                Chapter1SurfaceHash01(x / 11, y / 11, 331) > (past ? 0.976f : 0.966f))
+            {
+                color = Color.Lerp(color, past ? new Color(0.61f, 0.56f, 0.36f, 1f) : new Color(0.43f, 0.38f, 0.29f, 1f), past ? 0.16f : 0.16f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.055f + medium * 0.065f + broad * 0.035f);
+        }
+
+        private static Color SampleChapter1TerrainQuiltGrassEdgeSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past)
+        {
+            var baseGrass = past ? new Color(0.41f, 0.57f, 0.29f, 1f) : new Color(0.24f, 0.38f, 0.24f, 1f);
+            var deepGrass = past ? new Color(0.28f, 0.44f, 0.23f, 1f) : new Color(0.19f, 0.31f, 0.20f, 1f);
+            var soil = past ? new Color(0.43f, 0.39f, 0.26f, 1f) : new Color(0.30f, 0.28f, 0.22f, 1f);
+            var clump = Mathf.Clamp01(0.54f + broad * 0.30f + Mathf.Sin((u * 25f) + (v * 4f)) * 0.09f);
+            var color = Color.Lerp(deepGrass, baseGrass, clump);
+            var dirtThread = (y + Mathf.FloorToInt(Mathf.Sin(u * 15f) * 18f)) % 191;
+            if (dirtThread < 6 || Chapter1SurfaceHash01(x / 12, y / 12, 353) > 0.970f)
+            {
+                color = Color.Lerp(color, soil, past ? 0.12f : 0.18f);
+            }
+
+            return Chapter1SurfaceAdjust(color, fine * 0.065f + medium * 0.045f);
+        }
+
+        private static Color SampleChapter1TerrainQuiltStonePathSurface(int x, int y, float fine, float medium, float broad, bool past)
+        {
+            const int tileWidth = 132;
+            const int tileHeight = 84;
+            var row = y / tileHeight;
+            var offsetX = (row % 2) * (tileWidth / 2);
+            var localX = (x + offsetX) % tileWidth;
+            var localY = y % tileHeight;
+            var baseStone = past ? new Color(0.51f, 0.47f, 0.36f, 1f) : new Color(0.36f, 0.34f, 0.29f, 1f);
+            var warmStone = past ? new Color(0.65f, 0.58f, 0.44f, 1f) : new Color(0.45f, 0.40f, 0.34f, 1f);
+            var mortar = past ? new Color(0.35f, 0.32f, 0.27f, 1f) : new Color(0.30f, 0.29f, 0.25f, 1f);
+            var color = Color.Lerp(baseStone, warmStone, Mathf.Clamp01(0.46f + broad * 0.30f + fine * 0.08f));
+            if (localX < 5 || localX > tileWidth - 5 || localY < 5 || localY > tileHeight - 5)
+            {
+                color = Color.Lerp(color, mortar, 0.48f);
+            }
+
+            if (Chapter1SurfaceHash01((x + 23) / 22, (y + 11) / 22, 379) > (past ? 0.982f : 0.965f))
+            {
+                color = Color.Lerp(color, past ? new Color(0.38f, 0.44f, 0.28f, 1f) : new Color(0.24f, 0.29f, 0.21f, 1f), 0.16f);
+            }
+
+            return Chapter1SurfaceAdjust(color, medium * 0.055f);
         }
 
         private static Color SampleChapter1AgedPlasterSurface(float u, float v, int x, int y, float fine, float medium, float broad, bool past, bool outdoorSurface)
