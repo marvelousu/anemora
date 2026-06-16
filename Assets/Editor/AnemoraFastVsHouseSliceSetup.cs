@@ -42,12 +42,16 @@ namespace Anemora.EditorTools
         private const float SurfaceRampStrength = 0.36f;
         private const float SurfaceRampDirectionalLightStrength = 0.42f;
         private const float SurfaceRampShadowReceiveStrength = 0.56f;
+        private const float SurfaceRampExteriorWallDirectionalLightStrength = 0.18f;
+        private const float SurfaceRampExteriorWallShadowReceiveStrength = 0.24f;
         private static readonly Color SpriteCardTopLight = new Color(1.08f, 1.03f, 0.96f, 1f);
         private static readonly Color SpriteCardSideShade = new Color(0.94f, 0.97f, 1.03f, 1f);
         private static readonly Color SpriteCardFloorShade = new Color(0.89f, 0.92f, 0.96f, 1f);
         private static readonly Color SurfaceRampTopLight = new Color(1.18f, 1.06f, 0.84f, 1f);
         private static readonly Color SurfaceRampSideShade = new Color(0.70f, 0.64f, 0.54f, 1f);
         private static readonly Color SurfaceRampFloorShade = new Color(0.62f, 0.56f, 0.48f, 1f);
+        private static readonly Color SurfaceRampExteriorWallSideShade = new Color(0.94f, 0.86f, 0.72f, 1f);
+        private static readonly Color SurfaceRampExteriorWallFloorShade = new Color(0.76f, 0.68f, 0.56f, 1f);
         private static bool coreBlitD3d11CaptureWorkaroundChecked;
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityFloorTextureScale = new Vector2(8f, 6f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityWallTextureScale = new Vector2(6f, 4f);
@@ -77711,8 +77715,16 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: cycle 119 surface-light response missing material {materialPath}.");
             }
 
-            ValidateMaterialFloatBand(materialId, "_DirectionalLightStrength", 0.40f, 0.44f);
-            ValidateMaterialFloatBand(materialId, "_ShadowReceiveStrength", 0.54f, 0.58f);
+            if (IsExteriorWallSurfaceMaterial(materialId))
+            {
+                ValidateMaterialFloatBand(materialId, "_DirectionalLightStrength", 0.16f, 0.20f);
+                ValidateMaterialFloatBand(materialId, "_ShadowReceiveStrength", 0.22f, 0.26f);
+            }
+            else
+            {
+                ValidateMaterialFloatBand(materialId, "_DirectionalLightStrength", 0.40f, 0.44f);
+                ValidateMaterialFloatBand(materialId, "_ShadowReceiveStrength", 0.54f, 0.58f);
+            }
 
             var surfaceRampStrength = material.HasProperty("_SurfaceRampStrength") ? material.GetFloat("_SurfaceRampStrength") : -1f;
             if (surfaceRampStrength < 0.34f || surfaceRampStrength > 0.38f)
@@ -84952,14 +84964,14 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dCycle51MaterialLightShadowResponse()
         {
-            ValidateMaterialFloatBand("current_exterior_wall", "_DirectionalLightStrength", 0.40f, 0.44f);
-            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("current_exterior_wall", "_DirectionalLightStrength", 0.16f, 0.20f);
+            ValidateMaterialFloatBand("current_exterior_wall", "_ShadowReceiveStrength", 0.22f, 0.26f);
             ValidateMaterialFloatBand("current_ground", "_DirectionalLightStrength", 0.40f, 0.44f);
             ValidateMaterialFloatBand("current_ground", "_ShadowReceiveStrength", 0.54f, 0.58f);
             ValidateMaterialFloatBand("current_roof", "_DirectionalLightStrength", 0.40f, 0.44f);
             ValidateMaterialFloatBand("current_roof", "_ShadowReceiveStrength", 0.54f, 0.58f);
-            ValidateMaterialFloatBand("past_exterior_wall", "_DirectionalLightStrength", 0.40f, 0.44f);
-            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.54f, 0.58f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_DirectionalLightStrength", 0.16f, 0.20f);
+            ValidateMaterialFloatBand("past_exterior_wall", "_ShadowReceiveStrength", 0.22f, 0.26f);
             ValidateMaterialFloatBand("past_wood_floor", "_DirectionalLightStrength", 0.40f, 0.44f);
             ValidateMaterialFloatBand("past_wood_floor", "_ShadowReceiveStrength", 0.54f, 0.58f);
             ValidateMaterialFloatBand("book", "_DirectionalLightStrength", 0.40f, 0.44f);
@@ -101721,6 +101733,7 @@ namespace Anemora.EditorTools
 
         private static void ApplySurfaceRampProfile(Material material, string id)
         {
+            var exteriorWallProfile = IsExteriorWallSurfaceMaterial(id);
             if (material.HasProperty("_SurfaceRampStrength"))
             {
                 material.SetFloat("_SurfaceRampStrength", SurfaceRampStrength);
@@ -101733,12 +101746,12 @@ namespace Anemora.EditorTools
 
             if (material.HasProperty("_SideShade"))
             {
-                material.SetColor("_SideShade", SurfaceRampSideShade);
+                material.SetColor("_SideShade", exteriorWallProfile ? SurfaceRampExteriorWallSideShade : SurfaceRampSideShade);
             }
 
             if (material.HasProperty("_FloorShade"))
             {
-                material.SetColor("_FloorShade", SurfaceRampFloorShade);
+                material.SetColor("_FloorShade", exteriorWallProfile ? SurfaceRampExteriorWallFloorShade : SurfaceRampFloorShade);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -101758,14 +101771,20 @@ namespace Anemora.EditorTools
 
             if (material.HasProperty("_DirectionalLightStrength"))
             {
-                material.SetFloat("_DirectionalLightStrength", SurfaceRampDirectionalLightStrength);
+                material.SetFloat("_DirectionalLightStrength", exteriorWallProfile ? SurfaceRampExteriorWallDirectionalLightStrength : SurfaceRampDirectionalLightStrength);
             }
 
             if (material.HasProperty("_ShadowReceiveStrength"))
             {
-                material.SetFloat("_ShadowReceiveStrength", SurfaceRampShadowReceiveStrength);
+                material.SetFloat("_ShadowReceiveStrength", exteriorWallProfile ? SurfaceRampExteriorWallShadowReceiveStrength : SurfaceRampShadowReceiveStrength);
             }
 
+        }
+
+        private static bool IsExteriorWallSurfaceMaterial(string id)
+        {
+            return string.Equals(id, "current_exterior_wall", StringComparison.Ordinal) ||
+                   string.Equals(id, "past_exterior_wall", StringComparison.Ordinal);
         }
 
         private static void ApplySpriteCardRampProfile(Material material)

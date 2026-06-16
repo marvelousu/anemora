@@ -32,10 +32,19 @@ namespace Anemora.FastVS
         private static readonly Color CentralPlazaTopLight = new Color(1.06f, 1.04f, 0.94f, 1f);
         private static readonly Color RealtimeOutdoorSideShade = new Color(0.68f, 0.69f, 0.66f, 1f);
         private static readonly Color RealtimeOutdoorFloorShade = new Color(0.64f, 0.65f, 0.61f, 1f);
+        private static readonly Color RealtimeFacadeSideShade = new Color(0.94f, 0.86f, 0.72f, 1f);
+        private static readonly Color RealtimeFacadeFloorShade = new Color(0.76f, 0.68f, 0.56f, 1f);
+        private const float RealtimeSurfaceRampStrength = 0.50f;
+        private const float RealtimeFacadeSurfaceRampStrength = 0.36f;
+        private const float RealtimeSurfaceDirectionalLightStrength = 0.92f;
+        private const float RealtimeFacadeDirectionalLightStrength = 0.28f;
         private const float CentralPlazaStage7jShadowReceiveStrength = 0.44f;
+        private const float CentralPlazaFacadeShadowReceiveStrength = 0.24f;
         private const float CentralPlazaStage7jFacadeShadowTextureStrength = 0.20f;
         private const float CentralPlazaStage7jFloorShadowTextureStrength = 0.18f;
         private const float RealtimeOutdoorShadowReceiveStrength = 0.30f;
+        private const float RealtimeOutdoorFacadeShadowReceiveStrength = 0.18f;
+        private const float RealtimeFacadeShadowTextureStrength = 0.05f;
         private const float RealtimeOutdoorFacadeShadowTextureStrength = 0.12f;
         private const float RealtimeOutdoorFloorShadowTextureStrength = 0.10f;
         private static readonly Color CentralPlazaStage7jSideShade = new Color(0.62f, 0.63f, 0.60f, 1f);
@@ -803,6 +812,7 @@ namespace Anemora.FastVS
                 (surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
                  surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door ||
                  surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Roof);
+            var isFacadeWallReceiver = IsRealtimeFacadeWallReceiver(surface, objectName, isNamedFacadeReceiver);
 
             var material = renderer.sharedMaterial;
             if (material == null)
@@ -823,24 +833,30 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(SurfaceRampStrengthId))
             {
-                block.SetFloat(SurfaceRampStrengthId, 0.50f);
+                block.SetFloat(SurfaceRampStrengthId, isFacadeWallReceiver ? RealtimeFacadeSurfaceRampStrength : RealtimeSurfaceRampStrength);
             }
 
             if (material.HasProperty(DirectionalLightStrengthId))
             {
-                block.SetFloat(DirectionalLightStrengthId, 0.92f);
+                block.SetFloat(DirectionalLightStrengthId, isFacadeWallReceiver ? RealtimeFacadeDirectionalLightStrength : RealtimeSurfaceDirectionalLightStrength);
             }
 
             if (material.HasProperty(ShadowReceiveStrengthId))
             {
-                block.SetFloat(ShadowReceiveStrengthId, isCentralPlaza ? CentralPlazaStage7jShadowReceiveStrength : RealtimeOutdoorShadowReceiveStrength);
+                block.SetFloat(
+                    ShadowReceiveStrengthId,
+                    isFacadeWallReceiver
+                        ? (isCentralPlaza ? CentralPlazaFacadeShadowReceiveStrength : RealtimeOutdoorFacadeShadowReceiveStrength)
+                        : isCentralPlaza ? CentralPlazaStage7jShadowReceiveStrength : RealtimeOutdoorShadowReceiveStrength);
             }
 
             if (material.HasProperty(ShadowTextureStrengthId))
             {
                 block.SetFloat(
                     ShadowTextureStrengthId,
-                    isCentralPlaza
+                    isFacadeWallReceiver
+                        ? RealtimeFacadeShadowTextureStrength
+                        : isCentralPlaza
                         ? (isFacadeReceiver ? CentralPlazaStage7jFacadeShadowTextureStrength : CentralPlazaStage7jFloorShadowTextureStrength)
                         : isFacadeReceiver ? RealtimeOutdoorFacadeShadowTextureStrength : RealtimeOutdoorFloorShadowTextureStrength);
             }
@@ -852,16 +868,34 @@ namespace Anemora.FastVS
 
             if (material.HasProperty(SideShadeId))
             {
-                block.SetColor(SideShadeId, isCentralPlaza ? CentralPlazaStage7jSideShade : RealtimeOutdoorSideShade);
+                block.SetColor(SideShadeId, isFacadeWallReceiver ? RealtimeFacadeSideShade : isCentralPlaza ? CentralPlazaStage7jSideShade : RealtimeOutdoorSideShade);
             }
 
             if (material.HasProperty(FloorShadeId))
             {
-                block.SetColor(FloorShadeId, isCentralPlaza ? CentralPlazaStage7jFloorShade : RealtimeOutdoorFloorShade);
+                block.SetColor(FloorShadeId, isFacadeWallReceiver ? RealtimeFacadeFloorShade : isCentralPlaza ? CentralPlazaStage7jFloorShade : RealtimeOutdoorFloorShade);
             }
 
             CopyMaterialEmissionToPropertyBlock(material, block);
             renderer.SetPropertyBlock(block);
+        }
+
+        private static bool IsRealtimeFacadeWallReceiver(FastVsHd2dSurfaceProfile surface, string name, bool isNamedFacadeReceiver)
+        {
+            if (surface != null)
+            {
+                return surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Wall ||
+                       surface.SurfaceKindForReview == FastVsHd2dSurfaceKind.Door;
+            }
+
+            if (!isNamedFacadeReceiver || string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            return name.Contains("Wall") ||
+                   name.Contains("Facade") ||
+                   name.Contains("Door");
         }
 
         private static Color ResolveRealtimeBaseColor(Renderer renderer, FastVsHd2dSurfaceProfile surface, bool isFacadeReceiver)
