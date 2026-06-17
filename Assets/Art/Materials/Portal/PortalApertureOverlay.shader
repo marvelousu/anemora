@@ -10,16 +10,16 @@ Shader "Anemora/Review/PortalApertureOverlay"
     {
         Tags
         {
-            "Queue" = "Transparent-10"
-            "RenderType" = "Transparent"
+            "Queue" = "Transparent+40"
+            "RenderType" = "Opaque"
         }
 
         Pass
         {
-            Blend SrcAlpha OneMinusSrcAlpha
+            Blend One Zero
             Cull Off
-            ZWrite Off
-            ZTest LEqual
+            ZWrite On
+            ZTest Always
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -52,7 +52,8 @@ Shader "Anemora/Review/PortalApertureOverlay"
 
             half4 frag(Varyings input) : SV_Target
             {
-                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * _Color;
+                half4 sample = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
+                return half4(sample.rgb * _Color.rgb, _Color.a);
             }
             ENDHLSL
         }

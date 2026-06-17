@@ -11,8 +11,8 @@ namespace Anemora.TimeManagement
     /// </summary>
     public sealed class TimeWindowPairedSpacePortalController : MonoBehaviour
     {
-        private const float PortalApertureCompositeAlpha = 0.60f;
-        private const int PortalApertureRenderQueue = 2990;
+        private const float PortalApertureCompositeAlpha = 1.0f;
+        private const int PortalApertureRenderQueue = 3040;
 
         [Header("Spaces")]
         [SerializeField] private Transform currentSpaceRoot;
@@ -151,8 +151,14 @@ namespace Anemora.TimeManagement
         public Rect CurrentApertureViewportRectForReview => currentApertureViewportRect;
         public Rect OtherTimeApertureViewportRectForReview => otherTimeApertureViewportRect;
         public bool CurrentApertureUsesScreenRegionProjectionForReview => IsMeaningfulViewportCrop(currentApertureViewportRect);
+        public float PortalApertureCompositeAlphaForReview => PortalApertureCompositeAlpha;
+        public float CurrentApertureMaterialAlphaForReview => GetRendererColorAlpha(currentApertureRenderer);
+        public float OtherTimeApertureMaterialAlphaForReview => GetRendererColorAlpha(otherTimeApertureRenderer);
         public int CurrentApertureMaterialRenderQueueForReview => currentApertureRenderer != null && currentApertureRenderer.sharedMaterial != null
             ? currentApertureRenderer.sharedMaterial.renderQueue
+            : -1;
+        public int OtherTimeApertureMaterialRenderQueueForReview => otherTimeApertureRenderer != null && otherTimeApertureRenderer.sharedMaterial != null
+            ? otherTimeApertureRenderer.sharedMaterial.renderQueue
             : -1;
         public int PlayerRenderLayerForReview => player != null ? player.gameObject.layer : -1;
         public int CurrentSpaceRenderLayerForReview => currentSpaceRenderLayer;
@@ -827,22 +833,17 @@ namespace Anemora.TimeManagement
             for (var index = 0; index < renderers.Length; index++)
             {
                 var renderer = renderers[index];
-                if (ShouldSuppressRendererForAperture(root, renderer, out var exemptedVisualOverlay))
+                if (ShouldSuppressRendererForAperture(root, renderer))
                 {
                     renderer.enabled = false;
                     apertureSuppressedRenderers.Add(renderer);
                     suppressed.Add(BuildHierarchyPath(renderer.transform));
                 }
-                else if (exemptedVisualOverlay)
-                {
-                    visualExemptions.Add(BuildHierarchyPath(renderer.transform));
-                }
             }
         }
 
-        private bool ShouldSuppressRendererForAperture(Transform root, Renderer renderer, out bool exemptedVisualOverlay)
+        private bool ShouldSuppressRendererForAperture(Transform root, Renderer renderer)
         {
-            exemptedVisualOverlay = false;
             if (renderer == null ||
                 !renderer.enabled ||
                 IsChildOf(renderer.transform, currentPortalRoot != null ? currentPortalRoot.transform : null) ||
@@ -863,77 +864,7 @@ namespace Anemora.TimeManagement
                 return false;
             }
 
-            if (IsApertureVisualOverlayRenderer(renderer))
-            {
-                exemptedVisualOverlay = true;
-                return false;
-            }
-
             return true;
-        }
-
-        private static bool IsApertureVisualOverlayRenderer(Renderer renderer)
-        {
-            var path = BuildHierarchyPath(renderer != null ? renderer.transform : null);
-            if (ContainsAny(
-                    path,
-                    "DynamicSunShaft",
-                    "BroadSunshaftReceiver",
-                    "LightComposition_",
-                    "FramedLightPlanes_",
-                    "ReferenceLightColumn_",
-                    "ShadowFoundation",
-                    "DioramaShadow",
-                    "CloseShadowBarMute",
-                    "AerialLift",
-                    "OutdoorSky",
-                    "SkyWash",
-                    "Atmosphere",
-                    "AirDepth",
-                    "Vignette",
-                    "Glow",
-                    "Sun",
-                    "Shadow",
-                    "OcclusionReadability",
-                    "LightColumn",
-                    "Wash",
-                    "Veil",
-                    "Dust"))
-            {
-                return true;
-            }
-
-            var materials = renderer != null ? renderer.sharedMaterials : null;
-            if (materials == null)
-            {
-                return false;
-            }
-
-            for (var index = 0; index < materials.Length; index++)
-            {
-                var material = materials[index];
-                if (material == null)
-                {
-                    continue;
-                }
-
-                if (ContainsAny(
-                        material.name,
-                        "light",
-                        "glow",
-                        "shadow",
-                        "occlusion",
-                        "atmosphere",
-                        "air",
-                        "wash",
-                        "veil",
-                        "dust"))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private bool RendererBoundsIntersectPortal(Transform root, Bounds worldBounds, float depth)
@@ -1805,6 +1736,27 @@ namespace Anemora.TimeManagement
             }
 
             return material.HasProperty("_MainTex") && material.GetTexture("_MainTex") == expected;
+        }
+
+        private static float GetRendererColorAlpha(Renderer renderer)
+        {
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                return 0f;
+            }
+
+            var material = renderer.sharedMaterial;
+            if (material.HasProperty("_BaseColor"))
+            {
+                return material.GetColor("_BaseColor").a;
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                return material.GetColor("_Color").a;
+            }
+
+            return 1f;
         }
 
         private static int CountEnabledColliders(List<Collider> colliders)

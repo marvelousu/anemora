@@ -963,6 +963,7 @@ namespace Anemora.EditorTools
             }
 
             ValidateApertureBottomSitsAboveFloor(controller);
+            ValidateApertureOpaqueComposite(controller);
             ValidateApertureIntersectingObjectSuppression(controller);
             ValidateCurrentBackSidePhysicalBlock(controller);
             ValidateAperturePlayerLayerCulling(controller, false);
@@ -71548,6 +71549,30 @@ namespace Anemora.EditorTools
             if (controller.PortalBottomLocalYForReview < 0.055f)
             {
                 throw new InvalidOperationException("House slice validation failed: TimeWindow aperture bottom is embedded below the visible floor top.");
+            }
+        }
+
+        private static void ValidateApertureOpaqueComposite(TimeWindowPairedSpacePortalController controller)
+        {
+            controller.RenderPortalAperturesForReview();
+            const string apertureShaderPath = "Assets/Art/Materials/Portal/PortalApertureOverlay.shader";
+            const string apertureControllerPath = "Assets/Scripts/TimeManagement/TimeWindowPairedSpacePortalController.cs";
+            var apertureShaderSource = File.Exists(apertureShaderPath) ? File.ReadAllText(apertureShaderPath) : string.Empty;
+            var apertureControllerSource = File.Exists(apertureControllerPath) ? File.ReadAllText(apertureControllerPath) : string.Empty;
+            if (controller.PortalApertureCompositeAlphaForReview < 0.995f ||
+                controller.CurrentApertureMaterialAlphaForReview < 0.995f ||
+                controller.OtherTimeApertureMaterialAlphaForReview < 0.995f ||
+                controller.CurrentApertureMaterialRenderQueueForReview < 3038 ||
+                controller.OtherTimeApertureMaterialRenderQueueForReview < 3038 ||
+                !string.Equals(controller.ApertureVisualOverlayExemptionSummaryForReview, "none", StringComparison.Ordinal) ||
+                !apertureShaderSource.Contains("return half4(sample.rgb * _Color.rgb, _Color.a);") ||
+                !apertureShaderSource.Contains("Blend One Zero") ||
+                !apertureShaderSource.Contains("ZWrite On") ||
+                !apertureShaderSource.Contains("ZTest Always") ||
+                apertureControllerSource.Contains("IsApertureVisualOverlayRenderer") ||
+                apertureControllerSource.Contains("exemptedVisualOverlay = true"))
+            {
+                throw new InvalidOperationException("House slice validation failed: TimeWindow aperture must render opaque target-time imagery instead of blending the current side through the window.");
             }
         }
 
