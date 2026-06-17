@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.108 HD2D nature conifer strata (2026-06-17). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.109 HD2D nature leaf spray (2026-06-17). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 805 files including INDEX.md and README.md.
-- Dated devlog records: 803 files.
+- Root-level Markdown coverage: 806 files including INDEX.md and README.md.
+- Dated devlog records: 804 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-17 | 6 |
+| 2026-06-17 | 7 |
 | 2026-06-16 | 1 |
 | 2026-06-15 | 19 |
 | 2026-06-14 | 12 |
@@ -51,6 +51,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-17_hd2d_nature_leaf_spray.md](2026-06-17_hd2d_nature_leaf_spray.md) | Fast VS / HD2D | HD2D nature leaf spray |
 | [2026-06-17_hd2d_nature_conifer_strata.md](2026-06-17_hd2d_nature_conifer_strata.md) | Fast VS / HD2D | HD2D nature conifer strata |
 | [2026-06-17_hd2d_nature_branch_understory.md](2026-06-17_hd2d_nature_branch_understory.md) | Fast VS / HD2D | HD2D nature branch understory |
 | [2026-06-17_hd2d_environment_asset_persistence.md](2026-06-17_hd2d_environment_asset_persistence.md) | Fast VS / HD2D | HD2D environment asset persistence |
