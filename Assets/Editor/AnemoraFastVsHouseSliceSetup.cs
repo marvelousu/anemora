@@ -575,6 +575,8 @@ namespace Anemora.EditorTools
             TerrainSurfaceQuiltPathShoulderCount +
             TerrainSurfaceQuiltGrassSeamCount;
         private const int TerrainSurfaceQuiltVisibleMinimum = 14;
+        private const int ArchitecturalSurfaceAccentPerMapCount = 16;
+        private const int ArchitecturalSurfaceAccentRuinsExtraCount = 6;
         private const float DistantPanoramaVistaForestRadius = 66f;
         private const float DistantPanoramaVistaValleyThreadRadius = 62.8f;
         private const float DistantPanoramaVistaMidgroundValleyRadius = 64.2f;
@@ -1025,6 +1027,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dWaterlineBreakupAllMaps();
             ValidateFastVsHd2dNearfieldDressingAllMaps();
             ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps();
+            ValidateFastVsHd2dArchitecturalSurfaceAccentsAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
         }
 
@@ -10356,6 +10359,16 @@ namespace Anemora.EditorTools
                 ruinsRoot,
                 prefix,
                 past);
+            CreateChapter1PhaseLArchitecturalSurfaceAccentsForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
             ApplyChapter1Phase4AllMapLightingUplift(
                 plazaRoot,
                 miaHouseRoot,
@@ -25721,6 +25734,362 @@ namespace Anemora.EditorTools
         }
 
         private static void ApplyTerrainSurfaceQuiltRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
+        private static void CreateChapter1PhaseLArchitecturalSurfaceAccentsForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1PhaseLArchitecturalSurfaceAccents(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateChapter1PhaseLArchitecturalSurfaceAccents(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateChapter1PhaseLArchitecturalSurfaceAccents(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateChapter1PhaseLArchitecturalSurfaceAccents(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateChapter1PhaseLArchitecturalSurfaceAccents(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateChapter1PhaseLArchitecturalSurfaceAccents(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1PhaseLArchitecturalSurfaceAccents(
+            Transform mapRoot,
+            string prefix,
+            bool past,
+            FastVsHouseArea area,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_ArchitecturalSurfaceAccents").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var surfaceScope = area == FastVsHouseArea.Exterior
+                ? (past ? "PastHouseExterior" : "CurrentHouseExterior")
+                : (past ? "PastOutdoor" : "CurrentOutdoor");
+            var wallMaterial = EnsureChapter1ProductionSurfaceMaterial(
+                $"Ch1Surface_{surfaceScope}_ArchitecturalAccentAgedPlaster2K",
+                Chapter1ProductionSurfaceKind.AgedPlaster,
+                past,
+                new Vector2(0.92f, 1.15f));
+            var roofMaterial = EnsureChapter1ProductionSurfaceMaterial(
+                $"Ch1Surface_{surfaceScope}_ArchitecturalAccentWeatheredRoof2K",
+                Chapter1ProductionSurfaceKind.WeatheredRoof,
+                past,
+                new Vector2(1.40f, 0.72f));
+            var trimMaterial = past ? wallMaterial : materials.CurrentFrame;
+            var structuralTrimMaterial = past ? wallMaterial : materials.CurrentFurniture;
+            var bridgeMaterial = past ? materials.PastPath : materials.CurrentFurniture;
+            GetArchitecturalSurfaceAccentAnchors(
+                area,
+                out var facadePosition,
+                out var facadeWidth,
+                out var facadeHeight,
+                out var facadeRotation,
+                out var roofPosition,
+                out var roofWidth,
+                out var roofRotation);
+
+            var objectPrefix = $"{prefix}_{areaToken}_ArchitecturalSurfaceAccents";
+            var landmarkPrefix = $"{prefix}.{areaToken.ToLowerInvariant()}.architectural_surface_accents";
+            var facadeDepth = 0.055f;
+            var facadeFrontOffset = 0.065f;
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadeVerticalWearA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(-facadeWidth * 0.27f, facadeHeight * 0.03f, facadeFrontOffset)),
+                new Vector3(Mathf.Max(0.18f, facadeWidth * 0.085f), facadeHeight * 0.74f, facadeDepth),
+                facadeRotation,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_vertical_wear_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadePatchBreakA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(facadeWidth * 0.22f, -facadeHeight * 0.15f, facadeFrontOffset + 0.006f)),
+                new Vector3(facadeWidth * 0.34f, Mathf.Max(0.18f, facadeHeight * 0.20f), facadeDepth),
+                facadeRotation,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_patch_break_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_WindowSillShadowA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(-facadeWidth * 0.18f, facadeHeight * 0.10f, facadeFrontOffset + 0.012f)),
+                new Vector3(facadeWidth * 0.42f, 0.070f, 0.050f),
+                facadeRotation,
+                materials.Shadow,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.window_sill_shadow_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_WindowSillShadowB",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(facadeWidth * 0.18f, -facadeHeight * 0.02f, facadeFrontOffset + 0.012f)),
+                new Vector3(facadeWidth * 0.38f, 0.070f, 0.050f),
+                facadeRotation,
+                materials.Shadow,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.window_sill_shadow_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_BaseContactShadowA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(0f, -facadeHeight * 0.47f, facadeFrontOffset + 0.014f)),
+                new Vector3(facadeWidth * 0.92f, 0.082f, 0.054f),
+                facadeRotation,
+                materials.Shadow,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.base_contact_shadow_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofRidgeWearA",
+                parent,
+                roofPosition + (roofRotation * new Vector3(-roofWidth * 0.16f, 0.024f, 0.060f)),
+                new Vector3(roofWidth * 0.46f, 0.040f, 0.160f),
+                roofRotation,
+                roofMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_ridge_wear_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofEaveShadowA",
+                parent,
+                roofPosition + (roofRotation * new Vector3(0f, -0.040f, 0.18f)),
+                new Vector3(roofWidth * 0.92f, 0.058f, 0.120f),
+                roofRotation,
+                materials.Shadow,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_eave_shadow_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_UpperTrimRailA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(0f, facadeHeight * 0.42f, facadeFrontOffset + 0.016f)),
+                new Vector3(facadeWidth * 0.24f, 0.045f, 0.046f),
+                facadeRotation,
+                trimMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.upper_trim_rail_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadeLeftPilasterA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(-facadeWidth * 0.48f, -facadeHeight * 0.02f, facadeFrontOffset + 0.022f)),
+                new Vector3(Mathf.Max(0.13f, facadeWidth * 0.050f), facadeHeight * 0.92f, 0.070f),
+                facadeRotation,
+                structuralTrimMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_left_pilaster_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadeRightPilasterA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(facadeWidth * 0.48f, -facadeHeight * 0.02f, facadeFrontOffset + 0.022f)),
+                new Vector3(Mathf.Max(0.13f, facadeWidth * 0.050f), facadeHeight * 0.92f, 0.070f),
+                facadeRotation,
+                structuralTrimMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_right_pilaster_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_LowerMasonryBandA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(0f, -facadeHeight * 0.36f, facadeFrontOffset + 0.026f)),
+                new Vector3(facadeWidth * 0.86f, 0.110f, 0.074f),
+                facadeRotation,
+                structuralTrimMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.lower_masonry_band_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_MidLintelBandA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(0f, facadeHeight * 0.19f, facadeFrontOffset + 0.028f)),
+                new Vector3(facadeWidth * 0.70f, 0.080f, 0.070f),
+                facadeRotation,
+                structuralTrimMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.mid_lintel_band_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_FacadePlasterCapA",
+                parent,
+                facadePosition + (facadeRotation * new Vector3(-facadeWidth * 0.02f, facadeHeight * 0.31f, facadeFrontOffset + 0.020f)),
+                new Vector3(facadeWidth * 0.24f, Mathf.Max(0.075f, facadeHeight * 0.070f), facadeDepth),
+                facadeRotation,
+                wallMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.facade_plaster_cap_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofTileStripeB",
+                parent,
+                roofPosition + (roofRotation * new Vector3(roofWidth * 0.20f, 0.030f, 0.000f)),
+                new Vector3(roofWidth * 0.30f, 0.038f, 0.150f),
+                roofRotation,
+                roofMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_tile_stripe_b");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofFrontFasciaA",
+                parent,
+                roofPosition + (roofRotation * new Vector3(0f, -0.070f, 0.285f)),
+                new Vector3(roofWidth * 0.98f, 0.062f, 0.090f),
+                roofRotation,
+                structuralTrimMaterial,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_front_fascia_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                $"{objectPrefix}_RoofRearShadowBandA",
+                parent,
+                roofPosition + (roofRotation * new Vector3(0f, 0.015f, -0.225f)),
+                new Vector3(roofWidth * 0.76f, 0.048f, 0.090f),
+                roofRotation,
+                materials.Shadow,
+                TimeWindowPairedSpaceLandmarkKind.WallOrLandmark,
+                $"{landmarkPrefix}.roof_rear_shadow_band_a");
+
+            if (area == FastVsHouseArea.Ruins)
+            {
+                var c = Chapter1RuinsMapCenter;
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_BridgeDeckWearThreadA",
+                    parent,
+                    c + new Vector3(0.00f, 0.575f, 0.03f),
+                    new Vector3(10.40f, 0.024f, 0.10f),
+                    Quaternion.Euler(0f, -1.5f, 0f),
+                    bridgeMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{landmarkPrefix}.bridge_deck_wear_thread_a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_BridgeSideShadowThreadA",
+                    parent,
+                    c + new Vector3(0.08f, 0.565f, 0.46f),
+                    new Vector3(8.60f, 0.022f, 0.080f),
+                    Quaternion.Euler(0f, 2f, 0f),
+                    materials.Shadow,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{landmarkPrefix}.bridge_side_shadow_thread_a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_BridgeDeckPlankA",
+                    parent,
+                    c + new Vector3(-4.25f, 0.592f, 0.10f),
+                    new Vector3(0.16f, 0.034f, 0.82f),
+                    Quaternion.Euler(0f, -1.5f, 0f),
+                    bridgeMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{landmarkPrefix}.bridge_deck_plank_a");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_BridgeDeckPlankB",
+                    parent,
+                    c + new Vector3(-1.45f, 0.594f, 0.02f),
+                    new Vector3(0.18f, 0.034f, 0.78f),
+                    Quaternion.Euler(0f, 1.5f, 0f),
+                    bridgeMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{landmarkPrefix}.bridge_deck_plank_b");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_BridgeDeckPlankC",
+                    parent,
+                    c + new Vector3(1.35f, 0.596f, 0.00f),
+                    new Vector3(0.18f, 0.034f, 0.78f),
+                    Quaternion.Euler(0f, -2.5f, 0f),
+                    bridgeMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{landmarkPrefix}.bridge_deck_plank_c");
+                CreateNonArrivalLandmarkCubeShadowSafe(
+                    $"{objectPrefix}_BridgeDeckPlankD",
+                    parent,
+                    c + new Vector3(4.20f, 0.592f, 0.06f),
+                    new Vector3(0.16f, 0.034f, 0.82f),
+                    Quaternion.Euler(0f, 2.5f, 0f),
+                    bridgeMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                    $"{landmarkPrefix}.bridge_deck_plank_d");
+            }
+
+            ApplyArchitecturalSurfaceAccentRendererPolicy(parent);
+        }
+
+        private static void GetArchitecturalSurfaceAccentAnchors(
+            FastVsHouseArea area,
+            out Vector3 facadePosition,
+            out float facadeWidth,
+            out float facadeHeight,
+            out Quaternion facadeRotation,
+            out Vector3 roofPosition,
+            out float roofWidth,
+            out Quaternion roofRotation)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    facadePosition = HouseExteriorCenter + new Vector3(-0.42f, 1.08f, -1.342f);
+                    facadeWidth = 4.55f;
+                    facadeHeight = 1.36f;
+                    facadeRotation = Quaternion.identity;
+                    roofPosition = HouseExteriorCenter + new Vector3(-0.42f, 2.345f, -1.18f);
+                    roofWidth = 4.72f;
+                    roofRotation = Quaternion.Euler(8f, 0f, 1f);
+                    break;
+                case FastVsHouseArea.CentralPlaza:
+                    facadePosition = CentralPlazaVsCenter + new Vector3(0f, 1.48f, 7.62f);
+                    facadeWidth = 8.90f;
+                    facadeHeight = 2.10f;
+                    facadeRotation = Quaternion.identity;
+                    roofPosition = CentralPlazaVsCenter + new Vector3(0f, 2.80f, 7.58f);
+                    roofWidth = 9.30f;
+                    roofRotation = Quaternion.identity;
+                    break;
+                case FastVsHouseArea.MiaHouse:
+                    facadePosition = Chapter1MiaHouseMapCenter + new Vector3(-0.22f, 1.12f, 2.56f);
+                    facadeWidth = 4.05f;
+                    facadeHeight = 1.36f;
+                    facadeRotation = Quaternion.identity;
+                    roofPosition = Chapter1MiaHouseMapCenter + new Vector3(-0.22f, 2.42f, 2.02f);
+                    roofWidth = 4.28f;
+                    roofRotation = Quaternion.Euler(7f, 0f, 0f);
+                    break;
+                case FastVsHouseArea.AriaStreet:
+                    facadePosition = Chapter1AriaStreetMapCenter + new Vector3(8.95f, 1.12f, 4.70f);
+                    facadeWidth = 3.52f;
+                    facadeHeight = 1.30f;
+                    facadeRotation = Quaternion.identity;
+                    roofPosition = Chapter1AriaStreetMapCenter + new Vector3(8.90f, 2.36f, 4.36f);
+                    roofWidth = 3.76f;
+                    roofRotation = Quaternion.Euler(7f, 0f, 0f);
+                    break;
+                case FastVsHouseArea.KaiaFarm:
+                    facadePosition = Chapter1KaiaFarmMapCenter + new Vector3(-2.95f, 0.86f, 9.12f);
+                    facadeWidth = 12.70f;
+                    facadeHeight = 1.18f;
+                    facadeRotation = Quaternion.identity;
+                    roofPosition = Chapter1KaiaFarmMapCenter + new Vector3(0.15f, 0.96f, 8.86f);
+                    roofWidth = 10.20f;
+                    roofRotation = Quaternion.Euler(0f, -2f, 0f);
+                    break;
+                case FastVsHouseArea.Ruins:
+                default:
+                    facadePosition = Chapter1RuinsMapCenter + new Vector3(-23.80f, 0.90f, 3.92f);
+                    facadeWidth = 2.84f;
+                    facadeHeight = 1.18f;
+                    facadeRotation = Quaternion.Euler(0f, 10f, -6f);
+                    roofPosition = Chapter1RuinsMapCenter + new Vector3(-23.75f, 1.90f, 3.80f);
+                    roofWidth = 3.10f;
+                    roofRotation = Quaternion.Euler(8f, 0f, 8f);
+                    break;
+            }
+        }
+
+        private static void ApplyArchitecturalSurfaceAccentRendererPolicy(Transform parent)
         {
             var expectedLayer = parent.gameObject.layer;
             foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
@@ -55714,6 +56083,239 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: terrain surface quilt {prefix} {area} must visibly break large map surfaces, visible={visibleCount}, ground={groundVisibleCount}, field={fieldVisibleCount}, path={pathVisibleCount}, grass={grassVisibleCount}.");
             }
+        }
+
+        private static void ValidateFastVsHd2dArchitecturalSurfaceAccentsAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateArchitecturalSurfaceAccentRoot("Current", area);
+                ValidateArchitecturalSurfaceAccentRoot("Past", area);
+            }
+        }
+
+        private static void ValidateArchitecturalSurfaceAccentRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_ArchitecturalSurfaceAccents";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing architectural surface accent root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: architectural surface accent root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: architectural surface accent root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyArchitecturalSurfaceAccentRendererPolicy(root.transform);
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_FacadeVerticalWearA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_FacadePatchBreakA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_WindowSillShadowA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_WindowSillShadowB");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BaseContactShadowA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_RoofRidgeWearA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_RoofEaveShadowA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_UpperTrimRailA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_FacadeLeftPilasterA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_FacadeRightPilasterA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_LowerMasonryBandA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_MidLintelBandA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_FacadePlasterCapA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_RoofTileStripeB");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_RoofFrontFasciaA");
+            ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_RoofRearShadowBandA");
+            if (area == FastVsHouseArea.Ruins)
+            {
+                ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BridgeDeckWearThreadA");
+                ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BridgeSideShadowThreadA");
+                ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BridgeDeckPlankA");
+                ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BridgeDeckPlankB");
+                ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BridgeDeckPlankC");
+                ValidateArchitecturalSurfaceAccentChild(rootName, $"{rootName}_BridgeDeckPlankD");
+            }
+
+            var renderers = root.GetComponentsInChildren<Renderer>(true);
+            var expectedCount = ArchitecturalSurfaceAccentPerMapCount +
+                (area == FastVsHouseArea.Ruins ? ArchitecturalSurfaceAccentRuinsExtraCount : 0);
+            if (renderers.Length < expectedCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {expectedCount} architectural surface accents, found {renderers.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var facadeMaterialCount = 0;
+            var roofMaterialCount = 0;
+            var shadowAccentCount = 0;
+            var trimAccentCount = 0;
+            var bridgeAccentCount = 0;
+            foreach (var renderer in renderers)
+            {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                var obj = renderer.gameObject;
+                if (obj.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {obj.name} must stay on render layer {expectedLayer}, found {obj.layer}.");
+                }
+
+                if (obj.GetComponent<Collider>() != null || obj.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {obj.name} must remain visual-only and add no collision.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {obj.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = obj.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {obj.name} must keep a landmark marker.");
+                }
+
+                var localScale = obj.transform.localScale;
+                if (localScale.x <= 0.01f || localScale.y <= 0.01f || localScale.z <= 0.005f ||
+                    localScale.y > 1.45f &&
+                    !obj.name.Contains("FacadeVerticalWear", StringComparison.Ordinal) &&
+                    !obj.name.Contains("Pilaster", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {obj.name} has invalid thin-surface scale {localScale}.");
+                }
+
+                var localOffset = obj.transform.localPosition - center;
+                if (Mathf.Abs(localOffset.x) > 29.5f ||
+                    Mathf.Abs(localOffset.z) > 9.8f ||
+                    localOffset.y < 0.20f ||
+                    localOffset.y > 3.45f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {obj.name} left the intended authored architecture band at offset {localOffset}.");
+                }
+
+                var material = renderer.sharedMaterial;
+                ValidateArchitecturalSurfaceAccentMaterial(obj.name, material);
+                var materialName = material != null ? material.name ?? string.Empty : string.Empty;
+                var lowerMaterialName = materialName.ToLowerInvariant();
+                if (materialName.IndexOf("AgedPlaster2K", StringComparison.Ordinal) >= 0)
+                {
+                    facadeMaterialCount++;
+                }
+
+                if (materialName.IndexOf("WeatheredRoof2K", StringComparison.Ordinal) >= 0)
+                {
+                    roofMaterialCount++;
+                }
+
+                if (lowerMaterialName.Contains("shadow", StringComparison.Ordinal))
+                {
+                    shadowAccentCount++;
+                }
+
+                if (lowerMaterialName.Contains("frame", StringComparison.Ordinal) ||
+                    obj.name.Contains("Trim", StringComparison.Ordinal) ||
+                    obj.name.Contains("Fascia", StringComparison.Ordinal) ||
+                    obj.name.Contains("Pilaster", StringComparison.Ordinal))
+                {
+                    trimAccentCount++;
+                }
+
+                if (obj.name.Contains("Bridge", StringComparison.Ordinal))
+                {
+                    bridgeAccentCount++;
+                }
+            }
+
+            if (facadeMaterialCount < 2 ||
+                roofMaterialCount < 1 ||
+                shadowAccentCount < 3 ||
+                trimAccentCount < 1)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine facade, roof, trim, and shadow accents; facade={facadeMaterialCount}, roof={roofMaterialCount}, shadow={shadowAccentCount}, trim={trimAccentCount}.");
+            }
+
+            if (area == FastVsHouseArea.Ruins && bridgeAccentCount < ArchitecturalSurfaceAccentRuinsExtraCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must include bridge deck accent threads, found {bridgeAccentCount}.");
+            }
+        }
+
+        private static void ValidateArchitecturalSurfaceAccentChild(string rootName, string objectName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing architectural surface accent {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != rootName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} must stay parented under {rootName}.");
+            }
+        }
+
+        private static void ValidateArchitecturalSurfaceAccentMaterial(string objectName, Material material)
+        {
+            if (material == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} must use a material.");
+            }
+
+            var materialName = material.name ?? string.Empty;
+            if (materialName.IndexOf("Ch1Surface_", StringComparison.Ordinal) >= 0)
+            {
+                if (materialName.IndexOf("ArchitecturalAccent", StringComparison.Ordinal) < 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} must use the dedicated Ch1Surface architectural accent material, got {materialName}.");
+                }
+
+                var materialPath = AssetDatabase.GetAssetPath(material);
+                if (string.IsNullOrEmpty(materialPath) ||
+                    materialPath.IndexOf("/FastVS_House_Ch1Surface_", StringComparison.Ordinal) < 0 ||
+                    !materialPath.EndsWith(".mat", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} material must be a generated Ch1Surface_ asset, got {materialPath}.");
+                }
+
+                var texture = GetMaterialPrimaryTexture(material);
+                if (texture == null ||
+                    texture.width != Chapter1ProductionSurfaceTextureSize ||
+                    texture.height != Chapter1ProductionSurfaceTextureSize)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} must use a {Chapter1ProductionSurfaceTextureSize}x{Chapter1ProductionSurfaceTextureSize} texture.");
+                }
+
+                var tint = material.HasProperty("_BaseColor") ? material.GetColor("_BaseColor") : material.GetColor("_Color");
+                if (Mathf.Max(tint.r, tint.g, tint.b) > 0.86f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} tint is too bright for built-player bloom, found {tint}.");
+                }
+
+                return;
+            }
+
+            var lowerMaterialName = materialName.ToLowerInvariant();
+            if (lowerMaterialName.Contains("shadow", StringComparison.Ordinal) ||
+                lowerMaterialName.Contains("frame", StringComparison.Ordinal) ||
+                lowerMaterialName.Contains("furniture", StringComparison.Ordinal) ||
+                lowerMaterialName.Contains("path", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            throw new InvalidOperationException($"House slice validation failed: architectural surface accent {objectName} uses an unsupported accent material {materialName}.");
         }
 
         private static void ValidateDistantPanoramaVistaRoot(string prefix, FastVsHouseArea area)
@@ -101712,6 +102314,7 @@ namespace Anemora.EditorTools
             var material = FlatMaterial(id, Color.white, unlitTerrainQuilt, FastVsHd2dMaterialRole.SurfaceLit);
             var texture = EnsureChapter1ProductionSurfaceTexture(id, kind, past);
             AssignMaterialTexture(material, texture, tiling);
+            ApplyChapter1ArchitecturalAccentMaterialTint(material, id, past);
 
             if (material.HasProperty("_Smoothness"))
             {
@@ -101725,6 +102328,28 @@ namespace Anemora.EditorTools
 
             EditorUtility.SetDirty(material);
             return material;
+        }
+
+        private static void ApplyChapter1ArchitecturalAccentMaterialTint(Material material, string id, bool past)
+        {
+            if (id.IndexOf("ArchitecturalAccent", StringComparison.Ordinal) < 0)
+            {
+                return;
+            }
+
+            var tint = id.IndexOf("WeatheredRoof2K", StringComparison.Ordinal) >= 0
+                ? (past ? new Color(0.68f, 0.55f, 0.44f, 1f) : new Color(0.82f, 0.74f, 0.66f, 1f))
+                : (past ? new Color(0.62f, 0.58f, 0.48f, 1f) : new Color(0.76f, 0.72f, 0.64f, 1f));
+
+            if (material.HasProperty("_BaseColor"))
+            {
+                material.SetColor("_BaseColor", tint);
+            }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.SetColor("_Color", tint);
+            }
         }
 
         private static bool IsTerrainQuiltProductionSurfaceKind(Chapter1ProductionSurfaceKind kind)

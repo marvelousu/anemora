@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.103 HD2D terrain surface quilt (2026-06-17). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.104 HD2D architectural surface accents (2026-06-17). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 800 files including INDEX.md and README.md.
-- Dated devlog records: 798 files.
+- Root-level Markdown coverage: 801 files including INDEX.md and README.md.
+- Dated devlog records: 799 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-17 | 1 |
+| 2026-06-17 | 2 |
 | 2026-06-16 | 1 |
 | 2026-06-15 | 19 |
 | 2026-06-14 | 12 |
@@ -51,6 +51,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-17_hd2d_architectural_surface_accents.md](2026-06-17_hd2d_architectural_surface_accents.md) | Fast VS / HD2D | HD2D architectural surface accents |
 | [2026-06-17_hd2d_terrain_surface_quilt.md](2026-06-17_hd2d_terrain_surface_quilt.md) | Fast VS / HD2D | HD2D terrain surface quilt |
 
 ### 2026-06-16
