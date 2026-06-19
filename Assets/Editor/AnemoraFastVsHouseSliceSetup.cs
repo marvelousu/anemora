@@ -29420,7 +29420,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaRidgeFacetMesh(string meshName, int seed, int detailBand, float width, float maxHeight, float depth)
         {
-            const int columnCount = 19;
+            const int columnCount = 23;
             const int rowCount = 5;
             var sideVertexCount = columnCount * rowCount;
             var vertices = new Vector3[sideVertexCount * 2];
@@ -29441,12 +29441,19 @@ namespace Anemora.EditorTools
                         var ridgeB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.50f) * (detailBand == 0 ? 3.7f : 4.4f));
                         var ridgeC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.78f) * (detailBand == 0 ? 4.2f : 3.5f));
                         var saddle = Mathf.Clamp01(1f - Mathf.Abs(u - (detailBand == 0 ? 0.64f : 0.38f)) * 5.4f);
+                        var erosionCutA = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.26f, 0.34f, DistantPanoramaVistaHash01(seed + 101))) * 8.0f);
+                        var erosionCutB = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.58f, 0.72f, DistantPanoramaVistaHash01(seed + 107))) * 7.0f);
+                        var spur = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.38f, 0.82f, DistantPanoramaVistaHash01(seed + 113))) * 6.2f);
                         var ridgeMass = Mathf.Max(ridgeA * 0.84f, Mathf.Max(ridgeB, ridgeC * 0.76f));
                         var columnNoise = DistantPanoramaVistaSigned(seed + column * 47 + 5, 0.12f) * edgeFalloff;
-                        var topHeight = maxHeight * Mathf.Clamp(0.36f + edgeFalloff * 0.20f + ridgeMass * 0.42f - saddle * 0.16f + columnNoise, 0.22f, 1.08f);
+                        var topHeight = maxHeight * Mathf.Clamp(
+                            0.34f + edgeFalloff * 0.20f + ridgeMass * 0.44f + spur * 0.10f -
+                            saddle * 0.15f - Mathf.Max(erosionCutA, erosionCutB) * (detailBand == 0 ? 0.10f : 0.16f) + columnNoise,
+                            0.20f,
+                            1.12f);
                         var lowerCut = topHeight * Mathf.Clamp(0.07f + DistantPanoramaVistaHash01(seed + column * 53 + 17) * 0.12f + saddle * 0.08f, 0.06f, 0.34f);
                         var shelf = row == 1 || row == 2
-                            ? DistantPanoramaVistaSigned(seed + row * 79 + column * 29, 0.045f) * maxHeight * edgeFalloff
+                            ? (DistantPanoramaVistaSigned(seed + row * 79 + column * 29, 0.045f) - Mathf.Max(erosionCutA, erosionCutB) * 0.030f) * maxHeight * edgeFalloff
                             : 0f;
                         var y = Mathf.Lerp(lowerCut, topHeight, Mathf.Pow(v, 0.76f)) + shelf;
                         if (row == 0)
@@ -29458,8 +29465,8 @@ namespace Anemora.EditorTools
                             y = topHeight;
                         }
 
-                        var rowWidth = width * Mathf.Lerp(1.05f, detailBand == 0 ? 0.78f : 0.70f, v);
-                        var xDrift = DistantPanoramaVistaSigned(seed + row * 61 + column * 31 + side * 7, 0.26f) * edgeFalloff * (0.25f + v * 0.75f);
+                        var rowWidth = width * Mathf.Lerp(1.08f, detailBand == 0 ? 0.76f : 0.66f, v);
+                        var xDrift = (DistantPanoramaVistaSigned(seed + row * 61 + column * 31 + side * 7, 0.30f) + (spur - erosionCutA) * 0.10f) * edgeFalloff * (0.25f + v * 0.75f);
                         var zDrift = DistantPanoramaVistaSigned(seed + row * 67 + column * 37 + side * 11, depth * 0.16f) * edgeFalloff;
                         var index = sideOffset + row * columnCount + column;
                         vertices[index] = new Vector3(
@@ -29586,7 +29593,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaRidgeStrataMesh(string meshName, int seed, float width, float maxHeight, float thickness)
         {
-            const int columnCount = 13;
+            const int columnCount = 17;
             const int rowCount = 6;
             var sideVertexCount = columnCount * rowCount;
             var vertices = new Vector3[sideVertexCount * 2];
@@ -29617,7 +29624,13 @@ namespace Anemora.EditorTools
                         }
                         else if (row == rowCount - 1)
                         {
-                            y = maxHeight * Mathf.Lerp(0.68f, 1.04f, DistantPanoramaVistaHash01(seed + column * 37 + side * 19));
+                            var skylineNotch = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.24f, 0.76f, DistantPanoramaVistaHash01(seed + side * 31 + 211))) * 7.5f);
+                            var skylineSpur = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.18f, 0.88f, DistantPanoramaVistaHash01(seed + side * 37 + 223))) * 6.0f);
+                            y = maxHeight * Mathf.Clamp(
+                                Mathf.Lerp(0.66f, 1.06f, DistantPanoramaVistaHash01(seed + column * 37 + side * 19)) -
+                                skylineNotch * 0.12f + skylineSpur * 0.07f,
+                                0.52f,
+                                1.10f);
                         }
 
                         var x = Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u) +
@@ -30308,7 +30321,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaReliefMesh(string meshName, int seed, float width, float maxHeight, float thickness, bool lowTreeLine)
         {
-            const int columnCount = 19;
+            const int columnCount = 23;
             var vertices = new Vector3[columnCount * 6];
             var uvs = new Vector2[columnCount * 6];
             var frontZ = -thickness * 0.5f;
@@ -30326,23 +30339,32 @@ namespace Anemora.EditorTools
                 var peakB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.48f) * (lowTreeLine ? 5.2f : 4.5f));
                 var peakC = Mathf.Clamp01(1f - Mathf.Abs(u - 0.76f) * (lowTreeLine ? 4.4f : 4.0f));
                 var saddle = Mathf.Clamp01(1f - Mathf.Abs(u - 0.62f) * 5.6f);
+                var erodedGapA = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.28f, 0.38f, DistantPanoramaVistaHash01(seed + 103))) * 7.2f);
+                var erodedGapB = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.58f, 0.86f, DistantPanoramaVistaHash01(seed + 109))) * 6.8f);
+                var rockShoulder = Mathf.Clamp01(1f - Mathf.Abs(u - Mathf.Lerp(0.20f, 0.82f, DistantPanoramaVistaHash01(seed + 127))) * 5.8f);
                 var authoredRhythm = Mathf.Max(peakA * 0.78f, Mathf.Max(peakB, peakC * 0.86f)) - saddle * 0.16f;
                 var peakHeight = maxHeight * edgeTaper * Mathf.Lerp(lowTreeLine ? 0.40f : 0.50f, lowTreeLine ? 0.86f : 1.15f, step);
-                peakHeight *= Mathf.Clamp(0.88f + authoredRhythm * 0.28f, 0.72f, 1.18f);
+                peakHeight *= Mathf.Clamp(
+                    0.86f + authoredRhythm * 0.31f + rockShoulder * 0.16f -
+                    Mathf.Max(erodedGapA, erodedGapB) * (lowTreeLine ? 0.12f : 0.22f),
+                    lowTreeLine ? 0.64f : 0.56f,
+                    lowTreeLine ? 1.16f : 1.28f);
                 if (i == 0 || i == columnCount - 1)
                 {
                     peakHeight = Mathf.Min(peakHeight, maxHeight * 0.34f);
                 }
 
-                var shoulderHeight = peakHeight * Mathf.Lerp(0.28f, lowTreeLine ? 0.50f : 0.62f, DistantPanoramaVistaHash01(seed + i * 53 + 11));
+                var shoulderHeight = peakHeight * Mathf.Lerp(0.26f, lowTreeLine ? 0.52f : 0.66f, DistantPanoramaVistaHash01(seed + i * 53 + 11));
+                shoulderHeight += maxHeight * (rockShoulder * 0.06f - Mathf.Max(erodedGapA, erodedGapB) * 0.045f);
                 var baseLift = DistantPanoramaVistaSigned(seed + i * 19 + 7, 0.06f);
                 var baseIndex = i * 6;
-                vertices[baseIndex] = new Vector3(x, 0f, frontZ);
-                vertices[baseIndex + 1] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 31 + 13, 0.08f) * edgeFalloff, shoulderHeight + baseLift, Mathf.Lerp(frontZ, backZ, 0.24f));
-                vertices[baseIndex + 2] = new Vector3(x, peakHeight, frontZ);
-                vertices[baseIndex + 3] = new Vector3(x, 0f, backZ);
-                vertices[baseIndex + 4] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 41 + 17, 0.07f) * edgeFalloff, shoulderHeight * 0.92f + baseLift, Mathf.Lerp(frontZ, backZ, 0.76f));
-                vertices[baseIndex + 5] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 47 + 19, 0.10f) * edgeFalloff, peakHeight * Mathf.Lerp(0.90f, 0.99f, DistantPanoramaVistaHash01(seed + i * 59 + 23)), backZ);
+                var skylineLean = (rockShoulder - erodedGapA) * 0.16f * edgeFalloff;
+                vertices[baseIndex] = new Vector3(x, baseLift * 0.22f, frontZ);
+                vertices[baseIndex + 1] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 31 + 13, 0.10f) * edgeFalloff - skylineLean, shoulderHeight + baseLift, Mathf.Lerp(frontZ, backZ, 0.24f));
+                vertices[baseIndex + 2] = new Vector3(x + skylineLean, peakHeight, frontZ);
+                vertices[baseIndex + 3] = new Vector3(x, baseLift * 0.16f, backZ);
+                vertices[baseIndex + 4] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 41 + 17, 0.09f) * edgeFalloff + skylineLean * 0.5f, shoulderHeight * 0.92f + baseLift, Mathf.Lerp(frontZ, backZ, 0.76f));
+                vertices[baseIndex + 5] = new Vector3(x + DistantPanoramaVistaSigned(seed + i * 47 + 19, 0.12f) * edgeFalloff + skylineLean, peakHeight * Mathf.Lerp(0.88f, 1.01f, DistantPanoramaVistaHash01(seed + i * 59 + 23)), backZ);
                 uvs[baseIndex] = new Vector2(u, 0f);
                 uvs[baseIndex + 1] = new Vector2(u, 0.42f);
                 uvs[baseIndex + 2] = new Vector2(u, 1f);
