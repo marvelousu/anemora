@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.110 HD2D timewindow aperture opaque (2026-06-18). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.111 HD2D library facade and desk artifact cleanup (2026-06-19). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 807 files including INDEX.md and README.md.
-- Dated devlog records: 805 files.
+- Root-level Markdown coverage: 808 files including INDEX.md and README.md.
+- Dated devlog records: 806 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,6 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
+| 2026-06-19 | 1 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
 | 2026-06-16 | 1 |
@@ -47,6 +48,12 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-19
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-19_hd2d_library_facade_desk_artifact_cleanup.md](2026-06-19_hd2d_library_facade_desk_artifact_cleanup.md) | Fast VS / HD2D | HD2D library facade and desk artifact cleanup |
 
 ### 2026-06-18
 

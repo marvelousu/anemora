@@ -39,6 +39,7 @@ namespace Anemora.EditorTools
         private const int LibraryWindowLightCookieSize = 128;
         private const float LibraryWindowLightCookieAverageMin = 0.58f;
         private const float LibraryWindowLightCookieAverageMax = 0.86f;
+        private const int Hd2dFeedbackLibraryWindowLightCullingMask = 0;
         private const float SurfaceRampStrength = 0.36f;
         private const float SurfaceRampDirectionalLightStrength = 0.42f;
         private const float SurfaceRampShadowReceiveStrength = 0.56f;
@@ -717,6 +718,9 @@ namespace Anemora.EditorTools
             CreateHouseDoorTransitions(controller, player, areaVisibility, story);
             CreateRuntimeSmokeProbe();
             CreateHd2dDepthFraming(currentAreas, pastAreas);
+            ApplyHd2dFeedbackLibraryFloorArtifactCleanup();
+            ApplyHd2dFeedbackLibraryDeskArtifactCleanup();
+            ApplyHd2dFeedbackLibraryWindowProjectionCleanup();
             story.ApplyConfiguredStartStateForReview();
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
 
@@ -936,6 +940,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dThirtyThirdCycleLibraryFloorDecayDetails();
             ValidateFastVsHd2dFortySecondCycleCurrentLibraryRuinFloorDetail();
             ValidateFastVsHd2dSixtyFourthCycleCurrentLibraryRuinGrounding();
+            ValidateHd2dFeedbackLibraryFacadeAndDeskArtifactCleanup();
             ValidateFastVsHd2dFortyThirdCycleCurrentLibraryWallShelfDepth();
             ValidateFastVsHd2dNineteenthCycleCurrentLibrarySideShelves();
             ValidateFastVsHd2dTwentiethCycleCurrentLibrarySideShelfVisibility();
@@ -10265,6 +10270,7 @@ namespace Anemora.EditorTools
             ApplyCentralPlazaRealtimeDappleCasterCycle138(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeMeshCasterCycle140(plazaRoot, prefix, past, materials);
             ApplyCentralPlazaRealtimeCasterShapeRewriteCycle141(plazaRoot, prefix, past, materials);
+            ApplyHd2dFeedbackPlazaLibraryFacadeHazeCleanup(past);
             CreateDistantPanoramaVistasForChapter1OutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
@@ -36115,8 +36121,8 @@ namespace Anemora.EditorTools
                 windowCue.SetActive(false);
                 var ariaCue = CreateFloorGlowCue("Current_Library_TimeWindowOpenCue_Aria", root, new Vector3(PastLibraryPersonCueLocalPosition.x, CurrentLibraryCueFloorY, PastLibraryPersonCueLocalPosition.z), CurrentLibraryAriaCueGlowScale, materials.RedLight, "Current.library.timewindow_aria_cue");
                 ariaCue.SetActive(false);
-                CreateReadableBookProp(root, "Current_Library_RetoDeskBook_Initial", CurrentLibraryRetoDeskBookInitialLocalPosition, FaceTargetOnPlane(CurrentLibraryRetoDeskBookInitialLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.42f, 0.05f, 0.26f), materials.Book, materials.SignPaint, materials.CurrentFence, true, "Current.library.reto_desk_book");
-                var returnedBook = CreateReadableBookProp(root, "Current_Library_ReturnedBookOnDesk", CurrentLibraryReturnedBookLocalPosition, FaceTargetOnPlane(CurrentLibraryReturnedBookLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.48f, 0.05f, 0.28f), materials.Book, materials.SignPaint, materials.RedLight, true, "Current.library.returned_book_on_desk");
+                CreateReadableBookProp(root, "Current_Library_RetoDeskBook_Initial", CurrentLibraryRetoDeskBookInitialLocalPosition, FaceTargetOnPlane(CurrentLibraryRetoDeskBookInitialLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.42f, 0.05f, 0.26f), materials.Book, materials.CurrentFence, materials.CurrentFence, true, "Current.library.reto_desk_book");
+                var returnedBook = CreateReadableBookProp(root, "Current_Library_ReturnedBookOnDesk", CurrentLibraryReturnedBookLocalPosition, FaceTargetOnPlane(CurrentLibraryReturnedBookLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.48f, 0.05f, 0.28f), materials.Book, materials.CurrentFence, materials.CurrentFence, true, "Current.library.returned_book_on_desk");
                 returnedBook.SetActive(false);
                 CreateRetoAtLibraryDesk(root, materials);
                 var retoContactShadow = CreateCharacterContactShadow(
@@ -36208,6 +36214,7 @@ namespace Anemora.EditorTools
             if (!past)
             {
                 ApplyHd2dFeedbackLibraryFloorArtifactCleanup();
+                ApplyHd2dFeedbackLibraryDeskArtifactCleanup();
             }
         }
 
@@ -36275,15 +36282,153 @@ namespace Anemora.EditorTools
                 "Current_Library_Stage8n_FloorClosedBookShadowA"
             })
             {
-                var sceneObject = FindSceneObjectIncludingInactive(objectName);
-                if (sceneObject == null)
-                {
-                    continue;
-                }
-
-                sceneObject.SetActive(false);
-                EditorUtility.SetDirty(sceneObject);
+                DisableSceneObjectForReviewFeedback(objectName);
             }
+        }
+
+        private static void ApplyHd2dFeedbackLibraryDeskArtifactCleanup()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_Library_RetoDesk_WarmPool",
+                "Current_Library_WindowLightPool_LeftFloor",
+                "Current_Library_WindowLightPool_RightFloor",
+                "Current_Library_Stage8a_ReadingTableWarmCoverA",
+                "Current_Library_Stage8a_ReadingTableWarmPageA",
+                "Current_Library_Stage8b_TableLong_PageStackA",
+                "Current_Library_Stage8c_CoolFloorWash_LeftWindowA",
+                "Current_Library_Stage8c_CoolFloorWash_RightWindowA",
+                "Current_Library_Stage8d_FloorWarmRun_LongTableNorthA",
+                "Current_Library_Stage8d_FloorWarmPaperRun_LongTableSouthA",
+                "Current_Library_Stage8d_FloorWarmRun_SideTableA",
+                "Current_Library_Stage8d_FloorWarmPaperRun_SideTableB",
+                "Current_Library_Stage8e_LongTableLampCoreA",
+                "Current_Library_Stage8e_LongTableLampFloorPoolA",
+                "Current_Library_Stage8e_RetoDeskLampCoreA",
+                "Current_Library_Stage8e_RetoDeskLampFloorPoolA",
+                "Current_Library_Stage8e_BackShelfLampCoreA",
+                "Current_Library_Stage8e_BackShelfLampFloorPoolA",
+                "Current_Library_Stage8e_LongTableLampHaloA",
+                "Current_Library_Stage8e_RetoDeskLampHaloA",
+                "Current_Library_Stage8e_BackShelfLampHaloA",
+                "Current_Library_Stage8e_LongTableLampPointA",
+                "Current_Library_Stage8e_RetoDeskLampPointA",
+                "Current_Library_Stage8e_BackShelfLampPointA",
+                "Current_Library_Stage8g_HeroFloorWarmPoolWideA",
+                "Current_Library_Stage8g_HeroTableWarmCoreA",
+                "Current_Library_Stage8g_HeroTableWarmLeadA",
+                "Current_Library_Stage8g_HeroTablePointA",
+                "Current_Library_Stage8g_BackShelfPointA",
+                "Current_Library_Stage8h_LongTableAmberSurfaceA",
+                "Current_Library_Stage8h_LongTableOpenPageHighlightA",
+                "Current_Library_Stage8h_RightDeskAmberSurfaceA",
+                "Current_Library_Stage8h_RightDeskPageHighlightA",
+                "Current_Library_Stage8h_FloorWarmPlankBandNearA",
+                "Current_Library_Stage8h_FloorWarmPlankBandLeftA",
+                "Current_Library_Stage8h_FloorWarmPlankBandRightA",
+                "Current_Library_Stage8j_FloorWarmSpillUnderLongTableA",
+                "Current_Library_Stage8j_LongTableFrontWarmRimA",
+                "Current_Library_Stage8j_LongTableOpenPageGlowA",
+                "Current_Library_Stage8j_InkWellTableShadowA",
+                "Current_Library_Stage8l_LongTablePlankCatchlightA",
+                "Current_Library_Stage8l_RightDeskFloorWarmEdgeA",
+                "Current_Library_Stage8n_LongTableBookmarkSlipA",
+                "Current_Library_Stage8n_LongTableLoosePagePairA",
+                "Current_Library_Stage8n_LongTableLoosePageShadowA",
+                "Current_Library_Stage8n_RightDeskStackPageA",
+                "Current_Library_ReadableMicroprops_RetoDeskPaperLineA",
+                "Current_Library_ReadableMicroprops_RetoDeskBookmarkA",
+                "Current_Library_EntryTableContrast_RetoDeskFootDustA",
+                "Current_Library_PropDetail_RetoDeskLoosePapers",
+                "Current_Library_PropDetail_RetoDeskLoosePapers_Accent",
+                "Current_Library_PropDetail_RetoDeskLoosePapers_Detail",
+                "Current_Library_PropDetail_RetoDeskLoosePapers_Slip",
+                "Current_Library_ReadingSurfaceDensity_LongTablePaperSlipA",
+                "Current_Library_ReadingSurfaceDensity_SideTableDustLineA",
+                "Current_Library_ReadingSurfaceDensity_RetoDeskOpenBookShadowA"
+            })
+            {
+                DisableSceneObjectForReviewFeedback(objectName);
+            }
+        }
+
+        private static void ApplyHd2dFeedbackLibraryWindowProjectionCleanup()
+        {
+            var libraryWindow = FindSceneObjectIncludingInactive("FastVS_HD2D_LibraryWindowLight")?.GetComponent<Light>();
+            if (libraryWindow == null)
+            {
+                return;
+            }
+
+            libraryWindow.cullingMask = Hd2dFeedbackLibraryWindowLightCullingMask;
+            EditorUtility.SetDirty(libraryWindow);
+        }
+
+        private static void ApplyHd2dFeedbackPlazaLibraryFacadeHazeCleanup(bool past)
+        {
+            if (past)
+            {
+                return;
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_FacadeColumnA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_FloorLeftCatchA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_FloorCobbleWarmPathA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_LibraryStepWarmPlateA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_LeftCobbleFleckA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_PlayerShoulderFleckA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_StoneSquareSunMassA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_LibraryStepSunPlateA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_FacadeBroadRakeA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_FacadeUpperDustHitA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_BackwallReferenceAirA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_UpperPlazaDepthAirA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_BackfieldSunLiftA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_FacadePaleStoneBloomA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_PlayerLanePaleCatchA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_GroundAtmosphericWashA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_WholeFacadeDepthWashA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_SunshaftContinuationA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_FocusStoneSunPlateA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_BackStepSunTrimA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_BackOnlyAerialHazeA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_FacadeHighDepthAirA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_StoneSunMatteFieldA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_ReferenceReceiverLiftA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_CloseSeamSunMuteA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_CenterChalkSunCatchA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_BackStepPaleSunA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_FacadeReferenceSunPatchA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_HighSunbeamColumnA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_BackDepthHazeA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_ApproachBlackBarMuteA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_CloseGridWashA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_GroundAirUnifierA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_StepAirLiftA",
+                "Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA",
+                "Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryDoorCoolEntryLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryWestPlinthCoolLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryEastPlinthCoolLightA"
+            })
+            {
+                DisableSceneObjectForReviewFeedback(objectName);
+            }
+        }
+
+        private static void DisableSceneObjectForReviewFeedback(string objectName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                return;
+            }
+
+            sceneObject.SetActive(false);
+            EditorUtility.SetDirty(sceneObject);
         }
 
         private static void CreateLibraryUpperGalleryDetails(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
@@ -48900,6 +49045,7 @@ namespace Anemora.EditorTools
             libraryWindow.color = new Color(1.00f, 0.76f, 0.48f, 1f);
             libraryWindow.shadows = LightShadows.None;
             libraryWindow.cookie = EnsureHd2dLibraryWindowLightCookieTexture();
+            libraryWindow.cullingMask = Hd2dFeedbackLibraryWindowLightCullingMask;
             libraryWindowObject.transform.SetPositionAndRotation(new Vector3(28.55f, 3.05f, 23.15f), Quaternion.Euler(58f, 36f, 0f));
 
             var directorObject = new GameObject("FastVS_HD2D_LightingDirector");
@@ -52626,8 +52772,8 @@ namespace Anemora.EditorTools
                 CurrentSpaceRenderLayer,
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
                 new Color(1.00f, 0.84f, 0.60f, 1f),
-                3.00f,
-                3.20f);
+                0.70f,
+                2.20f);
         }
 
         private static void CreateHd2dPhaseCAlphaPlazaWaterSparkleLight(Transform parent)
@@ -69172,6 +69318,138 @@ namespace Anemora.EditorTools
             ValidateLandmarkExists("Past_Library_AriaIdleAtTable", "Past_LibraryMap_SeparateSpace");
         }
 
+        private static void ValidateHd2dFeedbackLibraryFacadeAndDeskArtifactCleanup()
+        {
+            foreach (var objectName in new[]
+            {
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_FacadeColumnA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_FloorLeftCatchA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_FloorCobbleWarmPathA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_LibraryStepWarmPlateA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_LeftCobbleFleckA",
+                "Current_CentralPlaza_Cycle121_LegacySunRibbonCleanSun_PlayerShoulderFleckA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_StoneSquareSunMassA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_LibraryStepSunPlateA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_FacadeBroadRakeA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_FacadeUpperDustHitA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_BackwallReferenceAirA",
+                "Current_CentralPlaza_Cycle122_ReferenceSurfaceRemap_UpperPlazaDepthAirA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_BackfieldSunLiftA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_FacadePaleStoneBloomA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_PlayerLanePaleCatchA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_GroundAtmosphericWashA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_WholeFacadeDepthWashA",
+                "Current_CentralPlaza_Cycle123_ReferenceAerialLift_SunshaftContinuationA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_FocusStoneSunPlateA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_BackStepSunTrimA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_BackOnlyAerialHazeA",
+                "Current_CentralPlaza_Cycle124_ReferenceFocusShadow_FacadeHighDepthAirA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_StoneSunMatteFieldA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_ReferenceReceiverLiftA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_CloseSeamSunMuteA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_CenterChalkSunCatchA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_BackStepPaleSunA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_FacadeReferenceSunPatchA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_HighSunbeamColumnA",
+                "Current_CentralPlaza_Cycle125_ReferenceDioramaShadow_BackDepthHazeA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_ApproachBlackBarMuteA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_CloseGridWashA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_GroundAirUnifierA",
+                "Current_CentralPlaza_Cycle126_CloseShadowBarMute_StepAirLiftA",
+                "Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA",
+                "Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryDoorCoolEntryLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryWestPlinthCoolLightA",
+                "Current_CentralPlaza_FramedLightPlanes_LibraryEastPlinthCoolLightA"
+            })
+            {
+                ValidateSceneObjectInactiveOrRemovedForReviewFeedback(objectName);
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_RetoDesk_WarmPool",
+                "Current_Library_WindowLightPool_LeftFloor",
+                "Current_Library_WindowLightPool_RightFloor",
+                "Current_Library_Stage8a_ReadingTableWarmCoverA",
+                "Current_Library_Stage8a_ReadingTableWarmPageA",
+                "Current_Library_Stage8b_TableLong_PageStackA",
+                "Current_Library_Stage8c_CoolFloorWash_LeftWindowA",
+                "Current_Library_Stage8c_CoolFloorWash_RightWindowA",
+                "Current_Library_Stage8d_FloorWarmRun_LongTableNorthA",
+                "Current_Library_Stage8d_FloorWarmPaperRun_LongTableSouthA",
+                "Current_Library_Stage8d_FloorWarmRun_SideTableA",
+                "Current_Library_Stage8d_FloorWarmPaperRun_SideTableB",
+                "Current_Library_Stage8e_LongTableLampCoreA",
+                "Current_Library_Stage8e_LongTableLampFloorPoolA",
+                "Current_Library_Stage8e_RetoDeskLampCoreA",
+                "Current_Library_Stage8e_RetoDeskLampFloorPoolA",
+                "Current_Library_Stage8e_BackShelfLampCoreA",
+                "Current_Library_Stage8e_BackShelfLampFloorPoolA",
+                "Current_Library_Stage8e_LongTableLampHaloA",
+                "Current_Library_Stage8e_RetoDeskLampHaloA",
+                "Current_Library_Stage8e_BackShelfLampHaloA",
+                "Current_Library_Stage8e_LongTableLampPointA",
+                "Current_Library_Stage8e_RetoDeskLampPointA",
+                "Current_Library_Stage8e_BackShelfLampPointA",
+                "Current_Library_Stage8g_HeroFloorWarmPoolWideA",
+                "Current_Library_Stage8g_HeroTableWarmCoreA",
+                "Current_Library_Stage8g_HeroTableWarmLeadA",
+                "Current_Library_Stage8g_HeroTablePointA",
+                "Current_Library_Stage8g_BackShelfPointA",
+                "Current_Library_Stage8h_LongTableAmberSurfaceA",
+                "Current_Library_Stage8h_LongTableOpenPageHighlightA",
+                "Current_Library_Stage8h_RightDeskAmberSurfaceA",
+                "Current_Library_Stage8h_RightDeskPageHighlightA",
+                "Current_Library_Stage8h_FloorWarmPlankBandNearA",
+                "Current_Library_Stage8h_FloorWarmPlankBandLeftA",
+                "Current_Library_Stage8h_FloorWarmPlankBandRightA",
+                "Current_Library_Stage8j_FloorWarmSpillUnderLongTableA",
+                "Current_Library_Stage8j_LongTableFrontWarmRimA",
+                "Current_Library_Stage8j_LongTableOpenPageGlowA",
+                "Current_Library_Stage8j_InkWellTableShadowA",
+                "Current_Library_Stage8l_LongTablePlankCatchlightA",
+                "Current_Library_Stage8l_RightDeskFloorWarmEdgeA",
+                "Current_Library_Stage8n_LongTableBookmarkSlipA",
+                "Current_Library_Stage8n_LongTableLoosePagePairA",
+                "Current_Library_Stage8n_LongTableLoosePageShadowA",
+                "Current_Library_Stage8n_RightDeskStackPageA",
+                "Current_Library_ReadableMicroprops_RetoDeskPaperLineA",
+                "Current_Library_ReadableMicroprops_RetoDeskBookmarkA",
+                "Current_Library_EntryTableContrast_RetoDeskFootDustA",
+                "Current_Library_PropDetail_RetoDeskLoosePapers",
+                "Current_Library_PropDetail_RetoDeskLoosePapers_Accent",
+                "Current_Library_PropDetail_RetoDeskLoosePapers_Detail",
+                "Current_Library_PropDetail_RetoDeskLoosePapers_Slip",
+                "Current_Library_ReadingSurfaceDensity_LongTablePaperSlipA",
+                "Current_Library_ReadingSurfaceDensity_SideTableDustLineA",
+                "Current_Library_ReadingSurfaceDensity_RetoDeskOpenBookShadowA"
+            })
+            {
+                ValidateSceneObjectInactiveOrRemovedForReviewFeedback(objectName);
+            }
+
+            var director = UnityEngine.Object.FindFirstObjectByType<FastVsHouseLightingDirector>();
+            var libraryWindow = FindSceneObjectIncludingInactive("FastVS_HD2D_LibraryWindowLight")?.GetComponent<Light>();
+            if (director == null || libraryWindow == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: feedback cleanup needs the library lighting director and window light.");
+            }
+
+            director.ApplyAreaForReview(FastVsHouseArea.Library);
+            if (libraryWindow.cullingMask != Hd2dFeedbackLibraryWindowLightCullingMask)
+            {
+                throw new InvalidOperationException($"House slice validation failed: feedback cleanup must keep FastVS_HD2D_LibraryWindowLight from projecting a gridded texture onto the library floor and desks, found cullingMask={libraryWindow.cullingMask}.");
+            }
+
+            if (FindSceneObjectIncludingInactive("Current_Library_RetoDeskBook_Initial") == null ||
+                FindSceneObjectIncludingInactive("Current_Library_ReturnedBookOnDesk") == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: feedback cleanup must keep the authored Reto desk books present while rejected desk artifacts are hidden.");
+            }
+        }
+
         private static void ValidateCentralPlazaLibraryRearVolumeObject(string objectName, string expectedMaterialToken, string expectedParentName, string expectedLandmarkIdPrefix, Vector3 minLocalPosition, Vector3 maxLocalPosition, float maxScaleX, float maxScaleY, float maxScaleZ)
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
@@ -74024,8 +74302,8 @@ namespace Anemora.EditorTools
                 CurrentSpaceRenderLayer,
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
                 new Color(1.00f, 0.84f, 0.60f, 1f),
-                3.00f,
-                3.20f);
+                0.70f,
+                2.20f);
             ValidateHd2dPhaseCAlphaPointLight(
                 "FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight",
                 "Current_CentralPlazaMap_SeparateSpace",
@@ -81654,6 +81932,15 @@ namespace Anemora.EditorTools
             if (FindSceneObjectIncludingInactive(objectName) != null)
             {
                 throw new InvalidOperationException($"House slice validation failed: rejected scene object must remain non-generated: {objectName}.");
+            }
+        }
+
+        private static void ValidateSceneObjectInactiveOrRemovedForReviewFeedback(string objectName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject != null && sceneObject.activeSelf)
+            {
+                throw new InvalidOperationException($"House slice validation failed: review-rejected visual artifact must stay inactive: {objectName}.");
             }
         }
 
