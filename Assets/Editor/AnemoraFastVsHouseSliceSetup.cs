@@ -14450,6 +14450,7 @@ namespace Anemora.EditorTools
                 var plankX = -5.78f + i * 1.06f;
                 CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgePlank_{i}", root, c + new Vector3(plankX, 0.49f, 0.01f), new Vector3(0.11f, 0.06f, 1.14f), Quaternion.Euler(0f, 0f, i % 2 == 0 ? 1.5f : -1.5f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.bridge_plank.{i}");
             }
+            CreateRuinsBridgeAuthoredCrossingDetails(root, prefix, past, materials);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeOpenWalkLine", root, c + new Vector3(0f, 0.105f, -0.02f), new Vector3(10.20f, 0.030f, 0.26f), Quaternion.identity, path, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_open_walk_line");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeLeftThreshold", root, c + new Vector3(-6.28f, 0.112f, -0.02f), new Vector3(0.64f, 0.045f, 0.66f), Quaternion.Euler(0f, 2f, 0f), past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_left_threshold");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_BridgeMidPierSurvives", root, c + new Vector3(0f, 0.102f, 0f), new Vector3(1.34f, 0.080f, 1.10f), Quaternion.identity, past ? materials.PastStone : materials.CurrentStone, true, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.f1.bridge_mid_pier_survives");
@@ -14485,6 +14486,66 @@ namespace Anemora.EditorTools
             }
 
             CreateChapter1RuinsBridgeRuntimePopulation(root, past, materials);
+        }
+
+        private static void CreateRuinsBridgeAuthoredCrossingDetails(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = Chapter1RuinsMapCenter;
+            var wood = past ? materials.PastFurniture : materials.CurrentFurniture;
+            var trim = past ? materials.PastFence : materials.CurrentFence;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var deckWear = past ? materials.PastPath : materials.Dust;
+            var darkWear = materials.Shadow;
+
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeSideStringerNorth", root, c + new Vector3(0.00f, 0.640f, 0.70f), new Vector3(12.20f, 0.10f, 0.10f), Quaternion.Euler(0f, past ? 0.5f : -1.5f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.side_stringer_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeSideStringerSouth", root, c + new Vector3(0.00f, 0.640f, -0.70f), new Vector3(12.20f, 0.10f, 0.10f), Quaternion.Euler(0f, past ? -0.5f : 1.5f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.side_stringer_south");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeUnderBeamNorth", root, c + new Vector3(0.00f, 0.310f, 0.55f), new Vector3(11.92f, 0.12f, 0.11f), Quaternion.Euler(0f, -1f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.under_beam_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeUnderBeamSouth", root, c + new Vector3(0.00f, 0.310f, -0.55f), new Vector3(11.92f, 0.12f, 0.11f), Quaternion.Euler(0f, 1f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.under_beam_south");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeLeftAbutmentCapNorth", root, c + new Vector3(-6.44f, 0.320f, 0.78f), new Vector3(0.90f, 0.16f, 0.16f), Quaternion.Euler(0f, 8f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.left_abutment_cap_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeLeftAbutmentCapSouth", root, c + new Vector3(-6.42f, 0.318f, -0.78f), new Vector3(0.86f, 0.16f, 0.16f), Quaternion.Euler(0f, -8f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.left_abutment_cap_south");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeRightAbutmentCapNorth", root, c + new Vector3(6.42f, 0.320f, 0.78f), new Vector3(0.86f, 0.16f, 0.16f), Quaternion.Euler(0f, -8f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.right_abutment_cap_north");
+            CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeRightAbutmentCapSouth", root, c + new Vector3(6.44f, 0.318f, -0.78f), new Vector3(0.90f, 0.16f, 0.16f), Quaternion.Euler(0f, 8f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.right_abutment_cap_south");
+
+            var tieXs = new[] { -5.20f, -3.45f, -1.70f, 0.00f, 1.72f, 3.48f, 5.20f };
+            for (var i = 0; i < tieXs.Length; i++)
+            {
+                var y = 0.555f + (i % 2 == 0 ? 0.006f : -0.004f);
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeTie_{i}", root, c + new Vector3(tieXs[i], y, 0.00f), new Vector3(0.12f, 0.045f, 1.34f), Quaternion.Euler(0f, i % 2 == 0 ? 2f : -2f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.tie.{i}");
+            }
+
+            var wearXs = new[] { -4.70f, -3.05f, -1.12f, 0.86f, 2.72f, 4.50f };
+            for (var i = 0; i < wearXs.Length; i++)
+            {
+                var z = i % 2 == 0 ? -0.17f : 0.16f;
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeWearStrip_{i}", root, c + new Vector3(wearXs[i], 0.552f, z), new Vector3(0.72f, 0.018f, 0.075f), Quaternion.Euler(0f, i % 2 == 0 ? 8f : -8f, 0f), deckWear, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.wear_strip.{i}");
+            }
+
+            var postXs = new[] { -5.62f, -3.68f, -1.64f, 1.62f, 3.70f, 5.62f };
+            for (var i = 0; i < postXs.Length; i++)
+            {
+                var lean = i % 2 == 0 ? -4f : 4f;
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgePostNorth_{i}", root, c + new Vector3(postXs[i], 0.765f, 0.78f), new Vector3(0.10f, 0.46f, 0.10f), Quaternion.Euler(0f, 0f, past ? 0f : lean), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.post_north.{i}");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgePostSouth_{i}", root, c + new Vector3(postXs[i], 0.765f, -0.78f), new Vector3(0.10f, 0.46f, 0.10f), Quaternion.Euler(0f, 0f, past ? 0f : -lean), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.post_south.{i}");
+            }
+
+            var braceXs = new[] { -4.56f, -2.34f, 2.34f, 4.56f };
+            for (var i = 0; i < braceXs.Length; i++)
+            {
+                var angle = i % 2 == 0 ? 13f : -13f;
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeBraceNorth_{i}", root, c + new Vector3(braceXs[i], 0.700f, 0.82f), new Vector3(1.36f, 0.070f, 0.085f), Quaternion.Euler(0f, 0f, past ? angle * 0.5f : angle), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.brace_north.{i}");
+                CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeBraceSouth_{i}", root, c + new Vector3(braceXs[i], 0.700f, -0.82f), new Vector3(1.36f, 0.070f, 0.085f), Quaternion.Euler(0f, 0f, past ? -angle * 0.5f : -angle), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f1.cycle151.bridge.brace_south.{i}");
+            }
+
+            if (past)
+            {
+                CreateLandmarkCube("Past_CentralPlaza_Chapter1_F1_Cycle151BridgePastRepairLashingA", root, c + new Vector3(-2.88f, 0.602f, 0.00f), new Vector3(0.060f, 0.040f, 1.22f), Quaternion.Euler(0f, -3f, 0f), materials.Rope, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f1.cycle151.bridge.repair_lashing_a");
+                CreateLandmarkCube("Past_CentralPlaza_Chapter1_F1_Cycle151BridgePastRepairLashingB", root, c + new Vector3(2.92f, 0.602f, 0.00f), new Vector3(0.060f, 0.040f, 1.22f), Quaternion.Euler(0f, 3f, 0f), materials.Rope, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Past.central_plaza.chapter1.f1.cycle151.bridge.repair_lashing_b");
+            }
+            else
+            {
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_F1_Cycle151BridgeCurrentMissingSlatShadowA", root, c + new Vector3(-2.86f, 0.558f, 0.29f), new Vector3(0.72f, 0.020f, 0.12f), Quaternion.Euler(0f, -9f, 0f), darkWear, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f1.cycle151.bridge.missing_slat_shadow_a");
+                CreateLandmarkCube("Current_CentralPlaza_Chapter1_F1_Cycle151BridgeCurrentLooseSplinterA", root, c + new Vector3(2.88f, 0.590f, -0.30f), new Vector3(0.82f, 0.035f, 0.070f), Quaternion.Euler(0f, 14f, 5f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, "Current.central_plaza.chapter1.f1.cycle151.bridge.loose_splinter_a");
+            }
         }
 
         private static void CreateChapter1Cycle96BridgeLandingShoulderDetails(Transform root, string prefix, bool past, Materials materials)
@@ -60140,6 +60201,7 @@ namespace Anemora.EditorTools
                     0.135f);
 
                 ValidateChapter1BridgeContinuousSupport(prefix);
+                ValidateChapter1BridgeAuthoredCrossingDetails(prefix);
             }
         }
 
@@ -60239,6 +60301,86 @@ namespace Anemora.EditorTools
             if (localY < minLocalY || localY > maxLocalY)
             {
                 throw new InvalidOperationException($"House slice validation failed: bridge traversal surface {objectName} local Y {localY:0.000} is outside {minLocalY:0.000}-{maxLocalY:0.000}.");
+            }
+        }
+
+        private static void ValidateChapter1BridgeAuthoredCrossingDetails(string prefix)
+        {
+            ValidateChapter1BridgeNonBlockingDetail(
+                $"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeSideStringerNorth",
+                new Vector3(11.50f, 0.070f, 0.070f),
+                new Vector3(12.80f, 0.130f, 0.130f),
+                0.580f,
+                0.700f);
+            ValidateChapter1BridgeNonBlockingDetail(
+                $"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeSideStringerSouth",
+                new Vector3(11.50f, 0.070f, 0.070f),
+                new Vector3(12.80f, 0.130f, 0.130f),
+                0.580f,
+                0.700f);
+            ValidateChapter1BridgeNonBlockingDetail(
+                $"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeUnderBeamNorth",
+                new Vector3(11.40f, 0.080f, 0.080f),
+                new Vector3(12.40f, 0.160f, 0.150f),
+                0.250f,
+                0.360f);
+            ValidateChapter1BridgeNonBlockingDetail(
+                $"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeTie_3",
+                new Vector3(0.080f, 0.030f, 1.15f),
+                new Vector3(0.160f, 0.070f, 1.55f),
+                0.520f,
+                0.590f);
+            ValidateChapter1BridgeNonBlockingDetail(
+                $"{prefix}_CentralPlaza_Chapter1_F1_Cycle151BridgeWearStrip_3",
+                new Vector3(0.50f, 0.010f, 0.040f),
+                new Vector3(0.90f, 0.030f, 0.120f),
+                0.530f,
+                0.575f);
+
+            if (prefix == "Past")
+            {
+                ValidateChapter1BridgeNonBlockingDetail(
+                    "Past_CentralPlaza_Chapter1_F1_Cycle151BridgePastRepairLashingA",
+                    new Vector3(0.040f, 0.020f, 1.00f),
+                    new Vector3(0.080f, 0.060f, 1.40f),
+                    0.570f,
+                    0.630f);
+            }
+            else
+            {
+                ValidateChapter1BridgeNonBlockingDetail(
+                    "Current_CentralPlaza_Chapter1_F1_Cycle151BridgeCurrentMissingSlatShadowA",
+                    new Vector3(0.50f, 0.010f, 0.080f),
+                    new Vector3(0.90f, 0.030f, 0.160f),
+                    0.535f,
+                    0.580f);
+            }
+        }
+
+        private static void ValidateChapter1BridgeNonBlockingDetail(string objectName, Vector3 minScale, Vector3 maxScale, float minLocalY, float maxLocalY)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing authored bridge detail {objectName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored bridge detail {objectName} must stay non-blocking.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            if (renderer == null || renderer.sharedMaterial == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored bridge detail {objectName} must keep a visible material.");
+            }
+
+            ValidateVectorWithinRange($"{objectName} authored bridge detail scale", sceneObject.transform.localScale, minScale, maxScale);
+            var localY = sceneObject.transform.localPosition.y;
+            if (localY < minLocalY || localY > maxLocalY)
+            {
+                throw new InvalidOperationException($"House slice validation failed: authored bridge detail {objectName} local Y {localY:0.000} is outside {minLocalY:0.000}-{maxLocalY:0.000}.");
             }
         }
 

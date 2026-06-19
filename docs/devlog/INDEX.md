@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.123 HD2D waterline shallow pool (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.124 HD2D bridge authored crossing (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 820 files including INDEX.md and README.md.
-- Dated devlog records: 818 files.
+- Root-level Markdown coverage: 821 files including INDEX.md and README.md.
+- Dated devlog records: 819 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-20 | 3 |
+| 2026-06-20 | 4 |
 | 2026-06-19 | 10 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
@@ -54,6 +54,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-20_hd2d_bridge_authored_crossing.md](2026-06-20_hd2d_bridge_authored_crossing.md) | Fast VS / HD2D | HD2D bridge authored crossing |
 | [2026-06-20_hd2d_waterline_shallow_pool.md](2026-06-20_hd2d_waterline_shallow_pool.md) | Fast VS / HD2D | HD2D waterline shallow pool |
 | [2026-06-20_hd2d_waterline_wetland_transition.md](2026-06-20_hd2d_waterline_wetland_transition.md) | Fast VS / HD2D | HD2D waterline wetland transition |
 | [2026-06-20_hd2d_distant_slope_contours.md](2026-06-20_hd2d_distant_slope_contours.md) | Fast VS / HD2D | HD2D distant slope contours |
@@ -820,6 +821,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.124 | 2026-06-20 | Added HD2D bridge authored crossing with non-blocking bridge stringers, ties, posts, braces, current/past repair-state cues, renderer-freeze validation, built-player bridge traversal proof, all-map capture, build, player smoke, and review propagation. |
 | v8.123 | 2026-06-20 | Added HD2D waterline shallow pool with deterministic low-poly shallow-water patches, current/past Ch1Distant shallow-pool materials, validation count/visibility coverage, r1 plateau rejection, r2 guard failure correction, r2b all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.122 | 2026-06-20 | Added HD2D waterline wetland transition with deterministic low-poly wetland mats, current/past Ch1Distant wetland materials, validation count/visibility coverage, r1 subtle-pass rejection, r2 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.121 | 2026-06-20 | Added HD2D distant slope contours with deterministic per-segment terrain face meshes, textured Ch1Distant slope materials, validation count/visibility coverage, r1 plateau rejection, r2 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
