@@ -572,13 +572,16 @@ namespace Anemora.EditorTools
         private const int WaterlineBreakupReedShadowCount = 6;
         private const int WaterlineBreakupShallowRunCount = 5;
         private const int WaterlineBreakupWetlandMatCount = 10;
+        private const int WaterlineBreakupShallowPoolCount = 12;
         private const int WaterlineBreakupMeshCount =
             WaterlineBreakupBankShelfCount +
             WaterlineBreakupReedShadowCount +
             WaterlineBreakupShallowRunCount +
-            WaterlineBreakupWetlandMatCount;
+            WaterlineBreakupWetlandMatCount +
+            WaterlineBreakupShallowPoolCount;
         private const int WaterlineBreakupVisibleMinimum = 6;
         private const int WaterlineBreakupWetlandMatVisibleMinimum = 4;
+        private const int WaterlineBreakupShallowPoolVisibleMinimum = 4;
         private const int NearfieldDressingTerracePatchCount = 6;
         private const int NearfieldDressingPathShardCount = 5;
         private const int NearfieldDressingFrontCurbCount = 4;
@@ -24969,6 +24972,73 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
+        private static Mesh CreateWaterlineBreakupShallowPoolMesh(string meshName, int seed, float width, float depth, float relief)
+        {
+            const int columnCount = 13;
+            const int rowCount = 5;
+            var vertices = new Vector3[columnCount * rowCount];
+            var uvs = new Vector2[vertices.Length];
+            var diagonalDrift = DistantPanoramaVistaSigned(seed + 43, 0.14f);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                var v = row / (float)(rowCount - 1);
+                var rowBulge = Mathf.Sin(v * Mathf.PI);
+                var rowWidth = width * Mathf.Lerp(0.38f, 1.05f, rowBulge);
+                var z = Mathf.Lerp(-depth * 0.50f, depth * 0.54f, v) +
+                    DistantPanoramaVistaSigned(seed + row * 37 + 5, depth * 0.045f);
+                var rowDrift = (v - 0.5f) * diagonalDrift * width +
+                    DistantPanoramaVistaSigned(seed + row * 41 + 11, width * 0.030f);
+
+                for (var column = 0; column < columnCount; column++)
+                {
+                    var u = column / (float)(columnCount - 1);
+                    var edgeFalloff = Mathf.Sin(u * Mathf.PI) * rowBulge;
+                    var glintA = Mathf.Clamp01(1f - Mathf.Abs(u - 0.32f) * 7.0f) * Mathf.Clamp01(1f - Mathf.Abs(v - 0.42f) * 4.2f);
+                    var glintB = Mathf.Clamp01(1f - Mathf.Abs(u - 0.68f) * 6.4f) * Mathf.Clamp01(1f - Mathf.Abs(v - 0.58f) * 4.0f);
+                    var x = Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u) +
+                        rowDrift +
+                        DistantPanoramaVistaSigned(seed + row * 53 + column * 17, width * 0.025f) * edgeFalloff;
+                    var y = 0.006f +
+                        relief * (0.20f + edgeFalloff * 0.30f + glintA * 0.24f + glintB * 0.18f) +
+                        DistantPanoramaVistaSigned(seed + row * 59 + column * 23, relief * 0.18f) * edgeFalloff;
+
+                    if (row == 0 || row == rowCount - 1 || column == 0 || column == columnCount - 1)
+                    {
+                        y *= 0.36f;
+                    }
+
+                    var vertexIndex = row * columnCount + column;
+                    vertices[vertexIndex] = new Vector3(x, y, z);
+                    uvs[vertexIndex] = new Vector2(u * 1.8f, v * 0.9f);
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 12);
+            for (var row = 0; row < rowCount - 1; row++)
+            {
+                for (var column = 0; column < columnCount - 1; column++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static Mesh CreateMidDistanceLandformClosureLowBankMesh(string meshName, int seed, float width, float height, float thickness)
         {
             const int columnCount = 14;
@@ -25768,6 +25838,7 @@ namespace Anemora.EditorTools
             var reedMaterial = EnsureWaterlineBreakupReedMaterial(past);
             var shallowMaterial = EnsureWaterlineBreakupShallowMaterial(past);
             var wetlandMaterial = EnsureWaterlineBreakupWetlandMaterial(past);
+            var shallowPoolMaterial = EnsureWaterlineBreakupShallowPoolMaterial(past);
             var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.waterline_breakup";
 
             for (var index = 0; index < WaterlineBreakupBankShelfCount; index++)
@@ -25893,6 +25964,38 @@ namespace Anemora.EditorTools
                     wetlandMaterial,
                     TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
                     $"{scope}.wetland_mat.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < WaterlineBreakupShallowPoolCount; index++)
+            {
+                var seed = 47629 + (int)area * 769 + (past ? 2957 : 0) + index * 211;
+                var t = index / (float)(WaterlineBreakupShallowPoolCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-69.0f, 71.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 3.25f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radiusBand = (index % 3) == 0 ? 21.4f : ((index % 3) == 1 ? 27.0f : 33.2f);
+                var radius = (radiusBand + DistantPanoramaVistaSigned(seed + 11, 2.25f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 6.10f * widthScale) +
+                    new Vector3(0f, 0.172f + DistantPanoramaVistaHash01(seed + 23) * 0.060f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_WaterlineBreakup_ShallowPool_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateWaterlineBreakupShallowPoolMesh(
+                        $"{prefix}_{areaToken}_WaterlineBreakup_ShallowPool_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(18.0f, 34.0f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(4.80f, 10.40f, DistantPanoramaVistaHash01(seed + 31)) * radiusScale,
+                        Mathf.Lerp(0.050f, 0.125f, DistantPanoramaVistaHash01(seed + 37))),
+                    shallowPoolMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.shallow_pool.s{index + 1:00}");
             }
 
             ApplyWaterlineBreakupRendererPolicy(parent);
@@ -32519,6 +32622,28 @@ namespace Anemora.EditorTools
                     PixelPattern.Grass,
                     0.09f,
                     new Vector2(3.4f, 2.6f));
+        }
+
+        private static Material EnsureWaterlineBreakupShallowPoolMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastWaterlineBreakupShallowPool" : "Ch1Distant_CurrentWaterlineBreakupShallowPool";
+            return past
+                ? EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(86, 92, 58, 255),
+                    new Color32(124, 125, 74, 255),
+                    new Color32(54, 60, 42, 255),
+                    PixelPattern.Water,
+                    0.20f,
+                    new Vector2(5.8f, 1.5f))
+                : EnsureWaterlineBreakupMaterial(
+                    id,
+                    new Color32(54, 112, 128, 255),
+                    new Color32(92, 150, 152, 255),
+                    new Color32(30, 70, 90, 255),
+                    PixelPattern.Water,
+                    0.20f,
+                    new Vector2(5.8f, 1.5f));
         }
 
         private static Material EnsureWaterlineBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
@@ -58138,6 +58263,8 @@ namespace Anemora.EditorTools
             ValidateWaterlineBreakupTexture("Ch1Distant_PastWaterlineBreakupShallow", 0.036f);
             ValidateWaterlineBreakupTexture("Ch1Distant_CurrentWaterlineBreakupWetland", 0.036f);
             ValidateWaterlineBreakupTexture("Ch1Distant_PastWaterlineBreakupWetland", 0.036f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_CurrentWaterlineBreakupShallowPool", 0.036f);
+            ValidateWaterlineBreakupTexture("Ch1Distant_PastWaterlineBreakupShallowPool", 0.036f);
 
             for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
             {
@@ -58202,6 +58329,7 @@ namespace Anemora.EditorTools
             var reedCount = 0;
             var shallowCount = 0;
             var wetlandCount = 0;
+            var shallowPoolCount = 0;
             foreach (var filter in filters)
             {
                 if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 28 || filter.sharedMesh.triangles.Length < 72)
@@ -58272,14 +58400,19 @@ namespace Anemora.EditorTools
                 {
                     wetlandCount++;
                 }
+                else if (filter.gameObject.name.Contains("ShallowPool", StringComparison.Ordinal))
+                {
+                    shallowPoolCount++;
+                }
             }
 
             if (bankCount < WaterlineBreakupBankShelfCount ||
                 reedCount < WaterlineBreakupReedShadowCount ||
                 shallowCount < WaterlineBreakupShallowRunCount ||
-                wetlandCount < WaterlineBreakupWetlandMatCount)
+                wetlandCount < WaterlineBreakupWetlandMatCount ||
+                shallowPoolCount < WaterlineBreakupShallowPoolCount)
             {
-                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine bank shelves, reed shadows, shallow runs, and wetland mats; bank={bankCount}, reed={reedCount}, shallow={shallowCount}, wetland={wetlandCount}.");
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine bank shelves, reed shadows, shallow runs, wetland mats, and shallow pools; bank={bankCount}, reed={reedCount}, shallow={shallowCount}, wetland={wetlandCount}, shallowPool={shallowPoolCount}.");
             }
         }
 
@@ -58302,6 +58435,7 @@ namespace Anemora.EditorTools
             var reedVisibleCount = 0;
             var shallowVisibleCount = 0;
             var wetlandVisibleCount = 0;
+            var shallowPoolVisibleCount = 0;
             foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
                 if (renderer == null || !renderer.enabled)
@@ -58331,15 +58465,20 @@ namespace Anemora.EditorTools
                 {
                     wetlandVisibleCount++;
                 }
+                else if (renderer.gameObject.name.Contains("ShallowPool", StringComparison.Ordinal))
+                {
+                    shallowPoolVisibleCount++;
+                }
             }
 
             if (visibleCount < WaterlineBreakupVisibleMinimum ||
                 bankVisibleCount < 2 ||
                 reedVisibleCount < 2 ||
                 shallowVisibleCount < 1 ||
-                wetlandVisibleCount < WaterlineBreakupWetlandMatVisibleMinimum)
+                wetlandVisibleCount < WaterlineBreakupWetlandMatVisibleMinimum ||
+                shallowPoolVisibleCount < WaterlineBreakupShallowPoolVisibleMinimum)
             {
-                throw new InvalidOperationException($"House slice validation failed: waterline breakup {prefix} {area} must visibly interrupt the horizontal water ribbon, visible={visibleCount}, bank={bankVisibleCount}, reed={reedVisibleCount}, shallow={shallowVisibleCount}, wetland={wetlandVisibleCount}.");
+                throw new InvalidOperationException($"House slice validation failed: waterline breakup {prefix} {area} must visibly interrupt the horizontal water ribbon, visible={visibleCount}, bank={bankVisibleCount}, reed={reedVisibleCount}, shallow={shallowVisibleCount}, wetland={wetlandVisibleCount}, shallowPool={shallowPoolVisibleCount}.");
             }
         }
 
