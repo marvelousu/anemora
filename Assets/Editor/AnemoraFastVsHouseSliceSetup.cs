@@ -513,6 +513,7 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaNaturalCanopyFleckCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalCanopyShadowCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalBranchTraceCount = DistantPanoramaVistaSegmentCount;
+        private const int DistantPanoramaVistaForestEdgeOverlapCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalUnderstoryCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalConiferSpireCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaRidgeStrataMeshCount = DistantPanoramaVistaSegmentCount;
@@ -525,6 +526,7 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaNaturalCanopyFleckVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalCanopyShadowVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalBranchTraceVisibleMinimum = 3;
+        private const int DistantPanoramaVistaForestEdgeOverlapVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalUnderstoryVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalConiferSpireVisibleMinimum = 3;
         private const int DistantPanoramaVistaLandformFacetVisibleMinimum = 4;
@@ -27694,6 +27696,7 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaMidgroundValleyBreaks(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaForegroundCoppices(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaNaturalTreeStands(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaForestEdgeOverlaps(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaNaturalConiferSpires(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaFoothillForest(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaAreaLandmarks(parent, prefix, past, area, areaToken, center);
@@ -28128,6 +28131,51 @@ namespace Anemora.EditorTools
                         standWidth,
                         standHeight,
                         standDepth,
+                        past));
+            }
+        }
+
+        private static void CreateDistantPanoramaVistaForestEdgeOverlaps(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            var radius = DistantPanoramaVistaForegroundCoppiceRadius + 0.78f;
+            var material = EnsureDistantPanoramaVistaForestEdgeOverlapMaterial(past);
+            var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.82f;
+
+            for (var segment = 0; segment < DistantPanoramaVistaForestEdgeOverlapCount; segment++)
+            {
+                var seed = 3779 + (int)area * 239 + (past ? 1049 : 0) + segment * 47;
+                var angle = ((segment + 0.5f + (segment % 5 - 2) * 0.020f) / DistantPanoramaVistaSegmentCount) * Mathf.PI * 2f;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var localPosition = center +
+                    radial * (radius + DistantPanoramaVistaSigned(seed + 5, 0.42f)) +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, 3.25f) +
+                    new Vector3(0f, 0.52f + DistantPanoramaVistaHash01(seed + 19) * 0.28f, 0f);
+                var faceDirection = center - localPosition;
+                faceDirection.y = 0f;
+                if (faceDirection.sqrMagnitude < 0.01f)
+                {
+                    faceDirection = -radial;
+                }
+
+                var edgeWidth = chordWidth * Mathf.Lerp(1.06f, 1.76f, DistantPanoramaVistaHash01(seed + 23));
+                var edgeHeight = Mathf.Lerp(10.8f, 19.6f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.06f : 1f);
+                var edgeDepth = Mathf.Lerp(4.10f, 7.60f, DistantPanoramaVistaHash01(seed + 37));
+
+                CreateDistantPanoramaVistaNaturalTreeStandObject(
+                    $"{prefix}_{areaToken}_DistantVista_ForestEdgeOverlap_S{segment + 1:00}",
+                    parent,
+                    localPosition + faceDirection.normalized * Mathf.Lerp(0.16f, 0.42f, DistantPanoramaVistaHash01(seed + 41)),
+                    Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
+                    past,
+                    material,
+                    $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.forest_edge_overlap.s{segment + 1:00}",
+                    CreateDistantPanoramaVistaForestEdgeOverlapMesh(
+                        $"{prefix}_{areaToken}_DistantVista_ForestEdgeOverlap_S{segment + 1:00}_Mesh",
+                        seed,
+                        edgeWidth,
+                        edgeHeight,
+                        edgeDepth,
                         past));
             }
         }
@@ -30788,6 +30836,88 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
+        private static Mesh CreateDistantPanoramaVistaForestEdgeOverlapMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
+        {
+            const int crownCount = 12;
+            var vertices = new List<Vector3>(crownCount * 42);
+            var uvs = new List<Vector2>(crownCount * 42);
+            var triangles = new List<int>(crownCount * 210);
+            var spacing = width / crownCount;
+
+            for (var crown = 0; crown < crownCount; crown++)
+            {
+                var crownSeed = seed + crown * 151;
+                var u = (crown + 0.5f) / crownCount;
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var rowStep = crown % 3;
+                var x = Mathf.Lerp(-width * 0.50f, width * 0.50f, u) +
+                    DistantPanoramaVistaSigned(crownSeed + 5, spacing * 0.34f) * edgeFalloff;
+                var z = -depth * Mathf.Lerp(0.10f, 0.62f, rowStep / 2f) +
+                    DistantPanoramaVistaSigned(crownSeed + 11, depth * 0.22f);
+                var crownWidth = spacing * Mathf.Lerp(1.55f, 2.95f, DistantPanoramaVistaHash01(crownSeed + 17));
+                var crownDepth = depth * Mathf.Lerp(0.42f, 0.92f, DistantPanoramaVistaHash01(crownSeed + 23));
+                var crownHeight = maxHeight * Mathf.Lerp(0.56f, 0.98f, DistantPanoramaVistaHash01(crownSeed + 29)) * (past ? 1.04f : 1f);
+                var baseHeight = maxHeight * Mathf.Lerp(0.08f, 0.32f, DistantPanoramaVistaHash01(crownSeed + 31));
+                var baseCenter = new Vector3(x, baseHeight, z);
+
+                AddDistantPanoramaVistaCanopyLobe(
+                    vertices,
+                    uvs,
+                    triangles,
+                    baseCenter,
+                    crownWidth,
+                    crownDepth,
+                    crownHeight,
+                    crownSeed,
+                    true);
+
+                if (crown > 0 && crown < crownCount - 1)
+                {
+                    AddDistantPanoramaVistaCanopyLobe(
+                        vertices,
+                        uvs,
+                        triangles,
+                        baseCenter + new Vector3(
+                            DistantPanoramaVistaSigned(crownSeed + 37, crownWidth * 0.24f),
+                            crownHeight * Mathf.Lerp(0.12f, 0.28f, DistantPanoramaVistaHash01(crownSeed + 41)),
+                            -crownDepth * Mathf.Lerp(0.18f, 0.46f, DistantPanoramaVistaHash01(crownSeed + 43))),
+                        crownWidth * Mathf.Lerp(0.40f, 0.70f, DistantPanoramaVistaHash01(crownSeed + 47)),
+                        crownDepth * Mathf.Lerp(0.50f, 0.82f, DistantPanoramaVistaHash01(crownSeed + 53)),
+                        crownHeight * Mathf.Lerp(0.36f, 0.62f, DistantPanoramaVistaHash01(crownSeed + 59)),
+                        crownSeed + 61,
+                        true);
+                }
+
+                if ((crown & 1) == 0)
+                {
+                    AddDistantPanoramaVistaLeafFringe(
+                        vertices,
+                        uvs,
+                        triangles,
+                        baseCenter + new Vector3(
+                            DistantPanoramaVistaSigned(crownSeed + 67, crownWidth * 0.16f),
+                            crownHeight * Mathf.Lerp(0.38f, 0.64f, DistantPanoramaVistaHash01(crownSeed + 71)),
+                            -crownDepth * Mathf.Lerp(0.10f, 0.36f, DistantPanoramaVistaHash01(crownSeed + 73))),
+                        spacing * Mathf.Lerp(1.12f, 1.68f, DistantPanoramaVistaHash01(crownSeed + 79)),
+                        crownHeight,
+                        crownDepth,
+                        crownSeed + 83,
+                        past);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices.ToArray(),
+                uv = uvs.ToArray(),
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static Mesh CreateDistantPanoramaVistaNaturalSpeciesClusterMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past, bool coniferCluster)
         {
             const int groupCount = 11;
@@ -31889,6 +32019,42 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.060f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaForestEdgeOverlapMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastForestEdgeOverlap" : "Ch1Distant_CurrentForestEdgeOverlap";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(52, 58, 31, 255),
+                    new Color32(108, 104, 56, 255),
+                    new Color32(27, 33, 19, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.8f, 5.4f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(12, 57, 32, 255),
+                    new Color32(78, 118, 58, 255),
+                    new Color32(5, 23, 14, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.8f, 5.4f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.045f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -59872,6 +60038,7 @@ namespace Anemora.EditorTools
                 DistantPanoramaVistaNaturalCanopyFleckCount +
                 DistantPanoramaVistaNaturalCanopyShadowCount +
                 DistantPanoramaVistaNaturalBranchTraceCount +
+                DistantPanoramaVistaForestEdgeOverlapCount +
                 DistantPanoramaVistaNaturalUnderstoryCount +
                 DistantPanoramaVistaNaturalConiferSpireCount +
                 DistantPanoramaVistaRidgeFacetMeshCount +
@@ -59941,6 +60108,7 @@ namespace Anemora.EditorTools
             var naturalCanopyShadowCount = 0;
             var naturalTreeTrunkCount = 0;
             var naturalBranchTraceCount = 0;
+            var forestEdgeOverlapCount = 0;
             var naturalUnderstoryCount = 0;
             var naturalConiferSpireCount = 0;
             foreach (var filter in filters)
@@ -59982,6 +60150,10 @@ namespace Anemora.EditorTools
                 {
                     naturalBranchTraceCount++;
                 }
+                else if (filter.gameObject.name.Contains("DistantVista_ForestEdgeOverlap", StringComparison.Ordinal))
+                {
+                    forestEdgeOverlapCount++;
+                }
                 else if (filter.gameObject.name.Contains("DistantVista_NaturalUnderstory", StringComparison.Ordinal))
                 {
                     naturalUnderstoryCount++;
@@ -60000,10 +60172,11 @@ namespace Anemora.EditorTools
                 naturalCanopyShadowCount < DistantPanoramaVistaNaturalCanopyShadowCount ||
                 naturalTreeTrunkCount < DistantPanoramaVistaNaturalTreeStandCount ||
                 naturalBranchTraceCount < DistantPanoramaVistaNaturalBranchTraceCount ||
+                forestEdgeOverlapCount < DistantPanoramaVistaForestEdgeOverlapCount ||
                 naturalUnderstoryCount < DistantPanoramaVistaNaturalUnderstoryCount ||
                 naturalConiferSpireCount < DistantPanoramaVistaNaturalConiferSpireCount)
             {
-                throw new InvalidOperationException($"House slice validation failed: {rootName} needs natural tree stand canopy/volume/species/accent/fleck/shadow/trunk/branch/understory/conifer layers, found canopy={naturalTreeStandCount}, volumes={naturalCanopyVolumeCount}, species={naturalSpeciesClusterCount}, accents={naturalCanopyAccentCount}, flecks={naturalCanopyFleckCount}, shadows={naturalCanopyShadowCount}, trunks={naturalTreeTrunkCount}, branches={naturalBranchTraceCount}, understory={naturalUnderstoryCount}, conifers={naturalConiferSpireCount}.");
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs natural tree stand canopy/volume/species/accent/fleck/shadow/trunk/branch/forest-edge/understory/conifer layers, found canopy={naturalTreeStandCount}, volumes={naturalCanopyVolumeCount}, species={naturalSpeciesClusterCount}, accents={naturalCanopyAccentCount}, flecks={naturalCanopyFleckCount}, shadows={naturalCanopyShadowCount}, trunks={naturalTreeTrunkCount}, branches={naturalBranchTraceCount}, forestEdge={forestEdgeOverlapCount}, understory={naturalUnderstoryCount}, conifers={naturalConiferSpireCount}.");
             }
 
             var areaLandmarkCount = 0;
@@ -60255,6 +60428,7 @@ namespace Anemora.EditorTools
             var naturalCanopyFleckVisibleCount = 0;
             var naturalCanopyShadowVisibleCount = 0;
             var naturalBranchTraceVisibleCount = 0;
+            var forestEdgeOverlapVisibleCount = 0;
             var naturalUnderstoryVisibleCount = 0;
             var naturalConiferSpireVisibleCount = 0;
             var landformFacetVisibleCount = 0;
@@ -60292,6 +60466,7 @@ namespace Anemora.EditorTools
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyFleck", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyShadow", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalBranchTrace", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_ForestEdgeOverlap", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalUnderstory", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalConiferSpire", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_RidgeStrata", StringComparison.Ordinal) ||
@@ -60334,6 +60509,11 @@ namespace Anemora.EditorTools
                     if (renderer.gameObject.name.Contains("DistantVista_NaturalBranchTrace", StringComparison.Ordinal))
                     {
                         naturalBranchTraceVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_ForestEdgeOverlap", StringComparison.Ordinal))
+                    {
+                        forestEdgeOverlapVisibleCount++;
                     }
 
                     if (renderer.gameObject.name.Contains("DistantVista_NaturalUnderstory", StringComparison.Ordinal))
@@ -60416,6 +60596,11 @@ namespace Anemora.EditorTools
             if (naturalBranchTraceVisibleCount < DistantPanoramaVistaNaturalBranchTraceVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} branch traces must be visible enough to make the forest read as individual trees, visible={naturalBranchTraceVisibleCount}.");
+            }
+
+            if (forestEdgeOverlapVisibleCount < DistantPanoramaVistaForestEdgeOverlapVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} forest-edge overlaps must be visible enough to turn the forest band into layered woodland, visible={forestEdgeOverlapVisibleCount}.");
             }
 
             if (naturalUnderstoryVisibleCount < DistantPanoramaVistaNaturalUnderstoryVisibleMinimum)
