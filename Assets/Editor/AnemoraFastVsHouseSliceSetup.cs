@@ -30847,8 +30847,8 @@ namespace Anemora.EditorTools
                 ? $"Ch1Distant_Past{areaToken}{bandToken}"
                 : $"Ch1Distant_Current{areaToken}{bandToken}";
             var tiling = band == 0
-                ? new Vector2(1.80f, 1.10f)
-                : (band == 1 ? new Vector2(1.50f, 0.95f) : new Vector2(1.20f, 0.82f));
+                ? new Vector2(1.32f, 0.78f)
+                : (band == 1 ? new Vector2(1.50f, 0.95f) : new Vector2(0.98f, 0.66f));
             Material material;
             if (past)
             {
@@ -30879,7 +30879,7 @@ namespace Anemora.EditorTools
                             new Color32(50, 44, 36, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.45f, 1.05f),
+                            new Vector2(1.08f, 0.76f),
                             FastVsHd2dMaterialRole.SurfaceLit));
             }
             else
@@ -30911,7 +30911,7 @@ namespace Anemora.EditorTools
                             new Color32(34, 42, 50, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.45f, 1.05f),
+                            new Vector2(1.08f, 0.76f),
                             FastVsHd2dMaterialRole.SurfaceLit));
             }
 
@@ -31378,7 +31378,7 @@ namespace Anemora.EditorTools
                     new Color32(24, 30, 20, 255),
                     PixelPattern.DistantLandform,
                     true,
-                    new Vector2(2.6f, 1.6f),
+                    new Vector2(1.72f, 1.02f),
                     FastVsHd2dMaterialRole.SurfaceLit)
                 : PixelMaterial(
                     id,
@@ -31387,7 +31387,7 @@ namespace Anemora.EditorTools
                     new Color32(12, 28, 24, 255),
                     PixelPattern.DistantLandform,
                     true,
-                    new Vector2(2.6f, 1.6f),
+                    new Vector2(1.72f, 1.02f),
                     FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
@@ -31414,7 +31414,7 @@ namespace Anemora.EditorTools
                     new Color32(42, 36, 24, 255),
                     PixelPattern.DistantLandform,
                     true,
-                    new Vector2(2.8f, 1.5f),
+                    new Vector2(1.86f, 0.98f),
                     FastVsHd2dMaterialRole.SurfaceLit)
                 : PixelMaterial(
                     id,
@@ -31453,7 +31453,7 @@ namespace Anemora.EditorTools
                         new Color32(56, 46, 34, 255),
                         PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.55f, 1.08f),
+                        new Vector2(1.10f, 0.78f),
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
@@ -31472,7 +31472,7 @@ namespace Anemora.EditorTools
                         new Color32(28, 42, 56, 255),
                         PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.55f, 1.08f),
+                        new Vector2(1.10f, 0.78f),
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
@@ -31520,7 +31520,7 @@ namespace Anemora.EditorTools
                         new Color32(48, 40, 30, 255),
                         PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.45f, 1.05f),
+                        new Vector2(1.08f, 0.76f),
                         FastVsHd2dMaterialRole.SurfaceLit))
                 : (detailBand == 0
                     ? PixelMaterial(
@@ -31539,7 +31539,7 @@ namespace Anemora.EditorTools
                         new Color32(26, 42, 58, 255),
                         PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.45f, 1.05f),
+                        new Vector2(1.08f, 0.76f),
                         FastVsHd2dMaterialRole.SurfaceLit));
             if (material.HasProperty("_Smoothness"))
             {
@@ -31631,7 +31631,7 @@ namespace Anemora.EditorTools
                             new Color32(40, 38, 28, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(2.30f, 1.40f),
+                            new Vector2(1.48f, 0.92f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
@@ -31640,7 +31640,7 @@ namespace Anemora.EditorTools
                             new Color32(18, 34, 34, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(2.30f, 1.40f),
+                            new Vector2(1.48f, 0.92f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 2:
@@ -31652,7 +31652,7 @@ namespace Anemora.EditorTools
                             new Color32(58, 48, 34, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.42f, 1.02f),
+                            new Vector2(1.04f, 0.74f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
@@ -31661,7 +31661,7 @@ namespace Anemora.EditorTools
                             new Color32(30, 44, 62, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.42f, 1.02f),
+                            new Vector2(1.04f, 0.74f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 3:
@@ -105464,20 +105464,25 @@ namespace Anemora.EditorTools
         private static Texture2D EnsurePixelTexture(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern)
         {
             var path = $"{TextureDirectory}/FastVS_House_{id}.asset";
+            var textureSize = IsDistantPixelPattern(pattern) ? 64 : 32;
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (texture == null)
             {
-                texture = new Texture2D(32, 32, TextureFormat.RGBA32, false);
+                texture = new Texture2D(textureSize, textureSize, TextureFormat.RGBA32, false);
                 AssetDatabase.CreateAsset(texture, path);
+            }
+            else if (texture.width != textureSize || texture.height != textureSize)
+            {
+                texture.Reinitialize(textureSize, textureSize);
             }
 
             texture.name = $"FastVS_House_{id}";
             texture.filterMode = FilterMode.Point;
             texture.wrapMode = TextureWrapMode.Repeat;
 
-            for (var y = 0; y < 32; y++)
+            for (var y = 0; y < textureSize; y++)
             {
-                for (var x = 0; x < 32; x++)
+                for (var x = 0; x < textureSize; x++)
                 {
                     texture.SetPixel(x, y, ResolvePixel(pattern, x, y, a, b, c));
                 }
@@ -105486,6 +105491,14 @@ namespace Anemora.EditorTools
             texture.Apply();
             EditorUtility.SetDirty(texture);
             return texture;
+        }
+
+        private static bool IsDistantPixelPattern(PixelPattern pattern)
+        {
+            return pattern == PixelPattern.DistantLandform ||
+                pattern == PixelPattern.DistantCanopy ||
+                pattern == PixelPattern.DistantRockStrata ||
+                pattern == PixelPattern.DistantNeedleCanopy;
         }
 
         private static Color32 ResolvePixel(PixelPattern pattern, int x, int y, Color32 a, Color32 b, Color32 c)
@@ -105537,11 +105550,12 @@ namespace Anemora.EditorTools
                 case PixelPattern.Water:
                     return (x + y * 2) % 10 < 2 ? b : ((x * 3 + y) % 17 < 3 ? c : a);
                 case PixelPattern.DistantLandform:
-                    var rowWarp = y + (x * 3 + (x / 5) * 7 + (y / 6) * 5) % 13;
-                    var contour = rowWarp % 23 == 0 || (rowWarp + x / 9 + y / 11) % 41 == 0;
-                    var rockShadow = (x * 11 + y * 17 + (x / 4) * 7 + (y / 9) * 5) % 53 < 5;
-                    var ridgedHighlight = (x * 5 + y * 11 + (y / 4) * 7 + (x / 9) * 3) % 67 < 4;
-                    var brokenCanopy = (x * 17 + y * 3 + (x / 6) * 5 + (y / 7) * 11) % 47 < 4;
+                    var landformMacro = (x / 13) * 17 + (y / 11) * 23 + ((x + y) / 19) * 7;
+                    var rowWarp = y + (x * 2 + (x / 9) * 5 + (y / 13) * 7 + landformMacro) % 19;
+                    var contour = rowWarp % 31 == 0 || (rowWarp + x / 17 + y / 23 + landformMacro) % 53 == 0;
+                    var rockShadow = (x * 11 + y * 17 + (x / 8) * 7 + (y / 15) * 5 + landformMacro) % 89 < 5;
+                    var ridgedHighlight = (x * 5 + y * 11 + (y / 9) * 7 + (x / 15) * 3 + landformMacro) % 101 < 5;
+                    var brokenCanopy = (x * 17 + y * 3 + (x / 11) * 5 + (y / 13) * 11 + landformMacro) % 83 < 5;
                     if (contour)
                     {
                         return c;
@@ -105569,10 +105583,11 @@ namespace Anemora.EditorTools
 
                     return canopyClump < 6 ? b : a;
                 case PixelPattern.DistantRockStrata:
-                    var strataWarp = y + ((x * 2 + (x / 7) * 5 + (y / 5) * 3) % 11) - 5;
-                    var bedding = strataWarp % 9 == 0 || (strataWarp + x / 6) % 17 == 0;
-                    var fracture = (x * 13 + y * 7 + (x / 4) * 19) % 61 < 5;
-                    var scree = (x * 5 + y * 23 + (y / 3) * 11) % 73 < 6;
+                    var strataMacro = (x / 17) * 13 + (y / 9) * 19 + ((x + y) / 23) * 5;
+                    var strataWarp = y + ((x * 2 + (x / 11) * 5 + (y / 9) * 3 + strataMacro) % 17) - 8;
+                    var bedding = strataWarp % 13 == 0 || (strataWarp + x / 10 + strataMacro) % 29 == 0;
+                    var fracture = (x * 13 + y * 7 + (x / 7) * 19 + strataMacro) % 97 < 5;
+                    var scree = (x * 5 + y * 23 + (y / 6) * 11 + strataMacro) % 109 < 6;
                     if (bedding || fracture)
                     {
                         return c;
