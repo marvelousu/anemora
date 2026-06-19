@@ -20035,6 +20035,24 @@ namespace Anemora.EditorTools
                 trunkMaterial,
                 $"{objectPrefix}.branch_fork_b",
                 CreateAuthoredVegetationBranchForkMesh($"{objectPrefix}_BranchForkB_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectPrefix}.branch_fork_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_CanopyRibA",
+                root,
+                trunkCenter + new Vector3(-0.10f, 1.06f, 0.08f),
+                new Vector3(0.18f, 0.34f, 0.16f),
+                Quaternion.Euler(AuthoredVegetationSigned(objectPrefix, 45, 6f), yaw - 52f, -24f + AuthoredVegetationSigned(objectPrefix, 47, 5f)),
+                trunkMaterial,
+                $"{objectPrefix}.canopy_rib_a",
+                CreateAuthoredVegetationBranchForkMesh($"{objectPrefix}_CanopyRibA_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectPrefix}.canopy_rib_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_CanopyRibB",
+                root,
+                trunkCenter + new Vector3(0.12f, 1.14f, -0.05f),
+                new Vector3(0.16f, 0.30f, 0.14f),
+                Quaternion.Euler(AuthoredVegetationSigned(objectPrefix, 49, 6f), yaw + 58f, 22f + AuthoredVegetationSigned(objectPrefix, 51, 5f)),
+                trunkMaterial,
+                $"{objectPrefix}.canopy_rib_b",
+                CreateAuthoredVegetationBranchForkMesh($"{objectPrefix}_CanopyRibB_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectPrefix}.canopy_rib_b"));
             CreateAuthoredVegetationMesh(
                 $"{objectPrefix}_Crown",
                 root,
@@ -20245,8 +20263,8 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateAuthoredVegetationCanopyMesh(string meshName, string seedKey, float upperRadius, float lowerRadius)
         {
-            const int sideCount = 12;
-            const int ringCount = 5;
+            const int sideCount = 16;
+            const int ringCount = 6;
             var vertices = new Vector3[sideCount * ringCount + 2];
             var uvs = new Vector2[vertices.Length];
             var topIndex = sideCount * ringCount;
@@ -20255,34 +20273,38 @@ namespace Anemora.EditorTools
             for (var ring = 0; ring < ringCount; ring++)
             {
                 var t = ring / (float)(ringCount - 1);
-                var y = Mathf.Lerp(-0.42f, 0.42f, t) + AuthoredVegetationSigned(seedKey, 53 + ring, 0.020f);
+                var y = Mathf.Lerp(-0.46f, 0.46f, t) + AuthoredVegetationSigned(seedKey, 53 + ring, 0.026f);
                 var baseRadius = ring == 0
-                    ? lowerRadius * 0.76f
+                    ? lowerRadius * 0.64f
                     : (ring == 1
-                        ? lowerRadius * 1.22f
+                        ? lowerRadius * 1.26f
                         : (ring == 2
-                            ? Mathf.Lerp(lowerRadius, upperRadius, 0.52f) * 1.12f
-                            : (ring == 3 ? upperRadius * 0.92f : upperRadius * 0.48f)));
+                            ? Mathf.Lerp(lowerRadius, upperRadius, 0.48f) * 1.20f
+                            : (ring == 3
+                                ? upperRadius * 1.02f
+                                : (ring == 4 ? upperRadius * 0.72f : upperRadius * 0.34f))));
                 var angleOffset = AuthoredVegetationSigned(seedKey, 61 + ring, 0.14f);
                 for (var i = 0; i < sideCount; i++)
                 {
                     var angle = (i / (float)sideCount) * Mathf.PI * 2f + angleOffset;
-                    var lobe = Mathf.Sin(angle * 3f + AuthoredVegetationSigned(seedKey, 67 + ring, 0.35f)) * 0.045f;
-                    var jitter = 0.86f + AuthoredVegetationHash01(seedKey, 71 + ring * 23 + i) * 0.30f + lobe;
+                    var lobe = Mathf.Sin(angle * 3f + AuthoredVegetationSigned(seedKey, 67 + ring, 0.35f)) * 0.070f;
+                    var fineLobe = Mathf.Sin(angle * 7f + AuthoredVegetationSigned(seedKey, 73 + ring, 0.45f)) * 0.026f;
+                    var jitter = 0.80f + AuthoredVegetationHash01(seedKey, 71 + ring * 23 + i) * 0.34f + lobe + fineLobe;
+                    var skirtSag = ring <= 1 ? AuthoredVegetationHash01(seedKey, 117 + ring * 29 + i) * 0.070f : 0f;
                     var centerDrift = new Vector2(
-                        AuthoredVegetationSigned(seedKey, 101 + ring, 0.035f) * t,
-                        AuthoredVegetationSigned(seedKey, 107 + ring, 0.035f) * t);
+                        AuthoredVegetationSigned(seedKey, 101 + ring, 0.048f) * t,
+                        AuthoredVegetationSigned(seedKey, 107 + ring, 0.048f) * t);
                     var index = ring * sideCount + i;
                     vertices[index] = new Vector3(
                         Mathf.Cos(angle) * baseRadius * jitter + centerDrift.x,
-                        y,
+                        y - skirtSag,
                         Mathf.Sin(angle) * baseRadius * jitter + centerDrift.y);
                     uvs[index] = new Vector2(i / (float)sideCount, t);
                 }
             }
 
-            vertices[topIndex] = new Vector3(AuthoredVegetationSigned(seedKey, 83, 0.035f), 0.52f, AuthoredVegetationSigned(seedKey, 89, 0.035f));
-            vertices[bottomIndex] = new Vector3(AuthoredVegetationSigned(seedKey, 97, 0.025f), -0.50f, AuthoredVegetationSigned(seedKey, 101, 0.025f));
+            vertices[topIndex] = new Vector3(AuthoredVegetationSigned(seedKey, 83, 0.044f), 0.56f, AuthoredVegetationSigned(seedKey, 89, 0.044f));
+            vertices[bottomIndex] = new Vector3(AuthoredVegetationSigned(seedKey, 97, 0.032f), -0.55f, AuthoredVegetationSigned(seedKey, 101, 0.032f));
             uvs[topIndex] = new Vector2(0.5f, 1f);
             uvs[bottomIndex] = new Vector2(0.5f, 0f);
 
@@ -20358,37 +20380,58 @@ namespace Anemora.EditorTools
         {
             var sideLean = AuthoredVegetationSigned(seedKey, 151, 0.08f);
             var frontLean = AuthoredVegetationSigned(seedKey, 157, 0.06f);
-            var vertices = new[]
+            const int outerCount = 10;
+            var vertices = new Vector3[outerCount + 3];
+            var uvs = new Vector2[vertices.Length];
+            var triangles = new List<int>(outerCount * 9);
+
+            vertices[0] = new Vector3(sideLean * 0.25f, -0.18f, frontLean * 0.25f);
+            uvs[0] = new Vector2(0.5f, 0.5f);
+            for (var i = 0; i < outerCount; i++)
             {
-                new Vector3(0f, -0.46f, 0f),
-                new Vector3(-0.46f, -0.40f, 0.08f),
-                new Vector3(-0.18f + sideLean, 0.10f, 0.18f + frontLean),
-                new Vector3(0.08f, -0.34f, 0.42f),
-                new Vector3(0.44f, -0.39f, -0.02f),
-                new Vector3(0.16f + sideLean * 0.5f, 0.12f, -0.22f),
-                new Vector3(-0.10f, -0.10f, -0.34f)
-            };
-            var uvs = new[]
+                var angle = (i / (float)outerCount) * Mathf.PI * 2f + AuthoredVegetationSigned(seedKey, 161, 0.12f);
+                var radial = 0.36f + AuthoredVegetationHash01(seedKey, 163 + i * 7) * 0.16f;
+                var height = Mathf.Lerp(-0.40f, 0.16f, AuthoredVegetationHash01(seedKey, 167 + i * 11));
+                if ((i & 1) == 0)
+                {
+                    height -= 0.08f;
+                }
+
+                vertices[i + 1] = new Vector3(
+                    Mathf.Cos(angle) * radial + sideLean,
+                    height,
+                    Mathf.Sin(angle) * radial * 0.88f + frontLean);
+                uvs[i + 1] = new Vector2(0.5f + Mathf.Cos(angle) * 0.45f, 0.5f + Mathf.Sin(angle) * 0.45f);
+            }
+
+            var topIndex = outerCount + 1;
+            var bottomIndex = outerCount + 2;
+            vertices[topIndex] = new Vector3(-0.12f + sideLean * 0.8f, 0.28f, 0.10f + frontLean);
+            vertices[bottomIndex] = new Vector3(0.10f - sideLean * 0.4f, -0.48f, -0.04f - frontLean * 0.6f);
+            uvs[topIndex] = new Vector2(0.40f, 0.92f);
+            uvs[bottomIndex] = new Vector2(0.60f, 0.08f);
+
+            for (var i = 0; i < outerCount; i++)
             {
-                new Vector2(0.50f, 0.10f),
-                new Vector2(0.10f, 0.20f),
-                new Vector2(0.28f, 0.92f),
-                new Vector2(0.56f, 0.28f),
-                new Vector2(0.92f, 0.22f),
-                new Vector2(0.74f, 0.90f),
-                new Vector2(0.36f, 0.32f)
-            };
-            var triangles = new List<int>
-            {
-                0, 1, 2,
-                0, 2, 3,
-                0, 3, 5,
-                0, 5, 4,
-                0, 4, 6,
-                0, 6, 1,
-                1, 6, 2,
-                2, 6, 5
-            };
+                var current = i + 1;
+                var next = i == outerCount - 1 ? 1 : i + 2;
+                triangles.Add(0);
+                triangles.Add(current);
+                triangles.Add(next);
+                if ((i & 1) == 0)
+                {
+                    triangles.Add(topIndex);
+                    triangles.Add(next);
+                    triangles.Add(current);
+                }
+                else
+                {
+                    triangles.Add(bottomIndex);
+                    triangles.Add(current);
+                    triangles.Add(next);
+                }
+            }
+
             return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
         }
 
@@ -20521,7 +20564,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateAuthoredVegetationLeafFanMesh(string meshName, string seedKey)
         {
-            const int fanCount = 5;
+            const int fanCount = 7;
             var vertices = new Vector3[fanCount * 4];
             var uvs = new Vector2[vertices.Length];
             var triangles = new List<int>(fanCount * 12);
@@ -20536,8 +20579,8 @@ namespace Anemora.EditorTools
                     AuthoredVegetationSigned(seedKey, 293 + i * 11, 0.16f),
                     Mathf.Lerp(-0.18f, 0.42f, i / (float)(fanCount - 1)) + AuthoredVegetationSigned(seedKey, 307 + i * 13, 0.035f),
                     AuthoredVegetationSigned(seedKey, 317 + i * 17, 0.16f));
-                var width = Mathf.Lerp(0.30f, 0.48f, AuthoredVegetationHash01(seedKey, 331 + i * 19));
-                var height = Mathf.Lerp(0.40f, 0.62f, AuthoredVegetationHash01(seedKey, 353 + i * 23));
+                var width = Mathf.Lerp(0.22f, 0.40f, AuthoredVegetationHash01(seedKey, 331 + i * 19));
+                var height = Mathf.Lerp(0.32f, 0.54f, AuthoredVegetationHash01(seedKey, 353 + i * 23));
                 var lean = forward * AuthoredVegetationSigned(seedKey, 359 + i * 29, 0.09f);
 
                 vertices[baseIndex] = center - right * width * 0.50f - Vector3.up * height * 0.36f - lean * 0.35f;
@@ -20568,7 +20611,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateAuthoredVegetationLeafSprayMesh(string meshName, string seedKey)
         {
-            const int leafCount = 12;
+            const int leafCount = 18;
             var vertices = new Vector3[leafCount * 4];
             var uvs = new Vector2[vertices.Length];
             var triangles = new List<int>(leafCount * 12);
@@ -20585,8 +20628,8 @@ namespace Anemora.EditorTools
                 var center = right * radius +
                     forward * AuthoredVegetationSigned(seedKey, 443 + i * 19, 0.18f) +
                     Vector3.up * height;
-                var width = Mathf.Lerp(0.16f, 0.34f, AuthoredVegetationHash01(seedKey, 457 + i * 23));
-                var bladeHeight = Mathf.Lerp(0.24f, 0.46f, AuthoredVegetationHash01(seedKey, 467 + i * 29));
+                var width = Mathf.Lerp(0.11f, 0.27f, AuthoredVegetationHash01(seedKey, 457 + i * 23));
+                var bladeHeight = Mathf.Lerp(0.20f, 0.40f, AuthoredVegetationHash01(seedKey, 467 + i * 29));
                 var lean = forward * AuthoredVegetationSigned(seedKey, 479 + i * 31, 0.14f);
                 var lift = Vector3.up * bladeHeight;
 
