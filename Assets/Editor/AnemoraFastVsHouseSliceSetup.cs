@@ -30424,21 +30424,21 @@ namespace Anemora.EditorTools
                     : (band == 1
                         ? PixelMaterial(
                             id,
-                            new Color32(54, 62, 42, 255),
-                            new Color32(70, 76, 50, 255),
-                            new Color32(38, 44, 34, 255),
-                            PixelPattern.DistantLandform,
+                            new Color32(44, 56, 38, 255),
+                            new Color32(66, 72, 46, 255),
+                            new Color32(28, 36, 30, 255),
+                            PixelPattern.DistantNeedleCanopy,
                             true,
-                            tiling,
+                            new Vector2(2.9f, 3.7f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(78, 66, 48, 255),
-                            new Color32(92, 78, 54, 255),
-                            new Color32(58, 52, 42, 255),
-                            PixelPattern.DistantLandform,
+                            new Color32(82, 70, 50, 255),
+                            new Color32(112, 92, 58, 255),
+                            new Color32(50, 44, 36, 255),
+                            PixelPattern.DistantRockStrata,
                             true,
-                            tiling,
+                            new Vector2(1.45f, 1.05f),
                             FastVsHd2dMaterialRole.SurfaceLit));
             }
             else
@@ -30446,9 +30446,9 @@ namespace Anemora.EditorTools
                 material = band == 0
                     ? PixelMaterial(
                         id,
-                        new Color32(36, 78, 46, 255),
-                        new Color32(52, 98, 58, 255),
-                        new Color32(24, 50, 34, 255),
+                        new Color32(34, 68, 44, 255),
+                        new Color32(62, 82, 46, 255),
+                        new Color32(22, 42, 34, 255),
                         PixelPattern.DistantLandform,
                         true,
                         tiling,
@@ -30456,21 +30456,21 @@ namespace Anemora.EditorTools
                     : (band == 1
                         ? PixelMaterial(
                             id,
-                            new Color32(24, 62, 44, 255),
-                            new Color32(38, 76, 54, 255),
-                            new Color32(16, 42, 36, 255),
-                            PixelPattern.DistantLandform,
+                            new Color32(18, 52, 42, 255),
+                            new Color32(36, 70, 54, 255),
+                            new Color32(8, 30, 28, 255),
+                            PixelPattern.DistantNeedleCanopy,
                             true,
-                            tiling,
+                            new Vector2(2.9f, 3.7f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(48, 64, 72, 255),
-                            new Color32(60, 76, 82, 255),
-                            new Color32(36, 48, 58, 255),
-                            PixelPattern.DistantLandform,
+                            new Color32(52, 62, 66, 255),
+                            new Color32(78, 84, 78, 255),
+                            new Color32(34, 42, 50, 255),
+                            PixelPattern.DistantRockStrata,
                             true,
-                            tiling,
+                            new Vector2(1.45f, 1.05f),
                             FastVsHd2dMaterialRole.SurfaceLit));
             }
 
@@ -30611,7 +30611,7 @@ namespace Anemora.EditorTools
                     new Color32(39, 48, 24, 255),
                     new Color32(70, 74, 36, 255),
                     new Color32(21, 28, 16, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(3.8f, 4.6f),
                     FastVsHd2dMaterialRole.SurfaceLit)
@@ -30620,7 +30620,7 @@ namespace Anemora.EditorTools
                     new Color32(16, 46, 28, 255),
                     new Color32(42, 78, 42, 255),
                     new Color32(7, 24, 16, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(3.8f, 4.6f),
                     FastVsHd2dMaterialRole.SurfaceLit);
@@ -30647,7 +30647,7 @@ namespace Anemora.EditorTools
                     new Color32(50, 58, 29, 255),
                     new Color32(80, 84, 43, 255),
                     new Color32(28, 36, 20, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(4.4f, 5.2f),
                     FastVsHd2dMaterialRole.SurfaceLit)
@@ -30656,7 +30656,7 @@ namespace Anemora.EditorTools
                     new Color32(24, 54, 32, 255),
                     new Color32(56, 88, 48, 255),
                     new Color32(9, 32, 20, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(4.4f, 5.2f),
                     FastVsHd2dMaterialRole.SurfaceLit);
@@ -30794,9 +30794,9 @@ namespace Anemora.EditorTools
                         new Color32(84, 70, 46, 255),
                         new Color32(104, 84, 52, 255),
                         new Color32(56, 46, 34, 255),
-                        PixelPattern.DistantLandform,
+                        PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(2.15f, 1.30f),
+                        new Vector2(1.55f, 1.08f),
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
@@ -30813,9 +30813,9 @@ namespace Anemora.EditorTools
                         new Color32(42, 64, 74, 255),
                         new Color32(60, 80, 88, 255),
                         new Color32(28, 42, 56, 255),
-                        PixelPattern.DistantLandform,
+                        PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(2.15f, 1.30f),
+                        new Vector2(1.55f, 1.08f),
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
@@ -30861,9 +30861,9 @@ namespace Anemora.EditorTools
                         new Color32(72, 62, 38, 255),
                         new Color32(90, 74, 44, 255),
                         new Color32(48, 40, 30, 255),
-                        PixelPattern.DistantLandform,
+                        PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.85f, 1.20f),
+                        new Vector2(1.45f, 1.05f),
                         FastVsHd2dMaterialRole.SurfaceLit))
                 : (detailBand == 0
                     ? PixelMaterial(
@@ -30880,9 +30880,9 @@ namespace Anemora.EditorTools
                         new Color32(38, 58, 72, 255),
                         new Color32(58, 78, 90, 255),
                         new Color32(26, 42, 58, 255),
-                        PixelPattern.DistantLandform,
+                        PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.85f, 1.20f),
+                        new Vector2(1.45f, 1.05f),
                         FastVsHd2dMaterialRole.SurfaceLit));
             if (material.HasProperty("_Smoothness"))
             {
@@ -30907,7 +30907,7 @@ namespace Anemora.EditorTools
                     new Color32(30, 48, 18, 255),
                     new Color32(58, 70, 28, 255),
                     new Color32(16, 28, 12, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(3.6f, 4.0f),
                     FastVsHd2dMaterialRole.SurfaceLit)
@@ -30916,7 +30916,7 @@ namespace Anemora.EditorTools
                     new Color32(10, 50, 23, 255),
                     new Color32(30, 82, 35, 255),
                     new Color32(4, 28, 14, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(3.6f, 4.0f),
                     FastVsHd2dMaterialRole.SurfaceLit);
@@ -30993,18 +30993,18 @@ namespace Anemora.EditorTools
                             new Color32(80, 66, 42, 255),
                             new Color32(104, 82, 48, 255),
                             new Color32(58, 48, 34, 255),
-                            PixelPattern.DistantLandform,
+                            PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.80f, 1.20f),
+                            new Vector2(1.42f, 1.02f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
                             new Color32(42, 64, 82, 255),
                             new Color32(64, 88, 98, 255),
                             new Color32(30, 44, 62, 255),
-                            PixelPattern.DistantLandform,
+                            PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.80f, 1.20f),
+                            new Vector2(1.42f, 1.02f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 3:
@@ -31155,7 +31155,7 @@ namespace Anemora.EditorTools
                     new Color32(28, 44, 16, 255),
                     new Color32(54, 68, 24, 255),
                     new Color32(14, 26, 10, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     new Vector2(3.8f, 4.2f),
                     0.08f)
                 : EnsureMidDistanceLandformClosureMaterial(
@@ -31163,7 +31163,7 @@ namespace Anemora.EditorTools
                     new Color32(10, 46, 22, 255),
                     new Color32(28, 72, 30, 255),
                     new Color32(4, 26, 12, 255),
-                    PixelPattern.DistantCanopy,
+                    PixelPattern.DistantNeedleCanopy,
                     new Vector2(3.8f, 4.2f),
                     0.08f);
         }
@@ -104835,6 +104835,27 @@ namespace Anemora.EditorTools
                     }
 
                     return canopyClump < 6 ? b : a;
+                case PixelPattern.DistantRockStrata:
+                    var strataWarp = y + ((x * 2 + (x / 7) * 5 + (y / 5) * 3) % 11) - 5;
+                    var bedding = strataWarp % 9 == 0 || (strataWarp + x / 6) % 17 == 0;
+                    var fracture = (x * 13 + y * 7 + (x / 4) * 19) % 61 < 5;
+                    var scree = (x * 5 + y * 23 + (y / 3) * 11) % 73 < 6;
+                    if (bedding || fracture)
+                    {
+                        return c;
+                    }
+
+                    return scree ? b : a;
+                case PixelPattern.DistantNeedleCanopy:
+                    var needleLine = (x * 5 + y * 2 + (x / 3) * 11) % 37 < 5;
+                    var deepPocket = (x * 7 + y * 17 + (y / 4) * 13) % 67 < 7;
+                    var crownTip = (x * 19 + y * 3 + (x / 5) * 7) % 53 < 5;
+                    if (deepPocket)
+                    {
+                        return c;
+                    }
+
+                    return needleLine || crownTip ? b : a;
                 default:
                     return (x * 13 + y * 7) % 19 < 5 ? b : ((x * 5 + y * 11) % 23 < 4 ? c : a);
             }
@@ -105599,7 +105620,9 @@ namespace Anemora.EditorTools
             Checker,
             Water,
             DistantLandform,
-            DistantCanopy
+            DistantCanopy,
+            DistantRockStrata,
+            DistantNeedleCanopy
         }
 
         private readonly struct HouseMapAreas
