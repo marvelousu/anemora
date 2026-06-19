@@ -29586,8 +29586,8 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaRidgeStrataMesh(string meshName, int seed, float width, float maxHeight, float thickness)
         {
-            const int columnCount = 9;
-            const int rowCount = 5;
+            const int columnCount = 13;
+            const int rowCount = 6;
             var sideVertexCount = columnCount * rowCount;
             var vertices = new Vector3[sideVertexCount * 2];
             var uvs = new Vector2[vertices.Length];
@@ -29602,26 +29602,27 @@ namespace Anemora.EditorTools
                 {
                     var v = row / (float)(rowCount - 1);
                     var rowWidth = width * Mathf.Lerp(1.04f, 0.62f, v);
-                    var stratumLift = (row % 2 == 0 ? 0.00f : 0.09f) * maxHeight;
+                    var stratumLift = (row % 2 == 0 ? 0.00f : 0.075f) * maxHeight;
                     for (var column = 0; column < columnCount; column++)
                     {
                         var u = column / (float)(columnCount - 1);
                         var edgeFalloff = Mathf.Sin(u * Mathf.PI);
-                        var slope = (u - 0.5f) * DistantPanoramaVistaSigned(seed + row * 47 + side * 11, maxHeight * 0.18f);
-                        var ridgeNoise = DistantPanoramaVistaSigned(seed + row * 61 + column * 29 + side * 13, maxHeight * 0.055f) * edgeFalloff;
-                        var y = maxHeight * Mathf.Lerp(0.00f, 0.88f, v) + slope + stratumLift + ridgeNoise;
+                        var slope = (u - 0.5f) * DistantPanoramaVistaSigned(seed + row * 47 + side * 11, maxHeight * 0.20f);
+                        var terraceCut = ((column + row + seed) % 5 == 0 ? -0.035f : 0.018f) * maxHeight * edgeFalloff;
+                        var ridgeNoise = DistantPanoramaVistaSigned(seed + row * 61 + column * 29 + side * 13, maxHeight * 0.062f) * edgeFalloff;
+                        var y = maxHeight * Mathf.Lerp(0.00f, 0.90f, Mathf.Pow(v, 0.92f)) + slope + stratumLift + terraceCut + ridgeNoise;
                         if (row == 0)
                         {
                             y = DistantPanoramaVistaSigned(seed + column * 31 + side * 17, maxHeight * 0.020f);
                         }
                         else if (row == rowCount - 1)
                         {
-                            y = maxHeight * Mathf.Lerp(0.72f, 1.00f, DistantPanoramaVistaHash01(seed + column * 37 + side * 19));
+                            y = maxHeight * Mathf.Lerp(0.68f, 1.04f, DistantPanoramaVistaHash01(seed + column * 37 + side * 19));
                         }
 
                         var x = Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u) +
-                            DistantPanoramaVistaSigned(seed + row * 43 + column * 23 + side * 7, width * 0.018f) * edgeFalloff;
-                        var z = sideZ + DistantPanoramaVistaSigned(seed + row * 53 + column * 31 + side * 5, thickness * 0.08f) * edgeFalloff;
+                            DistantPanoramaVistaSigned(seed + row * 43 + column * 23 + side * 7, width * 0.024f) * edgeFalloff;
+                        var z = sideZ + DistantPanoramaVistaSigned(seed + row * 53 + column * 31 + side * 5, thickness * 0.12f) * edgeFalloff;
                         var index = sideOffset + row * columnCount + column;
                         vertices[index] = new Vector3(x, y, z);
                         uvs[index] = new Vector2(u, v);
@@ -29875,8 +29876,8 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalConiferSpireMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int treeCount = 15;
-            const int tierCount = 5;
+            const int treeCount = 17;
+            const int tierCount = 6;
             var vertices = new List<Vector3>(treeCount * tierCount * 8);
             var uvs = new List<Vector2>(treeCount * tierCount * 8);
             var triangles = new List<int>(treeCount * tierCount * 72);
@@ -29978,10 +29979,10 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalTreeStandTrunkMesh(string meshName, int seed, float width, float maxHeight, float depth)
         {
-            const int treeCount = 17;
-            var vertices = new List<Vector3>(treeCount * 8);
-            var uvs = new List<Vector2>(treeCount * 8);
-            var triangles = new List<int>(treeCount * 72);
+            const int treeCount = 21;
+            var vertices = new List<Vector3>(treeCount * 12);
+            var uvs = new List<Vector2>(treeCount * 12);
+            var triangles = new List<int>(treeCount * 108);
             var spacing = width / treeCount;
 
             for (var tree = 0; tree < treeCount; tree++)
@@ -30007,6 +30008,26 @@ namespace Anemora.EditorTools
                     trunkHeight,
                     z + DistantPanoramaVistaSigned(treeSeed + 97, trunkDepth * 0.70f));
                 AddDistantPanoramaVistaTrunkPrism(vertices, uvs, triangles, new Vector3(x, 0f, z), top, trunkWidth, trunkDepth);
+
+                if (tree > 0 && tree < treeCount - 1 && DistantPanoramaVistaHash01(treeSeed + 101) > 0.48f)
+                {
+                    var splitBase = new Vector3(
+                        x + DistantPanoramaVistaSigned(treeSeed + 103, trunkWidth * 0.56f),
+                        trunkHeight * Mathf.Lerp(0.30f, 0.48f, DistantPanoramaVistaHash01(treeSeed + 107)),
+                        z + DistantPanoramaVistaSigned(treeSeed + 109, trunkDepth * 0.45f));
+                    var splitTop = splitBase + new Vector3(
+                        DistantPanoramaVistaSigned(treeSeed + 113, spacing * 0.18f),
+                        trunkHeight * Mathf.Lerp(0.42f, 0.66f, DistantPanoramaVistaHash01(treeSeed + 127)),
+                        DistantPanoramaVistaSigned(treeSeed + 131, depth * 0.055f));
+                    AddDistantPanoramaVistaTrunkPrism(
+                        vertices,
+                        uvs,
+                        triangles,
+                        splitBase,
+                        splitTop,
+                        trunkWidth * 0.58f,
+                        trunkDepth * 0.62f);
+                }
             }
 
             var mesh = new Mesh
@@ -30023,10 +30044,10 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalBranchTraceMesh(string meshName, int seed, float width, float maxHeight, float depth)
         {
-            const int treeCount = 17;
-            var vertices = new List<Vector3>(treeCount * 24);
-            var uvs = new List<Vector2>(treeCount * 24);
-            var triangles = new List<int>(treeCount * 180);
+            const int treeCount = 21;
+            var vertices = new List<Vector3>(treeCount * 32);
+            var uvs = new List<Vector2>(treeCount * 32);
+            var triangles = new List<int>(treeCount * 240);
             var spacing = width / treeCount;
 
             for (var tree = 0; tree < treeCount; tree++)
@@ -30068,6 +30089,26 @@ namespace Anemora.EditorTools
                     branchBase + new Vector3(sweep * 0.86f, lift * 0.82f, frontLean * 0.72f),
                     branchWidth * 0.86f,
                     branchDepth * 0.88f);
+                if (DistantPanoramaVistaHash01(treeSeed + 105) > 0.38f)
+                {
+                    var twigBase = branchBase + new Vector3(
+                        DistantPanoramaVistaSigned(treeSeed + 115, spacing * 0.10f),
+                        treeHeight * Mathf.Lerp(0.06f, 0.14f, DistantPanoramaVistaHash01(treeSeed + 119)),
+                        DistantPanoramaVistaSigned(treeSeed + 121, depth * 0.045f));
+                    var twigSign = DistantPanoramaVistaHash01(treeSeed + 123) > 0.5f ? 1f : -1f;
+                    AddDistantPanoramaVistaTrunkPrism(
+                        vertices,
+                        uvs,
+                        triangles,
+                        twigBase,
+                        twigBase + new Vector3(
+                            twigSign * sweep * Mathf.Lerp(0.34f, 0.58f, DistantPanoramaVistaHash01(treeSeed + 125)),
+                            lift * Mathf.Lerp(0.34f, 0.52f, DistantPanoramaVistaHash01(treeSeed + 129)),
+                            -frontLean * Mathf.Lerp(0.25f, 0.46f, DistantPanoramaVistaHash01(treeSeed + 133))),
+                        branchWidth * 0.48f,
+                        branchDepth * 0.54f);
+                }
+
                 if (tree % 3 == 1)
                 {
                     var leaderBase = new Vector3(
@@ -30103,10 +30144,10 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalUnderstoryMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int shrubCount = 21;
-            var vertices = new List<Vector3>(shrubCount * 10);
-            var uvs = new List<Vector2>(shrubCount * 10);
-            var triangles = new List<int>(shrubCount * 60);
+            const int shrubCount = 27;
+            var vertices = new List<Vector3>(shrubCount * 14);
+            var uvs = new List<Vector2>(shrubCount * 14);
+            var triangles = new List<int>(shrubCount * 84);
             var spacing = width / shrubCount;
 
             for (var shrub = 0; shrub < shrubCount; shrub++)
@@ -30133,7 +30174,7 @@ namespace Anemora.EditorTools
                     shrubSeed,
                     true);
 
-                if (shrub > 1 && shrub < shrubCount - 2 && DistantPanoramaVistaHash01(shrubSeed + 37) > 0.52f)
+                if (shrub > 1 && shrub < shrubCount - 2 && DistantPanoramaVistaHash01(shrubSeed + 37) > 0.42f)
                 {
                     AddDistantPanoramaVistaCanopyLobe(
                         vertices,
@@ -30147,6 +30188,23 @@ namespace Anemora.EditorTools
                         lobeDepth * 0.64f,
                         lobeHeight * 0.68f,
                         shrubSeed + 47,
+                        true);
+                }
+
+                if (shrub > 2 && shrub < shrubCount - 3 && DistantPanoramaVistaHash01(shrubSeed + 53) > 0.64f)
+                {
+                    AddDistantPanoramaVistaCanopyLobe(
+                        vertices,
+                        uvs,
+                        triangles,
+                        new Vector3(
+                            x + DistantPanoramaVistaSigned(shrubSeed + 59, spacing * 0.24f),
+                            baseHeight + lobeHeight * 0.04f,
+                            z + DistantPanoramaVistaSigned(shrubSeed + 61, lobeDepth * 0.50f)),
+                        lobeWidth * 0.42f,
+                        lobeDepth * 0.52f,
+                        lobeHeight * 0.46f,
+                        shrubSeed + 67,
                         true);
                 }
             }
@@ -104746,11 +104804,17 @@ namespace Anemora.EditorTools
                 case PixelPattern.Water:
                     return (x + y * 2) % 10 < 2 ? b : ((x * 3 + y) % 17 < 3 ? c : a);
                 case PixelPattern.DistantLandform:
-                    var rowWarp = y + (x * 3 + (x / 4) * 5) % 7;
-                    var contour = rowWarp % 17 == 0 || (rowWarp + x / 7) % 29 == 0;
-                    var ridgedHighlight = (x * 5 + y * 11 + (y / 4) * 7) % 31 < 4;
-                    var brokenCanopy = (x * 17 + y * 3 + (x / 6) * 5) % 37 < 5;
+                    var rowWarp = y + (x * 3 + (x / 5) * 7 + (y / 6) * 5) % 13;
+                    var contour = rowWarp % 23 == 0 || (rowWarp + x / 9 + y / 11) % 41 == 0;
+                    var rockShadow = (x * 11 + y * 17 + (x / 4) * 7 + (y / 9) * 5) % 53 < 5;
+                    var ridgedHighlight = (x * 5 + y * 11 + (y / 4) * 7 + (x / 9) * 3) % 67 < 4;
+                    var brokenCanopy = (x * 17 + y * 3 + (x / 6) * 5 + (y / 7) * 11) % 47 < 4;
                     if (contour)
+                    {
+                        return c;
+                    }
+
+                    if (rockShadow)
                     {
                         return c;
                     }
@@ -104758,13 +104822,19 @@ namespace Anemora.EditorTools
                     return ridgedHighlight || brokenCanopy ? b : a;
                 case PixelPattern.DistantCanopy:
                     var canopyClump = (x * 7 + y * 13 + (x / 3) * 5 + (y / 5) * 3) % 43;
-                    var canopyShadow = (x * 11 + y * 5 + (y / 4) * 7) % 59 < 5;
+                    var canopyShadow = (x * 11 + y * 5 + (y / 4) * 7 + (x / 8) * 3) % 59 < 7;
+                    var needleShadow = (x * 19 + y * 7 + (x / 5) * 11) % 71 < 4;
                     if (canopyShadow)
                     {
                         return c;
                     }
 
-                    return canopyClump < 7 ? b : a;
+                    if (needleShadow)
+                    {
+                        return c;
+                    }
+
+                    return canopyClump < 6 ? b : a;
                 default:
                     return (x * 13 + y * 7) % 19 < 5 ? b : ((x * 5 + y * 11) % 23 < 4 ? c : a);
             }
