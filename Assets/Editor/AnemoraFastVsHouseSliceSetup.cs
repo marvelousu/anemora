@@ -21005,6 +21005,7 @@ namespace Anemora.EditorTools
             DisableRendererAndKeepCollider(trunk);
             DisableRendererAndKeepCollider(crown);
             CreateHouseExteriorExternalTreeSprite(root, prefix, past);
+            CreateHouseExteriorAuthoredNaturalTree(root, prefix, past, materials);
             CreateHouseExteriorTreeCrownSilhouetteBreakup(root, prefix, past, materials);
             CreateHouseExteriorTreeFenceSilhouettePolish(root, prefix, past, materials);
             CreateExteriorDetails(root, prefix, past, materials);
@@ -23456,11 +23457,52 @@ namespace Anemora.EditorTools
                 root,
                 $"{prefix}_HouseExterior_ExternalTreeSprite_OpenGameArtTree3",
                 $"{prefix}.house_exterior.external_tree_sprite.opengameart_tree3",
-                HouseExteriorCenter + new Vector3(3.35f, 1.32f, 2.08f),
-                new Vector3(1.62f, 2.70f, 1f),
+                HouseExteriorCenter + new Vector3(3.35f, 1.34f, 2.24f),
+                new Vector3(1.34f, 2.42f, 1f),
                 past ? "past_house_exterior_tree3_sprite_cc0" : "current_house_exterior_tree3_sprite_cc0",
-                past ? new Color(1.02f, 1.04f, 0.94f, 1f) : new Color(0.62f, 0.70f, 0.58f, 1f),
+                past ? new Color(0.56f, 0.58f, 0.42f, 1f) : new Color(0.24f, 0.34f, 0.23f, 1f),
                 true);
+        }
+
+        private static void CreateHouseExteriorAuthoredNaturalTree(Transform root, string prefix, bool past, Materials materials)
+        {
+            var c = HouseExteriorCenter;
+            var objectPrefix = $"{prefix}_HouseExterior_AuthoredNaturalTree";
+            var trunk = EnsureDistantPanoramaVistaNaturalTrunkMaterial(past);
+            var canopy = EnsureDistantPanoramaVistaNaturalCanopyMaterial(past);
+            var accent = EnsureDistantPanoramaVistaNaturalCanopyAccentMaterial(past);
+            var baseCenter = c + new Vector3(3.35f, 0.68f, 2.86f);
+            var yaw = AuthoredVegetationSigned(objectPrefix, 301, 9f);
+
+            CreateAuthoredLowPolyTree(root, objectPrefix, baseCenter, trunk, canopy);
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_WarmLeafClusterA",
+                root,
+                baseCenter + new Vector3(-0.38f, 1.42f, -0.08f),
+                new Vector3(0.52f, 0.44f, 0.50f),
+                Quaternion.Euler(0f, yaw - 31f, -9f),
+                accent,
+                $"{prefix}.house_exterior.authored_natural_tree.warm_leaf_cluster_a",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_WarmLeafClusterA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.warm_leaf_cluster_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_WarmLeafClusterB",
+                root,
+                baseCenter + new Vector3(0.42f, 1.30f, -0.18f),
+                new Vector3(0.46f, 0.40f, 0.44f),
+                Quaternion.Euler(0f, yaw + 38f, 8f),
+                accent,
+                $"{prefix}.house_exterior.authored_natural_tree.warm_leaf_cluster_b",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_WarmLeafClusterB_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.warm_leaf_cluster_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_LowerShadeSpray",
+                root,
+                baseCenter + new Vector3(-0.08f, 0.72f, 0.20f),
+                new Vector3(0.88f, 0.38f, 0.70f),
+                Quaternion.Euler(0f, yaw + 8f, -6f),
+                accent,
+                $"{prefix}.house_exterior.authored_natural_tree.lower_shade_spray",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_LowerShadeSpray_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.lower_shade_spray"));
+            _ = materials;
         }
 
         private static GameObject CreateExternalTreeSpriteLandmark(Transform root, string objectName, string landmarkId, Vector3 position, Vector3 scale, string materialId, Color tint, bool countsForArrival)
@@ -23563,7 +23605,7 @@ namespace Anemora.EditorTools
         {
             var c = HouseExteriorCenter;
             var materialId = past ? "past_house_exterior_tree3_sprite_cc0" : "current_house_exterior_tree3_sprite_cc0";
-            var tint = past ? new Color(1.02f, 1.04f, 0.94f, 1f) : new Color(0.62f, 0.70f, 0.58f, 1f);
+            var tint = past ? new Color(0.56f, 0.58f, 0.42f, 1f) : new Color(0.24f, 0.34f, 0.23f, 1f);
 
             if (!past)
             {
@@ -29631,7 +29673,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalTreeStandCanopyMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int treeCount = 17;
+            const int treeCount = 19;
             var vertices = new List<Vector3>(treeCount * 12);
             var uvs = new List<Vector2>(treeCount * 12);
             var triangles = new List<int>(treeCount * 54);
@@ -29705,7 +29747,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalCanopyAccentMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int accentCount = 11;
+            const int accentCount = 13;
             var vertices = new List<Vector3>(accentCount * 24);
             var uvs = new List<Vector2>(accentCount * 24);
             var triangles = new List<int>(accentCount * 84);
@@ -29760,7 +29802,7 @@ namespace Anemora.EditorTools
 
         private static void AddDistantPanoramaVistaLeafFringe(List<Vector3> vertices, List<Vector2> uvs, List<int> triangles, Vector3 center, float spacing, float height, float depth, int seed, bool past)
         {
-            const int shardCount = 4;
+            const int shardCount = 6;
             for (var shard = 0; shard < shardCount; shard++)
             {
                 var shardSeed = seed + shard * 37;
@@ -29790,7 +29832,7 @@ namespace Anemora.EditorTools
 
         private static void AddDistantPanoramaVistaCanopyLobe(List<Vector3> vertices, List<Vector2> uvs, List<int> triangles, Vector3 baseCenter, float width, float depth, float height, int seed, bool broadleaf)
         {
-            const int sideCount = 6;
+            const int sideCount = 8;
             var start = vertices.Count;
             var lean = new Vector3(
                 DistantPanoramaVistaSigned(seed + 59, width * 0.08f),
@@ -29833,8 +29875,8 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalConiferSpireMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int treeCount = 13;
-            const int tierCount = 4;
+            const int treeCount = 15;
+            const int tierCount = 5;
             var vertices = new List<Vector3>(treeCount * tierCount * 8);
             var uvs = new List<Vector2>(treeCount * tierCount * 8);
             var triangles = new List<int>(treeCount * tierCount * 72);
@@ -30472,18 +30514,18 @@ namespace Anemora.EditorTools
             var material = past
                 ? PixelMaterial(
                     id,
-                    new Color32(38, 52, 24, 255),
-                    new Color32(64, 74, 34, 255),
-                    new Color32(22, 32, 18, 255),
+                    new Color32(42, 50, 26, 255),
+                    new Color32(70, 74, 38, 255),
+                    new Color32(24, 30, 18, 255),
                     PixelPattern.DistantCanopy,
                     true,
                     new Vector2(3.4f, 3.8f),
                     FastVsHd2dMaterialRole.SurfaceLit)
                 : PixelMaterial(
                     id,
-                    new Color32(18, 56, 28, 255),
-                    new Color32(38, 84, 38, 255),
-                    new Color32(8, 32, 18, 255),
+                    new Color32(23, 50, 30, 255),
+                    new Color32(48, 76, 43, 255),
+                    new Color32(9, 28, 18, 255),
                     PixelPattern.DistantCanopy,
                     true,
                     new Vector2(3.4f, 3.8f),
@@ -30508,18 +30550,18 @@ namespace Anemora.EditorTools
             var material = past
                 ? PixelMaterial(
                     id,
-                    new Color32(34, 50, 20, 255),
-                    new Color32(66, 78, 32, 255),
-                    new Color32(20, 30, 14, 255),
+                    new Color32(39, 48, 24, 255),
+                    new Color32(70, 74, 36, 255),
+                    new Color32(21, 28, 16, 255),
                     PixelPattern.DistantCanopy,
                     true,
                     new Vector2(3.8f, 4.6f),
                     FastVsHd2dMaterialRole.SurfaceLit)
                 : PixelMaterial(
                     id,
-                    new Color32(7, 48, 22, 255),
-                    new Color32(28, 86, 38, 255),
-                    new Color32(3, 26, 14, 255),
+                    new Color32(16, 46, 28, 255),
+                    new Color32(42, 78, 42, 255),
+                    new Color32(7, 24, 16, 255),
                     PixelPattern.DistantCanopy,
                     true,
                     new Vector2(3.8f, 4.6f),
@@ -30544,18 +30586,18 @@ namespace Anemora.EditorTools
             var material = past
                 ? PixelMaterial(
                     id,
-                    new Color32(46, 62, 27, 255),
-                    new Color32(82, 90, 42, 255),
-                    new Color32(27, 38, 20, 255),
+                    new Color32(50, 58, 29, 255),
+                    new Color32(80, 84, 43, 255),
+                    new Color32(28, 36, 20, 255),
                     PixelPattern.DistantCanopy,
                     true,
                     new Vector2(4.4f, 5.2f),
                     FastVsHd2dMaterialRole.SurfaceLit)
                 : PixelMaterial(
                     id,
-                    new Color32(14, 62, 30, 255),
-                    new Color32(48, 104, 47, 255),
-                    new Color32(5, 36, 20, 255),
+                    new Color32(24, 54, 32, 255),
+                    new Color32(56, 88, 48, 255),
+                    new Color32(9, 32, 20, 255),
                     PixelPattern.DistantCanopy,
                     true,
                     new Vector2(4.4f, 5.2f),
@@ -103966,7 +104008,7 @@ namespace Anemora.EditorTools
                 PaintedSurfaceMaterial("current_library_door_detail", "current_library_door_detail_hd2d_plate", 96, 160, SampleCurrentLibraryDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("current_stone", new Color32(128, 122, 106, 255), new Color32(174, 166, 138, 255), new Color32(70, 67, 61, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PaintedSurfaceMaterial("current_bed", "current_bed_hd2d_plate", 128, 128, SampleCurrentBedHd2dPixel, true, new Vector2(1f, 1f)),
-                PixelMaterial("current_leaf", new Color32(38, 65, 40, 255), new Color32(53, 82, 47, 255), new Color32(28, 45, 32, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
+                PixelMaterial("current_leaf", new Color32(28, 48, 32, 255), new Color32(40, 62, 38, 255), new Color32(20, 34, 25, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PaintedSurfaceMaterial("past_grass", "past_grass_hd2d_plate", 128, 128, SamplePastGrassHd2dPixel, false, new Vector2(6f, 6f)),
                 PaintedSurfaceMaterial("past_path", "past_path_hd2d_plate", 128, 128, SamplePastPathHd2dPixel, false, new Vector2(4f, 4f)),
                 PaintedSurfaceMaterial("past_wood_floor", "past_wood_floor_hd2d_plate", 128, 128, SamplePastWoodFloorHd2dPixel, false, new Vector2(4f, 3f)),
@@ -103979,7 +104021,7 @@ namespace Anemora.EditorTools
                 PaintedSurfaceMaterial("past_library_door_detail", "past_library_door_detail_hd2d_plate", 96, 160, SamplePastLibraryDoorDetailHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("past_stone", new Color32(118, 115, 100, 255), new Color32(151, 146, 123, 255), new Color32(83, 82, 75, 255), PixelPattern.Stone, false, new Vector2(3f, 2f)),
                 PaintedSurfaceMaterial("past_bed", "past_bed_hd2d_plate", 128, 128, SamplePastBedHd2dPixel, false, new Vector2(1f, 1f)),
-                PixelMaterial("leaf", new Color32(62, 122, 64, 255), new Color32(93, 158, 78, 255), new Color32(39, 91, 53, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
+                PixelMaterial("leaf", new Color32(40, 70, 42, 255), new Color32(58, 88, 52, 255), new Color32(28, 50, 34, 255), PixelPattern.Grass, false, new Vector2(3f, 3f)),
                 PaintedSurfaceMaterial("pillow", "pillow_hd2d_plate", 96, 64, SamplePillowHd2dPixel, false, new Vector2(1f, 1f)),
                 PixelMaterial("dust", new Color32(88, 82, 75, 255), new Color32(111, 104, 92, 255), new Color32(61, 57, 54, 255), PixelPattern.Noise, false, new Vector2(2f, 2f)),
                 PaintedSurfaceMaterial("current_rubble_detail", "current_rubble_detail_hd2d_plate", 128, 64, SampleCurrentRubbleDetailHd2dPixel, false, new Vector2(1f, 1f)),
@@ -104716,13 +104758,13 @@ namespace Anemora.EditorTools
                     return ridgedHighlight || brokenCanopy ? b : a;
                 case PixelPattern.DistantCanopy:
                     var canopyClump = (x * 7 + y * 13 + (x / 3) * 5 + (y / 5) * 3) % 43;
-                    var canopyShadow = (x * 11 + y * 5 + (y / 4) * 7) % 59 < 4;
+                    var canopyShadow = (x * 11 + y * 5 + (y / 4) * 7) % 59 < 5;
                     if (canopyShadow)
                     {
                         return c;
                     }
 
-                    return canopyClump < 9 ? b : a;
+                    return canopyClump < 7 ? b : a;
                 default:
                     return (x * 13 + y * 7) % 19 < 5 ? b : ((x * 5 + y * 11) % 23 < 4 ? c : a);
             }

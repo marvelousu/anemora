@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.113 HD2D nature canopy richness (2026-06-19). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.114 HD2D nature authored tree tone (2026-06-19). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 810 files including INDEX.md and README.md.
-- Dated devlog records: 808 files.
+- Root-level Markdown coverage: 811 files including INDEX.md and README.md.
+- Dated devlog records: 809 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-19 | 3 |
+| 2026-06-19 | 4 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
 | 2026-06-16 | 1 |
@@ -53,6 +53,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-19_hd2d_nature_authored_tree_tone.md](2026-06-19_hd2d_nature_authored_tree_tone.md) | Fast VS / HD2D | HD2D nature authored tree tone |
 | [2026-06-19_hd2d_nature_canopy_richness.md](2026-06-19_hd2d_nature_canopy_richness.md) | Fast VS / HD2D | HD2D nature canopy richness |
 | [2026-06-19_hd2d_distant_canopy_landform_texture.md](2026-06-19_hd2d_distant_canopy_landform_texture.md) | Fast VS / HD2D | HD2D distant canopy and landform texture uplift |
 | [2026-06-19_hd2d_library_facade_desk_artifact_cleanup.md](2026-06-19_hd2d_library_facade_desk_artifact_cleanup.md) | Fast VS / HD2D | HD2D library facade and desk artifact cleanup |
@@ -804,6 +805,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.114 | 2026-06-19 | Added HD2D nature authored tree tone with darker current/past vegetation palette, house-exterior authored natural tree geometry, denser distant natural stand meshes, all-map review capture, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.98 | 2026-06-15 | Added HD2D vegetation branching detail with deterministic branch-fork and leaf-fan authored meshes, all-map review capture, shotdiff, bridge traversal validator coverage, asset validation, and renderer-freeze validation. |
 | v8.88 | 2026-06-15 | Added HD2D midground edge closure prototype with House Exterior edge-skirt geometry, rejected far-water shelf iterations, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
 | v8.87 | 2026-06-15 | Added HD2D distant composition all-map rollout with area-specific horizon prototype meshes across all outdoor maps, radius/shadow validation fixes, all-map review capture, shotdiff, asset validation, and renderer-freeze validation. |
