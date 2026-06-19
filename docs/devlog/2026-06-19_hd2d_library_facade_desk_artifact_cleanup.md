@@ -59,5 +59,8 @@ Earlier rejected comparison packets were kept locally for traceability:
   - Accepted packet r9 uploaded 12 files for `wip-hd2d-point15-recovery-20260612/2026-06-19T12-04_library_facade_desk_cleanup_r9`.
   - Final branch manifest after uploading local comparison packets lists 666 paths.
 - `tools/review/validate-devlog-review-sync.ps1`: passed.
+- Public viewer refresh: passed after `anemora-viewer` commit `8c23d47`.
+  - `https://anemora-viewer.pages.dev/deploy-refresh.txt` reports source commit `45b6e33` and latest review `docs/review/2026-06-19T12-04_library_facade_desk_cleanup_r9`.
+  - `https://anemora-viewer.pages.dev/wip-hd2d-point15-recovery-20260612/review/` shows r9 at the top of the review list.
 
 Unity batch side effects were reverted after each batch; the intended tracked change for this cycle is the authored setup file plus this devlog/index update.
