@@ -507,14 +507,20 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaRidgeFacetMeshCount = DistantPanoramaVistaSegmentCount * DistantPanoramaVistaRidgeFacetBandCount;
         private const int DistantPanoramaVistaTreelineFoldMeshCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalTreeStandCount = DistantPanoramaVistaSegmentCount;
+        private const int DistantPanoramaVistaNaturalCanopyVolumeCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalCanopyAccentCount = DistantPanoramaVistaSegmentCount;
+        private const int DistantPanoramaVistaNaturalCanopyFleckCount = DistantPanoramaVistaSegmentCount;
+        private const int DistantPanoramaVistaNaturalCanopyShadowCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalBranchTraceCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalUnderstoryCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalConiferSpireCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaRidgeStrataMeshCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaQualityDetailVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalTreeStandVisibleMinimum = 4;
+        private const int DistantPanoramaVistaNaturalCanopyVolumeVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalCanopyAccentVisibleMinimum = 4;
+        private const int DistantPanoramaVistaNaturalCanopyFleckVisibleMinimum = 3;
+        private const int DistantPanoramaVistaNaturalCanopyShadowVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalBranchTraceVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalUnderstoryVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalConiferSpireVisibleMinimum = 3;
@@ -20018,6 +20024,15 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}.trunk",
                 CreateAuthoredVegetationTrunkMesh($"{objectPrefix}_Trunk_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", objectPrefix));
             CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_RootFlare",
+                root,
+                trunkCenter + new Vector3(0.00f, -0.34f, 0.00f),
+                new Vector3(0.76f, 0.30f, 0.72f),
+                Quaternion.Euler(0f, yaw + AuthoredVegetationSigned(objectPrefix, 52, 8f), 0f),
+                trunkMaterial,
+                $"{objectPrefix}.root_flare",
+                CreateAuthoredVegetationRootFlareMesh($"{objectPrefix}_RootFlare_{AuthoredVegetationMeshNamePrefix}_RootFlare", $"{objectPrefix}.root_flare"));
+            CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_BranchForkA",
                 root,
                 trunkCenter + new Vector3(-0.08f, 0.76f, 0.06f),
@@ -20154,6 +20169,15 @@ namespace Anemora.EditorTools
                 trunkMaterial,
                 $"{objectPrefix}.branch_spray_a",
                 CreateAuthoredVegetationBranchForkMesh($"{objectPrefix}_BranchSprayA_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectPrefix}.branch_spray_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_CrownInteriorBranchLace",
+                root,
+                trunkCenter + new Vector3(-0.02f, 1.08f, 0.02f),
+                new Vector3(0.60f, 0.46f, 0.54f),
+                Quaternion.Euler(AuthoredVegetationSigned(objectPrefix, 55, 5f), yaw + 7f, AuthoredVegetationSigned(objectPrefix, 57, 5f)),
+                trunkMaterial,
+                $"{objectPrefix}.crown_interior_branch_lace",
+                CreateAuthoredVegetationBranchLaceMesh($"{objectPrefix}_CrownInteriorBranchLace_{AuthoredVegetationMeshNamePrefix}_BranchLace", $"{objectPrefix}.crown_interior_branch_lace"));
             CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_UpperBranchReveal",
                 root,
@@ -20342,6 +20366,84 @@ namespace Anemora.EditorTools
             }
 
             return CreateAuthoredVegetationMeshAsset(meshName, vertices, uvs, triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationRootFlareMesh(string meshName, string seedKey)
+        {
+            var vertices = new List<Vector3>(72);
+            var uvs = new List<Vector2>(72);
+            var triangles = new List<int>(240);
+            const int rootCount = 6;
+
+            for (var root = 0; root < rootCount; root++)
+            {
+                var t = root / (float)rootCount;
+                var angle = t * Mathf.PI * 2f + AuthoredVegetationSigned(seedKey, 503 + root * 13, 0.22f);
+                var right = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+                var start = right * Mathf.Lerp(0.03f, 0.08f, AuthoredVegetationHash01(seedKey, 509 + root * 17)) +
+                    Vector3.up * Mathf.Lerp(-0.10f, 0.08f, AuthoredVegetationHash01(seedKey, 521 + root * 19));
+                var end = right * Mathf.Lerp(0.42f, 0.62f, AuthoredVegetationHash01(seedKey, 523 + root * 23)) +
+                    Vector3.up * Mathf.Lerp(-0.32f, -0.18f, AuthoredVegetationHash01(seedKey, 541 + root * 29)) +
+                    new Vector3(0f, 0f, AuthoredVegetationSigned(seedKey, 547 + root * 31, 0.04f));
+                AddAuthoredVegetationBranchSegment(
+                    vertices,
+                    uvs,
+                    triangles,
+                    start,
+                    end,
+                    Mathf.Lerp(0.070f, 0.095f, AuthoredVegetationHash01(seedKey, 557 + root * 37)),
+                    Mathf.Lerp(0.022f, 0.038f, AuthoredVegetationHash01(seedKey, 563 + root * 41)));
+            }
+
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices.ToArray(), uvs.ToArray(), triangles);
+        }
+
+        private static Mesh CreateAuthoredVegetationBranchLaceMesh(string meshName, string seedKey)
+        {
+            var vertices = new List<Vector3>(96);
+            var uvs = new List<Vector2>(96);
+            var triangles = new List<int>(300);
+            const int branchCount = 5;
+
+            for (var branch = 0; branch < branchCount; branch++)
+            {
+                var t = branch / (float)(branchCount - 1);
+                var side = Mathf.Lerp(-0.42f, 0.42f, t) + AuthoredVegetationSigned(seedKey, 601 + branch * 13, 0.08f);
+                var start = new Vector3(
+                    side * 0.38f,
+                    Mathf.Lerp(-0.36f, 0.08f, AuthoredVegetationHash01(seedKey, 607 + branch * 17)),
+                    AuthoredVegetationSigned(seedKey, 613 + branch * 19, 0.12f));
+                var end = new Vector3(
+                    side + AuthoredVegetationSigned(seedKey, 617 + branch * 23, 0.12f),
+                    Mathf.Lerp(0.18f, 0.46f, AuthoredVegetationHash01(seedKey, 619 + branch * 29)),
+                    AuthoredVegetationSigned(seedKey, 631 + branch * 31, 0.16f));
+                AddAuthoredVegetationBranchSegment(
+                    vertices,
+                    uvs,
+                    triangles,
+                    start,
+                    end,
+                    Mathf.Lerp(0.038f, 0.060f, AuthoredVegetationHash01(seedKey, 641 + branch * 37)),
+                    Mathf.Lerp(0.012f, 0.022f, AuthoredVegetationHash01(seedKey, 643 + branch * 41)));
+
+                if ((branch & 1) == 0)
+                {
+                    var twigEnd = end + new Vector3(
+                        AuthoredVegetationSigned(seedKey, 647 + branch * 43, 0.22f),
+                        Mathf.Lerp(0.06f, 0.18f, AuthoredVegetationHash01(seedKey, 653 + branch * 47)),
+                        AuthoredVegetationSigned(seedKey, 659 + branch * 53, 0.10f));
+                    AddAuthoredVegetationBranchSegment(
+                        vertices,
+                        uvs,
+                        triangles,
+                        Vector3.Lerp(start, end, 0.58f),
+                        twigEnd,
+                        0.024f,
+                        0.010f);
+                }
+            }
+
+            return CreateAuthoredVegetationMeshAsset(meshName, vertices.ToArray(), uvs.ToArray(), triangles);
         }
 
         private static Mesh CreateAuthoredVegetationGrassBladeMesh(string meshName, string seedKey)
@@ -27228,11 +27330,14 @@ namespace Anemora.EditorTools
 
         private static void CreateDistantPanoramaVistaNaturalTreeStands(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
         {
-            var radius = DistantPanoramaVistaForegroundCoppiceRadius + 1.05f;
+            var radius = DistantPanoramaVistaForegroundCoppiceRadius + 2.55f;
             var canopyMaterial = EnsureDistantPanoramaVistaNaturalCanopyMaterial(past);
+            var canopyVolumeMaterial = EnsureDistantPanoramaVistaNaturalCanopyVolumeMaterial(past);
             var canopyAccentMaterial = EnsureDistantPanoramaVistaNaturalCanopyAccentMaterial(past);
+            var canopyFleckMaterial = EnsureDistantPanoramaVistaNaturalCanopyFleckMaterial(past);
+            var canopyShadowMaterial = EnsureDistantPanoramaVistaNaturalCanopyShadowMaterial(past);
             var trunkMaterial = EnsureDistantPanoramaVistaNaturalTrunkMaterial(past);
-            var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.06f;
+            var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.34f;
 
             for (var segment = 0; segment < DistantPanoramaVistaNaturalTreeStandCount; segment++)
             {
@@ -27241,9 +27346,9 @@ namespace Anemora.EditorTools
                 var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
                 var tangent = new Vector3(radial.z, 0f, -radial.x);
                 var localPosition = center +
-                    radial * (radius + DistantPanoramaVistaSigned(seed + 5, 0.62f)) +
-                    tangent * DistantPanoramaVistaSigned(seed + 13, 2.15f) +
-                    new Vector3(0f, 0.20f + DistantPanoramaVistaHash01(seed + 19) * 0.16f, 0f);
+                    radial * (radius + DistantPanoramaVistaSigned(seed + 5, 0.82f)) +
+                    tangent * DistantPanoramaVistaSigned(seed + 13, 2.60f) +
+                    new Vector3(0f, 0.26f + DistantPanoramaVistaHash01(seed + 19) * 0.22f, 0f);
                 var faceDirection = center - localPosition;
                 faceDirection.y = 0f;
                 if (faceDirection.sqrMagnitude < 0.01f)
@@ -27251,9 +27356,9 @@ namespace Anemora.EditorTools
                     faceDirection = -radial;
                 }
 
-                var standWidth = chordWidth * Mathf.Lerp(0.82f, 1.26f, DistantPanoramaVistaHash01(seed + 23));
-                var standHeight = Mathf.Lerp(6.6f, 11.6f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.08f : 1f);
-                var standDepth = Mathf.Lerp(1.55f, 3.10f, DistantPanoramaVistaHash01(seed + 37));
+                var standWidth = chordWidth * Mathf.Lerp(1.08f, 1.62f, DistantPanoramaVistaHash01(seed + 23));
+                var standHeight = Mathf.Lerp(8.8f, 17.4f, DistantPanoramaVistaHash01(seed + 31)) * (past ? 1.08f : 1f);
+                var standDepth = Mathf.Lerp(2.35f, 5.10f, DistantPanoramaVistaHash01(seed + 37));
 
                 CreateDistantPanoramaVistaNaturalTreeStandObject(
                     $"{prefix}_{areaToken}_DistantVista_NaturalTreeStand_S{segment + 1:00}",
@@ -27272,9 +27377,25 @@ namespace Anemora.EditorTools
                         past));
 
                 CreateDistantPanoramaVistaNaturalTreeStandObject(
+                    $"{prefix}_{areaToken}_DistantVista_NaturalCanopyVolume_S{segment + 1:00}",
+                    parent,
+                    localPosition + faceDirection.normalized * 1.54f + new Vector3(0f, 0.12f, 0f),
+                    Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
+                    past,
+                    canopyVolumeMaterial,
+                    $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.natural_canopy_volume.s{segment + 1:00}",
+                    CreateDistantPanoramaVistaNaturalCanopyVolumeMesh(
+                        $"{prefix}_{areaToken}_DistantVista_NaturalCanopyVolume_S{segment + 1:00}_Mesh",
+                        seed + 1307,
+                        standWidth,
+                        standHeight,
+                        standDepth,
+                        past));
+
+                CreateDistantPanoramaVistaNaturalTreeStandObject(
                     $"{prefix}_{areaToken}_DistantVista_NaturalCanopyAccent_S{segment + 1:00}",
                     parent,
-                    localPosition + new Vector3(0f, 0.10f, 0f),
+                    localPosition + faceDirection.normalized * 0.54f + new Vector3(0f, 0.14f, 0f),
                     Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
                     past,
                     canopyAccentMaterial,
@@ -27282,6 +27403,22 @@ namespace Anemora.EditorTools
                     CreateDistantPanoramaVistaNaturalCanopyAccentMesh(
                         $"{prefix}_{areaToken}_DistantVista_NaturalCanopyAccent_S{segment + 1:00}_Mesh",
                         seed + 607,
+                        standWidth,
+                        standHeight,
+                        standDepth,
+                        past));
+
+                CreateDistantPanoramaVistaNaturalTreeStandObject(
+                    $"{prefix}_{areaToken}_DistantVista_NaturalCanopyFleck_S{segment + 1:00}",
+                    parent,
+                    localPosition + faceDirection.normalized * 2.20f + new Vector3(0f, 0.34f, 0f),
+                    Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
+                    past,
+                    canopyFleckMaterial,
+                    $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.natural_canopy_fleck.s{segment + 1:00}",
+                    CreateDistantPanoramaVistaNaturalCanopyFleckMesh(
+                        $"{prefix}_{areaToken}_DistantVista_NaturalCanopyFleck_S{segment + 1:00}_Mesh",
+                        seed + 1103,
                         standWidth,
                         standHeight,
                         standDepth,
@@ -27305,7 +27442,7 @@ namespace Anemora.EditorTools
                 CreateDistantPanoramaVistaNaturalTreeStandObject(
                     $"{prefix}_{areaToken}_DistantVista_NaturalBranchTrace_S{segment + 1:00}",
                     parent,
-                    localPosition + faceDirection.normalized * 0.72f + new Vector3(0f, 0.20f, 0f),
+                    localPosition + faceDirection.normalized * 1.36f + new Vector3(0f, 0.24f, 0f),
                     Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
                     past,
                     trunkMaterial,
@@ -27318,9 +27455,25 @@ namespace Anemora.EditorTools
                         standDepth));
 
                 CreateDistantPanoramaVistaNaturalTreeStandObject(
+                    $"{prefix}_{areaToken}_DistantVista_NaturalCanopyShadow_S{segment + 1:00}",
+                    parent,
+                    localPosition + faceDirection.normalized * 1.82f + new Vector3(0f, 0.30f, 0f),
+                    Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
+                    past,
+                    canopyShadowMaterial,
+                    $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.natural_canopy_shadow.s{segment + 1:00}",
+                    CreateDistantPanoramaVistaNaturalCanopyShadowMesh(
+                        $"{prefix}_{areaToken}_DistantVista_NaturalCanopyShadow_S{segment + 1:00}_Mesh",
+                        seed + 1201,
+                        standWidth,
+                        standHeight,
+                        standDepth,
+                        past));
+
+                CreateDistantPanoramaVistaNaturalTreeStandObject(
                     $"{prefix}_{areaToken}_DistantVista_NaturalUnderstory_S{segment + 1:00}",
                     parent,
-                    localPosition + faceDirection.normalized * 0.54f + new Vector3(0f, 0.02f, 0f),
+                    localPosition + faceDirection.normalized * 1.24f + new Vector3(0f, 0.04f, 0f),
                     Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
                     past,
                     canopyAccentMaterial,
@@ -29759,6 +29912,74 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
+        private static Mesh CreateDistantPanoramaVistaNaturalCanopyVolumeMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
+        {
+            const int crownCount = 13;
+            var vertices = new List<Vector3>(crownCount * 34);
+            var uvs = new List<Vector2>(crownCount * 34);
+            var triangles = new List<int>(crownCount * 180);
+            var spacing = width / crownCount;
+
+            for (var crown = 0; crown < crownCount; crown++)
+            {
+                var crownSeed = seed + crown * 149;
+                var u = (crown + 0.5f) / crownCount;
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.49f, width * 0.49f, u) +
+                    DistantPanoramaVistaSigned(crownSeed + 5, spacing * 0.28f) * edgeFalloff;
+                var z = -depth * Mathf.Lerp(0.22f, 0.62f, DistantPanoramaVistaHash01(crownSeed + 11)) +
+                    DistantPanoramaVistaSigned(crownSeed + 17, depth * 0.16f);
+                var crownWidth = spacing * Mathf.Lerp(1.42f, 2.45f, DistantPanoramaVistaHash01(crownSeed + 23));
+                var crownDepth = depth * Mathf.Lerp(0.40f, 0.84f, DistantPanoramaVistaHash01(crownSeed + 29));
+                var crownHeight = maxHeight * Mathf.Lerp(0.34f, 0.58f, DistantPanoramaVistaHash01(crownSeed + 31)) * (past ? 1.04f : 1f);
+                var baseHeight = maxHeight * Mathf.Lerp(0.18f, 0.36f, DistantPanoramaVistaHash01(crownSeed + 37));
+                var baseCenter = new Vector3(x, baseHeight, z);
+
+                AddDistantPanoramaVistaCanopyLobe(vertices, uvs, triangles, baseCenter, crownWidth, crownDepth, crownHeight, crownSeed, true);
+                AddDistantPanoramaVistaCanopyLobe(
+                    vertices,
+                    uvs,
+                    triangles,
+                    baseCenter + new Vector3(
+                        DistantPanoramaVistaSigned(crownSeed + 41, crownWidth * 0.22f),
+                        crownHeight * Mathf.Lerp(0.16f, 0.30f, DistantPanoramaVistaHash01(crownSeed + 43)),
+                        -crownDepth * Mathf.Lerp(0.16f, 0.32f, DistantPanoramaVistaHash01(crownSeed + 47))),
+                    crownWidth * Mathf.Lerp(0.48f, 0.72f, DistantPanoramaVistaHash01(crownSeed + 53)),
+                    crownDepth * Mathf.Lerp(0.52f, 0.76f, DistantPanoramaVistaHash01(crownSeed + 59)),
+                    crownHeight * Mathf.Lerp(0.46f, 0.68f, DistantPanoramaVistaHash01(crownSeed + 61)),
+                    crownSeed + 67,
+                    true);
+
+                if (crown > 1 && crown < crownCount - 2)
+                {
+                    AddDistantPanoramaVistaLeafFringe(
+                        vertices,
+                        uvs,
+                        triangles,
+                        baseCenter + new Vector3(
+                            DistantPanoramaVistaSigned(crownSeed + 71, crownWidth * 0.16f),
+                            crownHeight * Mathf.Lerp(0.38f, 0.58f, DistantPanoramaVistaHash01(crownSeed + 73)),
+                            -crownDepth * Mathf.Lerp(0.20f, 0.42f, DistantPanoramaVistaHash01(crownSeed + 79))),
+                        spacing * Mathf.Lerp(1.20f, 1.72f, DistantPanoramaVistaHash01(crownSeed + 83)),
+                        crownHeight,
+                        crownDepth,
+                        crownSeed + 89,
+                        past);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices.ToArray(),
+                uv = uvs.ToArray(),
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static Mesh CreateDistantPanoramaVistaNaturalCanopyAccentMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
             const int accentCount = 13;
@@ -29800,6 +30021,103 @@ namespace Anemora.EditorTools
                     lobeDepth,
                     accentSeed + 101,
                     past);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices.ToArray(),
+                uv = uvs.ToArray(),
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static Mesh CreateDistantPanoramaVistaNaturalCanopyFleckMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
+        {
+            const int fleckCount = 31;
+            var vertices = new List<Vector3>(fleckCount * 4);
+            var uvs = new List<Vector2>(fleckCount * 4);
+            var triangles = new List<int>(fleckCount * 12);
+            var spacing = width / fleckCount;
+
+            for (var fleck = 0; fleck < fleckCount; fleck++)
+            {
+                var fleckSeed = seed + fleck * 103;
+                var u = (fleck + 0.5f) / fleckCount;
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.50f, width * 0.50f, u) +
+                    DistantPanoramaVistaSigned(fleckSeed + 5, spacing * 0.36f) * edgeFalloff;
+                var y = maxHeight * Mathf.Lerp(0.34f, 0.84f, DistantPanoramaVistaHash01(fleckSeed + 11));
+                var z = -depth * Mathf.Lerp(0.16f, 0.42f, DistantPanoramaVistaHash01(fleckSeed + 17)) +
+                    DistantPanoramaVistaSigned(fleckSeed + 19, depth * 0.14f);
+                var fleckWidth = spacing * Mathf.Lerp(0.38f, 0.96f, DistantPanoramaVistaHash01(fleckSeed + 23));
+                var fleckHeight = maxHeight * Mathf.Lerp(0.075f, 0.190f, DistantPanoramaVistaHash01(fleckSeed + 29)) * (past ? 1.03f : 1f);
+                var leanX = DistantPanoramaVistaSigned(fleckSeed + 31, fleckWidth * 0.30f);
+                var leanZ = DistantPanoramaVistaSigned(fleckSeed + 37, depth * 0.08f);
+                var start = vertices.Count;
+                var center = new Vector3(x, y, z);
+
+                vertices.Add(center + new Vector3(-fleckWidth * 0.52f, -fleckHeight * 0.30f, -leanZ * 0.28f));
+                vertices.Add(center + new Vector3(fleckWidth * 0.48f, -fleckHeight * 0.24f, leanZ * 0.22f));
+                vertices.Add(center + new Vector3(fleckWidth * 0.28f + leanX, fleckHeight * 0.72f, leanZ));
+                vertices.Add(center + new Vector3(-fleckWidth * 0.34f + leanX * 0.36f, fleckHeight * 0.62f, -leanZ * 0.55f));
+                uvs.Add(new Vector2(0.04f, 0.10f));
+                uvs.Add(new Vector2(0.96f, 0.16f));
+                uvs.Add(new Vector2(0.74f, 0.94f));
+                uvs.Add(new Vector2(0.16f, 0.86f));
+                AddDoubleSidedQuad(triangles, start, start + 1, start + 3, start + 2);
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices.ToArray(),
+                uv = uvs.ToArray(),
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        private static Mesh CreateDistantPanoramaVistaNaturalCanopyShadowMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
+        {
+            const int pocketCount = 25;
+            var vertices = new List<Vector3>(pocketCount * 4);
+            var uvs = new List<Vector2>(pocketCount * 4);
+            var triangles = new List<int>(pocketCount * 12);
+            var spacing = width / pocketCount;
+
+            for (var pocket = 0; pocket < pocketCount; pocket++)
+            {
+                var pocketSeed = seed + pocket * 109;
+                var u = (pocket + 0.5f) / pocketCount;
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.48f, width * 0.48f, u) +
+                    DistantPanoramaVistaSigned(pocketSeed + 5, spacing * 0.34f) * edgeFalloff;
+                var y = maxHeight * Mathf.Lerp(0.26f, 0.72f, DistantPanoramaVistaHash01(pocketSeed + 11));
+                var z = -depth * Mathf.Lerp(0.04f, 0.24f, DistantPanoramaVistaHash01(pocketSeed + 17)) +
+                    DistantPanoramaVistaSigned(pocketSeed + 19, depth * 0.18f);
+                var pocketWidth = spacing * Mathf.Lerp(0.36f, 0.90f, DistantPanoramaVistaHash01(pocketSeed + 23));
+                var pocketHeight = maxHeight * Mathf.Lerp(0.080f, 0.205f, DistantPanoramaVistaHash01(pocketSeed + 29)) * (past ? 1.04f : 1f);
+                var leanX = DistantPanoramaVistaSigned(pocketSeed + 31, pocketWidth * 0.28f);
+                var leanZ = DistantPanoramaVistaSigned(pocketSeed + 37, depth * 0.10f);
+                var waist = Mathf.Lerp(0.48f, 0.76f, DistantPanoramaVistaHash01(pocketSeed + 41));
+                var start = vertices.Count;
+                var center = new Vector3(x, y, z);
+
+                vertices.Add(center + new Vector3(-pocketWidth * 0.52f, -pocketHeight * 0.42f, -leanZ * 0.32f));
+                vertices.Add(center + new Vector3(pocketWidth * 0.48f, -pocketHeight * 0.36f, leanZ * 0.28f));
+                vertices.Add(center + new Vector3(pocketWidth * waist * 0.26f + leanX, pocketHeight * 0.68f, leanZ));
+                vertices.Add(center + new Vector3(-pocketWidth * waist * 0.34f + leanX * 0.38f, pocketHeight * 0.76f, -leanZ * 0.74f));
+                uvs.Add(new Vector2(0.02f, 0.08f));
+                uvs.Add(new Vector2(0.98f, 0.14f));
+                uvs.Add(new Vector2(0.76f, 0.90f));
+                uvs.Add(new Vector2(0.18f, 0.96f));
+                AddDoubleSidedQuad(triangles, start, start + 1, start + 3, start + 2);
             }
 
             var mesh = new Mesh
@@ -30660,6 +30978,42 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material EnsureDistantPanoramaVistaNaturalCanopyVolumeMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastNaturalCanopyVolume" : "Ch1Distant_CurrentNaturalCanopyVolume";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(58, 62, 32, 255),
+                    new Color32(98, 96, 52, 255),
+                    new Color32(32, 38, 21, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.2f, 5.0f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(22, 54, 31, 255),
+                    new Color32(74, 108, 56, 255),
+                    new Color32(8, 31, 19, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.2f, 5.0f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.060f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
         private static Material EnsureDistantPanoramaVistaNaturalCanopyAccentMaterial(bool past)
         {
             var id = past ? "Ch1Distant_PastNaturalCanopyAccent" : "Ch1Distant_CurrentNaturalCanopyAccent";
@@ -30685,6 +31039,78 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.065f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaNaturalCanopyFleckMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastNaturalCanopyFleck" : "Ch1Distant_CurrentNaturalCanopyFleck";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(58, 66, 32, 255),
+                    new Color32(92, 92, 48, 255),
+                    new Color32(34, 42, 22, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.7f, 5.4f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(26, 58, 34, 255),
+                    new Color32(72, 104, 54, 255),
+                    new Color32(14, 36, 22, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.7f, 5.4f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.060f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaNaturalCanopyShadowMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastNaturalCanopyShadow" : "Ch1Distant_CurrentNaturalCanopyShadow";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(30, 36, 20, 255),
+                    new Color32(48, 52, 28, 255),
+                    new Color32(17, 22, 13, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(5.1f, 5.8f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(7, 24, 15, 255),
+                    new Color32(22, 44, 25, 255),
+                    new Color32(4, 14, 9, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(5.1f, 5.8f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.045f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -58079,7 +58505,10 @@ namespace Anemora.EditorTools
 
             var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 5) +
                 DistantPanoramaVistaNaturalTreeStandCount * 2 +
+                DistantPanoramaVistaNaturalCanopyVolumeCount +
                 DistantPanoramaVistaNaturalCanopyAccentCount +
+                DistantPanoramaVistaNaturalCanopyFleckCount +
+                DistantPanoramaVistaNaturalCanopyShadowCount +
                 DistantPanoramaVistaNaturalBranchTraceCount +
                 DistantPanoramaVistaNaturalUnderstoryCount +
                 DistantPanoramaVistaNaturalConiferSpireCount +
@@ -58142,7 +58571,10 @@ namespace Anemora.EditorTools
             }
 
             var naturalTreeStandCount = 0;
+            var naturalCanopyVolumeCount = 0;
             var naturalCanopyAccentCount = 0;
+            var naturalCanopyFleckCount = 0;
+            var naturalCanopyShadowCount = 0;
             var naturalTreeTrunkCount = 0;
             var naturalBranchTraceCount = 0;
             var naturalUnderstoryCount = 0;
@@ -58158,9 +58590,21 @@ namespace Anemora.EditorTools
                 {
                     naturalTreeStandCount++;
                 }
+                else if (filter.gameObject.name.Contains("DistantVista_NaturalCanopyVolume", StringComparison.Ordinal))
+                {
+                    naturalCanopyVolumeCount++;
+                }
                 else if (filter.gameObject.name.Contains("DistantVista_NaturalCanopyAccent", StringComparison.Ordinal))
                 {
                     naturalCanopyAccentCount++;
+                }
+                else if (filter.gameObject.name.Contains("DistantVista_NaturalCanopyFleck", StringComparison.Ordinal))
+                {
+                    naturalCanopyFleckCount++;
+                }
+                else if (filter.gameObject.name.Contains("DistantVista_NaturalCanopyShadow", StringComparison.Ordinal))
+                {
+                    naturalCanopyShadowCount++;
                 }
                 else if (filter.gameObject.name.Contains("DistantVista_NaturalTreeTrunks", StringComparison.Ordinal))
                 {
@@ -58181,13 +58625,16 @@ namespace Anemora.EditorTools
             }
 
             if (naturalTreeStandCount < DistantPanoramaVistaNaturalTreeStandCount ||
+                naturalCanopyVolumeCount < DistantPanoramaVistaNaturalCanopyVolumeCount ||
                 naturalCanopyAccentCount < DistantPanoramaVistaNaturalCanopyAccentCount ||
+                naturalCanopyFleckCount < DistantPanoramaVistaNaturalCanopyFleckCount ||
+                naturalCanopyShadowCount < DistantPanoramaVistaNaturalCanopyShadowCount ||
                 naturalTreeTrunkCount < DistantPanoramaVistaNaturalTreeStandCount ||
                 naturalBranchTraceCount < DistantPanoramaVistaNaturalBranchTraceCount ||
                 naturalUnderstoryCount < DistantPanoramaVistaNaturalUnderstoryCount ||
                 naturalConiferSpireCount < DistantPanoramaVistaNaturalConiferSpireCount)
             {
-                throw new InvalidOperationException($"House slice validation failed: {rootName} needs natural tree stand canopy/accent/trunk/branch/understory/conifer layers, found canopy={naturalTreeStandCount}, accents={naturalCanopyAccentCount}, trunks={naturalTreeTrunkCount}, branches={naturalBranchTraceCount}, understory={naturalUnderstoryCount}, conifers={naturalConiferSpireCount}.");
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs natural tree stand canopy/volume/accent/fleck/shadow/trunk/branch/understory/conifer layers, found canopy={naturalTreeStandCount}, volumes={naturalCanopyVolumeCount}, accents={naturalCanopyAccentCount}, flecks={naturalCanopyFleckCount}, shadows={naturalCanopyShadowCount}, trunks={naturalTreeTrunkCount}, branches={naturalBranchTraceCount}, understory={naturalUnderstoryCount}, conifers={naturalConiferSpireCount}.");
             }
 
             var areaLandmarkCount = 0;
@@ -58417,7 +58864,10 @@ namespace Anemora.EditorTools
             var compositionPrototypeVisibleCount = 0;
             var qualityDetailVisibleCount = 0;
             var naturalTreeStandVisibleCount = 0;
+            var naturalCanopyVolumeVisibleCount = 0;
             var naturalCanopyAccentVisibleCount = 0;
+            var naturalCanopyFleckVisibleCount = 0;
+            var naturalCanopyShadowVisibleCount = 0;
             var naturalBranchTraceVisibleCount = 0;
             var naturalUnderstoryVisibleCount = 0;
             var naturalConiferSpireVisibleCount = 0;
@@ -58449,7 +58899,10 @@ namespace Anemora.EditorTools
                         renderer.gameObject.name.Contains("DistantVista_LandformFacet", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_TreelineFold", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalTreeStand", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_NaturalCanopyVolume", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyAccent", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_NaturalCanopyFleck", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_NaturalCanopyShadow", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalBranchTrace", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalUnderstory", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalConiferSpire", StringComparison.Ordinal) ||
@@ -58464,9 +58917,24 @@ namespace Anemora.EditorTools
                         naturalTreeStandVisibleCount++;
                     }
 
+                    if (renderer.gameObject.name.Contains("DistantVista_NaturalCanopyVolume", StringComparison.Ordinal))
+                    {
+                        naturalCanopyVolumeVisibleCount++;
+                    }
+
                     if (renderer.gameObject.name.Contains("DistantVista_NaturalCanopyAccent", StringComparison.Ordinal))
                     {
                         naturalCanopyAccentVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_NaturalCanopyFleck", StringComparison.Ordinal))
+                    {
+                        naturalCanopyFleckVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_NaturalCanopyShadow", StringComparison.Ordinal))
+                    {
+                        naturalCanopyShadowVisibleCount++;
                     }
 
                     if (renderer.gameObject.name.Contains("DistantVista_NaturalBranchTrace", StringComparison.Ordinal))
@@ -58521,9 +58989,24 @@ namespace Anemora.EditorTools
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural tree stands must visibly replace flat forest silhouettes, visible={naturalTreeStandVisibleCount}.");
             }
 
+            if (naturalCanopyVolumeVisibleCount < DistantPanoramaVistaNaturalCanopyVolumeVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural canopy volumes must visibly read as layered tree crowns, visible={naturalCanopyVolumeVisibleCount}.");
+            }
+
             if (naturalCanopyAccentVisibleCount < DistantPanoramaVistaNaturalCanopyAccentVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural canopy accents must be visible enough to break the dark forest band, visible={naturalCanopyAccentVisibleCount}.");
+            }
+
+            if (naturalCanopyFleckVisibleCount < DistantPanoramaVistaNaturalCanopyFleckVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural canopy flecks must be visible enough to add varied leaf-face highlights, visible={naturalCanopyFleckVisibleCount}.");
+            }
+
+            if (naturalCanopyShadowVisibleCount < DistantPanoramaVistaNaturalCanopyShadowVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural canopy shadow pockets must be visible enough to carve interior foliage depth, visible={naturalCanopyShadowVisibleCount}.");
             }
 
             if (naturalBranchTraceVisibleCount < DistantPanoramaVistaNaturalBranchTraceVisibleMinimum)
