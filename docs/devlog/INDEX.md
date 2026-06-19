@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.120 HD2D distant terrain de-repeat (2026-06-19). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.121 HD2D distant slope contours (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 817 files including INDEX.md and README.md.
-- Dated devlog records: 815 files.
+- Root-level Markdown coverage: 818 files including INDEX.md and README.md.
+- Dated devlog records: 816 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,6 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
+| 2026-06-20 | 1 |
 | 2026-06-19 | 10 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
@@ -48,6 +49,12 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-20
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-20_hd2d_distant_slope_contours.md](2026-06-20_hd2d_distant_slope_contours.md) | Fast VS / HD2D | HD2D distant slope contours |
 
 ### 2026-06-19
 
@@ -811,6 +818,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.121 | 2026-06-20 | Added HD2D distant slope contours with deterministic per-segment terrain face meshes, textured Ch1Distant slope materials, validation count/visibility coverage, r1 plateau rejection, r2 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.120 | 2026-06-19 | Added HD2D distant terrain de-repeat with distant-only 64x64 generated pixel textures, lower-frequency landform/rock patterns, reduced distant material tiling, all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.119 | 2026-06-19 | Added HD2D forest species profile with deterministic broadleaf/conifer panorama clusters, muted branch-trace materials, r1 plateau rejection, r2 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.118 | 2026-06-19 | Added HD2D realistic nature depth with deterministic panorama canopy-volume meshes, larger leaf-face flecks, canopy shadow pockets, authored root flares and branch lace, r2 plateau rejection, all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
