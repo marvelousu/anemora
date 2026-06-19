@@ -508,6 +508,7 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaTreelineFoldMeshCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalTreeStandCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalCanopyVolumeCount = DistantPanoramaVistaSegmentCount;
+        private const int DistantPanoramaVistaNaturalSpeciesClusterCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalCanopyAccentCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalCanopyFleckCount = DistantPanoramaVistaSegmentCount;
         private const int DistantPanoramaVistaNaturalCanopyShadowCount = DistantPanoramaVistaSegmentCount;
@@ -518,6 +519,7 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaQualityDetailVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalTreeStandVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalCanopyVolumeVisibleMinimum = 4;
+        private const int DistantPanoramaVistaNaturalSpeciesClusterVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalCanopyAccentVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalCanopyFleckVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalCanopyShadowVisibleMinimum = 3;
@@ -27333,10 +27335,13 @@ namespace Anemora.EditorTools
             var radius = DistantPanoramaVistaForegroundCoppiceRadius + 2.55f;
             var canopyMaterial = EnsureDistantPanoramaVistaNaturalCanopyMaterial(past);
             var canopyVolumeMaterial = EnsureDistantPanoramaVistaNaturalCanopyVolumeMaterial(past);
+            var speciesBroadleafMaterial = EnsureDistantPanoramaVistaNaturalSpeciesBroadleafMaterial(past);
+            var speciesConiferMaterial = EnsureDistantPanoramaVistaNaturalSpeciesConiferMaterial(past);
             var canopyAccentMaterial = EnsureDistantPanoramaVistaNaturalCanopyAccentMaterial(past);
             var canopyFleckMaterial = EnsureDistantPanoramaVistaNaturalCanopyFleckMaterial(past);
             var canopyShadowMaterial = EnsureDistantPanoramaVistaNaturalCanopyShadowMaterial(past);
             var trunkMaterial = EnsureDistantPanoramaVistaNaturalTrunkMaterial(past);
+            var branchTraceMaterial = EnsureDistantPanoramaVistaNaturalBranchTraceMaterial(past);
             var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.34f;
 
             for (var segment = 0; segment < DistantPanoramaVistaNaturalTreeStandCount; segment++)
@@ -27392,6 +27397,24 @@ namespace Anemora.EditorTools
                         standDepth,
                         past));
 
+                var coniferCluster = DistantPanoramaVistaHash01(seed + 1399) > 0.58f;
+                CreateDistantPanoramaVistaNaturalTreeStandObject(
+                    $"{prefix}_{areaToken}_DistantVista_NaturalSpeciesCluster_S{segment + 1:00}",
+                    parent,
+                    localPosition + faceDirection.normalized * 2.00f + new Vector3(0f, 0.26f, 0f),
+                    Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
+                    past,
+                    coniferCluster ? speciesConiferMaterial : speciesBroadleafMaterial,
+                    $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.natural_species_cluster.s{segment + 1:00}",
+                    CreateDistantPanoramaVistaNaturalSpeciesClusterMesh(
+                        $"{prefix}_{areaToken}_DistantVista_NaturalSpeciesCluster_S{segment + 1:00}_Mesh",
+                        seed + 1433,
+                        standWidth * Mathf.Lerp(1.18f, 1.84f, DistantPanoramaVistaHash01(seed + 1447)),
+                        standHeight * Mathf.Lerp(0.78f, 1.22f, DistantPanoramaVistaHash01(seed + 1451)),
+                        standDepth * Mathf.Lerp(1.08f, 1.68f, DistantPanoramaVistaHash01(seed + 1453)),
+                        past,
+                        coniferCluster));
+
                 CreateDistantPanoramaVistaNaturalTreeStandObject(
                     $"{prefix}_{areaToken}_DistantVista_NaturalCanopyAccent_S{segment + 1:00}",
                     parent,
@@ -27445,7 +27468,7 @@ namespace Anemora.EditorTools
                     localPosition + faceDirection.normalized * 1.36f + new Vector3(0f, 0.24f, 0f),
                     Quaternion.LookRotation(faceDirection.normalized, Vector3.up),
                     past,
-                    trunkMaterial,
+                    branchTraceMaterial,
                     $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.natural_branch_trace.s{segment + 1:00}",
                     CreateDistantPanoramaVistaNaturalBranchTraceMesh(
                         $"{prefix}_{areaToken}_DistantVista_NaturalBranchTrace_S{segment + 1:00}_Mesh",
@@ -29980,6 +30003,84 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
+        private static Mesh CreateDistantPanoramaVistaNaturalSpeciesClusterMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past, bool coniferCluster)
+        {
+            const int groupCount = 11;
+            var vertices = new List<Vector3>(groupCount * 52);
+            var uvs = new List<Vector2>(groupCount * 52);
+            var triangles = new List<int>(groupCount * 300);
+            var spacing = width / groupCount;
+
+            for (var group = 0; group < groupCount; group++)
+            {
+                var groupSeed = seed + group * 157;
+                var u = (group + 0.5f) / groupCount;
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.48f, width * 0.48f, u) +
+                    DistantPanoramaVistaSigned(groupSeed + 5, spacing * 0.24f) * edgeFalloff;
+                var z = DistantPanoramaVistaSigned(groupSeed + 11, depth * 0.36f) -
+                    depth * Mathf.Lerp(0.04f, 0.26f, DistantPanoramaVistaHash01(groupSeed + 17));
+                var groupHeight = maxHeight * Mathf.Lerp(0.46f, 0.92f, DistantPanoramaVistaHash01(groupSeed + 23)) * (past ? 1.04f : 1f);
+
+                if (coniferCluster)
+                {
+                    var tierCount = 4 + (DistantPanoramaVistaHash01(groupSeed + 29) > 0.58f ? 1 : 0);
+                    var treeWidth = spacing * Mathf.Lerp(1.32f, 2.12f, DistantPanoramaVistaHash01(groupSeed + 31));
+                    var treeDepth = depth * Mathf.Lerp(0.44f, 0.82f, DistantPanoramaVistaHash01(groupSeed + 37));
+                    for (var tier = 0; tier < tierCount; tier++)
+                    {
+                        var tierT = tier / (float)Mathf.Max(1, tierCount - 1);
+                        var tierBase = new Vector3(
+                            x + DistantPanoramaVistaSigned(groupSeed + 41 + tier * 7, treeWidth * 0.10f),
+                            groupHeight * Mathf.Lerp(0.04f, 0.60f, tierT),
+                            z + DistantPanoramaVistaSigned(groupSeed + 47 + tier * 11, treeDepth * 0.12f));
+                        AddDistantPanoramaVistaConiferTier(
+                            vertices,
+                            uvs,
+                            triangles,
+                            tierBase,
+                            treeWidth * Mathf.Lerp(1.02f, 0.38f, tierT),
+                            treeDepth * Mathf.Lerp(1.00f, 0.42f, tierT),
+                            groupHeight * Mathf.Lerp(0.38f, 0.22f, tierT),
+                            groupSeed + tier * 43);
+                    }
+                }
+                else
+                {
+                    var crownWidth = spacing * Mathf.Lerp(1.70f, 2.85f, DistantPanoramaVistaHash01(groupSeed + 31));
+                    var crownDepth = depth * Mathf.Lerp(0.48f, 0.96f, DistantPanoramaVistaHash01(groupSeed + 37));
+                    var crownHeight = groupHeight * Mathf.Lerp(0.58f, 0.90f, DistantPanoramaVistaHash01(groupSeed + 41));
+                    var baseHeight = groupHeight * Mathf.Lerp(0.14f, 0.28f, DistantPanoramaVistaHash01(groupSeed + 43));
+                    var baseCenter = new Vector3(x, baseHeight, z);
+                    AddDistantPanoramaVistaCanopyLobe(vertices, uvs, triangles, baseCenter, crownWidth, crownDepth, crownHeight, groupSeed, true);
+                    AddDistantPanoramaVistaCanopyLobe(
+                        vertices,
+                        uvs,
+                        triangles,
+                        baseCenter + new Vector3(
+                            DistantPanoramaVistaSigned(groupSeed + 47, crownWidth * 0.22f),
+                            crownHeight * Mathf.Lerp(0.14f, 0.30f, DistantPanoramaVistaHash01(groupSeed + 53)),
+                            DistantPanoramaVistaSigned(groupSeed + 59, crownDepth * 0.26f)),
+                        crownWidth * Mathf.Lerp(0.42f, 0.66f, DistantPanoramaVistaHash01(groupSeed + 61)),
+                        crownDepth * Mathf.Lerp(0.50f, 0.72f, DistantPanoramaVistaHash01(groupSeed + 67)),
+                        crownHeight * Mathf.Lerp(0.44f, 0.62f, DistantPanoramaVistaHash01(groupSeed + 71)),
+                        groupSeed + 73,
+                        true);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices.ToArray(),
+                uv = uvs.ToArray(),
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static Mesh CreateDistantPanoramaVistaNaturalCanopyAccentMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
             const int accentCount = 13;
@@ -31003,6 +31104,114 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", 0.060f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaNaturalSpeciesBroadleafMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastNaturalSpeciesBroadleaf" : "Ch1Distant_CurrentNaturalSpeciesBroadleaf";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(64, 66, 36, 255),
+                    new Color32(104, 100, 56, 255),
+                    new Color32(36, 40, 23, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.7f, 5.5f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(30, 66, 38, 255),
+                    new Color32(96, 136, 72, 255),
+                    new Color32(12, 38, 23, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(4.7f, 5.5f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.055f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaNaturalSpeciesConiferMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastNaturalSpeciesConifer" : "Ch1Distant_CurrentNaturalSpeciesConifer";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(42, 50, 27, 255),
+                    new Color32(68, 72, 38, 255),
+                    new Color32(24, 30, 17, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(5.0f, 6.0f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(12, 46, 28, 255),
+                    new Color32(52, 92, 50, 255),
+                    new Color32(6, 26, 17, 255),
+                    PixelPattern.DistantNeedleCanopy,
+                    true,
+                    new Vector2(5.0f, 6.0f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.050f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaNaturalBranchTraceMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastNaturalBranchTrace" : "Ch1Distant_CurrentNaturalBranchTrace";
+            var material = past
+                ? PixelMaterial(
+                    id,
+                    new Color32(48, 44, 29, 255),
+                    new Color32(66, 58, 36, 255),
+                    new Color32(28, 27, 19, 255),
+                    PixelPattern.Planks,
+                    true,
+                    new Vector2(2.8f, 4.0f),
+                    FastVsHd2dMaterialRole.SurfaceLit)
+                : PixelMaterial(
+                    id,
+                    new Color32(22, 38, 26, 255),
+                    new Color32(42, 54, 34, 255),
+                    new Color32(11, 22, 16, 255),
+                    PixelPattern.Planks,
+                    true,
+                    new Vector2(2.8f, 4.0f),
+                    FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.040f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -58506,6 +58715,7 @@ namespace Anemora.EditorTools
             var expectedSegments = DistantPanoramaVistaSegmentCount * (DistantPanoramaVistaBandCount + 5) +
                 DistantPanoramaVistaNaturalTreeStandCount * 2 +
                 DistantPanoramaVistaNaturalCanopyVolumeCount +
+                DistantPanoramaVistaNaturalSpeciesClusterCount +
                 DistantPanoramaVistaNaturalCanopyAccentCount +
                 DistantPanoramaVistaNaturalCanopyFleckCount +
                 DistantPanoramaVistaNaturalCanopyShadowCount +
@@ -58572,6 +58782,7 @@ namespace Anemora.EditorTools
 
             var naturalTreeStandCount = 0;
             var naturalCanopyVolumeCount = 0;
+            var naturalSpeciesClusterCount = 0;
             var naturalCanopyAccentCount = 0;
             var naturalCanopyFleckCount = 0;
             var naturalCanopyShadowCount = 0;
@@ -58593,6 +58804,10 @@ namespace Anemora.EditorTools
                 else if (filter.gameObject.name.Contains("DistantVista_NaturalCanopyVolume", StringComparison.Ordinal))
                 {
                     naturalCanopyVolumeCount++;
+                }
+                else if (filter.gameObject.name.Contains("DistantVista_NaturalSpeciesCluster", StringComparison.Ordinal))
+                {
+                    naturalSpeciesClusterCount++;
                 }
                 else if (filter.gameObject.name.Contains("DistantVista_NaturalCanopyAccent", StringComparison.Ordinal))
                 {
@@ -58626,6 +58841,7 @@ namespace Anemora.EditorTools
 
             if (naturalTreeStandCount < DistantPanoramaVistaNaturalTreeStandCount ||
                 naturalCanopyVolumeCount < DistantPanoramaVistaNaturalCanopyVolumeCount ||
+                naturalSpeciesClusterCount < DistantPanoramaVistaNaturalSpeciesClusterCount ||
                 naturalCanopyAccentCount < DistantPanoramaVistaNaturalCanopyAccentCount ||
                 naturalCanopyFleckCount < DistantPanoramaVistaNaturalCanopyFleckCount ||
                 naturalCanopyShadowCount < DistantPanoramaVistaNaturalCanopyShadowCount ||
@@ -58634,7 +58850,7 @@ namespace Anemora.EditorTools
                 naturalUnderstoryCount < DistantPanoramaVistaNaturalUnderstoryCount ||
                 naturalConiferSpireCount < DistantPanoramaVistaNaturalConiferSpireCount)
             {
-                throw new InvalidOperationException($"House slice validation failed: {rootName} needs natural tree stand canopy/volume/accent/fleck/shadow/trunk/branch/understory/conifer layers, found canopy={naturalTreeStandCount}, volumes={naturalCanopyVolumeCount}, accents={naturalCanopyAccentCount}, flecks={naturalCanopyFleckCount}, shadows={naturalCanopyShadowCount}, trunks={naturalTreeTrunkCount}, branches={naturalBranchTraceCount}, understory={naturalUnderstoryCount}, conifers={naturalConiferSpireCount}.");
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs natural tree stand canopy/volume/species/accent/fleck/shadow/trunk/branch/understory/conifer layers, found canopy={naturalTreeStandCount}, volumes={naturalCanopyVolumeCount}, species={naturalSpeciesClusterCount}, accents={naturalCanopyAccentCount}, flecks={naturalCanopyFleckCount}, shadows={naturalCanopyShadowCount}, trunks={naturalTreeTrunkCount}, branches={naturalBranchTraceCount}, understory={naturalUnderstoryCount}, conifers={naturalConiferSpireCount}.");
             }
 
             var areaLandmarkCount = 0;
@@ -58865,6 +59081,7 @@ namespace Anemora.EditorTools
             var qualityDetailVisibleCount = 0;
             var naturalTreeStandVisibleCount = 0;
             var naturalCanopyVolumeVisibleCount = 0;
+            var naturalSpeciesClusterVisibleCount = 0;
             var naturalCanopyAccentVisibleCount = 0;
             var naturalCanopyFleckVisibleCount = 0;
             var naturalCanopyShadowVisibleCount = 0;
@@ -58900,6 +59117,7 @@ namespace Anemora.EditorTools
                         renderer.gameObject.name.Contains("DistantVista_TreelineFold", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalTreeStand", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyVolume", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_NaturalSpeciesCluster", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyAccent", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyFleck", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_NaturalCanopyShadow", StringComparison.Ordinal) ||
@@ -58920,6 +59138,11 @@ namespace Anemora.EditorTools
                     if (renderer.gameObject.name.Contains("DistantVista_NaturalCanopyVolume", StringComparison.Ordinal))
                     {
                         naturalCanopyVolumeVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_NaturalSpeciesCluster", StringComparison.Ordinal))
+                    {
+                        naturalSpeciesClusterVisibleCount++;
                     }
 
                     if (renderer.gameObject.name.Contains("DistantVista_NaturalCanopyAccent", StringComparison.Ordinal))
@@ -58992,6 +59215,11 @@ namespace Anemora.EditorTools
             if (naturalCanopyVolumeVisibleCount < DistantPanoramaVistaNaturalCanopyVolumeVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural canopy volumes must visibly read as layered tree crowns, visible={naturalCanopyVolumeVisibleCount}.");
+            }
+
+            if (naturalSpeciesClusterVisibleCount < DistantPanoramaVistaNaturalSpeciesClusterVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} natural species clusters must visibly group broadleaf and conifer profiles, visible={naturalSpeciesClusterVisibleCount}.");
             }
 
             if (naturalCanopyAccentVisibleCount < DistantPanoramaVistaNaturalCanopyAccentVisibleMinimum)
