@@ -585,6 +585,10 @@ namespace Anemora.EditorTools
         private const int WaterlineBreakupWetlandMatVisibleMinimum = 4;
         private const int WaterlineBreakupShallowPoolVisibleMinimum = 4;
         private const int WaterlineBreakupReflectionRibbonVisibleMinimum = 6;
+        private const int BroadWaterSurfaceSheetCount = 18;
+        private const int BroadWaterSurfaceBasinSheetCount = 7;
+        private const int BroadWaterSurfaceMeshCount = BroadWaterSurfaceSheetCount + BroadWaterSurfaceBasinSheetCount;
+        private const int BroadWaterSurfaceVisibleMinimum = 8;
         private const int NearfieldDressingTerracePatchCount = 6;
         private const int NearfieldDressingPathShardCount = 5;
         private const int NearfieldDressingFrontCurbCount = 4;
@@ -1062,6 +1066,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dForegroundEdgeBreakupAllMaps();
             ValidateFastVsHd2dFarShoreHoleClosureAllMaps();
             ValidateFastVsHd2dWaterlineBreakupAllMaps();
+            ValidateFastVsHd2dBroadWaterSurfaceAllMaps();
             ValidateFastVsHd2dNearfieldDressingAllMaps();
             ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps();
             ValidateFastVsHd2dArchitecturalSurfaceAccentsAllMaps();
@@ -10351,6 +10356,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1PhaseIWaterlineBreakupForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1PhaseIBroadWaterSurfaceForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -25175,6 +25190,89 @@ namespace Anemora.EditorTools
             return mesh;
         }
 
+        private static Mesh CreateBroadWaterSurfaceSheetMesh(string meshName, int seed, float width, float depth, float relief)
+        {
+            const int columnCount = 23;
+            const int rowCount = 7;
+            var vertices = new Vector3[columnCount * rowCount];
+            var uvs = new Vector2[vertices.Length];
+            var lateralCurl = DistantPanoramaVistaSigned(seed + 43, 0.22f);
+            var flowPhase = DistantPanoramaVistaHash01(seed + 47);
+
+            for (var row = 0; row < rowCount; row++)
+            {
+                var v = row / (float)(rowCount - 1);
+                var rowBulge = Mathf.Sin(v * Mathf.PI);
+                var rowWidth = width *
+                    Mathf.Lerp(0.46f, 1.08f, rowBulge) *
+                    Mathf.Lerp(0.88f, 1.12f, DistantPanoramaVistaHash01(seed + row * 29 + 7));
+                var rowDepth = Mathf.Lerp(-depth * 0.52f, depth * 0.52f, v) +
+                    DistantPanoramaVistaSigned(seed + row * 37 + 11, depth * 0.050f);
+                var rowDrift = (v - 0.5f) * lateralCurl * width +
+                    DistantPanoramaVistaSigned(seed + row * 41 + 13, width * 0.032f);
+
+                for (var column = 0; column < columnCount; column++)
+                {
+                    var u = column / (float)(columnCount - 1);
+                    var edgeFalloff = Mathf.Sin(u * Mathf.PI) * rowBulge;
+                    var chippedEdge = column == 0 || column == columnCount - 1
+                        ? DistantPanoramaVistaSigned(seed + row * 53 + column * 17, width * 0.085f)
+                        : 0f;
+                    var lateralRipple = Mathf.Sin((u * 2.0f + v * 0.42f + flowPhase) * Mathf.PI * 2.0f) *
+                        width * 0.020f * edgeFalloff;
+
+                    var flowA = Mathf.Clamp01(1f - Mathf.Abs(u - (0.24f + DistantPanoramaVistaSigned(seed + 101, 0.035f))) * 8.2f);
+                    var flowB = Mathf.Clamp01(1f - Mathf.Abs(u - (0.48f + DistantPanoramaVistaSigned(seed + 107, 0.040f))) * 7.4f);
+                    var flowC = Mathf.Clamp01(1f - Mathf.Abs(u - (0.74f + DistantPanoramaVistaSigned(seed + 113, 0.034f))) * 8.0f);
+                    var rowPulse = Mathf.Clamp01(1f - Mathf.Abs(v - (0.36f + DistantPanoramaVistaSigned(seed + column * 19 + 127, 0.12f))) * 3.1f);
+                    var brokenPatch = Mathf.Clamp01(1f - Mathf.Abs((u + v * 0.30f) - (0.61f + DistantPanoramaVistaSigned(seed + 131, 0.070f))) * 5.2f);
+                    var currentLane = Mathf.Clamp01((flowA * 0.72f + flowB + flowC * 0.64f) * (0.56f + rowPulse * 0.44f) - brokenPatch * 0.24f);
+
+                    var x = Mathf.Lerp(-rowWidth * 0.5f, rowWidth * 0.5f, u) +
+                        rowDrift +
+                        lateralRipple +
+                        DistantPanoramaVistaSigned(seed + row * 59 + column * 23, width * 0.018f) * edgeFalloff +
+                        chippedEdge;
+                    var y = 0.005f +
+                        relief * (0.08f + edgeFalloff * 0.12f + currentLane * 0.72f) +
+                        DistantPanoramaVistaSigned(seed + row * 67 + column * 31, relief * 0.10f) * edgeFalloff;
+
+                    if (row == 0 || row == rowCount - 1 || column == 0 || column == columnCount - 1)
+                    {
+                        y *= 0.24f;
+                    }
+
+                    var vertexIndex = row * columnCount + column;
+                    vertices[vertexIndex] = new Vector3(x, y, rowDepth);
+                    uvs[vertexIndex] = new Vector2(u * 3.4f, v * 0.92f);
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 12);
+            for (var row = 0; row < rowCount - 1; row++)
+            {
+                for (var column = 0; column < columnCount - 1; column++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
         private static Mesh CreateMidDistanceLandformClosureLowBankMesh(string meshName, int seed, float width, float height, float thickness)
         {
             const int columnCount = 14;
@@ -26231,6 +26329,137 @@ namespace Anemora.EditorTools
         }
 
         private static void ApplyWaterlineBreakupRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
+        private static void CreateChapter1PhaseIBroadWaterSurfaceForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            _ = materials;
+
+            CreateChapter1PhaseIBroadWaterSurface(exteriorRoot, prefix, past, FastVsHouseArea.Exterior);
+            CreateChapter1PhaseIBroadWaterSurface(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza);
+            CreateChapter1PhaseIBroadWaterSurface(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse);
+            CreateChapter1PhaseIBroadWaterSurface(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
+            CreateChapter1PhaseIBroadWaterSurface(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
+            CreateChapter1PhaseIBroadWaterSurface(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1PhaseIBroadWaterSurface(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_BroadWaterSurface").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var baseAngle = GetWaterlineBreakupBaseAngle(area);
+            var radiusScale = GetWaterlineBreakupRadiusScale(area);
+            var widthScale = GetWaterlineBreakupWidthScale(area);
+            var waterMaterial = EnsureBroadWaterSurfaceMaterial(past);
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.broad_water_surface";
+
+            for (var index = 0; index < BroadWaterSurfaceSheetCount; index++)
+            {
+                var seed = 52657 + (int)area * 809 + (past ? 3181 : 0) + index * 239;
+                var t = index / (float)(BroadWaterSurfaceSheetCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-92.0f, 94.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 3.65f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radiusBand = index % 6;
+                var baseRadius =
+                    radiusBand == 0 ? 15.8f :
+                    radiusBand == 1 ? 19.4f :
+                    radiusBand == 2 ? 23.4f :
+                    radiusBand == 3 ? 27.4f :
+                    radiusBand == 4 ? 31.2f :
+                    35.0f;
+                var radius = (baseRadius + DistantPanoramaVistaSigned(seed + 11, 1.15f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 10.80f * widthScale) +
+                    new Vector3(0f, 0.124f + DistantPanoramaVistaHash01(seed + 23) * 0.082f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_BroadWaterSurface_Sheet_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateBroadWaterSurfaceSheetMesh(
+                        $"{prefix}_{areaToken}_BroadWaterSurface_Sheet_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(30.0f, 60.0f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(5.6f, 13.2f, DistantPanoramaVistaHash01(seed + 31)) * radiusScale,
+                        Mathf.Lerp(0.042f, 0.104f, DistantPanoramaVistaHash01(seed + 37))),
+                    waterMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.sheet.s{index + 1:00}");
+            }
+
+            for (var index = 0; index < BroadWaterSurfaceBasinSheetCount; index++)
+            {
+                var seed = 57329 + (int)area * 827 + (past ? 3343 : 0) + index * 251;
+                var t = index / (float)(BroadWaterSurfaceBasinSheetCount - 1);
+                var angle = baseAngle +
+                    Mathf.Lerp(-24.0f, 24.0f, t) * Mathf.Deg2Rad +
+                    DistantPanoramaVistaSigned(seed + 5, 1.80f) * Mathf.Deg2Rad;
+                var radial = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle));
+                var tangent = new Vector3(radial.z, 0f, -radial.x);
+                var radiusBand = index % 3;
+                var baseRadius =
+                    radiusBand == 0 ? 11.8f :
+                    radiusBand == 1 ? 14.8f :
+                    17.6f;
+                var radius = (baseRadius + DistantPanoramaVistaSigned(seed + 11, 0.92f)) * radiusScale;
+                var position = center +
+                    radial * radius +
+                    tangent * DistantPanoramaVistaSigned(seed + 17, 6.80f * widthScale) +
+                    new Vector3(0f, 0.136f + DistantPanoramaVistaHash01(seed + 23) * 0.060f, 0f);
+
+                CreateMidDistanceLandformClosurePiece(
+                    $"{prefix}_{areaToken}_BroadWaterSurface_BasinSheet_S{index + 1:00}",
+                    parent,
+                    position,
+                    MidDistanceLandformClosureFacingRotation(center, position, -radial),
+                    CreateBroadWaterSurfaceSheetMesh(
+                        $"{prefix}_{areaToken}_BroadWaterSurface_BasinSheet_S{index + 1:00}_Mesh",
+                        seed,
+                        Mathf.Lerp(42.0f, 74.0f, DistantPanoramaVistaHash01(seed + 29)) * widthScale,
+                        Mathf.Lerp(8.2f, 16.4f, DistantPanoramaVistaHash01(seed + 31)) * radiusScale,
+                        Mathf.Lerp(0.040f, 0.094f, DistantPanoramaVistaHash01(seed + 37))),
+                    waterMaterial,
+                    TimeWindowPairedSpaceLandmarkKind.PathOrFloor,
+                    $"{scope}.basin_sheet.s{index + 1:00}");
+            }
+
+            ApplyBroadWaterSurfaceRendererPolicy(parent);
+        }
+
+        private static void ApplyBroadWaterSurfaceRendererPolicy(Transform parent)
         {
             var expectedLayer = parent.gameObject.layer;
             foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
@@ -32691,6 +32920,43 @@ namespace Anemora.EditorTools
         private static Material EnsureFarShoreHoleClosureMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
         {
             var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureBroadWaterSurfaceMaterial(bool past)
+        {
+            var id = past ? "Ch1Distant_PastBroadWaterSurface" : "Ch1Distant_CurrentBroadWaterSurface";
+            return past
+                ? EnsureBroadWaterSurfacePixelMaterial(
+                    id,
+                    new Color32(62, 82, 61, 255),
+                    new Color32(108, 116, 78, 255),
+                    new Color32(38, 52, 41, 255),
+                    0.26f,
+                    new Vector2(7.2f, 1.08f))
+                : EnsureBroadWaterSurfacePixelMaterial(
+                    id,
+                    new Color32(28, 72, 86, 255),
+                    new Color32(64, 112, 118, 255),
+                    new Color32(22, 52, 64, 255),
+                    0.26f,
+                    new Vector2(7.2f, 1.08f));
+        }
+
+        private static Material EnsureBroadWaterSurfacePixelMaterial(string id, Color32 a, Color32 b, Color32 c, float smoothness, Vector2 tiling)
+        {
+            var material = PixelMaterial(id, a, b, c, PixelPattern.Water, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", smoothness);
@@ -58684,6 +58950,192 @@ namespace Anemora.EditorTools
                 reflectionRibbonVisibleCount < WaterlineBreakupReflectionRibbonVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: waterline breakup {prefix} {area} must visibly interrupt the horizontal water ribbon, visible={visibleCount}, bank={bankVisibleCount}, reed={reedVisibleCount}, shallow={shallowVisibleCount}, wetland={wetlandVisibleCount}, shallowPool={shallowPoolVisibleCount}, reflectionRibbon={reflectionRibbonVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dBroadWaterSurfaceAllMaps()
+        {
+            ValidateBroadWaterSurfaceTexture("Ch1Distant_CurrentBroadWaterSurface", 0.040f);
+            ValidateBroadWaterSurfaceTexture("Ch1Distant_PastBroadWaterSurface", 0.040f);
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateBroadWaterSurfaceRoot("Current", area);
+                ValidateBroadWaterSurfaceRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: broad water surface requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateBroadWaterSurfaceCameraCoverage(camera, "Current", area);
+                ValidateBroadWaterSurfaceCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateBroadWaterSurfaceTexture(string textureId, float minLuminanceRange)
+        {
+            ValidateGeneratedRepeatTextureAsset(textureId, 32, 32, 3);
+            ValidateTextureLuminanceRange(textureId, minLuminanceRange, $"{textureId} broad water surface texture");
+        }
+
+        private static void ValidateBroadWaterSurfaceRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_BroadWaterSurface";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing broad water surface root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: broad water surface root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: broad water surface root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            ApplyBroadWaterSurfaceRendererPolicy(root.transform);
+            var filters = root.GetComponentsInChildren<MeshFilter>(true);
+            if (filters.Length < BroadWaterSurfaceMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {BroadWaterSurfaceMeshCount} authored broad water meshes, found {filters.Length}.");
+            }
+
+            var center = GetDistantPanoramaVistaCenter(area);
+            var minRadius = 8.0f * GetWaterlineBreakupRadiusScale(area);
+            var maxRadius = 44.0f * GetWaterlineBreakupRadiusScale(area);
+            var sheetCount = 0;
+            var basinSheetCount = 0;
+            foreach (var filter in filters)
+            {
+                if (filter == null || filter.sharedMesh == null || filter.sharedMesh.vertexCount < 120 || filter.sharedMesh.triangles.Length < 720)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter?.gameObject.name ?? "<null>"} must keep authored mesh density.");
+                }
+
+                if (filter.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must stay on render layer {expectedLayer}, found {filter.gameObject.layer}.");
+                }
+
+                if (filter.GetComponent<Collider>() != null || filter.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must not add collision.");
+                }
+
+                var localOffset = filter.transform.localPosition - center;
+                var flatRadius = new Vector2(localOffset.x, localOffset.z).magnitude;
+                if (flatRadius < minRadius ||
+                    flatRadius > maxRadius ||
+                    localOffset.y < 0.090f ||
+                    localOffset.y > 0.260f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} left the intended open-water band at offset {localOffset}, radius={flatRadius:0.000}.");
+                }
+
+                if (filter.sharedMesh.bounds.size.y > 0.220f)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must remain a low water sheet, local height={filter.sharedMesh.bounds.size.y:0.000}.");
+                }
+
+                var renderer = filter.GetComponent<Renderer>();
+                if (renderer == null || renderer.sharedMaterial == null || !renderer.sharedMaterial.name.Contains("BroadWaterSurface", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must use a BroadWaterSurface material.");
+                }
+
+                if (ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must use a non-shadow renderer.");
+                }
+
+                var landmark = filter.GetComponent<TimeWindowPairedSpaceLandmark>();
+                if (landmark == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: broad water surface mesh {filter.gameObject.name} must keep a landmark marker.");
+                }
+
+                if (filter.gameObject.name.Contains("BasinSheet", StringComparison.Ordinal))
+                {
+                    basinSheetCount++;
+                }
+                else if (filter.gameObject.name.Contains("Sheet", StringComparison.Ordinal))
+                {
+                    sheetCount++;
+                }
+            }
+
+            if (sheetCount < BroadWaterSurfaceSheetCount ||
+                basinSheetCount < BroadWaterSurfaceBasinSheetCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine outer and basin open-water sheets, sheet={sheetCount}, basin={basinSheetCount}.");
+            }
+        }
+
+        private static void ValidateBroadWaterSurfaceCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_BroadWaterSurface");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing broad water surface root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var sheetVisibleCount = 0;
+            var basinVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (renderer.gameObject.name.Contains("BasinSheet", StringComparison.Ordinal))
+                {
+                    basinVisibleCount++;
+                }
+
+                if (renderer.gameObject.name.Contains("Sheet", StringComparison.Ordinal))
+                {
+                    sheetVisibleCount++;
+                }
+            }
+
+            if (visibleCount < BroadWaterSurfaceVisibleMinimum ||
+                sheetVisibleCount < BroadWaterSurfaceVisibleMinimum ||
+                basinVisibleCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: broad water surface {prefix} {area} must visibly break up open water, visible={visibleCount}, sheets={sheetVisibleCount}, basin={basinVisibleCount}.");
             }
         }
 

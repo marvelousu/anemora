@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.125 HD2D water reflection ribbons (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.126 HD2D broad water surface (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 822 files including INDEX.md and README.md.
-- Dated devlog records: 820 files.
+- Root-level Markdown coverage: 823 files including INDEX.md and README.md.
+- Dated devlog records: 821 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-20 | 5 |
+| 2026-06-20 | 6 |
 | 2026-06-19 | 10 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
@@ -54,6 +54,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-20_hd2d_broad_water_surface.md](2026-06-20_hd2d_broad_water_surface.md) | Fast VS / HD2D | HD2D broad water surface |
 | [2026-06-20_hd2d_water_reflection_ribbons.md](2026-06-20_hd2d_water_reflection_ribbons.md) | Fast VS / HD2D | HD2D water reflection ribbons |
 | [2026-06-20_hd2d_bridge_authored_crossing.md](2026-06-20_hd2d_bridge_authored_crossing.md) | Fast VS / HD2D | HD2D bridge authored crossing |
 | [2026-06-20_hd2d_waterline_shallow_pool.md](2026-06-20_hd2d_waterline_shallow_pool.md) | Fast VS / HD2D | HD2D waterline shallow pool |
@@ -822,6 +823,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.126 | 2026-06-20 | Added HD2D broad water surface with deterministic low-poly outer and basin water sheets, current/past Ch1Distant broad-water materials, validation count/visibility coverage, r1 basin rejection, r3 muted all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.125 | 2026-06-20 | Added HD2D water reflection ribbons with deterministic low-poly water-surface meshes, current/past Ch1Distant reflection-ribbon materials, validation count/visibility coverage, r1 subtle-pass rejection, r3 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.124 | 2026-06-20 | Added HD2D bridge authored crossing with non-blocking bridge stringers, ties, posts, braces, current/past repair-state cues, renderer-freeze validation, built-player bridge traversal proof, all-map capture, build, player smoke, and review propagation. |
 | v8.123 | 2026-06-20 | Added HD2D waterline shallow pool with deterministic low-poly shallow-water patches, current/past Ch1Distant shallow-pool materials, validation count/visibility coverage, r1 plateau rejection, r2 guard failure correction, r2b all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
