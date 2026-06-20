@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.128 HD2D nature canopy breakup (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.129 HD2D nature grass silhouette (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 825 files including INDEX.md and README.md.
-- Dated devlog records: 823 files.
+- Root-level Markdown coverage: 826 files including INDEX.md and README.md.
+- Dated devlog records: 824 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-20 | 8 |
+| 2026-06-20 | 9 |
 | 2026-06-19 | 10 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
@@ -54,6 +54,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-20_hd2d_nature_grass_silhouette.md](2026-06-20_hd2d_nature_grass_silhouette.md) | Fast VS / HD2D | HD2D nature grass silhouette |
 | [2026-06-20_hd2d_nature_canopy_breakup.md](2026-06-20_hd2d_nature_canopy_breakup.md) | Fast VS / HD2D | HD2D nature canopy breakup |
 | [2026-06-20_hd2d_forest_edge_overlap.md](2026-06-20_hd2d_forest_edge_overlap.md) | Fast VS / HD2D | HD2D forest edge overlap |
 | [2026-06-20_hd2d_broad_water_surface.md](2026-06-20_hd2d_broad_water_surface.md) | Fast VS / HD2D | HD2D broad water surface |
@@ -825,6 +826,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.129 | 2026-06-20 | Added HD2D nature grass silhouette with deterministic grass tuft LowLeaf/extra blade meshes, current/past Ch1Surface grass silhouette materials, Phase2 volume/grove understory additions, r1 bright visual rejection, r2 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.128 | 2026-06-20 | Added HD2D nature canopy breakup with deterministic CanopyBreakupFan/Spray meshes for authored trees, orchard nut trees, Phase2 vegetation volumes, and groves; added Ch1Surface nature canopy materials, orchard-generator validation correction, r1 visual rejection, r2 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.127 | 2026-06-20 | Added HD2D forest edge overlap with deterministic DistantVista_ForestEdgeOverlap crown meshes, current/past forest-edge materials, r1 plateau rejection, r2 visible all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.126 | 2026-06-20 | Added HD2D broad water surface with deterministic low-poly outer and basin water sheets, current/past Ch1Distant broad-water materials, validation count/visibility coverage, r1 basin rejection, r3 muted all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |

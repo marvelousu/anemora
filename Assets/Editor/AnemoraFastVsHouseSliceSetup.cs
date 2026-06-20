@@ -27459,6 +27459,7 @@ namespace Anemora.EditorTools
         {
             var yaw = AuthoredVegetationSigned(objectPrefix, 313, 24f);
             var canopyBreakup = EnsureChapter1NatureCanopyBreakupMaterial(past);
+            var grassSilhouette = EnsureChapter1NatureGrassSilhouetteMaterial(past);
             var coreScale = new Vector3(0.94f * scale, (past ? 0.90f : 0.78f) * scale, 0.84f * scale);
             var topScale = new Vector3(0.66f * scale, (past ? 0.62f : 0.52f) * scale, 0.62f * scale);
             var sideScale = new Vector3(0.72f * scale, (past ? 0.68f : 0.58f) * scale, 0.64f * scale);
@@ -27519,6 +27520,24 @@ namespace Anemora.EditorTools
                 grass,
                 $"{objectPrefix}.blade_b",
                 CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_BladeB_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.blade_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_BladeC",
+                root,
+                center + new Vector3(0.02f * scale, -0.07f, 0.34f * scale),
+                bladeScale * 1.08f,
+                Quaternion.Euler(0f, yaw + 54f, -19f + AuthoredVegetationSigned(objectPrefix, 329, 6f)),
+                grassSilhouette,
+                $"{objectPrefix}.blade_c",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_BladeC_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.blade_c"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_LowLeafA",
+                root,
+                center + new Vector3(0.10f * scale, -0.11f, -0.30f * scale),
+                new Vector3(0.50f * scale, 0.25f * scale, 0.44f * scale),
+                Quaternion.Euler(0f, yaw - 62f, 0f),
+                grassSilhouette,
+                $"{objectPrefix}.low_leaf_a",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_LowLeafA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.low_leaf_a"));
 
             CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_Stem",
@@ -27599,7 +27618,9 @@ namespace Anemora.EditorTools
             Material trunk)
         {
             var yaw = AuthoredVegetationSigned(objectPrefix, 373, 28f);
-            var canopyBreakup = EnsureChapter1NatureCanopyBreakupMaterial(objectPrefix.StartsWith("Past_", StringComparison.Ordinal));
+            var past = objectPrefix.StartsWith("Past_", StringComparison.Ordinal);
+            var canopyBreakup = EnsureChapter1NatureCanopyBreakupMaterial(past);
+            var grassSilhouette = EnsureChapter1NatureGrassSilhouetteMaterial(past);
             CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_Trunk",
                 root,
@@ -27744,6 +27765,24 @@ namespace Anemora.EditorTools
                 grass,
                 $"{objectPrefix}.understory_b",
                 CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_UnderstoryB_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.understory_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_UnderstoryC",
+                root,
+                center + new Vector3(0.18f * scale, -0.13f, -0.46f * scale),
+                new Vector3(0.62f * scale, 0.28f * scale, 0.56f * scale),
+                Quaternion.Euler(0f, yaw - 64f, 0f),
+                grassSilhouette,
+                $"{objectPrefix}.understory_c",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_UnderstoryC_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.understory_c"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_UnderstoryBladeC",
+                root,
+                center + new Vector3(0.14f * scale, -0.16f, 0.52f * scale),
+                new Vector3(0.30f * scale, 0.82f * scale, 0.26f * scale),
+                Quaternion.Euler(0f, yaw + 58f, -18f + AuthoredVegetationSigned(objectPrefix, 449, 5f)),
+                grassSilhouette,
+                $"{objectPrefix}.understory_blade_c",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_UnderstoryBladeC_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.understory_blade_c"));
         }
 
         private static GameObject CreateAuthoredVegetationFeatureMesh(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId, Mesh mesh)
@@ -33040,6 +33079,41 @@ namespace Anemora.EditorTools
         private static Material EnsureChapter1NatureCanopyBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, float smoothness)
         {
             var material = PixelMaterial(id, a, b, c, PixelPattern.Grass, true, new Vector2(2.4f, 2.8f), FastVsHd2dMaterialRole.SurfaceLit);
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", smoothness);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureChapter1NatureGrassSilhouetteMaterial(bool past)
+        {
+            var id = past ? "Ch1Surface_PastNatureGrassSilhouette" : "Ch1Surface_CurrentNatureGrassSilhouette";
+            return past
+                ? EnsureChapter1NatureGrassSilhouetteMaterial(
+                    id,
+                    new Color32(92, 88, 50, 255),
+                    new Color32(133, 119, 70, 255),
+                    new Color32(54, 50, 30, 255),
+                    0.035f)
+                : EnsureChapter1NatureGrassSilhouetteMaterial(
+                    id,
+                    new Color32(52, 94, 45, 255),
+                    new Color32(102, 132, 68, 255),
+                    new Color32(25, 58, 31, 255),
+                    0.035f);
+        }
+
+        private static Material EnsureChapter1NatureGrassSilhouetteMaterial(string id, Color32 a, Color32 b, Color32 c, float smoothness)
+        {
+            var material = PixelMaterial(id, a, b, c, PixelPattern.Grass, true, new Vector2(2.0f, 2.6f), FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", smoothness);
@@ -50606,9 +50680,14 @@ namespace Anemora.EditorTools
 
         private static void CreateGrassTuft(Transform root, string prefix, Vector3 center, Material material, int index)
         {
-            CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_A", center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, $"{prefix}.house_exterior.grass_tuft.{index}.a");
-            CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_B", center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, $"{prefix}.house_exterior.grass_tuft.{index}.b");
-            CreateAuthoredGrassBlade(root, $"{prefix}_HouseExterior_GrassTuft{index}_C", center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, $"{prefix}.house_exterior.grass_tuft.{index}.c");
+            var tuftPrefix = $"{prefix}_HouseExterior_GrassTuft{index}";
+            var accent = EnsureChapter1NatureGrassSilhouetteMaterial(prefix.StartsWith("Past_", StringComparison.Ordinal));
+            CreateAuthoredGrassBlade(root, $"{tuftPrefix}_A", center, new Vector3(0.12f, 0.40f, 0.12f), Quaternion.Euler(0f, 0f, -10f), material, $"{prefix}.house_exterior.grass_tuft.{index}.a");
+            CreateAuthoredGrassBlade(root, $"{tuftPrefix}_B", center + new Vector3(0.12f, 0.02f, 0.04f), new Vector3(0.12f, 0.34f, 0.12f), Quaternion.Euler(0f, 0f, 12f), material, $"{prefix}.house_exterior.grass_tuft.{index}.b");
+            CreateAuthoredGrassBlade(root, $"{tuftPrefix}_C", center + new Vector3(-0.10f, -0.02f, -0.02f), new Vector3(0.12f, 0.30f, 0.12f), Quaternion.Euler(0f, 0f, 4f), material, $"{prefix}.house_exterior.grass_tuft.{index}.c");
+            CreateAuthoredGrassBladeFeature(root, $"{tuftPrefix}_D", center + new Vector3(0.04f, 0.01f, 0.13f), new Vector3(0.16f, 0.46f, 0.13f), Quaternion.Euler(0f, 0f, -22f), accent, $"{prefix}.house_exterior.grass_tuft.{index}.d");
+            CreateAuthoredGrassBladeFeature(root, $"{tuftPrefix}_E", center + new Vector3(-0.14f, 0.00f, 0.09f), new Vector3(0.15f, 0.36f, 0.12f), Quaternion.Euler(0f, 0f, 17f), material, $"{prefix}.house_exterior.grass_tuft.{index}.e");
+            CreateAuthoredGrassLeafCluster(root, $"{tuftPrefix}_LowLeafA", center + new Vector3(0.02f, 0.18f, 0.02f), new Vector3(0.36f, 0.22f, 0.32f), Quaternion.Euler(0f, 0f, 0f), accent, $"{prefix}.house_exterior.grass_tuft.{index}.low_leaf_a");
         }
 
         private static GameObject CreateAuthoredGrassBlade(Transform root, string objectName, Vector3 center, Vector3 scale, Quaternion rotation, Material material, string landmarkId)
@@ -50625,6 +50704,36 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 landmarkId,
                 CreateAuthoredVegetationGrassBladeMesh($"{objectName}_{AuthoredVegetationMeshNamePrefix}_GrassBlade", objectName));
+        }
+
+        private static GameObject CreateAuthoredGrassBladeFeature(Transform root, string objectName, Vector3 center, Vector3 scale, Quaternion rotation, Material material, string landmarkId)
+        {
+            var yaw = AuthoredVegetationSigned(objectName, 149, 24f);
+            var combinedRotation = Quaternion.Euler(0f, yaw, 0f) * rotation;
+            return CreateAuthoredVegetationFeatureMesh(
+                objectName,
+                root,
+                center,
+                scale,
+                combinedRotation,
+                material,
+                landmarkId,
+                CreateAuthoredVegetationGrassBladeMesh($"{objectName}_{AuthoredVegetationMeshNamePrefix}_GrassBlade", objectName));
+        }
+
+        private static GameObject CreateAuthoredGrassLeafCluster(Transform root, string objectName, Vector3 center, Vector3 scale, Quaternion rotation, Material material, string landmarkId)
+        {
+            var yaw = AuthoredVegetationSigned(objectName, 173, 32f);
+            var combinedRotation = Quaternion.Euler(0f, yaw, 0f) * rotation;
+            return CreateAuthoredVegetationFeatureMesh(
+                objectName,
+                root,
+                center,
+                scale,
+                combinedRotation,
+                material,
+                landmarkId,
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_{AuthoredVegetationMeshNamePrefix}_LeafCluster", objectName));
         }
 
         private static void CreateOutdoorGroundDetailCluster(Transform root, string objectName, Vector3 center, Vector3 mainScale, Vector3 accentScale, Vector3 shadowScale, float yaw, Material mainMaterial, Material accentMaterial, Material shadowMaterial, string landmarkIdBase)
@@ -57684,19 +57793,23 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA_LeafSprayA", $"{prefix}_CentralPlazaMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA", $"{prefix}_CentralPlazaMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftPlant_HouseExterior_GrassTuft0_A", $"{prefix}_CentralPlazaMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftPlant_HouseExterior_GrassTuft0", $"{prefix}_CentralPlazaMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_Trunk", $"{prefix}_MiaHouseMap_SeparateSpace", "LowPolyTrunk", 23, 126);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_BranchForkA", $"{prefix}_MiaHouseMap_SeparateSpace", "BranchFork", 36, 180);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_LeafFanA", $"{prefix}_MiaHouseMap_SeparateSpace", "LeafFan", 20, 60);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_LeafSprayA", $"{prefix}_MiaHouseMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0_A", $"{prefix}_MiaHouseMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_Trunk", $"{prefix}_AriaStreetMap_SeparateSpace", "LowPolyTrunk", 23, 126);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_BranchForkA", $"{prefix}_AriaStreetMap_SeparateSpace", "BranchFork", 36, 180);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_LeafFanA", $"{prefix}_AriaStreetMap_SeparateSpace", "LeafFan", 20, 60);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_LeafSprayA", $"{prefix}_AriaStreetMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10_A", $"{prefix}_AriaStreetMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_LivingScatter_HouseExterior_GrassTuft0_A", $"{prefix}_KaiaFarmMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_E1_LivingScatter_HouseExterior_GrassTuft0", $"{prefix}_KaiaFarmMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Trunk", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyTrunk", 23, 126, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_BranchForkA", $"{prefix}_KaiaFarmMap_SeparateSpace", "BranchFork", 36, 180, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_LeafFanA", $"{prefix}_KaiaFarmMap_SeparateSpace", "LeafFan", 20, 60, false);
@@ -57705,6 +57818,7 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Crown", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyCanopy", 62, 360, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_NutA", $"{prefix}_KaiaFarmMap_SeparateSpace", "FacetedFruit", 6, 24, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0_A", $"{prefix}_RuinsMap_SeparateSpace", "GrassBlade", 5, 18);
+            ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0", $"{prefix}_RuinsMap_SeparateSpace");
         }
 
         private static void ValidateChapter1Phase2VegetationVolumeForPrefix(string prefix)
@@ -57728,6 +57842,8 @@ namespace Anemora.EditorTools
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_SideB", expectedParentName, "LeafCluster", 7, 24);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BladeA", expectedParentName, "GrassBlade", 5, 18);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BladeB", expectedParentName, "GrassBlade", 5, 18);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BladeC", expectedParentName, "GrassBlade", 5, 18);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_LowLeafA", expectedParentName, "LeafCluster", 7, 24);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_Stem", expectedParentName, "LowPolyTrunk", 23, 126);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_TwigA", expectedParentName, "BranchFork", 36, 180);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_TwigB", expectedParentName, "BranchFork", 36, 180);
@@ -57758,6 +57874,8 @@ namespace Anemora.EditorTools
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BranchSprayA", expectedParentName, "BranchFork", 36, 180);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryA", expectedParentName, "LeafCluster", 7, 24);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryB", expectedParentName, "GrassBlade", 5, 18);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryC", expectedParentName, "LeafCluster", 7, 24);
+                ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryBladeC", expectedParentName, "GrassBlade", 5, 18);
             }
         }
 
@@ -57765,6 +57883,13 @@ namespace Anemora.EditorTools
         {
             ValidateAuthoredVegetationMeshObject($"{objectPrefix}_CanopyBreakupFanA", expectedParentName, "LeafFan", 20, 60, requireActive);
             ValidateAuthoredVegetationMeshObject($"{objectPrefix}_CanopyBreakupSprayA", expectedParentName, "LeafSpray", 32, 96, requireActive);
+        }
+
+        private static void ValidateChapter1GrassTuftSilhouetteForPrefix(string tuftPrefix, string expectedParentName, bool requireActive = true)
+        {
+            ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_D", expectedParentName, "GrassBlade", 5, 18, requireActive);
+            ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_E", expectedParentName, "GrassBlade", 5, 18, requireActive);
+            ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_LowLeafA", expectedParentName, "LeafCluster", 7, 24, requireActive);
         }
 
         private static void ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix(string prefix, string expectedParentName)
@@ -57817,6 +57942,7 @@ namespace Anemora.EditorTools
                 ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_A", expectedParentName, "GrassBlade", 5, 18);
                 ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_B", expectedParentName, "GrassBlade", 5, 18);
                 ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_C", expectedParentName, "GrassBlade", 5, 18);
+                ValidateChapter1GrassTuftSilhouetteForPrefix(tuftPrefix, expectedParentName);
             }
         }
 
