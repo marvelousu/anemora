@@ -4,7 +4,7 @@
 > 詳細実装履歴は `docs/devlog/`、物語骨格は `docs/STORY_BIBLE_v1.md`、運用 gotcha は `AGENTS.md`。
 > **更新規律**: frontier が動いたら同じ commit でここを更新する。古いまま放置しない (pre-push hook が7日超の漂流を検査する)。
 
-最終更新: 2026-06-13 (Win Claude / Fable 5)
+最終更新: 2026-06-20 (Codex / HD2D environment uplift)
 
 ---
 

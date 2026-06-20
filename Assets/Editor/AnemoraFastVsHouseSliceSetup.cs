@@ -12082,6 +12082,12 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchWest", root, c + new Vector3(-7.20f, 0.078f, -5.78f), new Vector3(2.36f, 0.05f, 0.62f), Quaternion.Euler(0f, -8f, 0f), plantBed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.lower_plant_patch_west");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchCenter", root, c + new Vector3(-1.10f, 0.079f, -6.22f), new Vector3(2.10f, 0.05f, 0.54f), Quaternion.Euler(0f, 7f, 0f), plantBed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.lower_plant_patch_center");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchEast", root, c + new Vector3(6.30f, 0.078f, -5.70f), new Vector3(2.42f, 0.05f, 0.58f), Quaternion.Euler(0f, -11f, 0f), plantBed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.lower_plant_patch_east");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1_RightUnderbrushA", c + new Vector3(5.42f, 0.075f, 2.02f), new Vector3(1.18f, 0.05f, 0.46f), 16f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1_RightUnderbrushB", c + new Vector3(9.72f, 0.075f, 5.52f), new Vector3(1.36f, 0.05f, 0.52f), -12f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1_LeftUnderbrush", c + new Vector3(-8.62f, 0.075f, 4.18f), new Vector3(1.08f, 0.05f, 0.50f), 10f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchWest", c + new Vector3(-7.20f, 0.078f, -5.78f), new Vector3(2.36f, 0.05f, 0.62f), -8f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchCenter", c + new Vector3(-1.10f, 0.079f, -6.22f), new Vector3(2.10f, 0.05f, 0.54f), 7f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchEast", c + new Vector3(6.30f, 0.078f, -5.70f), new Vector3(2.42f, 0.05f, 0.58f), -11f, leaf, past);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_FrontYardLowBorderLeft", root, c + new Vector3(-2.42f, 0.20f, 1.16f), new Vector3(1.46f, 0.16f, 0.10f), Quaternion.Euler(0f, -9f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.front_yard_low_border_left");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_FrontYardLowBorderRight", root, c + new Vector3(2.58f, 0.20f, 1.02f), new Vector3(1.34f, 0.16f, 0.10f), Quaternion.Euler(0f, 8f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.front_yard_low_border_right");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_C1_GardenStoneCluster", root, c + new Vector3(-4.92f, 0.12f, -5.32f), new Vector3(0.58f, 0.14f, 0.30f), Quaternion.Euler(0f, 22f, -5f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.c1.garden_stone_cluster");
@@ -12281,6 +12287,10 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_LowerFieldStonePile", root, c + new Vector3(8.42f, 0.15f, -7.88f), new Vector3(0.88f, 0.18f, 0.42f), Quaternion.Euler(0f, -15f, 5f), past ? materials.PastStone : materials.CurrentStone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.lower_field_stone_pile");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_RightGrassEdgeBreakA", root, c + new Vector3(15.05f, 0.060f, 1.18f), new Vector3(1.06f, 0.05f, 0.58f), Quaternion.Euler(0f, 14f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e1.right_grass_edge_break_a");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_RightGrassEdgeBreakB", root, c + new Vector3(15.18f, 0.061f, -2.84f), new Vector3(0.56f, 0.05f, 0.54f), Quaternion.Euler(0f, -19f, 0f), ground, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.e1.right_grass_edge_break_b");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_E1_FieldEndPatchLeft", c + new Vector3(-12.10f, 0.085f, -7.20f), new Vector3(2.20f, 0.05f, 0.42f), 13f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_E1_FieldEndPatchMid", c + new Vector3(-1.40f, 0.086f, -6.02f), new Vector3(1.64f, 0.05f, 0.34f), -18f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_E1_RightGrassEdgeBreakA", c + new Vector3(15.05f, 0.060f, 1.18f), new Vector3(1.06f, 0.05f, 0.58f), 14f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_E1_RightGrassEdgeBreakB", c + new Vector3(15.18f, 0.061f, -2.84f), new Vector3(0.56f, 0.05f, 0.54f), -19f, leaf, past);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_LeaningHoe", root, c + new Vector3(-7.34f, 0.50f, 4.12f), new Vector3(0.10f, 0.78f, 0.08f), Quaternion.Euler(0f, 0f, -18f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.leaning_hoe");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_E1_LowBushelBasket", root, c + new Vector3(-7.76f, 0.20f, 4.64f), new Vector3(0.50f, 0.28f, 0.42f), Quaternion.Euler(0f, 14f, 0f), wood, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.e1.low_bushel_basket");
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_E1", c + new Vector3(13.60f, 0.20f, -4.32f), leaf, 20);
@@ -14741,6 +14751,16 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_SouthBrushPatchRightB", root, c + new Vector3(3.86f, 0.081f, -4.34f), new Vector3(0.32f, 0.08f, 0.56f), Quaternion.Euler(0f, 17f, 0f), brush, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.south_brush_patch_right_b");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_RightLowerBrushPatchA", root, c + new Vector3(15.72f, 0.072f, -5.46f), new Vector3(1.12f, 0.05f, 0.42f), Quaternion.Euler(0f, -12f, 0f), brush, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.right_lower_brush_patch_a");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_RightLowerBrushPatchB", root, c + new Vector3(18.42f, 0.073f, -4.88f), new Vector3(0.96f, 0.05f, 0.34f), Quaternion.Euler(0f, 16f, 0f), brush, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.right_lower_brush_patch_b");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_NorthBrushPatchLeftA", c + new Vector3(-4.18f, 0.085f, 5.10f), new Vector3(0.46f, 0.08f, 0.72f), -12f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_NorthBrushPatchLeftB", c + new Vector3(-3.82f, 0.086f, 3.82f), new Vector3(0.34f, 0.08f, 0.58f), 16f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_NorthBrushPatchRightA", c + new Vector3(4.18f, 0.085f, 4.96f), new Vector3(0.46f, 0.08f, 0.70f), 13f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_NorthBrushPatchRightB", c + new Vector3(3.88f, 0.086f, 3.68f), new Vector3(0.34f, 0.08f, 0.54f), -15f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_SouthBrushPatchLeftA", c + new Vector3(-4.20f, 0.080f, -5.72f), new Vector3(0.42f, 0.08f, 0.82f), 14f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_SouthBrushPatchLeftB", c + new Vector3(-3.78f, 0.081f, -4.48f), new Vector3(0.32f, 0.08f, 0.58f), -18f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_SouthBrushPatchRightA", c + new Vector3(4.22f, 0.080f, -5.62f), new Vector3(0.42f, 0.08f, 0.78f), -13f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_SouthBrushPatchRightB", c + new Vector3(3.86f, 0.081f, -4.34f), new Vector3(0.32f, 0.08f, 0.56f), 17f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_RightLowerBrushPatchA", c + new Vector3(15.72f, 0.072f, -5.46f), new Vector3(1.12f, 0.05f, 0.42f), -12f, dryBrush, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_RightLowerBrushPatchB", c + new Vector3(18.42f, 0.073f, -4.88f), new Vector3(0.96f, 0.05f, 0.34f), 16f, dryBrush, past);
 
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush", c + new Vector3(-4.54f, 0.20f, 5.26f), dryBrush, 0);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush", c + new Vector3(4.52f, 0.20f, 4.96f), dryBrush, 1);
@@ -17551,6 +17571,10 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushPatchD", root, c + new Vector3(18.62f, 0.078f, -5.48f), new Vector3(1.34f, 0.05f, 0.38f), Quaternion.Euler(0f, -14f, 0f), weed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.right_low_brush_patch_d");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushClumpA", root, c + new Vector3(16.12f, 0.16f, -4.96f), new Vector3(0.30f, 0.30f, 0.30f), Quaternion.Euler(0f, -8f, 0f), weed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.right_low_brush_clump_a");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushClumpB", root, c + new Vector3(19.68f, 0.15f, -4.72f), new Vector3(0.28f, 0.26f, 0.28f), Quaternion.Euler(0f, 12f, 0f), weed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.f.right_low_brush_clump_b");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushPatchC", c + new Vector3(14.90f, 0.078f, -5.80f), new Vector3(1.10f, 0.05f, 0.36f), 11f, weed, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushPatchD", c + new Vector3(18.62f, 0.078f, -5.48f), new Vector3(1.34f, 0.05f, 0.38f), -14f, weed, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushClumpA", c + new Vector3(16.12f, 0.16f, -4.96f), new Vector3(0.56f, 0.22f, 0.42f), -8f, weed, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushClumpB", c + new Vector3(19.68f, 0.15f, -4.72f), new Vector3(0.52f, 0.22f, 0.42f), 12f, weed, past);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F_RightSettlement", c + new Vector3(14.70f, 0.20f, -4.92f), weed, 0);
             CreateGrassTuft(root, $"{prefix}_CentralPlaza_Chapter1_F_RightSettlement", c + new Vector3(18.86f, 0.20f, -5.70f), weed, 1);
         }
@@ -18940,6 +18964,8 @@ namespace Anemora.EditorTools
 
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadLowerVergePatch", root, c + new Vector3(5.92f, 0.108f, -2.94f), new Vector3(1.42f, 0.040f, 0.30f), Quaternion.Euler(0f, -12f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.cycle94.right_road_lower_verge_patch");
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadMidVergePatch", root, c + new Vector3(7.82f, 0.108f, 0.78f), new Vector3(1.36f, 0.040f, 0.32f), Quaternion.Euler(0f, 18f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.cycle94.right_road_mid_verge_patch");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadLowerVergePatch", c + new Vector3(5.92f, 0.108f, -2.94f), new Vector3(1.42f, 0.040f, 0.30f), -12f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadMidVergePatch", c + new Vector3(7.82f, 0.108f, 0.78f), new Vector3(1.36f, 0.040f, 0.32f), 18f, leaf, past);
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_A2ApproachOuterScuff", root, c + new Vector3(9.10f, 0.126f, 3.86f), new Vector3(1.08f, 0.035f, 0.18f), Quaternion.Euler(0f, -18f, 0f), path, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.house_exterior.chapter1.cycle94.a2_approach_outer_scuff");
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadSmallStone", root, c + new Vector3(7.06f, 0.156f, -0.72f), new Vector3(0.36f, 0.10f, 0.18f), Quaternion.Euler(0f, 15f, -3f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.cycle94.right_road_small_stone");
 
@@ -19589,6 +19615,10 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeMidBed", root, c + new Vector3(-4.80f, 0.118f, -7.82f), new Vector3(3.40f, 0.040f, 0.30f), Quaternion.Euler(0f, 3f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.cycle90.lower_verge_mid_bed");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeEastBed", root, c + new Vector3(5.44f, 0.118f, -7.60f), new Vector3(3.22f, 0.040f, 0.30f), Quaternion.Euler(0f, -5f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.cycle90.lower_verge_east_bed");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeDistantBed", root, c + new Vector3(13.92f, 0.118f, -7.44f), new Vector3(2.36f, 0.040f, 0.28f), Quaternion.Euler(0f, 6f, 0f), verge, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.cycle90.lower_verge_distant_bed");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeWestBed", c + new Vector3(-13.84f, 0.118f, -7.72f), new Vector3(3.12f, 0.040f, 0.30f), -4f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeMidBed", c + new Vector3(-4.80f, 0.118f, -7.82f), new Vector3(3.40f, 0.040f, 0.30f), 3f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeEastBed", c + new Vector3(5.44f, 0.118f, -7.60f), new Vector3(3.22f, 0.040f, 0.30f), -5f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeDistantBed", c + new Vector3(13.92f, 0.118f, -7.44f), new Vector3(2.36f, 0.040f, 0.28f), 6f, leaf, past);
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Cycle90_RoadSouthEdgeScuffWest", root, c + new Vector3(-10.12f, 0.142f, -5.58f), new Vector3(1.68f, 0.035f, 0.16f), Quaternion.Euler(0f, -7f, 0f), past ? materials.PastGrass : materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.cycle90.road_south_edge_scuff_west");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Cycle90_RoadSouthEdgeScuffEast", root, c + new Vector3(7.28f, 0.142f, -5.52f), new Vector3(1.54f, 0.035f, 0.16f), Quaternion.Euler(0f, 8f, 0f), past ? materials.PastGrass : materials.Dust, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.central_plaza.chapter1.cycle90.road_south_edge_scuff_east");
             CreateLandmarkCube($"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeMarkerStone", root, c + new Vector3(0.32f, 0.168f, -7.42f), new Vector3(0.38f, 0.12f, 0.20f), Quaternion.Euler(0f, 12f, 0f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.central_plaza.chapter1.cycle90.lower_verge_marker_stone");
@@ -47523,6 +47553,11 @@ namespace Anemora.EditorTools
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_A_FrontPlantPatchEast", root, c + new Vector3(3.82f, 0.076f, -4.36f), new Vector3(1.18f, 0.05f, 0.42f), Quaternion.Euler(0f, 10f, 0f), plantBed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.a.front_plant_patch_east");
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_A_RightTreeUnderbrush", root, c + new Vector3(6.42f, 0.076f, 2.14f), new Vector3(1.16f, 0.05f, 0.50f), Quaternion.Euler(0f, -18f, 0f), plantBed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.a.right_tree_underbrush");
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_A_LowerRightUnderbrush", root, c + new Vector3(6.68f, 0.076f, -3.22f), new Vector3(1.08f, 0.05f, 0.46f), Quaternion.Euler(0f, 16f, 0f), plantBed, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.a.lower_right_underbrush");
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_A_FrontPlantPatchWest", c + new Vector3(-4.82f, 0.075f, -4.58f), new Vector3(1.32f, 0.05f, 0.42f), 14f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_A_FrontPlantPatchCenter", c + new Vector3(-1.18f, 0.076f, -4.78f), new Vector3(1.78f, 0.05f, 0.46f), -6f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_A_FrontPlantPatchEast", c + new Vector3(3.82f, 0.076f, -4.36f), new Vector3(1.18f, 0.05f, 0.42f), 10f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_A_RightTreeUnderbrush", c + new Vector3(6.42f, 0.076f, 2.14f), new Vector3(1.16f, 0.05f, 0.50f), -18f, leaf, past);
+            CreateAuthoredGroundCoverPatch(root, $"{prefix}_HouseExterior_Chapter1_A_LowerRightUnderbrush", c + new Vector3(6.68f, 0.076f, -3.22f), new Vector3(1.08f, 0.05f, 0.46f), 16f, leaf, past);
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_A_LeftFencePlantBreak", root, c + new Vector3(-6.08f, 0.20f, -2.26f), new Vector3(0.12f, 0.18f, 1.04f), Quaternion.Euler(0f, 6f, 0f), trim, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.a.left_fence_plant_break");
             CreateLandmarkCube($"{prefix}_HouseExterior_Chapter1_A_FrontStoneCluster", root, c + new Vector3(1.54f, 0.13f, -4.48f), new Vector3(0.54f, 0.14f, 0.28f), Quaternion.Euler(0f, -18f, 4f), stone, false, TimeWindowPairedSpaceLandmarkKind.PropOrFeature, $"{prefix}.house_exterior.chapter1.a.front_stone_cluster");
             CreateGrassTuft(root, $"{prefix}_HouseExterior_Chapter1_A_NaturalScatter", c + new Vector3(-5.36f, 0.20f, -3.74f), leaf, 0);
@@ -50772,6 +50807,56 @@ namespace Anemora.EditorTools
                 material,
                 landmarkId,
                 CreateAuthoredVegetationLeafClusterMesh($"{objectName}_{AuthoredVegetationMeshNamePrefix}_LeafCluster", objectName));
+        }
+
+        private static void CreateAuthoredGroundCoverPatch(Transform root, string objectPrefix, Vector3 center, Vector3 footprint, float yaw, Material material, bool past)
+        {
+            var accent = EnsureChapter1NatureGrassSilhouetteMaterial(past);
+            var width = Mathf.Max(footprint.x, 0.42f);
+            var depth = Mathf.Max(footprint.z, 0.30f);
+            var lift = center + new Vector3(0f, 0.26f, 0f);
+            var yawJitter = AuthoredVegetationSigned(objectPrefix, 501, 7f);
+            CreateAuthoredGrassLeafCluster(
+                root,
+                $"{objectPrefix}_GroundCoverA",
+                lift + new Vector3(-0.16f * width, 0.00f, 0.10f * depth),
+                new Vector3(0.68f * width, 0.52f, 0.92f * depth),
+                Quaternion.Euler(0f, yaw + yawJitter, 0f),
+                accent,
+                $"{objectPrefix}.ground_cover_a");
+            CreateAuthoredGrassLeafCluster(
+                root,
+                $"{objectPrefix}_GroundCoverB",
+                lift + new Vector3(0.24f * width, -0.02f, -0.12f * depth),
+                new Vector3(0.54f * width, 0.44f, 0.74f * depth),
+                Quaternion.Euler(0f, yaw - 36f + AuthoredVegetationSigned(objectPrefix, 502, 7f), 0f),
+                material,
+                $"{objectPrefix}.ground_cover_b");
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_GroundCoverSprayA",
+                root,
+                lift + new Vector3(0.14f * width, 0.03f, -0.08f * depth),
+                new Vector3(0.72f * width, 0.58f, 0.82f * depth),
+                Quaternion.Euler(-3f + AuthoredVegetationSigned(objectPrefix, 503, 4f), yaw - 12f, 3f + AuthoredVegetationSigned(objectPrefix, 505, 4f)),
+                accent,
+                $"{objectPrefix}.ground_cover_spray_a",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_GroundCoverSprayA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.ground_cover_spray_a"));
+            CreateAuthoredGrassBladeFeature(
+                root,
+                $"{objectPrefix}_GroundCoverBladeA",
+                lift + new Vector3(-0.30f * width, 0.08f, -0.02f * depth),
+                new Vector3(0.14f * Mathf.Max(width, 0.80f), 0.72f, 0.14f * Mathf.Max(depth, 0.70f)),
+                Quaternion.Euler(0f, yaw + 22f, -18f + AuthoredVegetationSigned(objectPrefix, 507, 5f)),
+                material,
+                $"{objectPrefix}.ground_cover_blade_a");
+            CreateAuthoredGrassBladeFeature(
+                root,
+                $"{objectPrefix}_GroundCoverBladeB",
+                lift + new Vector3(0.30f * width, 0.06f, 0.06f * depth),
+                new Vector3(0.14f * Mathf.Max(width, 0.80f), 0.64f, 0.14f * Mathf.Max(depth, 0.70f)),
+                Quaternion.Euler(0f, yaw - 25f, 16f + AuthoredVegetationSigned(objectPrefix, 509, 5f)),
+                accent,
+                $"{objectPrefix}.ground_cover_blade_b");
         }
 
         private static void CreateOutdoorGroundDetailCluster(Transform root, string objectName, Vector3 center, Vector3 mainScale, Vector3 accentScale, Vector3 shadowScale, float yaw, Material mainMaterial, Material accentMaterial, Material shadowMaterial, string landmarkIdBase)
@@ -57825,6 +57910,8 @@ namespace Anemora.EditorTools
 
         private static void ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix(string prefix)
         {
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_HouseExterior_Chapter1_A_FrontPlantPatchCenter", $"{prefix}_HouseExteriorMap_SeparateSpace");
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_HouseExterior_Chapter1_Cycle94_RightRoadLowerVergePatch", $"{prefix}_HouseExteriorMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA_Trunk", $"{prefix}_CentralPlazaMap_SeparateSpace", "LowPolyTrunk", 23, 126);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA_BranchForkA", $"{prefix}_CentralPlazaMap_SeparateSpace", "BranchFork", 36, 180);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA_LeafFanA", $"{prefix}_CentralPlazaMap_SeparateSpace", "LeafFan", 20, 60);
@@ -57839,6 +57926,7 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_LeafSprayA", $"{prefix}_MiaHouseMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateChapter1TreeBaseShrubForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA", $"{prefix}_MiaHouseMap_SeparateSpace");
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchCenter", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0_A", $"{prefix}_MiaHouseMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_Trunk", $"{prefix}_AriaStreetMap_SeparateSpace", "LowPolyTrunk", 23, 126);
@@ -57847,10 +57935,12 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_LeafSprayA", $"{prefix}_AriaStreetMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateChapter1TreeBaseShrubForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA", $"{prefix}_AriaStreetMap_SeparateSpace");
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeMidBed", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10_A", $"{prefix}_AriaStreetMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_LivingScatter_HouseExterior_GrassTuft0_A", $"{prefix}_KaiaFarmMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_E1_LivingScatter_HouseExterior_GrassTuft0", $"{prefix}_KaiaFarmMap_SeparateSpace");
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_E1_FieldEndPatchMid", $"{prefix}_KaiaFarmMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Trunk", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyTrunk", 23, 126, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_BranchForkA", $"{prefix}_KaiaFarmMap_SeparateSpace", "BranchFork", 36, 180, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_LeafFanA", $"{prefix}_KaiaFarmMap_SeparateSpace", "LeafFan", 20, 60, false);
@@ -57861,6 +57951,8 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_NutA", $"{prefix}_KaiaFarmMap_SeparateSpace", "FacetedFruit", 6, 24, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0_A", $"{prefix}_RuinsMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0", $"{prefix}_RuinsMap_SeparateSpace");
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_F_NorthBrushPatchLeftA", $"{prefix}_RuinsMap_SeparateSpace");
+            ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_F_RightLowBrushPatchC", $"{prefix}_RuinsMap_SeparateSpace");
         }
 
         private static void ValidateChapter1Phase2VegetationVolumeForPrefix(string prefix)
@@ -57933,6 +58025,15 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BaseShrubA", expectedParentName, "LeafCluster", 7, 24, requireActive);
             ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BaseShrubB", expectedParentName, "LeafCluster", 7, 24, requireActive);
             ValidateAuthoredVegetationMeshObject($"{objectPrefix}_BaseLeafSprayA", expectedParentName, "LeafSpray", 32, 96, requireActive);
+        }
+
+        private static void ValidateChapter1GroundCoverPatchForPrefix(string objectPrefix, string expectedParentName, bool requireActive = true)
+        {
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_GroundCoverA", expectedParentName, "LeafCluster", 7, 24, requireActive);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_GroundCoverB", expectedParentName, "LeafCluster", 7, 24, requireActive);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_GroundCoverSprayA", expectedParentName, "LeafSpray", 32, 96, requireActive);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_GroundCoverBladeA", expectedParentName, "GrassBlade", 5, 18, requireActive);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_GroundCoverBladeB", expectedParentName, "GrassBlade", 5, 18, requireActive);
         }
 
         private static void ValidateChapter1GrassTuftSilhouetteForPrefix(string tuftPrefix, string expectedParentName, bool requireActive = true)

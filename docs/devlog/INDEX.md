@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.130 HD2D nature tree base shrub (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.131 HD2D nature ground cover overlay (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 827 files including INDEX.md and README.md.
-- Dated devlog records: 825 files.
+- Root-level Markdown coverage: 828 files including INDEX.md and README.md.
+- Dated devlog records: 826 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1497 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-20 | 10 |
+| 2026-06-20 | 11 |
 | 2026-06-19 | 10 |
 | 2026-06-18 | 1 |
 | 2026-06-17 | 7 |
@@ -54,6 +54,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-20_hd2d_nature_ground_cover_overlay.md](2026-06-20_hd2d_nature_ground_cover_overlay.md) | Fast VS / HD2D | HD2D nature ground cover overlay |
 | [2026-06-20_hd2d_nature_tree_base_shrub.md](2026-06-20_hd2d_nature_tree_base_shrub.md) | Fast VS / HD2D | HD2D nature tree base shrub |
 | [2026-06-20_hd2d_nature_grass_silhouette.md](2026-06-20_hd2d_nature_grass_silhouette.md) | Fast VS / HD2D | HD2D nature grass silhouette |
 | [2026-06-20_hd2d_nature_canopy_breakup.md](2026-06-20_hd2d_nature_canopy_breakup.md) | Fast VS / HD2D | HD2D nature canopy breakup |
@@ -827,6 +828,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.131 | 2026-06-20 | Added HD2D nature ground cover overlay with deterministic LeafCluster/LeafSpray/GrassBlade ground-cover feature meshes across HouseExterior, MiaHouse, AriaStreet, KaiaFarm, and Ruins flat patch/verge/brush areas; added representative A/C/D/E/F validation coverage, r1 subtle visual rejection, r2 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.130 | 2026-06-20 | Added HD2D nature tree base shrub with deterministic BaseShrub/BaseLeafSpray feature meshes for authored trees, farm nut trees, and Phase2 groves; added validation coverage, r1 hidden-canopy rejection, r2 localized rejection, r3 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.129 | 2026-06-20 | Added HD2D nature grass silhouette with deterministic grass tuft LowLeaf/extra blade meshes, current/past Ch1Surface grass silhouette materials, Phase2 volume/grove understory additions, r1 bright visual rejection, r2 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.128 | 2026-06-20 | Added HD2D nature canopy breakup with deterministic CanopyBreakupFan/Spray meshes for authored trees, orchard nut trees, Phase2 vegetation volumes, and groves; added Ch1Surface nature canopy materials, orchard-generator validation correction, r1 visual rejection, r2 all-map review capture, shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
