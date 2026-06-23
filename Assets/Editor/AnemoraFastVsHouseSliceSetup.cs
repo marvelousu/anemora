@@ -10448,6 +10448,16 @@ namespace Anemora.EditorTools
                 prefix,
                 past,
                 materials);
+            CreateChapter1RealisticNearfieldNatureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
             CreateChapter1Phase2VegetationVolumeForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
@@ -20441,8 +20451,6 @@ namespace Anemora.EditorTools
             var yaw = AuthoredVegetationSigned(objectPrefix, 1301, 160f);
             var treePath = SelectImportedNatureTreePath(objectPrefix, past);
             var treeScale = Vector3.one * Mathf.Clamp(scale * ImportedNatureTreeScaleMultiplier(treePath), 0.42f, 1.72f);
-            var grassScale = Vector3.one * Mathf.Clamp(scale * 0.84f, 0.62f, 1.14f);
-            var secondaryGrassScale = Vector3.one * Mathf.Clamp(scale * 0.68f, 0.50f, 0.96f);
 
             CreateImportedNatureModel(
                 $"{objectPrefix}_NatureTreeModel",
@@ -20459,97 +20467,33 @@ namespace Anemora.EditorTools
                 leafMaterial,
                 $"{objectPrefix}.nature_tree_model",
                 false);
-            CreateImportedNatureModel(
-                $"{objectPrefix}_NatureGrassModelA",
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_NatureUnderCanopyFillA",
                 root,
-                SelectImportedNatureGrassPath(objectPrefix),
-                basePosition + new Vector3(-0.34f * scale, 0.01f, 0.32f * scale),
-                grassScale,
-                Quaternion.Euler(0f, yaw - 38f, 0f),
-                past,
-                grassMaterial,
-                trunkMaterial,
-                grassMaterial,
-                null,
+                basePosition + new Vector3(-0.28f * scale, 0.62f * scale, 0.20f * scale),
+                new Vector3(0.84f * scale, 0.54f * scale, 0.72f * scale),
+                Quaternion.Euler(-4f + AuthoredVegetationSigned(objectPrefix, 1323, 4f), yaw - 34f, 6f + AuthoredVegetationSigned(objectPrefix, 1325, 5f)),
                 leafMaterial,
-                $"{objectPrefix}.nature_grass_model_a",
-                false);
-            CreateImportedNatureModel(
-                $"{objectPrefix}_NatureGrassModelB",
+                $"{objectPrefix}.nature_under_canopy_fill_a",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_NatureUnderCanopyFillA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.nature_under_canopy_fill_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_NatureUnderCanopyFillB",
                 root,
-                SelectImportedNatureGrassPath($"{objectPrefix}.understory_grass_b"),
-                basePosition + new Vector3(0.18f * scale, 0.012f, 0.46f * scale),
-                secondaryGrassScale,
-                Quaternion.Euler(0f, yaw + 18f + AuthoredVegetationSigned(objectPrefix, 1313, 12f), 0f),
-                past,
+                basePosition + new Vector3(0.30f * scale, 0.54f * scale, -0.18f * scale),
+                new Vector3(0.78f * scale, 0.46f * scale, 0.68f * scale),
+                Quaternion.Euler(3f + AuthoredVegetationSigned(objectPrefix, 1327, 4f), yaw + 42f, -5f + AuthoredVegetationSigned(objectPrefix, 1329, 5f)),
                 grassMaterial,
-                trunkMaterial,
-                grassMaterial,
-                null,
-                leafMaterial,
-                $"{objectPrefix}.nature_grass_model_b",
-                false);
-            CreateImportedNatureModel(
-                $"{objectPrefix}_NatureBushModelA",
+                $"{objectPrefix}.nature_under_canopy_fill_b",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_NatureUnderCanopyFillB_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.nature_under_canopy_fill_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_NatureUnderCanopyFillC",
                 root,
-                SelectImportedNatureBushPath(objectPrefix),
-                basePosition + new Vector3(0.42f * scale, 0.01f, -0.28f * scale),
-                Vector3.one * Mathf.Clamp(scale * 0.62f, 0.46f, 0.92f),
-                Quaternion.Euler(0f, yaw + 47f, 0f),
-                past,
+                basePosition + new Vector3(0.02f * scale, 0.42f * scale, 0.36f * scale),
+                new Vector3(0.72f * scale, 0.38f * scale, 0.62f * scale),
+                Quaternion.Euler(-2f + AuthoredVegetationSigned(objectPrefix, 1331, 4f), yaw + 8f, AuthoredVegetationSigned(objectPrefix, 1333, 5f)),
                 leafMaterial,
-                trunkMaterial,
-                grassMaterial,
-                null,
-                leafMaterial,
-                $"{objectPrefix}.nature_bush_model_a",
-                false);
-            CreateImportedNatureModel(
-                $"{objectPrefix}_NaturePlantModelA",
-                root,
-                SelectImportedNaturePlantPath($"{objectPrefix}.understory_plant_a"),
-                basePosition + new Vector3(-0.54f * scale, 0.012f, -0.12f * scale),
-                Vector3.one * Mathf.Clamp(scale * 0.52f, 0.38f, 0.78f),
-                Quaternion.Euler(0f, yaw - 74f + AuthoredVegetationSigned(objectPrefix, 1315, 16f), 0f),
-                past,
-                leafMaterial,
-                trunkMaterial,
-                grassMaterial,
-                null,
-                leafMaterial,
-                $"{objectPrefix}.nature_plant_model_a",
-                false);
-            CreateImportedNatureModel(
-                $"{objectPrefix}_NatureFallenWoodModelA",
-                root,
-                SelectImportedNatureGroundAccentPath(objectPrefix),
-                basePosition + new Vector3(AuthoredVegetationSigned(objectPrefix, 1307, 0.28f), 0.012f, -0.46f * scale + AuthoredVegetationSigned(objectPrefix, 1309, 0.08f)),
-                Vector3.one * Mathf.Clamp(scale * 0.34f, 0.24f, 0.52f),
-                Quaternion.Euler(0f, yaw + 92f + AuthoredVegetationSigned(objectPrefix, 1311, 18f), 0f),
-                past,
-                leafMaterial,
-                trunkMaterial,
-                grassMaterial,
-                trunkMaterial,
-                leafMaterial,
-                $"{objectPrefix}.nature_fallen_wood_model_a",
-                false);
-            var saplingPath = SelectImportedNatureBroadleafTreePath($"{objectPrefix}.sapling", past);
-            CreateImportedNatureModel(
-                $"{objectPrefix}_NatureSaplingModelA",
-                root,
-                saplingPath,
-                basePosition + new Vector3(0.62f * scale + AuthoredVegetationSigned(objectPrefix, 1317, 0.10f), 0.008f, 0.58f * scale + AuthoredVegetationSigned(objectPrefix, 1319, 0.10f)),
-                Vector3.one * Mathf.Clamp(scale * ImportedNatureTreeScaleMultiplier(saplingPath) * 0.48f, 0.22f, 0.50f),
-                Quaternion.Euler(0f, yaw - 64f + AuthoredVegetationSigned(objectPrefix, 1321, 12f), 0f),
-                past,
-                leafMaterial,
-                trunkMaterial,
-                grassMaterial,
-                null,
-                leafMaterial,
-                $"{objectPrefix}.nature_sapling_model_a",
-                false);
+                $"{objectPrefix}.nature_under_canopy_fill_c",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_NatureUnderCanopyFillC_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.nature_under_canopy_fill_c"));
             CreateAuthoredGroundCoverPatch(
                 root,
                 $"{objectPrefix}_NatureUnderstoryPatchA",
@@ -20566,7 +20510,18 @@ namespace Anemora.EditorTools
                 yaw - 32f,
                 leafMaterial,
                 past);
-            CreatePhotoVegetationTreeCards(root, objectPrefix, trunkCenter, basePosition, yaw, past, scale);
+            CreateGrassTuft(
+                root,
+                $"{objectPrefix}_NatureUnderstory",
+                basePosition + new Vector3(-0.48f * scale, 0.20f, 0.42f * scale),
+                grassMaterial,
+                0);
+            CreateGrassTuft(
+                root,
+                $"{objectPrefix}_NatureUnderstory",
+                basePosition + new Vector3(0.52f * scale, 0.20f, -0.30f * scale),
+                leafMaterial,
+                1);
         }
 
         private static void CreateImportedNatureClusterCompanion(Transform root, string objectPrefix, Vector3 center, float scale, bool past, Material leafMaterial, Material grassMaterial, Material stemMaterial, Material accentMaterial)
@@ -20636,7 +20591,6 @@ namespace Anemora.EditorTools
                 accentMaterial,
                 $"{objectPrefix}.nature_moss_rock_model_a",
                 false);
-            CreatePhotoVegetationClusterCards(root, objectPrefix, basePosition, yaw, past, scale);
         }
 
         private static void CreatePhotoVegetationTreeCards(Transform root, string objectPrefix, Vector3 trunkCenter, Vector3 basePosition, float yaw, bool past, float scale)
@@ -21048,12 +21002,6 @@ namespace Anemora.EditorTools
             }
 
             var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(outputPath);
-            if (existing != null)
-            {
-                TexturedNatureLeafToneTextureCache[outputPath] = existing;
-                return existing;
-            }
-
             EnsureTexturedNatureTextureImporter(sourcePath, false);
             var source = AssetDatabase.LoadAssetAtPath<Texture2D>(sourcePath);
             if (source == null)
@@ -21062,10 +21010,29 @@ namespace Anemora.EditorTools
             }
 
             var pixels = source.GetPixels32();
-            var toned = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false)
+            if (existing != null && (existing.width != source.width || existing.height != source.height || existing.format != TextureFormat.RGBA32))
             {
-                name = Path.GetFileNameWithoutExtension(outputPath)
-            };
+                AssetDatabase.DeleteAsset(outputPath);
+                existing = null;
+            }
+
+            var toned = existing ?? new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+            if (existing == null)
+            {
+                AssetDatabase.CreateAsset(toned, outputPath);
+            }
+            else if (toned.width != source.width || toned.height != source.height)
+            {
+                toned.Reinitialize(source.width, source.height, TextureFormat.RGBA32, false);
+            }
+
+            toned.name = Path.GetFileNameWithoutExtension(outputPath);
+            toned.filterMode = FilterMode.Point;
+            toned.wrapMode = TextureWrapMode.Clamp;
+
+            var transparentKey = past
+                ? (conifer ? new Color32(66, 76, 48, 0) : new Color32(70, 78, 50, 0))
+                : (conifer ? new Color32(42, 78, 42, 0) : new Color32(54, 88, 48, 0));
 
             var dark = past
                 ? (conifer ? new Color(0.34f, 0.40f, 0.22f, 1f) : new Color(0.38f, 0.42f, 0.24f, 1f))
@@ -21081,13 +21048,14 @@ namespace Anemora.EditorTools
             {
                 var sourcePixel = pixels[i];
                 var alpha = sourcePixel.a;
-                if (alpha <= 24)
+                var luma = (sourcePixel.r * 0.2126f + sourcePixel.g * 0.7152f + sourcePixel.b * 0.0722f) / 255f;
+                var maxChannel = Mathf.Max(sourcePixel.r, Mathf.Max(sourcePixel.g, sourcePixel.b)) / 255f;
+                if (alpha <= 24 || (luma < 0.075f && maxChannel < 0.20f))
                 {
-                    pixels[i] = new Color32(54, 88, 48, 0);
+                    pixels[i] = transparentKey;
                     continue;
                 }
 
-                var luma = (sourcePixel.r * 0.2126f + sourcePixel.g * 0.7152f + sourcePixel.b * 0.0722f) / 255f;
                 var tone = Mathf.Clamp01((luma - 0.05f) / 0.62f);
                 tone = tone * tone * (3f - 2f * tone);
                 var color = tone < 0.58f
@@ -21103,7 +21071,6 @@ namespace Anemora.EditorTools
 
             toned.SetPixels32(pixels);
             toned.Apply(false, false);
-            AssetDatabase.CreateAsset(toned, outputPath);
             AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceSynchronousImport);
             TexturedNatureLeafToneTextureCache[outputPath] = toned;
             return toned;
@@ -21286,15 +21253,15 @@ namespace Anemora.EditorTools
         private static Material ImportedNatureLeafMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(72, 96, 52, 255), new Color32(112, 137, 68, 255), new Color32(54, 74, 43, 255), PixelPattern.Grass, false, new Vector2(2.5f, 2.5f))
-                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(58, 100, 54, 255), new Color32(94, 145, 68, 255), new Color32(42, 78, 46, 255), PixelPattern.Grass, false, new Vector2(2.5f, 2.5f));
+                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(72, 96, 52, 255), new Color32(112, 137, 68, 255), new Color32(54, 74, 43, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f))
+                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(58, 100, 54, 255), new Color32(94, 145, 68, 255), new Color32(42, 78, 46, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f));
         }
 
         private static Material ImportedNatureGrassMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(82, 96, 50, 255), new Color32(124, 132, 68, 255), new Color32(60, 74, 44, 255), PixelPattern.Grass, false, new Vector2(3.0f, 3.0f))
-                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(58, 100, 50, 255), new Color32(88, 138, 64, 255), new Color32(42, 78, 44, 255), PixelPattern.Grass, false, new Vector2(3.0f, 3.0f));
+                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(82, 96, 50, 255), new Color32(124, 132, 68, 255), new Color32(60, 74, 44, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f))
+                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(58, 100, 50, 255), new Color32(88, 138, 64, 255), new Color32(42, 78, 44, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f));
         }
 
         private static Material ImportedNatureWoodMaterial(bool past)
@@ -21362,37 +21329,37 @@ namespace Anemora.EditorTools
             }
 
             var roll = AuthoredVegetationHash01(seedKey, 1405);
-            if (roll < 0.22f)
+            if (roll < 0.28f)
             {
                 return Cc0TexturedNatureTreeAPath;
             }
 
-            if (roll < 0.40f)
+            if (roll < 0.50f)
             {
                 return Cc0TexturedNatureTreeDPath;
             }
 
-            if (roll < 0.58f)
+            if (roll < 0.68f)
             {
                 return AuthoredVegetationHash01(seedKey, 1407) > 0.50f ? Cc0TexturedNatureBirchAPath : Cc0TexturedNatureBirchCPath;
             }
 
-            if (roll < 0.74f)
+            if (roll < 0.84f)
             {
                 return AuthoredVegetationHash01(seedKey, 1409) > 0.50f ? Cc0TexturedNatureBirchBPath : Cc0TexturedNatureBirchDPath;
             }
 
-            if (roll < 0.82f)
+            if (roll < 0.89f)
             {
                 return Cc0TexturedNaturePineAPath;
             }
 
-            if (roll < 0.90f)
+            if (roll < 0.94f)
             {
                 return Cc0TexturedNaturePineBPath;
             }
 
-            if (roll < 0.96f)
+            if (roll < 0.98f)
             {
                 return Cc0TexturedNaturePineCPath;
             }
@@ -27736,6 +27703,169 @@ namespace Anemora.EditorTools
             CreateChapter1PhaseJNearfieldDressing(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet);
             CreateChapter1PhaseJNearfieldDressing(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm);
             CreateChapter1PhaseJNearfieldDressing(ruinsRoot, prefix, past, FastVsHouseArea.Ruins);
+        }
+
+        private static void CreateChapter1RealisticNearfieldNatureForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1RealisticNearfieldNature(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateChapter1RealisticNearfieldNature(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateChapter1RealisticNearfieldNature(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateChapter1RealisticNearfieldNature(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateChapter1RealisticNearfieldNature(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateChapter1RealisticNearfieldNature(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1RealisticNearfieldNature(
+            Transform mapRoot,
+            string prefix,
+            bool past,
+            FastVsHouseArea area,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_RealisticNearfieldNature").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetNearfieldDressingScale(area);
+            var leafMaterial = ImportedNatureLeafMaterial(past) ?? (past ? materials.Leaf : materials.CurrentLeaf);
+            var grassMaterial = ImportedNatureGrassMaterial(past) ?? (past ? materials.PastGrass : materials.CurrentGrass);
+            var woodMaterial = ImportedNatureWoodMaterial(past) ?? (past ? materials.PastFurniture : materials.CurrentFurniture);
+            var accentMaterial = ImportedNatureAccentMaterial(past) ?? materials.FlowerYellow;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.realistic_nearfield_nature";
+            const int clusterCount = 5;
+
+            for (var index = 0; index < clusterCount; index++)
+            {
+                var seed = 73517 + (int)area * 907 + (past ? 4051 : 0) + index * 251;
+                var t = index / (float)(clusterCount - 1);
+                var sideBias = index % 2 == 0 ? -1f : 1f;
+                var baseX = Mathf.Lerp(-8.35f, 8.35f, t) * scale + DistantPanoramaVistaSigned(seed + 5, 0.46f * scale);
+                var baseZ = Mathf.Lerp(-7.85f, -5.65f, DistantPanoramaVistaHash01(seed + 11)) * scale +
+                    sideBias * DistantPanoramaVistaHash01(seed + 17) * 0.32f * scale;
+                var basePosition = center + new Vector3(baseX, 0.585f + DistantPanoramaVistaHash01(seed + 23) * 0.036f, baseZ);
+                var yaw = DistantPanoramaVistaSigned(seed + 29, 145f);
+                var clusterScale = Mathf.Lerp(0.78f, 1.12f, DistantPanoramaVistaHash01(seed + 31)) * scale;
+                var objectPrefix = $"{prefix}_{areaToken}_RealisticNearfieldNature_S{index + 1:00}";
+
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_BushModel",
+                    parent,
+                    SelectImportedNatureBushPath($"{scope}.bush.s{index + 1:00}"),
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 37, 0.18f * scale), 0.010f, DistantPanoramaVistaSigned(seed + 41, 0.16f * scale)),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.56f, 0.42f, 0.88f),
+                    Quaternion.Euler(0f, yaw, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.bush.s{index + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_GrassFanA",
+                    parent,
+                    SelectImportedNatureGrassPath($"{scope}.grass_a.s{index + 1:00}"),
+                    basePosition + new Vector3(-0.36f * clusterScale, 0.014f, 0.22f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.72f, 0.48f, 1.02f),
+                    Quaternion.Euler(0f, yaw - 34f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.grass_a.s{index + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_GrassFanB",
+                    parent,
+                    SelectImportedNatureGrassPath($"{scope}.grass_b.s{index + 1:00}"),
+                    basePosition + new Vector3(0.38f * clusterScale, 0.016f, -0.20f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.58f, 0.42f, 0.92f),
+                    Quaternion.Euler(0f, yaw + 46f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.grass_b.s{index + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_LeafPlant",
+                    parent,
+                    SelectImportedNaturePlantPath($"{scope}.plant.s{index + 1:00}"),
+                    basePosition + new Vector3(0.08f * clusterScale, 0.018f, 0.42f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.50f, 0.34f, 0.78f),
+                    Quaternion.Euler(0f, yaw + 82f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.plant.s{index + 1:00}",
+                    false);
+
+                if ((index & 1) == 0)
+                {
+                    var saplingPath = SelectImportedNatureBroadleafTreePath($"{scope}.sapling.s{index + 1:00}", past);
+                    CreateImportedNatureModel(
+                        $"{objectPrefix}_BroadleafSapling",
+                        parent,
+                        saplingPath,
+                        basePosition + new Vector3(0.66f * clusterScale, 0.012f, 0.32f * clusterScale),
+                        Vector3.one * Mathf.Clamp(clusterScale * ImportedNatureTreeScaleMultiplier(saplingPath) * 0.42f, 0.24f, 0.48f),
+                        Quaternion.Euler(0f, yaw - 58f, 0f),
+                        past,
+                        leafMaterial,
+                        woodMaterial,
+                        grassMaterial,
+                        null,
+                        accentMaterial,
+                        $"{scope}.sapling.s{index + 1:00}",
+                        false);
+                }
+
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_MossAccent",
+                    parent,
+                    SelectImportedNatureGroundAccentPath($"{scope}.moss_accent.s{index + 1:00}"),
+                    basePosition + new Vector3(-0.10f * clusterScale, 0.014f, -0.44f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.30f, 0.22f, 0.48f),
+                    Quaternion.Euler(0f, yaw + 96f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    woodMaterial,
+                    accentMaterial,
+                    $"{scope}.moss_accent.s{index + 1:00}",
+                    false);
+                CreateAuthoredGroundCoverPatch(
+                    parent,
+                    $"{objectPrefix}_LeafGroundCover",
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 43, 0.18f * scale), 0.052f, DistantPanoramaVistaSigned(seed + 47, 0.14f * scale)),
+                    new Vector3(Mathf.Clamp(clusterScale * 1.38f, 0.92f, 1.82f), 0.050f, Mathf.Clamp(clusterScale * 0.54f, 0.36f, 0.76f)),
+                    yaw + DistantPanoramaVistaSigned(seed + 53, 24f),
+                    grassMaterial,
+                    past);
+            }
         }
 
         private static void CreateChapter1PhaseJNearfieldDressing(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
@@ -34332,17 +34462,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureForegroundEdgeBreakupMaterial(
                     id,
-                    new Color32(64, 58, 36, 255),
-                    new Color32(89, 79, 44, 255),
-                    new Color32(38, 36, 27, 255),
+                    new Color32(82, 76, 48, 255),
+                    new Color32(116, 102, 58, 255),
+                    new Color32(54, 50, 36, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(4.0f, 2.5f))
                 : EnsureForegroundEdgeBreakupMaterial(
                     id,
-                    new Color32(19, 48, 25, 255),
-                    new Color32(36, 73, 35, 255),
-                    new Color32(12, 32, 21, 255),
+                    new Color32(42, 76, 40, 255),
+                    new Color32(76, 118, 58, 255),
+                    new Color32(28, 56, 32, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(4.0f, 2.5f));
@@ -34376,17 +34506,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureForegroundEdgeBreakupMaterial(
                     id,
-                    new Color32(52, 49, 36, 255),
-                    new Color32(76, 68, 44, 255),
-                    new Color32(29, 30, 25, 255),
+                    new Color32(64, 60, 44, 255),
+                    new Color32(94, 84, 54, 255),
+                    new Color32(40, 38, 30, 255),
                     PixelPattern.Stone,
                     0.08f,
                     new Vector2(2.0f, 1.5f))
                 : EnsureForegroundEdgeBreakupMaterial(
                     id,
-                    new Color32(20, 38, 26, 255),
-                    new Color32(42, 57, 38, 255),
-                    new Color32(14, 25, 20, 255),
+                    new Color32(36, 58, 40, 255),
+                    new Color32(68, 88, 54, 255),
+                    new Color32(26, 44, 32, 255),
                     PixelPattern.Stone,
                     0.08f,
                     new Vector2(2.0f, 1.5f));
@@ -34415,17 +34545,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureFarShoreHoleClosureMaterial(
                     id,
-                    new Color32(65, 59, 34, 255),
-                    new Color32(86, 77, 42, 255),
-                    new Color32(39, 37, 27, 255),
+                    new Color32(76, 70, 44, 255),
+                    new Color32(104, 92, 54, 255),
+                    new Color32(48, 45, 34, 255),
                     PixelPattern.Grass,
                     0.10f,
                     new Vector2(5.2f, 2.8f))
                 : EnsureFarShoreHoleClosureMaterial(
                     id,
-                    new Color32(22, 54, 29, 255),
-                    new Color32(37, 76, 37, 255),
-                    new Color32(12, 34, 22, 255),
+                    new Color32(36, 72, 36, 255),
+                    new Color32(68, 110, 52, 255),
+                    new Color32(24, 50, 28, 255),
                     PixelPattern.Grass,
                     0.10f,
                     new Vector2(5.2f, 2.8f));
@@ -34459,17 +34589,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureFarShoreHoleClosureMaterial(
                     id,
-                    new Color32(31, 42, 20, 255),
-                    new Color32(51, 64, 26, 255),
-                    new Color32(20, 28, 15, 255),
+                    new Color32(54, 64, 34, 255),
+                    new Color32(86, 96, 48, 255),
+                    new Color32(36, 44, 26, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(2.4f, 3.4f))
                 : EnsureFarShoreHoleClosureMaterial(
                     id,
-                    new Color32(7, 31, 16, 255),
-                    new Color32(18, 55, 24, 255),
-                    new Color32(5, 22, 12, 255),
+                    new Color32(34, 70, 32, 255),
+                    new Color32(68, 106, 48, 255),
+                    new Color32(24, 48, 26, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(2.4f, 3.4f));
@@ -34557,17 +34687,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(34, 42, 20, 255),
-                    new Color32(55, 65, 28, 255),
-                    new Color32(22, 29, 16, 255),
+                    new Color32(54, 62, 34, 255),
+                    new Color32(82, 92, 46, 255),
+                    new Color32(36, 42, 26, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(2.0f, 3.2f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(7, 30, 17, 255),
-                    new Color32(19, 52, 25, 255),
-                    new Color32(5, 21, 13, 255),
+                    new Color32(30, 66, 34, 255),
+                    new Color32(66, 104, 50, 255),
+                    new Color32(22, 46, 28, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(2.0f, 3.2f));
@@ -34684,17 +34814,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureNearfieldDressingMaterial(
                     id,
-                    new Color32(72, 65, 38, 255),
-                    new Color32(96, 82, 43, 255),
-                    new Color32(43, 39, 28, 255),
+                    new Color32(82, 75, 46, 255),
+                    new Color32(110, 94, 54, 255),
+                    new Color32(52, 46, 34, 255),
                     PixelPattern.Grass,
                     0.09f,
                     new Vector2(4.8f, 3.0f))
                 : EnsureNearfieldDressingMaterial(
                     id,
-                    new Color32(22, 55, 30, 255),
-                    new Color32(40, 82, 40, 255),
-                    new Color32(12, 34, 23, 255),
+                    new Color32(38, 72, 38, 255),
+                    new Color32(70, 106, 54, 255),
+                    new Color32(24, 50, 30, 255),
                     PixelPattern.Grass,
                     0.09f,
                     new Vector2(4.8f, 3.0f));
@@ -34750,17 +34880,17 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureNearfieldDressingMaterial(
                     id,
-                    new Color32(34, 45, 20, 255),
-                    new Color32(56, 70, 28, 255),
-                    new Color32(21, 29, 15, 255),
+                    new Color32(54, 66, 34, 255),
+                    new Color32(88, 100, 48, 255),
+                    new Color32(36, 45, 26, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(2.0f, 3.4f))
                 : EnsureNearfieldDressingMaterial(
                     id,
-                    new Color32(7, 31, 16, 255),
-                    new Color32(18, 58, 24, 255),
-                    new Color32(5, 22, 12, 255),
+                    new Color32(34, 72, 34, 255),
+                    new Color32(70, 112, 50, 255),
+                    new Color32(24, 50, 26, 255),
                     PixelPattern.Grass,
                     0.08f,
                     new Vector2(2.0f, 3.4f));
@@ -52207,7 +52337,7 @@ namespace Anemora.EditorTools
             SerializedSet(controller, "otherTimeSpaceRenderLayer", OtherTimeSpaceRenderLayer);
             SerializedSet(controller, "portalFrameRenderLayer", PortalFrameRenderLayer);
             SerializedSet(controller, "playerVisibleRenderLayer", PlayerVisibleRenderLayer);
-            SerializedSet(controller, "aperturePlaneOffset", 0.045f);
+            SerializedSet(controller, "aperturePlaneOffset", -0.045f);
             SerializedSet(controller, "apertureObjectSuppressionDepth", 0.30f);
             SerializedSet(controller, "portalApertureMaterial", materials.Aperture);
             SerializedSet(controller, "enableBackSideBlocking", false);
@@ -59211,7 +59341,6 @@ namespace Anemora.EditorTools
                 ValidateImportedNatureModelObject($"{objectPrefix}_NatureGrassModelA", expectedParentName, 1, 10);
                 ValidateImportedNatureModelObject($"{objectPrefix}_NaturePlantModelA", expectedParentName, 1, 10);
                 ValidateImportedNatureModelObject($"{objectPrefix}_NatureMossRockModelA", expectedParentName, 1, 10);
-                ValidatePhotoVegetationClusterCardsForPrefix(objectPrefix, expectedParentName);
 
                 if (string.Equals(prefix, "Past", StringComparison.Ordinal))
                 {
@@ -59347,80 +59476,15 @@ namespace Anemora.EditorTools
             }
 
             ValidateImportedNatureModelObject($"{objectPrefix}_NatureTreeModel", expectedParentName, 1, 80);
-            ValidateImportedNatureModelObject($"{objectPrefix}_NatureGrassModelA", expectedParentName, 1, 10);
-            ValidateImportedNatureModelObject($"{objectPrefix}_NatureBushModelA", expectedParentName, 1, 18);
-            ValidateImportedNatureModelObject($"{objectPrefix}_NatureFallenWoodModelA", expectedParentName, 1, 10);
-            ValidatePhotoVegetationTreeCardsForPrefix(objectPrefix, expectedParentName);
-        }
-
-        private static void ValidatePhotoVegetationTreeCardsForPrefix(string objectPrefix, string expectedParentName)
-        {
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoSmallPlantCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardB", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCloverCardA", expectedParentName);
-            ValidatePhotoVegetationGroundLayerCardsForPrefix(objectPrefix, expectedParentName);
-        }
-
-        private static void ValidatePhotoVegetationClusterCardsForPrefix(string objectPrefix, string expectedParentName)
-        {
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCloverCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoSmallPlantCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCloverCardB", expectedParentName);
-            ValidatePhotoVegetationGroundLayerCardsForPrefix(objectPrefix, expectedParentName);
-        }
-
-        private static void ValidatePhotoVegetationGroundLayerCardsForPrefix(string objectPrefix, string expectedParentName)
-        {
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundFernCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundFernCardB", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundSmallPlantCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundCloverCardA", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundFernCardC", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundSmallPlantCardB", expectedParentName);
-            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoGroundCloverCardB", expectedParentName);
-        }
-
-        private static void ValidatePhotoVegetationCardObject(string objectName, string expectedParentName)
-        {
-            var sceneObject = FindSceneObjectIncludingInactive(objectName);
-            if (sceneObject == null)
-            {
-                throw new InvalidOperationException($"House slice validation failed: missing photo vegetation card {objectName}.");
-            }
-
-            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
-            {
-                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must be parented under {expectedParentName}.");
-            }
-
-            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
-            {
-                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must remain non-colliding.");
-            }
-
-            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
-            if (landmark == null)
-            {
-                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must keep a TimeWindowPairedSpaceLandmark.");
-            }
-
-            var meshFilter = sceneObject.GetComponent<MeshFilter>();
-            if (meshFilter == null || meshFilter.sharedMesh == null || meshFilter.sharedMesh.name.IndexOf("Quad", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must use a quad mesh.");
-            }
-
-            var renderer = sceneObject.GetComponent<Renderer>();
-            var materialName = renderer != null && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : string.Empty;
-            if (renderer == null ||
-                !renderer.enabled ||
-                materialName.IndexOf("ch1_photo_vegetation_", StringComparison.OrdinalIgnoreCase) < 0 ||
-                materialName.IndexOf("anemora_cutout", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must use an Anemora cutout photo vegetation material.");
-            }
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_NatureUnderCanopyFillA", expectedParentName, "LeafCluster", 13, 30);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_NatureUnderCanopyFillB", expectedParentName, "LeafSpray", 32, 96);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_NatureUnderCanopyFillC", expectedParentName, "LeafCluster", 13, 30);
+            var tuftPrefixA = $"{objectPrefix}_NatureUnderstory_HouseExterior_GrassTuft0";
+            var tuftPrefixB = $"{objectPrefix}_NatureUnderstory_HouseExterior_GrassTuft1";
+            ValidateAuthoredVegetationMeshObject($"{tuftPrefixA}_A", expectedParentName, "GrassBlade", 5, 18);
+            ValidateAuthoredVegetationMeshObject($"{tuftPrefixB}_A", expectedParentName, "GrassBlade", 5, 18);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_NatureUnderstoryPatchA_GroundCoverA", expectedParentName, "LeafCluster", 13, 30);
+            ValidateAuthoredVegetationMeshObject($"{objectPrefix}_NatureUnderstoryPatchB_GroundCoverA", expectedParentName, "LeafCluster", 13, 30);
         }
 
         private static void ValidateImportedNatureModelObject(string objectName, string expectedParentName, int minRendererCount, int minVertexCount)
@@ -76220,7 +76284,8 @@ namespace Anemora.EditorTools
             var apertureShaderSource = File.Exists(apertureShaderPath) ? File.ReadAllText(apertureShaderPath) : string.Empty;
             var apertureControllerSource = File.Exists(apertureControllerPath) ? File.ReadAllText(apertureControllerPath) : string.Empty;
             if (controller.PortalApertureCompositeAlphaForReview < 0.995f ||
-                controller.PortalAperturePlaneOffsetForReview < 0.035f ||
+                controller.PortalAperturePlaneOffsetForReview > -0.035f ||
+                controller.PortalAperturePlaneOffsetForReview < -0.065f ||
                 controller.CurrentApertureMaterialAlphaForReview < 0.995f ||
                 controller.OtherTimeApertureMaterialAlphaForReview < 0.995f ||
                 controller.CurrentApertureMaterialRenderQueueForReview < 2440 ||
@@ -76237,7 +76302,7 @@ namespace Anemora.EditorTools
                 apertureControllerSource.Contains("IsApertureVisualOverlayRenderer") ||
                 apertureControllerSource.Contains("exemptedVisualOverlay = true"))
             {
-                throw new InvalidOperationException("House slice validation failed: TimeWindow aperture must stay opaque while allowing nearer player depth to occlude the window interior.");
+                throw new InvalidOperationException("House slice validation failed: TimeWindow aperture must stay opaque and sit behind the frame so nearer player depth occludes the window interior.");
             }
         }
 

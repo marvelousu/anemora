@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.137 HD2D realistic nature leaf lift (2026-06-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.138 HD2D realistic nature under-canopy (2026-06-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 834 files including INDEX.md and README.md.
-- Dated devlog records: 832 files.
+- Root-level Markdown coverage: 835 files including INDEX.md and README.md.
+- Dated devlog records: 833 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,6 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
+| 2026-06-24 | 1 |
 | 2026-06-23 | 5 |
 | 2026-06-22 | 1 |
 | 2026-06-20 | 11 |
@@ -51,6 +52,12 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-24
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-24_hd2d_realistic_nature_under_canopy.md](2026-06-24_hd2d_realistic_nature_under_canopy.md) | Fast VS / HD2D | HD2D realistic nature under-canopy |
 
 ### 2026-06-23
 
