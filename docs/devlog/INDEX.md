@@ -1,21 +1,21 @@
 ﻿# Devlog Index
 
-> Status: v8.135 HD2D photo vegetation canopy cards (2026-06-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.136 HD2D imported nature scale (2026-06-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 832 files including INDEX.md and README.md.
-- Dated devlog records: 830 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1498 files.
+- Root-level Markdown coverage: 833 files including INDEX.md and README.md.
+- Dated devlog records: 831 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
 
 | Date | Count |
 |---|---:|
-| 2026-06-23 | 3 |
+| 2026-06-23 | 4 |
 | 2026-06-22 | 1 |
 | 2026-06-20 | 11 |
 | 2026-06-19 | 10 |
@@ -56,6 +56,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-23_hd2d_imported_nature_scale.md](2026-06-23_hd2d_imported_nature_scale.md) | Fast VS / HD2D | HD2D imported nature scale |
 | [2026-06-23_hd2d_photo_vegetation_canopy_cards.md](2026-06-23_hd2d_photo_vegetation_canopy_cards.md) | Fast VS / HD2D | HD2D photo vegetation canopy cards |
 | [2026-06-23_hd2d_photo_vegetation_understory.md](2026-06-23_hd2d_photo_vegetation_understory.md) | Fast VS / HD2D | HD2D photo vegetation understory |
 | [2026-06-23_hd2d_textured_nature_and_aperture_depth.md](2026-06-23_hd2d_textured_nature_and_aperture_depth.md) | Fast VS / HD2D | HD2D textured nature and aperture depth |
@@ -844,6 +845,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.136 | 2026-06-23 | Added HD2D imported nature scale record with rejected floating distant photo layer, larger imported CC0/Textured Nature tree and undergrowth companions, all-map review capture, shotdiff triage, renderer-freeze validation, asset validation, build, player smoke, and review packet propagation. |
 | v8.133 | 2026-06-23 | Added HD2D textured nature and aperture depth record with CC0 textured tree subset, darker textured foliage/grass materials, deterministic conifer/birch silhouette distribution, understory 3D grass/plant/ground-cover companions, aperture AlphaTest/LEqual depth fix, all-map capture, asset validation, renderer-freeze validation, build, and player smoke. |
 | v8.132 | 2026-06-22 | Added HD2D portal depth and tree readability record with Time Window aperture depth-test correction, generated toned tree-card texture pass, all-map review capture, renderer-freeze validation, asset validation, build, player smoke, and review packet propagation. |
 | v8.131 | 2026-06-20 | Added HD2D nature ground cover overlay with deterministic LeafCluster/LeafSpray/GrassBlade ground-cover feature meshes across HouseExterior, MiaHouse, AriaStreet, KaiaFarm, and Ruins flat patch/verge/brush areas; added representative A/C/D/E/F validation coverage, r1 subtle visual rejection, r2 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |

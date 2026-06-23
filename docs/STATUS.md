@@ -4,13 +4,13 @@
 > 詳細実装履歴は `docs/devlog/`、物語骨格は `docs/STORY_BIBLE_v1.md`、運用 gotcha は `AGENTS.md`。
 > **更新規律**: frontier が動いたら同じ commit でここを更新する。古いまま放置しない (pre-push hook が7日超の漂流を検査する)。
 
-最終更新: 2026-06-23 (Codex / HD2D photo vegetation canopy cards review build)
+最終更新: 2026-06-23 (Codex / HD2D imported nature scale review build)
 
 ---
 
 ## 1. いま何の状態か (1 段落)
 
-Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-23 時点の最新レビュー build は Time Window aperture depth fix、CC0 textured nature pass、photo vegetation understory、photo branch canopy cards 追加を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。
+Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-23 時点の最新レビュー build は Time Window aperture depth fix、CC0 textured nature pass、photo vegetation understory、photo branch canopy cards、imported nature scale uplift を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。
 
 ## 2. branch / baseline
 
@@ -24,7 +24,7 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 
 ## 3. 現在の frontier (アクティブな一手)
 
-- **point15 レンダラループ / 環境アップリフト**: 2026-06-23 最新レビュー build で Time Window aperture を depth-aware AlphaTest/LEqual にし、CC0 textured tree subset + deterministic undergrowth companions + 追加 photo vegetation understory + photo branch canopy cards を導入。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-23T15-07_photo_vegetation_canopy_cards_r1/`。
+- **point15 レンダラループ / 環境アップリフト**: 2026-06-23 最新レビュー build で Time Window aperture を depth-aware AlphaTest/LEqual にし、CC0 textured tree subset + deterministic undergrowth companions + 追加 photo vegetation understory + photo branch canopy cards + imported nature scale uplift を導入。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-23T19-00_imported_nature_scale_r1/`。
 - **2026-06-13 環境監査の提案と着地**: ①✅レンダラ凍結=`Assets/Tests/RendererContract/` のゴールデン契約テストで実装済 (Unity検証: 初回ベースライン生成→2回目 36 EditMode緑/freeze=Passed)。renderer feature を変えるとテストが落ちる。意図的変更時は `ANEMORA_RENDERER_REBASELINE=1` で再生成しコミット。②✅アセット検収=`Assets/Editor/AnemoraAssetValidation.cs` の `ValidateImportedAssetsBatch` (missing ref/review_only混入/ポリ数、実走OK)。③authored file (81k行) 減量は **cycle 方式が当ファイルを毎サイクル編集する間は未着手** (再開時 merge 衝突を避けるため。cycle 方式を畳む時に実施)。環境アセット物量 (テクスチャ/植生/空) は Tier 目標確定後。
 - Chapter 1 設計トラックは S3 詳細設計で停止中 (canon は `docs/canon/chapter1.md`)。
 
@@ -67,3 +67,4 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 | 2026-06-23 | Codex | Build review 対応: Time Window aperture の前後関係を depth-aware composite に修正し、外部 CC0 textured tree subset + deterministic undergrowth companions で自然/木の見えを改善。最新 build: `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。 |
 | 2026-06-23 | Codex | Photo vegetation understory 追加: tree/cluster companion に fern/clover/small-plant カードを増やし、最新 review packet `docs/review/2026-06-23T13-07_photo_vegetation_understory_r1/` と最新 build を更新。 |
 | 2026-06-23 | Codex | Photo branch canopy cards 追加: tree crown に branch cutout カードを重ね、最新 review packet `docs/review/2026-06-23T15-07_photo_vegetation_canopy_cards_r1/` と最新 build を更新。 |
+| 2026-06-23 | Codex | Imported nature scale uplift: 浮いた遠景カード案を破棄し、既存の CC0/Textured Nature tree/grass/bush/plant companions を wide camera で樹形として読めるスケールへ調整。最新 review packet `docs/review/2026-06-23T19-00_imported_nature_scale_r1/` と最新 build を更新。 |

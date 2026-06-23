@@ -20444,9 +20444,9 @@ namespace Anemora.EditorTools
             var basePosition = ImportedNatureGroundPosition(trunkCenter, 0.62f);
             var yaw = AuthoredVegetationSigned(objectPrefix, 1301, 160f);
             var treePath = SelectImportedNatureTreePath(objectPrefix, past);
-            var treeScale = Vector3.one * Mathf.Clamp(scale * ImportedNatureTreeScaleMultiplier(treePath), 0.32f, 1.36f);
-            var grassScale = Vector3.one * Mathf.Clamp(scale * 0.66f, 0.50f, 0.96f);
-            var secondaryGrassScale = Vector3.one * Mathf.Clamp(scale * 0.52f, 0.38f, 0.78f);
+            var treeScale = Vector3.one * Mathf.Clamp(scale * ImportedNatureTreeScaleMultiplier(treePath), 0.42f, 1.72f);
+            var grassScale = Vector3.one * Mathf.Clamp(scale * 0.84f, 0.62f, 1.14f);
+            var secondaryGrassScale = Vector3.one * Mathf.Clamp(scale * 0.68f, 0.50f, 0.96f);
 
             CreateImportedNatureModel(
                 $"{objectPrefix}_NatureTreeModel",
@@ -20498,7 +20498,7 @@ namespace Anemora.EditorTools
                 root,
                 SelectImportedNatureBushPath(objectPrefix),
                 basePosition + new Vector3(0.42f * scale, 0.01f, -0.28f * scale),
-                Vector3.one * Mathf.Clamp(scale * 0.48f, 0.36f, 0.72f),
+                Vector3.one * Mathf.Clamp(scale * 0.62f, 0.46f, 0.92f),
                 Quaternion.Euler(0f, yaw + 47f, 0f),
                 past,
                 leafMaterial,
@@ -20513,7 +20513,7 @@ namespace Anemora.EditorTools
                 root,
                 SelectImportedNaturePlantPath($"{objectPrefix}.understory_plant_a"),
                 basePosition + new Vector3(-0.54f * scale, 0.012f, -0.12f * scale),
-                Vector3.one * Mathf.Clamp(scale * 0.42f, 0.30f, 0.64f),
+                Vector3.one * Mathf.Clamp(scale * 0.52f, 0.38f, 0.78f),
                 Quaternion.Euler(0f, yaw - 74f + AuthoredVegetationSigned(objectPrefix, 1315, 16f), 0f),
                 past,
                 leafMaterial,
@@ -21305,25 +21305,25 @@ namespace Anemora.EditorTools
         {
             if (!assetPath.StartsWith(Cc0TexturedNatureModelDirectory, StringComparison.Ordinal))
             {
-                return 1.08f;
+                return 1.20f;
             }
 
             if (assetPath.IndexOf("/Pine_", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return 0.54f;
+                return 0.72f;
             }
 
             if (assetPath.IndexOf("/Birch_", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return 0.50f;
+                return 0.64f;
             }
 
             if (assetPath.IndexOf("/Dead", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                return 0.46f;
+                return 0.58f;
             }
 
-            return 0.40f;
+            return 0.56f;
         }
 
         private static string SelectImportedNatureTreePath(string seedKey, bool past)
