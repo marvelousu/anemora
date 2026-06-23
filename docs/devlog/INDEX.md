@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.134 HD2D photo vegetation understory (2026-06-23). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.135 HD2D photo vegetation canopy cards (2026-06-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 831 files including INDEX.md and README.md.
-- Dated devlog records: 829 files.
+- Root-level Markdown coverage: 832 files including INDEX.md and README.md.
+- Dated devlog records: 830 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1498 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-23 | 2 |
+| 2026-06-23 | 3 |
 | 2026-06-22 | 1 |
 | 2026-06-20 | 11 |
 | 2026-06-19 | 10 |
@@ -56,6 +56,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-23_hd2d_photo_vegetation_canopy_cards.md](2026-06-23_hd2d_photo_vegetation_canopy_cards.md) | Fast VS / HD2D | HD2D photo vegetation canopy cards |
 | [2026-06-23_hd2d_photo_vegetation_understory.md](2026-06-23_hd2d_photo_vegetation_understory.md) | Fast VS / HD2D | HD2D photo vegetation understory |
 | [2026-06-23_hd2d_textured_nature_and_aperture_depth.md](2026-06-23_hd2d_textured_nature_and_aperture_depth.md) | Fast VS / HD2D | HD2D textured nature and aperture depth |
 

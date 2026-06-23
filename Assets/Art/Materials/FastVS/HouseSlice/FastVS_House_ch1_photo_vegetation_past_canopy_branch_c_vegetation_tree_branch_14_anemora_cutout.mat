@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FastVS_House_ch1_photo_vegetation_past_canopy_branch_c_vegetation_tree_branch_14_anemora_cutout
+  m_Shader: {fileID: 4800000, guid: fd01e16a459d4ea4bbf5d745971b8d36, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    AnemoraFastVsHd2dRole: SpriteCard
+    RenderType: TransparentCutout
+  disabledShaderPasses:
+  - DepthOnly
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 1cd19ebf9afb3d342a0ec389a3af6339, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 1cd19ebf9afb3d342a0ec389a3af6339, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 1
+    - _Cull: 0
+    - _Cutoff: 0.15
+    - _DstBlend: 0
+    - _EmissionIntensity: 0
+    - _PaperEdgeStrength: 0.1
+    - _PaperLowerShadeStrength: 0.08
+    - _PaperRimStrength: 0.07
+    - _QueueControl: 1
+    - _QueueOffset: 0
+    - _RampStrength: 0.1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _WorldLightStrength: 0.05
+    - _WorldShadowReceiveStrength: 0.04
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 0.58, g: 0.56, b: 0.36, a: 0.92}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FloorShade: {r: 0.89, g: 0.92, b: 0.96, a: 1}
+    - _SideShade: {r: 0.94, g: 0.97, b: 1.03, a: 1}
+    - _TopLight: {r: 1.08, g: 1.03, b: 0.96, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

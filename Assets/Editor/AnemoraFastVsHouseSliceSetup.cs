@@ -20629,9 +20629,11 @@ namespace Anemora.EditorTools
 
         private static void CreatePhotoVegetationTreeCards(Transform root, string objectPrefix, Vector3 trunkCenter, Vector3 basePosition, float yaw, bool past, float scale)
         {
-            var leafDetailTint = past ? new Color(0.76f, 0.70f, 0.50f, 0.96f) : new Color(0.64f, 0.80f, 0.54f, 0.98f);
+            var leafDetailTint = past ? new Color(0.68f, 0.64f, 0.44f, 0.94f) : new Color(0.50f, 0.68f, 0.40f, 0.95f);
             var understoryTint = past ? new Color(0.76f, 0.70f, 0.50f, 0.98f) : new Color(0.62f, 0.78f, 0.52f, 0.98f);
             var smallPlantTint = past ? new Color(0.82f, 0.74f, 0.54f, 0.98f) : new Color(0.72f, 0.86f, 0.60f, 0.98f);
+            var canopyTint = past ? new Color(0.58f, 0.56f, 0.36f, 0.92f) : new Color(0.40f, 0.62f, 0.34f, 0.93f);
+            CreatePhotoVegetationCanopyCards(root, objectPrefix, basePosition, yaw, past, scale, canopyTint);
 
             CreatePhotoVegetationCardLandmark(
                 root,
@@ -20640,7 +20642,7 @@ namespace Anemora.EditorTools
                 basePosition + new Vector3(-0.56f * scale, 0.20f * scale, 0.08f * scale),
                 new Vector3(0.22f * scale, 0.24f * scale, 1f),
                 yaw - 10f + AuthoredVegetationSigned(objectPrefix, 1491, 8f),
-                Cc0PhotoVegetationCloverAPath,
+                SelectPhotoVegetationBranchTexture($"{objectPrefix}.branch_detail_a"),
                 past ? "ch1_photo_vegetation_past_branch_a" : "ch1_photo_vegetation_current_branch_a",
                 leafDetailTint,
                 false);
@@ -20651,7 +20653,7 @@ namespace Anemora.EditorTools
                 basePosition + new Vector3(0.44f * scale, 0.22f * scale, -0.20f * scale),
                 new Vector3(0.24f * scale, 0.28f * scale, 1f),
                 yaw + 31f + AuthoredVegetationSigned(objectPrefix, 1493, 7f),
-                SelectPhotoVegetationSmallPlantTexture($"{objectPrefix}.leaf_detail_b"),
+                SelectPhotoVegetationBranchTexture($"{objectPrefix}.branch_detail_b"),
                 past ? "ch1_photo_vegetation_past_branch_b" : "ch1_photo_vegetation_current_branch_b",
                 leafDetailTint,
                 false);
@@ -20698,6 +20700,43 @@ namespace Anemora.EditorTools
                 Cc0PhotoVegetationCloverAPath,
                 past ? "ch1_photo_vegetation_past_tree_clover_a" : "ch1_photo_vegetation_current_tree_clover_a",
                 smallPlantTint,
+                false);
+        }
+
+        private static void CreatePhotoVegetationCanopyCards(Transform root, string objectPrefix, Vector3 basePosition, float yaw, bool past, float scale, Color canopyTint)
+        {
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoCanopyBranchCardA",
+                $"{objectPrefix}.photo_canopy_branch_card_a",
+                basePosition + new Vector3(-0.22f * scale, 1.02f * scale, 0.10f * scale),
+                new Vector3(0.62f * scale, 0.74f * scale, 1f),
+                yaw - 18f + AuthoredVegetationSigned(objectPrefix, 1503, 12f),
+                SelectPhotoVegetationBranchTexture($"{objectPrefix}.canopy_branch_a"),
+                past ? "ch1_photo_vegetation_past_canopy_branch_a" : "ch1_photo_vegetation_current_canopy_branch_a",
+                canopyTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoCanopyBranchCardB",
+                $"{objectPrefix}.photo_canopy_branch_card_b",
+                basePosition + new Vector3(0.28f * scale, 1.16f * scale, -0.12f * scale),
+                new Vector3(0.58f * scale, 0.70f * scale, 1f),
+                yaw + 44f + AuthoredVegetationSigned(objectPrefix, 1505, 12f),
+                SelectPhotoVegetationBranchTexture($"{objectPrefix}.canopy_branch_b"),
+                past ? "ch1_photo_vegetation_past_canopy_branch_b" : "ch1_photo_vegetation_current_canopy_branch_b",
+                canopyTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoCanopyBranchCardC",
+                $"{objectPrefix}.photo_canopy_branch_card_c",
+                basePosition + new Vector3(0.04f * scale, 1.34f * scale, 0.24f * scale),
+                new Vector3(0.48f * scale, 0.60f * scale, 1f),
+                yaw + 92f + AuthoredVegetationSigned(objectPrefix, 1507, 14f),
+                SelectPhotoVegetationBranchTexture($"{objectPrefix}.canopy_branch_c"),
+                past ? "ch1_photo_vegetation_past_canopy_branch_c" : "ch1_photo_vegetation_current_canopy_branch_c",
+                canopyTint,
                 false);
         }
 
@@ -59268,6 +59307,9 @@ namespace Anemora.EditorTools
 
         private static void ValidatePhotoVegetationTreeCardsForPrefix(string objectPrefix, string expectedParentName)
         {
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCanopyBranchCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCanopyBranchCardB", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCanopyBranchCardC", expectedParentName);
             ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoBranchCardA", expectedParentName);
             ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoBranchCardB", expectedParentName);
             ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardA", expectedParentName);
