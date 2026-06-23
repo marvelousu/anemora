@@ -53,6 +53,10 @@ namespace Anemora.EditorTools
         private static readonly Color SurfaceRampFloorShade = new Color(0.62f, 0.56f, 0.48f, 1f);
         private static readonly Color SurfaceRampExteriorWallSideShade = new Color(0.94f, 0.86f, 0.72f, 1f);
         private static readonly Color SurfaceRampExteriorWallFloorShade = new Color(0.76f, 0.68f, 0.56f, 1f);
+        private static readonly Dictionary<string, Texture2D> ReadableTreeSpriteTextureCache = new Dictionary<string, Texture2D>(StringComparer.Ordinal);
+        private static readonly Dictionary<string, Texture2D> TexturedNatureLeafToneTextureCache = new Dictionary<string, Texture2D>(StringComparer.Ordinal);
+        private static readonly HashSet<string> TexturedNatureTextureImportCache = new HashSet<string>(StringComparer.Ordinal);
+        private static readonly HashSet<string> TextureImporterConfigurationCache = new HashSet<string>(StringComparer.Ordinal);
         private static bool coreBlitD3d11CaptureWorkaroundChecked;
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityFloorTextureScale = new Vector2(8f, 6f);
         private static readonly Vector2 CurrentInteriorSurfaceReadabilityWallTextureScale = new Vector2(6f, 4f);
@@ -60,6 +64,66 @@ namespace Anemora.EditorTools
 
         private const string MaterialDirectory = "Assets/Art/Materials/FastVS/HouseSlice";
         private const string TextureDirectory = "Assets/Art/Textures/FastVS/HouseSlice";
+        private const string ReadableTreeSpriteCurrentTexturePath = TextureDirectory + "/FastVS_House_current_readable_tree_sprite_cc0_toned.asset";
+        private const string ReadableTreeSpritePastTexturePath = TextureDirectory + "/FastVS_House_past_readable_tree_sprite_cc0_toned.asset";
+        private const string Cc0NatureModelDirectory = "Assets/Art/External/CC0/NaturePack/Models";
+        private const string Cc0NatureCommonTreeAPath = Cc0NatureModelDirectory + "/CommonTree_1.obj";
+        private const string Cc0NatureCommonTreeBPath = Cc0NatureModelDirectory + "/CommonTree_2.obj";
+        private const string Cc0NatureCommonTreeCPath = Cc0NatureModelDirectory + "/CommonTree_4.obj";
+        private const string Cc0NatureBirchTreeAPath = Cc0NatureModelDirectory + "/BirchTree_1.obj";
+        private const string Cc0NatureBirchTreeBPath = Cc0NatureModelDirectory + "/BirchTree_3.obj";
+        private const string Cc0NaturePineTreeAPath = Cc0NatureModelDirectory + "/PineTree_1.obj";
+        private const string Cc0NaturePineTreeBPath = Cc0NatureModelDirectory + "/PineTree_3.obj";
+        private const string Cc0NatureBushAPath = Cc0NatureModelDirectory + "/Bush_1.obj";
+        private const string Cc0NatureBushBPath = Cc0NatureModelDirectory + "/Bush_2.obj";
+        private const string Cc0NatureBushBerriesPath = Cc0NatureModelDirectory + "/BushBerries_1.obj";
+        private const string Cc0NatureGrassAPath = Cc0NatureModelDirectory + "/Grass.obj";
+        private const string Cc0NatureGrassBPath = Cc0NatureModelDirectory + "/Grass_2.obj";
+        private const string Cc0NatureGrassShortPath = Cc0NatureModelDirectory + "/Grass_Short.obj";
+        private const string Cc0NaturePlantAPath = Cc0NatureModelDirectory + "/Plant_1.obj";
+        private const string Cc0NaturePlantBPath = Cc0NatureModelDirectory + "/Plant_3.obj";
+        private const string Cc0NatureRockMossPath = Cc0NatureModelDirectory + "/Rock_Moss_1.obj";
+        private const string Cc0NatureStumpMossPath = Cc0NatureModelDirectory + "/TreeStump_Moss.obj";
+        private const string Cc0NatureLogMossPath = Cc0NatureModelDirectory + "/WoodLog_Moss.obj";
+        private const string Cc0TexturedNatureModelDirectory = "Assets/Art/External/CC0/TexturedNaturePack/Models";
+        private const string Cc0TexturedNatureTextureDirectory = "Assets/Art/External/CC0/TexturedNaturePack/Textures";
+        private const string Cc0TexturedNatureTreeAPath = Cc0TexturedNatureModelDirectory + "/Tree_1.obj";
+        private const string Cc0TexturedNatureTreeBPath = Cc0TexturedNatureModelDirectory + "/Tree_3.obj";
+        private const string Cc0TexturedNatureTreeCPath = Cc0TexturedNatureModelDirectory + "/Tree_5.obj";
+        private const string Cc0TexturedNatureTreeDPath = Cc0TexturedNatureModelDirectory + "/Tree_7.obj";
+        private const string Cc0TexturedNatureTreeEPath = Cc0TexturedNatureModelDirectory + "/Tree_10.obj";
+        private const string Cc0TexturedNatureBirchAPath = Cc0TexturedNatureModelDirectory + "/Birch_1.obj";
+        private const string Cc0TexturedNatureBirchBPath = Cc0TexturedNatureModelDirectory + "/Birch_2.obj";
+        private const string Cc0TexturedNatureBirchCPath = Cc0TexturedNatureModelDirectory + "/Birch_6.obj";
+        private const string Cc0TexturedNatureBirchDPath = Cc0TexturedNatureModelDirectory + "/Birch_8.obj";
+        private const string Cc0TexturedNaturePineAPath = Cc0TexturedNatureModelDirectory + "/Pine_1.obj";
+        private const string Cc0TexturedNaturePineBPath = Cc0TexturedNatureModelDirectory + "/Pine_3.obj";
+        private const string Cc0TexturedNaturePineCPath = Cc0TexturedNatureModelDirectory + "/Pine_5.obj";
+        private const string Cc0TexturedNatureDeadTreeAPath = Cc0TexturedNatureModelDirectory + "/DeadTree_1.obj";
+        private const string Cc0TexturedNatureDeadTreeBPath = Cc0TexturedNatureModelDirectory + "/DeadTree_3.obj";
+        private const string Cc0TexturedNatureDeadBirchAPath = Cc0TexturedNatureModelDirectory + "/DeadBirch_1.obj";
+        private const string Cc0TexturedNatureTreeBarkTexturePath = Cc0TexturedNatureTextureDirectory + "/Tree_Bark.jpg";
+        private const string Cc0TexturedNatureTreeLeavesTexturePath = Cc0TexturedNatureTextureDirectory + "/Tree_Leaves.png";
+        private const string Cc0TexturedNaturePineLeavesTexturePath = Cc0TexturedNatureTextureDirectory + "/Pine_Leaves.png";
+        private const string Cc0TexturedNatureBirchBarkTexturePath = Cc0TexturedNatureTextureDirectory + "/Birch_Bark.png";
+        private const string Cc0TexturedNatureBirchLeavesGreenTexturePath = Cc0TexturedNatureTextureDirectory + "/Birch_Leaves_Green.png";
+        private const string Cc0TexturedNatureBirchLeavesYellowTexturePath = Cc0TexturedNatureTextureDirectory + "/Birch_Leaves_Yellow.png";
+        private const string TexturedNatureCurrentTreeLeavesTonedTexturePath = TextureDirectory + "/FastVS_House_ch1_textured_nature_current_tree_leaves_cutout_toned.asset";
+        private const string TexturedNaturePastTreeLeavesTonedTexturePath = TextureDirectory + "/FastVS_House_ch1_textured_nature_past_tree_leaves_cutout_toned.asset";
+        private const string TexturedNatureCurrentPineLeavesTonedTexturePath = TextureDirectory + "/FastVS_House_ch1_textured_nature_current_pine_leaves_cutout_toned.asset";
+        private const string TexturedNaturePastPineLeavesTonedTexturePath = TextureDirectory + "/FastVS_House_ch1_textured_nature_past_pine_leaves_cutout_toned.asset";
+        private const string TexturedNatureCurrentBirchLeavesTonedTexturePath = TextureDirectory + "/FastVS_House_ch1_textured_nature_current_birch_leaves_cutout_toned.asset";
+        private const string TexturedNaturePastBirchLeavesTonedTexturePath = TextureDirectory + "/FastVS_House_ch1_textured_nature_past_birch_leaves_cutout_toned.asset";
+        private const string Cc0PhotoVegetationTextureDirectory = "Assets/Art/External/CC0/VegetationBaseTextures";
+        private const string Cc0PhotoVegetationFernAPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_fern_01_anemora_cutout.png";
+        private const string Cc0PhotoVegetationFernBPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_fern_08_anemora_cutout.png";
+        private const string Cc0PhotoVegetationSmallPlantAPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_smallplant_03_anemora_cutout.png";
+        private const string Cc0PhotoVegetationSmallPlantBPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_smallplant_21_anemora_cutout.png";
+        private const string Cc0PhotoVegetationBranchAPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_tree_branch_10_anemora_cutout.png";
+        private const string Cc0PhotoVegetationBranchBPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_tree_branch_14_anemora_cutout.png";
+        private const string Cc0PhotoVegetationBranchCPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_tree_branch_16b_anemora_cutout.png";
+        private const string Cc0PhotoVegetationBranchDPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_tree_branch_25_anemora_cutout.png";
+        private const string Cc0PhotoVegetationCloverAPath = Cc0PhotoVegetationTextureDirectory + "/vegetation_clover_02_anemora_cutout.png";
         private const string Chapter1LightingSettingsDirectory = "Assets/Settings/Chapter1Lighting";
         private const string Chapter1Phase4HouseExteriorCurrentVolumeProfilePath = Chapter1LightingSettingsDirectory + "/FastVS_House_Ch1Lighting_HouseExterior_CurrentVolumeProfile.asset";
         private const string Chapter1Phase4HouseExteriorPastVolumeProfilePath = Chapter1LightingSettingsDirectory + "/FastVS_House_Ch1Lighting_HouseExterior_PastVolumeProfile.asset";
@@ -745,6 +809,7 @@ namespace Anemora.EditorTools
             CreateHd2dDepthFraming(currentAreas, pastAreas);
             ApplyHd2dFeedbackLibraryFloorArtifactCleanup();
             ApplyHd2dFeedbackLibraryDeskArtifactCleanup();
+            ApplyHd2dFeedbackLibraryDeskSurfaceMaterialMute(materials.Shadow);
             ApplyHd2dFeedbackLibraryWindowProjectionCleanup();
             story.ApplyConfiguredStartStateForReview();
             ApplyInitialReviewLayers(currentRoot, pastRoot, player.transform, camera);
@@ -20339,6 +20404,8 @@ namespace Anemora.EditorTools
                 trunkMaterial,
                 $"{objectPrefix}.upper_branch_reveal",
                 CreateAuthoredVegetationBranchForkMesh($"{objectPrefix}_UpperBranchReveal_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectPrefix}.upper_branch_reveal"));
+            CreateImportedNatureTreeCompanion(root, objectPrefix, trunkCenter, past, 1.00f, crownMaterial, baseShrub, trunkMaterial);
+            CreateReadableTreeSpriteOverlay(root, objectPrefix, trunkCenter, past, 1f);
         }
 
         private static void CreateAuthoredTreeBaseShrub(Transform root, string objectPrefix, Vector3 trunkCenter, float yaw, Material shrubMaterial, float scale)
@@ -20370,6 +20437,944 @@ namespace Anemora.EditorTools
                 shrubMaterial,
                 $"{objectPrefix}.base_leaf_spray_a",
                 CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_BaseLeafSprayA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.base_leaf_spray_a"));
+        }
+
+        private static void CreateImportedNatureTreeCompanion(Transform root, string objectPrefix, Vector3 trunkCenter, bool past, float scale, Material leafMaterial, Material grassMaterial, Material trunkMaterial)
+        {
+            var basePosition = ImportedNatureGroundPosition(trunkCenter, 0.62f);
+            var yaw = AuthoredVegetationSigned(objectPrefix, 1301, 160f);
+            var treePath = SelectImportedNatureTreePath(objectPrefix, past);
+            var treeScale = Vector3.one * Mathf.Clamp(scale * ImportedNatureTreeScaleMultiplier(treePath), 0.32f, 1.36f);
+            var grassScale = Vector3.one * Mathf.Clamp(scale * 0.66f, 0.50f, 0.96f);
+            var secondaryGrassScale = Vector3.one * Mathf.Clamp(scale * 0.52f, 0.38f, 0.78f);
+
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureTreeModel",
+                root,
+                treePath,
+                basePosition + new Vector3(AuthoredVegetationSigned(objectPrefix, 1303, 0.06f), 0f, AuthoredVegetationSigned(objectPrefix, 1305, 0.06f)),
+                treeScale,
+                Quaternion.Euler(0f, yaw, 0f),
+                past,
+                leafMaterial,
+                trunkMaterial,
+                grassMaterial,
+                null,
+                leafMaterial,
+                $"{objectPrefix}.nature_tree_model",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureGrassModelA",
+                root,
+                SelectImportedNatureGrassPath(objectPrefix),
+                basePosition + new Vector3(-0.34f * scale, 0.01f, 0.32f * scale),
+                grassScale,
+                Quaternion.Euler(0f, yaw - 38f, 0f),
+                past,
+                grassMaterial,
+                trunkMaterial,
+                grassMaterial,
+                null,
+                leafMaterial,
+                $"{objectPrefix}.nature_grass_model_a",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureGrassModelB",
+                root,
+                SelectImportedNatureGrassPath($"{objectPrefix}.understory_grass_b"),
+                basePosition + new Vector3(0.18f * scale, 0.012f, 0.46f * scale),
+                secondaryGrassScale,
+                Quaternion.Euler(0f, yaw + 18f + AuthoredVegetationSigned(objectPrefix, 1313, 12f), 0f),
+                past,
+                grassMaterial,
+                trunkMaterial,
+                grassMaterial,
+                null,
+                leafMaterial,
+                $"{objectPrefix}.nature_grass_model_b",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureBushModelA",
+                root,
+                SelectImportedNatureBushPath(objectPrefix),
+                basePosition + new Vector3(0.42f * scale, 0.01f, -0.28f * scale),
+                Vector3.one * Mathf.Clamp(scale * 0.48f, 0.36f, 0.72f),
+                Quaternion.Euler(0f, yaw + 47f, 0f),
+                past,
+                leafMaterial,
+                trunkMaterial,
+                grassMaterial,
+                null,
+                leafMaterial,
+                $"{objectPrefix}.nature_bush_model_a",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NaturePlantModelA",
+                root,
+                SelectImportedNaturePlantPath($"{objectPrefix}.understory_plant_a"),
+                basePosition + new Vector3(-0.54f * scale, 0.012f, -0.12f * scale),
+                Vector3.one * Mathf.Clamp(scale * 0.42f, 0.30f, 0.64f),
+                Quaternion.Euler(0f, yaw - 74f + AuthoredVegetationSigned(objectPrefix, 1315, 16f), 0f),
+                past,
+                leafMaterial,
+                trunkMaterial,
+                grassMaterial,
+                null,
+                leafMaterial,
+                $"{objectPrefix}.nature_plant_model_a",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureFallenWoodModelA",
+                root,
+                SelectImportedNatureGroundAccentPath(objectPrefix),
+                basePosition + new Vector3(AuthoredVegetationSigned(objectPrefix, 1307, 0.28f), 0.012f, -0.46f * scale + AuthoredVegetationSigned(objectPrefix, 1309, 0.08f)),
+                Vector3.one * Mathf.Clamp(scale * 0.34f, 0.24f, 0.52f),
+                Quaternion.Euler(0f, yaw + 92f + AuthoredVegetationSigned(objectPrefix, 1311, 18f), 0f),
+                past,
+                leafMaterial,
+                trunkMaterial,
+                grassMaterial,
+                trunkMaterial,
+                leafMaterial,
+                $"{objectPrefix}.nature_fallen_wood_model_a",
+                false);
+            CreateAuthoredGroundCoverPatch(
+                root,
+                $"{objectPrefix}_NatureUnderstoryPatchA",
+                basePosition + new Vector3(-0.22f * scale, 0.050f, 0.06f * scale),
+                new Vector3(1.06f * scale, 0.050f, 0.48f * scale),
+                yaw + 12f,
+                grassMaterial,
+                past);
+            CreateAuthoredGroundCoverPatch(
+                root,
+                $"{objectPrefix}_NatureUnderstoryPatchB",
+                basePosition + new Vector3(0.30f * scale, 0.052f, -0.38f * scale),
+                new Vector3(0.78f * scale, 0.050f, 0.42f * scale),
+                yaw - 32f,
+                leafMaterial,
+                past);
+            CreatePhotoVegetationTreeCards(root, objectPrefix, trunkCenter, basePosition, yaw, past, scale);
+        }
+
+        private static void CreateImportedNatureClusterCompanion(Transform root, string objectPrefix, Vector3 center, float scale, bool past, Material leafMaterial, Material grassMaterial, Material stemMaterial, Material accentMaterial)
+        {
+            var basePosition = ImportedNatureGroundPosition(center, 0.34f);
+            var yaw = AuthoredVegetationSigned(objectPrefix, 1361, 150f);
+            var bushScale = Vector3.one * Mathf.Clamp(scale * 0.54f, 0.38f, 0.82f);
+            var grassScale = Vector3.one * Mathf.Clamp(scale * 0.62f, 0.42f, 0.88f);
+
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureBushModelA",
+                root,
+                SelectImportedNatureBushPath(objectPrefix),
+                basePosition + new Vector3(AuthoredVegetationSigned(objectPrefix, 1363, 0.12f), 0.01f, AuthoredVegetationSigned(objectPrefix, 1365, 0.12f)),
+                bushScale,
+                Quaternion.Euler(0f, yaw, 0f),
+                past,
+                leafMaterial,
+                stemMaterial,
+                grassMaterial,
+                null,
+                accentMaterial,
+                $"{objectPrefix}.nature_bush_model_a",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureGrassModelA",
+                root,
+                SelectImportedNatureGrassPath(objectPrefix),
+                basePosition + new Vector3(-0.28f * scale, 0.01f, 0.22f * scale),
+                grassScale,
+                Quaternion.Euler(0f, yaw - 26f, 0f),
+                past,
+                grassMaterial,
+                stemMaterial,
+                grassMaterial,
+                null,
+                accentMaterial,
+                $"{objectPrefix}.nature_grass_model_a",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NaturePlantModelA",
+                root,
+                SelectImportedNaturePlantPath(objectPrefix),
+                basePosition + new Vector3(0.30f * scale, 0.01f, -0.18f * scale),
+                Vector3.one * Mathf.Clamp(scale * 0.46f, 0.32f, 0.70f),
+                Quaternion.Euler(0f, yaw + 41f, 0f),
+                past,
+                leafMaterial,
+                stemMaterial,
+                grassMaterial,
+                null,
+                accentMaterial,
+                $"{objectPrefix}.nature_plant_model_a",
+                false);
+            CreateImportedNatureModel(
+                $"{objectPrefix}_NatureMossRockModelA",
+                root,
+                SelectImportedNatureGroundAccentPath(objectPrefix),
+                basePosition + new Vector3(0.14f * scale, 0.012f, 0.40f * scale),
+                Vector3.one * Mathf.Clamp(scale * 0.30f, 0.22f, 0.48f),
+                Quaternion.Euler(0f, yaw + 76f + AuthoredVegetationSigned(objectPrefix, 1367, 20f), 0f),
+                past,
+                leafMaterial,
+                stemMaterial,
+                grassMaterial,
+                stemMaterial,
+                accentMaterial,
+                $"{objectPrefix}.nature_moss_rock_model_a",
+                false);
+            CreatePhotoVegetationClusterCards(root, objectPrefix, basePosition, yaw, past, scale);
+        }
+
+        private static void CreatePhotoVegetationTreeCards(Transform root, string objectPrefix, Vector3 trunkCenter, Vector3 basePosition, float yaw, bool past, float scale)
+        {
+            var leafDetailTint = past ? new Color(0.76f, 0.70f, 0.50f, 0.96f) : new Color(0.64f, 0.80f, 0.54f, 0.98f);
+            var understoryTint = past ? new Color(0.76f, 0.70f, 0.50f, 0.98f) : new Color(0.62f, 0.78f, 0.52f, 0.98f);
+            var smallPlantTint = past ? new Color(0.82f, 0.74f, 0.54f, 0.98f) : new Color(0.72f, 0.86f, 0.60f, 0.98f);
+
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoBranchCardA",
+                $"{objectPrefix}.photo_branch_card_a",
+                basePosition + new Vector3(-0.56f * scale, 0.20f * scale, 0.08f * scale),
+                new Vector3(0.22f * scale, 0.24f * scale, 1f),
+                yaw - 10f + AuthoredVegetationSigned(objectPrefix, 1491, 8f),
+                Cc0PhotoVegetationCloverAPath,
+                past ? "ch1_photo_vegetation_past_branch_a" : "ch1_photo_vegetation_current_branch_a",
+                leafDetailTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoBranchCardB",
+                $"{objectPrefix}.photo_branch_card_b",
+                basePosition + new Vector3(0.44f * scale, 0.22f * scale, -0.20f * scale),
+                new Vector3(0.24f * scale, 0.28f * scale, 1f),
+                yaw + 31f + AuthoredVegetationSigned(objectPrefix, 1493, 7f),
+                SelectPhotoVegetationSmallPlantTexture($"{objectPrefix}.leaf_detail_b"),
+                past ? "ch1_photo_vegetation_past_branch_b" : "ch1_photo_vegetation_current_branch_b",
+                leafDetailTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoFernCardA",
+                $"{objectPrefix}.photo_fern_card_a",
+                basePosition + new Vector3(-0.48f * scale, 0.34f * scale, 0.20f * scale),
+                new Vector3(0.42f * scale, 0.52f * scale, 1f),
+                yaw - 48f + AuthoredVegetationSigned(objectPrefix, 1495, 10f),
+                SelectPhotoVegetationUnderstoryTexture($"{objectPrefix}.fern_a"),
+                past ? "ch1_photo_vegetation_past_understory_a" : "ch1_photo_vegetation_current_understory_a",
+                understoryTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoSmallPlantCardA",
+                $"{objectPrefix}.photo_small_plant_card_a",
+                basePosition + new Vector3(0.36f * scale, 0.28f * scale, -0.34f * scale),
+                new Vector3(0.38f * scale, 0.42f * scale, 1f),
+                yaw + 52f + AuthoredVegetationSigned(objectPrefix, 1497, 10f),
+                SelectPhotoVegetationSmallPlantTexture($"{objectPrefix}.small_plant_a"),
+                past ? "ch1_photo_vegetation_past_smallplant_a" : "ch1_photo_vegetation_current_smallplant_a",
+                smallPlantTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoFernCardB",
+                $"{objectPrefix}.photo_fern_card_b",
+                basePosition + new Vector3(0.10f * scale, 0.30f * scale, 0.34f * scale),
+                new Vector3(0.50f * scale, 0.46f * scale, 1f),
+                yaw + 82f + AuthoredVegetationSigned(objectPrefix, 1499, 11f),
+                SelectPhotoVegetationUnderstoryTexture($"{objectPrefix}.fern_b"),
+                past ? "ch1_photo_vegetation_past_understory_b" : "ch1_photo_vegetation_current_understory_b",
+                understoryTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoCloverCardA",
+                $"{objectPrefix}.photo_clover_card_a",
+                basePosition + new Vector3(-0.12f * scale, 0.18f * scale, -0.42f * scale),
+                new Vector3(0.42f * scale, 0.30f * scale, 1f),
+                yaw - 82f + AuthoredVegetationSigned(objectPrefix, 1501, 11f),
+                Cc0PhotoVegetationCloverAPath,
+                past ? "ch1_photo_vegetation_past_tree_clover_a" : "ch1_photo_vegetation_current_tree_clover_a",
+                smallPlantTint,
+                false);
+        }
+
+        private static void CreatePhotoVegetationClusterCards(Transform root, string objectPrefix, Vector3 basePosition, float yaw, bool past, float scale)
+        {
+            var tint = past ? new Color(0.78f, 0.72f, 0.52f, 0.98f) : new Color(0.66f, 0.80f, 0.54f, 0.98f);
+            var smallPlantTint = past ? new Color(0.82f, 0.74f, 0.54f, 0.98f) : new Color(0.72f, 0.86f, 0.60f, 0.98f);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoFernCardA",
+                $"{objectPrefix}.photo_fern_card_a",
+                basePosition + new Vector3(-0.22f * scale, 0.30f * scale, 0.16f * scale),
+                new Vector3(0.36f * scale, 0.44f * scale, 1f),
+                yaw - 26f + AuthoredVegetationSigned(objectPrefix, 1511, 10f),
+                SelectPhotoVegetationUnderstoryTexture($"{objectPrefix}.cluster_fern_a"),
+                past ? "ch1_photo_vegetation_past_cluster_a" : "ch1_photo_vegetation_current_cluster_a",
+                tint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoCloverCardA",
+                $"{objectPrefix}.photo_clover_card_a",
+                basePosition + new Vector3(0.26f * scale, 0.22f * scale, -0.10f * scale),
+                new Vector3(0.34f * scale, 0.32f * scale, 1f),
+                yaw + 38f + AuthoredVegetationSigned(objectPrefix, 1513, 10f),
+                Cc0PhotoVegetationCloverAPath,
+                past ? "ch1_photo_vegetation_past_cluster_clover_a" : "ch1_photo_vegetation_current_cluster_clover_a",
+                tint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoSmallPlantCardA",
+                $"{objectPrefix}.photo_small_plant_card_a",
+                basePosition + new Vector3(0.02f * scale, 0.24f * scale, 0.30f * scale),
+                new Vector3(0.36f * scale, 0.34f * scale, 1f),
+                yaw + 72f + AuthoredVegetationSigned(objectPrefix, 1515, 9f),
+                SelectPhotoVegetationSmallPlantTexture($"{objectPrefix}.cluster_smallplant_a"),
+                past ? "ch1_photo_vegetation_past_cluster_smallplant_a" : "ch1_photo_vegetation_current_cluster_smallplant_a",
+                smallPlantTint,
+                false);
+            CreatePhotoVegetationCardLandmark(
+                root,
+                $"{objectPrefix}_PhotoCloverCardB",
+                $"{objectPrefix}.photo_clover_card_b",
+                basePosition + new Vector3(-0.32f * scale, 0.18f * scale, -0.18f * scale),
+                new Vector3(0.40f * scale, 0.28f * scale, 1f),
+                yaw - 68f + AuthoredVegetationSigned(objectPrefix, 1517, 9f),
+                Cc0PhotoVegetationCloverAPath,
+                past ? "ch1_photo_vegetation_past_cluster_clover_b" : "ch1_photo_vegetation_current_cluster_clover_b",
+                tint,
+                false);
+        }
+
+        private static GameObject CreatePhotoVegetationCardLandmark(Transform root, string objectName, string landmarkId, Vector3 position, Vector3 scale, float yaw, string texturePath, string materialId, Color tint, bool countsForArrival)
+        {
+            var textureToken = Path.GetFileNameWithoutExtension(texturePath).Replace('-', '_').Replace('.', '_').ToLowerInvariant();
+            var card = CreateQuad(
+                objectName,
+                root,
+                position,
+                scale,
+                PhotoVegetationCardMaterial($"{materialId}_{textureToken}", texturePath, tint));
+            card.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+
+            var renderer = card.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+
+            var landmark = card.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", countsForArrival);
+            return card;
+        }
+
+        private static GameObject CreateImportedNatureModel(
+            string objectName,
+            Transform root,
+            string assetPath,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation,
+            bool past,
+            Material leafMaterial,
+            Material trunkMaterial,
+            Material grassMaterial,
+            Material stoneMaterial,
+            Material accentMaterial,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (prefab == null)
+            {
+                AssetDatabase.Refresh();
+                prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                if (prefab == null)
+                {
+                    throw new InvalidOperationException($"House slice setup failed: missing imported nature model asset {assetPath}.");
+                }
+            }
+
+            var instance = PrefabUtility.InstantiatePrefab(prefab, root) as GameObject;
+            if (instance == null)
+            {
+                instance = UnityEngine.Object.Instantiate(prefab, root);
+            }
+
+            if (instance == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: could not instantiate imported nature model {assetPath}.");
+            }
+
+            instance.name = objectName;
+            instance.transform.localPosition = localPosition;
+            instance.transform.localRotation = localRotation;
+            instance.transform.localScale = localScale;
+            foreach (var collider in instance.GetComponentsInChildren<Collider>(true))
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            ApplyImportedNatureModelRendererPolicy(instance, past, leafMaterial, trunkMaterial, grassMaterial, stoneMaterial, accentMaterial);
+
+            var landmark = instance.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                landmark = instance.AddComponent<TimeWindowPairedSpaceLandmark>();
+            }
+
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", countsForArrival);
+            return instance;
+        }
+
+        private static void ApplyImportedNatureModelRendererPolicy(GameObject instance, bool past, Material leafMaterial, Material trunkMaterial, Material grassMaterial, Material stoneMaterial, Material accentMaterial)
+        {
+            var layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            foreach (var transform in instance.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = layer;
+            }
+
+            foreach (var renderer in instance.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+                var sharedMaterials = renderer.sharedMaterials;
+                for (var i = 0; i < sharedMaterials.Length; i++)
+                {
+                    sharedMaterials[i] = SelectImportedNatureMaterial(sharedMaterials[i], past, leafMaterial, trunkMaterial, grassMaterial, stoneMaterial, accentMaterial);
+                }
+
+                renderer.sharedMaterials = sharedMaterials;
+            }
+        }
+
+        private static Material SelectImportedNatureMaterial(Material sourceMaterial, bool past, Material leafMaterial, Material trunkMaterial, Material grassMaterial, Material stoneMaterial, Material accentMaterial)
+        {
+            var materialName = sourceMaterial == null ? string.Empty : sourceMaterial.name;
+            if (materialName.IndexOf("wood", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("trunk", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("bark", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("brown", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureTexturedWoodMaterial(materialName, past) ??
+                    ImportedNatureWoodMaterial(past) ??
+                    trunkMaterial ??
+                    sourceMaterial;
+            }
+
+            if (materialName.IndexOf("rock", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("stone", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureStoneMaterial(past) ?? stoneMaterial ?? trunkMaterial ?? sourceMaterial;
+            }
+
+            if (materialName.IndexOf("moss", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("grass", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureGrassMaterial(past) ?? grassMaterial ?? leafMaterial ?? sourceMaterial;
+            }
+
+            if (materialName.IndexOf("berry", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("red", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("flower", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("mushroom", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureAccentMaterial(past) ?? accentMaterial ?? leafMaterial ?? sourceMaterial;
+            }
+
+            if (materialName.IndexOf("green", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("leaf", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                materialName.IndexOf("leaves", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureTexturedLeafMaterial(materialName, past) ??
+                    ImportedNatureLeafMaterial(past) ??
+                    leafMaterial ??
+                    sourceMaterial;
+            }
+
+            return ImportedNatureLeafMaterial(past) ?? leafMaterial ?? sourceMaterial;
+        }
+
+        private static Material ImportedNatureTexturedWoodMaterial(string sourceMaterialName, bool past)
+        {
+            if (sourceMaterialName.IndexOf("birch", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureTextureMaterial(
+                    past ? "ch1_textured_nature_past_birch_bark" : "ch1_textured_nature_current_birch_bark",
+                    Cc0TexturedNatureBirchBarkTexturePath,
+                    past ? new Color(0.86f, 0.80f, 0.66f, 1f) : new Color(1.04f, 0.98f, 0.88f, 1f));
+            }
+
+            return ImportedNatureTextureMaterial(
+                past ? "ch1_textured_nature_past_tree_bark" : "ch1_textured_nature_current_tree_bark",
+                Cc0TexturedNatureTreeBarkTexturePath,
+                past ? new Color(0.88f, 0.78f, 0.62f, 1f) : new Color(1.06f, 0.96f, 0.82f, 1f));
+        }
+
+        private static Material ImportedNatureTexturedLeafMaterial(string sourceMaterialName, bool past)
+        {
+            if (sourceMaterialName.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureCutoutTextureMaterial(
+                    past ? "ch1_textured_nature_past_pine_leaves" : "ch1_textured_nature_current_pine_leaves",
+                    EnsureTexturedNatureLeafToneTexture(
+                        Cc0TexturedNaturePineLeavesTexturePath,
+                        past ? TexturedNaturePastPineLeavesTonedTexturePath : TexturedNatureCurrentPineLeavesTonedTexturePath,
+                        past,
+                        true),
+                    past ? new Color(0.48f, 0.52f, 0.34f, 1f) : new Color(0.40f, 0.58f, 0.34f, 1f));
+            }
+
+            if (sourceMaterialName.IndexOf("birch", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return ImportedNatureCutoutTextureMaterial(
+                    past ? "ch1_textured_nature_past_birch_leaves" : "ch1_textured_nature_current_birch_leaves",
+                    EnsureTexturedNatureLeafToneTexture(
+                        past ? Cc0TexturedNatureBirchLeavesYellowTexturePath : Cc0TexturedNatureBirchLeavesGreenTexturePath,
+                        past ? TexturedNaturePastBirchLeavesTonedTexturePath : TexturedNatureCurrentBirchLeavesTonedTexturePath,
+                        past,
+                        false),
+                    past ? new Color(0.58f, 0.52f, 0.34f, 1f) : new Color(0.46f, 0.62f, 0.38f, 1f));
+            }
+
+            return ImportedNatureCutoutTextureMaterial(
+                past ? "ch1_textured_nature_past_tree_leaves" : "ch1_textured_nature_current_tree_leaves",
+                EnsureTexturedNatureLeafToneTexture(
+                    Cc0TexturedNatureTreeLeavesTexturePath,
+                    past ? TexturedNaturePastTreeLeavesTonedTexturePath : TexturedNatureCurrentTreeLeavesTonedTexturePath,
+                    past,
+                    false),
+                past ? new Color(0.50f, 0.54f, 0.36f, 1f) : new Color(0.42f, 0.60f, 0.36f, 1f));
+        }
+
+        private static Texture2D EnsureTexturedNatureLeafToneTexture(string sourcePath, string outputPath, bool past, bool conifer)
+        {
+            if (TexturedNatureLeafToneTextureCache.TryGetValue(outputPath, out var cached) && cached != null)
+            {
+                return cached;
+            }
+
+            var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(outputPath);
+            if (existing != null)
+            {
+                TexturedNatureLeafToneTextureCache[outputPath] = existing;
+                return existing;
+            }
+
+            EnsureTexturedNatureTextureImporter(sourcePath, false);
+            var source = AssetDatabase.LoadAssetAtPath<Texture2D>(sourcePath);
+            if (source == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: missing textured nature source texture {sourcePath}.");
+            }
+
+            var pixels = source.GetPixels32();
+            var toned = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false)
+            {
+                name = Path.GetFileNameWithoutExtension(outputPath)
+            };
+
+            var dark = past
+                ? (conifer ? new Color(0.26f, 0.34f, 0.17f, 1f) : new Color(0.30f, 0.34f, 0.19f, 1f))
+                : (conifer ? new Color(0.14f, 0.34f, 0.18f, 1f) : new Color(0.18f, 0.38f, 0.20f, 1f));
+            var mid = past
+                ? (conifer ? new Color(0.38f, 0.46f, 0.24f, 1f) : new Color(0.42f, 0.48f, 0.27f, 1f))
+                : (conifer ? new Color(0.25f, 0.50f, 0.24f, 1f) : new Color(0.30f, 0.54f, 0.28f, 1f));
+            var high = past
+                ? (conifer ? new Color(0.58f, 0.58f, 0.30f, 1f) : new Color(0.66f, 0.60f, 0.34f, 1f))
+                : (conifer ? new Color(0.46f, 0.68f, 0.36f, 1f) : new Color(0.54f, 0.74f, 0.40f, 1f));
+
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var sourcePixel = pixels[i];
+                var alpha = sourcePixel.a;
+                if (alpha <= 24)
+                {
+                    pixels[i] = new Color32(54, 88, 48, 0);
+                    continue;
+                }
+
+                var luma = (sourcePixel.r * 0.2126f + sourcePixel.g * 0.7152f + sourcePixel.b * 0.0722f) / 255f;
+                var tone = Mathf.Clamp01((luma - 0.05f) / 0.62f);
+                tone = tone * tone * (3f - 2f * tone);
+                var color = tone < 0.58f
+                    ? Color.Lerp(dark, mid, tone / 0.58f)
+                    : Color.Lerp(mid, high, (tone - 0.58f) / 0.42f);
+                var alphaBoost = alpha < 96 ? (byte)0 : alpha;
+                pixels[i] = new Color32(
+                    (byte)Mathf.Clamp(Mathf.RoundToInt(color.r * 255f), 0, 255),
+                    (byte)Mathf.Clamp(Mathf.RoundToInt(color.g * 255f), 0, 255),
+                    (byte)Mathf.Clamp(Mathf.RoundToInt(color.b * 255f), 0, 255),
+                    alphaBoost);
+            }
+
+            toned.SetPixels32(pixels);
+            toned.Apply(false, false);
+            AssetDatabase.CreateAsset(toned, outputPath);
+            AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceSynchronousImport);
+            TexturedNatureLeafToneTextureCache[outputPath] = toned;
+            return toned;
+        }
+
+        private static Material ImportedNatureCutoutTextureMaterial(string id, Texture2D texture, Color tint)
+        {
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: missing textured nature cutout texture for {id}.");
+            }
+
+            var material = CreateSpriteCardMaterial(id, tint, SpriteCardCutoutRenderQueue);
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            if (material.HasProperty("_RampStrength"))
+            {
+                material.SetFloat("_RampStrength", 0.08f);
+            }
+
+            if (material.HasProperty("_WorldLightStrength"))
+            {
+                material.SetFloat("_WorldLightStrength", 0.05f);
+            }
+
+            if (material.HasProperty("_WorldShadowReceiveStrength"))
+            {
+                material.SetFloat("_WorldShadowReceiveStrength", 0.03f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material ImportedNatureTextureMaterial(string id, string texturePath, Color tint)
+        {
+            EnsureTexturedNatureTextureImporter(texturePath, false);
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: missing textured nature texture {texturePath}.");
+            }
+
+            var material = FlatMaterial(id, tint, false, FastVsHd2dMaterialRole.SurfaceLit);
+            AssignMaterialTexture(material, texture, Vector2.one);
+
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", 0.08f);
+            }
+
+            if (material.HasProperty("_SpecularHighlights"))
+            {
+                material.SetFloat("_SpecularHighlights", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material PhotoVegetationCardMaterial(string id, string texturePath, Color tint)
+        {
+            EnsureTexturedNatureTextureImporter(texturePath, false);
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: missing photo vegetation texture {texturePath}.");
+            }
+
+            var material = CreateSpriteCardMaterial(id, tint, SpriteCardCutoutRenderQueue);
+            AssignMaterialTexture(material, texture, Vector2.one);
+            if (material.HasProperty("_RampStrength"))
+            {
+                material.SetFloat("_RampStrength", 0.10f);
+            }
+
+            if (material.HasProperty("_WorldLightStrength"))
+            {
+                material.SetFloat("_WorldLightStrength", 0.05f);
+            }
+
+            if (material.HasProperty("_WorldShadowReceiveStrength"))
+            {
+                material.SetFloat("_WorldShadowReceiveStrength", 0.04f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static string SelectPhotoVegetationBranchTexture(string seedKey)
+        {
+            var roll = AuthoredVegetationHash01(seedKey, 1461);
+            if (roll < 0.25f)
+            {
+                return Cc0PhotoVegetationBranchAPath;
+            }
+
+            if (roll < 0.50f)
+            {
+                return Cc0PhotoVegetationBranchBPath;
+            }
+
+            if (roll < 0.75f)
+            {
+                return Cc0PhotoVegetationBranchCPath;
+            }
+
+            return Cc0PhotoVegetationBranchDPath;
+        }
+
+        private static string SelectPhotoVegetationUnderstoryTexture(string seedKey)
+        {
+            var roll = AuthoredVegetationHash01(seedKey, 1471);
+            if (roll < 0.34f)
+            {
+                return Cc0PhotoVegetationFernAPath;
+            }
+
+            if (roll < 0.68f)
+            {
+                return Cc0PhotoVegetationFernBPath;
+            }
+
+            return Cc0PhotoVegetationCloverAPath;
+        }
+
+        private static string SelectPhotoVegetationSmallPlantTexture(string seedKey)
+        {
+            return AuthoredVegetationHash01(seedKey, 1481) < 0.50f
+                ? Cc0PhotoVegetationSmallPlantAPath
+                : Cc0PhotoVegetationSmallPlantBPath;
+        }
+
+        private static void EnsureTexturedNatureTextureImporter(string texturePath, bool mipmapEnabled = true)
+        {
+            var cacheKey = $"{texturePath}|mip:{mipmapEnabled}";
+            if (TexturedNatureTextureImportCache.Contains(cacheKey))
+            {
+                return;
+            }
+
+            AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
+            if (importer == null)
+            {
+                return;
+            }
+
+            var changed = false;
+            if (importer.textureType != TextureImporterType.Default)
+            {
+                importer.textureType = TextureImporterType.Default;
+                changed = true;
+            }
+
+            if (!importer.alphaIsTransparency)
+            {
+                importer.alphaIsTransparency = true;
+                changed = true;
+            }
+
+            if (!importer.isReadable)
+            {
+                importer.isReadable = true;
+                changed = true;
+            }
+
+            if (importer.mipmapEnabled != mipmapEnabled)
+            {
+                importer.mipmapEnabled = mipmapEnabled;
+                changed = true;
+            }
+
+            if (importer.npotScale != TextureImporterNPOTScale.None)
+            {
+                importer.npotScale = TextureImporterNPOTScale.None;
+                changed = true;
+            }
+
+            if (importer.filterMode != FilterMode.Bilinear)
+            {
+                importer.filterMode = FilterMode.Bilinear;
+                changed = true;
+            }
+
+            if (importer.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                importer.SaveAndReimport();
+            }
+
+            TexturedNatureTextureImportCache.Add(cacheKey);
+        }
+
+        private static Material ImportedNatureLeafMaterial(bool past)
+        {
+            return past
+                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(54, 83, 42, 255), new Color32(92, 117, 57, 255), new Color32(38, 61, 35, 255), PixelPattern.Grass, false, new Vector2(2.5f, 2.5f))
+                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(42, 82, 46, 255), new Color32(79, 125, 57, 255), new Color32(28, 57, 35, 255), PixelPattern.Grass, false, new Vector2(2.5f, 2.5f));
+        }
+
+        private static Material ImportedNatureGrassMaterial(bool past)
+        {
+            return past
+                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(70, 83, 43, 255), new Color32(104, 114, 58, 255), new Color32(50, 64, 39, 255), PixelPattern.Grass, false, new Vector2(3.0f, 3.0f))
+                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(42, 82, 42, 255), new Color32(68, 116, 54, 255), new Color32(30, 62, 35, 255), PixelPattern.Grass, false, new Vector2(3.0f, 3.0f));
+        }
+
+        private static Material ImportedNatureWoodMaterial(bool past)
+        {
+            return past
+                ? PixelMaterial("ch1_imported_nature_past_wood", new Color32(105, 75, 45, 255), new Color32(142, 103, 60, 255), new Color32(68, 51, 38, 255), PixelPattern.Planks, false, new Vector2(1.6f, 2.2f))
+                : PixelMaterial("ch1_imported_nature_current_wood", new Color32(93, 58, 41, 255), new Color32(136, 86, 55, 255), new Color32(55, 40, 33, 255), PixelPattern.Planks, false, new Vector2(1.6f, 2.2f));
+        }
+
+        private static Material ImportedNatureStoneMaterial(bool past)
+        {
+            return past
+                ? PixelMaterial("ch1_imported_nature_past_stone", new Color32(105, 103, 88, 255), new Color32(144, 137, 104, 255), new Color32(75, 74, 66, 255), PixelPattern.Stone, false, new Vector2(1.8f, 1.8f))
+                : PixelMaterial("ch1_imported_nature_current_stone", new Color32(94, 101, 91, 255), new Color32(133, 143, 122, 255), new Color32(62, 68, 61, 255), PixelPattern.Stone, false, new Vector2(1.8f, 1.8f));
+        }
+
+        private static Material ImportedNatureAccentMaterial(bool past)
+        {
+            return past
+                ? PixelMaterial("ch1_imported_nature_past_accent", new Color32(173, 133, 48, 255), new Color32(222, 180, 74, 255), new Color32(104, 76, 42, 255), PixelPattern.Checker, false, Vector2.one)
+                : PixelMaterial("ch1_imported_nature_current_accent", new Color32(160, 62, 54, 255), new Color32(220, 102, 74, 255), new Color32(92, 48, 44, 255), PixelPattern.Checker, false, Vector2.one);
+        }
+
+        private static Vector3 ImportedNatureGroundPosition(Vector3 center, float authoredMidpointLift)
+        {
+            return new Vector3(center.x, Mathf.Max(0.035f, center.y - authoredMidpointLift), center.z);
+        }
+
+        private static float ImportedNatureTreeScaleMultiplier(string assetPath)
+        {
+            if (!assetPath.StartsWith(Cc0TexturedNatureModelDirectory, StringComparison.Ordinal))
+            {
+                return 1.08f;
+            }
+
+            if (assetPath.IndexOf("/Pine_", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return 0.54f;
+            }
+
+            if (assetPath.IndexOf("/Birch_", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return 0.50f;
+            }
+
+            if (assetPath.IndexOf("/Dead", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return 0.46f;
+            }
+
+            return 0.40f;
+        }
+
+        private static string SelectImportedNatureTreePath(string seedKey, bool past)
+        {
+            if (past && AuthoredVegetationHash01(seedKey, 1401) > 0.72f)
+            {
+                var deadRoll = AuthoredVegetationHash01(seedKey, 1403);
+                if (deadRoll < 0.34f)
+                {
+                    return Cc0TexturedNatureDeadTreeAPath;
+                }
+
+                return deadRoll < 0.68f ? Cc0TexturedNatureDeadTreeBPath : Cc0TexturedNatureDeadBirchAPath;
+            }
+
+            var roll = AuthoredVegetationHash01(seedKey, 1405);
+            if (roll < 0.14f)
+            {
+                return Cc0TexturedNatureTreeAPath;
+            }
+
+            if (roll < 0.28f)
+            {
+                return Cc0TexturedNatureTreeDPath;
+            }
+
+            if (roll < 0.42f)
+            {
+                return AuthoredVegetationHash01(seedKey, 1407) > 0.50f ? Cc0TexturedNatureBirchAPath : Cc0TexturedNatureBirchCPath;
+            }
+
+            if (roll < 0.56f)
+            {
+                return AuthoredVegetationHash01(seedKey, 1409) > 0.50f ? Cc0TexturedNatureBirchBPath : Cc0TexturedNatureBirchDPath;
+            }
+
+            if (roll < 0.70f)
+            {
+                return Cc0TexturedNaturePineAPath;
+            }
+
+            if (roll < 0.84f)
+            {
+                return Cc0TexturedNaturePineBPath;
+            }
+
+            if (roll < 0.94f)
+            {
+                return Cc0TexturedNaturePineCPath;
+            }
+
+            return Cc0TexturedNatureTreeEPath;
+        }
+
+        private static string SelectImportedNatureBushPath(string seedKey)
+        {
+            var roll = AuthoredVegetationHash01(seedKey, 1421);
+            if (roll < 0.34f)
+            {
+                return Cc0NatureBushAPath;
+            }
+
+            return roll < 0.68f ? Cc0NatureBushBPath : Cc0NatureBushBerriesPath;
+        }
+
+        private static string SelectImportedNatureGrassPath(string seedKey)
+        {
+            var roll = AuthoredVegetationHash01(seedKey, 1431);
+            if (roll < 0.34f)
+            {
+                return Cc0NatureGrassAPath;
+            }
+
+            return roll < 0.68f ? Cc0NatureGrassBPath : Cc0NatureGrassShortPath;
+        }
+
+        private static string SelectImportedNaturePlantPath(string seedKey)
+        {
+            return AuthoredVegetationHash01(seedKey, 1441) < 0.50f ? Cc0NaturePlantAPath : Cc0NaturePlantBPath;
+        }
+
+        private static string SelectImportedNatureGroundAccentPath(string seedKey)
+        {
+            var roll = AuthoredVegetationHash01(seedKey, 1451);
+            if (roll < 0.34f)
+            {
+                return Cc0NatureRockMossPath;
+            }
+
+            return roll < 0.67f ? Cc0NatureStumpMossPath : Cc0NatureLogMossPath;
         }
 
         private static GameObject CreateAuthoredVegetationMesh(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, TimeWindowPairedSpaceLandmarkKind kind, string landmarkId, Mesh mesh)
@@ -21153,6 +22158,8 @@ namespace Anemora.EditorTools
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 $"{objectPrefix}.nut_c",
                 CreateAuthoredVegetationFruitMesh($"{objectPrefix}_NutC_{AuthoredVegetationMeshNamePrefix}_FacetedFruit", $"{objectPrefix}.nut_c"));
+            CreateImportedNatureTreeCompanion(root, objectPrefix, trunkCenter, past, 0.92f, crownMaterial, baseShrub, trunkMaterial);
+            CreateReadableTreeSpriteOverlay(root, objectPrefix, trunkCenter, past, 1.08f);
         }
 
         private static void CreateRouteGlowPad(Transform root, string objectName, Vector3 triggerCenter, Material glow, string landmarkId)
@@ -23764,10 +24771,10 @@ namespace Anemora.EditorTools
                 root,
                 $"{prefix}_HouseExterior_ExternalTreeSprite_OpenGameArtTree3",
                 $"{prefix}.house_exterior.external_tree_sprite.opengameart_tree3",
-                HouseExteriorCenter + new Vector3(3.35f, 1.34f, 2.24f),
-                new Vector3(1.34f, 2.42f, 1f),
+                HouseExteriorCenter + new Vector3(3.35f, 1.06f, 2.06f),
+                new Vector3(0.20f, 0.34f, 1f),
                 past ? "past_house_exterior_tree3_sprite_cc0" : "current_house_exterior_tree3_sprite_cc0",
-                past ? new Color(0.56f, 0.58f, 0.42f, 1f) : new Color(0.24f, 0.34f, 0.23f, 1f),
+                past ? new Color(0.62f, 0.58f, 0.44f, 1f) : new Color(0.48f, 0.62f, 0.42f, 1f),
                 true);
         }
 
@@ -23810,6 +24817,37 @@ namespace Anemora.EditorTools
                 $"{prefix}.house_exterior.authored_natural_tree.lower_shade_spray",
                 CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_LowerShadeSpray_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.lower_shade_spray"));
             _ = materials;
+        }
+
+        private static void CreateReadableTreeSpriteOverlay(Transform root, string objectPrefix, Vector3 trunkCenter, bool past, float scale)
+        {
+            var materialId = past ? "past_readable_tree_sprite_cc0" : "current_readable_tree_sprite_cc0";
+            CreateReadableTreeSpriteLandmark(
+                root,
+                $"{objectPrefix}_ReadableTreeSpriteOverlayA",
+                $"{objectPrefix}.readable_tree_sprite_overlay_a",
+                trunkCenter + new Vector3(AuthoredVegetationSigned(objectPrefix, 503, 0.04f) * scale, 0.90f * scale, -0.16f * scale),
+                new Vector3(0.13f * scale, 0.24f * scale, 1f),
+                materialId,
+                past,
+                false);
+        }
+
+        private static GameObject CreateReadableTreeSpriteLandmark(Transform root, string objectName, string landmarkId, Vector3 position, Vector3 scale, string materialId, bool past, bool countsForArrival)
+        {
+            var sprite = CreateQuad(
+                objectName,
+                root,
+                position,
+                scale,
+                ReadableTreeSpriteMaterial(materialId, past));
+            sprite.transform.localRotation = Quaternion.identity;
+
+            var landmark = sprite.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", countsForArrival);
+            return sprite;
         }
 
         private static GameObject CreateExternalTreeSpriteLandmark(Transform root, string objectName, string landmarkId, Vector3 position, Vector3 scale, string materialId, Color tint, bool countsForArrival)
@@ -23862,7 +24900,9 @@ namespace Anemora.EditorTools
             var meshFilter = sprite.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = mesh;
             var renderer = sprite.AddComponent<MeshRenderer>();
-            renderer.sharedMaterial = ExternalSpriteMaterial(materialId, OpenGameArtTreeSpritePath, tint);
+            renderer.sharedMaterial = materialId.IndexOf("house_exterior_tree3_sprite_cc0", StringComparison.OrdinalIgnoreCase) >= 0
+                ? ReadableTreeSpriteMaterial(materialId, materialId.StartsWith("past_", StringComparison.OrdinalIgnoreCase))
+                : ExternalSpriteMaterial(materialId, OpenGameArtTreeSpritePath, tint);
 
             var landmark = sprite.AddComponent<TimeWindowPairedSpaceLandmark>();
             SerializedSet(landmark, "landmarkId", landmarkId);
@@ -23916,21 +24956,21 @@ namespace Anemora.EditorTools
 
             if (!past)
             {
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_a", c + new Vector3(2.88f, 1.36f, 2.16f), new Vector3(0.30f, 0.46f, 1f), materialId, tint, new Rect(0.04f, 0.30f, 0.46f, 0.42f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_b", c + new Vector3(3.84f, 1.38f, 2.20f), new Vector3(0.28f, 0.44f, 1f), materialId, tint, new Rect(0.50f, 0.30f, 0.46f, 0.42f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.left_edge_break_a", c + new Vector3(2.78f, 1.88f, 2.06f), new Vector3(0.18f, 0.42f, 1f), materialId, tint, new Rect(0.02f, 0.56f, 0.36f, 0.38f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.right_edge_break_a", c + new Vector3(3.96f, 1.90f, 2.08f), new Vector3(0.18f, 0.40f, 1f), materialId, tint, new Rect(0.62f, 0.56f, 0.36f, 0.38f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_a", c + new Vector3(3.82f, 2.06f, 2.10f), new Vector3(0.10f, 0.15f, 1f), materialId, tint, new Rect(0.68f, 0.76f, 0.22f, 0.20f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_b", c + new Vector3(3.02f, 2.02f, 2.10f), new Vector3(0.10f, 0.15f, 1f), materialId, tint, new Rect(0.10f, 0.76f, 0.22f, 0.20f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_a", c + new Vector3(2.88f, 1.36f, 2.16f), new Vector3(0.06f, 0.09f, 1f), materialId, tint, new Rect(0.04f, 0.30f, 0.46f, 0.42f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_b", c + new Vector3(3.84f, 1.38f, 2.20f), new Vector3(0.06f, 0.09f, 1f), materialId, tint, new Rect(0.50f, 0.30f, 0.46f, 0.42f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.left_edge_break_a", c + new Vector3(2.78f, 1.88f, 2.06f), new Vector3(0.05f, 0.09f, 1f), materialId, tint, new Rect(0.02f, 0.56f, 0.36f, 0.38f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.right_edge_break_a", c + new Vector3(3.96f, 1.90f, 2.08f), new Vector3(0.05f, 0.09f, 1f), materialId, tint, new Rect(0.62f, 0.56f, 0.36f, 0.38f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_a", c + new Vector3(3.82f, 2.06f, 2.10f), new Vector3(0.04f, 0.06f, 1f), materialId, tint, new Rect(0.68f, 0.76f, 0.22f, 0.20f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_b", c + new Vector3(3.02f, 2.02f, 2.10f), new Vector3(0.04f, 0.06f, 1f), materialId, tint, new Rect(0.10f, 0.76f, 0.22f, 0.20f));
             }
             else
             {
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_a", c + new Vector3(2.88f, 1.36f, 2.16f), new Vector3(0.30f, 0.46f, 1f), materialId, tint, new Rect(0.04f, 0.30f, 0.46f, 0.42f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_b", c + new Vector3(3.84f, 1.38f, 2.20f), new Vector3(0.28f, 0.44f, 1f), materialId, tint, new Rect(0.50f, 0.30f, 0.46f, 0.42f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.left_edge_break_a", c + new Vector3(2.78f, 1.88f, 2.06f), new Vector3(0.18f, 0.42f, 1f), materialId, tint, new Rect(0.02f, 0.56f, 0.36f, 0.38f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.right_edge_break_a", c + new Vector3(3.96f, 1.90f, 2.08f), new Vector3(0.18f, 0.40f, 1f), materialId, tint, new Rect(0.62f, 0.56f, 0.36f, 0.38f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_a", c + new Vector3(3.82f, 2.06f, 2.10f), new Vector3(0.10f, 0.15f, 1f), materialId, tint, new Rect(0.68f, 0.76f, 0.22f, 0.20f));
-                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_b", c + new Vector3(3.02f, 2.02f, 2.10f), new Vector3(0.10f, 0.15f, 1f), materialId, tint, new Rect(0.10f, 0.76f, 0.22f, 0.20f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_a", c + new Vector3(2.88f, 1.36f, 2.16f), new Vector3(0.06f, 0.09f, 1f), materialId, tint, new Rect(0.04f, 0.30f, 0.46f, 0.42f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", $"{prefix}.house_exterior.tree_crown_silhouette.front_lower_lobe_b", c + new Vector3(3.84f, 1.38f, 2.20f), new Vector3(0.06f, 0.09f, 1f), materialId, tint, new Rect(0.50f, 0.30f, 0.46f, 0.42f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.left_edge_break_a", c + new Vector3(2.78f, 1.88f, 2.06f), new Vector3(0.05f, 0.09f, 1f), materialId, tint, new Rect(0.02f, 0.56f, 0.36f, 0.38f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", $"{prefix}.house_exterior.tree_crown_silhouette.right_edge_break_a", c + new Vector3(3.96f, 1.90f, 2.08f), new Vector3(0.05f, 0.09f, 1f), materialId, tint, new Rect(0.62f, 0.56f, 0.36f, 0.38f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_a", c + new Vector3(3.82f, 2.06f, 2.10f), new Vector3(0.04f, 0.06f, 1f), materialId, tint, new Rect(0.68f, 0.76f, 0.22f, 0.20f));
+                CreateTreeCrownSpriteRegionLandmark(root, $"{prefix}_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", $"{prefix}.house_exterior.tree_crown_silhouette.outer_leaf_chip_b", c + new Vector3(3.02f, 2.02f, 2.10f), new Vector3(0.04f, 0.06f, 1f), materialId, tint, new Rect(0.10f, 0.76f, 0.22f, 0.20f));
             }
         }
 
@@ -27660,6 +28700,7 @@ namespace Anemora.EditorTools
                 canopyBreakup,
                 $"{objectPrefix}.canopy_breakup_spray_a",
                 CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_CanopyBreakupSprayA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.canopy_breakup_spray_a"));
+            CreateImportedNatureClusterCompanion(root, objectPrefix, center, scale, past, leaf, grass, dryOrStem, flower);
 
             if (past)
             {
@@ -27851,6 +28892,8 @@ namespace Anemora.EditorTools
                 grassSilhouette,
                 $"{objectPrefix}.understory_blade_c",
                 CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_UnderstoryBladeC_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectPrefix}.understory_blade_c"));
+            CreateImportedNatureTreeCompanion(root, objectPrefix, center, past, Mathf.Clamp(scale * 0.78f, 0.72f, 1.24f), leaf, grassSilhouette, trunk);
+            CreateReadableTreeSpriteOverlay(root, objectPrefix, center, past, Mathf.Clamp(scale * 1.05f, 0.82f, 1.45f));
         }
 
         private static GameObject CreateAuthoredVegetationFeatureMesh(string objectName, Transform root, Vector3 localPosition, Vector3 localScale, Quaternion localRotation, Material material, string landmarkId, Mesh mesh)
@@ -32444,18 +33487,18 @@ namespace Anemora.EditorTools
             var material = past
                 ? PixelMaterial(
                     id,
-                    new Color32(30, 36, 20, 255),
-                    new Color32(48, 52, 28, 255),
-                    new Color32(17, 22, 13, 255),
+                    new Color32(46, 50, 29, 255),
+                    new Color32(70, 72, 38, 255),
+                    new Color32(28, 34, 20, 255),
                     PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(5.1f, 5.8f),
                     FastVsHd2dMaterialRole.SurfaceLit)
                 : PixelMaterial(
                     id,
-                    new Color32(7, 24, 15, 255),
-                    new Color32(22, 44, 25, 255),
-                    new Color32(4, 14, 9, 255),
+                    new Color32(24, 47, 30, 255),
+                    new Color32(44, 70, 38, 255),
+                    new Color32(16, 33, 22, 255),
                     PixelPattern.DistantNeedleCanopy,
                     true,
                     new Vector2(5.1f, 5.8f),
@@ -38346,6 +39389,7 @@ namespace Anemora.EditorTools
                 CreateInvisibleColliderBox($"{prefix}_Library_ReadingTableLong_NoStepCollider", root, c + new Vector3(1.08f, 0.88f, 0.12f), new Vector3(2.42f, 1.32f, 0.88f), $"{prefix}.library.reading_table.long.no_step");
                 CreateInvisibleColliderBox($"{prefix}_Library_ReadingTableSideA_NoStepCollider", root, c + new Vector3(-1.72f, 0.88f, 1.42f), new Vector3(1.96f, 1.32f, 0.78f), $"{prefix}.library.reading_table.side_a.no_step");
                 CreateInvisibleColliderBox($"{prefix}_Library_ReadingTableSideB_NoStepCollider", root, c + new Vector3(2.98f, 0.88f, -1.48f), new Vector3(1.82f, 1.32f, 0.74f), $"{prefix}.library.reading_table.side_b.no_step");
+                CreateHd2dFeedbackLibrarySideTableSurfaceMutes(root, c, materials);
                 // Rejected in built-player review: current table book props leak into the past close-up as striped slabs.
             }
             CreateLandmarkCube($"{prefix}_Library_EntryThreshold", root, c + new Vector3(0f, 0.035f, -6.35f), new Vector3(1.18f, 0.035f, 0.26f), Quaternion.identity, trim, false, TimeWindowPairedSpaceLandmarkKind.PathOrFloor, $"{prefix}.library.entry_threshold");
@@ -38442,8 +39486,8 @@ namespace Anemora.EditorTools
                 windowCue.SetActive(false);
                 var ariaCue = CreateFloorGlowCue("Current_Library_TimeWindowOpenCue_Aria", root, new Vector3(PastLibraryPersonCueLocalPosition.x, CurrentLibraryCueFloorY, PastLibraryPersonCueLocalPosition.z), CurrentLibraryAriaCueGlowScale, materials.RedLight, "Current.library.timewindow_aria_cue");
                 ariaCue.SetActive(false);
-                CreateReadableBookProp(root, "Current_Library_RetoDeskBook_Initial", CurrentLibraryRetoDeskBookInitialLocalPosition, FaceTargetOnPlane(CurrentLibraryRetoDeskBookInitialLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.42f, 0.05f, 0.26f), materials.Book, materials.CurrentFence, materials.CurrentFence, true, "Current.library.reto_desk_book");
-                var returnedBook = CreateReadableBookProp(root, "Current_Library_ReturnedBookOnDesk", CurrentLibraryReturnedBookLocalPosition, FaceTargetOnPlane(CurrentLibraryReturnedBookLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.48f, 0.05f, 0.28f), materials.Book, materials.CurrentFence, materials.CurrentFence, true, "Current.library.returned_book_on_desk");
+                CreateReadableBookProp(root, "Current_Library_RetoDeskBook_Initial", CurrentLibraryRetoDeskBookInitialLocalPosition, FaceTargetOnPlane(CurrentLibraryRetoDeskBookInitialLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.22f, 0.035f, 0.13f), materials.CurrentRubbleDetail, materials.Shadow, materials.CurrentFence, true, "Current.library.reto_desk_book");
+                var returnedBook = CreateReadableBookProp(root, "Current_Library_ReturnedBookOnDesk", CurrentLibraryReturnedBookLocalPosition, FaceTargetOnPlane(CurrentLibraryReturnedBookLocalPosition, RetoLibraryDeskLocalPosition), new Vector3(0.24f, 0.035f, 0.14f), materials.CurrentRubbleDetail, materials.Shadow, materials.CurrentFence, true, "Current.library.returned_book_on_desk");
                 returnedBook.SetActive(false);
                 CreateRetoAtLibraryDesk(root, materials);
                 var retoContactShadow = CreateCharacterContactShadow(
@@ -38536,6 +39580,7 @@ namespace Anemora.EditorTools
             {
                 ApplyHd2dFeedbackLibraryFloorArtifactCleanup();
                 ApplyHd2dFeedbackLibraryDeskArtifactCleanup();
+                ApplyHd2dFeedbackLibraryDeskSurfaceMaterialMute(materials.Shadow);
             }
         }
 
@@ -38555,6 +39600,7 @@ namespace Anemora.EditorTools
                 "Current_Library_RuinFloorDetail_LowShadowUnderDebrisA",
                 "Current_Library_RuinFloorDetail_PaperFanNearRetoA",
                 "Current_Library_RuinFloorDetail_BookPageTrailWestA",
+                "Current_Library_RuinFloorDetail_StoneChipsEastA",
                 "Current_Library_ReadingSurfaceDensity_EntryFloorLoosePageA",
                 "Current_Library_FloorDecay_ScuffBandEntry",
                 "Current_Library_FloorDecay_DustBandWest",
@@ -38568,6 +39614,8 @@ namespace Anemora.EditorTools
                 "Current_Library_Stage8c_WarmFloorPool_SideTableA",
                 "Current_Library_Stage8c_WarmFloorPool_SideTableB",
                 "Current_Library_Stage8c_WarmBackShelfFloorBounceA",
+                "Current_Library_Stage8c_CoolWindowShaft_LeftWide",
+                "Current_Library_Stage8c_CoolWindowShaft_RightWide",
                 "Current_Library_Stage8c_CoolFloorWash_LeftWindowA",
                 "Current_Library_Stage8c_CoolFloorWash_RightWindowA",
                 "Current_Library_Stage8d_FloorWarmRun_LongTableNorthA",
@@ -38614,9 +39662,19 @@ namespace Anemora.EditorTools
                 "Current_Library_RetoDesk_WarmPool",
                 "Current_Library_WindowLightPool_LeftFloor",
                 "Current_Library_WindowLightPool_RightFloor",
+                "Current_Library_WindowLightShaft_Left",
+                "Current_Library_WindowLightShaft_Right",
+                "Current_Library_LeftSideShelf_SoftDustLift",
+                "Current_Library_RightSideShelf_SoftDustLift",
                 "Current_Library_Stage8a_ReadingTableWarmCoverA",
                 "Current_Library_Stage8a_ReadingTableWarmPageA",
+                "Current_Library_Stage8a_BackShelfWarmGlintUpperA",
+                "Current_Library_Stage8a_BackShelfWarmGlintLowerA",
                 "Current_Library_Stage8b_TableLong_PageStackA",
+                "Current_Library_Stage8b_BackShelfUpper_PageClusterCenter",
+                "Current_Library_Stage8b_BackShelfLower_WarmClusterRight",
+                "Current_Library_Stage8b_LeftSideShelf_PageBandMiddle",
+                "Current_Library_Stage8b_RightSideShelf_WarmBandMiddle",
                 "Current_Library_Stage8c_CoolFloorWash_LeftWindowA",
                 "Current_Library_Stage8c_CoolFloorWash_RightWindowA",
                 "Current_Library_Stage8d_FloorWarmRun_LongTableNorthA",
@@ -38640,10 +39698,17 @@ namespace Anemora.EditorTools
                 "Current_Library_Stage8g_HeroTableWarmLeadA",
                 "Current_Library_Stage8g_HeroTablePointA",
                 "Current_Library_Stage8g_BackShelfPointA",
+                "Current_Library_Stage8g_BackShelfWarmWallWashA",
+                "Current_Library_Stage8g_BackShelfWarmBandLeftA",
+                "Current_Library_Stage8g_BackShelfWarmBandRightA",
+                "Current_Library_Stage8g_BackRailWarmHighlightA",
+                "Current_Library_Stage8g_LeftCoolSideSeparationA",
+                "Current_Library_Stage8g_RightCoolSideSeparationA",
                 "Current_Library_Stage8h_LongTableAmberSurfaceA",
                 "Current_Library_Stage8h_LongTableOpenPageHighlightA",
                 "Current_Library_Stage8h_RightDeskAmberSurfaceA",
                 "Current_Library_Stage8h_RightDeskPageHighlightA",
+                "Current_Library_Stage8h_BackShelfPageMarkerLeftA",
                 "Current_Library_Stage8h_FloorWarmPlankBandNearA",
                 "Current_Library_Stage8h_FloorWarmPlankBandLeftA",
                 "Current_Library_Stage8h_FloorWarmPlankBandRightA",
@@ -38651,15 +39716,27 @@ namespace Anemora.EditorTools
                 "Current_Library_Stage8j_LongTableFrontWarmRimA",
                 "Current_Library_Stage8j_LongTableOpenPageGlowA",
                 "Current_Library_Stage8j_InkWellTableShadowA",
+                "Current_Library_Stage8k_BackShelfPageGlintA",
                 "Current_Library_Stage8l_LongTablePlankCatchlightA",
                 "Current_Library_Stage8l_RightDeskFloorWarmEdgeA",
+                "Current_Library_Stage8m_BackShelfPageGlintLeftA",
+                "Current_Library_Stage8m_BackShelfTopPagePinA",
+                "Current_Library_Stage8m_RightDeskShelfEchoPageA",
                 "Current_Library_Stage8n_LongTableBookmarkSlipA",
                 "Current_Library_Stage8n_LongTableLoosePagePairA",
                 "Current_Library_Stage8n_LongTableLoosePageShadowA",
                 "Current_Library_Stage8n_RightDeskStackPageA",
+                "Current_Library_ReadingTableSideB_TabletopPlankSeamA",
+                "Current_Library_ReadingTableSideB_TabletopPlankSeamB",
+                "Current_Library_ReadingTableSideB_TabletopPlankSeamC",
+                "Current_Library_ReadingTableSideB_RightEdgeHighlight",
+                "Current_Library_ReadingTableSideB_FrontBenchTrim",
+                "Current_Library_ReadingTableGrounding_CurrentSideTableEdgeChipA",
+                "Current_Library_ReadingTableGrounding_CurrentSideTableDustStripA",
                 "Current_Library_ReadableMicroprops_RetoDeskPaperLineA",
                 "Current_Library_ReadableMicroprops_RetoDeskBookmarkA",
                 "Current_Library_EntryTableContrast_RetoDeskFootDustA",
+                "Current_Library_EntryTableContrast_SideTableSplinterA",
                 "Current_Library_PropDetail_RetoDeskLoosePapers",
                 "Current_Library_PropDetail_RetoDeskLoosePapers_Accent",
                 "Current_Library_PropDetail_RetoDeskLoosePapers_Detail",
@@ -38728,6 +39805,9 @@ namespace Anemora.EditorTools
                 "Current_CentralPlaza_Cycle126_CloseShadowBarMute_CloseGridWashA",
                 "Current_CentralPlaza_Cycle126_CloseShadowBarMute_GroundAirUnifierA",
                 "Current_CentralPlaza_Cycle126_CloseShadowBarMute_StepAirLiftA",
+                "Current_CentralPlaza_Cycle120_ReferenceLightColumn_LightColumnGroundCatchA",
+                "Current_CentralPlaza_Cycle120_ReferenceLightColumn_LightColumnLibraryDustA",
+                "Current_CentralPlaza_Cycle129PaintedLightFlecksA",
                 "Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA",
                 "Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA",
                 "Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA",
@@ -38750,6 +39830,57 @@ namespace Anemora.EditorTools
 
             sceneObject.SetActive(false);
             EditorUtility.SetDirty(sceneObject);
+        }
+
+        private static void ApplyHd2dFeedbackLibraryDeskSurfaceMaterialMute(Material subduedMaterial)
+        {
+            if (subduedMaterial == null)
+            {
+                return;
+            }
+
+            foreach (var objectName in new[]
+            {
+                "Current_Library_ReadingTableSideB_TopSlab"
+            })
+            {
+                var renderer = FindSceneObjectIncludingInactive(objectName)?.GetComponent<Renderer>();
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                renderer.sharedMaterial = subduedMaterial;
+                EditorUtility.SetDirty(renderer);
+            }
+        }
+
+        private static void CreateHd2dFeedbackLibrarySideTableSurfaceMutes(Transform root, Vector3 c, Materials materials)
+        {
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                "Current_Library_Feedback_SideTableSurfaceMuteA",
+                root,
+                c + new Vector3(2.98f, 0.423f, -1.48f),
+                new Vector3(1.42f, 0.026f, 0.42f),
+                Quaternion.Euler(0f, 8f, 0f),
+                materials.Shadow,
+                "Current.library.feedback.side_table.surface_mute_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                "Current_Library_Feedback_SideTableFrontBenchMuteA",
+                root,
+                c + new Vector3(2.98f, 0.186f, -1.89f),
+                new Vector3(1.25f, 0.040f, 0.13f),
+                Quaternion.Euler(0f, 8f, 0f),
+                materials.Shadow,
+                "Current.library.feedback.side_table.front_bench_mute_a");
+            CreateNonArrivalLandmarkCubeShadowSafe(
+                "Current_Library_Feedback_SideTableStoneChipMuteA",
+                root,
+                c + new Vector3(4.25f, 0.108f, -1.75f),
+                new Vector3(0.42f, 0.035f, 0.24f),
+                Quaternion.Euler(0f, 14f, 0f),
+                materials.Shadow,
+                "Current.library.feedback.side_table.stone_chip_mute_a");
         }
 
         private static void CreateLibraryUpperGalleryDetails(Transform root, string prefix, bool past, Materials materials, Vector3 c, Material wood, Material trim)
@@ -50989,7 +52120,7 @@ namespace Anemora.EditorTools
             SerializedSet(controller, "otherTimeSpaceRenderLayer", OtherTimeSpaceRenderLayer);
             SerializedSet(controller, "portalFrameRenderLayer", PortalFrameRenderLayer);
             SerializedSet(controller, "playerVisibleRenderLayer", PlayerVisibleRenderLayer);
-            SerializedSet(controller, "aperturePlaneOffset", 0.001f);
+            SerializedSet(controller, "aperturePlaneOffset", 0.045f);
             SerializedSet(controller, "apertureObjectSuppressionDepth", 0.30f);
             SerializedSet(controller, "portalApertureMaterial", materials.Aperture);
             SerializedSet(controller, "enableBackSideBlocking", false);
@@ -55183,8 +56314,8 @@ namespace Anemora.EditorTools
                 CurrentSpaceRenderLayer,
                 LibraryVsCenter + Stage7LibraryWarmAnchorCenterLocalPosition + new Vector3(0.00f, 0.56f, 0.00f),
                 new Color(1.00f, 0.84f, 0.60f, 1f),
-                0.70f,
-                2.20f);
+                0.12f,
+                1.10f);
         }
 
         private static void CreateHd2dPhaseCAlphaPlazaWaterSparkleLight(Transform parent)
@@ -57902,6 +59033,8 @@ namespace Anemora.EditorTools
         {
             ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Current", "Current_HouseExteriorMap_SeparateSpace");
             ValidateHouseExteriorAuthoredVegetationPrototypeForPrefix("Past", "Past_HouseExteriorMap_SeparateSpace");
+            ValidateReadableTreeSpriteOverlayForPrefix("Current_HouseExterior_AuthoredNaturalTree", "Current_HouseExteriorMap_SeparateSpace");
+            ValidateReadableTreeSpriteOverlayForPrefix("Past_HouseExterior_AuthoredNaturalTree", "Past_HouseExteriorMap_SeparateSpace");
             ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix("Current");
             ValidateChapter1OutdoorAuthoredVegetationSamplesForPrefix("Past");
             ValidateChapter1Phase2VegetationVolumeForPrefix("Current");
@@ -57918,6 +59051,7 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA_LeafSprayA", $"{prefix}_CentralPlazaMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA", $"{prefix}_CentralPlazaMap_SeparateSpace");
             ValidateChapter1TreeBaseShrubForPrefix($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA", $"{prefix}_CentralPlazaMap_SeparateSpace");
+            ValidateReadableTreeSpriteOverlayForPrefix($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftTopTreeA", $"{prefix}_CentralPlazaMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftPlant_HouseExterior_GrassTuft0_A", $"{prefix}_CentralPlazaMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_B_Cycle39_LeftPlant_HouseExterior_GrassTuft0", $"{prefix}_CentralPlazaMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_Trunk", $"{prefix}_MiaHouseMap_SeparateSpace", "LowPolyTrunk", 23, 126);
@@ -57926,6 +59060,7 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA_LeafSprayA", $"{prefix}_MiaHouseMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateChapter1TreeBaseShrubForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA", $"{prefix}_MiaHouseMap_SeparateSpace");
+            ValidateReadableTreeSpriteOverlayForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LeftTreeA", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_LowerPlantPatchCenter", $"{prefix}_MiaHouseMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0_A", $"{prefix}_MiaHouseMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_C1_NaturalScatter_HouseExterior_GrassTuft0", $"{prefix}_MiaHouseMap_SeparateSpace");
@@ -57935,6 +59070,7 @@ namespace Anemora.EditorTools
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA_LeafSprayA", $"{prefix}_AriaStreetMap_SeparateSpace", "LeafSpray", 32, 96);
             ValidateChapter1NatureCanopyBreakupForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateChapter1TreeBaseShrubForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA", $"{prefix}_AriaStreetMap_SeparateSpace");
+            ValidateReadableTreeSpriteOverlayForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_RightGreenPatchTreeA", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_Cycle90_LowerVergeMidBed", $"{prefix}_AriaStreetMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10_A", $"{prefix}_AriaStreetMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_D1_HouseExterior_GrassTuft10", $"{prefix}_AriaStreetMap_SeparateSpace");
@@ -57949,6 +59085,7 @@ namespace Anemora.EditorTools
             ValidateChapter1TreeBaseShrubForPrefix($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA", $"{prefix}_KaiaFarmMap_SeparateSpace", false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_Crown", $"{prefix}_KaiaFarmMap_SeparateSpace", "LowPolyCanopy", 62, 360, false);
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA_NutA", $"{prefix}_KaiaFarmMap_SeparateSpace", "FacetedFruit", 6, 24, false);
+            ValidateReadableTreeSpriteOverlayForPrefix($"{prefix}_CentralPlaza_Chapter1_E1_NutTreeA", $"{prefix}_KaiaFarmMap_SeparateSpace");
             ValidateAuthoredVegetationMeshObject($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0_A", $"{prefix}_RuinsMap_SeparateSpace", "GrassBlade", 5, 18);
             ValidateChapter1GrassTuftSilhouetteForPrefix($"{prefix}_CentralPlaza_Chapter1_F_BridgeBrush_HouseExterior_GrassTuft0", $"{prefix}_RuinsMap_SeparateSpace");
             ValidateChapter1GroundCoverPatchForPrefix($"{prefix}_CentralPlaza_Chapter1_F_NorthBrushPatchLeftA", $"{prefix}_RuinsMap_SeparateSpace");
@@ -57983,6 +59120,11 @@ namespace Anemora.EditorTools
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_TwigB", expectedParentName, "BranchFork", 36, 180);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_LeafFanA", expectedParentName, "LeafFan", 20, 60);
                 ValidateChapter1NatureCanopyBreakupForPrefix(objectPrefix, expectedParentName);
+                ValidateImportedNatureModelObject($"{objectPrefix}_NatureBushModelA", expectedParentName, 1, 18);
+                ValidateImportedNatureModelObject($"{objectPrefix}_NatureGrassModelA", expectedParentName, 1, 10);
+                ValidateImportedNatureModelObject($"{objectPrefix}_NaturePlantModelA", expectedParentName, 1, 10);
+                ValidateImportedNatureModelObject($"{objectPrefix}_NatureMossRockModelA", expectedParentName, 1, 10);
+                ValidatePhotoVegetationClusterCardsForPrefix(objectPrefix, expectedParentName);
 
                 if (string.Equals(prefix, "Past", StringComparison.Ordinal))
                 {
@@ -58011,6 +59153,7 @@ namespace Anemora.EditorTools
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryB", expectedParentName, "GrassBlade", 5, 18);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryC", expectedParentName, "LeafCluster", 7, 24);
                 ValidateAuthoredVegetationMeshObject($"{objectPrefix}_UnderstoryBladeC", expectedParentName, "GrassBlade", 5, 18);
+                ValidateReadableTreeSpriteOverlayForPrefix(objectPrefix, expectedParentName);
             }
         }
 
@@ -58072,6 +59215,7 @@ namespace Anemora.EditorTools
                 ValidateChapter1NatureCanopyBreakupForPrefix(treePrefix, expectedParentName);
                 ValidateChapter1TreeBaseShrubForPrefix(treePrefix, expectedParentName);
                 ValidateAuthoredVegetationMeshObject($"{treePrefix}_BranchSprayA", expectedParentName, "BranchFork", 36, 180);
+                ValidateReadableTreeSpriteOverlayForPrefix(treePrefix, expectedParentName);
             }
 
             foreach (var treePrefix in secondaryTreePrefixes)
@@ -58087,6 +59231,7 @@ namespace Anemora.EditorTools
                 ValidateChapter1NatureCanopyBreakupForPrefix(treePrefix, expectedParentName, false);
                 ValidateChapter1TreeBaseShrubForPrefix(treePrefix, expectedParentName, false);
                 ValidateAuthoredVegetationMeshObject($"{treePrefix}_BranchSprayA", expectedParentName, "BranchFork", 36, 180, false);
+                ValidateReadableTreeSpriteOverlayForPrefix(treePrefix, expectedParentName);
             }
 
             for (var i = 0; i < 5; i++)
@@ -58096,6 +59241,165 @@ namespace Anemora.EditorTools
                 ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_B", expectedParentName, "GrassBlade", 5, 18);
                 ValidateAuthoredVegetationMeshObject($"{tuftPrefix}_C", expectedParentName, "GrassBlade", 5, 18);
                 ValidateChapter1GrassTuftSilhouetteForPrefix(tuftPrefix, expectedParentName);
+            }
+        }
+
+        private static void ValidateReadableTreeSpriteOverlayForPrefix(string objectPrefix, string expectedParentName)
+        {
+            var objectName = $"{objectPrefix}_ReadableTreeSpriteOverlayA";
+            var expectedMaterialToken = objectPrefix.StartsWith("Past_", StringComparison.Ordinal)
+                ? "past_readable_tree_sprite_cc0"
+                : "current_readable_tree_sprite_cc0";
+            ValidateExternalTreeSpriteObject(objectName, expectedParentName, expectedMaterialToken, "readable_tree_sprite_cc0_toned");
+
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            var scale = sceneObject.transform.localScale;
+            if (scale.x > 0.42f || scale.y > 0.72f)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must stay subordinate to the imported 3D tree model.");
+            }
+
+            ValidateImportedNatureModelObject($"{objectPrefix}_NatureTreeModel", expectedParentName, 1, 80);
+            ValidateImportedNatureModelObject($"{objectPrefix}_NatureGrassModelA", expectedParentName, 1, 10);
+            ValidateImportedNatureModelObject($"{objectPrefix}_NatureBushModelA", expectedParentName, 1, 18);
+            ValidateImportedNatureModelObject($"{objectPrefix}_NatureFallenWoodModelA", expectedParentName, 1, 10);
+            ValidatePhotoVegetationTreeCardsForPrefix(objectPrefix, expectedParentName);
+        }
+
+        private static void ValidatePhotoVegetationTreeCardsForPrefix(string objectPrefix, string expectedParentName)
+        {
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoBranchCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoBranchCardB", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoSmallPlantCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardB", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCloverCardA", expectedParentName);
+        }
+
+        private static void ValidatePhotoVegetationClusterCardsForPrefix(string objectPrefix, string expectedParentName)
+        {
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoFernCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCloverCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoSmallPlantCardA", expectedParentName);
+            ValidatePhotoVegetationCardObject($"{objectPrefix}_PhotoCloverCardB", expectedParentName);
+        }
+
+        private static void ValidatePhotoVegetationCardObject(string objectName, string expectedParentName)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing photo vegetation card {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must be parented under {expectedParentName}.");
+            }
+
+            if (sceneObject.GetComponent<Collider>() != null || sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must remain non-colliding.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var meshFilter = sceneObject.GetComponent<MeshFilter>();
+            if (meshFilter == null || meshFilter.sharedMesh == null || meshFilter.sharedMesh.name.IndexOf("Quad", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must use a quad mesh.");
+            }
+
+            var renderer = sceneObject.GetComponent<Renderer>();
+            var materialName = renderer != null && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : string.Empty;
+            if (renderer == null ||
+                !renderer.enabled ||
+                materialName.IndexOf("ch1_photo_vegetation_", StringComparison.OrdinalIgnoreCase) < 0 ||
+                materialName.IndexOf("anemora_cutout", StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: photo vegetation card {objectName} must use an Anemora cutout photo vegetation material.");
+            }
+        }
+
+        private static void ValidateImportedNatureModelObject(string objectName, string expectedParentName, int minRendererCount, int minVertexCount)
+        {
+            var sceneObject = FindSceneObjectIncludingInactive(objectName);
+            if (sceneObject == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing imported nature model {objectName}.");
+            }
+
+            if (sceneObject.transform.parent == null || sceneObject.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must be parented under {expectedParentName}.");
+            }
+
+            var landmark = sceneObject.GetComponent<TimeWindowPairedSpaceLandmark>();
+            if (landmark == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must keep a TimeWindowPairedSpaceLandmark.");
+            }
+
+            var landmarkSerialized = new SerializedObject(landmark);
+            var kindProperty = landmarkSerialized.FindProperty("kind");
+            if (kindProperty == null ||
+                kindProperty.propertyType != SerializedPropertyType.Enum ||
+                kindProperty.enumValueIndex != Convert.ToInt32(TimeWindowPairedSpaceLandmarkKind.PropOrFeature))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use TimeWindowPairedSpaceLandmarkKind.PropOrFeature.");
+            }
+
+            if (sceneObject.GetComponentsInChildren<Collider>(true).Length > 0)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must remain non-colliding imported nature.");
+            }
+
+            var renderers = sceneObject.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length < minRendererCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must have at least {minRendererCount} renderer(s).");
+            }
+
+            var requiresTexturedTreeMaterial = objectName.IndexOf("NatureTreeModel", StringComparison.OrdinalIgnoreCase) >= 0;
+            var hasTexturedTreeMaterial = false;
+            foreach (var renderer in renderers)
+            {
+                if (!renderer.enabled || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: {objectName} has an imported nature renderer without an enabled material.");
+                }
+
+                foreach (var material in renderer.sharedMaterials)
+                {
+                    var materialName = material == null ? string.Empty : material.name;
+                    if (materialName.IndexOf("ch1_textured_nature_", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        hasTexturedTreeMaterial = true;
+                    }
+                }
+            }
+
+            if (requiresTexturedTreeMaterial && !hasTexturedTreeMaterial)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the textured nature tree materials.");
+            }
+
+            var vertexCount = 0;
+            foreach (var filter in sceneObject.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh != null)
+                {
+                    vertexCount += filter.sharedMesh.vertexCount;
+                }
+            }
+
+            if (vertexCount < minVertexCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {objectName} has too little imported nature geometry ({vertexCount} vertices).");
             }
         }
 
@@ -72261,6 +73565,9 @@ namespace Anemora.EditorTools
                 "Current_CentralPlaza_Cycle126_CloseShadowBarMute_CloseGridWashA",
                 "Current_CentralPlaza_Cycle126_CloseShadowBarMute_GroundAirUnifierA",
                 "Current_CentralPlaza_Cycle126_CloseShadowBarMute_StepAirLiftA",
+                "Current_CentralPlaza_Cycle120_ReferenceLightColumn_LightColumnGroundCatchA",
+                "Current_CentralPlaza_Cycle120_ReferenceLightColumn_LightColumnLibraryDustA",
+                "Current_CentralPlaza_Cycle129PaintedLightFlecksA",
                 "Current_CentralPlaza_LightComposition_LibraryApproachCoolBounceA",
                 "Current_CentralPlaza_LightComposition_LibraryDoorCoolGlowA",
                 "Current_CentralPlaza_FramedLightPlanes_LibraryApproachCoolLightA",
@@ -72277,9 +73584,21 @@ namespace Anemora.EditorTools
                 "Current_Library_RetoDesk_WarmPool",
                 "Current_Library_WindowLightPool_LeftFloor",
                 "Current_Library_WindowLightPool_RightFloor",
+                "Current_Library_WindowLightShaft_Left",
+                "Current_Library_WindowLightShaft_Right",
+                "Current_Library_LeftSideShelf_SoftDustLift",
+                "Current_Library_RightSideShelf_SoftDustLift",
                 "Current_Library_Stage8a_ReadingTableWarmCoverA",
                 "Current_Library_Stage8a_ReadingTableWarmPageA",
+                "Current_Library_Stage8a_BackShelfWarmGlintUpperA",
+                "Current_Library_Stage8a_BackShelfWarmGlintLowerA",
                 "Current_Library_Stage8b_TableLong_PageStackA",
+                "Current_Library_Stage8b_BackShelfUpper_PageClusterCenter",
+                "Current_Library_Stage8b_BackShelfLower_WarmClusterRight",
+                "Current_Library_Stage8b_LeftSideShelf_PageBandMiddle",
+                "Current_Library_Stage8b_RightSideShelf_WarmBandMiddle",
+                "Current_Library_Stage8c_CoolWindowShaft_LeftWide",
+                "Current_Library_Stage8c_CoolWindowShaft_RightWide",
                 "Current_Library_Stage8c_CoolFloorWash_LeftWindowA",
                 "Current_Library_Stage8c_CoolFloorWash_RightWindowA",
                 "Current_Library_Stage8d_FloorWarmRun_LongTableNorthA",
@@ -72303,10 +73622,17 @@ namespace Anemora.EditorTools
                 "Current_Library_Stage8g_HeroTableWarmLeadA",
                 "Current_Library_Stage8g_HeroTablePointA",
                 "Current_Library_Stage8g_BackShelfPointA",
+                "Current_Library_Stage8g_BackShelfWarmWallWashA",
+                "Current_Library_Stage8g_BackShelfWarmBandLeftA",
+                "Current_Library_Stage8g_BackShelfWarmBandRightA",
+                "Current_Library_Stage8g_BackRailWarmHighlightA",
+                "Current_Library_Stage8g_LeftCoolSideSeparationA",
+                "Current_Library_Stage8g_RightCoolSideSeparationA",
                 "Current_Library_Stage8h_LongTableAmberSurfaceA",
                 "Current_Library_Stage8h_LongTableOpenPageHighlightA",
                 "Current_Library_Stage8h_RightDeskAmberSurfaceA",
                 "Current_Library_Stage8h_RightDeskPageHighlightA",
+                "Current_Library_Stage8h_BackShelfPageMarkerLeftA",
                 "Current_Library_Stage8h_FloorWarmPlankBandNearA",
                 "Current_Library_Stage8h_FloorWarmPlankBandLeftA",
                 "Current_Library_Stage8h_FloorWarmPlankBandRightA",
@@ -72314,15 +73640,28 @@ namespace Anemora.EditorTools
                 "Current_Library_Stage8j_LongTableFrontWarmRimA",
                 "Current_Library_Stage8j_LongTableOpenPageGlowA",
                 "Current_Library_Stage8j_InkWellTableShadowA",
+                "Current_Library_Stage8k_BackShelfPageGlintA",
                 "Current_Library_Stage8l_LongTablePlankCatchlightA",
                 "Current_Library_Stage8l_RightDeskFloorWarmEdgeA",
+                "Current_Library_Stage8m_BackShelfPageGlintLeftA",
+                "Current_Library_Stage8m_BackShelfTopPagePinA",
+                "Current_Library_Stage8m_RightDeskShelfEchoPageA",
                 "Current_Library_Stage8n_LongTableBookmarkSlipA",
                 "Current_Library_Stage8n_LongTableLoosePagePairA",
                 "Current_Library_Stage8n_LongTableLoosePageShadowA",
                 "Current_Library_Stage8n_RightDeskStackPageA",
+                "Current_Library_ReadingTableSideB_TabletopPlankSeamA",
+                "Current_Library_ReadingTableSideB_TabletopPlankSeamB",
+                "Current_Library_ReadingTableSideB_TabletopPlankSeamC",
+                "Current_Library_ReadingTableSideB_RightEdgeHighlight",
+                "Current_Library_ReadingTableSideB_FrontBenchTrim",
+                "Current_Library_ReadingTableGrounding_CurrentSideTableEdgeChipA",
+                "Current_Library_ReadingTableGrounding_CurrentSideTableDustStripA",
+                "Current_Library_RuinFloorDetail_StoneChipsEastA",
                 "Current_Library_ReadableMicroprops_RetoDeskPaperLineA",
                 "Current_Library_ReadableMicroprops_RetoDeskBookmarkA",
                 "Current_Library_EntryTableContrast_RetoDeskFootDustA",
+                "Current_Library_EntryTableContrast_SideTableSplinterA",
                 "Current_Library_PropDetail_RetoDeskLoosePapers",
                 "Current_Library_PropDetail_RetoDeskLoosePapers_Accent",
                 "Current_Library_PropDetail_RetoDeskLoosePapers_Detail",
@@ -72352,6 +73691,46 @@ namespace Anemora.EditorTools
                 FindSceneObjectIncludingInactive("Current_Library_ReturnedBookOnDesk") == null)
             {
                 throw new InvalidOperationException("House slice validation failed: feedback cleanup must keep the authored Reto desk books present while rejected desk artifacts are hidden.");
+            }
+
+            ValidateLibraryDeskBookSubduedForReviewFeedback("Current_Library_RetoDeskBook_Initial", 0.23f, 0.14f);
+            ValidateLibraryDeskBookSubduedForReviewFeedback("Current_Library_ReturnedBookOnDesk", 0.25f, 0.15f);
+            ValidateHd2dFeedbackMaterialNameContains("Current_Library_ReadingTableSideB_TopSlab", "shadow");
+            ValidateHd2dFeedbackMaterialNameContains("Current_Library_Feedback_SideTableSurfaceMuteA", "shadow");
+            ValidateHd2dFeedbackMaterialNameContains("Current_Library_Feedback_SideTableFrontBenchMuteA", "shadow");
+            ValidateHd2dFeedbackMaterialNameContains("Current_Library_Feedback_SideTableStoneChipMuteA", "shadow");
+        }
+
+        private static void ValidateLibraryDeskBookSubduedForReviewFeedback(string bookName, float maxCoverWidth, float maxCoverDepth)
+        {
+            var cover = FindSceneObjectIncludingInactive($"{bookName}_Cover");
+            var openPageLeft = FindSceneObjectIncludingInactive($"{bookName}_OpenPageLeft");
+            var openPageRight = FindSceneObjectIncludingInactive($"{bookName}_OpenPageRight");
+            if (cover == null || openPageLeft == null || openPageRight == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: feedback cleanup must keep subdued readable book parts for {bookName}.");
+            }
+
+            if (cover.transform.localScale.x > maxCoverWidth || cover.transform.localScale.z > maxCoverDepth)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {bookName} cover is too large for the current library desk cleanup.");
+            }
+
+            ValidateLibraryDeskBookSubduedMaterial(openPageLeft, bookName);
+            ValidateLibraryDeskBookSubduedMaterial(openPageRight, bookName);
+        }
+
+        private static void ValidateLibraryDeskBookSubduedMaterial(GameObject bookPart, string bookName)
+        {
+            var renderer = bookPart.GetComponent<Renderer>();
+            var materialName = renderer != null && renderer.sharedMaterial != null ? renderer.sharedMaterial.name : string.Empty;
+            if (materialName.Contains("sign_paint", StringComparison.OrdinalIgnoreCase) ||
+                materialName.Contains("window_light", StringComparison.OrdinalIgnoreCase) ||
+                materialName.Contains("warm_light", StringComparison.OrdinalIgnoreCase) ||
+                materialName.Contains("lamp", StringComparison.OrdinalIgnoreCase) ||
+                materialName.Contains("book", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException($"House slice validation failed: {bookName} desk pages must stay subdued for feedback cleanup, found {materialName}.");
             }
         }
 
@@ -74743,19 +76122,24 @@ namespace Anemora.EditorTools
             var apertureShaderSource = File.Exists(apertureShaderPath) ? File.ReadAllText(apertureShaderPath) : string.Empty;
             var apertureControllerSource = File.Exists(apertureControllerPath) ? File.ReadAllText(apertureControllerPath) : string.Empty;
             if (controller.PortalApertureCompositeAlphaForReview < 0.995f ||
+                controller.PortalAperturePlaneOffsetForReview < 0.035f ||
                 controller.CurrentApertureMaterialAlphaForReview < 0.995f ||
                 controller.OtherTimeApertureMaterialAlphaForReview < 0.995f ||
-                controller.CurrentApertureMaterialRenderQueueForReview < 3038 ||
-                controller.OtherTimeApertureMaterialRenderQueueForReview < 3038 ||
+                controller.CurrentApertureMaterialRenderQueueForReview < 2440 ||
+                controller.CurrentApertureMaterialRenderQueueForReview > 2449 ||
+                controller.OtherTimeApertureMaterialRenderQueueForReview < 2440 ||
+                controller.OtherTimeApertureMaterialRenderQueueForReview > 2449 ||
                 !string.Equals(controller.ApertureVisualOverlayExemptionSummaryForReview, "none", StringComparison.Ordinal) ||
+                !apertureShaderSource.Contains("\"Queue\" = \"AlphaTest\"") ||
                 !apertureShaderSource.Contains("return half4(sample.rgb * _Color.rgb, _Color.a);") ||
                 !apertureShaderSource.Contains("Blend One Zero") ||
                 !apertureShaderSource.Contains("ZWrite On") ||
-                !apertureShaderSource.Contains("ZTest Always") ||
+                !apertureShaderSource.Contains("ZTest LEqual") ||
+                apertureShaderSource.Contains("ZTest Always") ||
                 apertureControllerSource.Contains("IsApertureVisualOverlayRenderer") ||
                 apertureControllerSource.Contains("exemptedVisualOverlay = true"))
             {
-                throw new InvalidOperationException("House slice validation failed: TimeWindow aperture must render opaque target-time imagery instead of blending the current side through the window.");
+                throw new InvalidOperationException("House slice validation failed: TimeWindow aperture must stay opaque while allowing nearer player depth to occlude the window interior.");
             }
         }
 
@@ -76832,19 +78216,19 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dFortySeventhCycleHouseExteriorTreeCrownSilhouette()
         {
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
 
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_FrontLowerLobeA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_FrontLowerLobeB", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_LeftEdgeBreakA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_RightEdgeBreakA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
 
             if (FindSceneObjectIncludingInactive("Current_TreeBillboardLikeTrunk") == null ||
                 FindSceneObjectIncludingInactive("Current_TreePixelCrown") == null ||
@@ -76876,8 +78260,8 @@ namespace Anemora.EditorTools
             ValidateHouseExteriorTreeCrownSilhouetteCleanupObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipA", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", 0.30f, 0.40f);
             ValidateHouseExteriorTreeCrownSilhouetteCleanupObject("Past_HouseExterior_TreeCrownSilhouette_OuterLeafChipB", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", 0.30f, 0.40f);
 
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
             ValidateTreeCollisionShellHidden("Current_TreeBillboardLikeTrunk", "Current_HouseExteriorMap_SeparateSpace");
             ValidateTreeCollisionShellHidden("Current_TreePixelCrown", "Current_HouseExteriorMap_SeparateSpace");
             ValidateTreeCollisionShellHidden("Past_TreeBillboardLikeTrunk", "Past_HouseExteriorMap_SeparateSpace");
@@ -76891,8 +78275,8 @@ namespace Anemora.EditorTools
 
         private static void ValidateFastVsHd2dFortyEighthCycleHouseExteriorExternalTreeSprite()
         {
-            ValidateExternalTreeSpriteObject("Current_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0");
-            ValidateExternalTreeSpriteObject("Past_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0");
+            ValidateExternalTreeSpriteObject("Current_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Current_HouseExteriorMap_SeparateSpace", "current_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
+            ValidateExternalTreeSpriteObject("Past_HouseExterior_ExternalTreeSprite_OpenGameArtTree3", "Past_HouseExteriorMap_SeparateSpace", "past_house_exterior_tree3_sprite_cc0", "readable_tree_sprite_cc0_toned");
             ValidateTreeCollisionShellHidden("Current_TreeBillboardLikeTrunk", "Current_HouseExteriorMap_SeparateSpace");
             ValidateTreeCollisionShellHidden("Current_TreePixelCrown", "Current_HouseExteriorMap_SeparateSpace");
             ValidateTreeCollisionShellHidden("Past_TreeBillboardLikeTrunk", "Past_HouseExteriorMap_SeparateSpace");
@@ -96395,7 +97779,7 @@ namespace Anemora.EditorTools
             }
         }
 
-        private static void ValidateExternalTreeSpriteObject(string objectName, string expectedParentName, string expectedMaterialToken)
+        private static void ValidateExternalTreeSpriteObject(string objectName, string expectedParentName, string expectedMaterialToken, string expectedTextureToken = "tree3_0")
         {
             var sceneObject = FindSceneObjectIncludingInactive(objectName);
             if (sceneObject == null)
@@ -96441,9 +97825,9 @@ namespace Anemora.EditorTools
             }
 
             var materialTexture = ResolveMaterialTexture(renderer.sharedMaterial);
-            if (materialTexture == null || materialTexture.name.IndexOf("tree3_0", StringComparison.OrdinalIgnoreCase) < 0)
+            if (materialTexture == null || materialTexture.name.IndexOf(expectedTextureToken, StringComparison.OrdinalIgnoreCase) < 0)
             {
-                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the OpenGameArt tree3_0 texture.");
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use a tree sprite texture containing {expectedTextureToken}.");
             }
         }
 
@@ -96497,9 +97881,9 @@ namespace Anemora.EditorTools
             }
 
             var materialTexture = ResolveMaterialTexture(renderer.sharedMaterial);
-            if (materialTexture == null || materialTexture.name.IndexOf("tree3_0", StringComparison.OrdinalIgnoreCase) < 0)
+            if (materialTexture == null || materialTexture.name.IndexOf("readable_tree_sprite_cc0_toned", StringComparison.OrdinalIgnoreCase) < 0)
             {
-                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the OpenGameArt tree3_0 texture.");
+                throw new InvalidOperationException($"House slice validation failed: {objectName} must use the toned readable tree sprite texture.");
             }
 
             var meshFilter = sceneObject.GetComponent<MeshFilter>();
@@ -106744,6 +108128,230 @@ namespace Anemora.EditorTools
             return material;
         }
 
+        private static Material ReadableTreeSpriteMaterial(string id, bool past)
+        {
+            var texture = EnsureReadableTreeSpriteTexture(past);
+            var material = CreateSpriteCardMaterial(id, Color.white, 3011);
+            AssignMaterialTexture(material, texture, Vector2.one);
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Texture2D EnsureReadableTreeSpriteTexture(bool past)
+        {
+            EnsureTextureImporter(OpenGameArtTreeSpritePath);
+            var source = AssetDatabase.LoadAssetAtPath<Texture2D>(OpenGameArtTreeSpritePath);
+            if (source == null)
+            {
+                throw new InvalidOperationException($"Fast VS readable tree sprite source missing: {OpenGameArtTreeSpritePath}");
+            }
+
+            var texturePath = past ? ReadableTreeSpritePastTexturePath : ReadableTreeSpriteCurrentTexturePath;
+            if (ReadableTreeSpriteTextureCache.TryGetValue(texturePath, out var cached) &&
+                cached != null &&
+                cached.width == source.width &&
+                cached.height == source.height)
+            {
+                return cached;
+            }
+
+            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            if (texture != null && (texture.width != source.width || texture.height != source.height))
+            {
+                AssetDatabase.DeleteAsset(texturePath);
+                texture = null;
+            }
+
+            if (texture == null)
+            {
+                texture = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+                AssetDatabase.CreateAsset(texture, texturePath);
+            }
+
+            texture.name = past
+                ? "FastVS_House_past_readable_tree_sprite_cc0_toned"
+                : "FastVS_House_current_readable_tree_sprite_cc0_toned";
+            texture.filterMode = FilterMode.Point;
+            texture.wrapMode = TextureWrapMode.Clamp;
+
+            var tonedPixels = new Color32[source.width * source.height];
+            for (var y = 0; y < source.height; y++)
+            {
+                for (var x = 0; x < source.width; x++)
+                {
+                    tonedPixels[(y * source.width) + x] = SampleReadableAuthoredTreeSpritePixel(x, y, source.width, source.height, past);
+                }
+            }
+
+            texture.SetPixels32(tonedPixels);
+            texture.Apply(false, false);
+            EditorUtility.SetDirty(texture);
+            ReadableTreeSpriteTextureCache[texturePath] = texture;
+            return texture;
+        }
+
+        private static Color32 SampleReadableAuthoredTreeSpritePixel(int x, int y, int width, int height, bool past)
+        {
+            var u = width <= 1 ? 0f : x / (float)(width - 1);
+            var v = height <= 1 ? 0f : y / (float)(height - 1);
+            var canopy =
+                ReadableTreeEllipse(u, v, 0.34f, 0.58f, 0.27f, 0.24f) * 0.95f;
+            canopy = Mathf.Max(canopy, ReadableTreeEllipse(u, v, 0.50f, 0.72f, 0.31f, 0.26f));
+            canopy = Mathf.Max(canopy, ReadableTreeEllipse(u, v, 0.66f, 0.58f, 0.25f, 0.24f) * 0.94f);
+            canopy = Mathf.Max(canopy, ReadableTreeEllipse(u, v, 0.44f, 0.86f, 0.22f, 0.16f) * 0.86f);
+            canopy = Mathf.Max(canopy, ReadableTreeEllipse(u, v, 0.62f, 0.82f, 0.20f, 0.17f) * 0.82f);
+            canopy = Mathf.Max(canopy, ReadableTreeEllipse(u, v, 0.24f, 0.40f, 0.18f, 0.18f) * 0.70f);
+            canopy = Mathf.Max(canopy, ReadableTreeEllipse(u, v, 0.76f, 0.42f, 0.16f, 0.17f) * 0.68f);
+
+            var noise = (Hash01(x, y, past ? 773 : 761) * 0.58f) + (Hash01(x + 31, y + 17, past ? 797 : 787) * 0.28f);
+            var leafBreakup = Mathf.Clamp01(canopy + ((noise - 0.44f) * 0.22f));
+            if (leafBreakup > 0.18f)
+            {
+                var alpha = (byte)Mathf.RoundToInt(Mathf.Lerp(142f, 218f, Mathf.Clamp01((leafBreakup - 0.18f) / 0.42f)));
+                var upperLight = Mathf.Clamp01((v - 0.36f) * 0.95f);
+                var sideLight = Mathf.Clamp01(1f - Mathf.Abs(u - 0.42f) * 1.7f);
+                var luma = Mathf.Clamp01(0.14f + (leafBreakup * 0.30f) + (upperLight * 0.12f) + (sideLight * 0.08f) + ((noise - 0.50f) * 0.10f));
+                return ToneReadableTreeLeafPixel(luma, alpha, past);
+            }
+
+            var trunkWidth = Mathf.Lerp(0.060f, 0.030f, Mathf.Clamp01((v - 0.05f) / 0.58f));
+            var trunkCenter = 0.50f + Mathf.Sin(v * 8.2f) * 0.010f;
+            var trunkCore = 1f - Mathf.Abs(u - trunkCenter) / Mathf.Max(0.006f, trunkWidth);
+            var trunk = Mathf.Clamp01(trunkCore) * SmoothFade01(0.04f, 0.10f, v) * SmoothFade01(0.68f, 0.54f, v);
+            var branchA = Mathf.Clamp01(1f - Mathf.Abs((v - 0.38f) - ((u - 0.49f) * 0.58f)) / 0.030f) * SmoothFade01(0.38f, 0.55f, u) * SmoothFade01(0.52f, 0.36f, v);
+            var branchB = Mathf.Clamp01(1f - Mathf.Abs((v - 0.48f) + ((u - 0.50f) * 0.50f)) / 0.026f) * SmoothFade01(0.46f, 0.24f, u) * SmoothFade01(0.60f, 0.43f, v);
+            var wood = Mathf.Max(trunk, Mathf.Max(branchA, branchB) * 0.62f);
+            if (wood > 0.10f)
+            {
+                var alpha = (byte)Mathf.RoundToInt(Mathf.Lerp(190f, 255f, Mathf.Clamp01((wood - 0.10f) / 0.55f)));
+                var luma = Mathf.Clamp01(0.16f + (wood * 0.36f) + ((Hash01(x, y, 811) - 0.5f) * 0.10f));
+                return ToneReadableTreeBarkPixel(luma, alpha, past);
+            }
+
+            return new Color32(0, 0, 0, 0);
+        }
+
+        private static float ReadableTreeEllipse(float u, float v, float centerX, float centerY, float radiusX, float radiusY)
+        {
+            var dx = (u - centerX) / radiusX;
+            var dy = (v - centerY) / radiusY;
+            return Mathf.Clamp01(1f - Mathf.Sqrt((dx * dx) + (dy * dy)));
+        }
+
+        private static Color32 ToneReadableTreeSpritePixel(Color32[] sourcePixels, int index, int width, int height, bool past)
+        {
+            var source = sourcePixels[index];
+            if (source.a <= 4)
+            {
+                if (TrySampleReadableTreeSpriteHole(sourcePixels, index, width, height, out var holeLuminance, out var holeAlpha))
+                {
+                    return ToneReadableTreeLeafPixel(holeLuminance, holeAlpha, past);
+                }
+
+                return new Color32(0, 0, 0, 0);
+            }
+
+            var r = source.r / 255f;
+            var g = source.g / 255f;
+            var b = source.b / 255f;
+            var luminance = (r * 0.2126f) + (g * 0.7152f) + (b * 0.0722f);
+            var greenLead = g - Mathf.Max(r, b);
+            var leafLike = g >= r * 0.82f && g >= b * 0.92f && greenLead > -0.035f;
+
+            if (leafLike)
+            {
+                return ToneReadableTreeLeafPixel(luminance, source.a, past);
+            }
+
+            var barkT = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.06f, 0.62f, luminance));
+            var barkShadow = past ? new Color32(65, 54, 40, source.a) : new Color32(58, 43, 31, source.a);
+            var barkMid = past ? new Color32(94, 75, 49, source.a) : new Color32(91, 65, 42, source.a);
+            var barkHighlight = past ? new Color32(124, 99, 61, source.a) : new Color32(125, 91, 57, source.a);
+            var barkBase = LerpColor32(barkShadow, barkMid, barkT);
+            return LerpColor32(barkBase, barkHighlight, barkT * 0.42f);
+        }
+
+        private static Color32 ToneReadableTreeLeafPixel(float luminance, byte alpha, bool past)
+        {
+            var t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.08f, 0.72f, luminance));
+            var shadow = past ? new Color32(58, 59, 42, alpha) : new Color32(34, 52, 34, alpha);
+            var mid = past ? new Color32(86, 82, 55, alpha) : new Color32(50, 78, 45, alpha);
+            var highlight = past ? new Color32(112, 101, 66, alpha) : new Color32(78, 98, 56, alpha);
+            var baseColor = LerpColor32(shadow, mid, t);
+            return LerpColor32(baseColor, highlight, t * 0.34f);
+        }
+
+        private static Color32 ToneReadableTreeBarkPixel(float luminance, byte alpha, bool past)
+        {
+            var barkT = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.06f, 0.62f, luminance));
+            var barkShadow = past ? new Color32(65, 54, 40, alpha) : new Color32(58, 43, 31, alpha);
+            var barkMid = past ? new Color32(94, 75, 49, alpha) : new Color32(91, 65, 42, alpha);
+            var barkHighlight = past ? new Color32(124, 99, 61, alpha) : new Color32(125, 91, 57, alpha);
+            var barkBase = LerpColor32(barkShadow, barkMid, barkT);
+            return LerpColor32(barkBase, barkHighlight, barkT * 0.42f);
+        }
+
+        private static bool TrySampleReadableTreeSpriteHole(Color32[] sourcePixels, int index, int width, int height, out float luminance, out byte alpha)
+        {
+            var centerX = index % width;
+            var centerY = index / width;
+            var leafCount = 0;
+            var lumaSum = 0f;
+            const int radius = 6;
+
+            for (var y = Mathf.Max(0, centerY - radius); y <= Mathf.Min(height - 1, centerY + radius); y++)
+            {
+                for (var x = Mathf.Max(0, centerX - radius); x <= Mathf.Min(width - 1, centerX + radius); x++)
+                {
+                    var dx = x - centerX;
+                    var dy = y - centerY;
+                    if ((dx * dx) + (dy * dy) > radius * radius)
+                    {
+                        continue;
+                    }
+
+                    var candidate = sourcePixels[(y * width) + x];
+                    if (candidate.a <= 24 || !IsReadableTreeLeafLike(candidate))
+                    {
+                        continue;
+                    }
+
+                    leafCount++;
+                    lumaSum += ((candidate.r / 255f) * 0.2126f) + ((candidate.g / 255f) * 0.7152f) + ((candidate.b / 255f) * 0.0722f);
+                }
+            }
+
+            if (leafCount < 18)
+            {
+                luminance = 0f;
+                alpha = 0;
+                return false;
+            }
+
+            luminance = lumaSum / leafCount;
+            alpha = 172;
+            return true;
+        }
+
+        private static bool IsReadableTreeLeafLike(Color32 source)
+        {
+            var r = source.r / 255f;
+            var g = source.g / 255f;
+            var b = source.b / 255f;
+            var greenLead = g - Mathf.Max(r, b);
+            return g >= r * 0.82f && g >= b * 0.92f && greenLead > -0.035f;
+        }
+
+        private static Color32 LerpColor32(Color32 from, Color32 to, float t)
+        {
+            t = Mathf.Clamp01(t);
+            return new Color32(
+                (byte)Mathf.RoundToInt(Mathf.Lerp(from.r, to.r, t)),
+                (byte)Mathf.RoundToInt(Mathf.Lerp(from.g, to.g, t)),
+                (byte)Mathf.RoundToInt(Mathf.Lerp(from.b, to.b, t)),
+                (byte)Mathf.RoundToInt(Mathf.Lerp(from.a, to.a, t)));
+        }
+
         private static Material SpriteStripMaterial(string id, string texturePath, Color tint, int frameCount)
         {
             EnsureTextureImporter(texturePath);
@@ -106762,6 +108370,11 @@ namespace Anemora.EditorTools
 
         private static void EnsureTextureImporter(string texturePath)
         {
+            if (TextureImporterConfigurationCache.Contains(texturePath))
+            {
+                return;
+            }
+
             AssetDatabase.ImportAsset(texturePath, ImportAssetOptions.ForceSynchronousImport);
             var importer = AssetImporter.GetAtPath(texturePath) as TextureImporter;
             if (importer == null)
@@ -106769,14 +108382,55 @@ namespace Anemora.EditorTools
                 return;
             }
 
-            importer.textureType = TextureImporterType.Default;
-            importer.alphaIsTransparency = true;
-            importer.isReadable = true;
-            importer.mipmapEnabled = false;
-            importer.npotScale = TextureImporterNPOTScale.None;
-            importer.filterMode = FilterMode.Point;
-            importer.textureCompression = TextureImporterCompression.Uncompressed;
-            importer.SaveAndReimport();
+            var changed = false;
+            if (importer.textureType != TextureImporterType.Default)
+            {
+                importer.textureType = TextureImporterType.Default;
+                changed = true;
+            }
+
+            if (!importer.alphaIsTransparency)
+            {
+                importer.alphaIsTransparency = true;
+                changed = true;
+            }
+
+            if (!importer.isReadable)
+            {
+                importer.isReadable = true;
+                changed = true;
+            }
+
+            if (importer.mipmapEnabled)
+            {
+                importer.mipmapEnabled = false;
+                changed = true;
+            }
+
+            if (importer.npotScale != TextureImporterNPOTScale.None)
+            {
+                importer.npotScale = TextureImporterNPOTScale.None;
+                changed = true;
+            }
+
+            if (importer.filterMode != FilterMode.Point)
+            {
+                importer.filterMode = FilterMode.Point;
+                changed = true;
+            }
+
+            if (importer.textureCompression != TextureImporterCompression.Uncompressed)
+            {
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                importer.SaveAndReimport();
+            }
+
+            TextureImporterConfigurationCache.Add(texturePath);
         }
 
         private static Texture2D EnsureShadedSpriteTexture(string id, string texturePath)

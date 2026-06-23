@@ -12,7 +12,7 @@ namespace Anemora.TimeManagement
     public sealed class TimeWindowPairedSpacePortalController : MonoBehaviour
     {
         private const float PortalApertureCompositeAlpha = 1.0f;
-        private const int PortalApertureRenderQueue = 3040;
+        private const int PortalApertureRenderQueue = 2448;
 
         [Header("Spaces")]
         [SerializeField] private Transform currentSpaceRoot;
@@ -64,7 +64,7 @@ namespace Anemora.TimeManagement
         [SerializeField] private int portalFrameRenderLayer = 26;
         [SerializeField] private int playerVisibleRenderLayer = 0;
         [SerializeField] private int apertureTextureSize = 1024;
-        [SerializeField] private float aperturePlaneOffset = 0.024f;
+        [SerializeField] private float aperturePlaneOffset = 0.045f;
         [SerializeField] private float apertureObjectSuppressionDepth = 0.30f;
         [SerializeField] private Material portalApertureMaterial;
         [SerializeField] private Color portalCameraBackground = new Color(0.015f, 0.018f, 0.024f, 1f);
@@ -151,6 +151,7 @@ namespace Anemora.TimeManagement
         public Rect CurrentApertureViewportRectForReview => currentApertureViewportRect;
         public Rect OtherTimeApertureViewportRectForReview => otherTimeApertureViewportRect;
         public bool CurrentApertureUsesScreenRegionProjectionForReview => IsMeaningfulViewportCrop(currentApertureViewportRect);
+        public float PortalAperturePlaneOffsetForReview => aperturePlaneOffset;
         public float PortalApertureCompositeAlphaForReview => PortalApertureCompositeAlpha;
         public float CurrentApertureMaterialAlphaForReview => GetRendererColorAlpha(currentApertureRenderer);
         public float OtherTimeApertureMaterialAlphaForReview => GetRendererColorAlpha(otherTimeApertureRenderer);

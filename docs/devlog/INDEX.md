@@ -1,20 +1,22 @@
 ﻿# Devlog Index
 
-> Status: v8.131 HD2D nature ground cover overlay (2026-06-20). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.134 HD2D photo vegetation understory (2026-06-23). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 828 files including INDEX.md and README.md.
-- Dated devlog records: 826 files.
-- Linked evidence files present under docs/devlog/screenshots/: 1497 files.
+- Root-level Markdown coverage: 831 files including INDEX.md and README.md.
+- Dated devlog records: 829 files.
+- Linked evidence files present under docs/devlog/screenshots/: 1498 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
 ## 2. Coverage By Date
 
 | Date | Count |
 |---|---:|
+| 2026-06-23 | 2 |
+| 2026-06-22 | 1 |
 | 2026-06-20 | 11 |
 | 2026-06-19 | 10 |
 | 2026-06-18 | 1 |
@@ -49,6 +51,19 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-23
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-23_hd2d_photo_vegetation_understory.md](2026-06-23_hd2d_photo_vegetation_understory.md) | Fast VS / HD2D | HD2D photo vegetation understory |
+| [2026-06-23_hd2d_textured_nature_and_aperture_depth.md](2026-06-23_hd2d_textured_nature_and_aperture_depth.md) | Fast VS / HD2D | HD2D textured nature and aperture depth |
+
+### 2026-06-22
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-22_hd2d_portal_depth_tree_readability.md](2026-06-22_hd2d_portal_depth_tree_readability.md) | Fast VS / HD2D | HD2D portal depth and tree readability |
 
 ### 2026-06-20
 
@@ -828,6 +843,8 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.133 | 2026-06-23 | Added HD2D textured nature and aperture depth record with CC0 textured tree subset, darker textured foliage/grass materials, deterministic conifer/birch silhouette distribution, understory 3D grass/plant/ground-cover companions, aperture AlphaTest/LEqual depth fix, all-map capture, asset validation, renderer-freeze validation, build, and player smoke. |
+| v8.132 | 2026-06-22 | Added HD2D portal depth and tree readability record with Time Window aperture depth-test correction, generated toned tree-card texture pass, all-map review capture, renderer-freeze validation, asset validation, build, player smoke, and review packet propagation. |
 | v8.131 | 2026-06-20 | Added HD2D nature ground cover overlay with deterministic LeafCluster/LeafSpray/GrassBlade ground-cover feature meshes across HouseExterior, MiaHouse, AriaStreet, KaiaFarm, and Ruins flat patch/verge/brush areas; added representative A/C/D/E/F validation coverage, r1 subtle visual rejection, r2 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.130 | 2026-06-20 | Added HD2D nature tree base shrub with deterministic BaseShrub/BaseLeafSpray feature meshes for authored trees, farm nut trees, and Phase2 groves; added validation coverage, r1 hidden-canopy rejection, r2 localized rejection, r3 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |
 | v8.129 | 2026-06-20 | Added HD2D nature grass silhouette with deterministic grass tuft LowLeaf/extra blade meshes, current/past Ch1Surface grass silhouette materials, Phase2 volume/grove understory additions, r1 bright visual rejection, r2 all-map review capture, visual-threshold shotdiff, asset validation, renderer-freeze validation, build, player smoke, and review propagation. |

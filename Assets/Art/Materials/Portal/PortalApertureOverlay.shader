@@ -10,7 +10,7 @@ Shader "Anemora/Review/PortalApertureOverlay"
     {
         Tags
         {
-            "Queue" = "Transparent+40"
+            "Queue" = "AlphaTest"
             "RenderType" = "Opaque"
         }
 
@@ -19,7 +19,7 @@ Shader "Anemora/Review/PortalApertureOverlay"
             Blend One Zero
             Cull Off
             ZWrite On
-            ZTest Always
+            ZTest LEqual
 
             HLSLPROGRAM
             #pragma vertex vert

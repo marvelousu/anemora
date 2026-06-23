@@ -28,11 +28,11 @@ Material:
     m_TexEnvs:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 4397d90477cc6244192b2264729f8879, type: 2}
-        m_Scale: {x: 2.8, y: 3.6}
+        m_Scale: {x: 3.4, y: 3.8}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 4397d90477cc6244192b2264729f8879, type: 2}
-        m_Scale: {x: 2.8, y: 3.6}
+        m_Scale: {x: 3.4, y: 3.8}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
