@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.143 HD2D realistic specimen trees (2026-06-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.144 HD2D specimen canopy detail (2026-06-25). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 840 files including INDEX.md and README.md.
-- Dated devlog records: 838 files.
+- Root-level Markdown coverage: 841 files including INDEX.md and README.md.
+- Dated devlog records: 839 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,6 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
+| 2026-06-25 | 1 |
 | 2026-06-24 | 6 |
 | 2026-06-23 | 5 |
 | 2026-06-22 | 1 |
@@ -52,6 +53,12 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-25
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-25_hd2d_specimen_canopy_detail.md](2026-06-25_hd2d_specimen_canopy_detail.md) | Fast VS / HD2D | HD2D specimen canopy detail |
 
 ### 2026-06-24
 
