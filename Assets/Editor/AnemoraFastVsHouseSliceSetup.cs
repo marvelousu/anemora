@@ -622,6 +622,9 @@ namespace Anemora.EditorTools
             ForegroundEdgeBreakupPathPatchCount +
             ForegroundEdgeBreakupDetailPatchCount;
         private const int ForegroundEdgeBreakupVisibleMinimum = 7;
+        private const int RealisticTreeGroveClusterCount = 4;
+        private const int RealisticTreeGroveTreesPerCluster = 3;
+        private const int RealisticTreeGroveVisibleMinimum = 5;
         private const int RealisticForegroundWildGrassClusterCount = 9;
         private const int RealisticForegroundWildGrassVisibleMinimum = 6;
         private const int FarShoreHoleClosureShelfCount = 7;
@@ -1133,6 +1136,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dWaterlineBreakupAllMaps();
             ValidateFastVsHd2dBroadWaterSurfaceAllMaps();
             ValidateFastVsHd2dNearfieldDressingAllMaps();
+            ValidateFastVsHd2dRealisticTreeGrovesAllMaps();
             ValidateFastVsHd2dRealisticForegroundWildGrassAllMaps();
             ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps();
             ValidateFastVsHd2dArchitecturalSurfaceAccentsAllMaps();
@@ -10452,6 +10456,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1RealisticNearfieldNatureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1RealisticTreeGrovesForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -20982,7 +20996,7 @@ namespace Anemora.EditorTools
                         past ? TexturedNaturePastPineLeavesTonedTexturePath : TexturedNatureCurrentPineLeavesTonedTexturePath,
                         past,
                         true),
-                    past ? new Color(0.52f, 0.54f, 0.36f, 1f) : new Color(0.42f, 0.62f, 0.36f, 1f));
+                    past ? new Color(0.52f, 0.54f, 0.36f, 1f) : new Color(0.38f, 0.52f, 0.32f, 1f));
             }
 
             if (sourceMaterialName.IndexOf("birch", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -20994,7 +21008,7 @@ namespace Anemora.EditorTools
                         past ? TexturedNaturePastBirchLeavesTonedTexturePath : TexturedNatureCurrentBirchLeavesTonedTexturePath,
                         past,
                         false),
-                    past ? new Color(0.60f, 0.56f, 0.38f, 1f) : new Color(0.48f, 0.66f, 0.38f, 1f));
+                    past ? new Color(0.60f, 0.56f, 0.38f, 1f) : new Color(0.42f, 0.56f, 0.34f, 1f));
             }
 
             return ImportedNatureCutoutTextureMaterial(
@@ -21004,7 +21018,7 @@ namespace Anemora.EditorTools
                     past ? TexturedNaturePastTreeLeavesTonedTexturePath : TexturedNatureCurrentTreeLeavesTonedTexturePath,
                     past,
                     false),
-                past ? new Color(0.56f, 0.56f, 0.38f, 1f) : new Color(0.46f, 0.64f, 0.36f, 1f));
+                past ? new Color(0.56f, 0.56f, 0.38f, 1f) : new Color(0.40f, 0.55f, 0.32f, 1f));
         }
 
         private static Texture2D EnsureTexturedNatureLeafToneTexture(string sourcePath, string outputPath, bool past, bool conifer)
@@ -21049,13 +21063,13 @@ namespace Anemora.EditorTools
 
             var dark = past
                 ? (conifer ? new Color(0.34f, 0.40f, 0.22f, 1f) : new Color(0.38f, 0.42f, 0.24f, 1f))
-                : (conifer ? new Color(0.24f, 0.44f, 0.24f, 1f) : new Color(0.28f, 0.48f, 0.26f, 1f));
+                : (conifer ? new Color(0.20f, 0.34f, 0.22f, 1f) : new Color(0.24f, 0.38f, 0.24f, 1f));
             var mid = past
                 ? (conifer ? new Color(0.46f, 0.52f, 0.30f, 1f) : new Color(0.50f, 0.54f, 0.33f, 1f))
-                : (conifer ? new Color(0.36f, 0.58f, 0.32f, 1f) : new Color(0.42f, 0.64f, 0.34f, 1f));
+                : (conifer ? new Color(0.30f, 0.46f, 0.28f, 1f) : new Color(0.34f, 0.50f, 0.30f, 1f));
             var high = past
                 ? (conifer ? new Color(0.66f, 0.64f, 0.36f, 1f) : new Color(0.74f, 0.68f, 0.40f, 1f))
-                : (conifer ? new Color(0.58f, 0.76f, 0.42f, 1f) : new Color(0.66f, 0.82f, 0.46f, 1f));
+                : (conifer ? new Color(0.48f, 0.62f, 0.38f, 1f) : new Color(0.54f, 0.68f, 0.40f, 1f));
 
             for (var i = 0; i < pixels.Length; i++)
             {
@@ -21267,14 +21281,14 @@ namespace Anemora.EditorTools
         {
             return past
                 ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(72, 96, 52, 255), new Color32(112, 137, 68, 255), new Color32(54, 74, 43, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f))
-                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(58, 100, 54, 255), new Color32(94, 145, 68, 255), new Color32(42, 78, 46, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f));
+                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(48, 84, 50, 255), new Color32(78, 118, 65, 255), new Color32(36, 64, 42, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f));
         }
 
         private static Material ImportedNatureGrassMaterial(bool past)
         {
             return past
                 ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(82, 96, 50, 255), new Color32(124, 132, 68, 255), new Color32(60, 74, 44, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f))
-                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(58, 100, 50, 255), new Color32(88, 138, 64, 255), new Color32(42, 78, 44, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f));
+                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(50, 88, 48, 255), new Color32(78, 122, 62, 255), new Color32(38, 68, 40, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f));
         }
 
         private static Material ImportedNatureWoodMaterial(bool past)
@@ -27878,6 +27892,174 @@ namespace Anemora.EditorTools
                     yaw + DistantPanoramaVistaSigned(seed + 53, 24f),
                     grassMaterial,
                     past);
+            }
+        }
+
+        private static void CreateChapter1RealisticTreeGrovesForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1RealisticTreeGrove(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateChapter1RealisticTreeGrove(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateChapter1RealisticTreeGrove(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateChapter1RealisticTreeGrove(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateChapter1RealisticTreeGrove(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateChapter1RealisticTreeGrove(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1RealisticTreeGrove(
+            Transform mapRoot,
+            string prefix,
+            bool past,
+            FastVsHouseArea area,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_RealisticTreeGrove").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetNearfieldDressingScale(area);
+            var leafMaterial = ImportedNatureLeafMaterial(past) ?? (past ? materials.Leaf : materials.CurrentLeaf);
+            var grassMaterial = ImportedNatureGrassMaterial(past) ?? (past ? materials.PastGrass : materials.CurrentGrass);
+            var woodMaterial = ImportedNatureWoodMaterial(past) ?? (past ? materials.PastFurniture : materials.CurrentFurniture);
+            var stoneMaterial = ImportedNatureStoneMaterial(past) ?? (past ? materials.PastStone : materials.CurrentStone);
+            var accentMaterial = ImportedNatureAccentMaterial(past) ?? materials.FlowerYellow;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.realistic_tree_grove";
+
+            for (var clusterIndex = 0; clusterIndex < RealisticTreeGroveClusterCount; clusterIndex++)
+            {
+                var seed = 92417 + (int)area * 1117 + (past ? 6121 : 0) + clusterIndex * 389;
+                var clusterLocal = GetRealisticTreeGroveLocalOffset(clusterIndex, scale);
+                var basePosition = center + clusterLocal + new Vector3(
+                    DistantPanoramaVistaSigned(seed + 5, 0.42f * scale),
+                    0.620f + DistantPanoramaVistaHash01(seed + 7) * 0.034f,
+                    DistantPanoramaVistaSigned(seed + 11, 0.36f * scale));
+                var yaw = DistantPanoramaVistaSigned(seed + 13, 165f);
+                var groveScale = Mathf.Lerp(0.94f, 1.24f, DistantPanoramaVistaHash01(seed + 17)) * scale;
+                var objectPrefix = $"{prefix}_{areaToken}_RealisticTreeGrove_S{clusterIndex + 1:00}";
+
+                for (var treeIndex = 0; treeIndex < RealisticTreeGroveTreesPerCluster; treeIndex++)
+                {
+                    var treeSeed = seed + treeIndex * 47;
+                    var treeSuffix = (char)('A' + treeIndex);
+                    var treePath = SelectImportedNatureTreePath($"{scope}.tree.s{clusterIndex + 1:00}.t{treeIndex + 1:00}", past);
+                    var treeOffset = new Vector3(
+                        DistantPanoramaVistaSigned(treeSeed + 19, 0.78f * groveScale),
+                        0f,
+                        DistantPanoramaVistaSigned(treeSeed + 23, 0.62f * groveScale));
+                    var treeSize = Mathf.Lerp(1.18f, 1.62f, DistantPanoramaVistaHash01(treeSeed + 29));
+                    CreateImportedNatureModel(
+                        $"{objectPrefix}_TreeModel{treeSuffix}",
+                        parent,
+                        treePath,
+                        ImportedNatureGroundPosition(basePosition + treeOffset, 0.62f),
+                        Vector3.one * Mathf.Clamp(groveScale * ImportedNatureTreeScaleMultiplier(treePath) * treeSize, 0.68f, 1.88f),
+                        Quaternion.Euler(0f, yaw + DistantPanoramaVistaSigned(treeSeed + 31, 72f), 0f),
+                        past,
+                        leafMaterial,
+                        woodMaterial,
+                        grassMaterial,
+                        stoneMaterial,
+                        accentMaterial,
+                        $"{scope}.tree.s{clusterIndex + 1:00}.t{treeIndex + 1:00}",
+                        false);
+                }
+
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_BushModelA",
+                    parent,
+                    SelectImportedNatureBushPath($"{scope}.bush.s{clusterIndex + 1:00}"),
+                    basePosition + new Vector3(-0.48f * groveScale, 0.014f, 0.42f * groveScale),
+                    Vector3.one * Mathf.Clamp(groveScale * 0.74f, 0.48f, 1.08f),
+                    Quaternion.Euler(0f, yaw - 38f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    stoneMaterial,
+                    accentMaterial,
+                    $"{scope}.bush.s{clusterIndex + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_GrassFanA",
+                    parent,
+                    SelectImportedNatureGrassPath($"{scope}.grass.s{clusterIndex + 1:00}"),
+                    basePosition + new Vector3(0.62f * groveScale, 0.016f, -0.34f * groveScale),
+                    Vector3.one * Mathf.Clamp(groveScale * 0.88f, 0.54f, 1.22f),
+                    Quaternion.Euler(0f, yaw + 52f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    stoneMaterial,
+                    accentMaterial,
+                    $"{scope}.grass.s{clusterIndex + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_FallenLogA",
+                    parent,
+                    Cc0NatureLogMossPath,
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 41, 0.22f * scale), 0.012f, DistantPanoramaVistaSigned(seed + 43, 0.24f * scale)),
+                    Vector3.one * Mathf.Clamp(groveScale * 0.32f, 0.22f, 0.50f),
+                    Quaternion.Euler(0f, yaw + 84f + DistantPanoramaVistaSigned(seed + 47, 18f), 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    stoneMaterial,
+                    accentMaterial,
+                    $"{scope}.fallen_log.s{clusterIndex + 1:00}",
+                    false);
+                CreateAuthoredGroundCoverPatch(
+                    parent,
+                    $"{objectPrefix}_TreeFloorGroundCover",
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 53, 0.24f * scale), 0.052f, DistantPanoramaVistaSigned(seed + 59, 0.22f * scale)),
+                    new Vector3(Mathf.Clamp(groveScale * 1.82f, 1.12f, 2.54f), 0.050f, Mathf.Clamp(groveScale * 0.82f, 0.50f, 1.10f)),
+                    yaw + DistantPanoramaVistaSigned(seed + 61, 28f),
+                    (clusterIndex & 1) == 0 ? grassMaterial : leafMaterial,
+                    past);
+                CreateGrassTuft(
+                    parent,
+                    $"{objectPrefix}_TreeFloorGrassTuftA",
+                    basePosition + new Vector3(-0.92f * groveScale, 0.200f, -0.24f * groveScale),
+                    grassMaterial,
+                    clusterIndex);
+                CreateGrassTuft(
+                    parent,
+                    $"{objectPrefix}_TreeFloorGrassTuftB",
+                    basePosition + new Vector3(0.88f * groveScale, 0.200f, 0.34f * groveScale),
+                    leafMaterial,
+                    clusterIndex + RealisticTreeGroveClusterCount);
+            }
+
+            ApplyNearfieldDressingRendererPolicy(parent);
+        }
+
+        private static Vector3 GetRealisticTreeGroveLocalOffset(int clusterIndex, float scale)
+        {
+            switch (clusterIndex)
+            {
+                case 0:
+                    return new Vector3(-7.60f * scale, 0f, 4.85f * scale);
+                case 1:
+                    return new Vector3(7.65f * scale, 0f, 4.60f * scale);
+                case 2:
+                    return new Vector3(-7.15f * scale, 0f, -4.85f * scale);
+                case 3:
+                default:
+                    return new Vector3(7.25f * scale, 0f, -4.65f * scale);
             }
         }
 
@@ -60715,6 +60897,162 @@ namespace Anemora.EditorTools
                 var area = DistantPanoramaVistaAreas[i];
                 ValidateRealisticForegroundWildGrassCameraCoverage(camera, "Current", area);
                 ValidateRealisticForegroundWildGrassCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateFastVsHd2dRealisticTreeGrovesAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateRealisticTreeGroveRoot("Current", area);
+                ValidateRealisticTreeGroveRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: realistic tree groves require a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateRealisticTreeGroveCameraCoverage(camera, "Current", area);
+                ValidateRealisticTreeGroveCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateRealisticTreeGroveRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_RealisticTreeGrove";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing realistic tree grove root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic tree grove root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            ApplyNearfieldDressingRendererPolicy(root.transform);
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic tree grove root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            var treeModelCount = 0;
+            var bushCount = 0;
+            var grassFanCount = 0;
+            var fallenLogCount = 0;
+            var groundCoverCount = 0;
+            var lowLeafCount = 0;
+            foreach (var transform in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (transform.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic tree grove object {transform.gameObject.name} must stay on render layer {expectedLayer}, found {transform.gameObject.layer}.");
+                }
+
+                if (transform.name.Contains("_TreeModel", StringComparison.Ordinal))
+                {
+                    treeModelCount++;
+                }
+                else if (transform.name.Contains("_BushModel", StringComparison.Ordinal))
+                {
+                    bushCount++;
+                }
+                else if (transform.name.Contains("_GrassFan", StringComparison.Ordinal))
+                {
+                    grassFanCount++;
+                }
+                else if (transform.name.Contains("_FallenLog", StringComparison.Ordinal))
+                {
+                    fallenLogCount++;
+                }
+                else if (transform.name.EndsWith("_TreeFloorGroundCover_GroundCoverA", StringComparison.Ordinal))
+                {
+                    groundCoverCount++;
+                }
+                else if (transform.name.EndsWith("_LowLeafA", StringComparison.Ordinal))
+                {
+                    lowLeafCount++;
+                }
+
+                if (transform.GetComponent<Collider>() != null || transform.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic tree grove object {transform.gameObject.name} must not add collision.");
+                }
+            }
+
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic tree grove renderer under {rootName} must keep a material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic tree grove renderer {renderer.gameObject.name} must use a non-shadow renderer.");
+                }
+            }
+
+            var expectedTreeCount = RealisticTreeGroveClusterCount * RealisticTreeGroveTreesPerCluster;
+            if (treeModelCount < expectedTreeCount ||
+                bushCount < RealisticTreeGroveClusterCount ||
+                grassFanCount < RealisticTreeGroveClusterCount ||
+                fallenLogCount < RealisticTreeGroveClusterCount ||
+                groundCoverCount < RealisticTreeGroveClusterCount ||
+                lowLeafCount < RealisticTreeGroveClusterCount * 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine imported tree groves with low cover; trees={treeModelCount}, bush={bushCount}, grassFans={grassFanCount}, fallenLogs={fallenLogCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}.");
+            }
+        }
+
+        private static void ValidateRealisticTreeGroveCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_RealisticTreeGrove");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing realistic tree grove root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var importedTreeVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (RendererOrParentNameContains(renderer, "TreeModel"))
+                {
+                    importedTreeVisibleCount++;
+                }
+            }
+
+            if (visibleCount < RealisticTreeGroveVisibleMinimum || importedTreeVisibleCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic tree grove {prefix} {area} must visibly read as imported trees in the outdoor wide frame, visible={visibleCount}, importedTrees={importedTreeVisibleCount}.");
             }
         }
 

@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.139 HD2D realistic foreground wild grass (2026-06-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.140 HD2D realistic tree groves (2026-06-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 836 files including INDEX.md and README.md.
-- Dated devlog records: 834 files.
+- Root-level Markdown coverage: 837 files including INDEX.md and README.md.
+- Dated devlog records: 835 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-24 | 2 |
+| 2026-06-24 | 3 |
 | 2026-06-23 | 5 |
 | 2026-06-22 | 1 |
 | 2026-06-20 | 11 |
@@ -57,6 +57,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-24_hd2d_realistic_tree_groves.md](2026-06-24_hd2d_realistic_tree_groves.md) | Fast VS / HD2D | HD2D realistic tree groves |
 | [2026-06-24_hd2d_realistic_foreground_wild_grass.md](2026-06-24_hd2d_realistic_foreground_wild_grass.md) | Fast VS / HD2D | HD2D realistic foreground wild grass |
 | [2026-06-24_hd2d_realistic_nature_under_canopy.md](2026-06-24_hd2d_realistic_nature_under_canopy.md) | Fast VS / HD2D | HD2D realistic nature under-canopy |
 
