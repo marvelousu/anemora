@@ -4,13 +4,13 @@
 > 詳細実装履歴は `docs/devlog/`、物語骨格は `docs/STORY_BIBLE_v1.md`、運用 gotcha は `AGENTS.md`。
 > **更新規律**: frontier が動いたら同じ commit でここを更新する。古いまま放置しない (pre-push hook が7日超の漂流を検査する)。
 
-最終更新: 2026-06-24 (Codex / HD2D realistic tree groves review build)
+最終更新: 2026-06-24 (Codex / HD2D realistic depth panorama review build)
 
 ---
 
 ## 1. いま何の状態か (1 段落)
 
-Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-24 時点の最新レビュー build は Time Window aperture depth-order fix、CC0 textured nature pass、imported nature scale uplift、realistic nearfield nature clusters、authored under-canopy foliage、dark-pixel leaf alpha keying、全マップ前景 wild-grass layer、全マップ tree grove layer、current leaf/grass の低彩度化を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。黒い副作用が強かった photo vegetation card 案は accepted path から外した。
+Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-24 時点の最新レビュー build は Time Window aperture depth-order fix、CC0 textured nature pass、imported nature scale uplift、realistic nearfield nature clusters、authored under-canopy foliage、dark-pixel leaf alpha keying、全マップ前景 wild-grass layer、全マップ tree grove layer、current leaf/grass の低彩度化、遠景の forest/rock/woodland depth layer + camera-facing back arc を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。黒い副作用が強かった photo vegetation card 案は accepted path から外した。
 
 ## 2. branch / baseline
 
@@ -24,7 +24,7 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 
 ## 3. 現在の frontier (アクティブな一手)
 
-- **point15 レンダラループ / 環境アップリフト**: 2026-06-24 最新レビュー build で Time Window aperture を frame behind の depth-aware composite にし、CC0 textured tree subset + imported nature scale uplift + realistic nearfield nature clusters + authored under-canopy foliage + dark-pixel leaf alpha keying + all-map foreground wild-grass layer + all-map realistic tree grove layer を導入。黒い副作用が強かった photo vegetation card 案は accepted path から外した。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-24T16-19_realistic_tree_groves_r1/`。
+- **point15 レンダラループ / 環境アップリフト**: 2026-06-24 最新レビュー build で Time Window aperture を frame behind の depth-aware composite にし、CC0 textured tree subset + imported nature scale uplift + realistic nearfield nature clusters + authored under-canopy foliage + dark-pixel leaf alpha keying + all-map foreground wild-grass layer + all-map realistic tree grove layer + realistic distant panorama depth layer を導入。黒い副作用が強かった photo vegetation card 案は accepted path から外した。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-24T17-05_realistic_depth_panorama_r1/`。
 - **2026-06-13 環境監査の提案と着地**: ①✅レンダラ凍結=`Assets/Tests/RendererContract/` のゴールデン契約テストで実装済 (Unity検証: 初回ベースライン生成→2回目 36 EditMode緑/freeze=Passed)。renderer feature を変えるとテストが落ちる。意図的変更時は `ANEMORA_RENDERER_REBASELINE=1` で再生成しコミット。②✅アセット検収=`Assets/Editor/AnemoraAssetValidation.cs` の `ValidateImportedAssetsBatch` (missing ref/review_only混入/ポリ数、実走OK)。③authored file (81k行) 減量は **cycle 方式が当ファイルを毎サイクル編集する間は未着手** (再開時 merge 衝突を避けるため。cycle 方式を畳む時に実施)。環境アセット物量 (テクスチャ/植生/空) は Tier 目標確定後。
 - Chapter 1 設計トラックは S3 詳細設計で停止中 (canon は `docs/canon/chapter1.md`)。
 
@@ -72,3 +72,4 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 | 2026-06-24 | Codex | Realistic nature under-canopy: build review の Time Window aperture 前後関係を補正し、黒い副作用が残った photo vegetation card を accepted path から外し、authored under-canopy foliage、nearfield nature clusters、dark-pixel leaf alpha keying で自然の読みを改善。最新 review packet `docs/review/2026-06-24T02-33_realistic_nature_under_canopy_r1/` と最新 build を更新。 |
 | 2026-06-24 | Codex | Realistic foreground wild grass: 全 outdoor current/past map に deterministic foreground wild-grass layer を追加し、CC0 imported grass/plant + authored ground cover/grass tuft で下端の自然密度を改善。最新 review packet `docs/review/2026-06-24T14-36_realistic_foreground_wild_grass_r1/` と最新 build を更新。 |
 | 2026-06-24 | Codex | Realistic tree groves: 全 outdoor current/past map に deterministic tree grove layer を追加し、CC0/Textured Nature tree model を群れで配置、current leaf/grass を低彩度化して木としての読みを改善。最新 review packet `docs/review/2026-06-24T16-19_realistic_tree_groves_r1/` と最新 build を更新。 |
+| 2026-06-24 | Codex | Realistic depth panorama: 全 outdoor current/past map の遠景に forest/rock/woodland の depth mesh と camera-facing back arc を追加し、平板な外周帯から奥行きのある遠景へ寄せた。最新 review packet `docs/review/2026-06-24T17-05_realistic_depth_panorama_r1/` と最新 build を更新。 |
