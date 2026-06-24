@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.142 HD2D scenic relief backdrop (2026-06-24). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.143 HD2D realistic specimen trees (2026-06-24). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 839 files including INDEX.md and README.md.
-- Dated devlog records: 837 files.
+- Root-level Markdown coverage: 840 files including INDEX.md and README.md.
+- Dated devlog records: 838 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-24 | 5 |
+| 2026-06-24 | 6 |
 | 2026-06-23 | 5 |
 | 2026-06-22 | 1 |
 | 2026-06-20 | 11 |
@@ -57,6 +57,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-24_hd2d_realistic_specimen_trees.md](2026-06-24_hd2d_realistic_specimen_trees.md) | Fast VS / HD2D | HD2D realistic specimen trees |
 | [2026-06-24_hd2d_scenic_relief_backdrop.md](2026-06-24_hd2d_scenic_relief_backdrop.md) | Fast VS / HD2D | HD2D scenic relief backdrop |
 | [2026-06-24_hd2d_realistic_depth_panorama.md](2026-06-24_hd2d_realistic_depth_panorama.md) | Fast VS / HD2D | HD2D realistic depth panorama |
 | [2026-06-24_hd2d_realistic_tree_groves.md](2026-06-24_hd2d_realistic_tree_groves.md) | Fast VS / HD2D | HD2D realistic tree groves |

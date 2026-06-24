@@ -633,6 +633,8 @@ namespace Anemora.EditorTools
         private const int RealisticTreeGroveClusterCount = 4;
         private const int RealisticTreeGroveTreesPerCluster = 3;
         private const int RealisticTreeGroveVisibleMinimum = 5;
+        private const int RealisticSpecimenTreeCount = 3;
+        private const int RealisticSpecimenTreeVisibleMinimum = 3;
         private const int RealisticForegroundWildGrassClusterCount = 9;
         private const int RealisticForegroundWildGrassVisibleMinimum = 6;
         private const int FarShoreHoleClosureShelfCount = 7;
@@ -1145,6 +1147,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dBroadWaterSurfaceAllMaps();
             ValidateFastVsHd2dNearfieldDressingAllMaps();
             ValidateFastVsHd2dRealisticTreeGrovesAllMaps();
+            ValidateFastVsHd2dRealisticSpecimenTreesAllMaps();
             ValidateFastVsHd2dRealisticForegroundWildGrassAllMaps();
             ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps();
             ValidateFastVsHd2dArchitecturalSurfaceAccentsAllMaps();
@@ -10474,6 +10477,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1RealisticTreeGrovesForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1RealisticSpecimenTreesForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -28053,6 +28066,183 @@ namespace Anemora.EditorTools
             }
 
             ApplyNearfieldDressingRendererPolicy(parent);
+        }
+
+        private static void CreateChapter1RealisticSpecimenTreesForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1RealisticSpecimenTrees(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateChapter1RealisticSpecimenTrees(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateChapter1RealisticSpecimenTrees(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateChapter1RealisticSpecimenTrees(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateChapter1RealisticSpecimenTrees(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateChapter1RealisticSpecimenTrees(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1RealisticSpecimenTrees(
+            Transform mapRoot,
+            string prefix,
+            bool past,
+            FastVsHouseArea area,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_RealisticSpecimenTrees").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetNearfieldDressingScale(area);
+            var leafMaterial = ImportedNatureLeafMaterial(past) ?? (past ? materials.Leaf : materials.CurrentLeaf);
+            var grassMaterial = ImportedNatureGrassMaterial(past) ?? (past ? materials.PastGrass : materials.CurrentGrass);
+            var woodMaterial = ImportedNatureWoodMaterial(past) ?? (past ? materials.PastFurniture : materials.CurrentFurniture);
+            var stoneMaterial = ImportedNatureStoneMaterial(past) ?? (past ? materials.PastStone : materials.CurrentStone);
+            var accentMaterial = ImportedNatureAccentMaterial(past) ?? materials.FlowerYellow;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.realistic_specimen_trees";
+
+            for (var index = 0; index < RealisticSpecimenTreeCount; index++)
+            {
+                var seed = 131071 + (int)area * 1553 + (past ? 7253 : 0) + index * 431;
+                var specimenLocal = GetRealisticSpecimenTreeLocalOffset(area, index, scale);
+                var basePosition = center + specimenLocal + new Vector3(
+                    DistantPanoramaVistaSigned(seed + 5, 0.34f * scale),
+                    0.625f + DistantPanoramaVistaHash01(seed + 7) * 0.030f,
+                    DistantPanoramaVistaSigned(seed + 11, 0.28f * scale));
+                var yaw = DistantPanoramaVistaSigned(seed + 13, 160f);
+                var specimenScale = Mathf.Lerp(0.82f, 1.08f, DistantPanoramaVistaHash01(seed + 17)) * scale;
+                var objectPrefix = $"{prefix}_{areaToken}_RealisticSpecimenTree_S{index + 1:00}";
+                var treePath = index == 2
+                    ? SelectImportedNatureTreePath($"{scope}.tree.s{index + 1:00}", past)
+                    : SelectImportedNatureBroadleafTreePath($"{scope}.tree.s{index + 1:00}", past);
+                var treeGroundPosition = ImportedNatureGroundPosition(basePosition, 0.62f);
+                var treeSize = Mathf.Lerp(0.88f, 1.10f, DistantPanoramaVistaHash01(seed + 19));
+
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_SpecimenTreeModelA",
+                    parent,
+                    treePath,
+                    treeGroundPosition,
+                    Vector3.one * Mathf.Clamp(specimenScale * ImportedNatureTreeScaleMultiplier(treePath) * treeSize, 0.54f, 1.24f),
+                    Quaternion.Euler(0f, yaw, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    stoneMaterial,
+                    accentMaterial,
+                    $"{scope}.tree.s{index + 1:00}",
+                    false);
+
+                var trunkHeight = Mathf.Clamp(specimenScale * 1.05f, 0.72f, 1.42f);
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_SpecimenTrunkReinforcementA",
+                    parent,
+                    treeGroundPosition + new Vector3(DistantPanoramaVistaSigned(seed + 23, 0.04f * scale), trunkHeight * 0.50f, DistantPanoramaVistaSigned(seed + 29, 0.04f * scale)),
+                    new Vector3(Mathf.Clamp(specimenScale * 0.16f, 0.14f, 0.28f), trunkHeight, Mathf.Clamp(specimenScale * 0.16f, 0.14f, 0.28f)),
+                    Quaternion.Euler(0f, yaw + DistantPanoramaVistaSigned(seed + 31, 12f), 0f),
+                    woodMaterial,
+                    $"{scope}.trunk_reinforcement.s{index + 1:00}",
+                    CreateAuthoredVegetationTrunkMesh($"{objectPrefix}_SpecimenTrunkReinforcementA_{AuthoredVegetationMeshNamePrefix}_Trunk", $"{scope}.trunk_reinforcement.s{index + 1:00}"));
+
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_SpecimenCanopyFillA",
+                    parent,
+                    treeGroundPosition + new Vector3(-0.18f * specimenScale, Mathf.Clamp(specimenScale * 1.28f, 1.02f, 2.18f), 0.12f * specimenScale),
+                    new Vector3(Mathf.Clamp(specimenScale * 0.62f, 0.46f, 0.98f), Mathf.Clamp(specimenScale * 0.42f, 0.32f, 0.68f), Mathf.Clamp(specimenScale * 0.54f, 0.40f, 0.86f)),
+                    Quaternion.Euler(-4f + DistantPanoramaVistaSigned(seed + 37, 4f), yaw - 28f, 5f + DistantPanoramaVistaSigned(seed + 41, 5f)),
+                    leafMaterial,
+                    $"{scope}.canopy_fill_a.s{index + 1:00}",
+                    CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_SpecimenCanopyFillA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{scope}.canopy_fill_a.s{index + 1:00}"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_SpecimenCanopyFillB",
+                    parent,
+                    treeGroundPosition + new Vector3(0.24f * specimenScale, Mathf.Clamp(specimenScale * 1.08f, 0.90f, 1.94f), -0.18f * specimenScale),
+                    new Vector3(Mathf.Clamp(specimenScale * 0.50f, 0.36f, 0.78f), Mathf.Clamp(specimenScale * 0.34f, 0.28f, 0.54f), Mathf.Clamp(specimenScale * 0.46f, 0.34f, 0.72f)),
+                    Quaternion.Euler(3f + DistantPanoramaVistaSigned(seed + 43, 4f), yaw + 46f, -5f + DistantPanoramaVistaSigned(seed + 47, 5f)),
+                    grassMaterial,
+                    $"{scope}.canopy_fill_b.s{index + 1:00}",
+                    CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_SpecimenCanopyFillB_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{scope}.canopy_fill_b.s{index + 1:00}"));
+
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_SpecimenBushModelA",
+                    parent,
+                    SelectImportedNatureBushPath($"{scope}.bush.s{index + 1:00}"),
+                    treeGroundPosition + new Vector3(-0.42f * specimenScale, 0.014f, 0.34f * specimenScale),
+                    Vector3.one * Mathf.Clamp(specimenScale * 0.34f, 0.28f, 0.58f),
+                    Quaternion.Euler(0f, yaw - 42f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    stoneMaterial,
+                    accentMaterial,
+                    $"{scope}.bush.s{index + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_SpecimenGrassModelA",
+                    parent,
+                    SelectImportedNatureGrassPath($"{scope}.grass.s{index + 1:00}"),
+                    treeGroundPosition + new Vector3(0.44f * specimenScale, 0.014f, -0.26f * specimenScale),
+                    Vector3.one * Mathf.Clamp(specimenScale * 0.36f, 0.28f, 0.62f),
+                    Quaternion.Euler(0f, yaw + 54f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    stoneMaterial,
+                    accentMaterial,
+                    $"{scope}.grass.s{index + 1:00}",
+                    false);
+                CreateAuthoredGroundCoverPatch(
+                    parent,
+                    $"{objectPrefix}_SpecimenTreeFloor",
+                    treeGroundPosition + new Vector3(DistantPanoramaVistaSigned(seed + 53, 0.18f * scale), 0.050f, DistantPanoramaVistaSigned(seed + 59, 0.16f * scale)),
+                    new Vector3(Mathf.Clamp(specimenScale * 0.84f, 0.62f, 1.28f), 0.050f, Mathf.Clamp(specimenScale * 0.46f, 0.34f, 0.70f)),
+                    yaw + DistantPanoramaVistaSigned(seed + 61, 28f),
+                    (index & 1) == 0 ? grassMaterial : leafMaterial,
+                    past);
+                CreateGrassTuft(
+                    parent,
+                    $"{objectPrefix}_SpecimenUnderstoryA",
+                    treeGroundPosition + new Vector3(-0.58f * specimenScale, 0.200f, -0.24f * specimenScale),
+                    grassMaterial,
+                    index);
+                CreateGrassTuft(
+                    parent,
+                    $"{objectPrefix}_SpecimenUnderstoryB",
+                    treeGroundPosition + new Vector3(0.62f * specimenScale, 0.200f, 0.30f * specimenScale),
+                    leafMaterial,
+                    index + RealisticSpecimenTreeCount);
+            }
+
+            ApplyNearfieldDressingRendererPolicy(parent);
+        }
+
+        private static Vector3 GetRealisticSpecimenTreeLocalOffset(FastVsHouseArea area, int index, float scale)
+        {
+            var areaDepthBias = area == FastVsHouseArea.Exterior ? 0.45f : 0f;
+            var rearSide = ((int)area & 1) == 0 ? -1f : 1f;
+            switch (index)
+            {
+                case 0:
+                    return new Vector3(-9.38f * scale, 0f, (-2.48f + areaDepthBias) * scale);
+                case 1:
+                    return new Vector3(9.32f * scale, 0f, (-2.28f + areaDepthBias) * scale);
+                case 2:
+                default:
+                    return new Vector3(rearSide * 9.58f * scale, 0f, 4.84f * scale);
+            }
         }
 
         private static Vector3 GetRealisticTreeGroveLocalOffset(int clusterIndex, float scale)
@@ -61639,6 +61829,167 @@ namespace Anemora.EditorTools
             if (visibleCount < RealisticTreeGroveVisibleMinimum || importedTreeVisibleCount < 2)
             {
                 throw new InvalidOperationException($"House slice validation failed: realistic tree grove {prefix} {area} must visibly read as imported trees in the outdoor wide frame, visible={visibleCount}, importedTrees={importedTreeVisibleCount}.");
+            }
+        }
+
+        private static void ValidateFastVsHd2dRealisticSpecimenTreesAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateRealisticSpecimenTreeRoot("Current", area);
+                ValidateRealisticSpecimenTreeRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: realistic specimen trees require a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateRealisticSpecimenTreeCameraCoverage(camera, "Current", area);
+                ValidateRealisticSpecimenTreeCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateRealisticSpecimenTreeRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_RealisticSpecimenTrees";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing realistic specimen tree root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic specimen tree root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            ApplyNearfieldDressingRendererPolicy(root.transform);
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic specimen tree root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            var treeModelCount = 0;
+            var trunkReinforcementCount = 0;
+            var canopyFillCount = 0;
+            var bushCount = 0;
+            var grassCount = 0;
+            var groundCoverCount = 0;
+            var lowLeafCount = 0;
+            foreach (var transform in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (transform.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic specimen tree object {transform.gameObject.name} must stay on render layer {expectedLayer}, found {transform.gameObject.layer}.");
+                }
+
+                if (transform.name.Contains("_SpecimenTreeModel", StringComparison.Ordinal))
+                {
+                    treeModelCount++;
+                }
+                else if (transform.name.Contains("_SpecimenTrunkReinforcement", StringComparison.Ordinal))
+                {
+                    trunkReinforcementCount++;
+                }
+                else if (transform.name.Contains("_SpecimenCanopyFill", StringComparison.Ordinal))
+                {
+                    canopyFillCount++;
+                }
+                else if (transform.name.Contains("_SpecimenBushModel", StringComparison.Ordinal))
+                {
+                    bushCount++;
+                }
+                else if (transform.name.Contains("_SpecimenGrassModel", StringComparison.Ordinal))
+                {
+                    grassCount++;
+                }
+                else if (transform.name.EndsWith("_SpecimenTreeFloor_GroundCoverA", StringComparison.Ordinal))
+                {
+                    groundCoverCount++;
+                }
+                else if (transform.name.EndsWith("_LowLeafA", StringComparison.Ordinal))
+                {
+                    lowLeafCount++;
+                }
+
+                if (transform.GetComponent<Collider>() != null || transform.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic specimen tree object {transform.gameObject.name} must not add collision.");
+                }
+            }
+
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic specimen tree renderer under {rootName} must keep a material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic specimen tree renderer {renderer.gameObject.name} must use a non-shadow renderer.");
+                }
+            }
+
+            if (treeModelCount < RealisticSpecimenTreeCount ||
+                trunkReinforcementCount < RealisticSpecimenTreeCount ||
+                canopyFillCount < RealisticSpecimenTreeCount * 2 ||
+                bushCount < RealisticSpecimenTreeCount ||
+                grassCount < RealisticSpecimenTreeCount ||
+                groundCoverCount < RealisticSpecimenTreeCount ||
+                lowLeafCount < RealisticSpecimenTreeCount * 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must add readable specimen tree silhouettes with base planting; trees={treeModelCount}, trunks={trunkReinforcementCount}, canopy={canopyFillCount}, bush={bushCount}, grass={grassCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}.");
+            }
+        }
+
+        private static void ValidateRealisticSpecimenTreeCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_RealisticSpecimenTrees");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing realistic specimen tree root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var importedTreeVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (RendererOrParentNameContains(renderer, "SpecimenTreeModel"))
+                {
+                    importedTreeVisibleCount++;
+                }
+            }
+
+            if (visibleCount < RealisticSpecimenTreeVisibleMinimum || importedTreeVisibleCount < 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic specimen trees {prefix} {area} must visibly read as close/mid natural trees in the outdoor wide frame, visible={visibleCount}, importedTrees={importedTreeVisibleCount}.");
             }
         }
 
