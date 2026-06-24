@@ -581,6 +581,9 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaRealisticDepthLayerCount = 3;
         private const int DistantPanoramaVistaRealisticDepthMeshCount = DistantPanoramaVistaSegmentCount * DistantPanoramaVistaRealisticDepthLayerCount;
         private const int DistantPanoramaVistaRealisticDepthBackArcCount = DistantPanoramaVistaRealisticDepthLayerCount * 9;
+        private const int DistantPanoramaVistaScenicBackdropLayerCount = 2;
+        private const int DistantPanoramaVistaScenicBackdropSpanCount = 9;
+        private const int DistantPanoramaVistaScenicBackdropMeshCount = DistantPanoramaVistaScenicBackdropLayerCount * DistantPanoramaVistaScenicBackdropSpanCount;
         private const int DistantPanoramaVistaQualityDetailVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalTreeStandVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalCanopyVolumeVisibleMinimum = 4;
@@ -596,6 +599,7 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaRidgeStrataVisibleMinimum = 4;
         private const int DistantPanoramaVistaSlopeContourVisibleMinimum = 4;
         private const int DistantPanoramaVistaRealisticDepthVisibleMinimum = 5;
+        private const int DistantPanoramaVistaScenicBackdropVisibleMinimum = 7;
         private const int DistantPanoramaVistaProductionDepthPrototypeMeshCount = 18;
         private const int DistantPanoramaVistaProductionDepthPrototypeVisibleMinimum = 9;
         private const int MidgroundEdgeClosurePrototypeMeshCount = 12;
@@ -29484,6 +29488,7 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaProductionDepthPrototype(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaRealisticDepthBands(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaRealisticDepthBackArc(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaScenicBackdrop(parent, prefix, past, area, areaToken, center);
 
             for (var band = 0; band < DistantPanoramaVistaBandCount; band++)
             {
@@ -30712,6 +30717,228 @@ namespace Anemora.EditorTools
                         Mathf.Lerp(3.4f, 6.2f, DistantPanoramaVistaHash01(seed + 37)),
                         past);
             }
+        }
+
+        private static void CreateDistantPanoramaVistaScenicBackdrop(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            for (var layer = 0; layer < DistantPanoramaVistaScenicBackdropLayerCount; layer++)
+            {
+                var layerToken = GetDistantPanoramaVistaScenicBackdropLayerToken(layer);
+                for (var span = 0; span < DistantPanoramaVistaScenicBackdropSpanCount; span++)
+                {
+                    var seed = 9323 + (int)area * 421 + (past ? 2111 : 0) + layer * 313 + span * 89;
+                    var lateralStep = layer == 0 ? 14.0f : 15.4f;
+                    var forward = layer == 0
+                        ? 62.15f + DistantPanoramaVistaSigned(seed + 5, 0.10f)
+                        : 64.80f + DistantPanoramaVistaSigned(seed + 5, 0.74f);
+                    var lateral = (span - (DistantPanoramaVistaScenicBackdropSpanCount - 1) * 0.5f) * lateralStep +
+                        DistantPanoramaVistaSigned(seed + 7, layer == 0 ? 2.1f : 3.4f);
+                    var horizontal = new Vector2(lateral, forward);
+                    var maxRadius = layer == 0 ? 90.5f : 98.5f;
+                    if (horizontal.magnitude > maxRadius)
+                    {
+                        horizontal = horizontal.normalized * maxRadius;
+                    }
+
+                    var localPosition = center + new Vector3(
+                        horizontal.x,
+                        GetDistantPanoramaVistaScenicBackdropY(area, layer, past, seed),
+                        horizontal.y);
+                    var faceDirection = center - localPosition;
+                    faceDirection.y = 0f;
+                    if (faceDirection.sqrMagnitude < 0.01f)
+                    {
+                        faceDirection = Vector3.back;
+                    }
+
+                    var scenicObject = new GameObject($"{prefix}_{areaToken}_DistantVista_ScenicRelief_{layerToken}_S{span + 1:00}");
+                    scenicObject.transform.SetParent(parent, false);
+                    scenicObject.transform.localPosition = localPosition;
+                    scenicObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                    scenicObject.transform.localScale = Vector3.one;
+                    scenicObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                    var filter = scenicObject.AddComponent<MeshFilter>();
+                    filter.sharedMesh = CreateDistantPanoramaVistaScenicBackdropMesh(
+                        $"{scenicObject.name}_Mesh",
+                        seed,
+                        layer,
+                        area,
+                        past);
+
+                    var renderer = scenicObject.AddComponent<MeshRenderer>();
+                    renderer.sharedMaterial = EnsureDistantPanoramaVistaScenicBackdropMaterial(past, layer);
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+
+                    var landmark = scenicObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                    SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.scenic_backdrop.{layerToken.ToLowerInvariant()}.s{span + 1:00}");
+                    SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                    SerializedSet(landmark, "countsForArrival", false);
+                }
+            }
+        }
+
+        private static string GetDistantPanoramaVistaScenicBackdropLayerToken(int layer)
+        {
+            return layer == 0 ? "FrontWoodline" : "HighRidge";
+        }
+
+        private static float GetDistantPanoramaVistaScenicBackdropY(FastVsHouseArea area, int layer, bool past, int seed)
+        {
+            var baseY = layer == 0 ? 2.10f : 4.90f;
+            return baseY +
+                GetDistantPanoramaVistaProductionDepthHeightBias(area) +
+                GetDistantPanoramaVistaScenicReliefYBoost(area, layer) +
+                (past ? 0.12f : 0f) +
+                DistantPanoramaVistaHash01(seed + 19) * (layer == 0 ? 0.38f : 0.72f);
+        }
+
+        private static Mesh CreateDistantPanoramaVistaScenicBackdropMesh(string meshName, int seed, int layer, FastVsHouseArea area, bool past)
+        {
+            var widthScale = GetDistantPanoramaVistaProductionDepthWidthScale(area);
+            var heightScale = GetDistantPanoramaVistaProductionDepthHeightScale(area);
+            var scenicReliefHeightScale = GetDistantPanoramaVistaScenicReliefHeightScale(area, layer);
+            if (layer == 0)
+            {
+                return CreateDistantPanoramaVistaTreelineFoldMesh(
+                    meshName,
+                    seed,
+                    Mathf.Lerp(72.0f, 102.0f, DistantPanoramaVistaHash01(seed + 23)) * widthScale,
+                    Mathf.Lerp(30.0f, 50.0f, DistantPanoramaVistaHash01(seed + 31)) * heightScale * scenicReliefHeightScale * (past ? 1.07f : 1f),
+                    Mathf.Lerp(2.8f, 5.2f, DistantPanoramaVistaHash01(seed + 37)));
+            }
+
+            return CreateDistantPanoramaVistaScenicBackdropRidgeMesh(
+                meshName,
+                seed,
+                Mathf.Lerp(86.0f, 122.0f, DistantPanoramaVistaHash01(seed + 23)) * widthScale,
+                Mathf.Lerp(54.0f, 88.0f, DistantPanoramaVistaHash01(seed + 31)) * heightScale * scenicReliefHeightScale * (past ? 1.08f : 1f),
+                Mathf.Lerp(4.6f, 8.4f, DistantPanoramaVistaHash01(seed + 37)));
+        }
+
+        private static float GetDistantPanoramaVistaScenicReliefYBoost(FastVsHouseArea area, int layer)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return layer == 0 ? 2.80f : 5.20f;
+                case FastVsHouseArea.CentralPlaza:
+                    return layer == 0 ? 1.80f : 3.40f;
+                case FastVsHouseArea.MiaHouse:
+                    return layer == 0 ? 2.10f : 3.80f;
+                default:
+                    return 0f;
+            }
+        }
+
+        private static float GetDistantPanoramaVistaScenicReliefHeightScale(FastVsHouseArea area, int layer)
+        {
+            switch (area)
+            {
+                case FastVsHouseArea.Exterior:
+                    return layer == 0 ? 1.45f : 1.85f;
+                case FastVsHouseArea.CentralPlaza:
+                    return layer == 0 ? 1.25f : 1.55f;
+                case FastVsHouseArea.MiaHouse:
+                    return layer == 0 ? 1.35f : 1.65f;
+                default:
+                    return 1f;
+            }
+        }
+
+        private static Mesh CreateDistantPanoramaVistaScenicBackdropRidgeMesh(string meshName, int seed, float width, float height, float depth)
+        {
+            const int columnCount = 19;
+            const int rowCount = 5;
+            const int sideCount = 2;
+            var vertices = new Vector3[columnCount * rowCount * sideCount];
+            var uvs = new Vector2[vertices.Length];
+            var frontZ = -depth * 0.5f;
+            var backZ = depth * 0.5f;
+            var peakA = 0.22f + DistantPanoramaVistaSigned(seed + 43, 0.055f);
+            var peakB = 0.52f + DistantPanoramaVistaSigned(seed + 47, 0.070f);
+            var peakC = 0.78f + DistantPanoramaVistaSigned(seed + 53, 0.060f);
+
+            for (var column = 0; column < columnCount; column++)
+            {
+                var u = column / (float)(columnCount - 1);
+                var edgeFalloff = Mathf.Sin(u * Mathf.PI);
+                var x = Mathf.Lerp(-width * 0.5f, width * 0.5f, u) +
+                    DistantPanoramaVistaSigned(seed + column * 29 + 5, width * 0.018f) * edgeFalloff;
+                var summitA = Mathf.Clamp01(1f - Mathf.Abs(u - peakA) * 5.8f);
+                var summitB = Mathf.Clamp01(1f - Mathf.Abs(u - peakB) * 4.6f);
+                var summitC = Mathf.Clamp01(1f - Mathf.Abs(u - peakC) * 5.2f);
+                var saddle = Mathf.Clamp01(1f - Mathf.Abs(u - 0.40f) * 6.2f) * 0.16f +
+                    Mathf.Clamp01(1f - Mathf.Abs(u - 0.66f) * 5.4f) * 0.13f;
+                var skyline = Mathf.Clamp(0.34f + edgeFalloff * 0.20f + Mathf.Max(summitA * 0.54f, Mathf.Max(summitB * 0.74f, summitC * 0.58f)) - saddle, 0.22f, 1.08f);
+                if (column == 0 || column == columnCount - 1)
+                {
+                    skyline *= 0.48f;
+                }
+
+                var crown = height * skyline;
+                var shelfA = crown * Mathf.Lerp(0.22f, 0.32f, DistantPanoramaVistaHash01(seed + column * 37 + 7));
+                var shelfB = crown * Mathf.Lerp(0.44f, 0.58f, DistantPanoramaVistaHash01(seed + column * 41 + 11));
+                var shoulder = crown * Mathf.Lerp(0.66f, 0.82f, DistantPanoramaVistaHash01(seed + column * 43 + 13));
+                for (var side = 0; side < sideCount; side++)
+                {
+                    var z = side == 0 ? frontZ : backZ;
+                    var sideScale = side == 0 ? 1f : Mathf.Lerp(0.84f, 0.96f, DistantPanoramaVistaHash01(seed + column * 47 + 17));
+                    for (var row = 0; row < rowCount; row++)
+                    {
+                        var v = row / (float)(rowCount - 1);
+                        var y = 0f;
+                        if (row == 1)
+                        {
+                            y = shelfA;
+                        }
+                        else if (row == 2)
+                        {
+                            y = shelfB;
+                        }
+                        else if (row == 3)
+                        {
+                            y = shoulder;
+                        }
+                        else if (row == 4)
+                        {
+                            y = crown;
+                        }
+
+                        var rowIndex = ((side * rowCount) + row) * columnCount + column;
+                        vertices[rowIndex] = new Vector3(x, y * sideScale, z);
+                        uvs[rowIndex] = new Vector2(u * 1.5f, v);
+                    }
+                }
+            }
+
+            var triangles = new List<int>((columnCount - 1) * (rowCount - 1) * 24);
+            for (var column = 0; column < columnCount - 1; column++)
+            {
+                for (var row = 0; row < rowCount - 1; row++)
+                {
+                    var a = row * columnCount + column;
+                    var b = row * columnCount + column + 1;
+                    var c = (row + 1) * columnCount + column;
+                    var d = (row + 1) * columnCount + column + 1;
+                    AddDoubleSidedQuad(triangles, a, b, c, d);
+
+                    var backOffset = rowCount * columnCount;
+                    AddDoubleSidedQuad(triangles, backOffset + a, backOffset + c, backOffset + b, backOffset + d);
+                }
+            }
+
+            var mesh = new Mesh
+            {
+                name = meshName,
+                vertices = vertices,
+                uv = uvs,
+                triangles = triangles.ToArray()
+            };
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
         }
 
         private static bool HasDistantPanoramaVistaProductionDepthPrototype(FastVsHouseArea area)
@@ -34637,6 +34864,65 @@ namespace Anemora.EditorTools
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", layer == 1 ? 0.07f : 0.055f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaScenicBackdropMaterial(bool past, int layer)
+        {
+            var layerToken = GetDistantPanoramaVistaScenicBackdropLayerToken(layer);
+            var id = past
+                ? $"Ch1Distant_PastScenicRelief{layerToken}"
+                : $"Ch1Distant_CurrentScenicRelief{layerToken}";
+            var material = layer == 0
+                ? (past
+                    ? PixelMaterial(
+                        id,
+                        new Color32(52, 58, 24, 255),
+                        new Color32(102, 96, 38, 255),
+                        new Color32(24, 30, 13, 255),
+                        PixelPattern.DistantNeedleCanopy,
+                        true,
+                        new Vector2(5.6f, 6.4f),
+                        FastVsHd2dMaterialRole.SurfaceLit)
+                    : PixelMaterial(
+                        id,
+                        new Color32(12, 46, 29, 255),
+                        new Color32(54, 92, 50, 255),
+                        new Color32(3, 20, 12, 255),
+                        PixelPattern.DistantNeedleCanopy,
+                        true,
+                        new Vector2(5.6f, 6.4f),
+                        FastVsHd2dMaterialRole.SurfaceLit))
+                : (past
+                    ? PixelMaterial(
+                        id,
+                        new Color32(88, 74, 44, 255),
+                        new Color32(132, 110, 62, 255),
+                        new Color32(44, 36, 26, 255),
+                        PixelPattern.DistantRockStrata,
+                        true,
+                        new Vector2(1.58f, 0.94f),
+                        FastVsHd2dMaterialRole.SurfaceLit)
+                    : PixelMaterial(
+                        id,
+                        new Color32(42, 66, 64, 255),
+                        new Color32(86, 108, 96, 255),
+                        new Color32(18, 32, 38, 255),
+                        PixelPattern.DistantRockStrata,
+                        true,
+                        new Vector2(1.58f, 0.94f),
+                        FastVsHd2dMaterialRole.SurfaceLit));
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", layer == 0 ? 0.06f : 0.075f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -62860,6 +63146,7 @@ namespace Anemora.EditorTools
                 DistantPanoramaVistaTreelineFoldMeshCount +
                 DistantPanoramaVistaRealisticDepthMeshCount +
                 DistantPanoramaVistaRealisticDepthBackArcCount +
+                DistantPanoramaVistaScenicBackdropMeshCount +
                 DistantPanoramaVistaAreaLandmarkCount +
                 DistantPanoramaVistaAreaSignatureCount +
                 DistantPanoramaVistaLandformFacetCount;
@@ -63115,6 +63402,7 @@ namespace Anemora.EditorTools
 
             var realisticDepthCount = 0;
             var realisticDepthBackArcCount = 0;
+            var scenicBackdropCount = 0;
             foreach (var filter in filters)
             {
                 if (filter != null && filter.gameObject.name.Contains("DistantVista_RealisticDepth", StringComparison.Ordinal))
@@ -63126,6 +63414,11 @@ namespace Anemora.EditorTools
                 {
                     realisticDepthBackArcCount++;
                 }
+
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_ScenicRelief", StringComparison.Ordinal))
+                {
+                    scenicBackdropCount++;
+                }
             }
 
             if (realisticDepthCount < DistantPanoramaVistaRealisticDepthMeshCount)
@@ -63136,6 +63429,11 @@ namespace Anemora.EditorTools
             if (realisticDepthBackArcCount < DistantPanoramaVistaRealisticDepthBackArcCount)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaRealisticDepthBackArcCount} camera-facing realistic-depth back-arc meshes, found {realisticDepthBackArcCount}.");
+            }
+
+            if (scenicBackdropCount < DistantPanoramaVistaScenicBackdropMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaScenicBackdropMeshCount} scenic backdrop forest/ridge meshes, found {scenicBackdropCount}.");
             }
 
             var center = GetDistantPanoramaVistaCenter(area);
@@ -63191,6 +63489,12 @@ namespace Anemora.EditorTools
                     ResolveMaterialTexture(renderer.sharedMaterial) == null)
                 {
                     throw new InvalidOperationException($"House slice validation failed: distant vista realistic-depth mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (filter.gameObject.name.Contains("DistantVista_ScenicRelief", StringComparison.Ordinal) &&
+                    ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: distant vista scenic backdrop mesh {filter.gameObject.name} must use a textured material.");
                 }
 
                 if (HasDistantPanoramaVistaProductionDepthPrototype(area) &&
@@ -63281,6 +63585,7 @@ namespace Anemora.EditorTools
             var ridgeStrataVisibleCount = 0;
             var slopeContourVisibleCount = 0;
             var realisticDepthVisibleCount = 0;
+            var scenicBackdropVisibleCount = 0;
             var productionDepthVisibleCount = 0;
             foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
@@ -63319,6 +63624,7 @@ namespace Anemora.EditorTools
                         renderer.gameObject.name.Contains("DistantVista_RidgeStrata", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_SlopeContour", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_RealisticDepth", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_ScenicRelief", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_ProductionDepth", StringComparison.Ordinal))
                     {
                         qualityDetailVisibleCount++;
@@ -63392,6 +63698,11 @@ namespace Anemora.EditorTools
                     if (renderer.gameObject.name.Contains("DistantVista_RealisticDepth", StringComparison.Ordinal))
                     {
                         realisticDepthVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_ScenicRelief", StringComparison.Ordinal))
+                    {
+                        scenicBackdropVisibleCount++;
                     }
 
                     if (renderer.gameObject.name.Contains("DistantVista_ProductionDepth", StringComparison.Ordinal))
@@ -63484,6 +63795,11 @@ namespace Anemora.EditorTools
             if (realisticDepthVisibleCount < DistantPanoramaVistaRealisticDepthVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} realistic-depth forest/rock layers must visibly replace flat far background walls, visible={realisticDepthVisibleCount}.");
+            }
+
+            if (scenicBackdropVisibleCount < DistantPanoramaVistaScenicBackdropVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} scenic forest/ridge backdrop must be visible enough to break the flat upper horizon, visible={scenicBackdropVisibleCount}.");
             }
 
             if (HasDistantPanoramaVistaProductionDepthPrototype(area) &&
