@@ -622,6 +622,8 @@ namespace Anemora.EditorTools
             ForegroundEdgeBreakupPathPatchCount +
             ForegroundEdgeBreakupDetailPatchCount;
         private const int ForegroundEdgeBreakupVisibleMinimum = 7;
+        private const int RealisticForegroundWildGrassClusterCount = 9;
+        private const int RealisticForegroundWildGrassVisibleMinimum = 6;
         private const int FarShoreHoleClosureShelfCount = 7;
         private const int FarShoreHoleClosureBankCount = 4;
         private const int FarShoreHoleClosureCoppiceCount = 5;
@@ -1131,6 +1133,7 @@ namespace Anemora.EditorTools
             ValidateFastVsHd2dWaterlineBreakupAllMaps();
             ValidateFastVsHd2dBroadWaterSurfaceAllMaps();
             ValidateFastVsHd2dNearfieldDressingAllMaps();
+            ValidateFastVsHd2dRealisticForegroundWildGrassAllMaps();
             ValidateFastVsHd2dTerrainSurfaceQuiltAllMaps();
             ValidateFastVsHd2dArchitecturalSurfaceAccentsAllMaps();
             Debug.Log("Fast VS house slice validation passed.");
@@ -10449,6 +10452,16 @@ namespace Anemora.EditorTools
                 past,
                 materials);
             CreateChapter1RealisticNearfieldNatureForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
+            CreateChapter1RealisticForegroundWildGrassForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
                 miaHouseRoot,
@@ -27866,6 +27879,129 @@ namespace Anemora.EditorTools
                     grassMaterial,
                     past);
             }
+        }
+
+        private static void CreateChapter1RealisticForegroundWildGrassForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1RealisticForegroundWildGrass(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateChapter1RealisticForegroundWildGrass(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateChapter1RealisticForegroundWildGrass(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateChapter1RealisticForegroundWildGrass(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateChapter1RealisticForegroundWildGrass(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateChapter1RealisticForegroundWildGrass(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1RealisticForegroundWildGrass(
+            Transform mapRoot,
+            string prefix,
+            bool past,
+            FastVsHouseArea area,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_RealisticForegroundWildGrass").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetForegroundShorelineClosureScale(area);
+            var leafMaterial = ImportedNatureLeafMaterial(past) ?? (past ? materials.Leaf : materials.CurrentLeaf);
+            var grassMaterial = ImportedNatureGrassMaterial(past) ?? (past ? materials.PastGrass : materials.CurrentGrass);
+            var woodMaterial = ImportedNatureWoodMaterial(past) ?? (past ? materials.PastFurniture : materials.CurrentFurniture);
+            var accentMaterial = ImportedNatureAccentMaterial(past) ?? materials.FlowerYellow;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.realistic_foreground_wild_grass";
+
+            for (var index = 0; index < RealisticForegroundWildGrassClusterCount; index++)
+            {
+                var seed = 81233 + (int)area * 953 + (past ? 5051 : 0) + index * 277;
+                var t = index / (float)(RealisticForegroundWildGrassClusterCount - 1);
+                var baseX = Mathf.Lerp(-8.95f, 8.95f, t) * scale + DistantPanoramaVistaSigned(seed + 5, 0.36f * scale);
+                var baseZ = Mathf.Lerp(-7.25f, -5.18f, DistantPanoramaVistaHash01(seed + 11)) * scale;
+                var basePosition = center + new Vector3(baseX, 0.610f + DistantPanoramaVistaHash01(seed + 17) * 0.032f, baseZ);
+                var yaw = DistantPanoramaVistaSigned(seed + 23, 170f);
+                var clusterScale = Mathf.Lerp(0.82f, 1.22f, DistantPanoramaVistaHash01(seed + 29)) * scale;
+                var objectPrefix = $"{prefix}_{areaToken}_RealisticForegroundWildGrass_S{index + 1:00}";
+
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_GrassFanA",
+                    parent,
+                    SelectImportedNatureGrassPath($"{scope}.grass_a.s{index + 1:00}"),
+                    basePosition + new Vector3(-0.30f * clusterScale, 0.012f, 0.10f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.88f, 0.54f, 1.22f),
+                    Quaternion.Euler(0f, yaw - 36f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.grass_a.s{index + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_GrassFanB",
+                    parent,
+                    SelectImportedNatureGrassPath($"{scope}.grass_b.s{index + 1:00}"),
+                    basePosition + new Vector3(0.34f * clusterScale, 0.014f, -0.08f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.74f, 0.48f, 1.08f),
+                    Quaternion.Euler(0f, yaw + 44f, 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.grass_b.s{index + 1:00}",
+                    false);
+                CreateImportedNatureModel(
+                    $"{objectPrefix}_LeafPlantA",
+                    parent,
+                    SelectImportedNaturePlantPath($"{scope}.plant.s{index + 1:00}"),
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 31, 0.22f * scale), 0.016f, 0.36f * clusterScale),
+                    Vector3.one * Mathf.Clamp(clusterScale * 0.48f, 0.34f, 0.78f),
+                    Quaternion.Euler(0f, yaw + 84f + DistantPanoramaVistaSigned(seed + 37, 18f), 0f),
+                    past,
+                    leafMaterial,
+                    woodMaterial,
+                    grassMaterial,
+                    null,
+                    accentMaterial,
+                    $"{scope}.plant.s{index + 1:00}",
+                    false);
+                CreateAuthoredGroundCoverPatch(
+                    parent,
+                    $"{objectPrefix}_GroundCover",
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 41, 0.24f * scale), 0.052f, DistantPanoramaVistaSigned(seed + 43, 0.20f * scale)),
+                    new Vector3(Mathf.Clamp(clusterScale * 1.48f, 0.96f, 2.08f), 0.050f, Mathf.Clamp(clusterScale * 0.62f, 0.40f, 0.86f)),
+                    yaw + DistantPanoramaVistaSigned(seed + 47, 28f),
+                    (index & 1) == 0 ? grassMaterial : leafMaterial,
+                    past);
+                CreateGrassTuft(
+                    parent,
+                    $"{objectPrefix}_WildGrassTuftA",
+                    basePosition + new Vector3(-0.52f * clusterScale, 0.200f, -0.22f * clusterScale),
+                    grassMaterial,
+                    index);
+                CreateGrassTuft(
+                    parent,
+                    $"{objectPrefix}_WildGrassTuftB",
+                    basePosition + new Vector3(0.56f * clusterScale, 0.200f, 0.28f * clusterScale),
+                    leafMaterial,
+                    index + RealisticForegroundWildGrassClusterCount);
+            }
+
+            ApplyNearfieldDressingRendererPolicy(parent);
         }
 
         private static void CreateChapter1PhaseJNearfieldDressing(Transform mapRoot, string prefix, bool past, FastVsHouseArea area)
@@ -60557,6 +60693,166 @@ namespace Anemora.EditorTools
             {
                 throw new InvalidOperationException($"House slice validation failed: foreground edge breakup {prefix} {area} must visibly interrupt the bright front surface band, visible={visibleCount}, ground={groundVisibleCount}, path={pathVisibleCount}, detail={detailVisibleCount}.");
             }
+        }
+
+        private static void ValidateFastVsHd2dRealisticForegroundWildGrassAllMaps()
+        {
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateRealisticForegroundWildGrassRoot("Current", area);
+                ValidateRealisticForegroundWildGrassRoot("Past", area);
+            }
+
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                throw new InvalidOperationException("House slice validation failed: realistic foreground wild grass requires a main camera for visibility validation.");
+            }
+
+            for (var i = 0; i < DistantPanoramaVistaAreas.Length; i++)
+            {
+                var area = DistantPanoramaVistaAreas[i];
+                ValidateRealisticForegroundWildGrassCameraCoverage(camera, "Current", area);
+                ValidateRealisticForegroundWildGrassCameraCoverage(camera, "Past", area);
+            }
+        }
+
+        private static void ValidateRealisticForegroundWildGrassRoot(string prefix, FastVsHouseArea area)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var rootName = $"{prefix}_{areaToken}_RealisticForegroundWildGrass";
+            var root = FindSceneObjectIncludingInactive(rootName);
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing realistic foreground wild grass root {rootName}.");
+            }
+
+            var expectedParentName = $"{prefix}_{areaToken}Map_SeparateSpace";
+            if (root.transform.parent == null || root.transform.parent.name != expectedParentName)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass root {rootName} must stay parented under {expectedParentName}.");
+            }
+
+            var expectedLayer = string.Equals(prefix, "Past", StringComparison.Ordinal) ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+            ApplyNearfieldDressingRendererPolicy(root.transform);
+            if (root.layer != expectedLayer)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass root {rootName} must stay on render layer {expectedLayer}, found {root.layer}.");
+            }
+
+            var grassFanCount = 0;
+            var leafPlantCount = 0;
+            var groundCoverCount = 0;
+            var lowLeafCount = 0;
+            foreach (var transform in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (transform.gameObject.layer != expectedLayer)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass object {transform.gameObject.name} must stay on render layer {expectedLayer}, found {transform.gameObject.layer}.");
+                }
+
+                if (transform.name.Contains("GrassFan", StringComparison.Ordinal))
+                {
+                    grassFanCount++;
+                }
+                else if (transform.name.Contains("LeafPlant", StringComparison.Ordinal))
+                {
+                    leafPlantCount++;
+                }
+                else if (transform.name.EndsWith("_GroundCover_GroundCoverA", StringComparison.Ordinal))
+                {
+                    groundCoverCount++;
+                }
+                else if (transform.name.EndsWith("_LowLeafA", StringComparison.Ordinal))
+                {
+                    lowLeafCount++;
+                }
+
+                if (transform.GetComponent<Collider>() != null || transform.GetComponentsInChildren<Collider>(true).Length > 0)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass object {transform.gameObject.name} must not add collision.");
+                }
+            }
+
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || renderer.sharedMaterial == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass renderer under {rootName} must keep a material.");
+                }
+
+                if (renderer.shadowCastingMode != ShadowCastingMode.Off || renderer.receiveShadows)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass renderer {renderer.gameObject.name} must use a non-shadow renderer.");
+                }
+            }
+
+            if (grassFanCount < RealisticForegroundWildGrassClusterCount * 2 ||
+                leafPlantCount < RealisticForegroundWildGrassClusterCount ||
+                groundCoverCount < RealisticForegroundWildGrassClusterCount ||
+                lowLeafCount < RealisticForegroundWildGrassClusterCount * 2)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine imported grass, leaf plants, and authored low cover; grassFans={grassFanCount}, leafPlants={leafPlantCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}.");
+            }
+        }
+
+        private static void ValidateRealisticForegroundWildGrassCameraCoverage(Camera camera, string prefix, FastVsHouseArea area)
+        {
+            var root = FindSceneObjectIncludingInactive($"{prefix}_{GetDistantPanoramaVistaAreaToken(area)}_RealisticForegroundWildGrass");
+            if (root == null)
+            {
+                throw new InvalidOperationException($"House slice validation failed: missing realistic foreground wild grass root for camera coverage: {prefix} {area}.");
+            }
+
+            PositionChapter1AllMapsCamera(
+                camera,
+                GetDistantPanoramaVistaCenter(area),
+                GetDistantPanoramaVistaReviewPositionOffset(area),
+                GetDistantPanoramaVistaReviewLookAtOffset(area));
+
+            var visibleCount = 0;
+            var importedVisibleCount = 0;
+            foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null || !renderer.enabled)
+                {
+                    continue;
+                }
+
+                if (!DistantPanoramaVistaBoundsTouchesCamera(camera, renderer.bounds, out _, out _))
+                {
+                    continue;
+                }
+
+                visibleCount++;
+                if (RendererOrParentNameContains(renderer, "GrassFan") ||
+                    RendererOrParentNameContains(renderer, "LeafPlant"))
+                {
+                    importedVisibleCount++;
+                }
+            }
+
+            if (visibleCount < RealisticForegroundWildGrassVisibleMinimum || importedVisibleCount < 3)
+            {
+                throw new InvalidOperationException($"House slice validation failed: realistic foreground wild grass {prefix} {area} must visibly fill the lower outdoor band, visible={visibleCount}, imported={importedVisibleCount}.");
+            }
+        }
+
+        private static bool RendererOrParentNameContains(Renderer renderer, string token)
+        {
+            var current = renderer == null ? null : renderer.transform;
+            while (current != null)
+            {
+                if (current.name.Contains(token, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+
+                current = current.parent;
+            }
+
+            return false;
         }
 
         private static void ValidateFastVsHd2dFarShoreHoleClosureAllMaps()
