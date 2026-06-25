@@ -4,13 +4,13 @@
 > 詳細実装履歴は `docs/devlog/`、物語骨格は `docs/STORY_BIBLE_v1.md`、運用 gotcha は `AGENTS.md`。
 > **更新規律**: frontier が動いたら同じ commit でここを更新する。古いまま放置しない (pre-push hook が7日超の漂流を検査する)。
 
-最終更新: 2026-06-26 (Codex / HD2D terrain detail vista review build)
+最終更新: 2026-06-26 (Codex / HD2D tree grove silhouette review build)
 
 ---
 
 ## 1. いま何の状態か (1 段落)
 
-Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-26 時点の最新レビュー build は Time Window aperture depth-order fix、CC0 textured nature pass、imported nature scale uplift、realistic nearfield nature clusters、authored under-canopy foliage、dark-pixel leaf alpha keying、全マップ前景 wild-grass layer、全マップ tree grove layer、current leaf/grass の低彩度化、遠景の forest/rock/woodland depth layer + camera-facing back arc + ScenicRelief forest/ridge layer + close/mid realistic specimen tree framing layer + specimen canopy branch/leaf detail layer + terrain detail vista material-density pass を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。黒い副作用が強かった photo vegetation card 案は accepted path から外した。
+Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-26 時点の最新レビュー build は Time Window aperture depth-order fix、CC0 textured nature pass、imported nature scale uplift、realistic nearfield nature clusters、authored under-canopy foliage、dark-pixel leaf alpha keying、全マップ前景 wild-grass layer、全マップ tree grove layer、current leaf/grass の低彩度化、遠景の forest/rock/woodland depth layer + camera-facing back arc + ScenicRelief forest/ridge layer + close/mid realistic specimen tree framing layer + specimen canopy branch/leaf detail layer + terrain detail vista material-density pass + tree grove silhouette pass を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。黒い副作用が強かった photo vegetation card 案は accepted path から外した。
 
 ## 2. branch / baseline
 
@@ -24,7 +24,7 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 
 ## 3. 現在の frontier (アクティブな一手)
 
-- **point15 レンダラループ / 環境アップリフト**: 2026-06-26 最新レビュー build で Time Window aperture を frame behind の depth-aware composite にし、CC0 textured tree subset + imported nature scale uplift + realistic nearfield nature clusters + authored under-canopy foliage + dark-pixel leaf alpha keying + all-map foreground wild-grass layer + all-map realistic tree grove layer + realistic distant panorama depth layer + ScenicRelief forest/ridge layer + close/mid realistic specimen tree framing layer + specimen canopy branch/leaf detail layer + terrain detail vista material-density pass を導入。黒い副作用が強かった photo vegetation card 案は accepted path から外した。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-26T03-59_terrain_detail_vista_r6/`。
+- **point15 レンダラループ / 環境アップリフト**: 2026-06-26 最新レビュー build で Time Window aperture を frame behind の depth-aware composite にし、CC0 textured tree subset + imported nature scale uplift + realistic nearfield nature clusters + authored under-canopy foliage + dark-pixel leaf alpha keying + all-map foreground wild-grass layer + all-map realistic tree grove layer + realistic distant panorama depth layer + ScenicRelief forest/ridge layer + close/mid realistic specimen tree framing layer + specimen canopy branch/leaf detail layer + terrain detail vista material-density pass + tree grove silhouette pass を導入。黒い副作用が強かった photo vegetation card 案は accepted path から外した。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-26T07-26_tree_grove_silhouette_r3/`。
 - **2026-06-13 環境監査の提案と着地**: ①✅レンダラ凍結=`Assets/Tests/RendererContract/` のゴールデン契約テストで実装済 (Unity検証: 初回ベースライン生成→2回目 36 EditMode緑/freeze=Passed)。renderer feature を変えるとテストが落ちる。意図的変更時は `ANEMORA_RENDERER_REBASELINE=1` で再生成しコミット。②✅アセット検収=`Assets/Editor/AnemoraAssetValidation.cs` の `ValidateImportedAssetsBatch` (missing ref/review_only混入/ポリ数、実走OK)。③authored file (81k行) 減量は **cycle 方式が当ファイルを毎サイクル編集する間は未着手** (再開時 merge 衝突を避けるため。cycle 方式を畳む時に実施)。環境アセット物量 (テクスチャ/植生/空) は Tier 目標確定後。
 - Chapter 1 設計トラックは S3 詳細設計で停止中 (canon は `docs/canon/chapter1.md`)。
 
@@ -77,3 +77,4 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 | 2026-06-24 | Codex | Realistic specimen trees: 全 outdoor current/past map に close/mid specimen tree framing layer を追加し、巨大幹で主景を塞いだ初期案を縮小・端配置へ修正して自然の読みを改善。最新 review packet `docs/review/2026-06-24T23-43_realistic_specimen_trees_r2/` と最新 build を更新。 |
 | 2026-06-25 | Codex | Specimen canopy detail: 全 outdoor current/past specimen tree に branch lace / branch fork / canopy-breakup fan/spray / outer leaf spray / root fern detail を追加し、r1 の視認不足を r2 で外縁配置へ修正。最新 review packet `docs/review/2026-06-25T01-23_specimen_canopy_detail_r2/` と最新 build を更新。 |
 | 2026-06-26 | Codex | Terrain detail vista: r2/r4 の視認不足と r3 の半径ガード失敗を経て、全 outdoor current/past 遠景の terrain detail mesh + RealisticDepth/ScenicRelief/ProductionDepth のテクスチャ密度を r6 で可視化。最新 review packet `docs/review/2026-06-26T03-59_terrain_detail_vista_r6/` と最新 build を更新。 |
+| 2026-06-26 | Codex | Tree grove silhouette: r1 の視認不足と r2 の大きな丸樹冠を経て、全 outdoor current/past の tree grove を birch/pine 寄りの幹・枝・葉カード主体へ修正。最新 review packet `docs/review/2026-06-26T07-26_tree_grove_silhouette_r3/` と最新 build を更新。 |
