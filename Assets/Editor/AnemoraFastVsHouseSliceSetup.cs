@@ -584,6 +584,9 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaScenicBackdropLayerCount = 2;
         private const int DistantPanoramaVistaScenicBackdropSpanCount = 9;
         private const int DistantPanoramaVistaScenicBackdropMeshCount = DistantPanoramaVistaScenicBackdropLayerCount * DistantPanoramaVistaScenicBackdropSpanCount;
+        private const int DistantPanoramaVistaTerrainDetailLayerCount = 3;
+        private const int DistantPanoramaVistaTerrainDetailSpanCount = 13;
+        private const int DistantPanoramaVistaTerrainDetailMeshCount = DistantPanoramaVistaTerrainDetailLayerCount * DistantPanoramaVistaTerrainDetailSpanCount;
         private const int DistantPanoramaVistaQualityDetailVisibleMinimum = 3;
         private const int DistantPanoramaVistaNaturalTreeStandVisibleMinimum = 4;
         private const int DistantPanoramaVistaNaturalCanopyVolumeVisibleMinimum = 4;
@@ -600,6 +603,7 @@ namespace Anemora.EditorTools
         private const int DistantPanoramaVistaSlopeContourVisibleMinimum = 4;
         private const int DistantPanoramaVistaRealisticDepthVisibleMinimum = 5;
         private const int DistantPanoramaVistaScenicBackdropVisibleMinimum = 7;
+        private const int DistantPanoramaVistaTerrainDetailVisibleMinimum = 8;
         private const int DistantPanoramaVistaProductionDepthPrototypeMeshCount = 18;
         private const int DistantPanoramaVistaProductionDepthPrototypeVisibleMinimum = 9;
         private const int MidgroundEdgeClosurePrototypeMeshCount = 12;
@@ -29822,12 +29826,13 @@ namespace Anemora.EditorTools
             CreateDistantPanoramaVistaRealisticDepthBands(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaRealisticDepthBackArc(parent, prefix, past, area, areaToken, center);
             CreateDistantPanoramaVistaScenicBackdrop(parent, prefix, past, area, areaToken, center);
+            CreateDistantPanoramaVistaTerrainDetails(parent, prefix, past, area, areaToken, center);
 
             for (var band = 0; band < DistantPanoramaVistaBandCount; band++)
             {
                 var radius = GetDistantPanoramaVistaBandRadius(band);
-                var height = band == 0 ? 3.10f : (band == 1 ? 5.85f : 8.90f);
-                var thickness = band == 0 ? 0.92f : (band == 1 ? 0.76f : 0.58f);
+                var height = band == 0 ? 3.65f : (band == 1 ? 6.75f : 9.95f);
+                var thickness = band == 0 ? 1.22f : (band == 1 ? 1.04f : 0.82f);
                 var material = EnsureDistantPanoramaVistaMaterial(past, band, area);
                 var chordWidth = 2f * radius * Mathf.Tan(Mathf.PI / DistantPanoramaVistaSegmentCount) * 1.08f;
 
@@ -31177,6 +31182,125 @@ namespace Anemora.EditorTools
                     return layer == 0 ? 1.35f : 1.65f;
                 default:
                     return 1f;
+            }
+        }
+
+        private static void CreateDistantPanoramaVistaTerrainDetails(Transform parent, string prefix, bool past, FastVsHouseArea area, string areaToken, Vector3 center)
+        {
+            for (var layer = 0; layer < DistantPanoramaVistaTerrainDetailLayerCount; layer++)
+            {
+                var layerToken = GetDistantPanoramaVistaTerrainDetailLayerToken(layer);
+                for (var span = 0; span < DistantPanoramaVistaTerrainDetailSpanCount; span++)
+                {
+                    var seed = 10457 + (int)area * 463 + (past ? 2371 : 0) + layer * 347 + span * 97;
+                    var lateralStep = layer == 0 ? 12.8f : (layer == 1 ? 14.6f : 16.8f);
+                    var forward = layer == 0
+                        ? 62.45f + DistantPanoramaVistaHash01(seed + 5) * 0.92f
+                        : (layer == 1
+                            ? 67.60f + DistantPanoramaVistaHash01(seed + 5) * 1.28f
+                            : 76.40f + DistantPanoramaVistaHash01(seed + 5) * 1.82f);
+                    var lateral = (span - (DistantPanoramaVistaTerrainDetailSpanCount - 1) * 0.5f) * lateralStep +
+                        DistantPanoramaVistaSigned(seed + 7, layer == 0 ? 2.2f : 3.3f);
+                    var horizontal = new Vector2(lateral, forward);
+                    var maxRadius = layer == 0 ? 92.0f : (layer == 1 ? 104.0f : 116.0f);
+                    if (horizontal.magnitude > maxRadius)
+                    {
+                        horizontal = horizontal.normalized * maxRadius;
+                    }
+
+                    var localPosition = center + new Vector3(
+                        horizontal.x,
+                        GetDistantPanoramaVistaTerrainDetailY(area, layer, past, seed),
+                        horizontal.y);
+                    var faceDirection = center - localPosition;
+                    faceDirection.y = 0f;
+                    if (faceDirection.sqrMagnitude < 0.01f)
+                    {
+                        faceDirection = Vector3.back;
+                    }
+
+                    var detailObject = new GameObject($"{prefix}_{areaToken}_DistantVista_TerrainDetail_{layerToken}_S{span + 1:00}");
+                    detailObject.transform.SetParent(parent, false);
+                    detailObject.transform.localPosition = localPosition;
+                    detailObject.transform.localRotation = Quaternion.LookRotation(faceDirection.normalized, Vector3.up);
+                    detailObject.transform.localScale = Vector3.one;
+                    detailObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+                    var filter = detailObject.AddComponent<MeshFilter>();
+                    filter.sharedMesh = CreateDistantPanoramaVistaTerrainDetailMesh(
+                        $"{detailObject.name}_Mesh",
+                        seed,
+                        layer,
+                        area,
+                        past);
+
+                    var renderer = detailObject.AddComponent<MeshRenderer>();
+                    renderer.sharedMaterial = EnsureDistantPanoramaVistaTerrainDetailMaterial(past, layer, area);
+                    renderer.shadowCastingMode = ShadowCastingMode.Off;
+                    renderer.receiveShadows = false;
+
+                    var landmark = detailObject.AddComponent<TimeWindowPairedSpaceLandmark>();
+                    SerializedSet(landmark, "landmarkId", $"{prefix}.{areaToken.ToLowerInvariant()}.distant_vista.terrain_detail.{layerToken.ToLowerInvariant()}.s{span + 1:00}");
+                    SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+                    SerializedSet(landmark, "countsForArrival", false);
+                }
+            }
+        }
+
+        private static string GetDistantPanoramaVistaTerrainDetailLayerToken(int layer)
+        {
+            switch (layer)
+            {
+                case 0:
+                    return "ForestMosaic";
+                case 1:
+                    return "SlopeEtching";
+                case 2:
+                default:
+                    return "RidgeIncision";
+            }
+        }
+
+        private static float GetDistantPanoramaVistaTerrainDetailY(FastVsHouseArea area, int layer, bool past, int seed)
+        {
+            var baseY = layer == 0 ? 3.40f : (layer == 1 ? 5.80f : 8.40f);
+            return baseY +
+                GetDistantPanoramaVistaProductionDepthHeightBias(area) +
+                (past ? 0.14f : 0f) +
+                DistantPanoramaVistaHash01(seed + 19) * (layer == 0 ? 0.32f : (layer == 1 ? 0.54f : 0.78f));
+        }
+
+        private static Mesh CreateDistantPanoramaVistaTerrainDetailMesh(string meshName, int seed, int layer, FastVsHouseArea area, bool past)
+        {
+            var widthScale = GetDistantPanoramaVistaProductionDepthWidthScale(area);
+            var heightScale = GetDistantPanoramaVistaProductionDepthHeightScale(area);
+            switch (layer)
+            {
+                case 0:
+                    return CreateDistantPanoramaVistaNaturalCanopyVolumeMesh(
+                        meshName,
+                        seed,
+                        Mathf.Lerp(38.0f, 62.0f, DistantPanoramaVistaHash01(seed + 23)) * widthScale,
+                        Mathf.Lerp(18.0f, 32.0f, DistantPanoramaVistaHash01(seed + 31)) * heightScale * (past ? 1.07f : 1f),
+                        Mathf.Lerp(9.0f, 18.0f, DistantPanoramaVistaHash01(seed + 37)),
+                        past);
+                case 1:
+                    return CreateDistantPanoramaVistaSlopeContourMesh(
+                        meshName,
+                        seed,
+                        Mathf.Lerp(74.0f, 112.0f, DistantPanoramaVistaHash01(seed + 23)) * widthScale,
+                        Mathf.Lerp(28.0f, 50.0f, DistantPanoramaVistaHash01(seed + 31)) * heightScale * (past ? 1.07f : 1f),
+                        Mathf.Lerp(6.0f, 11.0f, DistantPanoramaVistaHash01(seed + 37)),
+                        past);
+                case 2:
+                default:
+                    return CreateDistantPanoramaVistaRidgeFacetMesh(
+                        meshName,
+                        seed,
+                        1,
+                        Mathf.Lerp(96.0f, 144.0f, DistantPanoramaVistaHash01(seed + 23)) * widthScale,
+                        Mathf.Lerp(42.0f, 72.0f, DistantPanoramaVistaHash01(seed + 31)) * heightScale * (past ? 1.08f : 1f),
+                        Mathf.Lerp(8.0f, 14.0f, DistantPanoramaVistaHash01(seed + 37)));
             }
         }
 
@@ -34302,17 +34426,17 @@ namespace Anemora.EditorTools
                 ? $"Ch1Distant_Past{areaToken}{bandToken}"
                 : $"Ch1Distant_Current{areaToken}{bandToken}";
             var tiling = band == 0
-                ? new Vector2(2.18f, 1.28f)
-                : (band == 1 ? new Vector2(4.80f, 5.40f) : new Vector2(2.12f, 1.34f));
+                ? new Vector2(3.65f, 2.25f)
+                : (band == 1 ? new Vector2(8.40f, 7.60f) : new Vector2(4.20f, 2.75f));
             Material material;
             if (past)
             {
                 material = band == 0
                     ? PixelMaterial(
                         id,
-                        new Color32(82, 78, 50, 255),
-                        new Color32(126, 108, 64, 255),
-                        new Color32(48, 44, 34, 255),
+                        new Color32(84, 78, 48, 255),
+                        new Color32(138, 122, 72, 255),
+                        new Color32(44, 42, 31, 255),
                         PixelPattern.DistantLandform,
                         true,
                         tiling,
@@ -34320,21 +34444,21 @@ namespace Anemora.EditorTools
                     : (band == 1
                         ? PixelMaterial(
                             id,
-                            new Color32(48, 58, 34, 255),
-                            new Color32(96, 92, 48, 255),
-                            new Color32(24, 32, 24, 255),
+                            new Color32(54, 62, 34, 255),
+                            new Color32(116, 108, 54, 255),
+                            new Color32(22, 30, 20, 255),
                             PixelPattern.DistantNeedleCanopy,
                             true,
-                            new Vector2(4.8f, 5.4f),
+                            new Vector2(8.4f, 7.6f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(86, 72, 50, 255),
-                            new Color32(136, 102, 62, 255),
-                            new Color32(46, 38, 32, 255),
+                            new Color32(90, 76, 52, 255),
+                            new Color32(150, 116, 70, 255),
+                            new Color32(42, 36, 31, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(2.12f, 1.34f),
+                            new Vector2(4.2f, 2.75f),
                             FastVsHd2dMaterialRole.SurfaceLit));
             }
             else
@@ -34342,9 +34466,9 @@ namespace Anemora.EditorTools
                 material = band == 0
                     ? PixelMaterial(
                         id,
-                        new Color32(28, 66, 52, 255),
-                        new Color32(76, 104, 66, 255),
-                        new Color32(16, 42, 40, 255),
+                        new Color32(30, 70, 54, 255),
+                        new Color32(92, 126, 78, 255),
+                        new Color32(12, 38, 34, 255),
                         PixelPattern.DistantLandform,
                         true,
                         tiling,
@@ -34352,21 +34476,21 @@ namespace Anemora.EditorTools
                     : (band == 1
                         ? PixelMaterial(
                             id,
-                            new Color32(10, 44, 34, 255),
-                            new Color32(52, 92, 56, 255),
-                            new Color32(4, 24, 22, 255),
+                            new Color32(10, 46, 34, 255),
+                            new Color32(70, 116, 62, 255),
+                            new Color32(2, 22, 20, 255),
                             PixelPattern.DistantNeedleCanopy,
                             true,
-                            new Vector2(4.8f, 5.4f),
+                            new Vector2(8.4f, 7.6f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(50, 68, 76, 255),
-                            new Color32(102, 112, 98, 255),
-                            new Color32(26, 40, 54, 255),
+                            new Color32(54, 76, 84, 255),
+                            new Color32(126, 138, 122, 255),
+                            new Color32(22, 36, 50, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(2.12f, 1.34f),
+                            new Vector2(4.2f, 2.75f),
                             FastVsHd2dMaterialRole.SurfaceLit));
             }
 
@@ -35132,42 +35256,42 @@ namespace Anemora.EditorTools
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(42, 48, 23, 255),
-                            new Color32(84, 82, 38, 255),
-                            new Color32(22, 28, 15, 255),
+                            new Color32(54, 60, 28, 255),
+                            new Color32(118, 112, 52, 255),
+                            new Color32(18, 26, 12, 255),
                             PixelPattern.DistantNeedleCanopy,
                             true,
-                            new Vector2(4.8f, 5.6f),
+                            new Vector2(8.4f, 9.2f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(12, 42, 26, 255),
-                            new Color32(38, 74, 42, 255),
-                            new Color32(5, 23, 16, 255),
+                            new Color32(10, 48, 28, 255),
+                            new Color32(82, 124, 62, 255),
+                            new Color32(3, 22, 12, 255),
                             PixelPattern.DistantNeedleCanopy,
                             true,
-                            new Vector2(4.8f, 5.6f),
+                            new Vector2(8.4f, 9.2f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 1:
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(72, 62, 38, 255),
-                            new Color32(108, 88, 48, 255),
-                            new Color32(42, 36, 27, 255),
+                            new Color32(82, 68, 42, 255),
+                            new Color32(142, 110, 60, 255),
+                            new Color32(36, 32, 24, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.34f, 0.86f),
+                            new Vector2(3.8f, 2.4f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(34, 58, 56, 255),
-                            new Color32(58, 84, 72, 255),
-                            new Color32(20, 38, 40, 255),
+                            new Color32(40, 70, 66, 255),
+                            new Color32(112, 136, 112, 255),
+                            new Color32(14, 30, 32, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.34f, 0.86f),
+                            new Vector2(3.8f, 2.4f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 2:
@@ -35175,21 +35299,21 @@ namespace Anemora.EditorTools
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(64, 58, 35, 255),
-                            new Color32(92, 80, 48, 255),
-                            new Color32(42, 38, 28, 255),
+                            new Color32(72, 64, 40, 255),
+                            new Color32(126, 104, 58, 255),
+                            new Color32(34, 32, 24, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(1.72f, 1.10f),
+                            new Vector2(4.2f, 2.7f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(34, 62, 60, 255),
-                            new Color32(58, 84, 74, 255),
-                            new Color32(23, 42, 46, 255),
+                            new Color32(44, 76, 76, 255),
+                            new Color32(126, 148, 130, 255),
+                            new Color32(16, 34, 40, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(1.72f, 1.10f),
+                            new Vector2(4.2f, 2.7f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
             }
@@ -35218,44 +35342,134 @@ namespace Anemora.EditorTools
                 ? (past
                     ? PixelMaterial(
                         id,
-                        new Color32(52, 58, 24, 255),
-                        new Color32(102, 96, 38, 255),
-                        new Color32(24, 30, 13, 255),
+                        new Color32(62, 66, 28, 255),
+                        new Color32(136, 126, 54, 255),
+                        new Color32(20, 28, 11, 255),
                         PixelPattern.DistantNeedleCanopy,
                         true,
-                        new Vector2(5.6f, 6.4f),
+                        new Vector2(9.2f, 10.0f),
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
-                        new Color32(12, 46, 29, 255),
-                        new Color32(54, 92, 50, 255),
-                        new Color32(3, 20, 12, 255),
+                        new Color32(9, 52, 30, 255),
+                        new Color32(94, 134, 66, 255),
+                        new Color32(2, 22, 11, 255),
                         PixelPattern.DistantNeedleCanopy,
                         true,
-                        new Vector2(5.6f, 6.4f),
+                        new Vector2(9.2f, 10.0f),
                         FastVsHd2dMaterialRole.SurfaceLit))
                 : (past
                     ? PixelMaterial(
                         id,
-                        new Color32(88, 74, 44, 255),
-                        new Color32(132, 110, 62, 255),
-                        new Color32(44, 36, 26, 255),
+                        new Color32(96, 78, 48, 255),
+                        new Color32(160, 128, 72, 255),
+                        new Color32(38, 32, 24, 255),
                         PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.58f, 0.94f),
+                        new Vector2(4.0f, 2.55f),
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
-                        new Color32(42, 66, 64, 255),
-                        new Color32(86, 108, 96, 255),
-                        new Color32(18, 32, 38, 255),
+                        new Color32(50, 78, 78, 255),
+                        new Color32(132, 150, 128, 255),
+                        new Color32(14, 30, 38, 255),
                         PixelPattern.DistantRockStrata,
                         true,
-                        new Vector2(1.58f, 0.94f),
+                        new Vector2(4.0f, 2.55f),
                         FastVsHd2dMaterialRole.SurfaceLit));
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", layer == 0 ? 0.06f : 0.075f);
+            }
+
+            if (material.HasProperty("_Metallic"))
+            {
+                material.SetFloat("_Metallic", 0f);
+            }
+
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        private static Material EnsureDistantPanoramaVistaTerrainDetailMaterial(bool past, int layer, FastVsHouseArea area)
+        {
+            var layerToken = GetDistantPanoramaVistaTerrainDetailLayerToken(layer);
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var id = past
+                ? $"Ch1Distant_Past{areaToken}TerrainDetail{layerToken}"
+                : $"Ch1Distant_Current{areaToken}TerrainDetail{layerToken}";
+            Material material;
+            switch (layer)
+            {
+                case 0:
+                    material = past
+                        ? PixelMaterial(
+                            id,
+                            new Color32(62, 62, 25, 255),
+                            new Color32(150, 132, 54, 255),
+                            new Color32(20, 24, 9, 255),
+                            PixelPattern.DistantNeedleCanopy,
+                            true,
+                            new Vector2(6.4f, 7.2f),
+                            FastVsHd2dMaterialRole.SurfaceLit)
+                        : PixelMaterial(
+                            id,
+                            new Color32(14, 52, 25, 255),
+                            new Color32(94, 138, 70, 255),
+                            new Color32(4, 20, 9, 255),
+                            PixelPattern.DistantNeedleCanopy,
+                            true,
+                            new Vector2(6.4f, 7.2f),
+                            FastVsHd2dMaterialRole.SurfaceLit);
+                    break;
+                case 1:
+                    material = past
+                        ? PixelMaterial(
+                            id,
+                            new Color32(76, 66, 38, 255),
+                            new Color32(154, 126, 66, 255),
+                            new Color32(30, 28, 17, 255),
+                            PixelPattern.DistantLandform,
+                            true,
+                            new Vector2(1.82f, 1.16f),
+                            FastVsHd2dMaterialRole.SurfaceLit)
+                        : PixelMaterial(
+                            id,
+                            new Color32(38, 70, 62, 255),
+                            new Color32(112, 138, 104, 255),
+                            new Color32(14, 30, 28, 255),
+                            PixelPattern.DistantLandform,
+                            true,
+                            new Vector2(1.82f, 1.16f),
+                            FastVsHd2dMaterialRole.SurfaceLit);
+                    break;
+                case 2:
+                default:
+                    material = past
+                        ? PixelMaterial(
+                            id,
+                            new Color32(96, 76, 46, 255),
+                            new Color32(170, 136, 76, 255),
+                            new Color32(38, 32, 22, 255),
+                            PixelPattern.DistantRockStrata,
+                            true,
+                            new Vector2(1.34f, 0.88f),
+                            FastVsHd2dMaterialRole.SurfaceLit)
+                        : PixelMaterial(
+                            id,
+                            new Color32(54, 78, 78, 255),
+                            new Color32(140, 154, 134, 255),
+                            new Color32(18, 32, 38, 255),
+                            PixelPattern.DistantRockStrata,
+                            true,
+                            new Vector2(1.34f, 0.88f),
+                            FastVsHd2dMaterialRole.SurfaceLit);
+                    break;
+            }
+
+            if (material.HasProperty("_Smoothness"))
+            {
+                material.SetFloat("_Smoothness", layer == 0 ? 0.055f : 0.07f);
             }
 
             if (material.HasProperty("_Metallic"))
@@ -35281,84 +35495,84 @@ namespace Anemora.EditorTools
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(26, 36, 16, 255),
                             new Color32(42, 52, 22, 255),
-                            new Color32(16, 24, 12, 255),
+                            new Color32(92, 94, 40, 255),
+                            new Color32(16, 24, 10, 255),
                             PixelPattern.DistantCanopy,
                             true,
-                            new Vector2(3.8f, 4.2f),
+                            new Vector2(8.2f, 8.8f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(6, 30, 15, 255),
-                            new Color32(16, 50, 24, 255),
-                            new Color32(4, 18, 10, 255),
+                            new Color32(7, 40, 20, 255),
+                            new Color32(58, 112, 50, 255),
+                            new Color32(2, 18, 9, 255),
                             PixelPattern.DistantCanopy,
                             true,
-                            new Vector2(3.8f, 4.2f),
+                            new Vector2(8.2f, 8.8f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 1:
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(60, 56, 32, 255),
-                            new Color32(78, 72, 40, 255),
-                            new Color32(40, 38, 28, 255),
+                            new Color32(72, 62, 36, 255),
+                            new Color32(126, 104, 56, 255),
+                            new Color32(34, 32, 24, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(1.48f, 0.92f),
+                            new Vector2(4.0f, 2.5f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(28, 54, 48, 255),
-                            new Color32(48, 74, 64, 255),
-                            new Color32(18, 34, 34, 255),
+                            new Color32(36, 66, 58, 255),
+                            new Color32(104, 132, 96, 255),
+                            new Color32(12, 28, 30, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(1.48f, 0.92f),
+                            new Vector2(4.0f, 2.5f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 2:
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(80, 66, 42, 255),
-                            new Color32(104, 82, 48, 255),
-                            new Color32(58, 48, 34, 255),
+                            new Color32(90, 72, 46, 255),
+                            new Color32(154, 118, 66, 255),
+                            new Color32(42, 36, 28, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.04f, 0.74f),
+                            new Vector2(3.6f, 2.35f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(42, 64, 82, 255),
-                            new Color32(64, 88, 98, 255),
-                            new Color32(30, 44, 62, 255),
+                            new Color32(48, 72, 88, 255),
+                            new Color32(124, 142, 136, 255),
+                            new Color32(22, 38, 56, 255),
                             PixelPattern.DistantRockStrata,
                             true,
-                            new Vector2(1.04f, 0.74f),
+                            new Vector2(3.6f, 2.35f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 3:
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(68, 64, 42, 255),
-                            new Color32(90, 82, 48, 255),
-                            new Color32(42, 40, 30, 255),
+                            new Color32(76, 72, 44, 255),
+                            new Color32(124, 112, 62, 255),
+                            new Color32(34, 34, 26, 255),
                             PixelPattern.Water,
                             true,
-                            new Vector2(3.4f, 1.4f),
+                            new Vector2(6.6f, 2.8f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(30, 64, 78, 255),
-                            new Color32(50, 88, 96, 255),
-                            new Color32(22, 42, 56, 255),
+                            new Color32(34, 74, 88, 255),
+                            new Color32(82, 128, 138, 255),
+                            new Color32(16, 38, 52, 255),
                             PixelPattern.Water,
                             true,
-                            new Vector2(3.4f, 1.4f),
+                            new Vector2(6.6f, 2.8f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 4:
@@ -35366,21 +35580,21 @@ namespace Anemora.EditorTools
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(60, 64, 38, 255),
-                            new Color32(82, 84, 46, 255),
-                            new Color32(42, 46, 30, 255),
+                            new Color32(68, 72, 40, 255),
+                            new Color32(120, 124, 62, 255),
+                            new Color32(32, 38, 24, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(2.00f, 1.20f),
+                            new Vector2(5.0f, 3.0f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(22, 58, 34, 255),
-                            new Color32(42, 78, 48, 255),
-                            new Color32(14, 38, 26, 255),
+                            new Color32(18, 64, 34, 255),
+                            new Color32(82, 132, 64, 255),
+                            new Color32(7, 34, 18, 255),
                             PixelPattern.DistantLandform,
                             true,
-                            new Vector2(2.00f, 1.20f),
+                            new Vector2(5.0f, 3.0f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
             }
@@ -63655,6 +63869,7 @@ namespace Anemora.EditorTools
                 DistantPanoramaVistaRealisticDepthMeshCount +
                 DistantPanoramaVistaRealisticDepthBackArcCount +
                 DistantPanoramaVistaScenicBackdropMeshCount +
+                DistantPanoramaVistaTerrainDetailMeshCount +
                 DistantPanoramaVistaAreaLandmarkCount +
                 DistantPanoramaVistaAreaSignatureCount +
                 DistantPanoramaVistaLandformFacetCount;
@@ -63911,6 +64126,7 @@ namespace Anemora.EditorTools
             var realisticDepthCount = 0;
             var realisticDepthBackArcCount = 0;
             var scenicBackdropCount = 0;
+            var terrainDetailCount = 0;
             foreach (var filter in filters)
             {
                 if (filter != null && filter.gameObject.name.Contains("DistantVista_RealisticDepth", StringComparison.Ordinal))
@@ -63927,6 +64143,11 @@ namespace Anemora.EditorTools
                 {
                     scenicBackdropCount++;
                 }
+
+                if (filter != null && filter.gameObject.name.Contains("DistantVista_TerrainDetail", StringComparison.Ordinal))
+                {
+                    terrainDetailCount++;
+                }
             }
 
             if (realisticDepthCount < DistantPanoramaVistaRealisticDepthMeshCount)
@@ -63942,6 +64163,11 @@ namespace Anemora.EditorTools
             if (scenicBackdropCount < DistantPanoramaVistaScenicBackdropMeshCount)
             {
                 throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaScenicBackdropMeshCount} scenic backdrop forest/ridge meshes, found {scenicBackdropCount}.");
+            }
+
+            if (terrainDetailCount < DistantPanoramaVistaTerrainDetailMeshCount)
+            {
+                throw new InvalidOperationException($"House slice validation failed: {rootName} needs {DistantPanoramaVistaTerrainDetailMeshCount} terrain detail vista meshes, found {terrainDetailCount}.");
             }
 
             var center = GetDistantPanoramaVistaCenter(area);
@@ -64003,6 +64229,12 @@ namespace Anemora.EditorTools
                     ResolveMaterialTexture(renderer.sharedMaterial) == null)
                 {
                     throw new InvalidOperationException($"House slice validation failed: distant vista scenic backdrop mesh {filter.gameObject.name} must use a textured material.");
+                }
+
+                if (filter.gameObject.name.Contains("DistantVista_TerrainDetail", StringComparison.Ordinal) &&
+                    ResolveMaterialTexture(renderer.sharedMaterial) == null)
+                {
+                    throw new InvalidOperationException($"House slice validation failed: distant vista terrain detail mesh {filter.gameObject.name} must use a textured material.");
                 }
 
                 if (HasDistantPanoramaVistaProductionDepthPrototype(area) &&
@@ -64094,6 +64326,7 @@ namespace Anemora.EditorTools
             var slopeContourVisibleCount = 0;
             var realisticDepthVisibleCount = 0;
             var scenicBackdropVisibleCount = 0;
+            var terrainDetailVisibleCount = 0;
             var productionDepthVisibleCount = 0;
             foreach (var renderer in root.GetComponentsInChildren<Renderer>(true))
             {
@@ -64133,6 +64366,7 @@ namespace Anemora.EditorTools
                         renderer.gameObject.name.Contains("DistantVista_SlopeContour", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_RealisticDepth", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_ScenicRelief", StringComparison.Ordinal) ||
+                        renderer.gameObject.name.Contains("DistantVista_TerrainDetail", StringComparison.Ordinal) ||
                         renderer.gameObject.name.Contains("DistantVista_ProductionDepth", StringComparison.Ordinal))
                     {
                         qualityDetailVisibleCount++;
@@ -64211,6 +64445,11 @@ namespace Anemora.EditorTools
                     if (renderer.gameObject.name.Contains("DistantVista_ScenicRelief", StringComparison.Ordinal))
                     {
                         scenicBackdropVisibleCount++;
+                    }
+
+                    if (renderer.gameObject.name.Contains("DistantVista_TerrainDetail", StringComparison.Ordinal))
+                    {
+                        terrainDetailVisibleCount++;
                     }
 
                     if (renderer.gameObject.name.Contains("DistantVista_ProductionDepth", StringComparison.Ordinal))
@@ -64308,6 +64547,11 @@ namespace Anemora.EditorTools
             if (scenicBackdropVisibleCount < DistantPanoramaVistaScenicBackdropVisibleMinimum)
             {
                 throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} scenic forest/ridge backdrop must be visible enough to break the flat upper horizon, visible={scenicBackdropVisibleCount}.");
+            }
+
+            if (terrainDetailVisibleCount < DistantPanoramaVistaTerrainDetailVisibleMinimum)
+            {
+                throw new InvalidOperationException($"House slice validation failed: distant vista {prefix} {area} terrain details must be visible enough to carve the distant forest and mountain surfaces, visible={terrainDetailVisibleCount}.");
             }
 
             if (HasDistantPanoramaVistaProductionDepthPrototype(area) &&
