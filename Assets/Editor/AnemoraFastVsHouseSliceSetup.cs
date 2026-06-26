@@ -55,6 +55,7 @@ namespace Anemora.EditorTools
         private static readonly Color SurfaceRampExteriorWallFloorShade = new Color(0.76f, 0.68f, 0.56f, 1f);
         private static readonly Dictionary<string, Texture2D> ReadableTreeSpriteTextureCache = new Dictionary<string, Texture2D>(StringComparer.Ordinal);
         private static readonly Dictionary<string, Texture2D> TexturedNatureLeafToneTextureCache = new Dictionary<string, Texture2D>(StringComparer.Ordinal);
+        private static readonly Dictionary<string, Texture2D> PhotoVegetationCutoutTextureCache = new Dictionary<string, Texture2D>(StringComparer.Ordinal);
         private static readonly HashSet<string> TexturedNatureTextureImportCache = new HashSet<string>(StringComparer.Ordinal);
         private static readonly HashSet<string> TextureImporterConfigurationCache = new HashSet<string>(StringComparer.Ordinal);
         private static bool coreBlitD3d11CaptureWorkaroundChecked;
@@ -638,12 +639,14 @@ namespace Anemora.EditorTools
         private const int RealisticTreeGroveTreesPerCluster = 3;
         private const int RealisticTreeGroveBranchDetailPerTree = 3;
         private const int RealisticTreeGroveLeafDetailPerTree = 4;
+        private const int RealisticTreeGrovePhotoGroundCardsPerCluster = 7;
         private const int RealisticTreeGroveVisibleMinimum = 5;
         private const int RealisticSpecimenTreeCount = 3;
         private const int RealisticSpecimenTreeBranchDetailPerTree = 4;
         private const int RealisticSpecimenTreeLeafDetailPerTree = 8;
         private const int RealisticSpecimenTreeVisibleMinimum = 3;
         private const int RealisticForegroundWildGrassClusterCount = 9;
+        private const int RealisticForegroundWildGrassPhotoGroundCardsPerCluster = 7;
         private const int RealisticForegroundWildGrassVisibleMinimum = 6;
         private const int FarShoreHoleClosureShelfCount = 7;
         private const int FarShoreHoleClosureBankCount = 4;
@@ -20262,6 +20265,7 @@ namespace Anemora.EditorTools
         {
             var yaw = AuthoredVegetationSigned(objectPrefix, 11, 11f);
             var past = objectPrefix.StartsWith("Past_", StringComparison.Ordinal);
+            trunkMaterial = ImportedNatureWoodMaterial(past) ?? trunkMaterial;
             var canopyBreakup = EnsureChapter1NatureCanopyBreakupMaterial(past);
             var baseShrub = EnsureChapter1NatureGrassSilhouetteMaterial(past);
             CreateAuthoredVegetationMesh(
@@ -20505,23 +20509,16 @@ namespace Anemora.EditorTools
         {
             var basePosition = ImportedNatureGroundPosition(trunkCenter, 0.62f);
             var yaw = AuthoredVegetationSigned(objectPrefix, 1301, 160f);
-            var treePath = SelectImportedNatureTreePath(objectPrefix, past);
-            var treeScale = Vector3.one * Mathf.Clamp(scale * 0.82f * ImportedNatureTreeScaleMultiplier(treePath), 0.36f, 1.32f);
-
-            CreateImportedNatureModel(
+            var treeScale = Mathf.Clamp(scale * 0.88f, 0.42f, 1.18f);
+            CreateAuthoredNatureTreeModelCompanion(
                 $"{objectPrefix}_NatureTreeModel",
                 root,
-                treePath,
                 basePosition + new Vector3(AuthoredVegetationSigned(objectPrefix, 1303, 0.06f), 0f, AuthoredVegetationSigned(objectPrefix, 1305, 0.06f)),
                 treeScale,
-                Quaternion.Euler(0f, yaw, 0f),
-                past,
                 leafMaterial,
                 trunkMaterial,
-                grassMaterial,
-                null,
-                leafMaterial,
                 $"{objectPrefix}.nature_tree_model",
+                yaw,
                 false);
             CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_NatureUnderCanopyFillA",
@@ -20580,179 +20577,215 @@ namespace Anemora.EditorTools
                 1);
         }
 
+        private static void CreateAuthoredNatureTreeModelCompanion(string objectName, Transform root, Vector3 localPosition, float scale, Material leafMaterial, Material trunkMaterial, string landmarkId, float yaw, bool countsForArrival)
+        {
+            var treeRoot = new GameObject(objectName);
+            treeRoot.transform.SetParent(root, false);
+            treeRoot.transform.localPosition = localPosition;
+            treeRoot.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            treeRoot.transform.localScale = Vector3.one;
+
+            var landmark = treeRoot.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", countsForArrival);
+
+            var trunk = ImportedNatureWoodMaterial(objectName.StartsWith("Past_", StringComparison.Ordinal)) ?? trunkMaterial;
+            var leaf = ImportedNatureLeafMaterial(objectName.StartsWith("Past_", StringComparison.Ordinal)) ?? leafMaterial;
+            CreateAuthoredVegetationMesh(
+                $"{objectName}_AuthoredTrunk",
+                treeRoot.transform,
+                new Vector3(0f, 0.58f * scale, 0f),
+                new Vector3(0.18f * scale, 0.98f * scale, 0.18f * scale),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(objectName, 1519, 7f), 0f),
+                trunk,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkId}.authored_trunk",
+                CreateAuthoredVegetationTrunkMesh($"{objectName}_AuthoredTrunk_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", $"{objectName}.authored_trunk"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredRootFlare",
+                treeRoot.transform,
+                new Vector3(0f, 0.08f * scale, 0f),
+                new Vector3(0.56f * scale, 0.20f * scale, 0.52f * scale),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(objectName, 1521, 18f), 0f),
+                trunk,
+                $"{landmarkId}.authored_root_flare",
+                CreateAuthoredVegetationRootFlareMesh($"{objectName}_AuthoredRootFlare_{AuthoredVegetationMeshNamePrefix}_RootFlare", $"{objectName}.authored_root_flare"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBranchA",
+                treeRoot.transform,
+                new Vector3(-0.06f * scale, 0.98f * scale, 0.04f * scale),
+                new Vector3(0.34f * scale, 0.46f * scale, 0.30f * scale),
+                Quaternion.Euler(2f + AuthoredVegetationSigned(objectName, 1523, 5f), -32f, -17f),
+                trunk,
+                $"{landmarkId}.authored_branch_a",
+                CreateAuthoredVegetationBranchForkMesh($"{objectName}_AuthoredBranchA_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectName}.authored_branch_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBranchB",
+                treeRoot.transform,
+                new Vector3(0.08f * scale, 0.90f * scale, -0.05f * scale),
+                new Vector3(0.30f * scale, 0.40f * scale, 0.28f * scale),
+                Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1525, 5f), 38f, 15f),
+                trunk,
+                $"{landmarkId}.authored_branch_b",
+                CreateAuthoredVegetationBranchForkMesh($"{objectName}_AuthoredBranchB_{AuthoredVegetationMeshNamePrefix}_BranchFork", $"{objectName}.authored_branch_b"));
+            CreateAuthoredVegetationMesh(
+                $"{objectName}_AuthoredCrown",
+                treeRoot.transform,
+                new Vector3(0f, 1.42f * scale, 0f),
+                new Vector3(0.92f * scale, 0.70f * scale, 0.84f * scale),
+                Quaternion.Euler(AuthoredVegetationSigned(objectName, 1527, 5f), AuthoredVegetationSigned(objectName, 1529, 8f), AuthoredVegetationSigned(objectName, 1531, 5f)),
+                leaf,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkId}.authored_crown",
+                CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrown_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown", 0.54f, 0.42f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownShoulderA",
+                treeRoot.transform,
+                new Vector3(-0.36f * scale, 1.30f * scale, 0.10f * scale),
+                new Vector3(0.60f * scale, 0.42f * scale, 0.52f * scale),
+                Quaternion.Euler(4f + AuthoredVegetationSigned(objectName, 1533, 5f), -18f, -5f),
+                leaf,
+                $"{landmarkId}.authored_crown_shoulder_a",
+                CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrownShoulderA_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown_shoulder_a", 0.48f, 0.34f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownShoulderB",
+                treeRoot.transform,
+                new Vector3(0.34f * scale, 1.24f * scale, -0.08f * scale),
+                new Vector3(0.56f * scale, 0.38f * scale, 0.48f * scale),
+                Quaternion.Euler(-4f + AuthoredVegetationSigned(objectName, 1535, 5f), 22f, 6f),
+                leaf,
+                $"{landmarkId}.authored_crown_shoulder_b",
+                CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrownShoulderB_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown_shoulder_b", 0.46f, 0.32f));
+        }
+
         private static void CreateImportedNatureClusterCompanion(Transform root, string objectPrefix, Vector3 center, float scale, bool past, Material leafMaterial, Material grassMaterial, Material stemMaterial, Material accentMaterial)
         {
             var basePosition = ImportedNatureGroundPosition(center, 0.34f);
             var yaw = AuthoredVegetationSigned(objectPrefix, 1361, 150f);
-            var bushScale = Vector3.one * Mathf.Clamp(scale * 0.54f, 0.38f, 0.82f);
-            var grassScale = Vector3.one * Mathf.Clamp(scale * 0.62f, 0.42f, 0.88f);
-
-            CreateImportedNatureModel(
+            var bushScale = Mathf.Clamp(scale * 0.54f, 0.38f, 0.82f);
+            var grassScale = Mathf.Clamp(scale * 0.62f, 0.42f, 0.88f);
+            CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_NatureBushModelA",
                 root,
-                SelectImportedNatureBushPath(objectPrefix),
                 basePosition + new Vector3(AuthoredVegetationSigned(objectPrefix, 1363, 0.12f), 0.01f, AuthoredVegetationSigned(objectPrefix, 1365, 0.12f)),
-                bushScale,
-                Quaternion.Euler(0f, yaw, 0f),
-                past,
+                new Vector3(0.64f * bushScale, 0.34f * bushScale, 0.52f * bushScale),
+                Quaternion.Euler(-4f + AuthoredVegetationSigned(objectPrefix, 1369, 5f), yaw, 3f + AuthoredVegetationSigned(objectPrefix, 1371, 5f)),
                 leafMaterial,
-                stemMaterial,
-                grassMaterial,
-                null,
-                accentMaterial,
                 $"{objectPrefix}.nature_bush_model_a",
-                false);
-            CreateImportedNatureModel(
+                CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_NatureBushModelA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.nature_bush_model_a"));
+            CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_NatureGrassModelA",
                 root,
-                SelectImportedNatureGrassPath(objectPrefix),
-                basePosition + new Vector3(-0.28f * scale, 0.01f, 0.22f * scale),
-                grassScale,
-                Quaternion.Euler(0f, yaw - 26f, 0f),
-                past,
+                basePosition + new Vector3(-0.28f * scale, 0.10f, 0.22f * scale),
+                new Vector3(0.42f * grassScale, 0.50f * grassScale, 0.38f * grassScale),
+                Quaternion.Euler(-5f + AuthoredVegetationSigned(objectPrefix, 1373, 5f), yaw - 26f, 4f + AuthoredVegetationSigned(objectPrefix, 1375, 5f)),
                 grassMaterial,
-                stemMaterial,
-                grassMaterial,
-                null,
-                accentMaterial,
                 $"{objectPrefix}.nature_grass_model_a",
-                false);
-            CreateImportedNatureModel(
+                CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_NatureGrassModelA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.nature_grass_model_a"));
+            CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_NaturePlantModelA",
                 root,
-                SelectImportedNaturePlantPath(objectPrefix),
-                basePosition + new Vector3(0.30f * scale, 0.01f, -0.18f * scale),
-                Vector3.one * Mathf.Clamp(scale * 0.46f, 0.32f, 0.70f),
-                Quaternion.Euler(0f, yaw + 41f, 0f),
-                past,
+                basePosition + new Vector3(0.30f * scale, 0.16f, -0.18f * scale),
+                new Vector3(0.42f * scale, 0.38f * scale, 0.34f * scale),
+                Quaternion.Euler(3f + AuthoredVegetationSigned(objectPrefix, 1377, 5f), yaw + 41f, -4f + AuthoredVegetationSigned(objectPrefix, 1379, 5f)),
                 leafMaterial,
-                stemMaterial,
-                grassMaterial,
-                null,
-                accentMaterial,
                 $"{objectPrefix}.nature_plant_model_a",
-                false);
-            CreateImportedNatureModel(
+                CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_NaturePlantModelA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.nature_plant_model_a"));
+            CreateAuthoredVegetationFeatureMesh(
                 $"{objectPrefix}_NatureMossRockModelA",
                 root,
-                SelectImportedNatureGroundAccentPath(objectPrefix),
                 basePosition + new Vector3(0.14f * scale, 0.012f, 0.40f * scale),
                 Vector3.one * Mathf.Clamp(scale * 0.30f, 0.22f, 0.48f),
                 Quaternion.Euler(0f, yaw + 76f + AuthoredVegetationSigned(objectPrefix, 1367, 20f), 0f),
-                past,
-                leafMaterial,
-                stemMaterial,
-                grassMaterial,
-                stemMaterial,
                 accentMaterial,
                 $"{objectPrefix}.nature_moss_rock_model_a",
-                false);
+                CreateAuthoredVegetationRootFlareMesh($"{objectPrefix}_NatureMossRockModelA_{AuthoredVegetationMeshNamePrefix}_RootFlare", $"{objectPrefix}.nature_moss_rock_model_a"));
         }
 
         private static void CreatePhotoVegetationTreeCards(Transform root, string objectPrefix, Vector3 trunkCenter, Vector3 basePosition, float yaw, bool past, float scale)
         {
-            var understoryTint = past ? new Color(0.66f, 0.62f, 0.46f, 0.94f) : new Color(0.52f, 0.70f, 0.44f, 0.94f);
-            var smallPlantTint = past ? new Color(0.70f, 0.66f, 0.50f, 0.94f) : new Color(0.58f, 0.74f, 0.48f, 0.94f);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoFernCardA",
-                $"{objectPrefix}.photo_fern_card_a",
-                basePosition + new Vector3(-0.48f * scale, 0.34f * scale, 0.20f * scale),
-                new Vector3(0.42f * scale, 0.52f * scale, 1f),
-                yaw - 48f + AuthoredVegetationSigned(objectPrefix, 1495, 10f),
-                SelectPhotoVegetationUnderstoryTexture($"{objectPrefix}.fern_a"),
-                past ? "ch1_photo_vegetation_past_understory_a" : "ch1_photo_vegetation_current_understory_a",
-                understoryTint,
-                false);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoSmallPlantCardA",
-                $"{objectPrefix}.photo_small_plant_card_a",
-                basePosition + new Vector3(0.36f * scale, 0.28f * scale, -0.34f * scale),
-                new Vector3(0.38f * scale, 0.42f * scale, 1f),
-                yaw + 52f + AuthoredVegetationSigned(objectPrefix, 1497, 10f),
-                SelectPhotoVegetationSmallPlantTexture($"{objectPrefix}.small_plant_a"),
-                past ? "ch1_photo_vegetation_past_smallplant_a" : "ch1_photo_vegetation_current_smallplant_a",
-                smallPlantTint,
-                false);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoFernCardB",
-                $"{objectPrefix}.photo_fern_card_b",
-                basePosition + new Vector3(0.10f * scale, 0.30f * scale, 0.34f * scale),
-                new Vector3(0.50f * scale, 0.46f * scale, 1f),
-                yaw + 82f + AuthoredVegetationSigned(objectPrefix, 1499, 11f),
-                SelectPhotoVegetationUnderstoryTexture($"{objectPrefix}.fern_b"),
-                past ? "ch1_photo_vegetation_past_understory_b" : "ch1_photo_vegetation_current_understory_b",
-                understoryTint,
-                false);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoCloverCardA",
-                $"{objectPrefix}.photo_clover_card_a",
-                basePosition + new Vector3(-0.12f * scale, 0.18f * scale, -0.42f * scale),
-                new Vector3(0.42f * scale, 0.30f * scale, 1f),
-                yaw - 82f + AuthoredVegetationSigned(objectPrefix, 1501, 11f),
-                Cc0PhotoVegetationCloverAPath,
-                past ? "ch1_photo_vegetation_past_tree_clover_a" : "ch1_photo_vegetation_current_tree_clover_a",
-                smallPlantTint,
-                false);
-            CreatePhotoVegetationGroundLayerCards(root, objectPrefix, basePosition, yaw, past, scale * 0.96f);
+            _ = trunkCenter;
+            CreatePhotoVegetationGroundLayerCards(root, objectPrefix, basePosition, yaw, past, scale * 0.72f);
         }
 
         private static void CreatePhotoVegetationClusterCards(Transform root, string objectPrefix, Vector3 basePosition, float yaw, bool past, float scale)
         {
-            var tint = past ? new Color(0.66f, 0.62f, 0.46f, 0.94f) : new Color(0.52f, 0.70f, 0.44f, 0.94f);
-            var smallPlantTint = past ? new Color(0.70f, 0.66f, 0.50f, 0.94f) : new Color(0.58f, 0.74f, 0.48f, 0.94f);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoFernCardA",
-                $"{objectPrefix}.photo_fern_card_a",
-                basePosition + new Vector3(-0.22f * scale, 0.34f * scale, 0.16f * scale),
-                new Vector3(0.46f * scale, 0.56f * scale, 1f),
-                yaw - 26f + AuthoredVegetationSigned(objectPrefix, 1511, 10f),
-                SelectPhotoVegetationUnderstoryTexture($"{objectPrefix}.cluster_fern_a"),
-                past ? "ch1_photo_vegetation_past_cluster_a" : "ch1_photo_vegetation_current_cluster_a",
-                tint,
-                false);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoCloverCardA",
-                $"{objectPrefix}.photo_clover_card_a",
-                basePosition + new Vector3(0.26f * scale, 0.22f * scale, -0.10f * scale),
-                new Vector3(0.44f * scale, 0.38f * scale, 1f),
-                yaw + 38f + AuthoredVegetationSigned(objectPrefix, 1513, 10f),
-                Cc0PhotoVegetationCloverAPath,
-                past ? "ch1_photo_vegetation_past_cluster_clover_a" : "ch1_photo_vegetation_current_cluster_clover_a",
-                tint,
-                false);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoSmallPlantCardA",
-                $"{objectPrefix}.photo_small_plant_card_a",
-                basePosition + new Vector3(0.02f * scale, 0.28f * scale, 0.30f * scale),
-                new Vector3(0.44f * scale, 0.44f * scale, 1f),
-                yaw + 72f + AuthoredVegetationSigned(objectPrefix, 1515, 9f),
-                SelectPhotoVegetationSmallPlantTexture($"{objectPrefix}.cluster_smallplant_a"),
-                past ? "ch1_photo_vegetation_past_cluster_smallplant_a" : "ch1_photo_vegetation_current_cluster_smallplant_a",
-                smallPlantTint,
-                false);
-            CreatePhotoVegetationCardLandmark(
-                root,
-                $"{objectPrefix}_PhotoCloverCardB",
-                $"{objectPrefix}.photo_clover_card_b",
-                basePosition + new Vector3(-0.32f * scale, 0.18f * scale, -0.18f * scale),
-                new Vector3(0.52f * scale, 0.34f * scale, 1f),
-                yaw - 68f + AuthoredVegetationSigned(objectPrefix, 1517, 9f),
-                Cc0PhotoVegetationCloverAPath,
-                past ? "ch1_photo_vegetation_past_cluster_clover_b" : "ch1_photo_vegetation_current_cluster_clover_b",
-                tint,
-                false);
-            CreatePhotoVegetationGroundLayerCards(root, objectPrefix, basePosition, yaw, past, scale * 0.92f);
+            CreatePhotoVegetationGroundLayerCards(root, objectPrefix, basePosition, yaw, past, scale * 0.68f);
         }
 
         private static void CreatePhotoVegetationGroundLayerCards(Transform root, string objectPrefix, Vector3 basePosition, float yaw, bool past, float scale)
         {
+            if (scale > 0f)
+            {
+                var leaf = ImportedNatureLeafMaterial(past);
+                var grass = ImportedNatureGrassMaterial(past);
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundFernCardA",
+                    root,
+                    basePosition + new Vector3(-0.42f * scale, 0.12f, -0.18f * scale),
+                    new Vector3(0.32f * scale, 0.34f * scale, 0.28f * scale),
+                    Quaternion.Euler(-6f + AuthoredVegetationSigned(objectPrefix, 1521, 6f), yaw - 62f, 5f + AuthoredVegetationSigned(objectPrefix, 1522, 5f)),
+                    leaf,
+                    $"{objectPrefix}.photo_ground_fern_card_a",
+                    CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_PhotoGroundFernCardA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.photo_ground_fern_card_a"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundFernCardB",
+                    root,
+                    basePosition + new Vector3(0.40f * scale, 0.12f, 0.10f * scale),
+                    new Vector3(0.30f * scale, 0.30f * scale, 0.26f * scale),
+                    Quaternion.Euler(5f + AuthoredVegetationSigned(objectPrefix, 1523, 6f), yaw + 64f, -4f + AuthoredVegetationSigned(objectPrefix, 1524, 5f)),
+                    grass,
+                    $"{objectPrefix}.photo_ground_fern_card_b",
+                    CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_PhotoGroundFernCardB_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.photo_ground_fern_card_b"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundSmallPlantCardA",
+                    root,
+                    basePosition + new Vector3(0.02f * scale, 0.10f, -0.42f * scale),
+                    new Vector3(0.30f * scale, 0.28f * scale, 0.24f * scale),
+                    Quaternion.Euler(AuthoredVegetationSigned(objectPrefix, 1525, 6f), yaw + 8f, AuthoredVegetationSigned(objectPrefix, 1526, 5f)),
+                    leaf,
+                    $"{objectPrefix}.photo_ground_small_plant_card_a",
+                    CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_PhotoGroundSmallPlantCardA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.photo_ground_small_plant_card_a"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundCloverCardA",
+                    root,
+                    basePosition + new Vector3(-0.10f * scale, 0.08f, 0.34f * scale),
+                    new Vector3(0.36f * scale, 0.18f * scale, 0.30f * scale),
+                    Quaternion.Euler(0f, yaw + 96f + AuthoredVegetationSigned(objectPrefix, 1527, 8f), 0f),
+                    grass,
+                    $"{objectPrefix}.photo_ground_clover_card_a",
+                    CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_PhotoGroundCloverCardA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.photo_ground_clover_card_a"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundFernCardC",
+                    root,
+                    basePosition + new Vector3(0.58f * scale, 0.12f, -0.32f * scale),
+                    new Vector3(0.28f * scale, 0.30f * scale, 0.24f * scale),
+                    Quaternion.Euler(-4f + AuthoredVegetationSigned(objectPrefix, 1529, 6f), yaw + 138f, 4f + AuthoredVegetationSigned(objectPrefix, 1530, 5f)),
+                    leaf,
+                    $"{objectPrefix}.photo_ground_fern_card_c",
+                    CreateAuthoredVegetationLeafSprayMesh($"{objectPrefix}_PhotoGroundFernCardC_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectPrefix}.photo_ground_fern_card_c"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundSmallPlantCardB",
+                    root,
+                    basePosition + new Vector3(-0.54f * scale, 0.10f, 0.28f * scale),
+                    new Vector3(0.28f * scale, 0.24f * scale, 0.22f * scale),
+                    Quaternion.Euler(3f + AuthoredVegetationSigned(objectPrefix, 1531, 6f), yaw - 132f, -5f + AuthoredVegetationSigned(objectPrefix, 1532, 5f)),
+                    leaf,
+                    $"{objectPrefix}.photo_ground_small_plant_card_b",
+                    CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_PhotoGroundSmallPlantCardB_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.photo_ground_small_plant_card_b"));
+                CreateAuthoredVegetationFeatureMesh(
+                    $"{objectPrefix}_PhotoGroundCloverCardB",
+                    root,
+                    basePosition + new Vector3(0.30f * scale, 0.08f, 0.46f * scale),
+                    new Vector3(0.32f * scale, 0.16f * scale, 0.26f * scale),
+                    Quaternion.Euler(0f, yaw - 102f + AuthoredVegetationSigned(objectPrefix, 1533, 8f), 0f),
+                    grass,
+                    $"{objectPrefix}.photo_ground_clover_card_b",
+                    CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_PhotoGroundCloverCardB_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectPrefix}.photo_ground_clover_card_b"));
+                return;
+            }
+
             var fernTint = past ? new Color(0.66f, 0.62f, 0.46f, 0.92f) : new Color(0.50f, 0.68f, 0.42f, 0.92f);
             var leafTint = past ? new Color(0.70f, 0.66f, 0.50f, 0.92f) : new Color(0.56f, 0.72f, 0.46f, 0.92f);
             var cloverTint = past ? new Color(0.62f, 0.58f, 0.44f, 0.90f) : new Color(0.46f, 0.62f, 0.38f, 0.90f);
@@ -20839,11 +20872,26 @@ namespace Anemora.EditorTools
         private static GameObject CreatePhotoVegetationCardLandmark(Transform root, string objectName, string landmarkId, Vector3 position, Vector3 scale, float yaw, string texturePath, string materialId, Color tint, bool countsForArrival)
         {
             var textureToken = Path.GetFileNameWithoutExtension(texturePath).Replace('-', '_').Replace('.', '_').ToLowerInvariant();
+            var adjustedPosition = position;
+            var adjustedScale = scale;
+            if (objectName.Contains("_PhotoGround", StringComparison.Ordinal))
+            {
+                adjustedPosition.y = Mathf.Min(adjustedPosition.y, 0.11f);
+                adjustedScale.x *= 0.48f;
+                adjustedScale.y *= 0.32f;
+            }
+            else
+            {
+                adjustedPosition.y *= 0.74f;
+                adjustedScale.x *= 0.78f;
+                adjustedScale.y *= 0.62f;
+            }
+
             var card = CreateQuad(
                 objectName,
                 root,
-                position,
-                scale,
+                adjustedPosition,
+                adjustedScale,
                 PhotoVegetationCardMaterial($"{materialId}_{textureToken}", texturePath, tint));
             card.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
 
@@ -20884,6 +20932,26 @@ namespace Anemora.EditorTools
             string landmarkId,
             bool countsForArrival)
         {
+            var authoredModel = TryCreateAuthoredImportedNatureModel(
+                objectName,
+                root,
+                assetPath,
+                localPosition,
+                localScale,
+                localRotation,
+                past,
+                leafMaterial,
+                trunkMaterial,
+                grassMaterial,
+                stoneMaterial,
+                accentMaterial,
+                landmarkId,
+                countsForArrival);
+            if (authoredModel != null)
+            {
+                return authoredModel;
+            }
+
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (prefab == null)
             {
@@ -20927,6 +20995,309 @@ namespace Anemora.EditorTools
             SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
             SerializedSet(landmark, "countsForArrival", countsForArrival);
             return instance;
+        }
+
+        private static GameObject TryCreateAuthoredImportedNatureModel(
+            string objectName,
+            Transform root,
+            string assetPath,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation,
+            bool past,
+            Material leafMaterial,
+            Material trunkMaterial,
+            Material grassMaterial,
+            Material stoneMaterial,
+            Material accentMaterial,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var lowerName = objectName.ToLowerInvariant();
+            var lowerPath = assetPath.Replace('\\', '/').ToLowerInvariant();
+            if (lowerName.Contains("treemodel", StringComparison.Ordinal) ||
+                lowerName.Contains("sapling", StringComparison.Ordinal) ||
+                lowerPath.Contains("/tree_", StringComparison.Ordinal))
+            {
+                return CreateAuthoredImportedTreeModel(objectName, root, localPosition, localScale, localRotation, past, leafMaterial, trunkMaterial, landmarkId, countsForArrival);
+            }
+
+            if (lowerName.Contains("bush", StringComparison.Ordinal))
+            {
+                return CreateAuthoredImportedBushModel(objectName, root, localPosition, localScale, localRotation, past, leafMaterial, grassMaterial, landmarkId, countsForArrival);
+            }
+
+            if (lowerName.Contains("grass", StringComparison.Ordinal) ||
+                lowerName.Contains("plant", StringComparison.Ordinal))
+            {
+                return CreateAuthoredImportedGroundVegetationModel(objectName, root, localPosition, localScale, localRotation, past, leafMaterial, grassMaterial, landmarkId, countsForArrival);
+            }
+
+            if (lowerName.Contains("log", StringComparison.Ordinal) ||
+                lowerName.Contains("stump", StringComparison.Ordinal) ||
+                lowerName.Contains("moss", StringComparison.Ordinal) ||
+                lowerPath.Contains("woodlog", StringComparison.Ordinal) ||
+                lowerPath.Contains("stump", StringComparison.Ordinal))
+            {
+                return CreateAuthoredImportedLogOrMossModel(objectName, root, localPosition, localScale, localRotation, past, trunkMaterial, stoneMaterial, grassMaterial, accentMaterial, landmarkId, countsForArrival);
+            }
+
+            return null;
+        }
+
+        private static GameObject CreateAuthoredImportedNatureContainer(
+            string objectName,
+            Transform root,
+            Vector3 localPosition,
+            Quaternion localRotation,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var container = new GameObject(objectName);
+            container.transform.SetParent(root, false);
+            container.transform.localPosition = localPosition;
+            container.transform.localRotation = localRotation;
+            container.transform.localScale = Vector3.one;
+
+            var landmark = container.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", countsForArrival);
+            return container;
+        }
+
+        private static float AuthoredImportedNatureScale(Vector3 localScale)
+        {
+            return Mathf.Clamp(
+                Mathf.Max(Mathf.Abs(localScale.x), Mathf.Max(Mathf.Abs(localScale.y), Mathf.Abs(localScale.z))),
+                0.18f,
+                1.55f);
+        }
+
+        private static GameObject CreateAuthoredImportedTreeModel(
+            string objectName,
+            Transform root,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation,
+            bool past,
+            Material leafMaterial,
+            Material trunkMaterial,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var container = CreateAuthoredImportedNatureContainer(objectName, root, localPosition, localRotation, landmarkId, countsForArrival);
+            var scale = AuthoredImportedNatureScale(localScale);
+            var trunk = ImportedNatureWoodMaterial(past) ?? trunkMaterial;
+            var leaf = ImportedNatureLeafMaterial(past) ?? leafMaterial;
+            var breakup = EnsureChapter1NatureCanopyBreakupMaterial(past);
+
+            CreateAuthoredVegetationMesh(
+                $"{objectName}_AuthoredTrunk",
+                container.transform,
+                new Vector3(0f, 0.50f * scale, 0f),
+                new Vector3(0.13f * scale, 0.98f * scale, 0.13f * scale),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(objectName, 1801, 7f), 0f),
+                trunk,
+                TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
+                $"{landmarkId}.authored_trunk",
+                CreateAuthoredVegetationTrunkMesh($"{objectName}_AuthoredTrunk_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", $"{objectName}.authored_trunk"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredRootFlare",
+                container.transform,
+                new Vector3(0f, 0.08f * scale, 0f),
+                new Vector3(0.42f * scale, 0.16f * scale, 0.38f * scale),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(objectName, 1803, 18f), 0f),
+                trunk,
+                $"{landmarkId}.authored_root_flare",
+                CreateAuthoredVegetationRootFlareMesh($"{objectName}_AuthoredRootFlare_{AuthoredVegetationMeshNamePrefix}_RootFlare", $"{objectName}.authored_root_flare"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBranchLaceA",
+                container.transform,
+                new Vector3(-0.05f * scale, 0.88f * scale, 0.04f * scale),
+                new Vector3(0.24f * scale, 0.22f * scale, 0.20f * scale),
+                Quaternion.Euler(2f + AuthoredVegetationSigned(objectName, 1805, 5f), -30f, -13f),
+                trunk,
+                $"{landmarkId}.authored_branch_lace_a",
+                CreateAuthoredVegetationBranchLaceMesh($"{objectName}_AuthoredBranchLaceA_{AuthoredVegetationMeshNamePrefix}_BranchLace", $"{objectName}.authored_branch_lace_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBranchLaceB",
+                container.transform,
+                new Vector3(0.06f * scale, 0.78f * scale, -0.05f * scale),
+                new Vector3(0.22f * scale, 0.20f * scale, 0.19f * scale),
+                Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1807, 5f), 36f, 12f),
+                trunk,
+                $"{landmarkId}.authored_branch_lace_b",
+                CreateAuthoredVegetationBranchLaceMesh($"{objectName}_AuthoredBranchLaceB_{AuthoredVegetationMeshNamePrefix}_BranchLace", $"{objectName}.authored_branch_lace_b"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownCore",
+                container.transform,
+                new Vector3(0f, 1.12f * scale, 0f),
+                new Vector3(0.60f * scale, 0.46f * scale, 0.54f * scale),
+                Quaternion.Euler(AuthoredVegetationSigned(objectName, 1809, 5f), AuthoredVegetationSigned(objectName, 1811, 8f), AuthoredVegetationSigned(objectName, 1813, 5f)),
+                leaf,
+                $"{landmarkId}.authored_crown_core",
+                CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrownCore_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown_core", 0.46f, 0.32f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownLeft",
+                container.transform,
+                new Vector3(-0.30f * scale, 1.02f * scale, 0.08f * scale),
+                new Vector3(0.42f * scale, 0.30f * scale, 0.36f * scale),
+                Quaternion.Euler(4f + AuthoredVegetationSigned(objectName, 1815, 5f), -22f, -6f),
+                breakup,
+                $"{landmarkId}.authored_crown_left",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_AuthoredCrownLeft_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectName}.authored_crown_left"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownRight",
+                container.transform,
+                new Vector3(0.30f * scale, 0.98f * scale, -0.08f * scale),
+                new Vector3(0.40f * scale, 0.28f * scale, 0.34f * scale),
+                Quaternion.Euler(-4f + AuthoredVegetationSigned(objectName, 1817, 5f), 26f, 6f),
+                leaf,
+                $"{landmarkId}.authored_crown_right",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_AuthoredCrownRight_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectName}.authored_crown_right"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredOuterLeafSpray",
+                container.transform,
+                new Vector3(0.02f * scale, 0.92f * scale, 0.22f * scale),
+                new Vector3(0.54f * scale, 0.26f * scale, 0.42f * scale),
+                Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1819, 5f), AuthoredVegetationSigned(objectName, 1821, 16f), -6f + AuthoredVegetationSigned(objectName, 1823, 5f)),
+                breakup,
+                $"{landmarkId}.authored_outer_leaf_spray",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectName}_AuthoredOuterLeafSpray_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectName}.authored_outer_leaf_spray"));
+            return container;
+        }
+
+        private static GameObject CreateAuthoredImportedBushModel(
+            string objectName,
+            Transform root,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation,
+            bool past,
+            Material leafMaterial,
+            Material grassMaterial,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var container = CreateAuthoredImportedNatureContainer(objectName, root, localPosition, localRotation, landmarkId, countsForArrival);
+            var scale = AuthoredImportedNatureScale(localScale);
+            var leaf = ImportedNatureLeafMaterial(past) ?? leafMaterial;
+            var grass = ImportedNatureGrassMaterial(past) ?? grassMaterial ?? leaf;
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBushCore",
+                container.transform,
+                new Vector3(0f, 0.20f * scale, 0f),
+                new Vector3(0.48f * scale, 0.30f * scale, 0.42f * scale),
+                Quaternion.Euler(-4f + AuthoredVegetationSigned(objectName, 1831, 5f), AuthoredVegetationSigned(objectName, 1833, 10f), 4f + AuthoredVegetationSigned(objectName, 1835, 5f)),
+                leaf,
+                $"{landmarkId}.authored_bush_core",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_AuthoredBushCore_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectName}.authored_bush_core"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBushSprayA",
+                container.transform,
+                new Vector3(-0.20f * scale, 0.24f * scale, 0.12f * scale),
+                new Vector3(0.44f * scale, 0.26f * scale, 0.34f * scale),
+                Quaternion.Euler(-6f + AuthoredVegetationSigned(objectName, 1837, 5f), -42f, -5f),
+                grass,
+                $"{landmarkId}.authored_bush_spray_a",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectName}_AuthoredBushSprayA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectName}.authored_bush_spray_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredBushSprayB",
+                container.transform,
+                new Vector3(0.22f * scale, 0.18f * scale, -0.10f * scale),
+                new Vector3(0.40f * scale, 0.24f * scale, 0.32f * scale),
+                Quaternion.Euler(5f + AuthoredVegetationSigned(objectName, 1839, 5f), 46f, 5f),
+                leaf,
+                $"{landmarkId}.authored_bush_spray_b",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectName}_AuthoredBushSprayB_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectName}.authored_bush_spray_b"));
+            return container;
+        }
+
+        private static GameObject CreateAuthoredImportedGroundVegetationModel(
+            string objectName,
+            Transform root,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation,
+            bool past,
+            Material leafMaterial,
+            Material grassMaterial,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var container = CreateAuthoredImportedNatureContainer(objectName, root, localPosition, localRotation, landmarkId, countsForArrival);
+            var scale = AuthoredImportedNatureScale(localScale);
+            var leaf = ImportedNatureLeafMaterial(past) ?? leafMaterial;
+            var grass = ImportedNatureGrassMaterial(past) ?? grassMaterial ?? leaf;
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredGrassFanA",
+                container.transform,
+                new Vector3(-0.08f * scale, 0.18f * scale, 0.02f * scale),
+                new Vector3(0.38f * scale, 0.46f * scale, 0.34f * scale),
+                Quaternion.Euler(-9f + AuthoredVegetationSigned(objectName, 1851, 5f), -24f, 5f + AuthoredVegetationSigned(objectName, 1853, 5f)),
+                grass,
+                $"{landmarkId}.authored_grass_fan_a",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectName}_AuthoredGrassFanA_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{objectName}.authored_grass_fan_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredLeafSprayA",
+                container.transform,
+                new Vector3(0.16f * scale, 0.16f * scale, -0.06f * scale),
+                new Vector3(0.34f * scale, 0.28f * scale, 0.30f * scale),
+                Quaternion.Euler(-5f + AuthoredVegetationSigned(objectName, 1855, 5f), 38f, -4f + AuthoredVegetationSigned(objectName, 1857, 5f)),
+                leaf,
+                $"{landmarkId}.authored_leaf_spray_a",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectName}_AuthoredLeafSprayA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectName}.authored_leaf_spray_a"));
+            return container;
+        }
+
+        private static GameObject CreateAuthoredImportedLogOrMossModel(
+            string objectName,
+            Transform root,
+            Vector3 localPosition,
+            Vector3 localScale,
+            Quaternion localRotation,
+            bool past,
+            Material trunkMaterial,
+            Material stoneMaterial,
+            Material grassMaterial,
+            Material accentMaterial,
+            string landmarkId,
+            bool countsForArrival)
+        {
+            var container = CreateAuthoredImportedNatureContainer(objectName, root, localPosition, localRotation, landmarkId, countsForArrival);
+            var scale = AuthoredImportedNatureScale(localScale);
+            var wood = ImportedNatureWoodMaterial(past) ?? trunkMaterial ?? accentMaterial;
+            var moss = ImportedNatureGrassMaterial(past) ?? grassMaterial ?? accentMaterial;
+            var stone = ImportedNatureStoneMaterial(past) ?? stoneMaterial ?? wood;
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredLogBody",
+                container.transform,
+                new Vector3(0f, 0.10f * scale, 0f),
+                new Vector3(0.16f * scale, 0.58f * scale, 0.16f * scale),
+                Quaternion.Euler(0f, 0f, 88f + AuthoredVegetationSigned(objectName, 1871, 4f)),
+                wood,
+                $"{landmarkId}.authored_log_body",
+                CreateAuthoredVegetationTrunkMesh($"{objectName}_AuthoredLogBody_{AuthoredVegetationMeshNamePrefix}_LowPolyTrunk", $"{objectName}.authored_log_body"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredMossPatch",
+                container.transform,
+                new Vector3(-0.04f * scale, 0.20f * scale, 0.04f * scale),
+                new Vector3(0.34f * scale, 0.12f * scale, 0.24f * scale),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(objectName, 1873, 14f), 0f),
+                moss,
+                $"{landmarkId}.authored_moss_patch",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_AuthoredMossPatch_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectName}.authored_moss_patch"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredStoneFoot",
+                container.transform,
+                new Vector3(0.18f * scale, 0.06f * scale, -0.12f * scale),
+                new Vector3(0.22f * scale, 0.10f * scale, 0.18f * scale),
+                Quaternion.Euler(0f, AuthoredVegetationSigned(objectName, 1875, 20f), 0f),
+                stone,
+                $"{landmarkId}.authored_stone_foot",
+                CreateAuthoredVegetationRootFlareMesh($"{objectName}_AuthoredStoneFoot_{AuthoredVegetationMeshNamePrefix}_RootFlare", $"{objectName}.authored_stone_foot"));
+            return container;
         }
 
         private static void ApplyImportedNatureModelRendererPolicy(GameObject instance, bool past, Material leafMaterial, Material trunkMaterial, Material grassMaterial, Material stoneMaterial, Material accentMaterial)
@@ -21000,54 +21371,14 @@ namespace Anemora.EditorTools
 
         private static Material ImportedNatureTexturedWoodMaterial(string sourceMaterialName, bool past)
         {
-            if (sourceMaterialName.IndexOf("birch", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return ImportedNatureTextureMaterial(
-                    past ? "ch1_textured_nature_past_birch_bark" : "ch1_textured_nature_current_birch_bark",
-                    Cc0TexturedNatureBirchBarkTexturePath,
-                    past ? new Color(0.86f, 0.80f, 0.66f, 1f) : new Color(1.04f, 0.98f, 0.88f, 1f));
-            }
-
-            return ImportedNatureTextureMaterial(
-                past ? "ch1_textured_nature_past_tree_bark" : "ch1_textured_nature_current_tree_bark",
-                Cc0TexturedNatureTreeBarkTexturePath,
-                past ? new Color(0.88f, 0.78f, 0.62f, 1f) : new Color(1.06f, 0.96f, 0.82f, 1f));
+            _ = sourceMaterialName;
+            return ImportedNatureWoodMaterial(past);
         }
 
         private static Material ImportedNatureTexturedLeafMaterial(string sourceMaterialName, bool past)
         {
-            if (sourceMaterialName.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return ImportedNatureCutoutTextureMaterial(
-                    past ? "ch1_textured_nature_past_pine_leaves" : "ch1_textured_nature_current_pine_leaves",
-                    EnsureTexturedNatureLeafToneTexture(
-                        Cc0TexturedNaturePineLeavesTexturePath,
-                        past ? TexturedNaturePastPineLeavesTonedTexturePath : TexturedNatureCurrentPineLeavesTonedTexturePath,
-                        past,
-                        true),
-                    past ? new Color(0.52f, 0.54f, 0.36f, 1f) : new Color(0.38f, 0.52f, 0.32f, 1f));
-            }
-
-            if (sourceMaterialName.IndexOf("birch", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return ImportedNatureCutoutTextureMaterial(
-                    past ? "ch1_textured_nature_past_birch_leaves" : "ch1_textured_nature_current_birch_leaves",
-                    EnsureTexturedNatureLeafToneTexture(
-                        past ? Cc0TexturedNatureBirchLeavesYellowTexturePath : Cc0TexturedNatureBirchLeavesGreenTexturePath,
-                        past ? TexturedNaturePastBirchLeavesTonedTexturePath : TexturedNatureCurrentBirchLeavesTonedTexturePath,
-                        past,
-                        false),
-                    past ? new Color(0.60f, 0.56f, 0.38f, 1f) : new Color(0.42f, 0.56f, 0.34f, 1f));
-            }
-
-            return ImportedNatureCutoutTextureMaterial(
-                past ? "ch1_textured_nature_past_tree_leaves" : "ch1_textured_nature_current_tree_leaves",
-                EnsureTexturedNatureLeafToneTexture(
-                    Cc0TexturedNatureTreeLeavesTexturePath,
-                    past ? TexturedNaturePastTreeLeavesTonedTexturePath : TexturedNatureCurrentTreeLeavesTonedTexturePath,
-                    past,
-                    false),
-                past ? new Color(0.56f, 0.56f, 0.38f, 1f) : new Color(0.40f, 0.55f, 0.32f, 1f));
+            _ = sourceMaterialName;
+            return ImportedNatureLeafMaterial(past);
         }
 
         private static Texture2D EnsureTexturedNatureLeafToneTexture(string sourcePath, string outputPath, bool past, bool conifer)
@@ -21091,14 +21422,14 @@ namespace Anemora.EditorTools
                 : (conifer ? new Color32(42, 78, 42, 0) : new Color32(54, 88, 48, 0));
 
             var dark = past
-                ? (conifer ? new Color(0.34f, 0.40f, 0.22f, 1f) : new Color(0.38f, 0.42f, 0.24f, 1f))
-                : (conifer ? new Color(0.20f, 0.34f, 0.22f, 1f) : new Color(0.24f, 0.38f, 0.24f, 1f));
+                ? (conifer ? new Color(0.38f, 0.44f, 0.26f, 1f) : new Color(0.42f, 0.46f, 0.28f, 1f))
+                : (conifer ? new Color(0.28f, 0.42f, 0.26f, 1f) : new Color(0.32f, 0.46f, 0.28f, 1f));
             var mid = past
-                ? (conifer ? new Color(0.46f, 0.52f, 0.30f, 1f) : new Color(0.50f, 0.54f, 0.33f, 1f))
-                : (conifer ? new Color(0.30f, 0.46f, 0.28f, 1f) : new Color(0.34f, 0.50f, 0.30f, 1f));
+                ? (conifer ? new Color(0.50f, 0.54f, 0.32f, 1f) : new Color(0.54f, 0.56f, 0.34f, 1f))
+                : (conifer ? new Color(0.38f, 0.52f, 0.32f, 1f) : new Color(0.42f, 0.56f, 0.34f, 1f));
             var high = past
-                ? (conifer ? new Color(0.66f, 0.64f, 0.36f, 1f) : new Color(0.74f, 0.68f, 0.40f, 1f))
-                : (conifer ? new Color(0.48f, 0.62f, 0.38f, 1f) : new Color(0.54f, 0.68f, 0.40f, 1f));
+                ? (conifer ? new Color(0.68f, 0.64f, 0.38f, 1f) : new Color(0.76f, 0.70f, 0.42f, 1f))
+                : (conifer ? new Color(0.52f, 0.66f, 0.40f, 1f) : new Color(0.58f, 0.70f, 0.42f, 1f));
 
             for (var i = 0; i < pixels.Length; i++)
             {
@@ -21117,7 +21448,7 @@ namespace Anemora.EditorTools
                 var color = tone < 0.58f
                     ? Color.Lerp(dark, mid, tone / 0.58f)
                     : Color.Lerp(mid, high, (tone - 0.58f) / 0.42f);
-                var alphaBoost = alpha < 96 ? (byte)0 : alpha;
+                var alphaBoost = alpha < 40 ? (byte)0 : (byte)255;
                 pixels[i] = new Color32(
                     (byte)Mathf.Clamp(Mathf.RoundToInt(color.r * 255f), 0, 255),
                     (byte)Mathf.Clamp(Mathf.RoundToInt(color.g * 255f), 0, 255),
@@ -21144,17 +21475,17 @@ namespace Anemora.EditorTools
 
             if (material.HasProperty("_RampStrength"))
             {
-                material.SetFloat("_RampStrength", 0.08f);
+                material.SetFloat("_RampStrength", 0.05f);
             }
 
             if (material.HasProperty("_WorldLightStrength"))
             {
-                material.SetFloat("_WorldLightStrength", 0.05f);
+                material.SetFloat("_WorldLightStrength", 0.08f);
             }
 
             if (material.HasProperty("_WorldShadowReceiveStrength"))
             {
-                material.SetFloat("_WorldShadowReceiveStrength", 0.03f);
+                material.SetFloat("_WorldShadowReceiveStrength", 0.00f);
             }
 
             EditorUtility.SetDirty(material);
@@ -21190,7 +21521,9 @@ namespace Anemora.EditorTools
         private static Material PhotoVegetationCardMaterial(string id, string texturePath, Color tint)
         {
             EnsureTexturedNatureTextureImporter(texturePath, false);
-            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath);
+            var texture = EnsurePhotoVegetationCutoutTexture(
+                texturePath,
+                $"{TextureDirectory}/FastVS_House_{id}_alpha_cutout.asset");
             if (texture == null)
             {
                 throw new InvalidOperationException($"House slice setup failed: missing photo vegetation texture {texturePath}.");
@@ -21200,21 +21533,137 @@ namespace Anemora.EditorTools
             AssignMaterialTexture(material, texture, Vector2.one);
             if (material.HasProperty("_RampStrength"))
             {
-                material.SetFloat("_RampStrength", 0.05f);
+                material.SetFloat("_RampStrength", 0.03f);
             }
 
             if (material.HasProperty("_WorldLightStrength"))
             {
-                material.SetFloat("_WorldLightStrength", 0.02f);
+                material.SetFloat("_WorldLightStrength", 0.04f);
             }
 
             if (material.HasProperty("_WorldShadowReceiveStrength"))
             {
-                material.SetFloat("_WorldShadowReceiveStrength", 0.06f);
+                material.SetFloat("_WorldShadowReceiveStrength", 0.00f);
             }
 
             EditorUtility.SetDirty(material);
             return material;
+        }
+
+        private static Texture2D EnsurePhotoVegetationCutoutTexture(string sourcePath, string outputPath)
+        {
+            if (PhotoVegetationCutoutTextureCache.TryGetValue(outputPath, out var cached) && cached != null)
+            {
+                return cached;
+            }
+
+            EnsureTexturedNatureTextureImporter(sourcePath, false);
+            var source = AssetDatabase.LoadAssetAtPath<Texture2D>(sourcePath);
+            if (source == null)
+            {
+                throw new InvalidOperationException($"House slice setup failed: missing photo vegetation source texture {sourcePath}.");
+            }
+
+            EnsureFolder(TextureDirectory);
+            var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(outputPath);
+            if (existing != null && (existing.width != source.width || existing.height != source.height || existing.format != TextureFormat.RGBA32))
+            {
+                AssetDatabase.DeleteAsset(outputPath);
+                existing = null;
+            }
+
+            var pixels = source.GetPixels32();
+            var background = SamplePhotoVegetationBackgroundColor(pixels, source.width, source.height);
+            var backgroundLuma = PhotoVegetationLuma01(background);
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var pixel = pixels[i];
+                var distance = PhotoVegetationColorDistance01(pixel, background);
+                var luma = PhotoVegetationLuma01(pixel);
+                var matteLike = distance < 0.122f && luma < backgroundLuma + 0.145f;
+                var distanceKeep = Mathf.InverseLerp(0.082f, 0.192f, distance);
+                var lumaKeep = Mathf.InverseLerp(backgroundLuma + 0.030f, backgroundLuma + 0.180f, luma);
+                var keep = Mathf.Clamp01(Mathf.Max(distanceKeep, lumaKeep * 0.36f));
+                if (matteLike)
+                {
+                    keep = Mathf.Min(keep, Mathf.InverseLerp(0.122f, 0.192f, distance));
+                }
+
+                var alpha = pixel.a <= 8 ? 0 : Mathf.RoundToInt(pixel.a * keep);
+                if (alpha < 56)
+                {
+                    alpha = 0;
+                }
+
+                if (alpha > 0 && luma < 0.250f)
+                {
+                    var darkBlend = Mathf.InverseLerp(0.085f, 0.250f, luma);
+                    var liftedR = Mathf.RoundToInt(Mathf.Lerp(40f, pixel.r, darkBlend));
+                    var liftedG = Mathf.RoundToInt(Mathf.Lerp(74f, pixel.g, darkBlend));
+                    var liftedB = Mathf.RoundToInt(Mathf.Lerp(40f, pixel.b, darkBlend));
+                    pixel = new Color32(
+                        (byte)Mathf.Clamp(liftedR, 0, 255),
+                        (byte)Mathf.Clamp(liftedG, 0, 255),
+                        (byte)Mathf.Clamp(liftedB, 0, 255),
+                        pixel.a);
+                }
+
+                pixels[i] = new Color32(pixel.r, pixel.g, pixel.b, (byte)Mathf.Clamp(alpha, 0, 255));
+            }
+
+            var cutout = existing ?? new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+            if (existing == null)
+            {
+                AssetDatabase.CreateAsset(cutout, outputPath);
+            }
+            else if (cutout.width != source.width || cutout.height != source.height)
+            {
+                cutout.Reinitialize(source.width, source.height, TextureFormat.RGBA32, false);
+            }
+
+            cutout.name = Path.GetFileNameWithoutExtension(outputPath);
+            cutout.filterMode = FilterMode.Bilinear;
+            cutout.wrapMode = TextureWrapMode.Clamp;
+            cutout.SetPixels32(pixels);
+            cutout.Apply(false, false);
+            AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceSynchronousImport);
+            PhotoVegetationCutoutTextureCache[outputPath] = cutout;
+            return cutout;
+        }
+
+        private static Color32 SamplePhotoVegetationBackgroundColor(Color32[] pixels, int width, int height)
+        {
+            var sample = new[]
+            {
+                pixels[0],
+                pixels[Mathf.Max(0, width - 1)],
+                pixels[Mathf.Max(0, (height - 1) * width)],
+                pixels[Mathf.Max(0, (height * width) - 1)]
+            };
+            var r = 0;
+            var g = 0;
+            var b = 0;
+            for (var i = 0; i < sample.Length; i++)
+            {
+                r += sample[i].r;
+                g += sample[i].g;
+                b += sample[i].b;
+            }
+
+            return new Color32((byte)(r / sample.Length), (byte)(g / sample.Length), (byte)(b / sample.Length), 255);
+        }
+
+        private static float PhotoVegetationColorDistance01(Color32 a, Color32 b)
+        {
+            var dr = (a.r - b.r) / 255f;
+            var dg = (a.g - b.g) / 255f;
+            var db = (a.b - b.b) / 255f;
+            return Mathf.Sqrt((dr * dr) + (dg * dg) + (db * db)) / 1.7320508f;
+        }
+
+        private static float PhotoVegetationLuma01(Color32 color)
+        {
+            return ((color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f)) / 255f;
         }
 
         private static string SelectPhotoVegetationUnderstoryTexture(string seedKey)
@@ -21309,22 +21758,22 @@ namespace Anemora.EditorTools
         private static Material ImportedNatureLeafMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(72, 96, 52, 255), new Color32(112, 137, 68, 255), new Color32(54, 74, 43, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f))
-                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(48, 84, 50, 255), new Color32(78, 118, 65, 255), new Color32(36, 64, 42, 255), PixelPattern.Grass, true, new Vector2(2.5f, 2.5f));
+                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(98, 100, 60, 255), new Color32(134, 132, 78, 255), new Color32(78, 80, 52, 255), PixelPattern.Grass, true, new Vector2(3.4f, 3.1f))
+                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(60, 102, 58, 255), new Color32(110, 142, 82, 255), new Color32(50, 84, 50, 255), PixelPattern.Grass, true, new Vector2(3.4f, 3.1f));
         }
 
         private static Material ImportedNatureGrassMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(82, 96, 50, 255), new Color32(124, 132, 68, 255), new Color32(60, 74, 44, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f))
-                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(50, 88, 48, 255), new Color32(78, 122, 62, 255), new Color32(38, 68, 40, 255), PixelPattern.Grass, true, new Vector2(3.0f, 3.0f));
+                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(98, 108, 58, 255), new Color32(138, 140, 80, 255), new Color32(68, 82, 50, 255), PixelPattern.Grass, true, new Vector2(3.8f, 3.4f))
+                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(58, 102, 56, 255), new Color32(104, 142, 76, 255), new Color32(42, 80, 48, 255), PixelPattern.Grass, true, new Vector2(3.8f, 3.4f));
         }
 
         private static Material ImportedNatureWoodMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_wood", new Color32(105, 75, 45, 255), new Color32(142, 103, 60, 255), new Color32(68, 51, 38, 255), PixelPattern.Planks, false, new Vector2(1.6f, 2.2f))
-                : PixelMaterial("ch1_imported_nature_current_wood", new Color32(93, 58, 41, 255), new Color32(136, 86, 55, 255), new Color32(55, 40, 33, 255), PixelPattern.Planks, false, new Vector2(1.6f, 2.2f));
+                ? PixelMaterial("ch1_imported_nature_past_wood", new Color32(130, 94, 58, 255), new Color32(166, 122, 74, 255), new Color32(100, 74, 50, 255), PixelPattern.Planks, false, new Vector2(1.6f, 2.2f))
+                : PixelMaterial("ch1_imported_nature_current_wood", new Color32(124, 84, 52, 255), new Color32(160, 108, 68, 255), new Color32(96, 68, 46, 255), PixelPattern.Planks, false, new Vector2(1.6f, 2.2f));
         }
 
         private static Material ImportedNatureStoneMaterial(bool past)
@@ -22134,6 +22583,7 @@ namespace Anemora.EditorTools
         {
             var yaw = AuthoredVegetationSigned(objectPrefix, 199, 13f);
             var past = objectPrefix.StartsWith("Past_", StringComparison.Ordinal);
+            trunkMaterial = ImportedNatureWoodMaterial(past) ?? trunkMaterial;
             var canopyBreakup = EnsureChapter1NatureCanopyBreakupMaterial(past);
             var baseShrub = EnsureChapter1NatureGrassSilhouetteMaterial(past);
             CreateAuthoredVegetationMesh(
@@ -28089,6 +28539,13 @@ namespace Anemora.EditorTools
                     basePosition + new Vector3(0.88f * groveScale, 0.200f, 0.34f * groveScale),
                     leafMaterial,
                     clusterIndex + RealisticTreeGroveClusterCount);
+                CreatePhotoVegetationGroundLayerCards(
+                    parent,
+                    $"{objectPrefix}_PhotoGroundLayer",
+                    basePosition + new Vector3(0f, 0.010f, 0f),
+                    yaw + DistantPanoramaVistaSigned(seed + 229, 18f),
+                    past,
+                    Mathf.Clamp(groveScale * 0.92f, 0.70f, 1.26f));
             }
 
             ApplyNearfieldDressingRendererPolicy(parent);
@@ -28125,7 +28582,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_GroveBranchLace{treeSuffix}A",
                 parent,
                 treeGroundPosition + new Vector3(-0.08f * scale, Mathf.Clamp(scale * 1.16f, 0.86f, 1.58f), 0.06f * scale),
-                new Vector3(Mathf.Clamp(scale * 0.44f, 0.32f, 0.66f), Mathf.Clamp(scale * 0.32f, 0.24f, 0.48f), Mathf.Clamp(scale * 0.38f, 0.28f, 0.58f)),
+                new Vector3(Mathf.Clamp(scale * 0.28f, 0.22f, 0.44f), Mathf.Clamp(scale * 0.22f, 0.18f, 0.34f), Mathf.Clamp(scale * 0.24f, 0.18f, 0.38f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 79, 5f), yaw - 24f + DistantPanoramaVistaSigned(seed + 83, 9f), -8f + DistantPanoramaVistaSigned(seed + 89, 5f)),
                 woodMaterial,
                 $"{scope}.grove_branch_lace_a.{treeId}",
@@ -28134,7 +28591,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_GroveBranchLace{treeSuffix}B",
                 parent,
                 treeGroundPosition + new Vector3(0.10f * scale, Mathf.Clamp(scale * 0.98f, 0.76f, 1.42f), -0.06f * scale),
-                new Vector3(Mathf.Clamp(scale * 0.38f, 0.28f, 0.58f), Mathf.Clamp(scale * 0.30f, 0.22f, 0.46f), Mathf.Clamp(scale * 0.34f, 0.26f, 0.52f)),
+                new Vector3(Mathf.Clamp(scale * 0.24f, 0.20f, 0.38f), Mathf.Clamp(scale * 0.20f, 0.16f, 0.32f), Mathf.Clamp(scale * 0.22f, 0.18f, 0.36f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 97, 5f), yaw + 34f + DistantPanoramaVistaSigned(seed + 101, 9f), 9f + DistantPanoramaVistaSigned(seed + 103, 5f)),
                 woodMaterial,
                 $"{scope}.grove_branch_lace_b.{treeId}",
@@ -28143,7 +28600,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_GroveBranchFork{treeSuffix}A",
                 parent,
                 treeGroundPosition + new Vector3(DistantPanoramaVistaSigned(seed + 107, 0.05f * scale), Mathf.Clamp(scale * 0.86f, 0.66f, 1.20f), DistantPanoramaVistaSigned(seed + 109, 0.05f * scale)),
-                new Vector3(Mathf.Clamp(scale * 0.20f, 0.16f, 0.32f), Mathf.Clamp(scale * 0.28f, 0.20f, 0.42f), Mathf.Clamp(scale * 0.18f, 0.14f, 0.30f)),
+                new Vector3(Mathf.Clamp(scale * 0.16f, 0.12f, 0.24f), Mathf.Clamp(scale * 0.22f, 0.16f, 0.32f), Mathf.Clamp(scale * 0.14f, 0.12f, 0.24f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 113, 5f), yaw + 8f + DistantPanoramaVistaSigned(seed + 127, 10f), 13f + DistantPanoramaVistaSigned(seed + 131, 5f)),
                 woodMaterial,
                 $"{scope}.grove_branch_fork_a.{treeId}",
@@ -28390,7 +28847,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_SpecimenBranchLaceA",
                 parent,
                 treeGroundPosition + new Vector3(-0.06f * scale, Mathf.Clamp(scale * 1.14f, 0.86f, 1.56f), 0.05f * scale),
-                new Vector3(Mathf.Clamp(scale * 0.44f, 0.34f, 0.62f), Mathf.Clamp(scale * 0.34f, 0.26f, 0.48f), Mathf.Clamp(scale * 0.38f, 0.30f, 0.54f)),
+                new Vector3(Mathf.Clamp(scale * 0.28f, 0.22f, 0.42f), Mathf.Clamp(scale * 0.22f, 0.18f, 0.34f), Mathf.Clamp(scale * 0.24f, 0.20f, 0.38f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 67, 4f), yaw - 18f + DistantPanoramaVistaSigned(seed + 71, 8f), -7f + DistantPanoramaVistaSigned(seed + 73, 4f)),
                 woodMaterial,
                 $"{scope}.branch_lace_a.{treeId}",
@@ -28399,7 +28856,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_SpecimenBranchLaceB",
                 parent,
                 treeGroundPosition + new Vector3(0.08f * scale, Mathf.Clamp(scale * 0.98f, 0.76f, 1.38f), -0.06f * scale),
-                new Vector3(Mathf.Clamp(scale * 0.36f, 0.28f, 0.54f), Mathf.Clamp(scale * 0.30f, 0.24f, 0.44f), Mathf.Clamp(scale * 0.34f, 0.26f, 0.50f)),
+                new Vector3(Mathf.Clamp(scale * 0.24f, 0.20f, 0.38f), Mathf.Clamp(scale * 0.20f, 0.16f, 0.32f), Mathf.Clamp(scale * 0.22f, 0.18f, 0.36f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 79, 4f), yaw + 34f + DistantPanoramaVistaSigned(seed + 83, 8f), 8f + DistantPanoramaVistaSigned(seed + 89, 4f)),
                 woodMaterial,
                 $"{scope}.branch_lace_b.{treeId}",
@@ -28408,7 +28865,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_SpecimenBranchForkA",
                 parent,
                 treeGroundPosition + new Vector3(DistantPanoramaVistaSigned(seed + 97, 0.04f * scale), Mathf.Clamp(scale * 0.86f, 0.68f, 1.18f), DistantPanoramaVistaSigned(seed + 101, 0.04f * scale)),
-                new Vector3(Mathf.Clamp(scale * 0.20f, 0.16f, 0.32f), Mathf.Clamp(scale * 0.28f, 0.22f, 0.42f), Mathf.Clamp(scale * 0.18f, 0.14f, 0.30f)),
+                new Vector3(Mathf.Clamp(scale * 0.16f, 0.12f, 0.24f), Mathf.Clamp(scale * 0.22f, 0.16f, 0.32f), Mathf.Clamp(scale * 0.14f, 0.12f, 0.24f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 103, 4f), yaw + 9f + DistantPanoramaVistaSigned(seed + 107, 10f), 12f + DistantPanoramaVistaSigned(seed + 109, 5f)),
                 woodMaterial,
                 $"{scope}.branch_fork_a.{treeId}",
@@ -28417,7 +28874,7 @@ namespace Anemora.EditorTools
                 $"{objectPrefix}_SpecimenBranchEdgeLaceC",
                 parent,
                 treeGroundPosition + new Vector3(0.30f * scale, Mathf.Clamp(scale * 1.08f, 0.82f, 1.50f), 0.30f * scale),
-                new Vector3(Mathf.Clamp(scale * 0.52f, 0.38f, 0.74f), Mathf.Clamp(scale * 0.36f, 0.26f, 0.54f), Mathf.Clamp(scale * 0.46f, 0.34f, 0.66f)),
+                new Vector3(Mathf.Clamp(scale * 0.32f, 0.24f, 0.48f), Mathf.Clamp(scale * 0.24f, 0.18f, 0.36f), Mathf.Clamp(scale * 0.28f, 0.22f, 0.42f)),
                 Quaternion.Euler(DistantPanoramaVistaSigned(seed + 111, 4f), yaw + 78f + DistantPanoramaVistaSigned(seed + 112, 10f), -11f + DistantPanoramaVistaSigned(seed + 113, 5f)),
                 woodMaterial,
                 $"{scope}.branch_edge_lace_c.{treeId}",
@@ -28647,6 +29104,13 @@ namespace Anemora.EditorTools
                     basePosition + new Vector3(0.56f * clusterScale, 0.200f, 0.28f * clusterScale),
                     leafMaterial,
                     index + RealisticForegroundWildGrassClusterCount);
+                CreatePhotoVegetationGroundLayerCards(
+                    parent,
+                    $"{objectPrefix}_PhotoGroundLayer",
+                    basePosition + new Vector3(0f, 0.010f, 0f),
+                    yaw + DistantPanoramaVistaSigned(seed + 53, 16f),
+                    past,
+                    Mathf.Clamp(clusterScale * 0.82f, 0.58f, 1.10f));
             }
 
             ApplyNearfieldDressingRendererPolicy(parent);
@@ -33856,7 +34320,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalCanopyFleckMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int fleckCount = 31;
+            const int fleckCount = 47;
             var vertices = new List<Vector3>(fleckCount * 4);
             var uvs = new List<Vector2>(fleckCount * 4);
             var triangles = new List<int>(fleckCount * 12);
@@ -33904,7 +34368,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalCanopyShadowMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int pocketCount = 25;
+            const int pocketCount = 37;
             var vertices = new List<Vector3>(pocketCount * 4);
             var uvs = new List<Vector2>(pocketCount * 4);
             var triangles = new List<int>(pocketCount * 12);
@@ -33953,7 +34417,7 @@ namespace Anemora.EditorTools
 
         private static void AddDistantPanoramaVistaLeafFringe(List<Vector3> vertices, List<Vector2> uvs, List<int> triangles, Vector3 center, float spacing, float height, float depth, int seed, bool past)
         {
-            const int shardCount = 6;
+            const int shardCount = 10;
             for (var shard = 0; shard < shardCount; shard++)
             {
                 var shardSeed = seed + shard * 37;
@@ -34194,7 +34658,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalBranchTraceMesh(string meshName, int seed, float width, float maxHeight, float depth)
         {
-            const int treeCount = 21;
+            const int treeCount = 25;
             var vertices = new List<Vector3>(treeCount * 32);
             var uvs = new List<Vector2>(treeCount * 32);
             var triangles = new List<int>(treeCount * 240);
@@ -34294,7 +34758,7 @@ namespace Anemora.EditorTools
 
         private static Mesh CreateDistantPanoramaVistaNaturalUnderstoryMesh(string meshName, int seed, float width, float maxHeight, float depth, bool past)
         {
-            const int shrubCount = 27;
+            const int shrubCount = 35;
             var vertices = new List<Vector3>(shrubCount * 14);
             var uvs = new List<Vector2>(shrubCount * 14);
             var triangles = new List<int>(shrubCount * 84);
@@ -35982,21 +36446,21 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureChapter1NatureCanopyBreakupMaterial(
                     id,
-                    new Color32(98, 104, 56, 255),
-                    new Color32(164, 150, 82, 255),
-                    new Color32(62, 66, 42, 255),
+                    new Color32(92, 98, 56, 255),
+                    new Color32(138, 130, 78, 255),
+                    new Color32(58, 62, 42, 255),
                     0.055f)
                 : EnsureChapter1NatureCanopyBreakupMaterial(
                     id,
-                    new Color32(72, 124, 60, 255),
-                    new Color32(144, 174, 92, 255),
-                    new Color32(44, 84, 44, 255),
+                    new Color32(58, 108, 58, 255),
+                    new Color32(104, 142, 78, 255),
+                    new Color32(34, 72, 42, 255),
                     0.055f);
         }
 
         private static Material EnsureChapter1NatureCanopyBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, float smoothness)
         {
-            var material = PixelMaterial(id, a, b, c, PixelPattern.Grass, true, new Vector2(2.4f, 2.8f), FastVsHd2dMaterialRole.SurfaceLit);
+            var material = PixelMaterial(id, a, b, c, PixelPattern.Grass, true, new Vector2(3.6f, 3.2f), FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", smoothness);
@@ -61128,7 +61592,8 @@ namespace Anemora.EditorTools
                 foreach (var material in renderer.sharedMaterials)
                 {
                     var materialName = material == null ? string.Empty : material.name;
-                    if (materialName.IndexOf("ch1_textured_nature_", StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (materialName.IndexOf("ch1_textured_nature_", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        materialName.IndexOf("ch1_imported_nature_", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         hasTexturedTreeMaterial = true;
                     }
@@ -62227,6 +62692,7 @@ namespace Anemora.EditorTools
             var fallenLogCount = 0;
             var groundCoverCount = 0;
             var lowLeafCount = 0;
+            var photoGroundCardCount = 0;
             foreach (var transform in root.GetComponentsInChildren<Transform>(true))
             {
                 if (transform.gameObject.layer != expectedLayer)
@@ -62272,6 +62738,10 @@ namespace Anemora.EditorTools
                 {
                     lowLeafCount++;
                 }
+                else if (transform.name.Contains("_PhotoGround", StringComparison.Ordinal))
+                {
+                    photoGroundCardCount++;
+                }
 
                 if (transform.GetComponent<Collider>() != null || transform.GetComponentsInChildren<Collider>(true).Length > 0)
                 {
@@ -62301,9 +62771,10 @@ namespace Anemora.EditorTools
                 grassFanCount < RealisticTreeGroveClusterCount ||
                 fallenLogCount < RealisticTreeGroveClusterCount ||
                 groundCoverCount < RealisticTreeGroveClusterCount ||
-                lowLeafCount < RealisticTreeGroveClusterCount * 2)
+                lowLeafCount < RealisticTreeGroveClusterCount * 2 ||
+                photoGroundCardCount < RealisticTreeGroveClusterCount * RealisticTreeGrovePhotoGroundCardsPerCluster)
             {
-                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine imported tree groves with readable trunk/branch/leaf detail and low cover; trees={treeModelCount}, trunks={trunkReinforcementCount}, branches={branchDetailCount}, leaves={leafDetailCount}, bush={bushCount}, grassFans={grassFanCount}, fallenLogs={fallenLogCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}.");
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine imported tree groves with readable trunk/branch/leaf detail, photo vegetation, and low cover; trees={treeModelCount}, trunks={trunkReinforcementCount}, branches={branchDetailCount}, leaves={leafDetailCount}, bush={bushCount}, grassFans={grassFanCount}, fallenLogs={fallenLogCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}, photoGround={photoGroundCardCount}.");
             }
         }
 
@@ -62550,6 +63021,7 @@ namespace Anemora.EditorTools
             var leafPlantCount = 0;
             var groundCoverCount = 0;
             var lowLeafCount = 0;
+            var photoGroundCardCount = 0;
             foreach (var transform in root.GetComponentsInChildren<Transform>(true))
             {
                 if (transform.gameObject.layer != expectedLayer)
@@ -62572,6 +63044,10 @@ namespace Anemora.EditorTools
                 else if (transform.name.EndsWith("_LowLeafA", StringComparison.Ordinal))
                 {
                     lowLeafCount++;
+                }
+                else if (transform.name.Contains("_PhotoGround", StringComparison.Ordinal))
+                {
+                    photoGroundCardCount++;
                 }
 
                 if (transform.GetComponent<Collider>() != null || transform.GetComponentsInChildren<Collider>(true).Length > 0)
@@ -62596,9 +63072,10 @@ namespace Anemora.EditorTools
             if (grassFanCount < RealisticForegroundWildGrassClusterCount * 2 ||
                 leafPlantCount < RealisticForegroundWildGrassClusterCount ||
                 groundCoverCount < RealisticForegroundWildGrassClusterCount ||
-                lowLeafCount < RealisticForegroundWildGrassClusterCount * 2)
+                lowLeafCount < RealisticForegroundWildGrassClusterCount * 2 ||
+                photoGroundCardCount < RealisticForegroundWildGrassClusterCount * RealisticForegroundWildGrassPhotoGroundCardsPerCluster)
             {
-                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine imported grass, leaf plants, and authored low cover; grassFans={grassFanCount}, leafPlants={leafPlantCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}.");
+                throw new InvalidOperationException($"House slice validation failed: {rootName} must combine imported grass, leaf plants, photo vegetation, and authored low cover; grassFans={grassFanCount}, leafPlants={leafPlantCount}, groundCover={groundCoverCount}, lowLeaf={lowLeafCount}, photoGround={photoGroundCardCount}.");
             }
         }
 
