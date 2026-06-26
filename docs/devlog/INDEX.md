@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.147 HD2D authored nature rendering (2026-06-26). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.148 HD2D nature softgrass canopy (2026-06-26). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 844 files including INDEX.md and README.md.
-- Dated devlog records: 842 files.
+- Root-level Markdown coverage: 845 files including INDEX.md and README.md.
+- Dated devlog records: 843 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,7 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
-| 2026-06-26 | 3 |
+| 2026-06-26 | 4 |
 | 2026-06-25 | 1 |
 | 2026-06-24 | 6 |
 | 2026-06-23 | 5 |
@@ -59,6 +59,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | File | Area | Title |
 |---|---|---|
+| [2026-06-26_hd2d_nature_softgrass_canopy.md](2026-06-26_hd2d_nature_softgrass_canopy.md) | Fast VS / HD2D | HD2D nature softgrass canopy |
 | [2026-06-26_hd2d_authored_nature_rendering.md](2026-06-26_hd2d_authored_nature_rendering.md) | Fast VS / HD2D | HD2D authored nature rendering |
 | [2026-06-26_hd2d_tree_grove_silhouette.md](2026-06-26_hd2d_tree_grove_silhouette.md) | Fast VS / HD2D | HD2D tree grove silhouette |
 | [2026-06-26_hd2d_terrain_detail_vista.md](2026-06-26_hd2d_terrain_detail_vista.md) | Fast VS / HD2D | HD2D terrain detail vista |
@@ -874,6 +875,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Version | Date | Change |
 |---|---|---|
+| v8.148 | 2026-06-26 | Added HD2D nature softgrass canopy record with imported nature SoftGrass material pattern, lower leaf/grass dark-pixel density, thinner BranchLace mesh generation, split tree companion crowns, r1 review capture, shotdiff triage, renderer-freeze validation, asset validation, build, player smoke, and review propagation. |
 | v8.147 | 2026-06-26 | Added HD2D authored nature rendering record with rejected black-matte photo-card/prefab blob path, authored imported-nature replacement for tree/bush/grass/log models, r17 review capture, shotdiff triage, renderer-freeze validation, asset validation, build, player smoke, and review propagation. |
 | v8.137 | 2026-06-23 | Added HD2D realistic nature leaf lift record with rejected photo branch/canopy card removal, deterministic broadleaf saplings, photo ground-layer cards, nature material dark-tone lift, all-map review capture, shotdiff triage, renderer-freeze validation, asset validation, build, player smoke, and review packet propagation. |
 | v8.136 | 2026-06-23 | Added HD2D imported nature scale record with rejected floating distant photo layer, larger imported CC0/Textured Nature tree and undergrowth companions, all-map review capture, shotdiff triage, renderer-freeze validation, asset validation, build, player smoke, and review packet propagation. |

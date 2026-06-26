@@ -20592,6 +20592,7 @@ namespace Anemora.EditorTools
 
             var trunk = ImportedNatureWoodMaterial(objectName.StartsWith("Past_", StringComparison.Ordinal)) ?? trunkMaterial;
             var leaf = ImportedNatureLeafMaterial(objectName.StartsWith("Past_", StringComparison.Ordinal)) ?? leafMaterial;
+            var breakup = EnsureChapter1NatureCanopyBreakupMaterial(objectName.StartsWith("Past_", StringComparison.Ordinal));
             CreateAuthoredVegetationMesh(
                 $"{objectName}_AuthoredTrunk",
                 treeRoot.transform,
@@ -20633,30 +20634,57 @@ namespace Anemora.EditorTools
                 $"{objectName}_AuthoredCrown",
                 treeRoot.transform,
                 new Vector3(0f, 1.42f * scale, 0f),
-                new Vector3(0.92f * scale, 0.70f * scale, 0.84f * scale),
+                new Vector3(0.72f * scale, 0.58f * scale, 0.66f * scale),
                 Quaternion.Euler(AuthoredVegetationSigned(objectName, 1527, 5f), AuthoredVegetationSigned(objectName, 1529, 8f), AuthoredVegetationSigned(objectName, 1531, 5f)),
                 leaf,
                 TimeWindowPairedSpaceLandmarkKind.PropOrFeature,
                 $"{landmarkId}.authored_crown",
-                CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrown_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown", 0.54f, 0.42f));
+                CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrown_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown", 0.42f, 0.34f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownTop",
+                treeRoot.transform,
+                new Vector3(0.04f * scale, 1.78f * scale, -0.04f * scale),
+                new Vector3(0.42f * scale, 0.34f * scale, 0.38f * scale),
+                Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1532, 5f), AuthoredVegetationSigned(objectName, 1534, 10f), 4f + AuthoredVegetationSigned(objectName, 1536, 5f)),
+                breakup,
+                $"{landmarkId}.authored_crown_top",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_AuthoredCrownTop_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectName}.authored_crown_top"));
             CreateAuthoredVegetationFeatureMesh(
                 $"{objectName}_AuthoredCrownShoulderA",
                 treeRoot.transform,
                 new Vector3(-0.36f * scale, 1.30f * scale, 0.10f * scale),
-                new Vector3(0.60f * scale, 0.42f * scale, 0.52f * scale),
+                new Vector3(0.50f * scale, 0.36f * scale, 0.46f * scale),
                 Quaternion.Euler(4f + AuthoredVegetationSigned(objectName, 1533, 5f), -18f, -5f),
-                leaf,
+                breakup,
                 $"{landmarkId}.authored_crown_shoulder_a",
                 CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrownShoulderA_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown_shoulder_a", 0.48f, 0.34f));
             CreateAuthoredVegetationFeatureMesh(
                 $"{objectName}_AuthoredCrownShoulderB",
                 treeRoot.transform,
                 new Vector3(0.34f * scale, 1.24f * scale, -0.08f * scale),
-                new Vector3(0.56f * scale, 0.38f * scale, 0.48f * scale),
+                new Vector3(0.48f * scale, 0.34f * scale, 0.42f * scale),
                 Quaternion.Euler(-4f + AuthoredVegetationSigned(objectName, 1535, 5f), 22f, 6f),
                 leaf,
                 $"{landmarkId}.authored_crown_shoulder_b",
                 CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrownShoulderB_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown_shoulder_b", 0.46f, 0.32f));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredOuterLeafSprayA",
+                treeRoot.transform,
+                new Vector3(-0.42f * scale, 1.10f * scale, 0.24f * scale),
+                new Vector3(0.44f * scale, 0.24f * scale, 0.36f * scale),
+                Quaternion.Euler(-4f + AuthoredVegetationSigned(objectName, 1537, 4f), -46f + AuthoredVegetationSigned(objectName, 1539, 8f), -6f + AuthoredVegetationSigned(objectName, 1541, 5f)),
+                breakup,
+                $"{landmarkId}.authored_outer_leaf_spray_a",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectName}_AuthoredOuterLeafSprayA_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectName}.authored_outer_leaf_spray_a"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredOuterLeafSprayB",
+                treeRoot.transform,
+                new Vector3(0.40f * scale, 1.06f * scale, -0.22f * scale),
+                new Vector3(0.40f * scale, 0.22f * scale, 0.34f * scale),
+                Quaternion.Euler(4f + AuthoredVegetationSigned(objectName, 1543, 4f), 42f + AuthoredVegetationSigned(objectName, 1545, 8f), 6f + AuthoredVegetationSigned(objectName, 1547, 5f)),
+                leaf,
+                $"{landmarkId}.authored_outer_leaf_spray_b",
+                CreateAuthoredVegetationLeafSprayMesh($"{objectName}_AuthoredOuterLeafSprayB_{AuthoredVegetationMeshNamePrefix}_LeafSpray", $"{objectName}.authored_outer_leaf_spray_b"));
         }
 
         private static void CreateImportedNatureClusterCompanion(Transform root, string objectPrefix, Vector3 center, float scale, bool past, Material leafMaterial, Material grassMaterial, Material stemMaterial, Material accentMaterial)
@@ -21115,7 +21143,7 @@ namespace Anemora.EditorTools
                 $"{objectName}_AuthoredBranchLaceA",
                 container.transform,
                 new Vector3(-0.05f * scale, 0.88f * scale, 0.04f * scale),
-                new Vector3(0.24f * scale, 0.22f * scale, 0.20f * scale),
+                new Vector3(0.18f * scale, 0.16f * scale, 0.16f * scale),
                 Quaternion.Euler(2f + AuthoredVegetationSigned(objectName, 1805, 5f), -30f, -13f),
                 trunk,
                 $"{landmarkId}.authored_branch_lace_a",
@@ -21124,7 +21152,7 @@ namespace Anemora.EditorTools
                 $"{objectName}_AuthoredBranchLaceB",
                 container.transform,
                 new Vector3(0.06f * scale, 0.78f * scale, -0.05f * scale),
-                new Vector3(0.22f * scale, 0.20f * scale, 0.19f * scale),
+                new Vector3(0.17f * scale, 0.15f * scale, 0.15f * scale),
                 Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1807, 5f), 36f, 12f),
                 trunk,
                 $"{landmarkId}.authored_branch_lace_b",
@@ -21133,16 +21161,25 @@ namespace Anemora.EditorTools
                 $"{objectName}_AuthoredCrownCore",
                 container.transform,
                 new Vector3(0f, 1.12f * scale, 0f),
-                new Vector3(0.60f * scale, 0.46f * scale, 0.54f * scale),
+                new Vector3(0.52f * scale, 0.42f * scale, 0.48f * scale),
                 Quaternion.Euler(AuthoredVegetationSigned(objectName, 1809, 5f), AuthoredVegetationSigned(objectName, 1811, 8f), AuthoredVegetationSigned(objectName, 1813, 5f)),
                 leaf,
                 $"{landmarkId}.authored_crown_core",
                 CreateAuthoredVegetationCanopyMesh($"{objectName}_AuthoredCrownCore_{AuthoredVegetationMeshNamePrefix}_LowPolyCanopy", $"{objectName}.authored_crown_core", 0.46f, 0.32f));
             CreateAuthoredVegetationFeatureMesh(
+                $"{objectName}_AuthoredCrownTop",
+                container.transform,
+                new Vector3(0.04f * scale, 1.42f * scale, -0.04f * scale),
+                new Vector3(0.34f * scale, 0.28f * scale, 0.32f * scale),
+                Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1814, 4f), AuthoredVegetationSigned(objectName, 1816, 10f), 4f + AuthoredVegetationSigned(objectName, 1818, 4f)),
+                breakup,
+                $"{landmarkId}.authored_crown_top",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectName}_AuthoredCrownTop_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{objectName}.authored_crown_top"));
+            CreateAuthoredVegetationFeatureMesh(
                 $"{objectName}_AuthoredCrownLeft",
                 container.transform,
                 new Vector3(-0.30f * scale, 1.02f * scale, 0.08f * scale),
-                new Vector3(0.42f * scale, 0.30f * scale, 0.36f * scale),
+                new Vector3(0.36f * scale, 0.28f * scale, 0.32f * scale),
                 Quaternion.Euler(4f + AuthoredVegetationSigned(objectName, 1815, 5f), -22f, -6f),
                 breakup,
                 $"{landmarkId}.authored_crown_left",
@@ -21151,7 +21188,7 @@ namespace Anemora.EditorTools
                 $"{objectName}_AuthoredCrownRight",
                 container.transform,
                 new Vector3(0.30f * scale, 0.98f * scale, -0.08f * scale),
-                new Vector3(0.40f * scale, 0.28f * scale, 0.34f * scale),
+                new Vector3(0.34f * scale, 0.26f * scale, 0.30f * scale),
                 Quaternion.Euler(-4f + AuthoredVegetationSigned(objectName, 1817, 5f), 26f, 6f),
                 leaf,
                 $"{landmarkId}.authored_crown_right",
@@ -21160,7 +21197,7 @@ namespace Anemora.EditorTools
                 $"{objectName}_AuthoredOuterLeafSpray",
                 container.transform,
                 new Vector3(0.02f * scale, 0.92f * scale, 0.22f * scale),
-                new Vector3(0.54f * scale, 0.26f * scale, 0.42f * scale),
+                new Vector3(0.46f * scale, 0.22f * scale, 0.36f * scale),
                 Quaternion.Euler(-3f + AuthoredVegetationSigned(objectName, 1819, 5f), AuthoredVegetationSigned(objectName, 1821, 16f), -6f + AuthoredVegetationSigned(objectName, 1823, 5f)),
                 breakup,
                 $"{landmarkId}.authored_outer_leaf_spray",
@@ -21758,15 +21795,15 @@ namespace Anemora.EditorTools
         private static Material ImportedNatureLeafMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(98, 100, 60, 255), new Color32(134, 132, 78, 255), new Color32(78, 80, 52, 255), PixelPattern.Grass, true, new Vector2(3.4f, 3.1f))
-                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(60, 102, 58, 255), new Color32(110, 142, 82, 255), new Color32(50, 84, 50, 255), PixelPattern.Grass, true, new Vector2(3.4f, 3.1f));
+                ? PixelMaterial("ch1_imported_nature_past_leaf", new Color32(104, 106, 66, 255), new Color32(128, 130, 78, 255), new Color32(88, 92, 60, 255), PixelPattern.SoftGrass, true, new Vector2(2.7f, 2.5f))
+                : PixelMaterial("ch1_imported_nature_current_leaf", new Color32(68, 106, 66, 255), new Color32(96, 128, 78, 255), new Color32(58, 88, 58, 255), PixelPattern.SoftGrass, true, new Vector2(2.7f, 2.5f));
         }
 
         private static Material ImportedNatureGrassMaterial(bool past)
         {
             return past
-                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(98, 108, 58, 255), new Color32(138, 140, 80, 255), new Color32(68, 82, 50, 255), PixelPattern.Grass, true, new Vector2(3.8f, 3.4f))
-                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(58, 102, 56, 255), new Color32(104, 142, 76, 255), new Color32(42, 80, 48, 255), PixelPattern.Grass, true, new Vector2(3.8f, 3.4f));
+                ? PixelMaterial("ch1_imported_nature_past_grass", new Color32(104, 112, 64, 255), new Color32(130, 136, 78, 255), new Color32(78, 90, 56, 255), PixelPattern.SoftGrass, true, new Vector2(3.0f, 2.8f))
+                : PixelMaterial("ch1_imported_nature_current_grass", new Color32(64, 104, 62, 255), new Color32(94, 132, 74, 255), new Color32(54, 86, 54, 255), PixelPattern.SoftGrass, true, new Vector2(3.0f, 2.8f));
         }
 
         private static Material ImportedNatureWoodMaterial(bool past)
@@ -22150,7 +22187,7 @@ namespace Anemora.EditorTools
             var vertices = new List<Vector3>(96);
             var uvs = new List<Vector2>(96);
             var triangles = new List<int>(300);
-            const int branchCount = 5;
+            const int branchCount = 4;
 
             for (var branch = 0; branch < branchCount; branch++)
             {
@@ -22170,8 +22207,8 @@ namespace Anemora.EditorTools
                     triangles,
                     start,
                     end,
-                    Mathf.Lerp(0.038f, 0.060f, AuthoredVegetationHash01(seedKey, 641 + branch * 37)),
-                    Mathf.Lerp(0.012f, 0.022f, AuthoredVegetationHash01(seedKey, 643 + branch * 41)));
+                    Mathf.Lerp(0.026f, 0.044f, AuthoredVegetationHash01(seedKey, 641 + branch * 37)),
+                    Mathf.Lerp(0.008f, 0.016f, AuthoredVegetationHash01(seedKey, 643 + branch * 41)));
 
                 if ((branch & 1) == 0)
                 {
@@ -22185,8 +22222,8 @@ namespace Anemora.EditorTools
                         triangles,
                         Vector3.Lerp(start, end, 0.58f),
                         twigEnd,
-                        0.024f,
-                        0.010f);
+                        0.017f,
+                        0.007f);
                 }
             }
 
@@ -111871,6 +111908,8 @@ namespace Anemora.EditorTools
                     return y % 8 == 0 || (x + (y / 8 % 2) * 8) % 16 == 0 ? c : ((x + y) % 7 == 0 ? b : a);
                 case PixelPattern.Grass:
                     return (x * 3 + y * 5) % 11 < 3 ? b : ((x + y) % 13 == 0 ? c : a);
+                case PixelPattern.SoftGrass:
+                    return (x * 3 + y * 5) % 17 < 3 ? b : ((x + y) % 29 == 0 ? c : a);
                 case PixelPattern.Stone:
                     return x % 8 == 0 || y % 8 == 0 ? c : ((x * 7 + y * 3) % 17 < 4 ? b : a);
                 case PixelPattern.Roof:
@@ -112720,6 +112759,7 @@ namespace Anemora.EditorTools
             Planks,
             Bricks,
             Grass,
+            SoftGrass,
             Stone,
             Roof,
             Cloth,
