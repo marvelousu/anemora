@@ -4,13 +4,13 @@
 > 詳細実装履歴は `docs/devlog/`、物語骨格は `docs/STORY_BIBLE_v1.md`、運用 gotcha は `AGENTS.md`。
 > **更新規律**: frontier が動いたら同じ commit でここを更新する。古いまま放置しない (pre-push hook が7日超の漂流を検査する)。
 
-最終更新: 2026-06-26 (Codex / HD2D nature species silhouette review build)
+最終更新: 2026-06-27 (Codex / HD2D nature understory no-water retone build)
 
 ---
 
 ## 1. いま何の状態か (1 段落)
 
-Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-26 時点の最新レビュー build は Time Window aperture depth-order fix、CC0 textured nature pass、imported nature scale uplift、realistic nearfield nature clusters、authored under-canopy foliage、dark-pixel leaf alpha keying、全マップ前景 wild-grass layer、全マップ tree grove layer、current leaf/grass の低彩度化、遠景の forest/rock/woodland depth layer + camera-facing back arc + ScenicRelief forest/ridge layer + close/mid realistic specimen tree framing layer + specimen canopy branch/leaf detail layer + terrain detail vista material-density pass + tree grove silhouette pass + authored imported-nature replacement + nature SoftGrass/canopy split pass + species silhouette accents を含む `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。黒い副作用が強かった photo vegetation card 案は accepted path から外し、r17 で黒マット/巨大 prefab 塊を authored mesh へ置換、r1 softgrass で葉・草の黒粒密度を下げ、枝レースを細くし、r2 species silhouette で針葉樹/広葉樹/細幹の deterministic crown accents を追加した。
+Fast VS House Slice は **public VS baseline** として `main` に公開済み。現在の実装活動は `wip/hd2d-point15-recovery-20260612` 上の **HD2D point15 レンダラ調整ループ + 環境アップリフト**で、Chapter 1 設計トラック (6シーン v1 設計完了済) は 2026-05-24 から停止中。2026-06-13 に環境監査を実施し、**レンダラ凍結 + 環境アセット物量投入への転換**を採用。2026-06-27 時点の最新レビュー build は Time Window aperture depth-order fix、authored/imported nature uplift、遠景 depth/ScenicRelief/terrain-density layers、tree grove/specimen/species silhouette accents に加え、Central Plaza edge void の dry ground/grass infill、current fog/camera background の olive/earth retone、waterline/broad-water fallback material の dry retone により街中の水っぽい青灰色を除去した `Builds/FastVS_HouseSlice/Anemora_FastVS_HouseSlice.exe`。黒い副作用が強かった photo vegetation card 案は accepted path から外し、最新 no-water retone は `docs/review/2026-06-27T04-36_nature_understory_no_water_r9/` を accepted packet とする。
 
 ## 2. branch / baseline
 
@@ -24,7 +24,7 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 
 ## 3. 現在の frontier (アクティブな一手)
 
-- **point15 レンダラループ / 環境アップリフト**: 2026-06-26 最新レビュー build で Time Window aperture を frame behind の depth-aware composite にし、CC0 textured tree subset + imported nature scale uplift + realistic nearfield nature clusters + authored under-canopy foliage + dark-pixel leaf alpha keying + all-map foreground wild-grass layer + all-map realistic tree grove layer + realistic distant panorama depth layer + ScenicRelief forest/ridge layer + close/mid realistic specimen tree framing layer + specimen canopy branch/leaf detail layer + terrain detail vista material-density pass + tree grove silhouette pass + authored imported-nature replacement + nature SoftGrass/canopy split pass + species silhouette accents を導入。黒い副作用が強かった photo vegetation card 案は accepted path から外し、r17 で黒マット/巨大 prefab 塊を authored mesh へ置換、r1 softgrass で葉・草の黒粒密度を下げ、枝レースを細くし、r2 species silhouette で針葉樹/広葉樹/細幹の deterministic crown accents を追加した。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-26T16-43_nature_species_silhouette_r2/`。
+- **point15 レンダラループ / 環境アップリフト**: 2026-06-27 最新レビュー build で Time Window aperture depth-aware composite、authored/imported nature uplift、realistic distant panorama depth/ScenicRelief/terrain-density、tree grove/specimen/species silhouette accents に続き、街中の水っぽい青灰色を dry ground/grass infill + current fog/camera background olive/earth retone + dry waterline/broad-water fallback material で除去した。全マップ capture、ValidateHouseSliceBatch、AssetValidation、EditMode renderer freeze、BuildAndValidateBatch、player smoke 済み。レビュー packet は `docs/review/2026-06-27T04-36_nature_understory_no_water_r9/`。
 - **2026-06-13 環境監査の提案と着地**: ①✅レンダラ凍結=`Assets/Tests/RendererContract/` のゴールデン契約テストで実装済 (Unity検証: 初回ベースライン生成→2回目 36 EditMode緑/freeze=Passed)。renderer feature を変えるとテストが落ちる。意図的変更時は `ANEMORA_RENDERER_REBASELINE=1` で再生成しコミット。②✅アセット検収=`Assets/Editor/AnemoraAssetValidation.cs` の `ValidateImportedAssetsBatch` (missing ref/review_only混入/ポリ数、実走OK)。③authored file (81k行) 減量は **cycle 方式が当ファイルを毎サイクル編集する間は未着手** (再開時 merge 衝突を避けるため。cycle 方式を畳む時に実施)。環境アセット物量 (テクスチャ/植生/空) は Tier 目標確定後。
 - Chapter 1 設計トラックは S3 詳細設計で停止中 (canon は `docs/canon/chapter1.md`)。
 
@@ -81,3 +81,4 @@ Fast VS House Slice は **public VS baseline** として `main` に公開済み�
 | 2026-06-26 | Codex | Authored nature rendering: r13/r14 の photo-card 黒マットと巨大 prefab 塊を受け、imported nature model 経路を authored mesh tree/bush/grass/log replacement へ切替。最新 review packet `docs/review/2026-06-26T13-35_nature_photo_ground_r17/` と最新 build を更新。 |
 | 2026-06-26 | Codex | Nature softgrass canopy: authored nature r17 の黒粒/丸樹冠を受け、imported nature leaf/grass を SoftGrass pattern にし、BranchLace を細く、tree companion crown を分割。最新 review packet `docs/review/2026-06-26T15-28_nature_softgrass_r1/` と最新 build を更新。 |
 | 2026-06-26 | Codex | Nature species silhouette: r1 は 0.04-0.15% の plateau として却下し、r2 で species accent scale を上げて tree grove/specimen に conifer/broadleaf/slender crown accents を追加。最新 review packet `docs/review/2026-06-26T16-43_nature_species_silhouette_r2/` と最新 build を更新。 |
+| 2026-06-27 | Codex | Nature understory no-water retone: Central Plaza edge void を dry ground/grass infill で塞ぎ、current fog/camera background と waterline/broad-water fallback を olive/earth/dry stone へ retone。最新 review packet `docs/review/2026-06-27T04-36_nature_understory_no_water_r9/` と最新 build を更新。 |

@@ -10467,6 +10467,16 @@ namespace Anemora.EditorTools
                 prefix,
                 past,
                 materials);
+            CreateChapter1DryMapEdgeInfillForOutdoorMaps(
+                exteriorRoot,
+                plazaRoot,
+                miaHouseRoot,
+                ariaStreetRoot,
+                kaiaFarmRoot,
+                ruinsRoot,
+                prefix,
+                past,
+                materials);
             CreateChapter1PhaseJNearfieldDressingForOutdoorMaps(
                 exteriorRoot,
                 plazaRoot,
@@ -25810,8 +25820,8 @@ namespace Anemora.EditorTools
                     ? (past ? "past_house_exterior_outdoor_void_background" : "current_house_exterior_outdoor_void_background")
                     : (past ? "past_central_plaza_outdoor_void_background" : "current_central_plaza_outdoor_void_background"),
                 area == FastVsHouseArea.Exterior
-                    ? (past ? new Color(0.47f, 0.42f, 0.34f, 0.070f) : new Color(0.36f, 0.45f, 0.54f, 0.070f))
-                    : (past ? new Color(0.16f, 0.15f, 0.12f, 0.036f) : new Color(0.10f, 0.11f, 0.10f, 0.038f)));
+                    ? (past ? new Color(0.47f, 0.42f, 0.34f, 0.070f) : new Color(0.24f, 0.31f, 0.23f, 0.070f))
+                    : (past ? new Color(0.16f, 0.15f, 0.12f, 0.036f) : new Color(0.12f, 0.16f, 0.10f, 0.038f)));
 
             if (area == FastVsHouseArea.Exterior)
             {
@@ -28227,6 +28237,267 @@ namespace Anemora.EditorTools
             }
         }
 
+        private static void CreateChapter1DryMapEdgeInfillForOutdoorMaps(
+            Transform exteriorRoot,
+            Transform plazaRoot,
+            Transform miaHouseRoot,
+            Transform ariaStreetRoot,
+            Transform kaiaFarmRoot,
+            Transform ruinsRoot,
+            string prefix,
+            bool past,
+            Materials materials)
+        {
+            CreateChapter1DryMapEdgeInfill(exteriorRoot, prefix, past, FastVsHouseArea.Exterior, materials);
+            CreateChapter1DryMapEdgeInfill(plazaRoot, prefix, past, FastVsHouseArea.CentralPlaza, materials);
+            CreateChapter1DryMapEdgeInfill(miaHouseRoot, prefix, past, FastVsHouseArea.MiaHouse, materials);
+            CreateChapter1DryMapEdgeInfill(ariaStreetRoot, prefix, past, FastVsHouseArea.AriaStreet, materials);
+            CreateChapter1DryMapEdgeInfill(kaiaFarmRoot, prefix, past, FastVsHouseArea.KaiaFarm, materials);
+            CreateChapter1DryMapEdgeInfill(ruinsRoot, prefix, past, FastVsHouseArea.Ruins, materials);
+        }
+
+        private static void CreateChapter1DryMapEdgeInfill(
+            Transform mapRoot,
+            string prefix,
+            bool past,
+            FastVsHouseArea area,
+            Materials materials)
+        {
+            var areaToken = GetDistantPanoramaVistaAreaToken(area);
+            var center = GetDistantPanoramaVistaCenter(area);
+            var parent = new GameObject($"{prefix}_{areaToken}_DryMapEdgeInfill").transform;
+            parent.SetParent(mapRoot, false);
+            parent.localPosition = Vector3.zero;
+            parent.localRotation = Quaternion.identity;
+            parent.localScale = Vector3.one;
+            parent.gameObject.layer = past ? OtherTimeSpaceRenderLayer : CurrentSpaceRenderLayer;
+
+            var scale = GetNearfieldDressingScale(area);
+            var terrain = EnsureForegroundEdgeBreakupTerrainMaterial(past);
+            var dryPath = past ? materials.PastPath : materials.Dust;
+            var stone = past ? materials.PastStone : materials.CurrentStone;
+            var grass = past ? materials.PastGrass : materials.CurrentGrass;
+            var scope = $"{prefix}.{areaToken.ToLowerInvariant()}.dry_map_edge_infill";
+            var plazaMultiplier = area == FastVsHouseArea.CentralPlaza ? 1.16f : 1.0f;
+            var ruinsMultiplier = area == FastVsHouseArea.Ruins ? 0.92f : 1.0f;
+            var width = scale * plazaMultiplier * ruinsMultiplier;
+
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_RightGroundA",
+                parent,
+                center + new Vector3(12.90f * width, 0.084f, -1.60f * width),
+                new Vector3(9.60f * width, 0.052f, 9.90f * width),
+                4.0f + DistantPanoramaVistaSigned(91821 + (int)area * 17 + (past ? 5 : 0), 3.0f),
+                terrain,
+                $"{scope}.right_ground_a");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftGroundA",
+                parent,
+                center + new Vector3(-13.00f * width, 0.084f, -1.76f * width),
+                new Vector3(9.20f * width, 0.052f, 9.60f * width),
+                -4.0f + DistantPanoramaVistaSigned(91849 + (int)area * 17 + (past ? 5 : 0), 3.0f),
+                terrain,
+                $"{scope}.left_ground_a");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_FrontGroundA",
+                parent,
+                center + new Vector3(0.10f * width, 0.080f, -9.72f * width),
+                new Vector3(20.40f * width, 0.048f, 4.40f * width),
+                DistantPanoramaVistaSigned(91877 + (int)area * 17 + (past ? 5 : 0), 2.5f),
+                grass,
+                $"{scope}.front_ground_a");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_BackGroundA",
+                parent,
+                center + new Vector3(0.20f * width, 0.080f, 9.62f * width),
+                new Vector3(20.10f * width, 0.048f, 4.10f * width),
+                DistantPanoramaVistaSigned(91903 + (int)area * 17 + (past ? 5 : 0), 2.5f),
+                grass,
+                $"{scope}.back_ground_a");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_RightFrontShoulder",
+                parent,
+                center + new Vector3(9.12f * width, 0.090f, -7.80f * width),
+                new Vector3(8.20f * width, 0.044f, 4.70f * width),
+                -11.0f,
+                dryPath,
+                $"{scope}.right_front_shoulder");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftFrontShoulder",
+                parent,
+                center + new Vector3(-9.18f * width, 0.090f, -7.62f * width),
+                new Vector3(8.00f * width, 0.044f, 4.58f * width),
+                11.0f,
+                dryPath,
+                $"{scope}.left_front_shoulder");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_RightStoneBreak",
+                parent,
+                center + new Vector3(10.32f * width, 0.104f, 2.94f * width),
+                new Vector3(3.20f * width, 0.036f, 1.22f * width),
+                -18.0f,
+                stone,
+                $"{scope}.right_stone_break");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftStoneBreak",
+                parent,
+                center + new Vector3(-10.22f * width, 0.104f, 2.72f * width),
+                new Vector3(3.10f * width, 0.036f, 1.16f * width),
+                16.0f,
+                stone,
+                $"{scope}.left_stone_break");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_RightOuterDryMeadowCap",
+                parent,
+                center + new Vector3(17.40f * width, 0.096f, 1.68f * width),
+                new Vector3(7.60f * width, 0.046f, 8.60f * width),
+                -5.0f + DistantPanoramaVistaSigned(91931 + (int)area * 17 + (past ? 5 : 0), 2.0f),
+                grass,
+                $"{scope}.right_outer_dry_meadow_cap");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftOuterDryMeadowCap",
+                parent,
+                center + new Vector3(-17.45f * width, 0.096f, 1.48f * width),
+                new Vector3(7.30f * width, 0.046f, 8.30f * width),
+                5.0f + DistantPanoramaVistaSigned(91959 + (int)area * 17 + (past ? 5 : 0), 2.0f),
+                grass,
+                $"{scope}.left_outer_dry_meadow_cap");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_RightFrontDryPathCap",
+                parent,
+                center + new Vector3(13.95f * width, 0.100f, -8.52f * width),
+                new Vector3(6.70f * width, 0.044f, 3.70f * width),
+                -14.0f + DistantPanoramaVistaSigned(91987 + (int)area * 17 + (past ? 5 : 0), 2.0f),
+                dryPath,
+                $"{scope}.right_front_dry_path_cap");
+            CreateDryMapEdgeInfillCube(
+                $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftFrontDryPathCap",
+                parent,
+                center + new Vector3(-14.10f * width, 0.100f, -8.38f * width),
+                new Vector3(6.50f * width, 0.044f, 3.60f * width),
+                14.0f + DistantPanoramaVistaSigned(92015 + (int)area * 17 + (past ? 5 : 0), 2.0f),
+                dryPath,
+                $"{scope}.left_front_dry_path_cap");
+
+            if (area == FastVsHouseArea.CentralPlaza)
+            {
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_RightStreetDryBasinCover",
+                    parent,
+                    center + new Vector3(8.78f * width, 0.128f, -3.88f * width),
+                    new Vector3(5.35f * width, 0.040f, 4.72f * width),
+                    -7.0f,
+                    dryPath,
+                    $"{scope}.right_street_dry_basin_cover");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_RightStreetGrassBankCover",
+                    parent,
+                    center + new Vector3(8.92f * width, 0.132f, 1.78f * width),
+                    new Vector3(4.85f * width, 0.038f, 4.10f * width),
+                    5.0f,
+                    grass,
+                    $"{scope}.right_street_grass_bank_cover");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftStreetDryBasinCover",
+                    parent,
+                    center + new Vector3(-8.86f * width, 0.126f, -4.26f * width),
+                    new Vector3(5.20f * width, 0.040f, 4.44f * width),
+                    8.0f,
+                    dryPath,
+                    $"{scope}.left_street_dry_basin_cover");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftStreetGrassBankCover",
+                    parent,
+                    center + new Vector3(-8.92f * width, 0.130f, 1.62f * width),
+                    new Vector3(4.70f * width, 0.038f, 3.98f * width),
+                    -5.0f,
+                    grass,
+                    $"{scope}.left_street_grass_bank_cover");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_RightForegroundVoidSeal",
+                    parent,
+                    center + new Vector3(8.75f * width, 0.262f, -1.10f * width),
+                    new Vector3(3.10f * width, 0.040f, 2.80f * width),
+                    8.0f,
+                    dryPath,
+                    $"{scope}.right_foreground_void_seal");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_RightForegroundGrassSeal",
+                    parent,
+                    center + new Vector3(9.95f * width, 0.268f, 0.10f * width),
+                    new Vector3(2.50f * width, 0.038f, 2.00f * width),
+                    -5.0f,
+                    grass,
+                    $"{scope}.right_foreground_grass_seal");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftForegroundVoidSeal",
+                    parent,
+                    center + new Vector3(-5.35f * width, 0.264f, -1.10f * width),
+                    new Vector3(3.40f * width, 0.040f, 2.90f * width),
+                    -8.0f,
+                    dryPath,
+                    $"{scope}.left_foreground_void_seal");
+                CreateDryMapEdgeInfillCube(
+                    $"{prefix}_{areaToken}_DryMapEdgeInfill_LeftForegroundGrassSeal",
+                    parent,
+                    center + new Vector3(-6.35f * width, 0.270f, 0.08f * width),
+                    new Vector3(2.70f * width, 0.038f, 2.10f * width),
+                    5.0f,
+                    grass,
+                    $"{scope}.left_foreground_grass_seal");
+            }
+
+            ApplyDryMapEdgeInfillRendererPolicy(parent);
+        }
+
+        private static void CreateDryMapEdgeInfillCube(
+            string objectName,
+            Transform parent,
+            Vector3 localPosition,
+            Vector3 localScale,
+            float yaw,
+            Material material,
+            string landmarkId)
+        {
+            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.name = objectName;
+            cube.transform.SetParent(parent, false);
+            cube.transform.localPosition = localPosition;
+            cube.transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+            cube.transform.localScale = localScale;
+            cube.layer = parent.gameObject.layer;
+            var renderer = cube.GetComponent<Renderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+
+            var collider = cube.GetComponent<Collider>();
+            if (collider != null)
+            {
+                UnityEngine.Object.DestroyImmediate(collider);
+            }
+
+            var landmark = cube.AddComponent<TimeWindowPairedSpaceLandmark>();
+            SerializedSet(landmark, "landmarkId", landmarkId);
+            SerializedSet(landmark, "kind", TimeWindowPairedSpaceLandmarkKind.PropOrFeature);
+            SerializedSet(landmark, "countsForArrival", false);
+        }
+
+        private static void ApplyDryMapEdgeInfillRendererPolicy(Transform parent)
+        {
+            var expectedLayer = parent.gameObject.layer;
+            foreach (var transform in parent.GetComponentsInChildren<Transform>(true))
+            {
+                transform.gameObject.layer = expectedLayer;
+            }
+
+            foreach (var renderer in parent.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+            }
+        }
+
         private static void CreateChapter1PhaseJNearfieldDressingForOutdoorMaps(
             Transform exteriorRoot,
             Transform plazaRoot,
@@ -28583,9 +28854,80 @@ namespace Anemora.EditorTools
                     yaw + DistantPanoramaVistaSigned(seed + 229, 18f),
                     past,
                     Mathf.Clamp(groveScale * 0.92f, 0.70f, 1.26f));
+                CreateRealisticUnderstoryLayer(
+                    parent,
+                    $"{objectPrefix}_OrganicUnderstory",
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 601, 0.20f * scale), 0.020f, DistantPanoramaVistaSigned(seed + 607, 0.18f * scale)),
+                    Mathf.Clamp(groveScale * 0.78f, 0.58f, 1.14f),
+                    yaw + DistantPanoramaVistaSigned(seed + 613, 16f),
+                    leafMaterial,
+                    grassMaterial,
+                    canopyBreakupMaterial,
+                    scope,
+                    seed + 619);
             }
 
             ApplyNearfieldDressingRendererPolicy(parent);
+        }
+
+        private static void CreateRealisticUnderstoryLayer(
+            Transform parent,
+            string objectPrefix,
+            Vector3 basePosition,
+            float clusterScale,
+            float yaw,
+            Material leafMaterial,
+            Material grassMaterial,
+            Material canopyBreakupMaterial,
+            string scope,
+            int seed)
+        {
+            var scale = Mathf.Clamp(clusterScale, 0.44f, 1.28f);
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_FernFanA",
+                parent,
+                basePosition + new Vector3(-0.36f * scale, 0.20f, -0.16f * scale),
+                new Vector3(Mathf.Clamp(scale * 0.46f, 0.30f, 0.68f), Mathf.Clamp(scale * 0.42f, 0.28f, 0.62f), Mathf.Clamp(scale * 0.38f, 0.26f, 0.58f)),
+                Quaternion.Euler(-8f + DistantPanoramaVistaSigned(seed + 5, 5f), yaw - 54f + DistantPanoramaVistaSigned(seed + 7, 10f), 6f + DistantPanoramaVistaSigned(seed + 11, 5f)),
+                canopyBreakupMaterial,
+                $"{scope}.organic_understory.fern_a.{seed}",
+                CreateAuthoredVegetationLeafFanMesh($"{objectPrefix}_FernFanA_{AuthoredVegetationMeshNamePrefix}_LeafFan", $"{scope}.organic_understory.fern_a.{seed}"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_FernFanB",
+                parent,
+                basePosition + new Vector3(0.40f * scale, 0.19f, 0.12f * scale),
+                new Vector3(Mathf.Clamp(scale * 0.42f, 0.28f, 0.64f), Mathf.Clamp(scale * 0.36f, 0.24f, 0.54f), Mathf.Clamp(scale * 0.34f, 0.24f, 0.52f)),
+                Quaternion.Euler(7f + DistantPanoramaVistaSigned(seed + 13, 5f), yaw + 62f + DistantPanoramaVistaSigned(seed + 17, 10f), -5f + DistantPanoramaVistaSigned(seed + 19, 5f)),
+                leafMaterial,
+                $"{scope}.organic_understory.fern_b.{seed}",
+                CreateAuthoredVegetationLeafFanMesh($"{objectPrefix}_FernFanB_{AuthoredVegetationMeshNamePrefix}_LeafFan", $"{scope}.organic_understory.fern_b.{seed}"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_LowLeafMatA",
+                parent,
+                basePosition + new Vector3(0.04f * scale, 0.13f, -0.38f * scale),
+                new Vector3(Mathf.Clamp(scale * 0.72f, 0.46f, 1.06f), Mathf.Clamp(scale * 0.24f, 0.18f, 0.38f), Mathf.Clamp(scale * 0.58f, 0.38f, 0.86f)),
+                Quaternion.Euler(DistantPanoramaVistaSigned(seed + 23, 3f), yaw + DistantPanoramaVistaSigned(seed + 29, 14f), DistantPanoramaVistaSigned(seed + 31, 4f)),
+                grassMaterial,
+                $"{scope}.organic_understory.low_leaf_mat_a.{seed}",
+                CreateAuthoredVegetationLeafClusterMesh($"{objectPrefix}_LowLeafMatA_{AuthoredVegetationMeshNamePrefix}_LeafCluster", $"{scope}.organic_understory.low_leaf_mat_a.{seed}"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_BladeSprayA",
+                parent,
+                basePosition + new Vector3(-0.10f * scale, 0.22f, 0.42f * scale),
+                new Vector3(Mathf.Clamp(scale * 0.22f, 0.16f, 0.34f), Mathf.Clamp(scale * 0.74f, 0.48f, 1.02f), Mathf.Clamp(scale * 0.20f, 0.14f, 0.30f)),
+                Quaternion.Euler(-4f + DistantPanoramaVistaSigned(seed + 37, 4f), yaw - 16f + DistantPanoramaVistaSigned(seed + 41, 10f), -17f + DistantPanoramaVistaSigned(seed + 43, 5f)),
+                grassMaterial,
+                $"{scope}.organic_understory.blade_spray_a.{seed}",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_BladeSprayA_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{scope}.organic_understory.blade_spray_a.{seed}"));
+            CreateAuthoredVegetationFeatureMesh(
+                $"{objectPrefix}_BladeSprayB",
+                parent,
+                basePosition + new Vector3(0.30f * scale, 0.19f, -0.02f * scale),
+                new Vector3(Mathf.Clamp(scale * 0.18f, 0.14f, 0.28f), Mathf.Clamp(scale * 0.62f, 0.42f, 0.88f), Mathf.Clamp(scale * 0.18f, 0.14f, 0.28f)),
+                Quaternion.Euler(4f + DistantPanoramaVistaSigned(seed + 47, 4f), yaw + 38f + DistantPanoramaVistaSigned(seed + 53, 10f), 15f + DistantPanoramaVistaSigned(seed + 59, 5f)),
+                canopyBreakupMaterial,
+                $"{scope}.organic_understory.blade_spray_b.{seed}",
+                CreateAuthoredVegetationGrassBladeMesh($"{objectPrefix}_BladeSprayB_{AuthoredVegetationMeshNamePrefix}_GrassBlade", $"{scope}.organic_understory.blade_spray_b.{seed}"));
         }
 
         private static void CreateRealisticTreeGroveSilhouetteDetail(
@@ -28983,6 +29325,17 @@ namespace Anemora.EditorTools
                     treeGroundPosition + new Vector3(0.62f * specimenScale, 0.200f, 0.30f * specimenScale),
                     leafMaterial,
                     index + RealisticSpecimenTreeCount);
+                CreateRealisticUnderstoryLayer(
+                    parent,
+                    $"{objectPrefix}_SpecimenOrganicUnderstory",
+                    treeGroundPosition + new Vector3(DistantPanoramaVistaSigned(seed + 307, 0.18f * scale), 0.020f, DistantPanoramaVistaSigned(seed + 311, 0.16f * scale)),
+                    Mathf.Clamp(specimenScale * 0.62f, 0.48f, 0.92f),
+                    yaw + DistantPanoramaVistaSigned(seed + 313, 16f),
+                    leafMaterial,
+                    grassMaterial,
+                    canopyBreakupMaterial,
+                    scope,
+                    seed + 317);
             }
 
             ApplyNearfieldDressingRendererPolicy(parent);
@@ -29286,6 +29639,17 @@ namespace Anemora.EditorTools
                     yaw + DistantPanoramaVistaSigned(seed + 53, 16f),
                     past,
                     Mathf.Clamp(clusterScale * 0.82f, 0.58f, 1.10f));
+                CreateRealisticUnderstoryLayer(
+                    parent,
+                    $"{objectPrefix}_WildOrganicUnderstory",
+                    basePosition + new Vector3(DistantPanoramaVistaSigned(seed + 67, 0.18f * scale), 0.020f, DistantPanoramaVistaSigned(seed + 71, 0.14f * scale)),
+                    Mathf.Clamp(clusterScale * 0.66f, 0.48f, 0.96f),
+                    yaw + DistantPanoramaVistaSigned(seed + 73, 18f),
+                    leafMaterial,
+                    grassMaterial,
+                    EnsureChapter1NatureCanopyBreakupMaterial(past),
+                    scope,
+                    seed + 79);
             }
 
             ApplyNearfieldDressingRendererPolicy(parent);
@@ -35927,9 +36291,9 @@ namespace Anemora.EditorTools
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
-                        new Color32(38, 58, 72, 255),
-                        new Color32(58, 78, 90, 255),
-                        new Color32(26, 42, 58, 255),
+                        new Color32(62, 66, 56, 255),
+                        new Color32(86, 90, 72, 255),
+                        new Color32(34, 36, 32, 255),
                         PixelPattern.DistantRockStrata,
                         true,
                         new Vector2(1.08f, 0.76f),
@@ -36064,9 +36428,9 @@ namespace Anemora.EditorTools
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(40, 70, 66, 255),
-                            new Color32(112, 136, 112, 255),
-                            new Color32(14, 30, 32, 255),
+                            new Color32(58, 72, 52, 255),
+                            new Color32(112, 128, 88, 255),
+                            new Color32(28, 34, 26, 255),
                             PixelPattern.DistantRockStrata,
                             true,
                             new Vector2(3.8f, 2.4f),
@@ -36086,9 +36450,9 @@ namespace Anemora.EditorTools
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(44, 76, 76, 255),
-                            new Color32(126, 148, 130, 255),
-                            new Color32(16, 34, 40, 255),
+                            new Color32(68, 76, 54, 255),
+                            new Color32(132, 138, 94, 255),
+                            new Color32(34, 38, 28, 255),
                             PixelPattern.DistantLandform,
                             true,
                             new Vector2(4.2f, 2.7f),
@@ -36148,9 +36512,9 @@ namespace Anemora.EditorTools
                         FastVsHd2dMaterialRole.SurfaceLit)
                     : PixelMaterial(
                         id,
-                        new Color32(50, 78, 78, 255),
-                        new Color32(132, 150, 128, 255),
-                        new Color32(14, 30, 38, 255),
+                        new Color32(72, 78, 56, 255),
+                        new Color32(138, 142, 96, 255),
+                        new Color32(32, 34, 28, 255),
                         PixelPattern.DistantRockStrata,
                         true,
                         new Vector2(4.0f, 2.55f),
@@ -36213,9 +36577,9 @@ namespace Anemora.EditorTools
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(38, 70, 62, 255),
-                            new Color32(112, 138, 104, 255),
-                            new Color32(14, 30, 28, 255),
+                            new Color32(58, 72, 48, 255),
+                            new Color32(124, 132, 84, 255),
+                            new Color32(28, 34, 24, 255),
                             PixelPattern.DistantLandform,
                             true,
                             new Vector2(1.82f, 1.16f),
@@ -36235,9 +36599,9 @@ namespace Anemora.EditorTools
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(54, 78, 78, 255),
-                            new Color32(140, 154, 134, 255),
-                            new Color32(18, 32, 38, 255),
+                            new Color32(78, 78, 56, 255),
+                            new Color32(146, 140, 96, 255),
+                            new Color32(36, 34, 28, 255),
                             PixelPattern.DistantRockStrata,
                             true,
                             new Vector2(1.34f, 0.88f),
@@ -36303,9 +36667,9 @@ namespace Anemora.EditorTools
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(36, 66, 58, 255),
-                            new Color32(104, 132, 96, 255),
-                            new Color32(12, 28, 30, 255),
+                            new Color32(52, 70, 46, 255),
+                            new Color32(116, 128, 82, 255),
+                            new Color32(24, 32, 22, 255),
                             PixelPattern.DistantLandform,
                             true,
                             new Vector2(4.0f, 2.5f),
@@ -36324,9 +36688,9 @@ namespace Anemora.EditorTools
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(48, 72, 88, 255),
-                            new Color32(124, 142, 136, 255),
-                            new Color32(22, 38, 56, 255),
+                            new Color32(72, 72, 58, 255),
+                            new Color32(136, 134, 98, 255),
+                            new Color32(34, 34, 30, 255),
                             PixelPattern.DistantRockStrata,
                             true,
                             new Vector2(3.6f, 2.35f),
@@ -36336,21 +36700,21 @@ namespace Anemora.EditorTools
                     material = past
                         ? PixelMaterial(
                             id,
-                            new Color32(76, 72, 44, 255),
-                            new Color32(124, 112, 62, 255),
-                            new Color32(34, 34, 26, 255),
-                            PixelPattern.Water,
+                            new Color32(72, 66, 42, 255),
+                            new Color32(112, 96, 54, 255),
+                            new Color32(42, 40, 30, 255),
+                            PixelPattern.DistantLandform,
                             true,
-                            new Vector2(6.6f, 2.8f),
+                            new Vector2(5.2f, 3.0f),
                             FastVsHd2dMaterialRole.SurfaceLit)
                         : PixelMaterial(
                             id,
-                            new Color32(34, 74, 88, 255),
-                            new Color32(82, 128, 138, 255),
-                            new Color32(16, 38, 52, 255),
-                            PixelPattern.Water,
+                            new Color32(30, 66, 38, 255),
+                            new Color32(70, 104, 54, 255),
+                            new Color32(20, 44, 28, 255),
+                            PixelPattern.DistantLandform,
                             true,
-                            new Vector2(6.6f, 2.8f),
+                            new Vector2(5.4f, 3.0f),
                             FastVsHd2dMaterialRole.SurfaceLit);
                     break;
                 case 4:
@@ -36857,23 +37221,23 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureBroadWaterSurfacePixelMaterial(
                     id,
-                    new Color32(62, 82, 61, 255),
-                    new Color32(108, 116, 78, 255),
-                    new Color32(38, 52, 41, 255),
-                    0.26f,
-                    new Vector2(7.2f, 1.08f))
+                    new Color32(58, 52, 38, 255),
+                    new Color32(94, 78, 48, 255),
+                    new Color32(38, 34, 28, 255),
+                    0.0f,
+                    new Vector2(5.2f, 2.4f))
                 : EnsureBroadWaterSurfacePixelMaterial(
                     id,
-                    new Color32(28, 72, 86, 255),
-                    new Color32(64, 112, 118, 255),
-                    new Color32(22, 52, 64, 255),
-                    0.26f,
-                    new Vector2(7.2f, 1.08f));
+                    new Color32(46, 50, 38, 255),
+                    new Color32(76, 76, 48, 255),
+                    new Color32(34, 36, 30, 255),
+                    0.0f,
+                    new Vector2(5.4f, 2.6f));
         }
 
         private static Material EnsureBroadWaterSurfacePixelMaterial(string id, Color32 a, Color32 b, Color32 c, float smoothness, Vector2 tiling)
         {
-            var material = PixelMaterial(id, a, b, c, PixelPattern.Water, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            var material = PixelMaterial(id, a, b, c, PixelPattern.Stone, false, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", smoothness);
@@ -36898,15 +37262,15 @@ namespace Anemora.EditorTools
                     new Color32(82, 74, 43, 255),
                     new Color32(35, 34, 27, 255),
                     PixelPattern.Stone,
-                    0.10f,
+                    0.0f,
                     new Vector2(4.4f, 1.8f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(19, 45, 30, 255),
-                    new Color32(37, 63, 39, 255),
-                    new Color32(12, 29, 24, 255),
+                    new Color32(34, 38, 30, 255),
+                    new Color32(58, 58, 40, 255),
+                    new Color32(24, 26, 22, 255),
                     PixelPattern.Stone,
-                    0.10f,
+                    0.0f,
                     new Vector2(4.4f, 1.8f));
         }
 
@@ -36920,7 +37284,7 @@ namespace Anemora.EditorTools
                     new Color32(82, 92, 46, 255),
                     new Color32(36, 42, 26, 255),
                     PixelPattern.Grass,
-                    0.08f,
+                    0.0f,
                     new Vector2(2.0f, 3.2f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
@@ -36928,7 +37292,7 @@ namespace Anemora.EditorTools
                     new Color32(66, 104, 50, 255),
                     new Color32(22, 46, 28, 255),
                     PixelPattern.Grass,
-                    0.08f,
+                    0.0f,
                     new Vector2(2.0f, 3.2f));
         }
 
@@ -36938,20 +37302,20 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(66, 72, 53, 255),
-                    new Color32(86, 92, 62, 255),
-                    new Color32(42, 48, 39, 255),
-                    PixelPattern.Water,
-                    0.14f,
-                    new Vector2(5.0f, 1.2f))
+                    new Color32(64, 58, 42, 255),
+                    new Color32(94, 82, 52, 255),
+                    new Color32(42, 38, 32, 255),
+                    PixelPattern.Stone,
+                    0.0f,
+                    new Vector2(3.8f, 2.2f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(36, 68, 78, 255),
-                    new Color32(55, 89, 96, 255),
-                    new Color32(27, 48, 60, 255),
-                    PixelPattern.Water,
-                    0.14f,
-                    new Vector2(5.0f, 1.2f));
+                    new Color32(44, 50, 38, 255),
+                    new Color32(72, 74, 48, 255),
+                    new Color32(32, 34, 28, 255),
+                    PixelPattern.Stone,
+                    0.0f,
+                    new Vector2(3.8f, 2.2f));
         }
 
         private static Material EnsureWaterlineBreakupWetlandMaterial(bool past)
@@ -36964,15 +37328,15 @@ namespace Anemora.EditorTools
                     new Color32(104, 95, 46, 255),
                     new Color32(44, 48, 28, 255),
                     PixelPattern.Grass,
-                    0.09f,
+                    0.0f,
                     new Vector2(3.4f, 2.6f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(18, 58, 30, 255),
-                    new Color32(48, 94, 46, 255),
-                    new Color32(10, 36, 24, 255),
+                    new Color32(34, 64, 32, 255),
+                    new Color32(66, 100, 48, 255),
+                    new Color32(22, 44, 26, 255),
                     PixelPattern.Grass,
-                    0.09f,
+                    0.0f,
                     new Vector2(3.4f, 2.6f));
         }
 
@@ -36982,20 +37346,20 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(86, 92, 58, 255),
-                    new Color32(124, 125, 74, 255),
-                    new Color32(54, 60, 42, 255),
-                    PixelPattern.Water,
-                    0.20f,
-                    new Vector2(5.8f, 1.5f))
+                    new Color32(68, 62, 44, 255),
+                    new Color32(104, 88, 54, 255),
+                    new Color32(46, 42, 34, 255),
+                    PixelPattern.Stone,
+                    0.0f,
+                    new Vector2(4.0f, 2.3f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(54, 112, 128, 255),
-                    new Color32(92, 150, 152, 255),
-                    new Color32(30, 70, 90, 255),
-                    PixelPattern.Water,
-                    0.20f,
-                    new Vector2(5.8f, 1.5f));
+                    new Color32(48, 55, 38, 255),
+                    new Color32(78, 82, 48, 255),
+                    new Color32(34, 38, 28, 255),
+                    PixelPattern.Stone,
+                    0.0f,
+                    new Vector2(4.2f, 2.4f));
         }
 
         private static Material EnsureWaterlineBreakupReflectionRibbonMaterial(bool past)
@@ -37004,25 +37368,25 @@ namespace Anemora.EditorTools
             return past
                 ? EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(89, 102, 65, 255),
-                    new Color32(154, 150, 92, 255),
-                    new Color32(48, 64, 48, 255),
-                    PixelPattern.Water,
-                    0.30f,
-                    new Vector2(7.4f, 0.82f))
+                    new Color32(70, 62, 42, 255),
+                    new Color32(108, 88, 54, 255),
+                    new Color32(44, 42, 32, 255),
+                    PixelPattern.Stone,
+                    0.0f,
+                    new Vector2(4.4f, 2.0f))
                 : EnsureWaterlineBreakupMaterial(
                     id,
-                    new Color32(47, 102, 123, 255),
-                    new Color32(112, 164, 160, 255),
-                    new Color32(24, 58, 82, 255),
-                    PixelPattern.Water,
-                    0.30f,
-                    new Vector2(7.4f, 0.82f));
+                    new Color32(40, 43, 34, 255),
+                    new Color32(70, 68, 44, 255),
+                    new Color32(28, 30, 24, 255),
+                    PixelPattern.Stone,
+                    0.0f,
+                    new Vector2(4.6f, 2.0f));
         }
 
         private static Material EnsureWaterlineBreakupMaterial(string id, Color32 a, Color32 b, Color32 c, PixelPattern pattern, float smoothness, Vector2 tiling)
         {
-            var material = PixelMaterial(id, a, b, c, pattern, true, tiling, FastVsHd2dMaterialRole.SurfaceLit);
+            var material = PixelMaterial(id, a, b, c, pattern, false, tiling, FastVsHd2dMaterialRole.SurfaceLit);
             if (material.HasProperty("_Smoothness"))
             {
                 material.SetFloat("_Smoothness", smoothness);
@@ -37153,7 +37517,7 @@ namespace Anemora.EditorTools
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = past
                 ? new Color(0.310f, 0.292f, 0.238f, 1f)
-                : new Color(0.232f, 0.292f, 0.330f, 1f);
+                : new Color(0.190f, 0.270f, 0.205f, 1f);
             RenderSettings.fogStartDistance = 36f;
             RenderSettings.fogEndDistance = 210f;
 
@@ -37162,7 +37526,7 @@ namespace Anemora.EditorTools
                 camera.clearFlags = CameraClearFlags.SolidColor;
                 camera.backgroundColor = past
                     ? new Color(0.322f, 0.300f, 0.240f, 1f)
-                    : new Color(0.235f, 0.300f, 0.352f, 1f);
+                    : new Color(0.202f, 0.292f, 0.212f, 1f);
             }
         }
 
@@ -40201,11 +40565,11 @@ namespace Anemora.EditorTools
         {
             var c = area == FastVsHouseArea.Exterior ? HouseExteriorCenter : CentralPlazaVsCenter;
             var baseColor = area == FastVsHouseArea.Exterior
-                ? (past ? new Color(0.46f, 0.42f, 0.34f, 0.10f) : new Color(0.36f, 0.45f, 0.54f, 0.08f))
-                : (past ? new Color(0.25f, 0.23f, 0.18f, 0.18f) : new Color(0.19f, 0.21f, 0.18f, 0.18f));
+                ? (past ? new Color(0.46f, 0.42f, 0.34f, 0.10f) : new Color(0.24f, 0.31f, 0.23f, 0.08f))
+                : (past ? new Color(0.25f, 0.23f, 0.18f, 0.18f) : new Color(0.16f, 0.22f, 0.15f, 0.18f));
             var horizonColor = area == FastVsHouseArea.Exterior
-                ? (past ? new Color(0.30f, 0.28f, 0.22f, 0.16f) : new Color(0.20f, 0.27f, 0.24f, 0.14f))
-                : (past ? new Color(0.20f, 0.18f, 0.15f, 0.22f) : new Color(0.13f, 0.14f, 0.12f, 0.22f));
+                ? (past ? new Color(0.30f, 0.28f, 0.22f, 0.16f) : new Color(0.17f, 0.24f, 0.18f, 0.14f))
+                : (past ? new Color(0.20f, 0.18f, 0.15f, 0.22f) : new Color(0.12f, 0.17f, 0.11f, 0.22f));
 
             var skyMaterial = EnsureOutdoorVoidBackgroundMaterial(
                 area == FastVsHouseArea.Exterior
@@ -58720,15 +59084,15 @@ namespace Anemora.EditorTools
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.56f, 2.22f),
                 new Vector3(0.42f, 0.22f, 0.42f),
                 material,
-                new Color(0.76f, 0.88f, 0.96f, 0.30f),
-                16,
-                0.84f,
-                0.80f,
-                2.20f,
-                0.34f,
-                0.032f,
-                0.92f,
-                0.32f,
+                new Color(0.46f, 0.40f, 0.32f, 0.025f),
+                3,
+                1.10f,
+                0.70f,
+                0.18f,
+                0.045f,
+                0.018f,
+                -0.06f,
+                0.06f,
                 ParticleSystemSimulationSpace.World,
                 system =>
                 {
@@ -58738,15 +59102,15 @@ namespace Anemora.EditorTools
                     gradient.SetKeys(
                         new[]
                         {
-                            new GradientColorKey(new Color(0.92f, 0.98f, 1.00f, 1f), 0f),
-                            new GradientColorKey(new Color(0.78f, 0.92f, 1.00f, 1f), 0.45f),
-                            new GradientColorKey(new Color(0.64f, 0.80f, 0.94f, 1f), 1f)
+                            new GradientColorKey(new Color(0.50f, 0.44f, 0.34f, 1f), 0f),
+                            new GradientColorKey(new Color(0.42f, 0.36f, 0.28f, 1f), 0.45f),
+                            new GradientColorKey(new Color(0.34f, 0.30f, 0.24f, 1f), 1f)
                         },
                         new[]
                         {
-                            new GradientAlphaKey(0.28f, 0f),
-                            new GradientAlphaKey(0.14f, 0.55f),
-                            new GradientAlphaKey(0.04f, 1f)
+                            new GradientAlphaKey(0.025f, 0f),
+                            new GradientAlphaKey(0.015f, 0.55f),
+                            new GradientAlphaKey(0.00f, 1f)
                         });
                     colorOverLifetime.color = new ParticleSystem.MinMaxGradient(gradient);
                 });
@@ -58771,9 +59135,9 @@ namespace Anemora.EditorTools
                 "FastVS_HD2D_PhaseCAlpha_PlazaWaterSparkleLight",
                 CurrentSpaceRenderLayer,
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.96f, 2.20f),
-                new Color(0.88f, 0.96f, 1.00f, 1f),
-                1.20f,
-                2.20f);
+                new Color(0.58f, 0.50f, 0.38f, 1f),
+                0.03f,
+                0.65f);
         }
 
         private static void CreateAudio(Transform currentRoot, FastVsHouseAreaVisibility areaVisibility)
@@ -70128,7 +70492,7 @@ namespace Anemora.EditorTools
             ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_Fire_Spark", 0.56f);
             ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_Firefly", 0.25f);
             ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_Smoke", 0.23f);
-            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_WaterSplash", 0.31f);
+            ValidateHd2dFeedbackParticleStartAlpha("FastVS_HD2D_PhaseCAlpha_WaterSplash", 0.03f);
 
             ValidateHd2dFeedbackObjectScale("Current_Library_Stage8n_FloorLoosePageA", new Vector3(0.34f, 0.012f, 0.13f));
             ValidateHd2dFeedbackObjectScale("Current_Library_Stage8n_FloorLoosePageShadowA", new Vector3(0.40f, 0.008f, 0.16f));
@@ -81595,15 +81959,15 @@ namespace Anemora.EditorTools
                 atmosphereMaterial,
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.56f, 2.22f),
                 new Vector3(0.42f, 0.22f, 0.42f),
-                16,
-                0.84f,
-                0.80f,
-                2.20f,
-                0.34f,
-                0.032f,
-                0.92f,
-                0.32f,
-                new Color(0.76f, 0.88f, 0.96f, 0.30f),
+                3,
+                1.10f,
+                0.70f,
+                0.18f,
+                0.045f,
+                0.018f,
+                -0.06f,
+                0.06f,
+                new Color(0.46f, 0.40f, 0.32f, 0.025f),
                 true);
 
             ValidateHd2dPhaseCAlphaPointLight(
@@ -81619,9 +81983,9 @@ namespace Anemora.EditorTools
                 "Current_CentralPlazaMap_SeparateSpace",
                 CurrentSpaceRenderLayer,
                 CentralPlazaVsCenter + new Vector3(-0.08f, 0.96f, 2.20f),
-                new Color(0.88f, 0.96f, 1.00f, 1f),
-                1.20f,
-                2.20f);
+                new Color(0.58f, 0.50f, 0.38f, 1f),
+                0.03f,
+                0.65f);
         }
 
         private static void ValidateHd2dPhaseCAlphaParticleSystem(
@@ -97484,7 +97848,7 @@ namespace Anemora.EditorTools
             ValidateTransparentWorldMaterialDepthTest(
                 EnsureOutdoorVoidBackgroundMaterial(
                     "current_house_exterior_outdoor_void_background",
-                    new Color(0.36f, 0.45f, 0.54f, 0.070f)),
+                    new Color(0.24f, 0.31f, 0.23f, 0.070f)),
                 "current_house_exterior_outdoor_void_background");
             ValidateTransparentWorldMaterialDepthTest(
                 EnsureOutdoorVoidBackgroundMaterial(
@@ -108245,10 +108609,10 @@ namespace Anemora.EditorTools
                         }
                         else
                         {
-                            lowerColor = past ? new Color(0.52f, 0.46f, 0.39f, 1f) : new Color(0.28f, 0.36f, 0.46f, 1f);
-                            upperColor = past ? new Color(0.77f, 0.67f, 0.56f, 1f) : new Color(0.55f, 0.66f, 0.79f, 1f);
-                            hazeColor = past ? new Color(0.66f, 0.57f, 0.47f, 1f) : new Color(0.48f, 0.56f, 0.64f, 1f);
-                            cloudColor = past ? new Color(0.84f, 0.76f, 0.66f, 1f) : new Color(0.70f, 0.79f, 0.86f, 1f);
+                            lowerColor = past ? new Color(0.52f, 0.46f, 0.39f, 1f) : new Color(0.25f, 0.32f, 0.23f, 1f);
+                            upperColor = past ? new Color(0.77f, 0.67f, 0.56f, 1f) : new Color(0.41f, 0.50f, 0.33f, 1f);
+                            hazeColor = past ? new Color(0.66f, 0.57f, 0.47f, 1f) : new Color(0.36f, 0.43f, 0.31f, 1f);
+                            cloudColor = past ? new Color(0.84f, 0.76f, 0.66f, 1f) : new Color(0.48f, 0.55f, 0.39f, 1f);
                         }
 
                         tint = Color.Lerp(lowerColor, upperColor, skyBlend);
@@ -108281,10 +108645,10 @@ namespace Anemora.EditorTools
                         }
                         else
                         {
-                            tint = past ? new Color(0.40f, 0.33f, 0.28f, 1f) : new Color(0.25f, 0.27f, 0.29f, 1f);
+                            tint = past ? new Color(0.40f, 0.33f, 0.28f, 1f) : new Color(0.24f, 0.30f, 0.22f, 1f);
                         }
 
-                        tint = Color.Lerp(tint, past ? new Color(0.68f, 0.59f, 0.48f, 1f) : new Color(0.50f, 0.56f, 0.60f, 1f), Mathf.Clamp01(1f - silhouette));
+                        tint = Color.Lerp(tint, past ? new Color(0.68f, 0.59f, 0.48f, 1f) : new Color(0.40f, 0.48f, 0.34f, 1f), Mathf.Clamp01(1f - silhouette));
                         alpha = ((0.26f + silhouette * 0.44f) + horizonCore * 0.08f) * edgeFade;
                         alpha = Mathf.Clamp(alpha, 0f, past ? 0.62f : 0.56f);
                     }
@@ -108295,14 +108659,14 @@ namespace Anemora.EditorTools
                         var wrapCore = Mathf.Clamp01(verticalBand * (0.42f + (edgeBand * 0.58f)));
                         if (area == FastVsHouseArea.Exterior)
                         {
-                            tint = past ? new Color(0.59f, 0.52f, 0.44f, 1f) : new Color(0.43f, 0.53f, 0.62f, 1f);
-                            tint = Color.Lerp(tint, past ? new Color(0.76f, 0.68f, 0.58f, 1f) : new Color(0.64f, 0.73f, 0.84f, 1f), wrapCore * 0.58f);
+                            tint = past ? new Color(0.59f, 0.52f, 0.44f, 1f) : new Color(0.29f, 0.39f, 0.27f, 1f);
+                            tint = Color.Lerp(tint, past ? new Color(0.76f, 0.68f, 0.58f, 1f) : new Color(0.43f, 0.52f, 0.33f, 1f), wrapCore * 0.58f);
                             alpha = Mathf.Clamp(((0.025f + wrapCore * 0.070f) + (edgeBand * 0.018f)) * edgeFade, 0f, past ? 0.12f : 0.10f);
                         }
                         else
                         {
-                            tint = past ? new Color(0.49f, 0.43f, 0.37f, 1f) : new Color(0.31f, 0.39f, 0.46f, 1f);
-                            tint = Color.Lerp(tint, past ? new Color(0.70f, 0.62f, 0.54f, 1f) : new Color(0.55f, 0.64f, 0.72f, 1f), wrapCore * 0.46f);
+                            tint = past ? new Color(0.49f, 0.43f, 0.37f, 1f) : new Color(0.24f, 0.32f, 0.23f, 1f);
+                            tint = Color.Lerp(tint, past ? new Color(0.70f, 0.62f, 0.54f, 1f) : new Color(0.38f, 0.46f, 0.30f, 1f), wrapCore * 0.46f);
                             alpha = Mathf.Clamp(((0.12f + wrapCore * 0.26f) + (edgeBand * 0.06f)) * edgeFade, 0f, past ? 0.34f : 0.30f);
                         }
                     }
@@ -108311,20 +108675,20 @@ namespace Anemora.EditorTools
                         var isWrap = layer == "sky_wrap";
                         var lower = past
                             ? (isWrap ? new Color(0.58f, 0.52f, 0.43f, 1f) : new Color(0.50f, 0.43f, 0.35f, 1f))
-                            : (isWrap ? new Color(0.44f, 0.52f, 0.60f, 1f) : new Color(0.35f, 0.43f, 0.52f, 1f));
+                            : (isWrap ? new Color(0.32f, 0.42f, 0.29f, 1f) : new Color(0.24f, 0.32f, 0.23f, 1f));
                         var upper = past
                             ? (isWrap ? new Color(0.70f, 0.62f, 0.51f, 1f) : new Color(0.64f, 0.55f, 0.45f, 1f))
-                            : (isWrap ? new Color(0.58f, 0.66f, 0.75f, 1f) : new Color(0.48f, 0.57f, 0.68f, 1f));
+                            : (isWrap ? new Color(0.44f, 0.52f, 0.33f, 1f) : new Color(0.36f, 0.45f, 0.30f, 1f));
                         var cloud = Mathf.Exp(-Mathf.Pow((v - (0.68f + wobble)) / 0.075f, 2f)) * Mathf.Clamp01(0.75f - Mathf.Abs(u - 0.5f));
                         tint = Color.Lerp(lower, upper, Mathf.SmoothStep(0f, 1f, v));
-                        tint = Color.Lerp(tint, Color.white, cloud * 0.12f);
+                        tint = Color.Lerp(tint, past ? new Color(0.78f, 0.70f, 0.60f, 1f) : new Color(0.50f, 0.56f, 0.40f, 1f), cloud * 0.10f);
                         alpha = (isWrap ? 0.055f : 0.22f) + (cloud * (isWrap ? 0.035f : 0.15f));
                         alpha *= edgeFade;
                     }
                     else if (layer == "low_haze_band")
                     {
                         var hazeCore = Mathf.Exp(-Mathf.Pow((v - (0.52f + wobble * 0.45f)) / 0.20f, 2f));
-                        tint = past ? new Color(0.56f, 0.49f, 0.39f, 1f) : new Color(0.48f, 0.55f, 0.56f, 1f);
+                        tint = past ? new Color(0.56f, 0.49f, 0.39f, 1f) : new Color(0.35f, 0.42f, 0.30f, 1f);
                         alpha = (0.24f + hazeCore * 0.34f) * edgeFade;
                     }
                     else if (layer == "distant_tree_line")
@@ -108415,22 +108779,47 @@ namespace Anemora.EditorTools
                     Color cloudColor;
                     if (area == FastVsHouseArea.Exterior)
                     {
-                        lowerColor = past ? new Color(0.39f, 0.34f, 0.30f, 1f) : new Color(0.29f, 0.35f, 0.40f, 1f);
-                        upperColor = past ? new Color(0.57f, 0.50f, 0.44f, 1f) : new Color(0.42f, 0.49f, 0.56f, 1f);
-                        hazeColor = past ? new Color(0.61f, 0.55f, 0.49f, 1f) : new Color(0.50f, 0.56f, 0.60f, 1f);
-                        cloudColor = past ? new Color(0.50f, 0.45f, 0.40f, 1f) : new Color(0.39f, 0.46f, 0.52f, 1f);
+                        lowerColor = past ? new Color(0.39f, 0.34f, 0.30f, 1f) : new Color(0.24f, 0.31f, 0.23f, 1f);
+                        upperColor = past ? new Color(0.57f, 0.50f, 0.44f, 1f) : new Color(0.35f, 0.44f, 0.29f, 1f);
+                        hazeColor = past ? new Color(0.61f, 0.55f, 0.49f, 1f) : new Color(0.38f, 0.45f, 0.32f, 1f);
+                        cloudColor = past ? new Color(0.50f, 0.45f, 0.40f, 1f) : new Color(0.34f, 0.42f, 0.29f, 1f);
                     }
                     else
                     {
-                        lowerColor = past ? new Color(0.37f, 0.32f, 0.28f, 1f) : new Color(0.28f, 0.33f, 0.37f, 1f);
-                        upperColor = past ? new Color(0.55f, 0.48f, 0.41f, 1f) : new Color(0.40f, 0.46f, 0.53f, 1f);
-                        hazeColor = past ? new Color(0.58f, 0.52f, 0.45f, 1f) : new Color(0.49f, 0.54f, 0.58f, 1f);
-                        cloudColor = past ? new Color(0.48f, 0.42f, 0.37f, 1f) : new Color(0.37f, 0.44f, 0.49f, 1f);
+                        lowerColor = past ? new Color(0.37f, 0.32f, 0.28f, 1f) : new Color(0.23f, 0.28f, 0.21f, 1f);
+                        upperColor = past ? new Color(0.55f, 0.48f, 0.41f, 1f) : new Color(0.33f, 0.39f, 0.27f, 1f);
+                        hazeColor = past ? new Color(0.58f, 0.52f, 0.45f, 1f) : new Color(0.36f, 0.42f, 0.30f, 1f);
+                        cloudColor = past ? new Color(0.48f, 0.42f, 0.37f, 1f) : new Color(0.31f, 0.37f, 0.25f, 1f);
                     }
 
                     var tint = Color.Lerp(lowerColor, upperColor, Mathf.SmoothStep(0f, 1f, v));
                     tint = Color.Lerp(tint, hazeColor, Mathf.Clamp01(horizonHaze * 0.30f));
                     tint = Color.Lerp(tint, cloudColor, Mathf.Clamp01((cloudBandA + cloudBandB) * 0.18f));
+                    if (!past)
+                    {
+                        var tonalBand = (((x / 16) + (y / 28) + seed) & 3);
+                        Color tonalTarget;
+                        if (tonalBand == 0)
+                        {
+                            tonalTarget = new Color(0.18f, 0.24f, 0.16f, 1f);
+                        }
+                        else if (tonalBand == 1)
+                        {
+                            tonalTarget = new Color(0.44f, 0.52f, 0.30f, 1f);
+                        }
+                        else if (tonalBand == 2)
+                        {
+                            tonalTarget = new Color(0.36f, 0.32f, 0.21f, 1f);
+                        }
+                        else
+                        {
+                            tonalTarget = new Color(0.30f, 0.39f, 0.25f, 1f);
+                        }
+
+                        var foliageNoise = SampleSmoothValueNoise2D((u * 10.5f) + seed * 0.03f, (v * 8.2f) + seed * 0.05f, 13091);
+                        tint = Color.Lerp(tint, tonalTarget, Mathf.Lerp(0.10f, 0.18f, foliageNoise));
+                    }
+
                     pixels[(y * texture.width) + x] = new Color32(
                         (byte)Mathf.Clamp(Mathf.RoundToInt(tint.r * 255f), 0, 255),
                         (byte)Mathf.Clamp(Mathf.RoundToInt(tint.g * 255f), 0, 255),
@@ -111087,7 +111476,7 @@ namespace Anemora.EditorTools
                 FlatMaterial("timewindow_marker_yellow", new Color(1.00f, 0.78f, 0.05f, 1f), true, FastVsHd2dMaterialRole.OverlayGlow),
                 PaintedSurfaceMaterial("window_light", "window_light_hd2d_plate", 96, 96, SampleWindowLightHd2dPixel, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.PortalWindow),
                 PaintedSurfaceMaterial("empty_window", "empty_window_hd2d_plate", 96, 96, SampleEmptyWindowHd2dPixel, true, new Vector2(1f, 1f), FastVsHd2dMaterialRole.PortalWindow),
-                PixelMaterial("water", new Color32(56, 119, 151, 255), new Color32(91, 171, 195, 255), new Color32(33, 72, 112, 255), PixelPattern.Water, true, new Vector2(1f, 1f)),
+                PixelMaterial("water", new Color32(48, 45, 34, 255), new Color32(74, 66, 43, 255), new Color32(30, 28, 24, 255), PixelPattern.Stone, false, new Vector2(1.2f, 1.0f)),
                 PixelMaterial("rope", new Color32(142, 112, 70, 255), new Color32(181, 146, 89, 255), new Color32(89, 70, 47, 255), PixelPattern.Planks, false, new Vector2(1f, 1f)),
                 PixelMaterial("flower_red", new Color32(190, 46, 54, 255), new Color32(239, 87, 79, 255), new Color32(117, 35, 53, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),
                 PixelMaterial("flower_yellow", new Color32(225, 177, 62, 255), new Color32(255, 222, 100, 255), new Color32(145, 105, 44, 255), PixelPattern.Checker, true, new Vector2(1f, 1f)),

@@ -1,13 +1,13 @@
 ﻿# Devlog Index
 
-> Status: v8.149 HD2D nature species silhouette (2026-06-26). This index is navigation only; detailed implementation history remains in each devlog file.
+> Status: v8.150 HD2D nature understory no-water retone (2026-06-27). This index is navigation only; detailed implementation history remains in each devlog file.
 
 ## 1. Overview
 
 This file indexes the current root-level Markdown files under `docs/devlog/` after recovering records from local Anemora worktrees, local refs, fetched remotes, and notes-side handover/procedure records.
 
-- Root-level Markdown coverage: 846 files including INDEX.md and README.md.
-- Dated devlog records: 844 files.
+- Root-level Markdown coverage: 847 files including INDEX.md and README.md.
+- Dated devlog records: 845 files.
 - Linked evidence files present under docs/devlog/screenshots/: 1499 files.
 - Update policy: when adding a root-level devlog, add or regenerate this index so the dated record stays discoverable.
 
@@ -15,6 +15,7 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 
 | Date | Count |
 |---|---:|
+| 2026-06-27 | 1 |
 | 2026-06-26 | 5 |
 | 2026-06-25 | 1 |
 | 2026-06-24 | 6 |
@@ -54,6 +55,12 @@ This file indexes the current root-level Markdown files under `docs/devlog/` aft
 | 2026-06-09 | 12 |
 
 ## 3. Date-Grouped Devlogs
+
+### 2026-06-27
+
+| File | Area | Title |
+|---|---|---|
+| [2026-06-27_hd2d_nature_understory_no_water.md](2026-06-27_hd2d_nature_understory_no_water.md) | Fast VS / HD2D | HD2D nature understory no-water retone |
 
 ### 2026-06-26
 
