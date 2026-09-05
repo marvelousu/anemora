@@ -2,9 +2,15 @@
 
 > HD-2D 探索アクション・アドベンチャー。衰退する街で「時の窓」を開き、過去で取った小さな行動が現在の風景を変える、短い循環の体験を目指しています。
 
+## 開発状況（2026-09-05）
+
+**Anemora は長期プロジェクトとして、現在は開発を凍結しています。** 今後は Unreal Engine（UE）への移行を予定しています。開発再開・移行・リリースの時期は未定です。
+
+このリポジトリでは、これまでに制作した Unity 版のプロトタイプと設計資料・開発記録を公開しています。以下のプレイ可能ビルド、技術情報、セットアップ手順は、この Unity 版に関するものです。
+
 > 2026-05-18 時点の Fast VS 公開ベースラインは `vs-public-2026-05-18` です。Chapter 1 のニロの家、外、広場、図書館、時の窓、レトの本イベントまでを確認できます。
 
-> 進行中の作業（各 work branch の screenshots / docs / Markdown）を外出中でもブラウジングできる iPhone / PC 対応ビューア: <https://anemora-viewer.pages.dev/> 。詳細は [`docs/review/README.md`](docs/review/README.md)。
+> これまでの開発資料（各 work branch の screenshots / docs / Markdown）を閲覧できる iPhone / PC 対応ビューア: <https://anemora-viewer.pages.dev/> 。詳細は [`docs/review/README.md`](docs/review/README.md)。
 
 ## Fast VS を遊ぶ（Windows）
 
@@ -63,21 +69,22 @@ Builds/Anemora_FastVS_HouseSlice_20260518.zip
 
 | 項目 | 状態 |
 |---|---|
-| 開発ステージ | Fast VS の公開ベースラインは `vs-public-2026-05-18` で固定。VS 後のポリッシュはブランチで継続 |
-| プレイ可能状態 | Windows 版 Fast VS ビルドはローカルの `Builds/FastVS_HouseSlice/` に存在。公開プレイ用にはフォルダ一式を zip にしてリリースへ添付 |
-| Unity / URP | `6000.3.14f1` / URP `17.3.0` |
-| 公開リリース経路 | Steam Early Access を主軸として想定（時期・条件は Stage 4 レビューで確定） |
+| 開発ステージ | 長期プロジェクトとして開発凍結中（2026-09-05 時点） |
+| 今後の方針 | Unreal Engine への移行を予定。開発再開・移行時期は未定 |
+| プレイ可能状態 | Unity 版 Fast VS を [Releases](https://github.com/marvelousu/anemora/releases/tag/vs-public-2026-05-18) で公開済み |
+| 現行 Unity / URP | `6000.3.14f1` / URP `17.3.0` |
+| 公開リリース計画 | 時期は未定。従来の Steam Early Access 計画は開発再開時に見直し |
 | コードライセンス | 既定で All Rights Reserved（Stage 4 入口で再評価） |
 | 仮名称 | 主人公 Niro / ニロ、第 1 ゾーン Antela / アンテラ（Stage 4 レビューまで仮） |
 
 ## コア機能（設計目標）
 
-- **時の窓 (Time Frame Portal)**: 空中にフレームを描き、3 つのシンボルから選んで過去 / 現在を覗くポータル機構。境界を踏み越えると映った時間に入る挙動を目指して実装中。
+- **時の窓 (Time Frame Portal)**: 空中にフレームを描き、3 つのシンボルから選んで過去 / 現在を覗くポータル機構。境界を踏み越えると映った時間に入る挙動を目指しています。
 - **行動記録 (ActionRecord)**: 過去で取った行動（拾う・話す・到達）を記録し、戻った後の現在側の風景や進行に反映する仕組み。
-- **第 1 ゾーン Antela**: 衰退した街、主人公の家、図書館跡を含む Vertical Slice エリア。10〜15 分の通し体験を想定して制作中。
+- **第 1 ゾーン Antela**: 衰退した街、主人公の家、図書館跡を含む Vertical Slice エリア。10〜15 分の通し体験を想定しています。
 - **日英ローカライズ基盤**: TextMeshPro SDF Atlas + LocalizationSettings + Addressables による日本語 / 英語切替。
 
-## 技術スタック
+## 技術スタック（現行の Unity 版）
 
 | 領域 | 採用 |
 |---|---|
@@ -150,9 +157,9 @@ Editor 上で Fast VS を確認したい場合の手順:
 ## ロードマップ
 
 - **Fast VS 公開ベースライン**（2026-05-18）: ニロの家から図書館、レトの本イベント、時の窓操作までの公開確認版。
-- **VS 後のポリッシュ**: グラフィックのポリッシュ、Steam Early Access 提出準備、公開向けドキュメント / ストアアセットの整備。
-- **Stage 5 以降**: Steam Early Access のフィードバック反映とフル版リリース計画。
+- **現在**（2026-09-05）: 長期プロジェクトとして開発を凍結。Unity 版の成果と開発記録を公開・保管。
+- **今後**: Unreal Engine への移行を予定。再開時に開発範囲と公開計画を見直します。日程は未定です。
 
 ## コントリビューション
 
-現状は単独開発です。Issue / Pull Request の受付方針は、Stage 4 以降に Steam Early Access の予定とコードライセンス再評価に合わせて決定します。
+現状は単独開発で、開発凍結中です。Issue / Pull Request の受付方針は、開発再開時に公開計画とコードライセンスの再評価に合わせて決定します。
